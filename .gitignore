@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs (keep structure, ignore contents)
+logs/*.log
+logs/*.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Local settings
+.claude/
+
+# Data files that change frequently
+data/themes_cache.json

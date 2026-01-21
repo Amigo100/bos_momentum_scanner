@@ -25,3 +25,26 @@ logs/*.txt
 
 # Data files that change frequently
 data/themes_cache.json
+
+# Playwright browser profile (contains login sessions)
+.playwright_profile/
+
+# Sensitive backup copies
+*.bak
+*copy*.txt
+
+# Local environment files
+.env
+.env.local
+
+# Reports directory (generated, can be large)
+reports/
+
+# Portfolio backups (keep latest only)
+trades/portfolio_backups/
+
+# Chart images (regenerated as needed)
+trades/charts/*.png
+
+# Tweet posting logs
+trades/tweets/posted_*.json

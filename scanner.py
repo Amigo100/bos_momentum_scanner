@@ -58,6 +58,22 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+# Portfolio Manager Integration (unified trade tracking)
+# Falls back to legacy CSV handling if portfolio_manager.py not found
+try:
+    from portfolio_manager import (
+        PortfolioManager,
+        get_portfolio_manager,
+        add_trade_to_portfolio,
+        check_portfolio_stops,
+        get_open_position_symbols,
+        update_portfolio_prices
+    )
+    PORTFOLIO_MANAGER_AVAILABLE = True
+except ImportError:
+    PORTFOLIO_MANAGER_AVAILABLE = False
+    print("  ℹ️  portfolio_manager.py not found - using legacy CSV tracking")
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -65,12 +81,10 @@ import yfinance as yf
 
 BASE_DIR = Path(__file__).resolve().parent
 TICKERS_FILE = BASE_DIR / "complete_tickers.txt"
-DATA_DIR = BASE_DIR / "data"
 TRADES_DIR = BASE_DIR / "trades"
 LOGS_DIR = BASE_DIR / "logs"
 
 # Create directories
-DATA_DIR.mkdir(exist_ok=True)
 TRADES_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
@@ -89,8 +103,16 @@ BANKER_TIER3 = 55.0      # Slight accumulation (price ~1%+ above VWAP)
 # from +9.2% to +6.1% on average across 4000+ stocks
 # Momentum is still tracked for informational purposes but not used as a gate
 
-# Exit criteria
+# Trading parameters
 TRAILING_STOP_PCT = 20.0  # 20% trailing stop from highest close
+
+
+def rel_path(p: Path) -> str:
+    """Convert path to relative path for cleaner output."""
+    try:
+        return str(p.relative_to(Path.cwd()))
+    except ValueError:
+        return str(p)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -126,7 +148,14 @@ class Stock:
     catalyst_summary: str = ""
     red_flag_level: str = ""
     action: str = ""
-    
+    # Due Diligence fields (from dd_automator.py)
+    dd_verdict: str = ""          # STRONG BUY / SPEC BUY / NO GO
+    dd_conviction: int = 0        # 1-10 scale
+    dd_position_size: str = ""    # FULL / REDUCED / PASS
+    dd_analysis: str = ""         # Full analysis text
+    dd_key_catalyst: str = ""     # Extracted key catalyst
+    dd_fatal_flaw: str = ""       # Extracted fatal flaw (if NO GO)
+
     def meets_technical_criteria(self) -> bool:
         """Check if stock meets technical signal criteria."""
         return self.beta >= BETA_SIGNAL and self.bos_bullish
@@ -237,7 +266,7 @@ def calculate_beta(returns: pd.Series, benchmark_returns: pd.Series) -> float:
             return 0.0
         beta = cov / var
         return round(float(beta), 2) if not pd.isna(beta) else 0.0
-    except:
+    except Exception:
         return 0.0
 
 
@@ -270,7 +299,7 @@ def calculate_banker(df: pd.DataFrame) -> float:
         deviation_pct = ((current / vwap) - 1) * 100
         banker = 50 + (deviation_pct * 5)  # 1% above VWAP = 55, 2% = 60, etc.
         return round(max(0, min(100, banker)), 1)
-    except:
+    except Exception:
         return 0.0
 
 
@@ -457,7 +486,7 @@ def calculate_bos_daily(df: pd.DataFrame) -> Tuple[bool, bool]:
         is_bullish = current > high_20 * 0.98 and current > prev_high
         is_bearish = current < low_20 * 1.02
         return is_bullish, is_bearish
-    except:
+    except Exception:
         return False, False
 
 
@@ -470,17 +499,25 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
     stocks = {}
     chunk_size = 50
     chunks = [tickers[i:i+chunk_size] for i in range(0, len(tickers), chunk_size)]
-    
+    failed_downloads = []  # Buffer failed downloads
+
+    # Suppress yfinance error output during download
+    import io
+    import contextlib
+
     for i, chunk in enumerate(chunks):
         pct = (i + 1) / len(chunks) * 100
-        print(f"\r  Downloading chunk {i+1}/{len(chunks)} ({pct:.0f}%)...", end="", flush=True)
-        
+        print(f"\r  Downloading: {pct:3.0f}% ({i+1}/{len(chunks)} chunks)", end="", flush=True)
+
         try:
-            data = yf.download(chunk, period="1y", progress=False, threads=True, group_by='ticker')
-            
+            # Capture stderr to buffer yfinance errors
+            with contextlib.redirect_stderr(io.StringIO()):
+                data = yf.download(chunk, period="1y", progress=False, threads=True, group_by='ticker')
+
             if data.empty:
+                failed_downloads.extend(chunk)
                 continue
-            
+
             for symbol in chunk:
                 try:
                     if len(chunk) == 1:
@@ -521,7 +558,7 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                                 close_now = float(weekly['Close'].iloc[-1])
                                 close_4w_ago = float(weekly['Close'].iloc[-5])  # 4 weeks back
                                 stock.momentum_4w = round((close_now / close_4w_ago - 1) * 100, 1)
-                        except:
+                        except Exception:
                             stock.momentum_4w = 0.0
                     
                     stocks[symbol] = stock
@@ -530,11 +567,16 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                     continue
                     
         except Exception:
+            failed_downloads.extend(chunk)
             continue
-        
+
         time.sleep(0.3)
-    
-    print()
+
+    # Clear progress line and show summary
+    print(f"\r  ✓ Data for {len(stocks)} stocks" + " " * 30)
+    if failed_downloads:
+        print(f"  ⚠ {len(failed_downloads)} ticker(s) failed to download")
+
     return stocks
 
 
@@ -828,7 +870,7 @@ def run_gatekeeper(signals: List[Stock], top_n: int = None, themes_context: str 
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SELL SIGNAL CHECKER
+# SELL SIGNAL CHECKER & POSITION MANAGEMENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @dataclass
@@ -845,11 +887,87 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
     """
     Check for sell signals on open positions.
     
+    Uses portfolio_manager.py if available, otherwise falls back to legacy CSV.
+    
     EXIT CRITERIA:
     1. PRIMARY: Weekly BoS Down signal
     2. BACKUP: 20% trailing stop from highest close since entry
     """
     
+    # Use portfolio_manager if available
+    if PORTFOLIO_MANAGER_AVAILABLE:
+        return _check_sell_signals_portfolio_manager(stocks)
+    else:
+        return _check_sell_signals_legacy(stocks)
+
+
+def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[SellSignal]:
+    """Check sell signals using portfolio_manager (unified tracking)."""
+    pm = get_portfolio_manager()
+    sell_signals = []
+    
+    try:
+        open_trades = pm.get_open_positions()
+        
+        if not open_trades:
+            return []
+        
+        for trade in open_trades:
+            symbol = trade.ticker.upper()
+            
+            if symbol not in stocks:
+                continue
+            
+            stock = stocks[symbol]
+            current_price = stock.price
+            
+            # Update highest close
+            if current_price > trade.highest_close:
+                trade.highest_close = current_price
+            
+            # Calculate drawdown
+            if trade.highest_close > 0:
+                drawdown_pct = ((trade.highest_close - current_price) / trade.highest_close) * 100
+            else:
+                drawdown_pct = 0
+            
+            # CHECK EXIT CRITERIA
+            sell_reason = None
+            
+            # PRIMARY: Weekly BoS Down
+            if stock.bos_bearish:
+                sell_reason = f"Weekly BoS Down (price breaking structure low)"
+            
+            # BACKUP: 20% trailing stop
+            elif drawdown_pct >= TRAILING_STOP_PCT:
+                sell_reason = f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${trade.highest_close:.2f})"
+            
+            if sell_reason:
+                sell_signals.append(SellSignal(
+                    symbol=symbol,
+                    price=current_price,
+                    reason=sell_reason,
+                    entry_price=trade.entry_price,
+                    highest_close=trade.highest_close,
+                    drawdown_pct=drawdown_pct
+                ))
+                # Flag the trade as exited in portfolio
+                pm.flag_exit(symbol, current_price, reason=sell_reason)
+
+        # Note: Prices will be updated in main() when export_for_google_sheets() is called
+        # No need for duplicate pm.update_prices() here
+
+        return sell_signals
+        
+    except Exception as e:
+        print(f"  ⚠ Error checking sell signals (portfolio_manager): {e}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+
+def _check_sell_signals_legacy(stocks: Dict[str, Stock]) -> List[SellSignal]:
+    """Check sell signals using legacy open_positions.csv."""
     open_positions_file = TRADES_DIR / "open_positions.csv"
     
     if not open_positions_file.exists():
@@ -869,31 +987,24 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
             highest_close = float(row.get('highest_close', entry_price))
             
             if symbol not in stocks:
-                # Keep position if we don't have data
                 updated_positions.append(row)
                 continue
             
             stock = stocks[symbol]
             current_price = stock.price
             
-            # Update highest close if current price is higher
             if current_price > highest_close:
                 highest_close = current_price
             
-            # Calculate drawdown from highest close
             if highest_close > 0:
                 drawdown_pct = ((highest_close - current_price) / highest_close) * 100
             else:
                 drawdown_pct = 0
             
-            # CHECK EXIT CRITERIA
             sell_reason = None
             
-            # PRIMARY: Weekly BoS Down
             if stock.bos_bearish:
                 sell_reason = f"Weekly BoS Down (price breaking structure low)"
-            
-            # BACKUP: 20% trailing stop
             elif drawdown_pct >= TRAILING_STOP_PCT:
                 sell_reason = f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${highest_close:.2f})"
             
@@ -907,15 +1018,13 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
                     drawdown_pct=drawdown_pct
                 ))
             else:
-                # Update the position with new highest_close
                 updated_row = row.copy()
                 updated_row['highest_close'] = str(highest_close)
                 updated_row['current_price'] = str(current_price)
                 updated_row['drawdown_pct'] = f"{drawdown_pct:.1f}"
                 updated_positions.append(updated_row)
         
-        # Write updated positions back (excluding sold ones)
-        if rows:  # Only update if there were positions
+        if rows:
             fieldnames = list(rows[0].keys())
             if 'highest_close' not in fieldnames:
                 fieldnames.append('highest_close')
@@ -932,13 +1041,25 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
         return sell_signals
         
     except Exception as e:
-        print(f"  ⚠ Error checking sell signals: {e}")
+        print(f"  ⚠ Error checking sell signals (legacy): {e}")
         return []
 
 
 def add_to_open_positions(stock: Stock):
-    """Add a confirmed trade to open positions for tracking."""
+    """Add a confirmed trade to open positions for tracking.
     
+    Uses portfolio_manager.py if available, otherwise falls back to legacy CSV.
+    """
+    
+    # Use portfolio_manager if available
+    if PORTFOLIO_MANAGER_AVAILABLE:
+        try:
+            add_trade_to_portfolio(stock)
+            return
+        except Exception as e:
+            print(f"  ⚠ Portfolio manager error, falling back to legacy: {e}")
+    
+    # Legacy CSV handling
     open_positions_file = TRADES_DIR / "open_positions.csv"
     write_header = not open_positions_file.exists()
     
@@ -954,7 +1075,7 @@ def add_to_open_positions(stock: Stock):
             'symbol': stock.symbol,
             'entry_date': datetime.now().strftime("%Y-%m-%d"),
             'entry_price': stock.price,
-            'highest_close': stock.price,  # Starts at entry price
+            'highest_close': stock.price,
             'tier': stock.tier,
             'theme': stock.theme,
             'decision': stock.final_decision,
@@ -965,7 +1086,19 @@ def add_to_open_positions(stock: Stock):
 
 
 def load_open_positions() -> set:
-    """Load symbols from open positions file for flagging in scanner output."""
+    """Load symbols from open positions for flagging in scanner output.
+    
+    Uses portfolio_manager.py if available, otherwise falls back to legacy CSV.
+    """
+    
+    # Use portfolio_manager if available
+    if PORTFOLIO_MANAGER_AVAILABLE:
+        try:
+            return get_open_position_symbols()
+        except Exception:
+            pass  # Fall through to legacy
+    
+    # Legacy CSV handling
     open_positions_file = TRADES_DIR / "open_positions.csv"
 
     if not open_positions_file.exists():
@@ -983,12 +1116,13 @@ def load_open_positions() -> set:
 # MAIN SCANNER
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: int = None, top_n: int = None, use_web_search: bool = False) -> Tuple[List[Stock], List[Stock], List[SellSignal], ScanStats, List[Stock], List[dict]]:
+def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: int = None, top_n: int = None, use_web_search: bool = False, verbose: bool = False) -> Tuple[List[Stock], List[Stock], List[SellSignal], ScanStats, List[Stock], List[dict]]:
     """Run the complete scan pipeline. Returns (confirmed_buys, all_assessed, sell_signals, stats, momentum_rejected, themes_data).
-    
+
     Args:
         skip_llm: Skip ALL LLM gates (technical only)
         skip_momentum: Skip momentum assessor but keep theme analysis
+        verbose: Show detailed diagnostic output (10 items vs 3)
         assess_top_n: Only run momentum assessor on top N stocks
         top_n: Only scan top N stocks by beta
     """
@@ -1047,9 +1181,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     
     stocks = download_and_process(tickers, benchmark_returns)
     stats.data_downloaded = len(stocks)
-    
-    print(f"  ✓ Data for {len(stocks)} stocks")
-    
+
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 4: Calculate Statistics
     # ─────────────────────────────────────────────────────────────────────────
@@ -1099,68 +1231,50 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print(f"  Banker > 55 (Slight):     {stats.banker_gt_2:>6}")
     
     # ═══════════════════════════════════════════════════════════════════════════
-    # DIAGNOSTIC: Show sample tickers for each filter category
+    # DIAGNOSTIC: Show sample tickers (controlled by --verbose flag)
     # ═══════════════════════════════════════════════════════════════════════════
-    print(f"\n  ┌─────────────────────────────────────────────────────────────────┐")
-    print(f"  │  DIAGNOSTIC: Sample Tickers by Filter Category                  │")
-    print(f"  └─────────────────────────────────────────────────────────────────┘")
-    
-    # High beta stocks (up to 10)
-    beta_samples = sorted([s for s in high_beta_stocks], key=lambda x: x.beta, reverse=True)[:10]
-    print(f"\n  📊 TOP HIGH-BETA STOCKS (Beta >= 1.5):")
-    for s in beta_samples:
-        print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:.2f}")
-    
+    sample_size = 10 if verbose else 3
+
+    # Get week ending date once (from any stock with bos_debug)
+    week_date = "N/A"
+    for s in stocks.values():
+        if s.bos_debug and s.bos_debug.get('last_date'):
+            week_date = s.bos_debug['last_date']
+            break
+
+    print(f"\n  📅 Week ending: {week_date}")
+
+    if verbose:
+        print(f"\n  ┌─────────────────────────────────────────────────────────────────┐")
+        print(f"  │  DIAGNOSTIC: Sample Tickers (--verbose mode)                    │")
+        print(f"  └─────────────────────────────────────────────────────────────────┘")
+
     # HMA Pivot BUY signals (entry candidates)
     bos_up_stocks = [s for s in stocks.values() if s.bos_bullish]
-    print(f"\n  🟢 HMA PIVOT BUY ({len(bos_up_stocks)} total) - Entry Candidates:")
-    if bos_up_stocks:
-        for s in bos_up_stocks[:10]:
-            held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:.2f}  Banker={s.banker:.1f}{held_flag}")
-            if s.bos_debug:
-                d = s.bos_debug
-                if d.get('bos_up_reason'):
-                    print(f"              └─ {d['bos_up_reason']}")
-                    print(f"              └─ Week ending: {d.get('last_date', 'N/A')}")
-    else:
-        print(f"      (none)")
-    
-    # HMA Pivot SELL signals (caution - NOT automatic exit)
-    bos_down_stocks = [s for s in stocks.values() if s.bos_bearish]
-    print(f"\n  🔴 HMA PIVOT SELL ({len(bos_down_stocks)} total) - Caution (Tighten Stops):")
-    if bos_down_stocks:
-        for s in bos_down_stocks[:10]:
-            print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:.2f}  Banker={s.banker:.1f}")
-            if s.bos_debug:
-                d = s.bos_debug
-                if d.get('bos_down_reason'):
-                    print(f"              └─ {d['bos_down_reason']}")
-                    print(f"              └─ Week ending: {d.get('last_date', 'N/A')}")
-    else:
-        print(f"      (none)")
-    
-    # High banker stocks (top 10)
-    banker_stocks = sorted([s for s in high_beta_stocks if s.banker > 55], key=lambda x: x.banker, reverse=True)[:10]
-    print(f"\n  💰 TOP BANKER SCORES (>55, high-beta only):")
-    if banker_stocks:
-        for s in banker_stocks:
-            print(f"      {s.symbol:<6} Banker={s.banker:.1f}  β={s.beta:.2f}  ${s.price:.2f}")
-    else:
-        print(f"      (none)")
-    
-    # HMA Pivot BUY + High Beta (entry candidates that pass first gate)
     bos_up_high_beta = [s for s in high_beta_stocks if s.bos_bullish]
-    print(f"\n  ⭐ ENTRY CANDIDATES (HMA Pivot BUY + Beta >= 1.5) - {len(bos_up_high_beta)} stocks:")
-    if bos_up_high_beta:
-        for s in bos_up_high_beta[:10]:
-            mom_status = f"4wMom={s.momentum_4w:+.1f}%" if s.momentum_4w else "4wMom=N/A"
+    print(f"\n  🟢 HMA PIVOT BUY: {len(bos_up_stocks)} total, {len(bos_up_high_beta)} with β≥1.5")
+    if bos_up_stocks and verbose:
+        for s in bos_up_stocks[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:.2f}  Banker={s.banker:.1f}  {mom_status}{held_flag}")
-    else:
-        print(f"      (none - this explains why no signals)")
-    
-    print(f"\n  └─────────────────────────────────────────────────────────────────┘")
+            print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}{held_flag}")
+
+    # HMA Pivot SELL signals
+    bos_down_stocks = [s for s in stocks.values() if s.bos_bearish]
+    print(f"  🔴 HMA PIVOT SELL: {len(bos_down_stocks)} (caution signals)")
+    if bos_down_stocks and verbose:
+        for s in bos_down_stocks[:sample_size]:
+            print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}")
+
+    # Entry candidates summary
+    print(f"\n  ⭐ ENTRY CANDIDATES (BUY + β≥1.5 + Banker≥55): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
+    if bos_up_high_beta:
+        for s in sorted(bos_up_high_beta, key=lambda x: -x.banker)[:sample_size]:
+            if s.banker >= 55:
+                held_flag = " [HELD]" if s.symbol in open_positions else ""
+                print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}  4wMom={s.momentum_4w:+.1f}%{held_flag}")
+
+    if not verbose:
+        print(f"\n  💡 Use --verbose for detailed diagnostics")
     
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 5: Apply Technical Signal Gates (BoS + Beta + Banker)
@@ -1215,13 +1329,11 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # STEP 6: Thematic Analyzer Gate
     # ─────────────────────────────────────────────────────────────────────────
     themes_data = []  # Initialize for newsletter briefing
-    
+
     if skip_llm:
-        print("\n" + "─" * 70)
-        print("  STEP 6: Thematic Analyzer Gate (SKIPPED)")
-        print("─" * 70)
+        print(f"\n  Steps 6-7: SKIPPED (--no-llm)")
         theme_confirmed = technical_signals
-        themes_context = ""  # No themes context when skipping
+        themes_context = ""
         for s in theme_confirmed:
             s.theme_verdict = "SKIPPED"
     else:
@@ -1250,30 +1362,26 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # STEP 7: Momentum Assessor Final Decision
     # ─────────────────────────────────────────────────────────────────────────
     if skip_llm or skip_momentum:
-        print("\n" + "─" * 70)
-        print("  STEP 7: Momentum Assessor (SKIPPED - cost optimization)")
-        print("─" * 70)
-        print(f"\n  💡 Skipping momentum assessment saves ~$0.72/run")
-        print(f"     Run 'python due_diligence.py <TICKER>' for manual deep analysis")
+        # Set decisions (step header already shown if skip_llm)
         confirmed = theme_confirmed
         for s in confirmed:
-            # Use appropriate label based on what was skipped
             if skip_llm:
                 s.final_decision = "TECHNICAL_ONLY"
             else:
                 s.final_decision = "THEME_CONFIRMED"
-        
-        # Show the candidates that passed
-        print(f"\n  📊 ENTRY CANDIDATES ({len(confirmed)} stocks passed all filters):")
-        print(f"  " + "─" * 60)
-        
-        # Sort by Banker score
+
+        # Only show step 7 header if we ran step 6 (skip_momentum but not skip_llm)
+        if skip_momentum and not skip_llm:
+            print(f"\n  Step 7: SKIPPED (--no-momentum)")
+
+        # Show candidates summary
+        print(f"\n  📊 ENTRY CANDIDATES: {len(confirmed)} passed filters")
         sorted_confirmed = sorted(confirmed, key=lambda x: -x.banker)
-        for s in sorted_confirmed[:15]:
+        for s in sorted_confirmed[:5]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"     {s.symbol:<6} | Tier {s.tier} | Banker={s.banker:.0f} | 20d={s.return_20d:+.1f}%{held_flag}")
-            if s.theme:
-                print(f"            └─ Theme: {s.theme}")
+            print(f"     {s.symbol:<6} | {s.tier} | Banker={s.banker:.0f} | 20d={s.return_20d:+.1f}%{held_flag}")
+        if len(sorted_confirmed) > 5:
+            print(f"     ... and {len(sorted_confirmed) - 5} more")
     else:
         print("\n" + "─" * 70)
         print("  STEP 7: Gatekeeper - Final Quality Gate (50-100%+ Return Potential)")
@@ -1607,8 +1715,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append("  1. HMA Pivot BUY (lower step line changes = bullish structure)")
     lines.append("  2. Beta ≥ 1.5 (high momentum stock)")
     lines.append("  3. Banker > 55 (institutional accumulation)")
-    lines.append("  4. 4-Week Momentum < 10% (not chasing extended moves)")
-    lines.append("  5. Strong/Good theme fit (in hot sector)")
+    lines.append("  4. Strong/Good theme fit (in hot sector)")
     lines.append("")
     lines.append("  TIER ASSIGNMENT:")
     lines.append("    • TIER 1: Banker > 70 (highest conviction)")
@@ -1849,19 +1956,120 @@ def generate_newsletter_briefing(
     # ═══════════════════════════════════════════════════════════════════════════
     lines.append("## 📈 Portfolio Update")
     lines.append("")
-    
-    # Load open positions
-    open_positions_file = TRADES_DIR / "open_positions.csv"
+
+    # Load portfolio data from portfolio_manager (preferred) or legacy CSV
     open_positions = []
-    if open_positions_file.exists():
+    closed_trades = []
+    performance_summary = None
+
+    if PORTFOLIO_MANAGER_AVAILABLE:
         try:
-            with open(open_positions_file, 'r') as f:
-                reader = csv.DictReader(f)
-                open_positions = list(reader)
-        except Exception:
+            pm = get_portfolio_manager()
+            # Refresh prices before getting data
+            pm.update_prices()
+
+            for trade in pm.get_open_positions():
+                open_positions.append({
+                    'symbol': trade.ticker,
+                    'entry_date': trade.entry_date,
+                    'entry_price': trade.entry_price,
+                    'highest_close': trade.highest_close,
+                    'current_price': trade.current_price if trade.current_price > 0 else trade.entry_price,
+                    'pnl_pct': trade.pnl_pct,
+                    'pnl_usd': trade.pnl_usd,
+                    'days_held': trade.days_held,
+                    'stop_level': trade.stop_level,
+                    'distance_to_stop': trade.distance_to_stop,
+                    'theme': trade.theme,
+                    'tier': trade.tier
+                })
+
+            # Get recently closed trades (last 7 days)
+            for trade in pm.get_closed_trades():
+                if trade.exit_date:
+                    try:
+                        exit_dt = datetime.strptime(trade.exit_date, "%Y-%m-%d")
+                        if (datetime.now() - exit_dt).days <= 7:
+                            closed_trades.append({
+                                'symbol': trade.ticker,
+                                'entry_date': trade.entry_date,
+                                'exit_date': trade.exit_date,
+                                'entry_price': trade.entry_price,
+                                'exit_price': trade.exit_price,
+                                'pnl_pct': trade.pnl_pct,
+                                'pnl_usd': trade.pnl_usd,
+                                'theme': trade.theme,
+                                'status': trade.status
+                            })
+                    except:
+                        pass
+
+            # Get performance summary
+            performance_summary = pm.get_performance_summary()
+        except Exception as e:
             pass
-    
-    # Sell signals section
+
+    # Fallback to legacy open_positions.csv if portfolio_manager unavailable or empty
+    if not open_positions:
+        open_positions_file = TRADES_DIR / "open_positions.csv"
+        if open_positions_file.exists():
+            try:
+                with open(open_positions_file, 'r') as f:
+                    reader = csv.DictReader(f)
+                    open_positions = list(reader)
+            except Exception:
+                pass
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # PORTFOLIO PERFORMANCE SUMMARY
+    # ─────────────────────────────────────────────────────────────────────────
+    if performance_summary or open_positions:
+        lines.append("### 📊 Performance Summary")
+        lines.append("")
+
+        if performance_summary:
+            # Calculate total unrealized P&L
+            total_unrealized_pnl = sum(p.get('pnl_pct', 0) for p in open_positions)
+            total_unrealized_usd = sum(p.get('pnl_usd', 0) for p in open_positions)
+
+            lines.append("**Current Portfolio:**")
+            lines.append(f"- Open Positions: {len(open_positions)}")
+            lines.append(f"- Unrealized P&L: {total_unrealized_pnl:+.1f}% (${total_unrealized_usd:+,.0f})")
+            lines.append("")
+
+            if performance_summary.get('closed_trades', 0) > 0:
+                lines.append("**Closed Trades (All Time):**")
+                lines.append(f"- Win Rate: {performance_summary.get('win_rate', 0):.0f}%")
+                lines.append(f"- Avg Winner: {performance_summary.get('avg_winner', 0):+.1f}%")
+                lines.append(f"- Avg Loser: {performance_summary.get('avg_loser', 0):+.1f}%")
+                lines.append(f"- Total Closed: {performance_summary.get('closed_trades', 0)}")
+                lines.append("")
+        else:
+            lines.append(f"- Open Positions: {len(open_positions)}")
+            lines.append("")
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # RECENTLY CLOSED TRADES (This Week)
+    # ─────────────────────────────────────────────────────────────────────────
+    if closed_trades:
+        lines.append("### 🏁 Recently Closed (Last 7 Days)")
+        lines.append("")
+        lines.append("| Ticker | Exit Date | Entry | Exit | P&L | Status |")
+        lines.append("|--------|-----------|-------|------|-----|--------|")
+        for trade in closed_trades:
+            symbol = trade.get('symbol', 'N/A')
+            exit_date = trade.get('exit_date', 'N/A')
+            entry_price = float(trade.get('entry_price', 0))
+            exit_price = float(trade.get('exit_price', 0))
+            pnl_pct = trade.get('pnl_pct', 0)
+            status = trade.get('status', 'CLOSED')
+            status_emoji = "🛑" if status == "STOPPED" else "✅"
+            lines.append(f"| {symbol} | {exit_date} | ${entry_price:.2f} | ${exit_price:.2f} | {pnl_pct:+.1f}% | {status_emoji} {status} |")
+        lines.append("")
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # SELL/CAUTION SIGNALS
+    # ─────────────────────────────────────────────────────────────────────────
     if sell_signals:
         lines.append("### ⚠️ Caution Signals (Consider Tightening Stops)")
         lines.append("")
@@ -1874,32 +2082,35 @@ def generate_newsletter_briefing(
         lines.append("")
         lines.append("*Note: These are CAUTION signals, not automatic exits. Based on backtesting, trailing stops outperform signal-based exits.*")
         lines.append("")
-    
-    # Open positions section
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # OPEN POSITIONS WITH LIVE DATA
+    # ─────────────────────────────────────────────────────────────────────────
     if open_positions:
-        lines.append("### 📊 Open Positions")
+        lines.append("### 📈 Open Positions (Live Data)")
         lines.append("")
-        lines.append("| Ticker | Entry Date | Entry Price | Theme | Tier | Status |")
-        lines.append("|--------|------------|-------------|-------|------|--------|")
+        lines.append("| Ticker | Entry | Current | P&L | Days | Stop Distance | Theme |")
+        lines.append("|--------|-------|---------|-----|------|---------------|-------|")
         for pos in open_positions:
             symbol = pos.get('symbol', 'N/A')
-            entry_date = pos.get('entry_date', 'N/A')
             entry_price = float(pos.get('entry_price', 0))
-            theme = pos.get('theme', 'N/A')[:20]
-            tier = pos.get('tier', 'N/A')
             current_price = float(pos.get('current_price', entry_price))
-            
-            # Calculate current P&L
-            if entry_price > 0:
-                pnl = ((current_price / entry_price) - 1) * 100
-                status = f"{pnl:+.1f}%"
-            else:
-                status = "N/A"
-            
-            lines.append(f"| {symbol} | {entry_date} | ${entry_price:.2f} | {theme} | {tier} | {status} |")
+            pnl_pct = pos.get('pnl_pct', 0)
+            if pnl_pct == 0 and entry_price > 0:
+                pnl_pct = ((current_price / entry_price) - 1) * 100
+            days_held = pos.get('days_held', 0)
+            distance_to_stop = pos.get('distance_to_stop', 20)
+            theme = pos.get('theme', 'N/A')[:15]
+
+            # Color code stop distance
+            stop_indicator = "🟢" if distance_to_stop > 15 else "🟡" if distance_to_stop > 10 else "🔴"
+
+            lines.append(f"| {symbol} | ${entry_price:.2f} | ${current_price:.2f} | {pnl_pct:+.1f}% | {days_held} | {stop_indicator} {distance_to_stop:.1f}% | {theme} |")
+        lines.append("")
+        lines.append("*Stop Distance: 🟢 >15% safe | 🟡 10-15% watch | 🔴 <10% alert*")
         lines.append("")
     else:
-        lines.append("### 📊 Open Positions")
+        lines.append("### 📈 Open Positions")
         lines.append("")
         lines.append("*No open positions*")
         lines.append("")
@@ -1958,32 +2169,275 @@ def generate_newsletter_briefing(
 
 
 def save_newsletter_briefing(
-    confirmed: List[Stock], 
-    sell_signals: List[SellSignal], 
+    confirmed: List[Stock],
+    sell_signals: List[SellSignal],
     themes_data: List[dict] = None,
-    stats: ScanStats = None
+    stats: ScanStats = None,
+    archive: bool = False
 ):
     """Save the newsletter briefing to a markdown file."""
-    
+
     date_str = datetime.now().strftime("%Y%m%d")
-    
+
+    # Helper for relative paths
+    def rel_path(p: Path) -> str:
+        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
+
     briefing = generate_newsletter_briefing(confirmed, sell_signals, themes_data, stats)
-    
-    # Save to trades directory
-    briefing_file = TRADES_DIR / f"newsletter_briefing_{date_str}.md"
-    with open(briefing_file, 'w') as f:
-        f.write(briefing)
-    
-    # Also save as latest for easy access
+
+    # Save as latest (always)
     latest_file = TRADES_DIR / "latest_newsletter_briefing.md"
     with open(latest_file, 'w') as f:
         f.write(briefing)
+
+    # Save dated archive only if --archive flag
+    if archive:
+        briefing_file = TRADES_DIR / f"newsletter_briefing_{date_str}.md"
+        with open(briefing_file, 'w') as f:
+            f.write(briefing)
+
+    print(f"\n  📰 Newsletter briefing: {rel_path(latest_file)}")
+    if archive:
+        print(f"     (archived: {rel_path(briefing_file)})")
+
+    return latest_file
+
+
+def generate_grok_prompts(
+    briefing_file: Path,
+    confirmed: List[Stock] = None,
+    sell_signals: List[SellSignal] = None,
+    themes_data: List[dict] = None,
+    stats: ScanStats = None
+):
+    """
+    Generate 21 Grok prompts for weekly X/Twitter content.
     
-    print(f"\n  📰 Newsletter briefing saved:")
-    print(f"     • {briefing_file}")
-    print(f"     • {latest_file}")
+    This function creates contextual prompts based on scanner outputs that can be
+    copied into Grok to generate ready-to-post tweets.
+    """
+    try:
+        from grok_prompts_generator import (
+            PortfolioData, 
+            parse_briefing_markdown, 
+            load_open_positions_csv,
+            load_themes_cache,
+            generate_weekly_prompts,
+            save_prompts,
+            OUTPUT_DIR
+        )
+    except ImportError:
+        print("\n  ⚠️  grok_prompts_generator.py not found - skipping Grok prompt generation")
+        print("     Place grok_prompts_generator.py in the same directory as scanner.py")
+        return
     
-    return briefing_file
+    print("\n" + "─" * 70)
+    print("  GROK PROMPTS GENERATION")
+    print("─" * 70)
+    
+    # Parse briefing to get portfolio data
+    data = parse_briefing_markdown(briefing_file)
+    
+    # Supplement with direct data if available
+    if confirmed:
+        # Add PASS signals
+        for s in confirmed:
+            if s.final_decision == "TRADE" and s.symbol not in [x.get('ticker') for x in data.pass_signals]:
+                data.pass_signals.append({
+                    'ticker': s.symbol,
+                    'price': s.price,
+                    'theme': s.theme or 'Unknown',
+                    'catalyst': s.catalyst_summary or '',
+                    'reasoning': s.reasoning or ''
+                })
+            elif s.final_decision == "CONSIDER" and s.symbol not in [x.get('ticker') for x in data.caution_signals]:
+                data.caution_signals.append({
+                    'ticker': s.symbol,
+                    'price': s.price,
+                    'theme': s.theme or 'Unknown',
+                    'concerns': s.risk_factors or [],
+                    'reasoning': s.reasoning or ''
+                })
+    
+    if sell_signals:
+        for s in sell_signals:
+            if s.symbol not in [x.get('ticker') for x in data.sell_signals]:
+                data.sell_signals.append({
+                    'ticker': s.symbol,
+                    'price': s.price,
+                    'reason': s.reason,
+                    'entry_price': s.entry_price,
+                    'highest_close': s.highest_close,
+                    'pnl': f"{((s.price / s.entry_price) - 1) * 100:+.1f}%" if s.entry_price > 0 else "+0%"
+                })
+    
+    if themes_data:
+        for t in themes_data:
+            classification = t.get('classification', 'INVESTABLE')
+            theme_dict = {'name': t.get('name', 'Unknown'), 'classification': classification}
+            
+            if classification == 'PRIME' and theme_dict not in data.prime_themes:
+                data.prime_themes.append(theme_dict)
+            elif classification == 'INVESTABLE' and theme_dict not in data.investable_themes:
+                data.investable_themes.append(theme_dict)
+            elif classification == 'SELECTIVE' and theme_dict not in data.selective_themes:
+                data.selective_themes.append(theme_dict)
+            elif classification == 'AVOID' and theme_dict not in data.avoid_themes:
+                data.avoid_themes.append(theme_dict)
+    
+    if stats:
+        data.scan_stats = {
+            'tickers_scanned': stats.tickers_loaded,
+            'bos_bullish': stats.bos_bullish,
+            'technical_signals': stats.meets_technical_gate,
+            'theme_confirmed': stats.theme_confirmed
+        }
+    
+    # Also load from CSV/cache if available
+    if not data.open_positions:
+        csv_positions = load_open_positions_csv(TRADES_DIR)
+        if csv_positions:
+            data.open_positions = csv_positions
+    
+    if not data.prime_themes and not data.investable_themes:
+        themes_cache = load_themes_cache(BASE_DIR)
+        for theme in themes_cache:
+            classification = theme.get('classification', 'INVESTABLE')
+            if classification == 'PRIME':
+                data.prime_themes.append(theme)
+            elif classification == 'INVESTABLE':
+                data.investable_themes.append(theme)
+            elif classification == 'SELECTIVE':
+                data.selective_themes.append(theme)
+            elif classification == 'AVOID':
+                data.avoid_themes.append(theme)
+    
+    # Generate prompts
+    prompts = generate_weekly_prompts(data)
+    
+    # Save to output directory
+    output_dir = TRADES_DIR / "grok_prompts"
+    main_file = save_prompts(prompts, data, output_dir)
+    
+    # Helper for relative paths
+    def rel_path(p: Path) -> str:
+        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
+
+    # Summary
+    print(f"\n  ✅ Generated {len(prompts)} Grok prompts for the week")
+    print(f"\n  📁 Grok prompts: {rel_path(output_dir)}/latest_grok_prompts.md")
+    print("")
+    print("  📅 Weekly Schedule:")
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    for day in days:
+        day_prompts = [p for p in prompts if p.day == day]
+        titles = [p.title[:22] for p in sorted(day_prompts, key=lambda x: x.slot)]
+        if titles:
+            print(f"     {day:10} | {' | '.join(titles)}")
+    print("")
+    print("  💡 Copy prompts to Grok (X's AI) to generate ready-to-post tweets")
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # PRINT FULL PROMPTS IN TERMINAL
+    # ─────────────────────────────────────────────────────────────────────────
+    print("\n" + "═" * 70)
+    print("  FULL GROK PROMPTS (21 FOR THE WEEK)")
+    print("═" * 70)
+
+    for day in days:
+        day_prompts = sorted([p for p in prompts if p.day == day], key=lambda x: x.slot)
+        if day_prompts:
+            print(f"\n  ╔{'═' * 66}╗")
+            print(f"  ║  {day.upper():^62}  ║")
+            print(f"  ╚{'═' * 66}╝")
+
+            for p in day_prompts:
+                slot_times = {1: "08:00 AM", 2: "12:00 PM", 3: "06:00 PM"}
+                slot_time = slot_times.get(p.slot, f"Slot {p.slot}")
+
+                print(f"\n  ┌─ {slot_time} │ {p.title} {'─' * max(1, 50 - len(p.title) - len(slot_time))}┐")
+                print(f"  │ Category: {p.category}")
+                if p.ticker:
+                    print(f"  │ Ticker: ${p.ticker}")
+                if p.theme:
+                    print(f"  │ Theme: {p.theme}")
+                print(f"  │ Visual: {p.visual_suggestion}")
+                print(f"  └{'─' * 68}┘")
+                print("")
+                print("  PROMPT:")
+                print("  " + "─" * 68)
+                # Indent and wrap prompt text
+                for line in p.prompt.strip().split('\n'):
+                    # Wrap long lines
+                    while len(line) > 64:
+                        print(f"  │ {line[:64]}")
+                        line = line[64:]
+                    print(f"  │ {line}")
+                print("  " + "─" * 68)
+
+    print("\n" + "═" * 70)
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # SAVE GROK PROMPTS SUMMARY TO TEXT FILE
+    # ─────────────────────────────────────────────────────────────────────────
+    summary_lines = []
+    summary_lines.append("=" * 72)
+    summary_lines.append("  GROK PROMPTS SUMMARY - 21 WEEKLY X/TWITTER PROMPTS")
+    summary_lines.append(f"  Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    summary_lines.append("=" * 72)
+    summary_lines.append("")
+    summary_lines.append("  Copy prompts to Grok (X's AI) to generate ready-to-post tweets.")
+    summary_lines.append("")
+    summary_lines.append("  📅 WEEKLY SCHEDULE:")
+    summary_lines.append("  " + "-" * 68)
+    for day in days:
+        day_prompts = [p for p in prompts if p.day == day]
+        titles = [p.title[:22] for p in sorted(day_prompts, key=lambda x: x.slot)]
+        if titles:
+            summary_lines.append(f"     {day:10} | {' | '.join(titles)}")
+    summary_lines.append("  " + "-" * 68)
+    summary_lines.append("")
+
+    for day in days:
+        day_prompts = sorted([p for p in prompts if p.day == day], key=lambda x: x.slot)
+        if day_prompts:
+            summary_lines.append("")
+            summary_lines.append("=" * 72)
+            summary_lines.append(f"  {day.upper()}")
+            summary_lines.append("=" * 72)
+
+            for p in day_prompts:
+                slot_times = {1: "08:00 AM", 2: "12:00 PM", 3: "06:00 PM"}
+                slot_time = slot_times.get(p.slot, f"Slot {p.slot}")
+
+                summary_lines.append("")
+                summary_lines.append("-" * 72)
+                summary_lines.append(f"  {slot_time} | {p.title}")
+                summary_lines.append("-" * 72)
+                summary_lines.append(f"  Category: {p.category}")
+                if p.ticker:
+                    summary_lines.append(f"  Ticker: ${p.ticker}")
+                if p.theme:
+                    summary_lines.append(f"  Theme: {p.theme}")
+                summary_lines.append(f"  Visual: {p.visual_suggestion}")
+                summary_lines.append("")
+                summary_lines.append("  PROMPT:")
+                summary_lines.append("")
+                for line in p.prompt.strip().split('\n'):
+                    summary_lines.append(f"    {line}")
+                summary_lines.append("")
+
+    summary_lines.append("")
+    summary_lines.append("=" * 72)
+    summary_lines.append("  END OF GROK PROMPTS")
+    summary_lines.append("=" * 72)
+
+    # Save to text file
+    summary_file = output_dir / "grok_prompts_summary.txt"
+    with open(summary_file, 'w') as f:
+        f.write('\n'.join(summary_lines))
+
+    print(f"\n  📄 Summary saved: {rel_path(summary_file)}")
 
 
 def print_newsletter_prompts(briefing_file: Path = None):
@@ -2198,13 +2652,17 @@ Generate the complete newsletter in markdown format, ready to paste into Substac
     print("")
 
 
-def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals: List[SellSignal], stats: ScanStats, momentum_rejected: List[Stock] = None, themes_data: List[dict] = None):
+def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals: List[SellSignal], stats: ScanStats, momentum_rejected: List[Stock] = None, themes_data: List[dict] = None, archive: bool = False):
     """Save results to files - includes ALL assessed stocks for back-analysis."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     date_str = datetime.now().strftime("%Y%m%d")
+
+    # Helper for relative paths in output
+    def rel_path(p: Path) -> str:
+        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
     
     # Save signals JSON (confirmed only)
-    signals_file = DATA_DIR / "signals.json"
+    signals_file = TRADES_DIR / "signals.json"
     with open(signals_file, 'w') as f:
         json.dump({
             "timestamp": timestamp,
@@ -2245,7 +2703,13 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                         else "Consider smaller position" if s.final_decision == "CONSIDER"
                         else "Pending LLM analysis" if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]
                         else "Review required"
-                    )
+                    ),
+                    # Due Diligence fields (populated if --dd or --full-dd flag used)
+                    "dd_verdict": s.dd_verdict,
+                    "dd_conviction": s.dd_conviction,
+                    "dd_position_size": s.dd_position_size,
+                    "dd_key_catalyst": s.dd_key_catalyst,
+                    "dd_fatal_flaw": s.dd_fatal_flaw
                 }
                 for s in confirmed
             ],
@@ -2313,80 +2777,37 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 'passed_all_gates': 'YES' if s.final_decision in ['TRADE', 'CONSIDER'] else 'NO'
             })
     
-    # ═══════════════════════════════════════════════════════════════════════════
-    # TRADE LOG - Only confirmed signals (for tracking actual trades)
-    # ═══════════════════════════════════════════════════════════════════════════
-    if confirmed:
-        trade_log = TRADES_DIR / "trade_log.csv"
-        write_header = not trade_log.exists()
-        
-        with open(trade_log, 'a', newline='') as f:
-            fieldnames = [
-                'timestamp', 'symbol', 'tier', 'price', 'beta', 'banker', 'momentum_4w', 'return_20d',
-                'theme', 'theme_score', 'pure_play_score', 'theme_verdict',
-                'final_decision', 'conviction', 'sector_status', 'upside_potential',
-                'bullish_factors', 'risk_factors', 'reasoning'
-            ]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            
-            if write_header:
-                writer.writeheader()
-            
-            for s in confirmed:
-                bullish = '; '.join(s.bullish_factors) if s.bullish_factors else ''
-                risks = '; '.join(s.risk_factors) if s.risk_factors else ''
-                reasoning = s.reasoning.replace(',', ';').replace('\n', ' ').replace('"', "'") if s.reasoning else ''
-                
-                writer.writerow({
-                    'timestamp': timestamp,
-                    'symbol': s.symbol,
-                    'tier': s.tier,
-                    'price': s.price,
-                    'beta': s.beta,
-                    'banker': s.banker,
-                    'momentum_4w': s.momentum_4w,
-                    'return_20d': s.return_20d,
-                    'theme': s.theme or '',
-                    'theme_score': s.theme_score,
-                    'pure_play_score': s.pure_play_score,
-                    'theme_verdict': s.theme_verdict or '',
-                    'final_decision': s.final_decision,
-                    'conviction': s.conviction,
-                    'sector_status': s.sector_status or '',
-                    'upside_potential': s.upside_potential or '',
-                    'bullish_factors': bullish[:200],
-                    'risk_factors': risks[:200],
-                    'reasoning': reasoning[:300]
-                })
-    
+    # Note: trade_log.csv removed - analysis_log.csv contains all data with passed_all_gates flag
+    # Filter analysis_log for passed_all_gates='YES' to get confirmed trades
+
     # ═══════════════════════════════════════════════════════════════════════════
     # GENERATE AND SAVE REPORT
     # ═══════════════════════════════════════════════════════════════════════════
     report = generate_report(confirmed, all_assessed, sell_signals, stats, momentum_rejected)
-    
-    # Save report file
-    report_file = TRADES_DIR / f"report_{date_str}.txt"
-    with open(report_file, 'w') as f:
-        f.write(report)
-    
-    # Also save as latest report for easy access
+
+    # Save as latest report (always)
     latest_report = TRADES_DIR / "latest_report.txt"
     with open(latest_report, 'w') as f:
         f.write(report)
-    
+
+    # Save dated archive file only if --archive flag
+    if archive:
+        report_file = TRADES_DIR / f"report_{date_str}.txt"
+        with open(report_file, 'w') as f:
+            f.write(report)
+
     print(f"\n  📁 Results saved:")
-    print(f"     • {signals_file} (confirmed signals JSON)")
-    print(f"     • {analysis_log} (ALL assessed stocks for back-analysis)")
-    print(f"     • {report_file} (formatted report)")
-    print(f"     • {latest_report} (latest report)")
-    if confirmed:
-        print(f"     • {TRADES_DIR / 'trade_log.csv'} (trade candidates)")
-    
+    print(f"     • {rel_path(signals_file)}")
+    print(f"     • {rel_path(analysis_log)}")
+    print(f"     • {rel_path(latest_report)}")
+    if archive:
+        print(f"     • {rel_path(report_file)} (archived)")
+
     # ═══════════════════════════════════════════════════════════════════════════
     # GENERATE NEWSLETTER BRIEFING
     # ═══════════════════════════════════════════════════════════════════════════
-    save_newsletter_briefing(confirmed, sell_signals, themes_data, stats)
-    
+    save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=archive)
+
     return report  # Return report for email use
 
 
@@ -2461,8 +2882,16 @@ def main():
     parser.add_argument("--no-prompts", action="store_true", help="Skip printing DD and newsletter prompts at the end")
     # Keep --no-dd-prompts as alias for backwards compatibility
     parser.add_argument("--no-dd-prompts", action="store_true", dest="no_prompts", help=argparse.SUPPRESS)
+    parser.add_argument("--no-grok-prompts", action="store_true", help="Skip generating Grok/X prompts")
     parser.add_argument("--top", type=int, help="Only scan top N stocks by beta")
     parser.add_argument("--web-search", action="store_true", help="Enable web search for Thematic Analyzer AND Gatekeeper. Recommended for production scans.")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed diagnostic output (10 items per category instead of 3)")
+    parser.add_argument("--archive", action="store_true", help="Save dated archive files in addition to latest_* files")
+    # Due Diligence options
+    parser.add_argument("--dd", action="store_true", help="Run automated due diligence on PASS stocks (Quick mode)")
+    parser.add_argument("--full-dd", action="store_true", help="Run FULL due diligence using Opus (slower, deeper analysis)")
+    parser.add_argument("--dd-top", type=int, metavar="N", help="Only run DD on top N stocks by conviction")
+    parser.add_argument("--save-dd", action="store_true", help="Save DD reports to reports/ directory")
     args = parser.parse_args()
     
     # Header
@@ -2507,17 +2936,71 @@ def main():
         print("     • Using model knowledge only - data may be outdated")
         print("     • Use --web-search for production scans")
     
+    # Portfolio status
+    if PORTFOLIO_MANAGER_AVAILABLE:
+        try:
+            pm = get_portfolio_manager()
+            open_count = len(pm.get_open_positions())
+            if open_count > 0:
+                print(f"\n  📊 Portfolio: {open_count} open position(s) tracked")
+                print(f"     • {rel_path(pm.portfolio_file)}")
+                print(f"     • Google Sheets export on completion")
+        except Exception:
+            pass
+    
     start_time = time.time()
     
     # Run scan
     confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data = run_scan(
-        skip_llm=args.no_llm, 
+        skip_llm=args.no_llm,
         skip_momentum=args.no_momentum,
         assess_top_n=args.assess_top,
         top_n=args.top,
-        use_web_search=args.web_search
+        use_web_search=args.web_search,
+        verbose=args.verbose
     )
-    
+
+    # Step 7.5: Automated Due Diligence (if enabled)
+    dd_results = []
+    if (args.dd or args.full_dd) and confirmed and not args.no_llm:
+        pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        if pass_stocks:
+            print("\n" + "─" * 70)
+            print("  STEP 7.5: AUTOMATED DUE DILIGENCE")
+            print("─" * 70)
+
+            try:
+                from dd_automator import run_automated_dd
+
+                # Limit stocks if --dd-top specified
+                dd_stocks = pass_stocks[:args.dd_top] if args.dd_top else pass_stocks
+
+                # Run DD
+                dd_results = run_automated_dd(
+                    stocks=dd_stocks,
+                    quick_mode=not args.full_dd,
+                    use_web_search=args.web_search,
+                    save_reports=args.save_dd,
+                    max_stocks=args.dd_top
+                )
+
+                # Apply DD results back to Stock objects
+                dd_lookup = {r.ticker: r for r in dd_results}
+                for stock in confirmed:
+                    if stock.symbol in dd_lookup:
+                        result = dd_lookup[stock.symbol]
+                        stock.dd_verdict = result.dd_verdict
+                        stock.dd_conviction = result.dd_conviction
+                        stock.dd_position_size = result.dd_position_size
+                        stock.dd_analysis = result.dd_analysis
+                        stock.dd_key_catalyst = result.dd_key_catalyst
+                        stock.dd_fatal_flaw = result.dd_fatal_flaw
+
+            except ImportError:
+                print("  ⚠️  dd_automator.py not found - skipping automated DD")
+            except Exception as e:
+                print(f"  ⚠️  DD error: {e}")
+
     # Print report
     print_final_report(confirmed, sell_signals, stats)
     
@@ -2536,15 +3019,54 @@ def main():
     report = None
     briefing_file = None
     if all_assessed or sell_signals or momentum_rejected:
-        report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data)
+        report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data, archive=args.archive)
         briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
     else:
         # Still generate newsletter briefing for weeks with no signals
-        briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats)
+        briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=args.archive)
+    
+    # Portfolio summary and Google Sheets export
+    if PORTFOLIO_MANAGER_AVAILABLE:
+        try:
+            pm = get_portfolio_manager()
+            open_positions = pm.get_open_positions()
+            closed_trades = pm.get_closed_trades()
+            
+            print("\n" + "─" * 70)
+            print("  PORTFOLIO UPDATE")
+            print("─" * 70)
+            print(f"  ✓ Portfolio: {len(open_positions)} open, {len(closed_trades)} closed")
+            print(f"  ✓ CSV: {rel_path(pm.portfolio_file)}")
+            
+            # Export for Google Sheets
+            sheets_file = pm.export_for_google_sheets()
+            print(f"  ✓ Google Sheets export: {rel_path(sheets_file)}")
+            
+            # Performance summary
+            if closed_trades:
+                perf = pm.get_performance_summary()
+                win_rate = perf.get('closed_win_rate', 0)
+                avg_win = perf.get('avg_winner', 0)
+                avg_loss = perf.get('avg_loser', 0)
+                print(f"\n  📊 Performance (closed trades):")
+                print(f"     Win Rate: {win_rate:.0f}% │ Avg Win: +{avg_win:.1f}% │ Avg Loss: {avg_loss:.1f}%")
+            
+            # Stop alerts
+            alerts = [t for t in open_positions if t.stop_alert]
+            if alerts:
+                print(f"\n  ⚠️  STOP ALERTS ({len(alerts)} positions within 5% of stop):")
+                for t in alerts:
+                    print(f"     • {t.ticker}: ${t.current_price:.2f} (stop: ${t.stop_level:.2f})")
+        except Exception as e:
+            print(f"  ⚠ Portfolio summary error: {e}")
     
     # Print newsletter generation prompts (market context + compilation)
     if not args.no_prompts:
         print_newsletter_prompts(briefing_file)
+    
+    # Generate Grok/X prompts for weekly social media content
+    if not args.no_grok_prompts and briefing_file:
+        generate_grok_prompts(briefing_file, confirmed, sell_signals, themes_data, stats)
     
     # Send email with the formatted report
     if not args.no_email:

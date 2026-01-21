@@ -49,6 +49,24 @@ class GateDecision(Enum):
     FAIL = "FAIL"
 
 
+def _safe_float(value, default: float = 0.0) -> float:
+    """Safely convert a value to float, handling strings like 'N/A', '19.1%', etc."""
+    if value is None:
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        # Remove common suffixes and try to parse
+        cleaned = value.strip().rstrip('%').replace(',', '')
+        if cleaned.lower() in ('n/a', 'na', 'none', 'unknown', ''):
+            return default
+        try:
+            return float(cleaned)
+        except ValueError:
+            return default
+    return default
+
+
 @dataclass
 class GatekeeperResult:
     """Result from the Gatekeeper analysis"""
@@ -86,9 +104,25 @@ class GatekeeperResult:
     error: bool = False
     error_msg: str = ""
     
+    # Cost tracking
+    input_tokens: int = 0
+    output_tokens: int = 0
+    
     def __post_init__(self):
         if not self.timestamp:
             self.timestamp = datetime.now().isoformat()
+    
+    def get_cost(self, model: str = "sonnet") -> float:
+        """Estimate cost for this analysis"""
+        if "opus" in model.lower():
+            input_rate, output_rate = 15.0, 75.0
+        elif "sonnet" in model.lower():
+            input_rate, output_rate = 3.0, 15.0
+        else:  # haiku
+            input_rate, output_rate = 0.25, 1.25
+        
+        return (self.input_tokens / 1_000_000 * input_rate + 
+                self.output_tokens / 1_000_000 * output_rate)
 
 
 # =============================================================================
@@ -196,34 +230,25 @@ def run_gatekeeper_single(
     
     # Adjust prompt based on web search availability
     if use_web_search:
-        search_instructions = """REQUIRED SEARCHES (do all of these):
-1. Search: "{ticker} earnings date 2025 consensus estimate"
-   → Find next earnings date and whether estimates are rising/falling
+        search_instructions = """REQUIRED SEARCHES (consolidated for efficiency):
 
-2. Search: "{ticker} SEC filing 8-K 10-K recent"
-   → Check for auditor changes, CFO changes, material events
+1. Search: "{ticker} earnings date analyst consensus short interest 2025"
+   → Find: next earnings date, estimate trend (rising/falling), short interest %
 
-3. Search: "{ticker} insider buying selling Form 4"
-   → Determine net insider sentiment (exclude 10b5-1 scheduled sales)
+2. Search: "{ticker} SEC filing insider buying selling CFO recent news"
+   → Find: any 8-K material events, auditor changes, insider sentiment, governance red flags
 
-4. Search: "{ticker} analyst price target upgrade downgrade"
-   → Find recent analyst actions and sentiment trend
+3. (Only if concerns found) Search: "{ticker} dilution shelf offering S-3"
+   → Check for pending dilution only if prior searches suggest risk
 
-5. Search: "{ticker} short interest percent float"
-   → Get current short interest level
-
-6. Search: "{ticker} offering dilution shelf S-3"
-   → Check for any recent or pending dilution
-
-After completing ALL searches, synthesize findings into the JSON response."""
+After completing searches, synthesize findings into the JSON response.
+Focus on what matters: Is there a catalyst? Are there dealbreaker red flags?"""
     else:
         search_instructions = """Based on your knowledge (web search disabled for testing):
 1. What you know about upcoming earnings and catalysts
-2. Any known governance issues or red flags from training data
-3. General insider sentiment patterns for this company
-4. Analyst sentiment and coverage
-5. Typical short interest levels
-6. Any known dilution history
+2. Any known governance issues or red flags
+3. Analyst sentiment and short interest levels
+4. Any known dilution history
 
 NOTE: Without web search, your information may be outdated. 
 Flag any areas where current data would be needed for a real decision."""
@@ -246,13 +271,15 @@ A stock with strong catalyst but minor red flag is still PASS if the risk is man
 Return ONLY the JSON object, no other text."""
 
     last_error = None
+    input_tokens = 0
+    output_tokens = 0
     
     for attempt in range(max_retries):
         try:
-            # Build API parameters
+            # Build API parameters - use Sonnet 4.5 for cost efficiency
             api_params = {
-                "model": "claude-opus-4-5-20251101",
-                "max_tokens": 4000,
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 3000,  # Reduced - Sonnet is more concise
                 "system": GATEKEEPER_SYSTEM_PROMPT,
                 "messages": [{"role": "user", "content": user_prompt}]
             }
@@ -262,6 +289,11 @@ Return ONLY the JSON object, no other text."""
                 api_params["tools"] = [{"type": "web_search_20250305", "name": "web_search"}]
             
             response = client.messages.create(**api_params)
+            
+            # Track token usage
+            if hasattr(response, 'usage'):
+                input_tokens = response.usage.input_tokens
+                output_tokens = response.usage.output_tokens
             
             # Extract text content
             text = "".join([b.text for b in response.content if hasattr(b, 'text')])
@@ -289,12 +321,14 @@ Return ONLY the JSON object, no other text."""
                     red_flag_level=data.get("red_flag_level", "UNKNOWN"),
                     red_flags=data.get("red_flags", []),
                     analyst_trend=data.get("analyst_trend", "UNKNOWN"),
-                    short_interest_pct=data.get("short_interest_pct", 0.0),
+                    short_interest_pct=_safe_float(data.get("short_interest_pct"), 0.0),
                     key_bullish=data.get("key_bullish", []),
                     key_risks=data.get("key_risks", []),
                     reasoning=data.get("reasoning", ""),
                     action=data.get("action", ""),
-                    error=False
+                    error=False,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens
                 )
             
             raise ValueError("No valid JSON in response")
@@ -365,20 +399,50 @@ def run_gatekeeper_batch(
         print(f"\n  [{i+1}/{len(stocks)}] Gatekeeper: {ticker}")
         print(f"  " + "─" * 50)
         
-        result = run_gatekeeper_single(
-            client=client,
-            ticker=ticker,
-            theme=stock.get("theme", "Unknown"),
-            theme_fit=stock.get("theme_fit", stock.get("theme_verdict", "GOOD")),
-            price=stock.get("price", 0.0),
-            themes_context=themes_context,
-            use_web_search=use_web_search
-        )
-        
-        results.append(result)
-        
-        # Print result immediately
-        print_gatekeeper_result(result)
+        try:
+            result = run_gatekeeper_single(
+                client=client,
+                ticker=ticker,
+                theme=stock.get("theme", "Unknown"),
+                theme_fit=stock.get("theme_fit", stock.get("theme_verdict", "GOOD")),
+                price=stock.get("price", 0.0),
+                themes_context=themes_context,
+                use_web_search=use_web_search
+            )
+            
+            results.append(result)
+            
+            # Print result immediately (with error handling for formatting issues)
+            try:
+                print_gatekeeper_result(result)
+            except Exception as print_err:
+                print(f"  ⚠ Display error for {ticker}: {print_err}")
+                print(f"  │ Decision: {result.decision.value} │ Conviction: {result.conviction}")
+            
+        except Exception as e:
+            print(f"  ⚠ Analysis error for {ticker}: {e}")
+            # Create error result so we don't lose the stock
+            error_result = GatekeeperResult(
+                ticker=ticker,
+                decision=GateDecision.CAUTION,
+                conviction=0,
+                theme=stock.get("theme", "Unknown"),
+                theme_fit=stock.get("theme_fit", "GOOD"),
+                catalyst_present=False,
+                catalyst_summary="Analysis failed",
+                days_to_catalyst=-1,
+                red_flag_level="UNKNOWN",
+                red_flags=[f"Analysis error: {e}"],
+                analyst_trend="UNKNOWN",
+                short_interest_pct=0.0,
+                key_bullish=[],
+                key_risks=["Could not complete analysis"],
+                reasoning=f"Analysis failed: {e}",
+                action="Manual review required",
+                error=True,
+                error_msg=str(e)
+            )
+            results.append(error_result)
         
         # Delay between calls to avoid rate limits
         if i < len(stocks) - 1:
@@ -428,9 +492,9 @@ def print_gatekeeper_result(result: GatekeeperResult):
     for flag in red_flags[:2]:
         print(f"  │            └─ {str(flag)[:42]:<42} │")
     
-    # Street Sentiment - handle None values
+    # Street Sentiment - handle None values and string values
     analyst_trend = result.analyst_trend or "UNKNOWN"
-    short_interest = result.short_interest_pct if result.short_interest_pct is not None else 0.0
+    short_interest = _safe_float(result.short_interest_pct, 0.0)
     print(f"  │ Analysts: {analyst_trend:<10} │ Short Interest: {short_interest:>5.1f}%{' ' * 15} │")
     
     # Key Points - handle None/empty lists
@@ -476,11 +540,17 @@ def print_gatekeeper_result(result: GatekeeperResult):
 
 
 def print_gatekeeper_summary(results: List[GatekeeperResult]):
-    """Print summary of all gatekeeper results"""
+    """Print summary of all gatekeeper results including cost tracking"""
     
     passes = [r for r in results if r.decision == GateDecision.PASS]
     cautions = [r for r in results if r.decision == GateDecision.CAUTION]
     fails = [r for r in results if r.decision == GateDecision.FAIL]
+    
+    # Calculate total costs
+    total_input = sum(r.input_tokens for r in results)
+    total_output = sum(r.output_tokens for r in results)
+    # Sonnet pricing: $3/1M input, $15/1M output
+    total_cost = (total_input / 1_000_000 * 3.0) + (total_output / 1_000_000 * 15.0)
     
     print(f"""
   ╔{'═' * 60}╗
@@ -511,6 +581,9 @@ def print_gatekeeper_summary(results: List[GatekeeperResult]):
             flag = (r.red_flags[0][:45] if r.red_flags else "Failed gate")
             print(f"  ║   {r.ticker:<6} │ {flag:<48} ║")
     
+    # Cost summary
+    print(f"  ╠{'═' * 60}╣")
+    print(f"  ║ 💰 COST: {total_input:,} in + {total_output:,} out tokens = ${total_cost:.4f}  ║")
     print(f"  ╚{'═' * 60}╝")
 
 

@@ -1,0 +1,133 @@
+name: Daily Tweet Posting
+
+on:
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'Which slot to post (1=morning, 2=midday, 3=evening, all=all pending)'
+        required: false
+        default: 'all'
+      dry_run:
+        description: 'Dry run (no actual posting)'
+        required: false
+        default: 'false'
+        type: boolean
+
+  # Scheduled runs (UK time = UTC in winter, UTC+1 in summer)
+  schedule:
+    # Morning post: 08:00 UK (08:00 UTC winter / 07:00 UTC summer)
+    - cron: '0 8 * * *'
+    # Midday post: 12:30 UK
+    - cron: '30 12 * * *'
+    # Evening post: 18:00 UK
+    - cron: '0 18 * * *'
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+  TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+  TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+  TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+  TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+
+jobs:
+  post-tweet:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Determine slot from schedule
+        id: slot
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "slot=${{ github.event.inputs.slot }}" >> $GITHUB_OUTPUT
+            echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
+          else
+            # Determine slot from cron schedule
+            HOUR=$(date -u +%H)
+            MINUTE=$(date -u +%M)
+
+            if [ "$HOUR" = "08" ]; then
+              echo "slot=1" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "12" ]; then
+              echo "slot=2" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "18" ]; then
+              echo "slot=3" >> $GITHUB_OUTPUT
+            else
+              echo "slot=all" >> $GITHUB_OUTPUT
+            fi
+            echo "dry_run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download content queue artifact (if exists)
+        uses: actions/download-artifact@v4
+        with:
+          name: content-queue
+          path: trades/
+        continue-on-error: true
+
+      - name: Check for content queue
+        id: check-queue
+        run: |
+          if [ -f "trades/content_queue.json" ]; then
+            echo "queue_exists=true" >> $GITHUB_OUTPUT
+            echo "Content queue found"
+            cat trades/content_queue.json | head -50
+          else
+            echo "queue_exists=false" >> $GITHUB_OUTPUT
+            echo "No content queue found - will generate mock tweets"
+          fi
+
+      - name: Generate tweets if no queue exists
+        if: steps.check-queue.outputs.queue_exists == 'false'
+        run: |
+          echo "Generating mock tweets for testing..."
+          python tweet_generator.py --mock
+
+      - name: Post tweet
+        id: post
+        run: |
+          SLOT="${{ steps.slot.outputs.slot }}"
+          DRY_RUN="${{ steps.slot.outputs.dry_run }}"
+
+          echo "Posting slot: $SLOT"
+          echo "Dry run: $DRY_RUN"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "DRY RUN - Would post tweet for slot $SLOT"
+            python twitter_poster.py --slot $SLOT --dry-run
+          else
+            python twitter_poster.py --slot $SLOT
+          fi
+
+      - name: Upload updated content queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-queue
+          path: trades/content_queue.json
+          retention-days: 7
+        if: always()
+
+      - name: Report status
+        if: always()
+        run: |
+          echo "## Daily Post Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Slot:** ${{ steps.slot.outputs.slot }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry Run:** ${{ steps.slot.outputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY

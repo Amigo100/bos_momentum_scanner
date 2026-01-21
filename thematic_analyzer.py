@@ -53,21 +53,26 @@ class Config:
     
     # API Settings
     anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY", "")
-    model: str = "claude-opus-4-5-20251101"
-    max_tokens: int = 16000  # Increased for Opus 4.5 verbose output
+    model: str = "claude-sonnet-4-20250514"  # Sonnet 4.5 - good balance of cost/quality
+    model_step1: str = ""  # Override for Step 1 (defaults to model if empty)
+    model_step2: str = ""  # Override for Step 2 (defaults to model if empty)
+    max_tokens: int = 12000  # Reduced from 16000 - Sonnet is more concise
     
     # Rate Limiting
-    max_retries: int = 8  # Increased from 5
-    base_delay: float = 5.0  # Increased from 2.0
-    max_delay: float = 180.0  # Increased from 120
-    rate_limit_cooldown: float = 90.0  # Increased from 60
-    inter_step_delay: float = 30.0  # NEW: Delay between Step 1 and Step 2
-    min_request_interval: float = 3.0  # NEW: Minimum seconds between any requests
+    max_retries: int = 8
+    base_delay: float = 5.0
+    max_delay: float = 180.0
+    rate_limit_cooldown: float = 90.0
+    inter_step_delay: float = 30.0
+    min_request_interval: float = 3.0
     
     # Web Search Settings
     # WARNING: Web search costs ~$10/1000 searches. Each API call can make 5-10 searches.
     # Default OFF to control costs. Enable only when you need current news/prices.
-    use_web_search: bool = False  # Set True to enable web search (adds ~$0.50-2.00/run)
+    use_web_search: bool = False  # Set True to enable web search (adds ~$0.30-0.80/run)
+    
+    # Cost Tracking
+    track_costs: bool = True  # Track and display API costs
     
     # File Paths
     tickers_file: str = "LLM_tickers.txt"
@@ -86,6 +91,101 @@ class Config:
     max_tickers_per_batch: int = 5  # Reduced from 10 to be safer with rate limits
     theme_count: int = 5  # Number of top themes to identify
     conservative_rate_limiting: bool = True  # If True, use longer delays
+
+
+# ============================================================================
+# COST TRACKING
+# ============================================================================
+
+@dataclass
+class CostTracker:
+    """Track API usage and costs"""
+    
+    # Token counts
+    input_tokens: int = 0
+    output_tokens: int = 0
+    
+    # Web search counts
+    web_searches: int = 0
+    
+    # Call counts by step
+    step1_calls: int = 0
+    step2_calls: int = 0
+    
+    # Pricing (per 1M tokens) - Sonnet 4.5 defaults
+    input_price_per_m: float = 3.0   # $3/1M input tokens (Sonnet)
+    output_price_per_m: float = 15.0  # $15/1M output tokens (Sonnet)
+    search_price: float = 0.01        # $0.01 per web search
+    
+    def set_model_pricing(self, model: str):
+        """Set pricing based on model"""
+        if "opus" in model.lower():
+            self.input_price_per_m = 15.0
+            self.output_price_per_m = 75.0
+        elif "sonnet" in model.lower():
+            self.input_price_per_m = 3.0
+            self.output_price_per_m = 15.0
+        elif "haiku" in model.lower():
+            self.input_price_per_m = 0.25
+            self.output_price_per_m = 1.25
+    
+    def add_usage(self, response, step: str = ""):
+        """Add usage from API response"""
+        if hasattr(response, 'usage'):
+            self.input_tokens += response.usage.input_tokens
+            self.output_tokens += response.usage.output_tokens
+        
+        # Count web searches from response content
+        if hasattr(response, 'content'):
+            for block in response.content:
+                if hasattr(block, 'type') and block.type == 'web_search_tool_result':
+                    self.web_searches += 1
+        
+        if step == "step1":
+            self.step1_calls += 1
+        elif step == "step2":
+            self.step2_calls += 1
+    
+    def get_token_cost(self) -> float:
+        """Calculate token cost"""
+        input_cost = (self.input_tokens / 1_000_000) * self.input_price_per_m
+        output_cost = (self.output_tokens / 1_000_000) * self.output_price_per_m
+        return input_cost + output_cost
+    
+    def get_search_cost(self) -> float:
+        """Calculate web search cost"""
+        return self.web_searches * self.search_price
+    
+    def get_total_cost(self) -> float:
+        """Get total estimated cost"""
+        return self.get_token_cost() + self.get_search_cost()
+    
+    def print_summary(self):
+        """Print cost summary"""
+        print("\n" + "─" * 60)
+        print("  💰 API COST SUMMARY")
+        print("─" * 60)
+        print(f"  Tokens:  {self.input_tokens:,} input + {self.output_tokens:,} output")
+        print(f"  Searches: {self.web_searches}")
+        print(f"  API Calls: {self.step1_calls} (Step 1) + {self.step2_calls} (Step 2)")
+        print(f"\n  Token cost:  ${self.get_token_cost():.4f}")
+        print(f"  Search cost: ${self.get_search_cost():.4f}")
+        print(f"  ─────────────────────")
+        print(f"  TOTAL:       ${self.get_total_cost():.4f}")
+        print("─" * 60)
+    
+    def to_dict(self) -> dict:
+        """Export as dictionary"""
+        return {
+            "input_tokens": self.input_tokens,
+            "output_tokens": self.output_tokens,
+            "web_searches": self.web_searches,
+            "step1_calls": self.step1_calls,
+            "step2_calls": self.step2_calls,
+            "token_cost": self.get_token_cost(),
+            "search_cost": self.get_search_cost(),
+            "total_cost": self.get_total_cost()
+        }
 
 
 # ============================================================================
@@ -232,6 +332,21 @@ class Theme:
     
     def to_dict(self) -> Dict:
         return asdict(self)
+    
+    def to_compact_dict(self) -> Dict:
+        """Return minimal dict for Step 2 - only essential fields to reduce token count"""
+        return {
+            "rank": self.rank,
+            "name": self.name,
+            "classification": self.classification,
+            "theme_type": self.theme_type,
+            "composite_score": round(self.composite_score, 1),
+            "primary_etfs": self.primary_etfs[:3],  # Limit ETFs
+            "key_catalysts": self.key_catalysts[:3],  # Limit catalysts
+            "crowding_indicator": self.crowding_indicator,
+            # One-liner summaries only
+            "thesis": self.thesis_summary[:200] if self.thesis_summary else "",
+        }
 
 
 @dataclass
@@ -723,9 +838,12 @@ If a theme was INVESTABLE last week, it should remain INVESTABLE unless somethin
 """
 
 STEP_2_PROMPT_TEMPLATE = """
-## MAP TICKERS TO THEMES & ASSESS FIT (6-12 Month Horizon)
+## MAP TICKERS TO THEMES (Simplified Assessment)
 
-Given the top themes identified, analyze how well each ticker fits and score its potential.
+Given the top themes from Step 1, determine how well each ticker fits its best theme.
+
+**NOTE:** This is theme mapping ONLY. Detailed risk assessment and catalyst checking 
+happens in the Gatekeeper step. Focus on theme fit and company position.
 
 ### TOP THEMES FROM STEP 1:
 {themes_json}
@@ -734,72 +852,49 @@ Given the top themes identified, analyze how well each ticker fits and score its
 {ticker_list}
 
 ### ═══════════════════════════════════════════════════════════════════════════
-### TICKER EVALUATION FRAMEWORK
+### EVALUATION CRITERIA (2 factors only)
 ### ═══════════════════════════════════════════════════════════════════════════
 
-For each ticker, determine:
+## 1. THEME FIT (How much does this company benefit from the theme?)
 
-## 1. THEME FIT (Does this stock benefit from the theme?)
-
-**Search:** "[company] business segments" and "[company] revenue breakdown"
+**One search:** "[company] business segments revenue breakdown"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| PURE PLAY | >70% of business directly tied to theme | 9-10 |
-| STRONG | 50-70% exposure to theme | 7-8 |
-| MODERATE | 30-50% exposure to theme | 5-6 |
-| WEAK | <30% exposure, tangential at best | 1-4 |
+| PURE PLAY | >70% of business tied to theme | 9-10 |
+| STRONG | 50-70% exposure | 7-8 |
+| MODERATE | 30-50% exposure | 5-6 |
+| WEAK | <30% exposure | 1-4 |
 
-## 2. COMPANY POSITION (Is this the RIGHT stock for the theme?)
+## 2. COMPANY POSITION (Is this a good stock for the theme?)
 
-**Search:** "[company] market share" and "[company] vs competitors"
-
-| Rating | Criteria | Score |
-|--------|----------|-------|
-| LEADER | #1-2 market share, gaining share | 9-10 |
-| STRONG CHALLENGER | Top 5, competitive position | 7-8 |
-| NICHE | Specialized player, defensible niche | 5-6 |
-| LAGGARD | Losing share, weak position | 1-4 |
-
-## 3. STOCK SETUP (Is now a good time to buy?)
-
-**Search:** "[ticker] stock news" and check recent price action
+**One search:** "[company] market position competitors"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| IDEAL | Breaking out, not extended, positive momentum | 9-10 |
-| GOOD | Healthy uptrend, reasonable entry | 7-8 |
-| FAIR | Consolidating, waiting for catalyst | 5-6 |
-| POOR | Extended/overbought OR downtrend | 1-4 |
-
-## 4. RISK ASSESSMENT
-
-**Search:** "[company] risks" and "[ticker] short interest"
-
-Identify:
-- Upcoming earnings date (risk if within 2 weeks)
-- Short interest level
-- Any company-specific red flags
+| LEADER | Top 2 market share | 9-10 |
+| CHALLENGER | Top 5, gaining share | 7-8 |
+| NICHE | Specialized, defensible | 5-6 |
+| LAGGARD | Losing share | 1-4 |
 
 ### ═══════════════════════════════════════════════════════════════════════════
-### VERDICT CRITERIA
+### VERDICT RULES
 ### ═══════════════════════════════════════════════════════════════════════════
 
-| Theme Classification | Theme Fit Score | Company Position | Verdict |
-|---------------------|-----------------|------------------|---------|
+| Theme Class | Theme Fit | Company Position | Verdict |
+|-------------|-----------|------------------|---------|
 | PRIME | 7+ | Leader/Challenger | **STRONG FIT** |
 | PRIME | 5-6 | Any | GOOD FIT |
 | INVESTABLE | 7+ | Leader/Challenger | **STRONG FIT** |
-| INVESTABLE | 5-6 | Leader/Challenger | GOOD FIT |
-| INVESTABLE | 5-6 | Niche/Laggard | MODERATE FIT |
+| INVESTABLE | 5-6 | Any | GOOD FIT |
 | SELECTIVE | 7+ | Leader only | GOOD FIT |
-| SELECTIVE | Any other | Any | MODERATE FIT |
+| SELECTIVE | <7 | Any | MODERATE FIT |
 | AVOID | Any | Any | WEAK FIT |
 
-**STRONG FIT** = High conviction, full position
-**GOOD FIT** = Solid opportunity, standard position
-**MODERATE FIT** = Lower conviction, reduced position or pass
-**WEAK FIT** = Do not buy
+**STRONG FIT** → Pass to Gatekeeper for final assessment
+**GOOD FIT** → Pass to Gatekeeper
+**MODERATE FIT** → Skip unless exceptional circumstances
+**WEAK FIT** → Do not proceed
 
 ### ═══════════════════════════════════════════════════════════════════════════
 ### OUTPUT FORMAT
@@ -814,7 +909,6 @@ Respond with ONLY valid JSON (no markdown, no explanation):
     {{
       "ticker": "SYMBOL",
       "company_name": "Full Company Name",
-      "current_price": 123.45,
       "sector": "Technology",
       
       "primary_theme": "Theme Name",
@@ -823,33 +917,19 @@ Respond with ONLY valid JSON (no markdown, no explanation):
       "theme_fit": {{
         "score": 8,
         "exposure_pct": 75,
-        "rationale": "Why this % exposure"
+        "rationale": "Brief explanation of theme exposure"
       }},
       
       "company_position": {{
         "score": 8,
         "position": "Leader/Challenger/Niche/Laggard",
-        "rationale": "Market share and competitive position"
-      }},
-      
-      "stock_setup": {{
-        "score": 7,
-        "setup": "Ideal/Good/Fair/Poor",
-        "rationale": "Current technical/momentum assessment"
-      }},
-      
-      "risk_factors": {{
-        "earnings_date": "YYYY-MM-DD or Unknown",
-        "earnings_risk": true/false,
-        "short_interest": "X%",
-        "red_flags": ["Any specific concerns"]
+        "rationale": "Brief market position assessment"
       }},
       
       "verdict": "STRONG FIT/GOOD FIT/MODERATE FIT/WEAK FIT",
-      "verdict_rationale": "One sentence explaining verdict",
+      "verdict_rationale": "One sentence summary",
       
       "upside_score": 8.5,
-      "action": "Buy/Accumulate/Hold/Avoid",
       "conviction": "High/Medium/Low"
     }}
   ],
@@ -888,6 +968,10 @@ class ThematicAnalyzer:
         
         self.client = anthropic.Anthropic(api_key=self.config.anthropic_api_key)
         
+        # Cost tracking
+        self.cost_tracker = CostTracker()
+        self.cost_tracker.set_model_pricing(self.config.model)
+        
         # State
         self.themes: List[Theme] = []
         self.ticker_analyses: List[TickerAnalysis] = []
@@ -896,26 +980,29 @@ class ThematicAnalyzer:
     
     def _print_banner(self):
         """Print startup banner"""
-        banner = """
+        model_name = self.config.model.split("-")[1].upper() if "-" in self.config.model else self.config.model
+        banner = f"""
 ╔══════════════════════════════════════════════════════════════════╗
-║           THEMATIC INVESTMENT ANALYZER v2.0                      ║
+║           THEMATIC INVESTMENT ANALYZER v2.1                      ║
 ║                                                                  ║
-║   Step 1: Identify Top Themes with FUNDAMENTAL Cycle Analysis   ║
-║   Step 2: Map Tickers to Themes & Score Upside                  ║
+║   Step 1: Identify Top Themes (catalyst + momentum analysis)     ║
+║   Step 2: Map Tickers to Themes (simplified scoring)             ║
 ║                                                                  ║
-║   🚀 Enhanced: 4-Factor Cycle Detection Framework               ║
-║      • TAM Penetration (40%) - How much market left?            ║
-║      • Capex Cycle (30%) - Are companies still investing?       ║
-║      • Sentiment (20%) - Is everyone already in?                ║
-║      • Valuation/Runway (10%) - Growth ahead vs price?          ║
+║   Model: {model_name:<10}  Web Search: {'ON' if self.config.use_web_search else 'OFF':<5}  Cost Track: {'ON' if self.config.track_costs else 'OFF':<3}   ║
 ╚══════════════════════════════════════════════════════════════════╝
         """
         print(banner)
         self.logger.info(f"Initialized with model: {self.config.model}")
         self.logger.info(f"Max retries: {self.config.max_retries}")
     
-    def _call_api_with_retry(self, messages: List[Dict], description: str) -> str:
-        """Call Claude API with retry logic and rate limiting"""
+    def _call_api_with_retry(self, messages: List[Dict], description: str, step: str = "") -> str:
+        """Call Claude API with retry logic, rate limiting, and cost tracking.
+        
+        Args:
+            messages: API messages
+            description: Description for logging
+            step: Either "step1" or "step2" for cost tracking
+        """
         
         for attempt in range(self.config.max_retries):
             try:
@@ -923,9 +1010,17 @@ class ThematicAnalyzer:
                 
                 self.logger.info(f"API call: {description} (attempt {attempt + 1}/{self.config.max_retries})")
                 
+                # Determine which model to use
+                if step == "step1" and self.config.model_step1:
+                    model = self.config.model_step1
+                elif step == "step2" and self.config.model_step2:
+                    model = self.config.model_step2
+                else:
+                    model = self.config.model
+                
                 # Build API call parameters
                 api_params = {
-                    "model": self.config.model,
+                    "model": model,
                     "max_tokens": self.config.max_tokens,
                     "messages": messages
                 }
@@ -941,6 +1036,12 @@ class ThematicAnalyzer:
                 response = self.client.messages.create(**api_params)
                 
                 self.rate_limiter.record_success()
+                
+                # Track costs
+                if self.config.track_costs:
+                    self.cost_tracker.add_usage(response, step)
+                    if hasattr(response, 'usage'):
+                        self.logger.debug(f"Tokens: {response.usage.input_tokens} in, {response.usage.output_tokens} out")
                 
                 # Extract text content
                 text_content = ""
@@ -1356,7 +1457,7 @@ class ThematicAnalyzer:
         
         messages = [{"role": "user", "content": full_prompt}]
         
-        response_text = self._call_api_with_retry(messages, "Step 1 - Theme Identification")
+        response_text = self._call_api_with_retry(messages, "Step 1 - Theme Identification", step="step1")
 
         # Debug: save raw response for inspection
         debug_file = Path("logs/opus_raw_response.txt")
@@ -1605,8 +1706,13 @@ class ThematicAnalyzer:
         
         return self.themes
     
-    def run_step_2(self, tickers: List[str]) -> List[TickerAnalysis]:
-        """Step 2: Map tickers to themes and score upside"""
+    def run_step_2(self, tickers: List[str], batch_size: int = 12) -> List[TickerAnalysis]:
+        """Step 2: Map tickers to themes and score upside
+        
+        Args:
+            tickers: List of ticker symbols to analyze
+            batch_size: Max tickers per API call (default 12 to stay under token limits)
+        """
         
         if not self.themes:
             raise ValueError("Must run Step 1 first to identify themes")
@@ -1617,20 +1723,44 @@ class ThematicAnalyzer:
         self.logger.info("=" * 60)
         self.logger.info(f"Analyzing {len(tickers)} tickers: {', '.join(tickers)}")
         
-        # Prepare themes JSON for prompt
-        themes_json = json.dumps([t.to_dict() for t in self.themes], indent=2)
+        # Prepare compact themes JSON for prompt (to avoid token limit)
+        # Use to_compact_dict() instead of to_dict() to minimize token usage
+        themes_json = json.dumps([t.to_compact_dict() for t in self.themes], indent=2)
+        self.logger.debug(f"Compact themes JSON size: {len(themes_json)} chars")
         
-        prompt = STEP_2_PROMPT_TEMPLATE.format(
-            themes_json=themes_json,
-            ticker_list=", ".join(tickers)
-        )
+        # Batch tickers if needed to avoid token limits
+        all_analyses = []
+        ticker_batches = [tickers[i:i + batch_size] for i in range(0, len(tickers), batch_size)]
         
-        messages = [{"role": "user", "content": prompt}]
+        if len(ticker_batches) > 1:
+            self.logger.info(f"Splitting into {len(ticker_batches)} batches of {batch_size} tickers")
         
-        response_text = self._call_api_with_retry(messages, "Step 2 - Ticker Analysis")
+        for batch_idx, ticker_batch in enumerate(ticker_batches):
+            if len(ticker_batches) > 1:
+                self.logger.info(f"Processing batch {batch_idx + 1}/{len(ticker_batches)}: {', '.join(ticker_batch)}")
+            
+            prompt = STEP_2_PROMPT_TEMPLATE.format(
+                themes_json=themes_json,
+                ticker_list=", ".join(ticker_batch)
+            )
+            
+            messages = [{"role": "user", "content": prompt}]
+            
+            response_text = self._call_api_with_retry(messages, f"Step 2 - Ticker Analysis (batch {batch_idx + 1})", step="step2")
+            
+            # Parse response
+            data = self._extract_json(response_text)
+            
+            # Collect analyses from this batch
+            batch_analyses = data.get("ticker_analysis", [])
+            all_analyses.extend(batch_analyses)
+            
+            # Small delay between batches
+            if batch_idx < len(ticker_batches) - 1:
+                time.sleep(2)
         
-        # Parse response
-        data = self._extract_json(response_text)
+        # Now process all analyses
+        data = {"ticker_analysis": all_analyses}
         
         # Try to fetch price data via yfinance (may fail in some environments)
         price_data = self._fetch_price_data(tickers)
@@ -2181,6 +2311,10 @@ class ThematicAnalyzer:
         self.logger.info(f"Trade log: {self.config.trade_log_file}")
         self.logger.info(f"Full analysis: {analysis_file}")
         
+        # Print cost summary if enabled
+        if self.config.track_costs:
+            self.cost_tracker.print_summary()
+        
         return AnalysisResult(
             timestamp=datetime.now().isoformat(),
             themes=self.themes,
@@ -2188,7 +2322,8 @@ class ThematicAnalyzer:
             summary={
                 "elapsed_seconds": elapsed,
                 "api_calls": self.rate_limiter.request_count,
-                "passing_gate": len([t for t in self.ticker_analyses if t.passes_gate()])
+                "passing_gate": len([t for t in self.ticker_analyses if t.passes_gate()]),
+                "costs": self.cost_tracker.to_dict() if self.config.track_costs else {}
             }
         )
 

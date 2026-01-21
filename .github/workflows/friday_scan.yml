@@ -1,0 +1,220 @@
+name: Friday Weekly Scan
+
+on:
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      skip_llm:
+        description: 'Skip LLM analysis (technical scan only)'
+        required: false
+        default: 'false'
+        type: boolean
+      web_search:
+        description: 'Enable web search in LLM analysis'
+        required: false
+        default: 'true'
+        type: boolean
+      top_n:
+        description: 'Limit to top N tickers by beta (0 = no limit)'
+        required: false
+        default: '0'
+      skip_charts:
+        description: 'Skip chart capture'
+        required: false
+        default: 'false'
+        type: boolean
+      skip_tweets:
+        description: 'Skip tweet generation'
+        required: false
+        default: 'false'
+        type: boolean
+
+  # Scheduled run: Friday 4:30 PM EST (21:30 UTC)
+  schedule:
+    - cron: '30 21 * * 5'
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  weekly-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright for chart capture
+        if: ${{ github.event.inputs.skip_charts != 'true' }}
+        run: |
+          pip install playwright
+          playwright install chromium
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 1: RUN SCANNER
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Run Scanner
+        id: scanner
+        run: |
+          echo "## Scanner Configuration" >> $GITHUB_STEP_SUMMARY
+
+          SCANNER_ARGS="--archive"
+
+          # Skip LLM if requested
+          if [ "${{ github.event.inputs.skip_llm }}" = "true" ]; then
+            SCANNER_ARGS="$SCANNER_ARGS --no-llm"
+            echo "- **LLM:** Disabled" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **LLM:** Enabled" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Web search
+          if [ "${{ github.event.inputs.web_search }}" = "true" ] && [ "${{ github.event.inputs.skip_llm }}" != "true" ]; then
+            SCANNER_ARGS="$SCANNER_ARGS --web-search"
+            echo "- **Web Search:** Enabled" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Web Search:** Disabled" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Top N limit
+          TOP_N="${{ github.event.inputs.top_n }}"
+          if [ -n "$TOP_N" ] && [ "$TOP_N" != "0" ]; then
+            SCANNER_ARGS="$SCANNER_ARGS --top $TOP_N"
+            echo "- **Top N:** $TOP_N" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo ""
+          echo "Running: python scanner.py $SCANNER_ARGS"
+          echo ""
+
+          python scanner.py $SCANNER_ARGS
+
+          echo "scanner_complete=true" >> $GITHUB_OUTPUT
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 2: CAPTURE CHARTS (Optional - may not work in CI)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Capture Charts
+        if: ${{ github.event.inputs.skip_charts != 'true' }}
+        run: |
+          if [ -f "trades/latest_signals.json" ]; then
+            echo "Capturing charts from latest_signals.json..."
+            python chart_capture.py --tickers-from trades/latest_signals.json --headless --skip-wait || {
+              echo "Chart capture failed (expected in CI without TradingView login)"
+              echo "Charts can be captured locally before the scan"
+            }
+          else
+            echo "No latest_signals.json found, skipping chart capture"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 3: GENERATE TWEETS
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Tweets
+        if: ${{ github.event.inputs.skip_tweets != 'true' }}
+        run: |
+          if [ -f "tweet_generator.py" ]; then
+            echo "Generating tweets via Claude API..."
+            python tweet_generator.py
+          else
+            echo "tweet_generator.py not found, falling back to grok_prompts_generator.py"
+            python grok_prompts_generator.py || true
+          fi
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 4: SAVE ARTIFACTS
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-results-${{ github.run_id }}
+          path: |
+            trades/latest_newsletter_briefing.md
+            trades/latest_report.txt
+            trades/signals.json
+            trades/portfolio.csv
+            trades/portfolio_google_sheets.csv
+          retention-days: 30
+
+      - name: Upload content queue for daily posting
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-queue
+          path: trades/content_queue.json
+          retention-days: 7
+
+      - name: Upload charts (if captured)
+        uses: actions/upload-artifact@v4
+        with:
+          name: charts-${{ github.run_id }}
+          path: trades/charts/
+          retention-days: 30
+        if: always()
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 5: COMMIT RESULTS TO REPO
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add trades/ 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            DATE=$(date '+%Y-%m-%d')
+            git commit -m "Weekly scan results $DATE"
+            git push
+            echo "Results committed and pushed"
+          fi
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 6: SUMMARY
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "trades/latest_report.txt" ]; then
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            head -100 trades/latest_report.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Files Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          [ -f "trades/latest_newsletter_briefing.md" ] && echo "- latest_newsletter_briefing.md" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/content_queue.json" ] && echo "- content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/signals.json" ] && echo "- signals.json" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/charts" ] && echo "- charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Completed:** $(date -u)" >> $GITHUB_STEP_SUMMARY

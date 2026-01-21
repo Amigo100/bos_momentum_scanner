@@ -134,23 +134,33 @@ def get_current_slot() -> int:
         return 0  # Outside posting hours
     
 
-def find_next_tweet(queue: list, force: bool = False) -> Optional[Dict]:
-    """Find the next tweet to post based on schedule and slot."""
-    
+def find_next_tweet(queue: list, force: bool = False, target_slot: int = None) -> Optional[Dict]:
+    """Find the next tweet to post based on schedule and slot.
+
+    Args:
+        queue: List of tweet dictionaries
+        force: If True, post first pending regardless of schedule
+        target_slot: If specified, only consider tweets for this slot (1, 2, or 3)
+    """
+
     today = datetime.now().strftime("%Y-%m-%d")
     current_slot = get_current_slot()
-    
+
     for tweet in queue:
         if tweet.get("status") != "pending":
             continue
-        
+
         scheduled_date = tweet.get("scheduled_date", "")
         slot = tweet.get("slot", 0)
-        
-        # If forcing, post first pending tweet
+
+        # Filter by target slot if specified
+        if target_slot is not None and slot != target_slot:
+            continue
+
+        # If forcing, post first pending tweet (that matches slot filter)
         if force:
             return tweet
-        
+
         # Check if this tweet is due
         if scheduled_date <= today:
             # If it's today, check slot
@@ -160,7 +170,7 @@ def find_next_tweet(queue: list, force: bool = False) -> Optional[Dict]:
             else:
                 # Past due - post it
                 return tweet
-    
+
     return None
 
 
@@ -259,6 +269,8 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
     parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")
     parser.add_argument("--queue", type=str, help="Path to content queue JSON")
+    parser.add_argument("--slot", type=str, default="all",
+                        help="Which slot to post (1, 2, 3, or 'all')")
     args = parser.parse_args()
     
     print("\n" + "═" * 60)
@@ -276,8 +288,9 @@ def main():
     
     print(f"  📊 Status: {len(posted)} posted, {len(pending)} pending")
     
-    # Find next tweet
-    tweet = find_next_tweet(queue, force=args.force)
+    # Find next tweet (filter by slot if specified)
+    target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
+    tweet = find_next_tweet(queue, force=args.force, target_slot=target_slot)
     
     if not tweet:
         print(f"\n  ℹ️  No tweets due right now")

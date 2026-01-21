@@ -117,8 +117,12 @@ echo ""
 
 log_step "Running pre-flight checks..."
 
-# Check required environment variables
-check_env "ANTHROPIC_API_KEY"
+# Check required environment variables (skip API key check in test mode)
+if [ "$TEST_MODE" = false ]; then
+    check_env "ANTHROPIC_API_KEY"
+else
+    log_warning "Test mode: Skipping ANTHROPIC_API_KEY check"
+fi
 
 # Check required files
 if [ ! -f "scanner.py" ]; then
@@ -148,8 +152,8 @@ else
     SCANNER_ARGS="$SCANNER_ARGS --web-search"
 fi
 
-log_step "python scanner.py $SCANNER_ARGS"
-python scanner.py $SCANNER_ARGS
+log_step "python3 scanner.py $SCANNER_ARGS"
+python3 scanner.py $SCANNER_ARGS
 
 log_success "Scanner complete"
 
@@ -165,8 +169,8 @@ else
     if [ -f "chart_capture.py" ]; then
         # Extract tickers from latest signals
         if [ -f "trades/latest_signals.json" ]; then
-            log_step "python chart_capture.py --tickers-from trades/latest_signals.json --headless"
-            python chart_capture.py --tickers-from trades/latest_signals.json --headless || {
+            log_step "python3 chart_capture.py --tickers-from trades/latest_signals.json --headless"
+            python3 chart_capture.py --tickers-from trades/latest_signals.json --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         else
@@ -190,8 +194,8 @@ if [ -f "tweet_generator.py" ]; then
         log_warning "Test mode: Using --mock"
     fi
     
-    log_step "python tweet_generator.py $TWEET_ARGS"
-    python tweet_generator.py $TWEET_ARGS
+    log_step "python3 tweet_generator.py $TWEET_ARGS"
+    python3 tweet_generator.py $TWEET_ARGS
     log_success "Tweet generation complete"
 else
     log_warning "tweet_generator.py not found, skipping"
@@ -199,7 +203,7 @@ else
     # Fallback to old grok prompts
     if [ -f "grok_prompts_generator.py" ]; then
         log_step "Falling back to grok_prompts_generator.py"
-        python grok_prompts_generator.py
+        python3 grok_prompts_generator.py
     fi
 fi
 
@@ -210,8 +214,8 @@ fi
 log_header "STEP 4: Newsletter Compilation"
 
 if [ -f "newsletter_compiler.py" ]; then
-    log_step "python newsletter_compiler.py"
-    python newsletter_compiler.py || {
+    log_step "python3 newsletter_compiler.py"
+    python3 newsletter_compiler.py || {
         log_warning "Newsletter compilation failed - continuing anyway"
     }
 else
@@ -225,8 +229,8 @@ fi
 log_header "STEP 5: Substack Publishing"
 
 if [ -f "substack_publisher.py" ]; then
-    log_step "python substack_publisher.py --draft"
-    python substack_publisher.py --draft || {
+    log_step "python3 substack_publisher.py --draft"
+    python3 substack_publisher.py --draft || {
         log_warning "Substack publishing failed - continuing anyway"
     }
 else

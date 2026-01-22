@@ -36,6 +36,10 @@ on:
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
+# Required for git push
+permissions:
+  contents: write
+
 jobs:
   weekly-scan:
     runs-on: ubuntu-latest

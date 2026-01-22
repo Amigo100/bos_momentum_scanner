@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: Best trade you passed on this year?
+Topic/Question: How long do you typically hold positions?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Entry timing matters more than stock sel...
+## Slot 2: Lesson: Position sizing determines survival, not...
 
 ```
 TRADING LESSON:
-Topic: Entry timing matters more than stock selection
+Topic: Position sizing determines survival, not returns
 
 ---
 

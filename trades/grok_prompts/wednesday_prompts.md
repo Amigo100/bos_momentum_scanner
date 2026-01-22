@@ -25,68 +25,64 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Hot Theme: Nuclear Power & Small Modular Reactors
+## Slot 2: Lesson: The best trade is often the one you don'...
 
 ```
-SCANNER OUTPUT:
-PRIME: Nuclear Power & Small Modular Reactors
+TRADING LESSON:
+Topic: The best trade is often the one you don't make
 
 ---
 
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+You are drafting an X post for @SterlingSignals.
 
-Using the theme above:
-1. Search for the LATEST news/developments in Nuclear Power & Small Modular Reactors (last 7 days)
-2. Find a specific catalyst, data point, or news event that's driving momentum
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with a compelling hook about why this theme matters NOW
-   - Uses the specific recent data point or catalyst you found
-   - Shows this is a PRIME theme in my systematic scanner
-   - Teases that I have specific stock picks in this theme
+1. Pick a practical way to illustrate this lesson
+2. Draft a visually engaging X post (under 280 characters) that:
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it accessible to readers who don't follow this sector closely.
-
-IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Nuclear Power & Small Modular Reactors
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
-## Slot 3: Position Update: IBKR
+## Slot 3: Position Update: CGON
 
 ```
 POSITION CONTEXT (may be outdated - look up current price):
-Ticker: $IBKR
-Entry: $65.00 on 2025-12-29
-Theme: Financials | Tier: TIER1
-Days Held: ~20
-Snapshot P&L: +12.9% (verify with current price)
+Ticker: $CGON
+Entry: $53.92 on 09/01/2026
+Theme: Healthcare / Biotech | Tier: TIER1
+Days Held: ~0
+Snapshot P&L: +6.0% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $IBKR
-2. Calculate the LIVE P&L: ((current_price / 65.00) - 1) * 100
+1. Look up the CURRENT price of $CGON
+2. Calculate the LIVE P&L: ((current_price / 53.92) - 1) * 100
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
    - Notes current status based on price action (uptrend, consolidating, pullback)
-   - Search for any recent news on $IBKR (last 7 days)
+   - Search for any recent news on $CGON (last 7 days)
    - Shows active, systematic portfolio management
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$IBKR update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$CGON update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing IBKR, Entry $65.00 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing CGON, Entry $53.92 → Current, live P&L%, chart thumbnail
 
 ---

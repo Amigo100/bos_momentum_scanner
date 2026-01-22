@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: How long do you typically hold positions?
+Topic/Question: What's your biggest trading lesson from 2024?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: The best trade is often the one you don'...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: The best trade is often the one you don't make
 
 ---
 

@@ -25,11 +25,11 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Lesson: The best trade is often the one you don'...
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 

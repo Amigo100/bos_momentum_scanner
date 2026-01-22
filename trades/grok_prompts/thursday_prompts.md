@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 17 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 17 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -26,11 +26,11 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Lesson: Entry timing matters more than stock sel...
+## Slot 2: Lesson: Weekly timeframes filter out noise...
 
 ```
 TRADING LESSON:
-Topic: Entry timing matters more than stock selection
+Topic: Weekly timeframes filter out noise
 
 ---
 

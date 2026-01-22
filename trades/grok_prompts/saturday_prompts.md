@@ -27,11 +27,11 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
@@ -53,11 +53,11 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Lesson: Entry timing matters more than stock sel...
+## Slot 3: Lesson: Fresh trends outperform extended trends...
 
 ```
 TRADING LESSON:
-Topic: Entry timing matters more than stock selection
+Topic: Fresh trends outperform extended trends
 
 ---
 

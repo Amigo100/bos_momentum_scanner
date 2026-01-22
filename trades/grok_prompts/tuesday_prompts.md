@@ -1,36 +1,39 @@
 # Tuesday Prompts
 
-## Slot 1: Weekly Scanner Stats
+## Slot 1: BUY Signal: IESC
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+PASS: IESC | Theme: Industrials Manufacturing Renaissance | Price: $474.43
+Catalyst: Earnings Feb 4, 2026 (strong 15.7% revenue growth momentum), data center infrastructure expansion driving communications segment growth
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
+Using the scanner output above:
+1. Search for the LATEST news on $IESC (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
 
 ```
 
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for IESC
 
 ---
 
-## Slot 2: Lesson: Fresh trends outperform extended trends...
+## Slot 2: Lesson: Theme alignment multiplies momentum...
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Theme alignment multiplies momentum
 
 ---
 
@@ -52,27 +55,30 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Market Pulse
+## Slot 3: Watching: LTBR
 
 ```
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+SCANNER OUTPUT:
+CAUTION: LTBR | Theme: Power Grid Modernization & Nuclear | Price: $18.07
+Reason: Heavy insider selling suggests lack of confidence
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $LTBR
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
-**Visual:** Index performance bars or sector heat map
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for LTBR
 
 ---

@@ -1,6 +1,6 @@
 # 📱 GROK PROMPTS - Weekly X/Twitter Content
 
-**Generated:** January 21, 2026
+**Generated:** January 22, 2026
 **Account:** @SterlingSignals
 **Substack:** https://sterlingsignals.substack.com
 
@@ -10,22 +10,26 @@
 
 | Day | Slot 1 (Morning) | Slot 2 (Midday) | Slot 3 (Evening) |
 |-----|------------------|-----------------|------------------|
-| Monday | Week Ahead Preview | Market Pulse | Position Update: VNE |
-| Tuesday | Weekly Scanner Stats | Lesson: Fresh trends | Market Pulse |
-| Wednesday | Market Pulse | Lesson: Trailing sto | Position Update: CGO |
-| Thursday | Weekly Scanner Stats | Lesson: Weekly timef | Market Pulse |
-| Friday | Weekly Scanner Stats | Lesson: Fresh trends | Position Update: INO |
-| Saturday | Newsletter Drop | Lesson: Trailing sto | Lesson: Fresh trends |
-| Sunday | Sunday Engagement | Lesson: The best tra | Looking Ahead (Soft) |
+| Monday | Week Ahead Preview | Hot Theme: Power Gri | Position Update: VNE |
+| Tuesday | BUY Signal: IESC | Lesson: Theme alignm | Watching: LTBR |
+| Wednesday | Market Pulse | Hot Theme: Defense S | Position Update: CGO |
+| Thursday | BUY Signal: STRL | Hot Theme: Defense S | Watching: AMSC |
+| Friday | Weekly Scanner Stats | Why I Passed: AMSC | Position Update: INO |
+| Saturday | Newsletter Drop | Deep Dive: IESC | Why I Passed: LTBR |
+| Sunday | Sunday Engagement | Lesson: Fresh trends | Looking Ahead (Soft) |
 
 ---
 
 ## 📊 Portfolio Context
 
 **Current State:**
-- **Open Positions:** VNET, CGON, INOD, OUST, APLD, WCC
+- **PASS Signals:** IESC, STRL, AAON
+- **CAUTION Signals:** LTBR, AMSC, RMBS, CORZ, EOSE, IPGP, AGX, FLR
+- **Open Positions:** VNET, CGON, INOD, OUST, APLD, WCC, IESC, STRL, AAON
 
 **Themes:**
+- **PRIME:** Power Grid Modernization & Nuclear, Defense Supply Chain Reshoring, AI Cooling & Data Center Infrastructure
+- **INVESTABLE:** Metals Supply Chain Critical Materials, Industrials Manufacturing Renaissance, Energy Storage & Grid Batteries
 
 ---
 
@@ -60,29 +64,35 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## ☀️ Midday: Market Pulse
+## ☀️ Midday: Hot Theme: Power Grid Modernization & Nuclear
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** theme_hot
+**Theme:** Power Grid Modernization & Nuclear
+**Visual:** Theme infographic or sector ETF momentum chart for Power Grid Modernization & Nuclear
 
 ### Prompt (Copy to Grok)
 
 ```
+SCANNER OUTPUT:
+PRIME: Power Grid Modernization & Nuclear
+
+---
+
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
-
-2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
+Using the theme above:
+1. Search for the LATEST news/developments in Power Grid Modernization & Nuclear (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
@@ -131,36 +141,41 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 TUESDAY
 
-## 🌅 Morning: Weekly Scanner Stats
+## 🌅 Morning: BUY Signal: IESC
 
-**Category:** scanner_stats
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+**Category:** buy_signal
+**Ticker:** $IESC
+**Theme:** Industrials Manufacturing Renaissance
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for IESC
 
 ### Prompt (Copy to Grok)
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+PASS: IESC | Theme: Industrials Manufacturing Renaissance | Price: $474.43
+Catalyst: Earnings Feb 4, 2026 (strong 15.7% revenue growth momentum), data center infrastructure expansion driving communications segment growth
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
+Using the scanner output above:
+1. Search for the LATEST news on $IESC (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
 
 ```
 
 ---
 
-## ☀️ Midday: Lesson: Fresh trends outperform extended trends...
+## ☀️ Midday: Lesson: Theme alignment multiplies momentum...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -169,7 +184,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Theme alignment multiplies momentum
 
 ---
 
@@ -189,29 +204,34 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Market Pulse
+## 🌆 Evening: Watching: LTBR
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** watchlist
+**Ticker:** $LTBR
+**Theme:** Power Grid Modernization & Nuclear
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for LTBR
 
 ### Prompt (Copy to Grok)
 
 ```
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+SCANNER OUTPUT:
+CAUTION: LTBR | Theme: Power Grid Modernization & Nuclear | Price: $18.07
+Reason: Heavy insider selling suggests lack of confidence
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $LTBR
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
@@ -247,30 +267,35 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## ☀️ Midday: Lesson: Trailing stops protect gains better than...
+## ☀️ Midday: Hot Theme: Defense Supply Chain Reshoring
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** theme_hot
+**Theme:** Defense Supply Chain Reshoring
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Reshoring
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+SCANNER OUTPUT:
+PRIME: Defense Supply Chain Reshoring
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Supply Chain Reshoring (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
@@ -319,87 +344,102 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 THURSDAY
 
-## 🌅 Morning: Weekly Scanner Stats
+## 🌅 Morning: BUY Signal: STRL
 
-**Category:** scanner_stats
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
-
-### Prompt (Copy to Grok)
-
-```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
-
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
-
-```
-
----
-
-## ☀️ Midday: Lesson: Weekly timeframes filter out noise...
-
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** buy_signal
+**Ticker:** $STRL
+**Theme:** AI Cooling & Data Center Infrastructure
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for STRL
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Weekly timeframes filter out noise
+SCANNER OUTPUT:
+PASS: STRL | Theme: AI Cooling & Data Center Infrastructure | Price: $362.53
+Catalyst: Q4 2024 earnings Feb 24 (est beat likely), strong analyst upgrades trending, data center infrastructure tailwinds
 
 ---
 
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
----
-
-## 🌆 Evening: Market Pulse
-
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
-
-### Prompt (Copy to Grok)
-
-```
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
-
-2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
+Using the scanner output above:
+1. Search for the LATEST news on $STRL (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+
+```
+
+---
+
+## ☀️ Midday: Hot Theme: Defense Supply Chain Reshoring
+
+**Category:** theme_hot
+**Theme:** Defense Supply Chain Reshoring
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Reshoring
+
+### Prompt (Copy to Grok)
+
+```
+SCANNER OUTPUT:
+PRIME: Defense Supply Chain Reshoring
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Supply Chain Reshoring (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+
+```
+
+---
+
+## 🌆 Evening: Watching: AMSC
+
+**Category:** watchlist
+**Ticker:** $AMSC
+**Theme:** Power Grid Modernization & Nuclear
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for AMSC
+
+### Prompt (Copy to Grok)
+
+```
+SCANNER OUTPUT:
+CAUTION: AMSC | Theme: Power Grid Modernization & Nuclear | Price: $31.81
+Reason: Earnings in 14 days creates binary risk
+
+---
+
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $AMSC
+2. Draft a visually engaging X post (under 280 characters) that:
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
+
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
@@ -416,7 +456,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 17 | Technical Pass: 17 | Theme Fit: 14 | Final PASS: 3
 
 ---
 
@@ -424,7 +464,7 @@ You are drafting an X post for @SterlingSignals.
 
 Using the stats above:
 1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
+   - Leads with the filtering ratio (e.g., "885 stocks → 3 signals")
    - Emphasizes the rigorous 3-gate screening process
    - Creates CURIOSITY about what made the cut
    - Builds FOMO for non-subscribers
@@ -436,30 +476,34 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Midday: Lesson: Fresh trends outperform extended trends...
+## ☀️ Midday: Why I Passed: AMSC
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** why_passed
+**Ticker:** $AMSC
+**Theme:** Power Grid Modernization & Nuclear
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+SCANNER OUTPUT:
+EXCLUDED: AMSC | Theme: Power Grid Modernization & Nuclear
+Reason: Earnings in 14 days creates binary risk
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $AMSC might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
@@ -517,7 +561,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: None | CAUTION: None | Top Theme: Multiple themes
+PASS: IESC, STRL, AAON | CAUTION: LTBR, AMSC, RMBS | Top Theme: Power Grid Modernization & Nuclear
 
 ---
 
@@ -538,59 +582,68 @@ This is the moment. Make it count.
 
 ---
 
-## ☀️ Midday: Lesson: Trailing stops protect gains better than...
+## ☀️ Midday: Deep Dive: IESC
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** buy_signal
+**Ticker:** $IESC
+**Theme:** Industrials Manufacturing Renaissance
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for IESC
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+SCANNER OUTPUT:
+PASS: IESC | Theme: Industrials Manufacturing Renaissance | Price: $474.43
+Catalyst: Earnings Feb 4, 2026 (strong 15.7% revenue growth momentum), data center infrastructure expansion driving communications segment growth
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the scanner output above:
+1. Search for the LATEST news on $IESC (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+
+```
+
+---
+
+## 🌆 Evening: Why I Passed: LTBR
+
+**Category:** why_passed
+**Ticker:** $LTBR
+**Theme:** Power Grid Modernization & Nuclear
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+
+### Prompt (Copy to Grok)
+
+```
+SCANNER OUTPUT:
+EXCLUDED: LTBR | Theme: Power Grid Modernization & Nuclear
+Reason: Heavy insider selling suggests lack of confidence
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $LTBR might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
----
-
-## 🌆 Evening: Lesson: Fresh trends outperform extended trends...
-
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
-
-### Prompt (Copy to Grok)
-
-```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
@@ -613,7 +666,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: What's your biggest trading lesson from 2024?
+Topic/Question: Best trade you passed on this year?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -627,7 +680,7 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## ☀️ Midday: Lesson: The best trade is often the one you don'...
+## ☀️ Midday: Lesson: Fresh trends outperform extended trends...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -636,7 +689,7 @@ Light touch, not a hard sell. Build relationships.
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Fresh trends outperform extended trends
 
 ---
 

@@ -4,7 +4,7 @@
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: None | CAUTION: None | Top Theme: Multiple themes
+PASS: IESC, STRL, AAON | CAUTION: LTBR, AMSC, RMBS | Top Theme: Power Grid Modernization & Nuclear
 
 ---
 
@@ -27,54 +27,59 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Lesson: Trailing stops protect gains better than...
+## Slot 2: Deep Dive: IESC
 
 ```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+SCANNER OUTPUT:
+PASS: IESC | Theme: Industrials Manufacturing Renaissance | Price: $474.43
+Catalyst: Earnings Feb 4, 2026 (strong 15.7% revenue growth momentum), data center infrastructure expansion driving communications segment growth
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the scanner output above:
+1. Search for the LATEST news on $IESC (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+
+```
+
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for IESC
+
+---
+
+## Slot 3: Why I Passed: LTBR
+
+```
+SCANNER OUTPUT:
+EXCLUDED: LTBR | Theme: Power Grid Modernization & Nuclear
+Reason: Heavy insider selling suggests lack of confidence
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $LTBR might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
-**Visual:** Rule graphic or annotated chart example
-
----
-
-## Slot 3: Lesson: Fresh trends outperform extended trends...
-
-```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
-**Visual:** Rule graphic or annotated chart example
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
 
 ---

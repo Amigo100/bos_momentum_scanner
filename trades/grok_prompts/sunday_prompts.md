@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: What's your biggest trading lesson from 2024?
+Topic/Question: Best trade you passed on this year?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: The best trade is often the one you don'...
+## Slot 2: Lesson: Fresh trends outperform extended trends...
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Fresh trends outperform extended trends
 
 ---
 

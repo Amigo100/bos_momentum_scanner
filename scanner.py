@@ -1432,13 +1432,9 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"  ✓ No sell signals")
     
     # ─────────────────────────────────────────────────────────────────────────
-    # Add TRADE signals to open positions for tracking
+    # NOTE: Portfolio updates now happen AFTER DD step in main()
+    # This ensures only DD-PASS signals get added to portfolio
     # ─────────────────────────────────────────────────────────────────────────
-    trade_signals = [s for s in confirmed if s.final_decision == "TRADE"]
-    if trade_signals:
-        print(f"\n  Adding {len(trade_signals)} TRADE signal(s) to open positions...")
-        for stock in trade_signals:
-            add_to_open_positions(stock)
     
     # Return: confirmed (TRADE/CONSIDER), all_assessed (theme_confirmed), sell_signals, stats, momentum_rejected
     return confirmed, theme_confirmed, sell_signals, stats, momentum_rejected, themes_data
@@ -2887,11 +2883,13 @@ def main():
     parser.add_argument("--web-search", action="store_true", help="Enable web search for Thematic Analyzer AND Gatekeeper. Recommended for production scans.")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed diagnostic output (10 items per category instead of 3)")
     parser.add_argument("--archive", action="store_true", help="Save dated archive files in addition to latest_* files")
-    # Due Diligence options
-    parser.add_argument("--dd", action="store_true", help="Run automated due diligence on PASS stocks (Quick mode)")
+    # Due Diligence options (DD runs by default now)
+    parser.add_argument("--no-dd", action="store_true", help="Skip automated due diligence (NOT recommended - portfolio won't be updated)")
     parser.add_argument("--full-dd", action="store_true", help="Run FULL due diligence using Opus (slower, deeper analysis)")
     parser.add_argument("--dd-top", type=int, metavar="N", help="Only run DD on top N stocks by conviction")
     parser.add_argument("--save-dd", action="store_true", help="Save DD reports to reports/ directory")
+    # Keep --dd for backwards compatibility (now a no-op since DD is default)
+    parser.add_argument("--dd", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     
     # Header
@@ -2960,14 +2958,20 @@ def main():
         verbose=args.verbose
     )
 
-    # Step 7.5: Automated Due Diligence (if enabled)
+    # Step 7.5: Automated Due Diligence (runs by default now)
+    # DD is required for portfolio updates - only DD-PASS signals get added
     dd_results = []
-    if (args.dd or args.full_dd) and confirmed and not args.no_llm:
+    dd_pass_stocks = []
+    dd_fail_stocks = []
+
+    if not args.no_dd and confirmed and not args.no_llm:
         pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
         if pass_stocks:
             print("\n" + "─" * 70)
             print("  STEP 7.5: AUTOMATED DUE DILIGENCE")
             print("─" * 70)
+            print("  📋 DD is REQUIRED before adding to portfolio")
+            print("     Only STRONG BUY / SPEC BUY verdicts will be added")
 
             try:
                 from dd_automator import run_automated_dd
@@ -2996,10 +3000,38 @@ def main():
                         stock.dd_key_catalyst = result.dd_key_catalyst
                         stock.dd_fatal_flaw = result.dd_fatal_flaw
 
+                        # Categorize by DD result
+                        if result.dd_verdict in ["STRONG BUY", "SPEC BUY", "SPECULATIVE BUY"]:
+                            dd_pass_stocks.append(stock)
+                        elif result.dd_verdict == "NO GO":
+                            dd_fail_stocks.append(stock)
+
+                # Add only DD-PASS stocks to portfolio
+                if dd_pass_stocks:
+                    print(f"\n  ✅ Adding {len(dd_pass_stocks)} DD-PASS signal(s) to portfolio...")
+                    for stock in dd_pass_stocks:
+                        add_to_open_positions(stock)
+                        print(f"     • {stock.symbol} - {stock.dd_verdict} ({stock.dd_conviction}/10)")
+
+                if dd_fail_stocks:
+                    print(f"\n  ❌ {len(dd_fail_stocks)} signal(s) FAILED DD (not added to portfolio):")
+                    for stock in dd_fail_stocks:
+                        print(f"     • {stock.symbol} - NO GO: {stock.dd_fatal_flaw or 'See analysis'}")
+
             except ImportError:
                 print("  ⚠️  dd_automator.py not found - skipping automated DD")
+                print("     Portfolio will NOT be updated without DD")
             except Exception as e:
                 print(f"  ⚠️  DD error: {e}")
+                print("     Portfolio will NOT be updated without DD")
+
+    elif args.no_dd and confirmed:
+        # DD skipped - warn user that portfolio won't be updated
+        pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        if pass_stocks:
+            print("\n  ⚠️  DD SKIPPED (--no-dd flag)")
+            print(f"     {len(pass_stocks)} TRADE signal(s) will NOT be added to portfolio")
+            print("     Run without --no-dd to perform DD and update portfolio")
 
     # Print report
     print_final_report(confirmed, sell_signals, stats)

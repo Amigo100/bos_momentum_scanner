@@ -28,6 +28,11 @@ on:
         required: false
         default: 'false'
         type: boolean
+      skip_newsletter:
+        description: 'Skip newsletter compilation'
+        required: false
+        default: 'false'
+        type: boolean
 
   # Scheduled run: Friday 4:30 PM EST (21:30 UTC)
   schedule:
@@ -43,7 +48,7 @@ permissions:
 jobs:
   weekly-scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Checkout repository
@@ -68,7 +73,7 @@ jobs:
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 1: RUN SCANNER
+      # STEP 1: RUN SCANNER (Technical → Thematic → Gatekeeper → DD)
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Run Scanner
@@ -83,7 +88,7 @@ jobs:
             SCANNER_ARGS="$SCANNER_ARGS --no-llm"
             echo "- **LLM:** Disabled" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- **LLM:** Enabled" >> $GITHUB_STEP_SUMMARY
+            echo "- **LLM:** Enabled (includes DD)" >> $GITHUB_STEP_SUMMARY
           fi
 
           # Web search
@@ -116,26 +121,68 @@ jobs:
       - name: Capture Charts
         if: ${{ github.event.inputs.skip_charts != 'true' }}
         run: |
-          if [ -f "trades/latest_signals.json" ]; then
-            echo "Capturing charts from latest_signals.json..."
-            python chart_capture.py --tickers-from trades/latest_signals.json --headless --skip-wait || {
-              echo "Chart capture failed (expected in CI without TradingView login)"
-              echo "Charts can be captured locally before the scan"
-            }
+          if [ -f "chart_capture.py" ]; then
+            if [ -f "trades/signals.json" ]; then
+              echo "Capturing charts from signals.json..."
+              python chart_capture.py --tickers-from trades/signals.json --headless --skip-wait || {
+                echo "Chart capture failed (expected in CI without TradingView login)"
+              }
+            elif [ -f "trades/latest_signals.json" ]; then
+              echo "Capturing charts from latest_signals.json..."
+              python chart_capture.py --tickers-from trades/latest_signals.json --headless --skip-wait || {
+                echo "Chart capture failed (expected in CI without TradingView login)"
+              }
+            else
+              echo "No signals.json found, skipping chart capture"
+            fi
           else
-            echo "No latest_signals.json found, skipping chart capture"
+            echo "chart_capture.py not found, skipping"
           fi
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 3: GENERATE TWEETS
+      # STEP 3: GENERATE MARKET ANALYSIS (Claude + Web Search)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Market Analysis
+        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
+        run: |
+          if [ -f "market_analyzer.py" ]; then
+            echo "Generating market analysis via Claude + web search..."
+            python market_analyzer.py --save || {
+              echo "Market analysis failed - continuing anyway"
+            }
+          else
+            echo "market_analyzer.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 4: COMPILE NEWSLETTER (Full LLM-powered compilation)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Compile Newsletter
+        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
+        run: |
+          if [ -f "newsletter_compiler.py" ]; then
+            echo "Compiling newsletter via LLM..."
+            python newsletter_compiler.py --full || {
+              echo "Newsletter compilation failed - continuing anyway"
+            }
+          else
+            echo "newsletter_compiler.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 5: GENERATE TWEETS (35 for the week - 5 per day)
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Tweets
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
           if [ -f "tweet_generator.py" ]; then
-            echo "Generating tweets via Claude API..."
+            echo "Generating 35 tweets via Claude API..."
             python tweet_generator.py
           else
             echo "tweet_generator.py not found, falling back to grok_prompts_generator.py"
@@ -143,7 +190,7 @@ jobs:
           fi
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4: SAVE ARTIFACTS
+      # STEP 6: SAVE ARTIFACTS
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Upload scan results
@@ -152,6 +199,8 @@ jobs:
           name: scan-results-${{ github.run_id }}
           path: |
             trades/latest_newsletter_briefing.md
+            trades/latest_newsletter.html
+            trades/market_analysis.md
             trades/latest_report.txt
             trades/signals.json
             trades/portfolio.csv
@@ -175,7 +224,7 @@ jobs:
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 5: COMMIT RESULTS TO REPO
+      # STEP 7: COMMIT RESULTS TO REPO
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Commit and push results
@@ -195,7 +244,7 @@ jobs:
           fi
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 6: SUMMARY
+      # STEP 8: SUMMARY
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Summary
@@ -215,10 +264,17 @@ jobs:
           echo "## Files Generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          [ -f "trades/latest_newsletter_briefing.md" ] && echo "- latest_newsletter_briefing.md" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/content_queue.json" ] && echo "- content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/signals.json" ] && echo "- signals.json" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/charts" ] && echo "- charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/latest_newsletter_briefing.md" ] && echo "- ✅ latest_newsletter_briefing.md" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/market_analysis.md" ] && echo "- ✅ market_analysis.md" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/latest_newsletter.html" ] && echo "- ✅ latest_newsletter.html (ready for Substack)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets for the week)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/signals.json" ] && echo "- ✅ signals.json" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/charts" ] && echo "- ✅ charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
 
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Automation Schedule" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Weekly Scan:** Friday 21:30 UTC (4:30 PM EST)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Daily Tweets:** 5 posts/day at 07:00, 09:00, 12:30, 15:30, 19:00 UK" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Completed:** $(date -u)" >> $GITHUB_STEP_SUMMARY

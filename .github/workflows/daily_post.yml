@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       slot:
-        description: 'Which slot to post (1=morning, 2=midday, 3=evening, all=all pending)'
+        description: 'Which slot to post (1-5, or all)'
         required: false
         default: 'all'
       dry_run:
@@ -14,14 +14,18 @@ on:
         default: 'false'
         type: boolean
 
-  # Scheduled runs (UK time = UTC in winter, UTC+1 in summer)
+  # Scheduled runs - 5 posts per day (UK time = UTC in winter)
   schedule:
-    # Morning post: 08:00 UK (08:00 UTC winter / 07:00 UTC summer)
-    - cron: '0 8 * * *'
-    # Midday post: 12:30 UK
+    # Slot 1: Early morning 07:00 UK
+    - cron: '0 7 * * *'
+    # Slot 2: Morning 09:00 UK
+    - cron: '0 9 * * *'
+    # Slot 3: Midday 12:30 UK
     - cron: '30 12 * * *'
-    # Evening post: 18:00 UK
-    - cron: '0 18 * * *'
+    # Slot 4: Afternoon 15:30 UK
+    - cron: '30 15 * * *'
+    # Slot 5: Evening 19:00 UK
+    - cron: '0 19 * * *'
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -56,16 +60,20 @@ jobs:
             echo "slot=${{ github.event.inputs.slot }}" >> $GITHUB_OUTPUT
             echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
           else
-            # Determine slot from cron schedule
+            # Determine slot from cron schedule (UK time = UTC in winter)
             HOUR=$(date -u +%H)
             MINUTE=$(date -u +%M)
 
-            if [ "$HOUR" = "08" ]; then
+            if [ "$HOUR" = "07" ]; then
               echo "slot=1" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "12" ]; then
+            elif [ "$HOUR" = "09" ]; then
               echo "slot=2" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "18" ]; then
+            elif [ "$HOUR" = "12" ]; then
               echo "slot=3" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "15" ]; then
+              echo "slot=4" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "19" ]; then
+              echo "slot=5" >> $GITHUB_OUTPUT
             else
               echo "slot=all" >> $GITHUB_OUTPUT
             fi
@@ -84,8 +92,8 @@ jobs:
         run: |
           if [ -f "trades/content_queue.json" ]; then
             echo "queue_exists=true" >> $GITHUB_OUTPUT
-            echo "Content queue found"
-            cat trades/content_queue.json | head -50
+            TWEET_COUNT=$(cat trades/content_queue.json | grep -c '"id"' || echo 0)
+            echo "Content queue found with $TWEET_COUNT tweets"
           else
             echo "queue_exists=false" >> $GITHUB_OUTPUT
             echo "No content queue found - will generate mock tweets"
@@ -113,6 +121,21 @@ jobs:
             python twitter_poster.py --slot $SLOT
           fi
 
+      - name: Commit updated content queue
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add trades/content_queue.json 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update content queue after posting"
+            git push
+          fi
+        continue-on-error: true
+
       - name: Upload updated content queue
         uses: actions/upload-artifact@v4
         with:
@@ -130,4 +153,14 @@ jobs:
           echo "- **Dry Run:** ${{ steps.slot.outputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Schedule (UK Time)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 1: 07:00 (early morning)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 2: 09:00 (morning)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 3: 12:30 (midday)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 4: 15:30 (afternoon)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 5: 19:00 (evening)" >> $GITHUB_STEP_SUMMARY
 
+# Required for git push
+permissions:
+  contents: write

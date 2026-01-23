@@ -145,6 +145,34 @@ STYLE GUIDELINES:
 - Occasional humor is OK
 - No financial advice disclaimers in tweets (save for bio)
 
+CRITICAL MARKETING LANGUAGE RULES:
+1. NEVER reveal specific strategy details:
+   - NO: "20% trailing stop", "HMA pivots", "Banker indicator formula", "Beta >= 1.5"
+   - YES: "proprietary risk management", "technical indicators", "smart money signals"
+
+2. USE these approved phrases instead:
+   - "proprietary multi-step screening process"
+   - "smart money accumulation signals"
+   - "institutional flow tracking"
+   - "theme momentum confirmation"
+   - "technical entry/exit signals"
+   - "rigorous due diligence"
+   - "disciplined risk management"
+   - "systematic approach"
+
+3. FOCUS messaging on these themes:
+   - Following institutional money / smart money flows
+   - Identifying hot themes and bottleneck plays
+   - Contrarian opportunities when themes are cold
+   - Patience and discipline over FOMO
+   - Outperforming the market through systematic approach
+   - Multi-step filtering (1800 stocks → 3-5 winners)
+
+4. CREATE intrigue without revealing the secret sauce:
+   - "Our proprietary signals flagged this before the move"
+   - "Smart money was accumulating here for weeks"
+   - "Our multi-step system identified this bottleneck theme"
+
 CRITICAL HONESTY + POSITIVITY RULES:
 1. NEVER hide losses or only show winners - always include full P&L picture
 2. NEVER exclude stopped-out trades from portfolio updates
@@ -154,8 +182,8 @@ CRITICAL HONESTY + POSITIVITY RULES:
    - "Drawdowns are part of momentum trading - here's how we manage them"
 4. Frame losses as LEARNING/DISCIPLINE, not failures:
    - "Stop hit = system working exactly as designed"
-   - "Cut the loser at -18% before it became -40%"
-   - "Risk management > ego. We'll catch the next one."
+   - "Risk management protected us from a bigger loss"
+   - "Discipline > ego. We'll catch the next one."
 5. When mentioning portfolio, ALWAYS include:
    - Total unrealized P&L (not just winners)
    - Any recent stops hit
@@ -203,20 +231,23 @@ Generate {count} tweets about new BUY signals that passed ALL our gates.
 PASS Signals this week (passed technical + thematic + gatekeeper + DD):
 {json.dumps(content.pass_signals, indent=2)}
 
-For each signal, highlight:
+For each signal, highlight (use GENERIC language):
 - The ticker with $TICKER format
 - DD verdict (STRONG BUY / SPEC BUY)
 - Key catalyst driving the trade
-- Our multi-step screening process (1800 stocks → ~3 PASS)
+- Our multi-step proprietary screening process (1800 stocks → ~3 winners)
 - Link to full analysis: sterlingsignals.substack.com
 
-Example format:
-"🎯 $IESC passes our 5-gate system
+CRITICAL: Do NOT reveal specific indicator names or formulas.
+Use: "proprietary signals", "smart money accumulation", "theme momentum confirmed"
 
-✅ Technical breakout
-✅ Hot theme (Industrials)
-✅ Gatekeeper PASS
-✅ DD: STRONG BUY
+Example format:
+"🎯 $IESC passes our proprietary 5-gate system
+
+✅ Technical entry signal confirmed
+✅ Smart money accumulation detected
+✅ Hot theme momentum
+✅ Deep due diligence: STRONG BUY
 
 Full analysis in this week's newsletter 👇
 sterlingsignals.substack.com"
@@ -232,19 +263,30 @@ PRIME Themes (highest conviction):
 INVESTABLE Themes:
 {json.dumps(content.investable_themes, indent=2)}
 
-For each tweet:
+For each tweet (use language about following money/institutions):
 - Explain WHY the theme is hot NOW (specific catalyst)
-- Mention key stocks benefiting
+- Mention institutional/smart money flows
+- Frame as bottleneck plays or contrarian opportunities
 - Connect to our scanner identifying these opportunities
 - Link to newsletter for stock picks: sterlingsignals.substack.com
+
+CRITICAL: Focus on "following the money", "institutional flows", "bottleneck themes"
 
 Example format:
 "🔥 AI Cooling is THIS week's hottest theme
 
 Why? Hyperscalers spending $100B+ on data centers
-Smart money is piling into liquid cooling plays
+Institutional money piling into bottleneck plays
 
-Our scanner flagged 3 STRONG BUYs in this space 👇
+Our proprietary system flagged this theme early 👇
+sterlingsignals.substack.com"
+
+"💰 Following institutional flows into Power Grid
+
+Smart money knows: AI needs power
+Grid infrastructure = bottleneck play of the decade
+
+Where we're positioned 👇
 sterlingsignals.substack.com"
 """
 
@@ -258,23 +300,35 @@ SELECTIVE Themes (mixed signals):
 AVOID Themes (stay away):
 {json.dumps(content.avoid_themes, indent=2)}
 
-Frame these as:
-- Risk warnings for crowded trades
-- Themes losing momentum (explain why)
+Frame these as (contrarian/patience angle):
+- Risk warnings for crowded trades (institutions exiting)
+- Themes losing momentum (smart money rotating out)
 - Our system helping avoid these traps
-- Educational about why theme momentum matters
+- Patience > FOMO - wait for better setups
+
+CRITICAL: Focus on "crowded trades", "smart money exiting", "patience over FOMO"
 
 Example format:
 "❄️ Quantum Computing is cooling off
 
 Why we're avoiding:
-- Extended valuations
+- Crowded trade - everyone's in
+- Smart money rotating out
 - No near-term catalysts
-- Insider selling accelerating
 
-Our scanner keeps us OUT of theme traps like this
+Patience > FOMO. Our system keeps us out of traps.
 
 What themes are you avoiding? 👇"
+
+"🚫 When everyone's bullish, be cautious
+
+Crowded themes = smart money exits first
+Retail holds the bag
+
+Our contrarian signals help us avoid these traps
+
+Current themes to avoid 👇
+sterlingsignals.substack.com"
 """
 
     elif category == "closed_trade":
@@ -286,17 +340,19 @@ Recently Closed Trades:
 
 CRITICAL: Generate tweets for BOTH wins AND losses. Do not skip losses.
 
-For each:
+For each (use GENERIC language - no specific percentages for stops):
 - Be TRANSPARENT about P&L (wins AND losses)
-- Explain WHY we exited (stop hit, took profits, thesis changed)
-- Show our risk management in action
+- Explain WHY we exited (risk management triggered, took profits, thesis changed)
+- Show disciplined risk management in action
 - Link to track record: sterlingsignals.substack.com
 
 FRAMING LOSSES POSITIVELY (without hiding them):
 - Stop hit = "System worked. Cut the loss before it got worse."
-- Multiple losses = "2 losses this month, both under -20%. That's the trailing stop doing its job."
+- Multiple losses = "2 losses this month, both contained. That's disciplined risk management."
 - Big loss = "Painful but manageable. This is why position sizing matters."
 - Loss after gain = "Gave back some profits but protected the core. On to the next."
+
+CRITICAL: Do NOT mention specific stop percentages or indicator names.
 
 Example formats:
 
@@ -307,7 +363,7 @@ Entry: $8.50 → Exit: $12.08
 What worked:
 • Drone theme stayed hot
 • Earnings beat expectations
-• 20% trailing stop preserved gains
+• Disciplined exit preserved gains
 
 Full trade breakdown 👇
 sterlingsignals.substack.com"
@@ -316,7 +372,7 @@ LOSS: "🔴 $SMCI stopped out at -18%
 
 No system wins 100%. Here's what happened:
 • Thesis changed (accounting concerns)
-• 20% trailing stop triggered
+• Risk management triggered
 • Loss capped. Capital preserved.
 
 This is exactly why we have rules.
@@ -351,15 +407,18 @@ Portfolio Summary:
 - Recent stops hit: {len([t for t in content.closed_trades if t.get('exit_reason') == 'STOPPED'])} (if any)
 - Unrealized P&L: (calculate from positions)
 
-CRITICAL RULES FOR POSITION UPDATES:
+CRITICAL RULES FOR POSITION UPDATES (use GENERIC language):
 1. ALWAYS show the FULL portfolio picture, not just winners
 2. If any positions are red, INCLUDE them - don't hide losses
 3. If overall portfolio is down, frame constructively:
-   - "Down but managing risk - stops in place"
+   - "Down but managing risk - exits in place"
    - "Drawdown expected in momentum trading - system handles it"
 4. If recently stopped out, MENTION it as discipline:
-   - "2 stops hit last week, but that's the system working"
+   - "2 exits triggered last week, but that's disciplined risk management"
 5. Include total unrealized P&L, not cherry-picked winners
+
+CRITICAL: Do NOT mention specific stop percentages or indicator names.
+Use: "risk management", "disciplined exits", "following smart money", "theme momentum"
 
 Example formats:
 
@@ -367,11 +426,11 @@ MIXED PORTFOLIO:
 "📊 Portfolio check: 8 positions
 
 🟢 Winners: VNET +12%, WCC +8%, INOD +5%
-🔴 Laggards: APLD -3% (watching stop)
+🔴 Laggards: APLD -3% (monitoring closely)
 
 Net unrealized: +4.2%
 
-1 stop hit last week ($SMCI -18%)
+1 exit triggered last week ($SMCI -18%)
 System working. Discipline > ego.
 
 Full breakdown 👇
@@ -381,11 +440,11 @@ UNDERWATER PORTFOLIO:
 "📉 Tough week: Portfolio -3.2% unrealized
 
 But here's the thing:
-• All stops intact (no blowups)
+• All risk management intact
 • SPY down 4.5% (we're outperforming)
 • 2 positions showing strength
 
-Drawdowns happen. Risk management keeps us in the game.
+Drawdowns happen. Disciplined exits keep us in the game.
 
 How we're positioned 👇
 sterlingsignals.substack.com"
@@ -401,18 +460,21 @@ Sell Signals:
 Caution Signals:
 {json.dumps(content.caution_signals, indent=2)}
 
-Frame as:
+Frame as (use GENERIC language):
 - Risk management in action
-- Weekly BoS breakdown = warning sign
+- Technical signals showing weakness
 - Protecting gains / cutting losses
 - Our system identifying risks early
+
+CRITICAL: Do NOT mention specific indicators like "BoS" or specific stop percentages.
+Use phrases like "technical warning signals", "momentum fading", "risk management triggered"
 
 Example format:
 "⚠️ $VNET flashing CAUTION
 
-Weekly structure breaking down:
-• BoS turned bearish
-• Tightening stop to 15%
+Our proprietary signals showing weakness:
+• Technical momentum fading
+• Tightening risk management
 
 Our system catches these early
 
@@ -423,40 +485,44 @@ What's your exit strategy? 👇"
         context = f"""
 Generate {count} tweets promoting our proprietary scanning system.
 
-KEY SELLING POINTS:
-1. Multi-step screening (1800 stocks → 3-5 PASS)
-2. Smart money tracking (Banker indicator = institutional accumulation)
-3. Theme momentum (hot vs cold themes)
-4. Technical confirmation (Weekly BoS breakouts)
-5. Full due diligence on every signal
-6. 20% trailing stop risk management
+KEY SELLING POINTS (use generic language):
+1. Multi-step proprietary screening (1800 stocks → 3-5 winners)
+2. Smart money / institutional flow tracking
+3. Theme momentum identification (hot vs cold themes)
+4. Technical entry and exit signals
+5. Rigorous due diligence on every signal
+6. Disciplined risk management
 
-DO NOT reveal specific formulas - create mystery/intrigue.
+CRITICAL: DO NOT reveal specific formulas, indicator names, or parameters.
+Create mystery and intrigue. Use phrases like:
+- "proprietary indicators"
+- "smart money accumulation signals"
+- "institutional flow tracking"
+- "systematic approach"
+
 ALWAYS link to newsletter: sterlingsignals.substack.com
 
 Example formats:
 "🔬 How we filter 1,800 stocks to 3 STRONG BUYs:
 
-Step 1: Technical breakout ✅
-Step 2: Beta ≥1.5 (high volatility) ✅
-Step 3: Theme momentum ✅
-Step 4: Gatekeeper quality check ✅
-Step 5: Full due diligence ✅
+Step 1: Technical breakout confirmed ✅
+Step 2: Smart money accumulation ✅
+Step 3: Theme momentum aligned ✅
+Step 4: Quality gate passed ✅
+Step 5: Deep due diligence ✅
 
-Most stocks FAIL at step 2.
+99% of stocks fail our screening.
 
 See what passed this week 👇
 sterlingsignals.substack.com"
 
-"📊 The 'Banker' indicator
+"📊 Following the smart money
 
-Tracks where smart money is accumulating.
+Our proprietary indicators track institutional accumulation.
 
-When Banker > 70:
-→ Institutions are buying
-→ Stock likely to move
+When big money flows in, we pay attention.
 
-This week: 3 stocks hit Banker > 75
+This week: 3 stocks showing heavy accumulation
 
 Free analysis 👇
 sterlingsignals.substack.com"
@@ -492,12 +558,17 @@ sterlingsignals.substack.com"
         context = f"""
 Generate {count} educational tweets about momentum trading.
 
-Topics to cover:
-- How we identify breakouts (Weekly BoS signals)
-- Theme investing approach (ride the wave)
-- Risk management (20% trailing stops)
-- Why weekly timeframes work
+Topics to cover (use GENERIC language, no specific formulas):
+- Identifying breakouts using technical signals
+- Theme investing approach (follow institutional flows)
+- Disciplined risk management (protect capital)
+- Why patience beats FOMO
 - Position sizing principles
+- Following smart money into hot themes
+- Avoiding crowded/cold themes
+
+CRITICAL: Do NOT reveal specific indicators, percentages, or formulas.
+Use phrases like "proprietary signals", "disciplined exits", "systematic approach"
 
 ALWAYS tie back to our system and newsletter.
 
@@ -507,24 +578,35 @@ Example formats:
 Daily = too much noise
 Monthly = too slow
 
-Weekly BoS (Break of Structure):
-→ Catches major trend changes
-→ Filters out fake breakouts
+Weekly timeframes:
+→ Catch major trend changes
+→ Filter out fake breakouts
 → Perfect for swing trades
 
-How we use it 👇
+Our proprietary system uses this 👇
 sterlingsignals.substack.com"
 
-"💡 The 20% trailing stop rule
+"💡 Disciplined risk management
 
-Our ONLY exit strategy:
-1. Track highest close since entry
-2. Stop = 20% below that high
-3. NEVER move stop down
+The difference between pros and amateurs:
 
-Sounds simple. Saves accounts.
+✅ Predetermined exit strategy
+✅ Never move stops down
+✅ Cut losers fast, let winners run
 
-See it in action 👇
+Simple rules. Saves accounts.
+
+How we manage risk 👇
+sterlingsignals.substack.com"
+
+"🎯 Theme investing = following the money
+
+Smart money rotates into hot themes
+Retail chases after the move
+
+Our system identifies theme momentum BEFORE the crowd
+
+Current hot theme analysis 👇
 sterlingsignals.substack.com"
 """
 
@@ -536,7 +618,12 @@ Examples:
 - "What sectors are you watching this week?"
 - "How do you handle positions at all-time highs?"
 - "Biggest lesson from your last losing trade?"
-- "Do you use trailing stops? What %?"
+- "Do you have a systematic exit strategy?"
+- "What themes are you following right now?"
+- "Patience or FOMO - which wins more often?"
+
+CRITICAL: Do NOT mention specific percentages, indicator names, or formula details.
+Keep it generic and engaging.
 
 STILL mention Sterling Signals or link where natural.
 
@@ -552,7 +639,18 @@ D) Let it ride
 
 Reply with your strategy 👇
 
-(We use 20% trailing - see why at sterlingsignals.substack.com)"
+How we handle this at sterlingsignals.substack.com"
+
+"💭 What's your edge in this market?
+
+Theme momentum?
+Technical signals?
+Fundamental analysis?
+All of the above?
+
+Our edge: systematic multi-step screening
+
+What's yours? 👇"
 """
 
     else:

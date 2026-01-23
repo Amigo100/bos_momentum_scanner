@@ -3139,12 +3139,17 @@ def main() -> int:
     # Save results and generate report (save if any stocks were assessed OR sell signals OR momentum filtered)
     report = None
     briefing_file = None
-    if all_assessed or sell_signals or momentum_rejected:
-        report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data, archive=args.archive)
-        briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
-    else:
-        # Still generate newsletter briefing for weeks with no signals
-        briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=args.archive)
+    try:
+        if all_assessed or sell_signals or momentum_rejected:
+            report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data, archive=args.archive)
+            briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
+        else:
+            # Still generate newsletter briefing for weeks with no signals
+            briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=args.archive)
+    except Exception as e:
+        print(f"  ⚠ Error saving results: {e}")
+        import traceback
+        traceback.print_exc()
     
     # Portfolio summary and Google Sheets export
     if PORTFOLIO_MANAGER_AVAILABLE:
@@ -3183,18 +3188,29 @@ def main() -> int:
     
     # Print newsletter generation prompts (market context + compilation)
     if not args.no_prompts:
-        print_newsletter_prompts(briefing_file)
-    
+        try:
+            print_newsletter_prompts(briefing_file)
+        except Exception as e:
+            print(f"  ⚠ Error printing newsletter prompts: {e}")
+
     # Generate Grok/X prompts for weekly social media content
     if not args.no_grok_prompts and briefing_file:
-        generate_grok_prompts(briefing_file, confirmed, sell_signals, themes_data, stats)
-    
+        try:
+            generate_grok_prompts(briefing_file, confirmed, sell_signals, themes_data, stats)
+        except Exception as e:
+            print(f"  ⚠ Error generating Grok prompts: {e}")
+            import traceback
+            traceback.print_exc()
+
     # Send email with the formatted report
     if not args.no_email:
-        print("\n" + "─" * 70)
-        print("  EMAIL NOTIFICATION")
-        print("─" * 70)
-        send_notification(confirmed, sell_signals, stats, report)
+        try:
+            print("\n" + "─" * 70)
+            print("  EMAIL NOTIFICATION")
+            print("─" * 70)
+            send_notification(confirmed, sell_signals, stats, report)
+        except Exception as e:
+            print(f"  ⚠ Error sending email notification: {e}")
     
     duration = time.time() - start_time
     print(f"\n  Completed in {duration:.1f} seconds")

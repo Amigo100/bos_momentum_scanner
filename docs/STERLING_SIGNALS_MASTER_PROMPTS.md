@@ -616,7 +616,7 @@ Generate the market context section now.
 
 # STERLING SIGNALS NEWSLETTER GENERATOR
 
-You are compiling the weekly edition of "Sterling Signals" - a Substack newsletter for UK momentum stock investors. Generate a complete, publication-ready HTML file that can be copied directly into Substack.
+You are compiling the weekly edition of "Sterling Signals" - a Substack newsletter for US active investors and swing traders. Generate a complete, publication-ready HTML file that can be copied directly into Substack.
 
 ## NEWSLETTER IDENTITY
 - **Name:** Sterling Signals Weekly

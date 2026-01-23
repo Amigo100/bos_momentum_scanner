@@ -225,6 +225,93 @@ def validate_all_tweets(tweets: list) -> Tuple[int, int]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# VALIDATION DECORATOR
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import functools
+from typing import Callable, Union
+
+
+def validate_output(
+    strict: bool = False,
+    content_type: str = "output"
+) -> Callable:
+    """
+    Decorator to validate function output for banned marketing terms.
+
+    Args:
+        strict: If True, raise ValueError on violations. If False, log warning.
+        content_type: Description of content type for logging.
+
+    Usage:
+        @validate_output()
+        def generate_tweet(ticker: str) -> str:
+            return f"Buy ${ticker} using HMA pivot signals!"  # Will warn
+
+        @validate_output(strict=True)
+        def generate_newsletter(data: dict) -> str:
+            ...  # Will raise if violations found
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+
+            # Handle different return types
+            if isinstance(result, str):
+                _check_content(result, func.__name__, strict, content_type)
+            elif isinstance(result, list):
+                for i, item in enumerate(result):
+                    if isinstance(item, str):
+                        _check_content(item, f"{func.__name__}[{i}]", strict, content_type)
+                    elif isinstance(item, dict) and 'text' in item:
+                        _check_content(item['text'], f"{func.__name__}[{i}]", strict, content_type)
+            elif isinstance(result, dict):
+                if 'text' in result:
+                    _check_content(result['text'], func.__name__, strict, content_type)
+                if 'content' in result:
+                    _check_content(result['content'], func.__name__, strict, content_type)
+
+            return result
+        return wrapper
+    return decorator
+
+
+def _check_content(text: str, source: str, strict: bool, content_type: str) -> None:
+    """Check content and handle violations."""
+    is_valid, violations = validate_content(text)
+    if not is_valid:
+        message = f"{content_type} from {source} contains banned terms: {violations}"
+        if strict:
+            raise ValueError(message)
+        else:
+            print(f"  ⚠ WARNING: {message}")
+
+
+def validated_content(text: str, content_type: str = "content") -> str:
+    """
+    Validate content and return it, logging any warnings.
+
+    Args:
+        text: Content to validate
+        content_type: Description for logging
+
+    Returns:
+        The original text (unchanged)
+
+    Example:
+        tweet = validated_content(
+            generate_tweet_text(),
+            content_type="Tweet"
+        )
+    """
+    is_valid, violations = validate_content(text)
+    if not is_valid:
+        log_violations(content_type, violations)
+    return text
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CONTENT TYPE DEFINITIONS (for tweet_generator.py)
 # ═══════════════════════════════════════════════════════════════════════════════
 

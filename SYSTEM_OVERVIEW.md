@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Sterling Signals is a fully automated weekly momentum trading scanner and content publishing system targeting UK ISA investors seeking US equity exposure. The system scans 1,800+ stocks weekly, generates trade signals through a proprietary 5-gate process, and publishes content across X/Twitter and Substack with minimal manual intervention.
+Sterling Signals is a fully automated weekly momentum trading scanner and content publishing system targeting US Active Investors seeking momentum trading opportunities. The system scans 1,800+ stocks weekly, generates trade signals through a proprietary 5-gate process, and publishes content across X/Twitter and Substack with minimal manual intervention.
 
 ### Key Metrics
 
@@ -34,9 +34,9 @@ Sterling Signals is a fully automated weekly momentum trading scanner and conten
 
 ### Target Audience
 
-- **Primary:** UK ISA investors seeking US equity exposure
-- **Secondary:** Momentum traders, swing traders, theme investors
-- **Tertiary:** Trading educators, fintech enthusiasts
+- **Primary:** US Active Investors, Swing Traders
+- **Secondary:** Roth IRA Builders, PDT-constrained traders
+- **Tertiary:** Momentum traders, theme investors, trading educators
 
 ### Brand Voice
 
@@ -50,56 +50,67 @@ Sterling Signals is a fully automated weekly momentum trading scanner and conten
 
 ## 2. Marketing Language Rules
 
-### NEVER Reveal (Proprietary Details)
+### NEVER Reveal (BANNED TERMS)
 
 These specific strategy elements must NEVER appear in public content:
 
-| ❌ DO NOT SAY | ✅ SAY INSTEAD |
-|---------------|----------------|
-| "20% trailing stop" | "Disciplined risk management" |
-| "HMA pivots" | "Proprietary technical signals" |
-| "Banker indicator" | "Smart money accumulation signals" |
-| "Beta >= 1.5" | "High-momentum screening criteria" |
-| "Weekly BoS (Break of Structure)" | "Technical trend confirmation" |
-| "Tier 1/2/3 classification" | "Signal strength indicators" |
+| ❌ BANNED TERM | ✅ APPROVED ALTERNATIVE |
+|----------------|------------------------|
+| "20% trailing stop" | "Capital Preservation Protocol" |
+| "HMA pivots" | "Structural Pivot Confirmation" |
+| "Banker indicator" / "Banker >= 55" | "Institutional Accumulation Divergence" |
+| "Beta >= 1.5" | "Volatility Expansion Criteria" |
+| "Weekly BoS (Break of Structure)" | "Structural Trend Confirmation" |
+| "Tier 1/2/3 classification" | "Conviction Rating" |
+| "Gatekeeper" | "The 5th Gate: Forensic Audit" |
+| "Theme scoring" | "Sector Flow Analysis" |
+
+**Also BANNED:** UK ISA, ISA account, GMT, BST, UK Time, RSI, MACD, KDJ, GBP/USD
 
 ### Approved Marketing Phrases
 
 Use these phrases consistently across all content:
 
 **System Description:**
-- "Proprietary multi-step screening process"
-- "5-gate quality system"
-- "Filters 1,800 stocks down to 3-5 winners"
-- "Systematic approach to momentum trading"
+- "Proprietary 5-gate screening system"
+- "Filters 1,800 stocks to 3-5 actionable signals"
+- "Institutional-grade momentum analysis"
+- "Systematic approach that removes emotional bias"
 
 **Signal Detection:**
-- "Smart money accumulation signals"
-- "Institutional flow tracking"
-- "Theme momentum confirmation"
-- "Technical entry/exit signals"
-- "Proprietary breakout detection"
+- "Institutional Accumulation Divergence detected"
+- "Structural Pivot Confirmation triggered"
+- "Sector Flow Analysis alignment"
+- "Forensic Audit cleared"
 
 **Risk Management:**
-- "Disciplined risk management"
-- "Predetermined exit strategy"
-- "Capital preservation focus"
-- "Systematic position sizing"
+- "Capital Preservation Protocol activated"
+- "Systematic exit discipline"
+- "Risk-defined position sizing"
+- "The system protects capital so we live to fight another day"
+- "No ego, just execution"
+
+**US Audience Hooks:**
+- "Beat SPY with systematic selection"
+- "Tax-free compounding in your Roth"
+- "No PDT restrictions with weekly timeframes"
+- "Power Hour relative strength analysis"
 
 **Theme Investing:**
 - "Following institutional money flows"
 - "Bottleneck play identification"
-- "Hot vs cold theme analysis"
+- "Hot vs cold Sector Flow Analysis"
 - "Contrarian opportunity detection"
 
 ### Content Themes to Emphasize
 
-1. **Following Smart Money** - Institutional flows, accumulation patterns
-2. **Bottleneck Plays** - Infrastructure, supply chain, capacity constraints
-3. **Theme Momentum** - Hot sectors, rotating capital, catalyst-driven
-4. **Contrarian Opportunities** - Cold themes, oversold setups, patience plays
-5. **Discipline Over FOMO** - Patience, systematic approach, no chasing
-6. **Outperformance** - Market-beating results through systematic screening
+1. **Beat SPY** - Alpha over indexing, stop indexing start selecting
+2. **Roth IRA** - Tax-free compounding, retirement account momentum
+3. **PDT-Friendly** - No $25k requirement, weekly timeframe, minimal screen time
+4. **Following Smart Money** - Institutional flows, accumulation patterns
+5. **Bottleneck Plays** - Infrastructure, supply chain, capacity constraints
+6. **Theme Momentum** - Hot sectors, rotating capital, catalyst-driven
+7. **Discipline Over FOMO** - Patience, systematic approach, no chasing
 
 ### Honesty Rules (Critical)
 
@@ -223,17 +234,17 @@ Even with marketing language, NEVER hide losses:
 
 ## 4. Content Calendar
 
-### Weekly Schedule (UK Time)
+### Weekly Schedule (Eastern Time)
 
 | Day | X/Twitter (Automated) | Substack (Manual) |
 |-----|----------------------|-------------------|
-| **Friday** | 5 posts: Scanner tease, theme update, week ahead | Pipeline runs @ 21:30 UTC |
+| **Friday** | 5 posts: Scanner tease, theme update, week ahead | Pipeline runs @ 16:30 ET (21:30 UTC) |
 | **Saturday** | 5 posts: Newsletter drop, signal spotlight, education | **Publish newsletter** (~10 min) |
 | **Sunday** | 5 posts: Engagement, lessons, week preview | - |
-| **Monday** | 5 posts: Week ahead, theme deep-dive, positions | - |
-| **Tuesday** | 5 posts: Buy signal, cold theme, watchlist | **Post "Portfolio Pulse" note** (~2 min) |
-| **Wednesday** | 5 posts: Market pulse, theme compare, positions | - |
-| **Thursday** | 5 posts: Signal spotlight, hot theme, watchlist | **Post "Trade Spotlight" note** (~2 min) |
+| **Monday** | 5 posts: Beat SPY, theme deep-dive, Power Hour | - |
+| **Tuesday** | 5 posts: Roth IRA hook, buy signal, watchlist | **Post "Portfolio Pulse" note** (~2 min) |
+| **Wednesday** | 5 posts: PDT-friendly, market pulse, positions | - |
+| **Thursday** | 5 posts: Beat SPY, hot theme, Power Hour | **Post "Trade Spotlight" note** (~2 min) |
 
 ### Tweet Categories (35/week)
 
@@ -250,13 +261,13 @@ Even with marketing language, NEVER hide losses:
 
 ### Tweet Schedule (5 slots/day)
 
-| Slot | UK Time | Content Type |
-|------|---------|--------------|
-| 1 | 07:00 | System promo / Educational |
-| 2 | 09:00 | Theme analysis / Buy signal |
-| 3 | 12:30 | Position update / Market pulse |
-| 4 | 15:30 | Theme / Watchlist |
-| 5 | 19:00 | Engagement / Lessons |
+| Slot | Eastern Time | Content Type |
+|------|--------------|--------------|
+| 1 | 08:00 ET | Pre-market / Beat SPY / Roth IRA hooks |
+| 2 | 10:00 ET | Theme analysis / Buy signal |
+| 3 | 12:30 ET | Position update / Market pulse |
+| 4 | 15:30 ET | **Power Hour reaction** (CRITICAL) |
+| 5 | 18:00 ET | After-hours / Engagement / Lessons |
 
 ---
 

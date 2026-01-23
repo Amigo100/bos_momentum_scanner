@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 17 | Theme Fit: 14 | Final PASS: 3
+Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -12,7 +12,7 @@ You are drafting an X post for @SterlingSignals.
 
 Using the stats above:
 1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 3 signals")
+   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
    - Emphasizes the rigorous 3-gate screening process
    - Creates CURIOSITY about what made the cut
    - Builds FOMO for non-subscribers
@@ -26,31 +26,29 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Why I Passed: AMSC
+## Slot 2: Lesson: Weekly timeframes filter out noise...
 
 ```
-SCANNER OUTPUT:
-EXCLUDED: AMSC | Theme: Power Grid Modernization & Nuclear
-Reason: Earnings in 14 days creates binary risk
+TRADING LESSON:
+Topic: Weekly timeframes filter out noise
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-Using the scanner output above:
-1. Search for why $AMSC might be getting attention/hype right now
+1. Pick a practical way to illustrate this lesson
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
-   - States specifically which gate it failed (technical, thematic, or quality)
-   - Shows disciplined process over FOMO
-   - References the proprietary 3-gate system
-   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Show process, not arrogance. This builds trust.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
@@ -62,7 +60,7 @@ Ticker: $INOD
 Entry: $61.54 on 18/01/2026
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: -4.0% (verify with current price)
+Snapshot P&L: -1.3% (verify with current price)
 
 ---
 

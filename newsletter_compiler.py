@@ -51,7 +51,7 @@ NEWSLETTER_NAME = "Sterling Signals"
 # LLM NEWSLETTER COMPILATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-COMPILATION_SYSTEM = """You are the editor of Sterling Signals, a weekly momentum trading newsletter on Substack for UK investors trading US stocks.
+COMPILATION_SYSTEM = """You are the editor of Sterling Signals, a weekly momentum trading newsletter on Substack for US active investors and swing traders.
 
 Your job is to compile a polished, publication-ready newsletter from the raw inputs provided.
 
@@ -60,14 +60,21 @@ STYLE:
 - Data-driven with specific numbers
 - Confident without being arrogant
 - Educational - explain WHY, not just WHAT
-- UK investor perspective
+- US investor perspective
+- Reference SPY/QQQ comparison when outperforming
+
+SUBJECT LINE FORMULA:
+Week ${WEEK_NUM}: ${YTD_RETURN}% YTD | ${NEW_SIGNALS} New Signals | ${HOOK_PHRASE}
+Example: "Week 4: +12% YTD | 3 New Buys | Why Power Grid is 2026's Winning Theme"
+ALWAYS lead with performance (even if negative). Reference SPY when outperforming.
 
 FORMAT:
 - Use markdown formatting
 - Keep it scannable with headers and bullets
 - Use tables for data comparison
 - Target 1,500-2,500 words
-- 8-12 minute read time"""
+- 8-12 minute read time
+- Include Performance vs Benchmark section (Portfolio vs SPY YTD)"""
 
 COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from these inputs:
 

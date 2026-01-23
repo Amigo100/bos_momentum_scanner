@@ -74,14 +74,26 @@ MAX_TOKENS = 4000
 
 # Days and slots (increased from 3 to 5 per day to better use X API limits)
 # X free tier allows ~50 tweets/day (1,500/month)
+# Schedule aligned to US Eastern Time (ET)
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 SLOTS = {
-    1: "early_morning",  # 07:00 UK
-    2: "morning",        # 09:00 UK
-    3: "midday",         # 12:30 UK
-    4: "afternoon",      # 15:30 UK
-    5: "evening"         # 19:00 UK
+    1: "pre_market",     # 08:00 ET - Pre-market / Beat SPY / Roth IRA hooks
+    2: "morning",        # 10:00 ET - 30min after market open
+    3: "midday",         # 12:30 ET - Lunch break engagement
+    4: "power_hour",     # 15:30 ET - CRITICAL: Power Hour reaction
+    5: "after_hours"     # 18:00 ET - After-hours / engagement
 }
+
+# Import marketing vocabulary for validation
+try:
+    from marketing_vocabulary import (
+        validate_content, BANNED_TERMS, APPROVED_VOCABULARY,
+        POWER_PHRASES, US_AUDIENCE_HOOKS, validate_all_tweets
+    )
+    MARKETING_VOCABULARY_AVAILABLE = True
+except ImportError:
+    MARKETING_VOCABULARY_AVAILABLE = False
+    BANNED_TERMS = []
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -128,7 +140,7 @@ class WeeklyContent:
 # CLAUDE TWEET GENERATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-TWEET_SYSTEM_PROMPT = """You are a financial content writer for Sterling Signals, a momentum trading newsletter on Substack.
+TWEET_SYSTEM_PROMPT = """You are a financial content writer for Sterling Signals, a momentum trading newsletter on Substack targeting US active investors and swing traders.
 
 Your task is to write engaging tweets for X/Twitter that:
 1. Highlight trading signals, themes, and market insights
@@ -144,59 +156,62 @@ STYLE GUIDELINES:
 - Professional trader voice, not hype
 - Occasional humor is OK
 - No financial advice disclaimers in tweets (save for bio)
+- All times in Eastern Time (ET)
 
-CRITICAL MARKETING LANGUAGE RULES:
-1. NEVER reveal specific strategy details:
-   - NO: "20% trailing stop", "HMA pivots", "Banker indicator formula", "Beta >= 1.5"
-   - YES: "proprietary risk management", "technical indicators", "smart money signals"
+CRITICAL MARKETING LANGUAGE RULES - BANNED TERMS:
+NEVER use these terms in any tweet:
+- "HMA", "Hull Moving Average", "HMA Pivot"
+- "Banker indicator", "Banker >= 55"
+- "20% trailing stop", "20% stop", "trailing stop"
+- "Beta >= 1.5", "beta threshold"
+- "Break of Structure", "BoS", "BOS", "Weekly BoS"
+- "Tier 1", "Tier 2", "Tier 3", "TIER1", "TIER2", "TIER3"
+- "Gatekeeper"
+- "UK ISA", "ISA account", "GMT", "BST", "UK Time"
+- "RSI", "MACD", "KDJ"
 
-2. USE these approved phrases instead:
-   - "proprietary multi-step screening process"
-   - "smart money accumulation signals"
-   - "institutional flow tracking"
-   - "theme momentum confirmation"
-   - "technical entry/exit signals"
-   - "rigorous due diligence"
-   - "disciplined risk management"
-   - "systematic approach"
+APPROVED VOCABULARY - USE THESE INSTEAD:
+- "Structural Pivot Confirmation" (not HMA Pivot)
+- "Institutional Accumulation Divergence" (not Banker indicator)
+- "Volatility Expansion Criteria" (not Beta >= 1.5)
+- "Capital Preservation Protocol" (not 20% trailing stop)
+- "Structural Trend Confirmation" (not Weekly BoS)
+- "The 5th Gate: Forensic Audit" (not Gatekeeper)
+- "Conviction Rating" (not Tier 1/2/3)
+- "Sector Flow Analysis" (not Theme scoring)
 
-3. FOCUS messaging on these themes:
-   - Following institutional money / smart money flows
-   - Identifying hot themes and bottleneck plays
-   - Contrarian opportunities when themes are cold
-   - Patience and discipline over FOMO
-   - Outperforming the market through systematic approach
-   - Multi-step filtering (1800 stocks → 3-5 winners)
+US AUDIENCE CONTENT HOOKS:
+1. BEAT SPY - Alpha over indexing, "Stop indexing. Start selecting."
+2. ROTH IRA - Tax-free compounding, retirement account momentum
+3. PDT-FRIENDLY - No $25k requirement, weekly timeframe, 15 min/week
+4. POWER HOUR - 15:30-16:00 ET market reaction, relative strength
+5. SECTOR ROTATION - Following institutional flows between themes
 
-4. CREATE intrigue without revealing the secret sauce:
-   - "Our proprietary signals flagged this before the move"
-   - "Smart money was accumulating here for weeks"
-   - "Our multi-step system identified this bottleneck theme"
+APPROVED POWER PHRASES:
+- "Proprietary 5-gate screening system"
+- "Filters 1,800 stocks to 3-5 actionable signals"
+- "Institutional Accumulation Divergence detected"
+- "Structural Pivot Confirmation triggered"
+- "Forensic Audit cleared"
+- "Capital Preservation Protocol activated"
+- "The system protects capital so we live to fight another day"
+- "No ego, just execution"
 
 CRITICAL HONESTY + POSITIVITY RULES:
 1. NEVER hide losses or only show winners - always include full P&L picture
 2. NEVER exclude stopped-out trades from portfolio updates
 3. When portfolio is down, frame constructively:
    - "Down 5% YTD but system working - cutting losers fast"
-   - "3 stops hit this month = capital preserved for better setups"
-   - "Drawdowns are part of momentum trading - here's how we manage them"
+   - "SPY down 8%, we're down 5% = outperforming in tough conditions"
 4. Frame losses as LEARNING/DISCIPLINE, not failures:
-   - "Stop hit = system working exactly as designed"
-   - "Risk management protected us from a bigger loss"
-   - "Discipline > ego. We'll catch the next one."
-5. When mentioning portfolio, ALWAYS include:
-   - Total unrealized P&L (not just winners)
-   - Any recent stops hit
-   - Win rate if discussing closed trades
-6. Find the positive angle WITHOUT lying:
-   - Market down 10%, we're down 5% = "Outperforming in tough conditions"
-   - Had 2 losers, 1 big winner = "One winner covered both losses + profit"
-   - New to trading, no track record = "Building track record transparently"
+   - "Stop hit = Capital Preservation Protocol working as designed"
+   - "No ego, just execution. On to the next."
+5. When mentioning portfolio, ALWAYS include SPY comparison when outperforming
 
 CRITICAL: Every tweet MUST either:
 - Link to Substack (sterlingsignals.substack.com)
 - Ask an engaging question
-- Highlight our multi-step proprietary system
+- Highlight our 5-gate proprietary screening system
 
 STRUCTURE:
 - Hook in first line
@@ -206,7 +221,7 @@ STRUCTURE:
 Return tweets as a JSON array with this structure:
 [
   {
-    "category": "buy_signal|theme_hot|theme_cold|closed_trade|position_update|sell_signal|system_promo|market_insight|educational|engagement",
+    "category": "buy_signal|theme_hot|theme_cold|closed_trade|position_update|sell_signal|system_promo|market_insight|educational|engagement|beat_spy|roth_ira|pdt_friendly|power_hour|sector_rotation|funnel_graphic|post_mortem",
     "ticker": "AAPL" or null,
     "theme": "AI Infrastructure" or null,
     "text": "The actual tweet text under 280 chars"
@@ -653,8 +668,216 @@ Our edge: systematic multi-step screening
 What's yours? 👇"
 """
 
+    elif category == "beat_spy":
+        context = f"""
+Generate {count} tweets comparing our performance to SPY/QQQ for US active investors.
+
+Open positions: {json.dumps(content.open_positions[:3], indent=2) if content.open_positions else "None"}
+Hot themes: {[t.get('name') for t in content.prime_themes]}
+
+TEMPLATES:
+"SPY is chopping sideways.
+Meanwhile, the system found 3 sectors breaking out with institutional backing.
+Stop indexing. Start selecting.
+sterlingsignals.substack.com"
+
+"QQQ down 2% this week. Our portfolio: +4.2%
+The difference? We follow smart money into specific themes, not broad exposure.
+This week's breakdown:
+sterlingsignals.substack.com"
+
+"Most portfolios mirror the S&P 500.
+Ours hunts the 3-5 stocks each week that institutions are quietly accumulating BEFORE the breakout.
+That's alpha. That's the system.
+sterlingsignals.substack.com"
+
+RULES:
+- Reference SPY/QQQ comparison when outperforming
+- Be factual, not arrogant
+- Focus on stock selection vs passive indexing
+- ALWAYS link to newsletter
+"""
+
+    elif category == "roth_ira":
+        context = f"""
+Generate {count} tweets for Roth IRA / tax-advantaged account investors.
+
+Hot themes: {[t.get('name') for t in content.prime_themes]}
+
+TEMPLATES:
+"The Roth IRA hack nobody talks about:
+Instead of holding SPY forever, rotate into momentum winners.
+Tax-free compounding on 30-50% swing trades > 10% annual index returns.
+The system identifies these setups weekly.
+sterlingsignals.substack.com"
+
+"Your Roth doesn't have to be boring index funds.
+Systematic momentum + tax-free compounding = retirement account on steroids.
+This week's themes: {content.prime_themes[0].get('name') if content.prime_themes else 'Power Grid'}
+sterlingsignals.substack.com"
+
+"Perfect Roth setup:
+Institutional Accumulation Divergence detected.
+Sector Flow Analysis aligned.
+Structural Pivot confirmed.
+Tax-free gains if this runs.
+sterlingsignals.substack.com"
+
+RULES:
+- Focus on tax-free compounding angle
+- Mention systematic approach
+- Use APPROVED vocabulary only
+- Never financial advice
+"""
+
+    elif category == "pdt_friendly":
+        context = f"""
+Generate {count} tweets about PDT-friendly swing trading (no $25k requirement).
+
+TEMPLATES:
+"No PDT worries here.
+We trade weekly signals. Buy Monday, set stops, check Friday.
+Pure swing trading. No 9:30 AM stress.
+sterlingsignals.substack.com"
+
+"Day trading requires:
+- $25k minimum (PDT rule)
+- All-day screen time
+- Split-second decisions
+
+This system requires:
+- Any account size
+- 15 minutes/week
+- Patience
+
+Which sounds sustainable?
+sterlingsignals.substack.com"
+
+"The weekly timeframe advantage:
+✓ No PDT restrictions
+✓ No all-day monitoring
+✓ Clear entry/exit signals
+✓ Works with any schedule
+
+How we trade without the $25k requirement:
+sterlingsignals.substack.com"
+
+RULES:
+- Emphasize weekly timeframe = no PDT issues
+- Focus on minimal time commitment
+- Appeal to busy professionals
+"""
+
+    elif category == "power_hour":
+        context = f"""
+Generate {count} Power Hour reaction tweets (15:30-16:00 ET market hours).
+
+Open positions: {json.dumps(content.open_positions[:3], indent=2) if content.open_positions else "None"}
+Hot themes: {[t.get('name') for t in content.prime_themes]}
+
+TEMPLATE:
+"Power Hour Check:
+[THEME_NAME] seeing [HIGH/MODERATE/LOW] volume into the close.
+Our pick $[TICKER] currently [UP/DOWN] [PERCENT]%.
+[Brief observation about relative strength vs market]
+Watching for structural confirmation on the weekly close.
+sterlingsignals.substack.com"
+
+RULES:
+- Post during 15:30-16:00 ET window (Power Hour)
+- Reference relative strength vs market
+- Keep observational, not promotional
+- Mention "structural confirmation" language
+"""
+
+    elif category == "sector_rotation":
+        context = f"""
+Generate {count} tweets about sector rotation and institutional flow shifts.
+
+Hot themes: {[t.get('name') for t in content.prime_themes]}
+Cold themes: {[t.get('name') for t in content.avoid_themes]}
+
+TEMPLATES:
+"Money is rotating.
+Out of: [COLD_THEME]
+Into: [HOT_THEME]
+The system detected this shift 2 weeks ago. Our [THEME] picks are up.
+Don't fight the flow.
+sterlingsignals.substack.com"
+
+"Sector rotation in real-time:
+[THEME_1]: 🔥 Institutional accumulation surging
+[THEME_2]: 📈 Structural breakouts confirmed
+[THEME_3]: ❄️ Smart money exiting
+The system follows the flow. This week's picks:
+sterlingsignals.substack.com"
+
+RULES:
+- Reference specific theme rotation
+- Use "institutional flows" language
+- Mention Sector Flow Analysis
+"""
+
+    elif category == "funnel_graphic":
+        context = f"""
+Generate {count} tweets about our weekly filtering funnel.
+
+Scan stats (use these numbers):
+- Total scanned: 1,817
+- Passed Volatility Expansion: ~485
+- Showed Institutional Accumulation: ~48
+- Theme aligned: ~17
+- Forensic Audit PASS: {len(content.pass_signals) if content.pass_signals else 6}
+
+TEMPLATE:
+"This week's scan:
+📊 1,817 stocks analyzed
+📉 485 passed Volatility Expansion Criteria
+🔍 48 showed Institutional Accumulation
+🎯 17 aligned with hot themes
+✅ {len(content.pass_signals) if content.pass_signals else 6} cleared the Forensic Audit
+
+{len(content.pass_signals) if content.pass_signals else 6} actionable signals. Full breakdown in the newsletter.
+sterlingsignals.substack.com"
+
+RULES:
+- Use APPROVED vocabulary (not HMA, Banker, BoS, etc.)
+- Show the funnel progression with specific numbers
+- End with newsletter CTA
+- High viral potential - show the work done
+"""
+
+    elif category == "post_mortem":
+        stopped_trades = [t for t in content.closed_trades if t.get('status') == 'STOPPED'] if content.closed_trades else []
+        context = f"""
+Generate Post-Mortem Card tweets for stopped-out positions.
+
+Stopped trades: {json.dumps(stopped_trades, indent=2) if stopped_trades else "None this week"}
+
+TEMPLATE (Post-Mortem Card format):
+"❌ $[TICKER] — Stopped Out
+
+Entry: $[ENTRY_PRICE]
+Exit: $[EXIT_PRICE]
+Loss: -[LOSS_PERCENT]%
+
+The system protects capital so we live to fight another day.
+No ego, just execution.
+
+[Optional 1-sentence lesson]
+sterlingsignals.substack.com"
+
+RULES:
+- Post IMMEDIATELY when stop hits
+- Never delete losing trade posts
+- Frame positively (Capital Preservation Protocol working)
+- Optional brief lesson learned
+- NEVER mention "20%" stop level
+- Use "Capital Preservation Protocol" not "trailing stop"
+"""
+
     else:
-        context = f"Generate {count} general financial content tweets. Always link to sterlingsignals.substack.com"
+        context = f"Generate {count} general financial content tweets. Always link to sterlingsignals.substack.com. Use APPROVED vocabulary - never mention HMA, Banker, BoS, 20% stop, Tier 1/2/3, or UK ISA."
 
     # Call Claude
     try:
@@ -700,58 +923,61 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
 
     all_tweets = []
 
-    # Category distribution across the week
+    # Category distribution across the week - US AUDIENCE FOCUS
     # 35 total = 5 per day × 7 days (X API allows ~50/day)
-    # Prioritize: system_promo, buy_signal, theme_hot, closed_trade
+    # Schedule aligned to Eastern Time (ET)
+    # Slot 1 = 08:00 ET (Pre-market), Slot 4 = 15:30 ET (Power Hour) are CRITICAL
+    stopped_trades = [t for t in content.closed_trades if t.get('status') == 'STOPPED'] if content.closed_trades else []
+
     categories_schedule = [
-        # Monday: Week kickoff - system, themes, signals
-        ("Monday", 1, "system_promo"),      # Early: System overview
-        ("Monday", 2, "theme_hot"),          # Morning: Hot theme spotlight
-        ("Monday", 3, "buy_signal"),         # Midday: Buy signal
-        ("Monday", 4, "position_update"),    # Afternoon: Portfolio update
-        ("Monday", 5, "engagement"),         # Evening: Engagement
+        # Monday: Week kickoff - US focus with alpha hooks
+        ("Monday", 1, "beat_spy"),             # 08:00 ET - Alpha hook (pre-market)
+        ("Monday", 2, "theme_hot"),            # 10:00 ET - Theme momentum
+        ("Monday", 3, "position_update"),      # 12:30 ET - Portfolio check
+        ("Monday", 4, "power_hour"),           # 15:30 ET - Power Hour reaction (CRITICAL)
+        ("Monday", 5, "market_insight"),       # 18:00 ET - Week ahead
 
-        # Tuesday: Education & positions
-        ("Tuesday", 1, "educational"),       # Early: Trading lesson
-        ("Tuesday", 2, "position_update"),   # Morning: Position P&L
-        ("Tuesday", 3, "theme_hot"),         # Midday: Another hot theme
-        ("Tuesday", 4, "system_promo"),      # Afternoon: System feature
-        ("Tuesday", 5, "closed_trade" if content.closed_trades else "engagement"),
+        # Tuesday: Position updates + tax angle
+        ("Tuesday", 1, "roth_ira"),            # 08:00 ET - Tax-advantaged angle
+        ("Tuesday", 2, "position_update"),     # 10:00 ET - Portfolio Pulse day
+        ("Tuesday", 3, "buy_signal" if content.pass_signals else "theme_hot"),
+        ("Tuesday", 4, "power_hour"),          # 15:30 ET - Power Hour
+        ("Tuesday", 5, "educational"),         # 18:00 ET - Trading lesson
 
-        # Wednesday: Mid-week momentum
-        ("Wednesday", 1, "theme_hot"),       # Early: Theme momentum
-        ("Wednesday", 2, "buy_signal" if len(content.pass_signals) > 1 else "system_promo"),
-        ("Wednesday", 3, "educational"),     # Midday: Trading tip
-        ("Wednesday", 4, "theme_cold"),      # Afternoon: What to avoid
-        ("Wednesday", 5, "engagement"),      # Evening: Q&A
+        # Wednesday: Educational + PDT-friendly
+        ("Wednesday", 1, "pdt_friendly"),      # 08:00 ET - PDT-free swing trading
+        ("Wednesday", 2, "system_promo"),      # 10:00 ET - System feature
+        ("Wednesday", 3, "theme_hot"),         # 12:30 ET - Theme spotlight
+        ("Wednesday", 4, "power_hour"),        # 15:30 ET - Power Hour
+        ("Wednesday", 5, "engagement"),        # 18:00 ET - Community Q&A
 
-        # Thursday: Deep dive day
-        ("Thursday", 1, "market_insight"),   # Early: Market outlook
-        ("Thursday", 2, "position_update"),  # Morning: Portfolio check
-        ("Thursday", 3, "buy_signal" if len(content.pass_signals) > 2 else "theme_hot"),
-        ("Thursday", 4, "system_promo"),     # Afternoon: Methodology
-        ("Thursday", 5, "educational"),      # Evening: Risk management
+        # Thursday: Trade spotlight + sector rotation
+        ("Thursday", 1, "beat_spy"),           # 08:00 ET - Alpha comparison
+        ("Thursday", 2, "buy_signal" if content.pass_signals else "position_update"),
+        ("Thursday", 3, "sector_rotation"),    # 12:30 ET - Sector flows
+        ("Thursday", 4, "power_hour"),         # 15:30 ET - Power Hour
+        ("Thursday", 5, "educational"),        # 18:00 ET - Risk management
 
-        # Friday: Pre-weekend recap
-        ("Friday", 1, "theme_hot"),          # Early: Theme update
-        ("Friday", 2, "sell_signal" if content.sell_signals else "position_update"),
-        ("Friday", 3, "system_promo"),       # Midday: Newsletter teaser
-        ("Friday", 4, "engagement"),         # Afternoon: Weekend poll
-        ("Friday", 5, "market_insight"),     # Evening: Week recap
+        # Friday: Scanner tease + Funnel graphic
+        ("Friday", 1, "roth_ira"),             # 08:00 ET - Tax angle
+        ("Friday", 2, "funnel_graphic"),       # 10:00 ET - Weekly funnel visual
+        ("Friday", 3, "system_promo"),         # 12:30 ET - Newsletter teaser
+        ("Friday", 4, "power_hour"),           # 15:30 ET - Power Hour
+        ("Friday", 5, "market_insight"),       # 18:00 ET - Week recap
 
         # Saturday: Newsletter day - heavy promotion
-        ("Saturday", 1, "buy_signal"),       # Early: Newsletter highlight
-        ("Saturday", 2, "system_promo"),     # Morning: System promo
-        ("Saturday", 3, "theme_hot"),        # Midday: Featured theme
-        ("Saturday", 4, "closed_trade" if content.closed_trades else "educational"),
-        ("Saturday", 5, "engagement"),       # Evening: Discussion
+        ("Saturday", 1, "buy_signal" if content.pass_signals else "system_promo"),
+        ("Saturday", 2, "system_promo"),       # 10:00 ET - System promo
+        ("Saturday", 3, "theme_hot"),          # 12:30 ET - Featured theme
+        ("Saturday", 4, "post_mortem" if stopped_trades else "closed_trade" if content.closed_trades else "educational"),
+        ("Saturday", 5, "engagement"),         # 18:00 ET - Discussion
 
         # Sunday: Week ahead planning
-        ("Sunday", 1, "market_insight"),     # Early: Week ahead
-        ("Sunday", 2, "theme_hot"),          # Morning: Theme preview
-        ("Sunday", 3, "educational"),        # Midday: Learning
-        ("Sunday", 4, "system_promo"),       # Afternoon: Newsletter CTA
-        ("Sunday", 5, "engagement"),         # Evening: Week kickoff poll
+        ("Sunday", 1, "market_insight"),       # 08:00 ET - Week ahead preview
+        ("Sunday", 2, "sector_rotation"),      # 10:00 ET - Sector flow preview
+        ("Sunday", 3, "educational"),          # 12:30 ET - Learning
+        ("Sunday", 4, "system_promo"),         # 15:30 ET - Newsletter CTA
+        ("Sunday", 5, "engagement"),           # 18:00 ET - Week kickoff poll
     ]
 
     # Group by category to batch API calls
@@ -819,6 +1045,15 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         )
 
         all_tweets.append(tweet)
+
+    # Validate tweets for banned terms
+    if MARKETING_VOCABULARY_AVAILABLE:
+        print("\n  🔍 Validating tweets for banned terms...")
+        total, violations = validate_all_tweets(all_tweets)
+        if violations > 0:
+            print(f"  ⚠ {violations}/{total} tweets contain banned terms (review recommended)")
+        else:
+            print(f"  ✓ All {total} tweets passed vocabulary validation")
 
     return all_tweets
 

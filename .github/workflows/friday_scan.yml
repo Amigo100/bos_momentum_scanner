@@ -34,7 +34,8 @@ on:
         default: 'false'
         type: boolean
 
-  # Scheduled run: Friday 4:30 PM EST (21:30 UTC)
+  # Scheduled run: Friday 4:30 PM ET (21:30 UTC)
+  # After US market close - allows full weekly data
   schedule:
     - cron: '30 21 * * 5'
 

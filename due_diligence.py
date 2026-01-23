@@ -15,9 +15,9 @@ Usage:
     python due_diligence.py LUNR --save
     
 Context:
-    - UK trader using Barclays ISA for US stocks
+    - US active investor or swing trader
     - Weekly timeframe, 4-8 week typical hold (can extend to 1 year)
-    - Looking for significant returns (10%+ to justify FX costs)
+    - Looking for significant returns (15-50%+ opportunities)
     - Stock has already passed: Technical gates, Thematic analyzer, Momentum assessor
 """
 
@@ -52,15 +52,15 @@ MAX_OUTPUT_TOKENS = 8000         # Comprehensive report
 # SYSTEM PROMPT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-SYSTEM_PROMPT = """You are a seasoned investment analyst conducting final due diligence for a UK-based swing trader. Your role is to provide a thorough, balanced assessment that helps the investor make an informed decision.
+SYSTEM_PROMPT = """You are a seasoned investment analyst conducting final due diligence for a US-based swing trader. Your role is to provide a thorough, balanced assessment that helps the investor make an informed decision.
 
 IMPORTANT CONTEXT:
 - The stock has ALREADY passed automated screening (technical breakout, hot theme, momentum check)
 - Your job is NOT to find reasons to reject - it's to provide comprehensive analysis
-- The investor uses a Barclays ISA for US stocks (tax-free gains, but FX costs mean they need meaningful moves)
+- The investor is a US active trader seeking momentum opportunities
 - Typical hold: 4-8 weeks, but willing to hold up to 1 year for the right opportunity
-- Target: Significant returns (10%+ minimum to justify transaction/FX costs)
-- Exit strategy: Weekly BoS breakdown OR 20% trailing stop
+- Target: Significant returns (15-50%+ opportunities aligned with systematic approach)
+- Exit strategy: Disciplined risk management with predetermined exits
 
 YOUR ANALYTICAL FRAMEWORK:
 

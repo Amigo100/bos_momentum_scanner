@@ -229,15 +229,15 @@ Annual projection: ~$100-250/year
 
 ---
 
-## Tweet Posting Schedule (UK Time)
+## Tweet Posting Schedule (Eastern Time)
 
-| Slot | Time | Content Type |
-|------|------|--------------|
-| 1 | 07:00 | System promo / Educational |
-| 2 | 09:00 | Theme analysis / Buy signal |
+| Slot | Time (ET) | Content Type |
+|------|-----------|--------------|
+| 1 | 08:00 | Pre-market / Beat SPY / Roth IRA hooks |
+| 2 | 10:00 | Theme analysis / Buy signal |
 | 3 | 12:30 | Position update with chart |
-| 4 | 15:30 | Theme / Watchlist |
-| 5 | 19:00 | Engagement / Lessons |
+| 4 | 15:30 | **Power Hour reaction** (CRITICAL) |
+| 5 | 18:00 | Engagement / Lessons |
 
 ---
 

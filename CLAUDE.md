@@ -16,7 +16,7 @@
 | **Purpose** | Weekly momentum trading scanner for US stocks |
 | **Newsletter** | [Sterling Signals](https://sterlingsignals.substack.com) |
 | **X/Twitter** | [@SterlingSignals](https://twitter.com/SterlingSignals), [@AlexanderSterling](https://twitter.com/AlexanderSterling) |
-| **Target Audience** | UK ISA investors seeking US equity exposure |
+| **Target Audience** | US Active Investors, Swing Traders, Roth IRA Builders |
 
 ### Trading Strategy (Internal Reference Only)
 
@@ -34,37 +34,49 @@ EXIT:   20% trailing stop from highest weekly close OR Weekly BoS Down (tighten 
 
 All public-facing content (tweets, newsletter, notes) must follow these rules.
 
-### NEVER Reveal These Details
+### NEVER Reveal These Details (BANNED TERMS)
 
 | Internal Term | Public Alternative |
 |---------------|-------------------|
-| "20% trailing stop" | "Disciplined risk management" |
-| "HMA pivots" | "Proprietary technical signals" |
-| "Banker indicator" / "Banker >= 55" | "Smart money accumulation signals" |
-| "Beta >= 1.5" | "High-momentum screening criteria" |
-| "Weekly BoS (Break of Structure)" | "Technical trend confirmation" |
-| "Tier 1/2/3 classification" | "Signal strength indicators" |
+| "20% trailing stop" | "Capital Preservation Protocol" |
+| "HMA pivots" | "Structural Pivot Confirmation" |
+| "Banker indicator" / "Banker >= 55" | "Institutional Accumulation Divergence" |
+| "Beta >= 1.5" | "Volatility Expansion Criteria" |
+| "Weekly BoS (Break of Structure)" | "Structural Trend Confirmation" |
+| "Tier 1/2/3 classification" | "Conviction Rating" |
+| "Gatekeeper" | "The 5th Gate: Forensic Audit" |
+| "Theme scoring" | "Sector Flow Analysis" |
+
+**Also BANNED:** UK ISA, ISA account, GMT, BST, UK Time, RSI, MACD, KDJ
 
 ### Approved Marketing Phrases
 
 **System Description:**
-- "Proprietary multi-step screening process"
-- "5-gate quality system"
-- "Filters 1,800 stocks down to 3-5 winners"
-- "Systematic approach to momentum trading"
+- "Proprietary 5-gate screening system"
+- "Filters 1,800 stocks to 3-5 actionable signals"
+- "Institutional-grade momentum analysis"
+- "Systematic approach that removes emotional bias"
 
 **Signal Detection:**
-- "Smart money accumulation signals"
-- "Institutional flow tracking"
-- "Theme momentum confirmation"
-- "Technical entry/exit signals"
-- "Proprietary breakout detection"
+- "Institutional Accumulation Divergence detected"
+- "Structural Pivot Confirmation triggered"
+- "Sector Flow Analysis alignment"
+- "Forensic Audit cleared"
 
 **Risk Management:**
-- "Disciplined risk management"
-- "Predetermined exit strategy"
-- "Capital preservation focus"
-- "Systematic position sizing"
+- "Capital Preservation Protocol activated"
+- "Systematic exit discipline"
+- "Risk-defined position sizing"
+- "The system protects capital so we live to fight another day"
+- "No ego, just execution"
+
+### US Audience Content Hooks
+
+1. **Beat SPY** - Alpha over indexing, stop indexing start selecting
+2. **Roth IRA** - Tax-free compounding, retirement account momentum
+3. **PDT-Friendly** - No $25k requirement, weekly timeframe, 15 min/week
+4. **Power Hour** - 15:30-16:00 ET market reaction, relative strength
+5. **Sector Rotation** - Following institutional flows between themes
 
 ### Content Themes to Emphasize
 
@@ -89,12 +101,22 @@ Even with marketing language, NEVER hide losses:
 
 | Day | Automated | Manual |
 |-----|-----------|--------|
-| **Friday PM** | Full scan, DD, tweets, newsletter via GitHub Actions | - |
-| **Saturday AM** | Tweet posting (5/day) | Copy newsletter to Substack, add charts |
+| **Friday 4:15 PM ET** | Full scan, DD, tweets, newsletter via GitHub Actions | - |
+| **Saturday** | Tweet posting (5/day) | Copy newsletter to Substack, add charts |
 | **Sunday-Monday** | Tweet posting (5/day) | - |
 | **Tuesday** | Tweet posting, Substack Note ready | Post Tuesday "Portfolio Pulse" note |
 | **Wednesday** | Tweet posting (5/day) | - |
 | **Thursday** | Tweet posting, Substack Note ready | Post Thursday "Trade Spotlight" note |
+
+### Daily Tweet Schedule (Eastern Time)
+
+| Slot | Time (ET) | Content Type |
+|------|-----------|--------------|
+| 1 | 08:00 | Pre-market / Beat SPY / Roth IRA hooks |
+| 2 | 10:00 | Theme analysis / Buy signal |
+| 3 | 12:30 | Position update + chart |
+| 4 | 15:30 | **Power Hour reaction** (CRITICAL) |
+| 5 | 18:00 | Engagement / Lessons / Week ahead |
 
 **Only manual steps:** Substack newsletter publish (~10 min) + Tuesday/Thursday notes (~2 min each)
 

@@ -30,8 +30,8 @@ EXIT CRITERIA:
 - BACKUP: 20% trailing stop from highest close since entry
 
 CONTEXT:
-- Designed for UK trader using Barclays ISA for US stocks
-- Weekly timeframe to minimize FX costs
+- Designed for US active investors and swing traders
+- Weekly timeframe for systematic entries and exits
 - Average hold period: 4-8 weeks (can extend to months)
 
 Usage:
@@ -2510,7 +2510,7 @@ def print_newsletter_prompts(briefing_file: Path = None):
     
     market_prompt = f'''# MARKET CONTEXT GENERATION
 
-You are writing the market analysis section for a weekly investment newsletter focused on US momentum/growth stocks. The newsletter is aimed at UK investors using ISA accounts for US equity exposure.
+You are writing the market analysis section for a weekly investment newsletter focused on US momentum/growth stocks. The newsletter is aimed at US active investors and swing traders seeking systematic momentum opportunities.
 
 **Today's Date:** {today.strftime("%B %d, %Y")}
 **Week Ending:** {friday.strftime("%B %d, %Y")}
@@ -2561,7 +2561,7 @@ Write in this structure (markdown):
 - Professional but accessible tone
 - Specific numbers (e.g., "S&P 500 rose 1.2% to 4,850")
 - Connect macro to momentum stock implications
-- UK investor perspective (mention GBP/USD if significant move)
+- US investor perspective (mention DXY/dollar index only if significant macro impact)
 - No disclaimers (those come later)
 
 Generate the market context section now.'''
@@ -2595,7 +2595,7 @@ You are the editor compiling the final weekly edition of "BoS Momentum Scanner" 
 
 ## NEWSLETTER IDENTITY
 - **Name:** BoS Momentum Scanner Weekly
-- **Audience:** UK investors trading US momentum stocks via ISA accounts
+- **Audience:** US active investors and swing traders seeking systematic momentum opportunities
 - **Frequency:** Weekly (published Saturday/Sunday)
 - **Tone:** Professional, data-driven, actionable
 - **Platform:** Substack

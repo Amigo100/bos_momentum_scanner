@@ -25,33 +25,29 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Hot Theme: Defense Supply Chain Reshoring
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
-SCANNER OUTPUT:
-PRIME: Defense Supply Chain Reshoring
+TRADING LESSON:
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+You are drafting an X post for @SterlingSignals.
 
-Using the theme above:
-1. Search for the LATEST news/developments in Defense Supply Chain Reshoring (last 7 days)
-2. Find a specific catalyst, data point, or news event that's driving momentum
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with a compelling hook about why this theme matters NOW
-   - Uses the specific recent data point or catalyst you found
-   - Shows this is a PRIME theme in my systematic scanner
-   - Teases that I have specific stock picks in this theme
+1. Pick a practical way to illustrate this lesson
+2. Draft a visually engaging X post (under 280 characters) that:
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it accessible to readers who don't follow this sector closely.
-
-IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Reshoring
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
@@ -63,7 +59,7 @@ Ticker: $CGON
 Entry: $53.92 on 09/01/2026
 Theme: Healthcare / Biotech | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: +6.0% (verify with current price)
+Snapshot P&L: +3.6% (verify with current price)
 
 ---
 

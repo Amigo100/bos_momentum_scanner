@@ -23,7 +23,7 @@ from datetime import datetime, timedelta
 MARKET_CONTEXT_PROMPT = '''
 # MARKET CONTEXT GENERATION
 
-You are writing the market analysis section for a weekly investment newsletter focused on US momentum/growth stocks. The newsletter is aimed at UK investors using ISA accounts for US equity exposure.
+You are writing the market analysis section for a weekly investment newsletter focused on US momentum/growth stocks. The newsletter is aimed at US active investors and swing traders seeking systematic momentum opportunities.
 
 **Today's Date:** {date}
 **Week Ending:** {week_ending}
@@ -79,7 +79,8 @@ Write in this structure (markdown):
 - Connect macro to momentum stock implications
 - No hedging language like "it remains to be seen"
 - Confident analysis, acknowledge uncertainty where real
-- UK investor perspective (mention GBP/USD if significant move)
+- US investor perspective (mention DXY if significant macro impact)
+- Reference pre-market futures and after-hours movers when relevant
 
 ## DO NOT INCLUDE
 - Generic statements without data
@@ -102,7 +103,7 @@ You are the editor compiling the final weekly edition of "BoS Momentum Scanner" 
 
 ## NEWSLETTER IDENTITY
 - **Name:** BoS Momentum Scanner Weekly
-- **Audience:** UK investors trading US momentum stocks via ISA accounts
+- **Audience:** US active investors and swing traders seeking momentum opportunities
 - **Frequency:** Weekly (published Saturday/Sunday)
 - **Tone:** Professional, data-driven, actionable
 - **Platform:** Substack

@@ -14,18 +14,19 @@ on:
         default: 'false'
         type: boolean
 
-  # Scheduled runs - 5 posts per day (UK time = UTC in winter)
+  # Scheduled runs - 5 posts per day (Eastern Time via UTC)
+  # Note: Using EST (UTC-5) times. During EDT (Mar-Nov), posts will be 1hr earlier.
   schedule:
-    # Slot 1: Early morning 07:00 UK
-    - cron: '0 7 * * *'
-    # Slot 2: Morning 09:00 UK
-    - cron: '0 9 * * *'
-    # Slot 3: Midday 12:30 UK
-    - cron: '30 12 * * *'
-    # Slot 4: Afternoon 15:30 UK
-    - cron: '30 15 * * *'
-    # Slot 5: Evening 19:00 UK
-    - cron: '0 19 * * *'
+    # Slot 1: Pre-market 08:00 ET = 13:00 UTC
+    - cron: '0 13 * * *'
+    # Slot 2: Morning 10:00 ET = 15:00 UTC
+    - cron: '0 15 * * *'
+    # Slot 3: Midday 12:30 ET = 17:30 UTC
+    - cron: '30 17 * * *'
+    # Slot 4: Power Hour 15:30 ET = 20:30 UTC (CRITICAL)
+    - cron: '30 20 * * *'
+    # Slot 5: After-hours 18:00 ET = 23:00 UTC
+    - cron: '0 23 * * *'
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -60,20 +61,20 @@ jobs:
             echo "slot=${{ github.event.inputs.slot }}" >> $GITHUB_OUTPUT
             echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
           else
-            # Determine slot from cron schedule (UK time = UTC in winter)
+            # Determine slot from cron schedule (Eastern Time via UTC)
             HOUR=$(date -u +%H)
             MINUTE=$(date -u +%M)
 
-            if [ "$HOUR" = "07" ]; then
-              echo "slot=1" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "09" ]; then
-              echo "slot=2" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "12" ]; then
-              echo "slot=3" >> $GITHUB_OUTPUT
+            if [ "$HOUR" = "13" ]; then
+              echo "slot=1" >> $GITHUB_OUTPUT    # 08:00 ET - Pre-market
             elif [ "$HOUR" = "15" ]; then
-              echo "slot=4" >> $GITHUB_OUTPUT
-            elif [ "$HOUR" = "19" ]; then
-              echo "slot=5" >> $GITHUB_OUTPUT
+              echo "slot=2" >> $GITHUB_OUTPUT    # 10:00 ET - Morning
+            elif [ "$HOUR" = "17" ]; then
+              echo "slot=3" >> $GITHUB_OUTPUT    # 12:30 ET - Midday
+            elif [ "$HOUR" = "20" ]; then
+              echo "slot=4" >> $GITHUB_OUTPUT    # 15:30 ET - Power Hour (CRITICAL)
+            elif [ "$HOUR" = "23" ]; then
+              echo "slot=5" >> $GITHUB_OUTPUT    # 18:00 ET - After-hours
             else
               echo "slot=all" >> $GITHUB_OUTPUT
             fi
@@ -154,12 +155,12 @@ jobs:
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Schedule (UK Time)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 1: 07:00 (early morning)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 2: 09:00 (morning)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 3: 12:30 (midday)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 4: 15:30 (afternoon)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 5: 19:00 (evening)" >> $GITHUB_STEP_SUMMARY
+          echo "### Schedule (Eastern Time)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 1: 08:00 ET (pre-market)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 2: 10:00 ET (morning)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 3: 12:30 ET (midday)" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 4: 15:30 ET (power hour) - CRITICAL" >> $GITHUB_STEP_SUMMARY
+          echo "- Slot 5: 18:00 ET (after-hours)" >> $GITHUB_STEP_SUMMARY
 
 # Required for git push
 permissions:

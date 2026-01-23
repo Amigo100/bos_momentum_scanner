@@ -41,11 +41,13 @@ BASE_DIR = Path(__file__).resolve().parent
 TRADES_DIR = BASE_DIR / "trades"
 QUEUE_FILE = TRADES_DIR / "content_queue.json"
 
-# Slot times (UK time)
+# Slot times (Eastern Time)
 SLOT_TIMES = {
-    1: "08:00",  # Morning
-    2: "12:30",  # Midday
-    3: "18:00",  # Evening
+    1: "08:00",  # Pre-market
+    2: "10:00",  # Morning (30min after open)
+    3: "12:30",  # Midday
+    4: "15:30",  # Power Hour (CRITICAL)
+    5: "18:00",  # After-hours
 }
 
 
@@ -111,25 +113,31 @@ def save_queue(queue: list, queue_file: Path):
 
 
 def get_current_slot() -> int:
-    """Determine current time slot based on UK time."""
-    # Note: In production, you'd want proper timezone handling
-    # For simplicity, we assume the system is in UK time or adjust accordingly
+    """Determine current time slot based on Eastern Time (ET)."""
+    # Note: In production via GitHub Actions, UTC time is converted in workflow
+    # Locally, this assumes system is in ET or adjust accordingly
     now = datetime.now()
     hour = now.hour
     minute = now.minute
     current_time = hour * 60 + minute
-    
-    # Slot windows (in minutes from midnight)
-    # Slot 1: 06:00 - 10:00 (morning)
-    # Slot 2: 10:00 - 15:00 (midday)
-    # Slot 3: 15:00 - 20:00 (evening)
-    
-    if current_time < 10 * 60:
+
+    # Slot windows (in minutes from midnight, Eastern Time)
+    # Slot 1: 07:00 - 09:00 (pre-market)
+    # Slot 2: 09:00 - 12:00 (morning)
+    # Slot 3: 12:00 - 15:00 (midday)
+    # Slot 4: 15:00 - 17:00 (power hour)
+    # Slot 5: 17:00 - 20:00 (after-hours)
+
+    if current_time < 9 * 60:
         return 1
-    elif current_time < 15 * 60:
+    elif current_time < 12 * 60:
         return 2
-    elif current_time < 20 * 60:
+    elif current_time < 15 * 60:
         return 3
+    elif current_time < 17 * 60:
+        return 4
+    elif current_time < 20 * 60:
+        return 5
     else:
         return 0  # Outside posting hours
     

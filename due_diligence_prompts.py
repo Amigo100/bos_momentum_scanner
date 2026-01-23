@@ -33,11 +33,11 @@ Your reputation depends on finding asymmetric bets with 50%+ upside potential.
 | Gatekeeper | ✓ PASSED | Catalysts confirmed, red flags: {RED_FLAG_LEVEL} |
 
 ## INVESTOR CONTEXT
-- Capital at risk: £10,000
+- Capital at risk: $10,000
 - Target hold: 3-12 months (flexible if thesis holds)
-- Exit rule: 20% trailing stop from highest weekly close
+- Exit rule: Disciplined risk management with predetermined exits
 - Minimum return target: 50%+ (we're not here for 10% trades)
-- This is a UK ISA account - no day trading, weekly decisions only
+- Weekly swing trading approach - systematic entries and exits
 
 ## YOUR MISSION
 Validate whether this stock has REALISTIC potential for **50-100%+ returns** in 3-12 months.

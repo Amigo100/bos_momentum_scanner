@@ -18,12 +18,72 @@
 | **X/Twitter** | [@SterlingSignals](https://twitter.com/SterlingSignals), [@AlexanderSterling](https://twitter.com/AlexanderSterling) |
 | **Target Audience** | UK ISA investors seeking US equity exposure |
 
-### Trading Strategy (One-Line Summary)
+### Trading Strategy (Internal Reference Only)
 
 ```
 ENTRY:  Weekly HMA Pivot BUY + Beta ≥1.5 + Banker ≥55 + Theme Confirmed + Gatekeeper PASS
 EXIT:   20% trailing stop from highest weekly close OR Weekly BoS Down (tighten stop)
 ```
+
+> **IMPORTANT:** These specific strategy details are for internal documentation only.
+> Public content must use approved marketing language (see below).
+
+---
+
+## MARKETING LANGUAGE RULES (CRITICAL)
+
+All public-facing content (tweets, newsletter, notes) must follow these rules.
+
+### NEVER Reveal These Details
+
+| Internal Term | Public Alternative |
+|---------------|-------------------|
+| "20% trailing stop" | "Disciplined risk management" |
+| "HMA pivots" | "Proprietary technical signals" |
+| "Banker indicator" / "Banker >= 55" | "Smart money accumulation signals" |
+| "Beta >= 1.5" | "High-momentum screening criteria" |
+| "Weekly BoS (Break of Structure)" | "Technical trend confirmation" |
+| "Tier 1/2/3 classification" | "Signal strength indicators" |
+
+### Approved Marketing Phrases
+
+**System Description:**
+- "Proprietary multi-step screening process"
+- "5-gate quality system"
+- "Filters 1,800 stocks down to 3-5 winners"
+- "Systematic approach to momentum trading"
+
+**Signal Detection:**
+- "Smart money accumulation signals"
+- "Institutional flow tracking"
+- "Theme momentum confirmation"
+- "Technical entry/exit signals"
+- "Proprietary breakout detection"
+
+**Risk Management:**
+- "Disciplined risk management"
+- "Predetermined exit strategy"
+- "Capital preservation focus"
+- "Systematic position sizing"
+
+### Content Themes to Emphasize
+
+1. **Following Smart Money** - Institutional flows, accumulation patterns
+2. **Bottleneck Plays** - Infrastructure, supply chain, capacity constraints
+3. **Theme Momentum** - Hot sectors, rotating capital, catalyst-driven
+4. **Contrarian Opportunities** - Cold themes, oversold setups, patience plays
+5. **Discipline Over FOMO** - Patience, systematic approach, no chasing
+
+### Honesty Rules
+
+Even with marketing language, NEVER hide losses:
+- Always show full P&L including losers
+- Frame losses positively: "Stop hit = system working as designed"
+- When underwater: "Down but managing risk - disciplined exits in place"
+
+> **Full marketing guidelines:** See `SYSTEM_OVERVIEW.md` Section 2
+
+---
 
 ### Weekly Schedule
 
@@ -940,7 +1000,14 @@ TWITTER_ACCESS_TOKEN
 TWITTER_ACCESS_SECRET
 ```
 
-**Schedule:** Posts at 08:00, 10:00, 12:00, 15:00, 18:00 UK time daily
+**Schedule (UK Time):**
+| Slot | Time | Content Type |
+|------|------|--------------|
+| 1 | 07:00 | System promo / Educational |
+| 2 | 09:00 | Theme analysis / Buy signal |
+| 3 | 12:30 | Position update with chart |
+| 4 | 15:30 | Theme / Watchlist |
+| 5 | 19:00 | Engagement / Lessons |
 
 ---
 
@@ -1010,17 +1077,38 @@ def publish_via_email(newsletter_content, subject):
 
 ---
 
-### TradingView Chart Integration (HIGH PRIORITY)
+### TradingView Chart Integration (IMPLEMENTED)
 
-**Current State:**
-- Charts referenced as `[CHART: TICKER]` placeholders
-- User manually screenshots from TradingView
-- User has existing TradingView account with custom Pine Script indicators
+**Status:** Operational via `chart_capture.py`
 
-**Target State:**
-- Auto-capture charts with user's indicators applied
-- Embed in X posts and Substack newsletters
-- Standardized dimensions for X cards (1200x630)
+**Components:**
+- `chart_capture.py` - Playwright-based TradingView screenshot capture
+- `trades/charts/` - Output directory for chart images
+- `trades/charts/chart_manifest.json` - Tracks captured charts with paths
+
+**Configuration:**
+- Layout ID: `rxC5j0SK` (saved with custom indicators)
+- X/Twitter size: 1200x800 pixels
+- Indicator names hidden via JavaScript injection
+
+**Usage:**
+```bash
+# Capture specific tickers
+python chart_capture.py --tickers AAPL,NVDA
+
+# Capture from signals file
+python chart_capture.py --tickers-from trades/signals.json
+
+# Headless mode (for CI)
+python chart_capture.py --tickers AAPL --headless
+```
+
+**Integration:**
+- Position update tweets include `image_path` field
+- `twitter_poster.py` uploads chart via Twitter API v1.1
+- Attaches media_id to tweet via Twitter API v2
+
+**Note:** Requires local run with TradingView login (not fully CI-compatible)
 
 **Implementation Options:**
 

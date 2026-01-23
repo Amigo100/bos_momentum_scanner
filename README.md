@@ -11,13 +11,13 @@ A **fully automated weekly momentum trading scanner** for US stocks with integra
 
 Every Friday after market close, the system automatically:
 
-1. **Scans 1,800+ US stocks** for momentum signals
-2. **Identifies hot themes** (AI, Energy, Defense, etc.)
-3. **Runs due diligence** on qualifying stocks
-4. **Generates 35 tweets** for the week (5/day)
-5. **Compiles newsletter** ready for Substack
+1. **Scans 1,800+ US stocks** using our proprietary multi-step screening process
+2. **Identifies hot themes** and tracks institutional money flows
+3. **Runs rigorous due diligence** on qualifying signals
+4. **Generates 35 tweets** for the week (5/day) with marketing-optimized language
+5. **Compiles newsletter** with full analysis ready for Substack
 6. **Creates Substack Notes** for Tuesday/Thursday mid-week updates
-7. **Posts to X** automatically via GitHub Actions
+7. **Posts to X automatically** via GitHub Actions with chart attachments
 
 ---
 
@@ -43,56 +43,36 @@ python scanner.py --web-search
 
 | Day | Automated | Manual |
 |-----|-----------|--------|
-| **Friday** | Full scan, DD, tweets, newsletter compilation | - |
-| **Saturday** | Tweet posting (5 posts) | Copy newsletter to Substack, add charts |
+| **Friday** | Full scan, DD, tweets, newsletter, notes | - |
+| **Saturday** | Tweet posting (5 posts) | Copy newsletter to Substack (~10 min) |
 | **Sunday** | Tweet posting (5 posts) | - |
 | **Monday** | Tweet posting (5 posts) | - |
-| **Tuesday** | Tweet posting (5 posts), Substack Note ready | Post Tuesday Note to Substack |
+| **Tuesday** | Tweet posting (5 posts) | Post "Portfolio Pulse" to Notes (~2 min) |
 | **Wednesday** | Tweet posting (5 posts) | - |
-| **Thursday** | Tweet posting (5 posts), Substack Note ready | Post Thursday Note to Substack |
+| **Thursday** | Tweet posting (5 posts) | Post "Trade Spotlight" to Notes (~2 min) |
 
-**Only manual steps:** Substack newsletter publish (~10 min) + Tuesday/Thursday notes (~2 min each)
-
----
-
-## Entry & Exit Strategy
-
-### ENTRY (Buy Signal)
-```
-1. Weekly HMA Pivot BUY signal (bullish structure break)
-2. Beta >= 1.5 (high momentum)
-3. Banker score > 55 (institutional accumulation)
-4. Hot theme confirmed (PRIME or INVESTABLE)
-5. Gatekeeper PASS decision
-6. Due Diligence confirms
-```
-
-### EXIT (Sell Signal)
-```
-PRIMARY:  20% trailing stop from highest weekly close
-CAUTION:  Weekly BoS Down → tighten stop to 15%
-```
+**Total manual time:** ~15 minutes per week
 
 ---
 
-## Pipeline Architecture
+## System Overview
+
+Our proprietary 5-gate system filters 1,800 stocks down to 3-5 actionable signals:
 
 ```
 Universe (1,800 tickers)
         ↓
-   Technical Gate (Beta >= 1.5 + HMA Pivot BUY + Banker > 55)
+   Gate 1: Technical Breakout Confirmation
         ↓
-   Thematic Analyzer (Theme classification + stock mapping)
+   Gate 2: Smart Money Accumulation Signals
         ↓
-   Gatekeeper (PASS / CAUTION / FAIL decisions)
+   Gate 3: Theme Momentum Alignment
         ↓
-   Due Diligence (Deal Memo for PASS signals)
+   Gate 4: Quality Gatekeeper (LLM analysis)
         ↓
-   Portfolio Update (track positions, P&L, stops)
+   Gate 5: Deep Due Diligence
         ↓
-   Content Generation (tweets, newsletter, Substack notes)
-        ↓
-   Auto-Posting (X via GitHub Actions)
+   PASS Signals (3-5 stocks/week)
 ```
 
 ---
@@ -103,34 +83,27 @@ Universe (1,800 tickers)
 | File | Purpose |
 |------|---------|
 | `scanner.py` | Main pipeline orchestrator |
-| `thematic_analyzer.py` | LLM theme discovery and scoring |
-| `gatekeeper.py` | LLM final quality gate |
-| `portfolio_manager.py` | Trade tracking, P&L, Google Sheets export |
+| `thematic_analyzer.py` | Theme discovery and stock mapping |
+| `gatekeeper.py` | Quality gate with PASS/CAUTION/FAIL decisions |
+| `portfolio_manager.py` | Trade tracking, P&L, stop management |
+| `dd_automator.py` | Automated due diligence |
 
 ### Content Generation
 | File | Purpose |
 |------|---------|
-| `tweet_generator.py` | Generate 35 weekly tweets |
-| `newsletter_compiler.py` | Compile full newsletter with DD |
+| `tweet_generator.py` | 35 weekly tweets with marketing language rules |
+| `newsletter_compiler.py` | Full HTML newsletter compilation |
 | `substack_notes_generator.py` | Tuesday/Thursday mid-week notes |
 | `market_analyzer.py` | Market context analysis |
-| `dd_automator.py` | Automated due diligence |
-
-### Automation
-| File | Purpose |
-|------|---------|
-| `run_friday.sh` | Full Friday pipeline script |
-| `.github/workflows/friday_scan.yml` | Friday scan automation |
-| `.github/workflows/post_content.yml` | Daily tweet posting |
-| `output_paths.py` | Centralized folder structure |
-
-### Utilities
-| File | Purpose |
-|------|---------|
-| `verify_bos.py` | Debug signal calculation |
-| `diagnose_bos.py` | Universe state analysis |
-| `email_notifier.py` | Email notifications |
 | `chart_capture.py` | TradingView chart screenshots |
+
+### Publishing
+| File | Purpose |
+|------|---------|
+| `twitter_poster.py` | X/Twitter API posting with media |
+| `.github/workflows/friday_scan.yml` | Weekly scan automation (Fridays 21:30 UTC) |
+| `.github/workflows/daily_post.yml` | 5 tweets/day at scheduled times |
+| `output_paths.py` | Centralized folder structure management |
 
 ---
 
@@ -138,31 +111,19 @@ Universe (1,800 tickers)
 
 ```
 trades/
-├── current/                    # Latest outputs (symlinked)
+├── current/                    # Latest week's outputs
+│   ├── newsletter.html         ← Copy to Substack Saturday
 │   ├── newsletter_briefing.md
-│   ├── newsletter.html
-│   ├── tweets.json
+│   ├── signals.json
 │   └── substack_notes/
-│       ├── tuesday_note.md
-│       └── thursday_note.md
+│       ├── tuesday_note.md     ← Copy to Notes Tuesday
+│       └── thursday_note.md    ← Copy to Notes Thursday
 │
-├── weeks/                      # Weekly archives
-│   ├── 2026-W03/
-│   ├── 2026-W04/
-│   └── ...
-│
-├── charts/                     # Chart images
-│   └── chart_manifest.json
-│
-├── grok_prompts/              # Daily tweet files
-│   ├── latest_grok_prompts.md
-│   ├── monday_prompts.md
-│   └── ...
-│
-├── portfolio.csv              # Source of truth for trades
-├── signals.json               # Latest scan results
-├── analysis_log.csv           # Historical scan data
-└── content_queue.json         # Tweet posting queue
+├── weeks/                      # Weekly archives (2026-W04, etc.)
+├── charts/                     # Chart images with manifest
+├── portfolio.csv               # Source of truth for trades
+├── content_queue.json          # Tweet posting queue with status
+└── signals.json                # Latest scan results
 ```
 
 ---
@@ -171,22 +132,19 @@ trades/
 
 ### Full Pipeline
 ```bash
-# Automated Friday run (what GitHub Actions does)
+# Automated Friday run
 ./run_friday.sh
 
-# Manual full pipeline with web search
+# Manual with web search (~$2-5)
 python scanner.py --web-search
 ```
 
 ### Scanner Options
 ```bash
-# Technical scan only (FREE)
+# Technical scan only (FREE, no LLM)
 python scanner.py --no-llm
 
-# With themes, skip gatekeeper
-python scanner.py --no-momentum
-
-# Full pipeline with web search (~$1-3)
+# Full pipeline with web search
 python scanner.py --web-search
 
 # Limit to top N by beta
@@ -198,11 +156,26 @@ python scanner.py --web-search --top 50
 # Generate newsletter
 python newsletter_compiler.py --full
 
-# Generate tweets
+# Generate tweets (with marketing language rules)
 python tweet_generator.py
 
 # Generate Substack notes
 python substack_notes_generator.py
+
+# Capture charts (requires TradingView login)
+python chart_capture.py --tickers AAPL,NVDA
+```
+
+### Publishing
+```bash
+# Post next pending tweet
+source .env && python twitter_poster.py
+
+# Force post regardless of schedule
+source .env && python twitter_poster.py --force
+
+# Dry run (show what would post)
+python twitter_poster.py --dry-run
 ```
 
 ### Portfolio Management
@@ -222,8 +195,14 @@ python portfolio_manager.py --export
 ## Environment Variables
 
 ```bash
-# Required
+# Required for LLM analysis
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
+
+# Required for X posting (also set in GitHub Secrets)
+export X_API_KEY="..."
+export X_API_SECRET="..."
+export X_ACCESS_TOKEN="..."
+export X_ACCESS_SECRET="..."
 
 # Optional: Email notifications
 export SMTP_SERVER="smtp.gmail.com"
@@ -231,12 +210,6 @@ export SMTP_PORT="587"
 export EMAIL_SENDER="you@gmail.com"
 export EMAIL_PASSWORD="app-password"
 export EMAIL_RECIPIENTS="you@gmail.com"
-
-# For X posting (GitHub Secrets)
-TWITTER_API_KEY
-TWITTER_API_SECRET
-TWITTER_ACCESS_TOKEN
-TWITTER_ACCESS_SECRET
 ```
 
 ---
@@ -245,12 +218,26 @@ TWITTER_ACCESS_SECRET
 
 | Component | Cost per Run |
 |-----------|--------------|
-| Thematic Analyzer | ~$0.15-0.25 |
-| Gatekeeper (per stock) | ~$0.10-0.20 |
-| Due Diligence (per stock) | ~$0.30-0.50 |
-| Market Analysis | ~$0.10 |
-| Newsletter Compilation | ~$0.20 |
+| Scanner (themes + gating) | ~$1.00-1.50 |
+| Due Diligence (per signal) | ~$0.30-0.50 |
+| Market Analysis | ~$0.20-0.30 |
+| Newsletter Compilation | ~$0.20-0.50 |
+| Tweet Generation | ~$0.30-0.50 |
 | **Total Friday Pipeline** | **~$2-5** |
+
+Annual projection: ~$100-250/year
+
+---
+
+## Tweet Posting Schedule (UK Time)
+
+| Slot | Time | Content Type |
+|------|------|--------------|
+| 1 | 07:00 | System promo / Educational |
+| 2 | 09:00 | Theme analysis / Buy signal |
+| 3 | 12:30 | Position update with chart |
+| 4 | 15:30 | Theme / Watchlist |
+| 5 | 19:00 | Engagement / Lessons |
 
 ---
 
@@ -258,10 +245,21 @@ TWITTER_ACCESS_SECRET
 
 | File | Purpose |
 |------|---------|
-| `CLAUDE.md` | Full system documentation for AI context |
+| `SYSTEM_OVERVIEW.md` | **Complete marketing & automation guide** |
+| `CLAUDE.md` | Full technical documentation |
 | `SETUP.md` | External service setup guide |
-| `SYSTEM_OVERVIEW.md` | Marketing & improvement assessment |
-| `docs/archive/` | Historical planning documents |
+
+---
+
+## Marketing Language Guidelines
+
+All generated content follows these rules:
+- **NO revealing** specific strategy details (stop percentages, indicator names)
+- **USE** approved phrases: "proprietary signals", "smart money accumulation", "theme momentum"
+- **FOCUS** on following institutional money, bottleneck plays, discipline over FOMO
+- **HONEST** about losses - frame positively but never hide them
+
+See `SYSTEM_OVERVIEW.md` Section 2 for full marketing language rules.
 
 ---
 

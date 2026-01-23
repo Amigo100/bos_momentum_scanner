@@ -35,6 +35,14 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent
 TRADES_DIR = BASE_DIR / "trades"
 
+# Import marketing vocabulary for validation
+try:
+    from marketing_vocabulary import validate_content, BANNED_TERMS
+    MARKETING_VOCABULARY_AVAILABLE = True
+except ImportError:
+    MARKETING_VOCABULARY_AVAILABLE = False
+    BANNED_TERMS = []
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # OUTPUT DIRECTORY HELPERS
@@ -357,6 +365,13 @@ def generate_thursday_note(signals: Dict, portfolio: List[Dict], prices: Dict[st
 
 def save_note(content: str, filename: str, current_dir: Path, week_dir: Path):
     """Save note to both current/ and weekly archive directories."""
+    # Validate content for banned marketing terms
+    if MARKETING_VOCABULARY_AVAILABLE:
+        is_valid, violations = validate_content(content)
+        if not is_valid:
+            print(f"  ⚠️  WARNING: Note '{filename}' contains banned terms: {violations}")
+            print("      Review content before publishing to Substack.")
+
     # Save to current/
     current_path = current_dir / "substack_notes" / filename
     with open(current_path, 'w') as f:

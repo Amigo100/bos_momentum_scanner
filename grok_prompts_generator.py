@@ -52,6 +52,14 @@ ACCOUNT_HANDLE = "@SterlingSignals"
 # Days of the week for scheduling
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+# Import marketing vocabulary for validation
+try:
+    from marketing_vocabulary import validate_content, BANNED_TERMS
+    MARKETING_VOCABULARY_AVAILABLE = True
+except ImportError:
+    MARKETING_VOCABULARY_AVAILABLE = False
+    BANNED_TERMS = []
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DATA STRUCTURES
@@ -1442,6 +1450,16 @@ def save_prompts(prompts: List[GrokPrompt], data: PortfolioData, output_dir: Pat
     
     # Main file with all prompts
     main_content = generate_prompts_markdown(prompts, data)
+
+    # Validate content for banned marketing terms
+    if MARKETING_VOCABULARY_AVAILABLE:
+        is_valid, violations = validate_content(main_content)
+        if not is_valid:
+            print(f"  ⚠️ WARNING: Prompts contain banned terms: {violations}")
+            print("     Consider reviewing generated prompts.")
+        else:
+            print("  ✅ Prompts passed vocabulary validation")
+
     main_file = output_dir / f"grok_prompts_{date_str}.md"
     with open(main_file, 'w') as f:
         f.write(main_content)

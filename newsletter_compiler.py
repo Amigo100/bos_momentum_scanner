@@ -39,6 +39,14 @@ try:
 except ImportError:
     OUTPUT_PATHS_AVAILABLE = False
 
+# Import marketing vocabulary for validation
+try:
+    from marketing_vocabulary import validate_content, BANNED_TERMS
+    MARKETING_VOCABULARY_AVAILABLE = True
+except ImportError:
+    MARKETING_VOCABULARY_AVAILABLE = False
+    BANNED_TERMS = []
+
 TRADES_DIR = Path(__file__).parent / "trades"
 CHARTS_DIR = TRADES_DIR / "charts"
 
@@ -89,6 +97,9 @@ COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from thes
 
 ## PORTFOLIO STATUS
 {portfolio_status}
+
+## PERFORMANCE VS BENCHMARK
+{benchmark_comparison}
 
 ---
 
@@ -156,7 +167,8 @@ def compile_newsletter_llm(
     market_context: str,
     scanner_briefing: str,
     dd_results: str,
-    portfolio_status: str
+    portfolio_status: str,
+    benchmark_comparison: str = ""
 ) -> str:
     """Use Claude to compile the full newsletter."""
     if anthropic is None:
@@ -173,7 +185,8 @@ def compile_newsletter_llm(
         market_context=market_context or "[No market context available]",
         scanner_briefing=scanner_briefing or "[No scanner briefing available]",
         dd_results=dd_results or "[No DD results available]",
-        portfolio_status=portfolio_status or "[No portfolio data available]"
+        portfolio_status=portfolio_status or "[No portfolio data available]",
+        benchmark_comparison=benchmark_comparison or "[No benchmark data available]"
     )
 
     try:
@@ -288,6 +301,102 @@ def load_portfolio_status() -> str:
         for row in reader:
             if row.get('status') == 'OPEN':
                 lines.append(f"| {row['ticker']} | ${row['entry_price']} | {row.get('theme', 'N/A')} | {row['status']} |")
+
+    return "\n".join(lines)
+
+
+def get_spy_ytd_return() -> float:
+    """Get SPY YTD return for benchmark comparison."""
+    try:
+        import yfinance as yf
+        import pandas as pd
+
+        spy = yf.Ticker("SPY")
+        hist = spy.history(period="1y")
+
+        # Find first trading day of year
+        year_start = datetime(datetime.now().year, 1, 1)
+        ytd_data = hist[hist.index >= pd.Timestamp(year_start)]
+
+        if len(ytd_data) >= 2:
+            return ((ytd_data['Close'].iloc[-1] / ytd_data['Close'].iloc[0]) - 1) * 100
+    except ImportError:
+        print("  Note: yfinance not available for SPY comparison")
+    except Exception as e:
+        print(f"  Warning: Could not fetch SPY data: {e}")
+
+    return 0.0
+
+
+def calculate_portfolio_ytd_return() -> float:
+    """Calculate portfolio YTD return from portfolio.csv."""
+    portfolio_file = TRADES_DIR / "portfolio.csv"
+    if not portfolio_file.exists():
+        return 0.0
+
+    try:
+        import csv
+        import yfinance as yf
+
+        total_pnl_pct = 0.0
+        open_count = 0
+
+        with open(portfolio_file, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get('status') == 'OPEN':
+                    ticker = row.get('ticker', '')
+                    entry_price = float(row.get('entry_price') or 0)
+
+                    if ticker and entry_price > 0:
+                        try:
+                            # Get current price
+                            stock = yf.Ticker(ticker)
+                            current_price = stock.info.get('regularMarketPrice') or stock.info.get('currentPrice', 0)
+
+                            if current_price > 0:
+                                pnl_pct = ((current_price / entry_price) - 1) * 100
+                                total_pnl_pct += pnl_pct
+                                open_count += 1
+                        except:
+                            pass
+
+        if open_count > 0:
+            return total_pnl_pct / open_count  # Average return across positions
+
+    except ImportError:
+        print("  Note: yfinance not available for portfolio calculation")
+    except Exception as e:
+        print(f"  Warning: Could not calculate portfolio return: {e}")
+
+    return 0.0
+
+
+def generate_benchmark_comparison() -> str:
+    """Generate Performance vs Benchmark markdown section."""
+    portfolio_return = calculate_portfolio_ytd_return()
+    spy_return = get_spy_ytd_return()
+    alpha = portfolio_return - spy_return
+
+    lines = [
+        "### Performance vs Benchmark",
+        "",
+        "| Metric | Return |",
+        "|--------|--------|",
+        f"| **Portfolio YTD** | {portfolio_return:+.1f}% |",
+        f"| **SPY YTD** | {spy_return:+.1f}% |",
+        f"| **Alpha** | {alpha:+.1f}% |",
+        "",
+    ]
+
+    if alpha > 0:
+        lines.append(f"*Outperforming the S&P 500 by {alpha:.1f} percentage points.*")
+    elif alpha < 0:
+        lines.append(f"*Underperforming SPY by {abs(alpha):.1f}pp. Staying disciplined - process over short-term results.*")
+    else:
+        lines.append("*Tracking the market benchmark.*")
+
+    lines.append("")
 
     return "\n".join(lines)
 
@@ -641,13 +750,22 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
         else:
             print("    ⚠️ No portfolio data")
 
+        # Step 4b: Generate benchmark comparison
+        print("\n  Step 4b: Benchmark Comparison (Portfolio vs SPY)")
+        benchmark_comparison = generate_benchmark_comparison()
+        if benchmark_comparison:
+            print("    ✅ Generated SPY comparison")
+        else:
+            print("    ⚠️ No benchmark data")
+
         # Step 5: LLM compilation
         print("\n  Step 5: LLM Newsletter Compilation")
         compiled_newsletter = compile_newsletter_llm(
             market_analysis,
             scanner_briefing,
             dd_results,
-            portfolio_status
+            portfolio_status,
+            benchmark_comparison
         )
 
         if compiled_newsletter:
@@ -670,6 +788,16 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
 
         with open(briefing_path, 'r') as f:
             md_content = f.read()
+
+    # Validate content for banned marketing terms
+    if MARKETING_VOCABULARY_AVAILABLE:
+        print("\n  🔍 Validating content for banned terms...")
+        is_valid, violations = validate_content(md_content)
+        if not is_valid:
+            print(f"  ⚠️ WARNING: Newsletter contains banned terms: {violations}")
+            print("     Review recommended before publishing.")
+        else:
+            print("  ✅ Content passed vocabulary validation")
 
     # Convert to HTML
     print("\n  🔄 Converting to HTML...")

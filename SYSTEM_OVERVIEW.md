@@ -203,12 +203,12 @@ Even with marketing language, NEVER hide losses:
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  X/TWITTER (daily_post.yml + twitter_poster.py)                            │
-│  └─> 5 posts/day at scheduled times (UK)                                   │
-│      • Slot 1: 07:00 - Early morning                                       │
-│      • Slot 2: 09:00 - Morning                                             │
-│      • Slot 3: 12:30 - Midday                                              │
-│      • Slot 4: 15:30 - Afternoon                                           │
-│      • Slot 5: 19:00 - Evening                                             │
+│  └─> 5 posts/day at scheduled times (Eastern Time)                         │
+│      • Slot 1: 08:00 ET - Pre-market / Beat SPY hooks                      │
+│      • Slot 2: 10:00 ET - Morning (30min after open)                       │
+│      • Slot 3: 12:30 ET - Midday                                           │
+│      • Slot 4: 15:30 ET - Power Hour (CRITICAL)                            │
+│      • Slot 5: 18:00 ET - After-hours                                      │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```

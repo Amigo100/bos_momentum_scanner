@@ -999,15 +999,38 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
     # Assign tweets to schedule
     category_index = {cat: 0 for cat in categories_needed}
 
-    # Calculate dates (start from next Monday)
+    # Calculate dates for the week
+    # When run on Friday (after scan), schedule tweets starting Saturday
+    # When run on other days, schedule starting from next Saturday
     today = datetime.now()
-    days_until_monday = (7 - today.weekday()) % 7
-    if days_until_monday == 0:
-        days_until_monday = 7  # Next Monday if today is Monday
-    start_date = today + timedelta(days=days_until_monday)
+    current_weekday = today.weekday()  # 0=Monday, 4=Friday, 5=Saturday, 6=Sunday
+
+    if current_weekday == 4:  # Friday - start from tomorrow (Saturday)
+        days_until_saturday = 1
+    elif current_weekday == 5:  # Saturday - start from today
+        days_until_saturday = 0
+    elif current_weekday == 6:  # Sunday - start from yesterday (use current week)
+        days_until_saturday = -1
+    else:  # Mon-Thu - start from this coming Saturday
+        days_until_saturday = 5 - current_weekday
+
+    # start_date is Saturday - calculate offsets from Saturday
+    # Saturday=0, Sunday=1, Monday=2, Tuesday=3, Wednesday=4, Thursday=5, Friday=6
+    start_date = today + timedelta(days=days_until_saturday)
+
+    # Map day names to offsets from Saturday
+    day_offset_from_saturday = {
+        "Saturday": 0,
+        "Sunday": 1,
+        "Monday": 2,
+        "Tuesday": 3,
+        "Wednesday": 4,
+        "Thursday": 5,
+        "Friday": 6
+    }
 
     for day, slot, category in categories_schedule:
-        day_offset = DAYS.index(day)
+        day_offset = day_offset_from_saturday[day]
         scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
 
         # Get next tweet for this category
@@ -1062,12 +1085,30 @@ def generate_mock_tweets() -> List[Tweet]:
     """Generate mock tweets for testing without API calls."""
     tweets = []
 
+    # Same logic as generate_all_tweets - start from Saturday
     today = datetime.now()
-    days_until_monday = (7 - today.weekday()) % 7 or 7
-    start_date = today + timedelta(days=days_until_monday)
+    current_weekday = today.weekday()
 
-    for i, day in enumerate(DAYS):
-        scheduled_date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+    if current_weekday == 4:  # Friday
+        days_until_saturday = 1
+    elif current_weekday == 5:  # Saturday
+        days_until_saturday = 0
+    elif current_weekday == 6:  # Sunday
+        days_until_saturday = -1
+    else:  # Mon-Thu
+        days_until_saturday = 5 - current_weekday
+
+    start_date = today + timedelta(days=days_until_saturday)
+
+    # Day offsets from Saturday
+    day_offset_from_saturday = {
+        "Saturday": 0, "Sunday": 1, "Monday": 2, "Tuesday": 3,
+        "Wednesday": 4, "Thursday": 5, "Friday": 6
+    }
+
+    for day in DAYS:
+        day_offset = day_offset_from_saturday[day]
+        scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
         for slot in [1, 2, 3]:
             tweets.append(Tweet(
                 id=f"{day.lower()}_{slot}_mock",
@@ -1215,6 +1256,190 @@ def print_summary(tweets: List[Tweet]):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# THREAD GENERATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+THREAD_SYSTEM = """You are writing an educational X/Twitter thread for @SterlingSignals.
+
+Your threads are:
+- 5 tweets long (numbered 1/5, 2/5, etc.)
+- Educational and value-driven
+- Each tweet stands alone but builds a narrative
+- Under 280 characters per tweet
+- Uses line breaks for readability
+- Ends with CTA to Substack
+
+Topics you cover:
+- Bottleneck investing (infrastructure, supply chain)
+- Systematic stock selection methodology
+- Theme momentum analysis
+- Risk management principles
+- Market psychology and discipline
+
+STYLE:
+- Confident but not arrogant
+- Data-driven with specific examples
+- Accessible to regular investors
+- No jargon, no banned technical terms
+"""
+
+THREAD_PROMPT = """Generate a 5-tweet educational thread on this topic:
+
+TOPIC: {topic}
+
+CONTEXT:
+{context}
+
+REQUIREMENTS:
+1. Each tweet numbered (1/5, 2/5, etc.)
+2. Under 280 characters each
+3. Tweet 1: Hook - provocative question or bold claim
+4. Tweet 2: Problem - why most investors fail at this
+5. Tweet 3: Insight - your systematic solution
+6. Tweet 4: Proof - specific example or data point
+7. Tweet 5: CTA - link to https://sterlingsignals.substack.com
+
+Output as JSON array:
+[
+  {{"number": 1, "text": "..."}},
+  {{"number": 2, "text": "..."}},
+  ...
+]
+"""
+
+
+@dataclass
+class Thread:
+    """Represents a multi-tweet thread."""
+    id: str
+    topic: str
+    tweets: List[Dict]  # [{number: 1, text: "..."}, ...]
+    generated_at: str = ""
+    scheduled_date: str = ""
+
+
+def generate_thread(
+    topic: str,
+    context: str = "",
+    client: Optional[anthropic.Anthropic] = None
+) -> Thread:
+    """
+    Generate a 5-tweet educational thread.
+
+    Args:
+        topic: Thread topic (e.g., "bottleneck investing", "systematic selection")
+        context: Additional context for personalization
+        client: Anthropic client (creates one if not provided)
+
+    Returns:
+        Thread object with 5 tweets
+    """
+    if client is None:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            print("  ⚠️ ANTHROPIC_API_KEY not set")
+            return Thread(
+                id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
+                topic=topic,
+                tweets=[{"number": i, "text": f"[Thread {i}/5 placeholder]"} for i in range(1, 6)],
+                generated_at=datetime.now().isoformat()
+            )
+        client = anthropic.Anthropic(api_key=api_key)
+
+    prompt = THREAD_PROMPT.format(
+        topic=topic,
+        context=context or "General educational content for momentum investors."
+    )
+
+    try:
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=2000,
+            system=THREAD_SYSTEM,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        response_text = response.content[0].text
+
+        # Parse JSON response
+        json_match = re.search(r'\[[\s\S]*\]', response_text)
+        if json_match:
+            tweets = json.loads(json_match.group())
+        else:
+            tweets = [{"number": i, "text": f"[Parse error - tweet {i}]"} for i in range(1, 6)]
+
+        # Validate each tweet
+        if MARKETING_VOCABULARY_AVAILABLE:
+            for tweet in tweets:
+                is_valid, violations = validate_content(tweet.get('text', ''))
+                if not is_valid:
+                    print(f"  ⚠️ Thread tweet {tweet.get('number')} contains banned terms: {violations}")
+
+        return Thread(
+            id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
+            topic=topic,
+            tweets=tweets,
+            generated_at=datetime.now().isoformat()
+        )
+
+    except Exception as e:
+        print(f"  ⚠️ Thread generation error: {e}")
+        return Thread(
+            id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
+            topic=topic,
+            tweets=[{"number": i, "text": f"[Error: {e}]"} for i in range(1, 6)],
+            generated_at=datetime.now().isoformat()
+        )
+
+
+def save_thread(thread: Thread, output_dir: Path = None) -> Path:
+    """Save thread to JSON file."""
+    if output_dir is None:
+        output_dir = TWEETS_DIR
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    filename = f"thread_{datetime.now():%Y%m%d_%H%M%S}.json"
+    output_path = output_dir / filename
+
+    with open(output_path, 'w') as f:
+        json.dump({
+            'id': thread.id,
+            'topic': thread.topic,
+            'tweets': thread.tweets,
+            'generated_at': thread.generated_at,
+            'scheduled_date': thread.scheduled_date
+        }, f, indent=2)
+
+    print(f"  Thread saved: {output_path}")
+    return output_path
+
+
+THREAD_TOPICS = [
+    {
+        'topic': 'Bottleneck Investing',
+        'context': 'Explain the concept of second-order investing: instead of buying the obvious trend (AI), buy what the trend NEEDS that is in shortage (power, cooling). Use current examples like data centers, grid infrastructure.'
+    },
+    {
+        'topic': 'The 5-Gate System',
+        'context': 'Explain systematic stock selection process without revealing specific gate mechanics. Focus on: starting with 1,800 stocks, filtering through volatility criteria, smart money signals, sector alignment, and final forensic review. Emphasize how filtering down to 3-5 weekly picks reduces noise and improves conviction. DO NOT mention specific indicator names or thresholds.'
+    },
+    {
+        'topic': 'Systematic Risk Management',
+        'context': 'Explain capital preservation protocols: predetermined exits, position sizing, never fighting the system. No ego, just execution. The stop hit = system working as designed.'
+    },
+    {
+        'topic': 'Following Smart Money',
+        'context': 'Explain how tracking institutional capital flows helps identify winning themes. Focus on sector rotation, following where big money is accumulating, and avoiding crowded retail trades. Use "institutional accumulation signals" and "smart money flows" language.'
+    },
+    {
+        'topic': 'Beat the Index',
+        'context': 'Explain why systematic momentum selection beats passive indexing: concentration in best setups, active sector rotation timing, disciplined risk management vs buy-and-hope. Reference SPY/QQQ underperformance in choppy markets.'
+    },
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1223,7 +1448,49 @@ def main():
     parser.add_argument("--briefing", type=str, help="Path to newsletter briefing")
     parser.add_argument("--output", type=str, help="Output directory")
     parser.add_argument("--mock", action="store_true", help="Use mock data (no API)")
+    parser.add_argument("--thread", type=str, help="Generate thread on specific topic")
+    parser.add_argument("--thread-list", action="store_true", help="List available thread topics")
     args = parser.parse_args()
+
+    # Thread topic list mode
+    if args.thread_list:
+        print("\n  Available Thread Topics:")
+        print("  " + "─" * 50)
+        for i, t in enumerate(THREAD_TOPICS, 1):
+            print(f"\n  {i}. {t['topic']}")
+            print(f"     {t['context'][:80]}...")
+        print("\n  Usage: python tweet_generator.py --thread \"Bottleneck Investing\"")
+        return
+
+    # Thread generation mode
+    if args.thread:
+        print("\n" + "═" * 60)
+        print("  THREAD GENERATOR")
+        print("═" * 60)
+
+        # Find matching topic
+        topic_match = next((t for t in THREAD_TOPICS if args.thread.lower() in t['topic'].lower()), None)
+
+        if topic_match:
+            print(f"\n  📝 Generating thread: {topic_match['topic']}")
+            thread = generate_thread(topic_match['topic'], topic_match['context'])
+        else:
+            print(f"\n  📝 Generating thread: {args.thread}")
+            thread = generate_thread(args.thread)
+
+        # Save thread
+        output_dir = Path(args.output) if args.output else TWEETS_DIR
+        save_thread(thread, output_dir)
+
+        # Print preview
+        print("\n  Thread Preview:")
+        print("  " + "─" * 50)
+        for tweet in thread.tweets:
+            print(f"\n  {tweet.get('number', '?')}/5:")
+            print(f"  {tweet.get('text', '[empty]')}")
+
+        print("\n" + "═" * 60)
+        return
 
     print("\n" + "═" * 60)
     print("  TWEET GENERATOR - Claude-Powered Content")

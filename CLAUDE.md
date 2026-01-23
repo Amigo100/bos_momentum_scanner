@@ -1022,14 +1022,14 @@ TWITTER_ACCESS_TOKEN
 TWITTER_ACCESS_SECRET
 ```
 
-**Schedule (UK Time):**
-| Slot | Time | Content Type |
-|------|------|--------------|
-| 1 | 07:00 | System promo / Educational |
-| 2 | 09:00 | Theme analysis / Buy signal |
+**Schedule (Eastern Time):**
+| Slot | Time (ET) | Content Type |
+|------|-----------|--------------|
+| 1 | 08:00 | Pre-market / Beat SPY / Roth IRA hooks |
+| 2 | 10:00 | Theme analysis / Buy signal |
 | 3 | 12:30 | Position update with chart |
-| 4 | 15:30 | Theme / Watchlist |
-| 5 | 19:00 | Engagement / Lessons |
+| 4 | 15:30 | **Power Hour reaction** (CRITICAL) |
+| 5 | 18:00 | Engagement / Lessons |
 
 ---
 
@@ -1692,18 +1692,26 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
 ### Daily (Monday-Sunday)
 
 ```
-[ ] Morning post (08:00 UK)
+[ ] Pre-market post (08:00 ET)
     - Open trades/grok_prompts/{day}_prompts.md
     - Copy Slot 1 prompt to Grok
     - Review generated tweet
     - Post to X
 
-[ ] Midday post (12:30 UK)
+[ ] Morning post (10:00 ET)
     - Copy Slot 2 prompt to Grok
     - Post to X
 
-[ ] Evening post (18:00 UK)
+[ ] Midday post (12:30 ET)
     - Copy Slot 3 prompt to Grok
+    - Post to X
+
+[ ] Power Hour post (15:30 ET) - CRITICAL
+    - Copy Slot 4 prompt to Grok
+    - Post to X
+
+[ ] After-hours post (18:00 ET)
+    - Copy Slot 5 prompt to Grok
     - Post to X
 ```
 

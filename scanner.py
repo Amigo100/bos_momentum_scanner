@@ -1241,15 +1241,28 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print(f"  ────────────────────────────────────")
     print(f"  Total tickers scanned:    {stats.tickers_loaded:>6}")
     print(f"  Data downloaded:          {stats.data_downloaded:>6}")
-    print(f"  Beta >= 1.5:              {stats.beta_gte_1_8:>6}")
-    print(f"  Beta >= 2.0:              {stats.beta_gte_2_0:>6}")
-    print(f"  ────────────────────────────────────")
-    print(f"  HMA Pivot BUY (entry):    {stats.bos_bullish:>6}")
-    print(f"  HMA Pivot SELL (caution): {stats.bos_bearish:>6}")
-    print(f"  ────────────────────────────────────")
-    print(f"  Banker > 70 (Strong):     {stats.banker_gt_5:>6}")
-    print(f"  Banker > 60 (Moderate):   {stats.banker_gt_3:>6}")
-    print(f"  Banker > 55 (Slight):     {stats.banker_gt_2:>6}")
+    if verbose:
+        # Internal terminology for debugging
+        print(f"  Beta >= 1.5:              {stats.beta_gte_1_8:>6}")
+        print(f"  Beta >= 2.0:              {stats.beta_gte_2_0:>6}")
+        print(f"  ────────────────────────────────────")
+        print(f"  HMA Pivot BUY (entry):    {stats.bos_bullish:>6}")
+        print(f"  HMA Pivot SELL (caution): {stats.bos_bearish:>6}")
+        print(f"  ────────────────────────────────────")
+        print(f"  Banker > 70 (Strong):     {stats.banker_gt_5:>6}")
+        print(f"  Banker > 60 (Moderate):   {stats.banker_gt_3:>6}")
+        print(f"  Banker > 55 (Slight):     {stats.banker_gt_2:>6}")
+    else:
+        # Marketing-safe terminology
+        print(f"  Volatility Expansion:     {stats.beta_gte_1_8:>6}")
+        print(f"  High Volatility:          {stats.beta_gte_2_0:>6}")
+        print(f"  ────────────────────────────────────")
+        print(f"  Structural Breakouts:     {stats.bos_bullish:>6}")
+        print(f"  Caution Signals:          {stats.bos_bearish:>6}")
+        print(f"  ────────────────────────────────────")
+        print(f"  Strong Accumulation:      {stats.banker_gt_5:>6}")
+        print(f"  Moderate Accumulation:    {stats.banker_gt_3:>6}")
+        print(f"  Slight Accumulation:      {stats.banker_gt_2:>6}")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # DIAGNOSTIC: Show sample tickers (controlled by --verbose flag)
@@ -1270,24 +1283,33 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"  │  DIAGNOSTIC: Sample Tickers (--verbose mode)                    │")
         print(f"  └─────────────────────────────────────────────────────────────────┘")
 
-    # HMA Pivot BUY signals (entry candidates)
+    # Structural breakout signals (entry candidates)
     bos_up_stocks = [s for s in stocks.values() if s.bos_bullish]
     bos_up_high_beta = [s for s in high_beta_stocks if s.bos_bullish]
-    print(f"\n  🟢 HMA PIVOT BUY: {len(bos_up_stocks)} total, {len(bos_up_high_beta)} with β≥1.5")
+    if verbose:
+        print(f"\n  🟢 HMA PIVOT BUY: {len(bos_up_stocks)} total, {len(bos_up_high_beta)} with β≥1.5")
+    else:
+        print(f"\n  🟢 STRUCTURAL BREAKOUTS: {len(bos_up_stocks)} total, {len(bos_up_high_beta)} high-volatility")
     if bos_up_stocks and verbose:
         for s in bos_up_stocks[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
             print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}{held_flag}")
 
-    # HMA Pivot SELL signals
+    # Caution signals
     bos_down_stocks = [s for s in stocks.values() if s.bos_bearish]
-    print(f"  🔴 HMA PIVOT SELL: {len(bos_down_stocks)} (caution signals)")
+    if verbose:
+        print(f"  🔴 HMA PIVOT SELL: {len(bos_down_stocks)} (caution signals)")
+    else:
+        print(f"  🔴 CAUTION SIGNALS: {len(bos_down_stocks)} (tighten stops)")
     if bos_down_stocks and verbose:
         for s in bos_down_stocks[:sample_size]:
             print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}")
 
     # Entry candidates summary
-    print(f"\n  ⭐ ENTRY CANDIDATES (BUY + β≥1.5 + Banker≥55): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
+    if verbose:
+        print(f"\n  ⭐ ENTRY CANDIDATES (BUY + β≥1.5 + Banker≥55): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
+    else:
+        print(f"\n  ⭐ ENTRY CANDIDATES (5-Gate Qualified): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
     if bos_up_high_beta:
         for s in sorted(bos_up_high_beta, key=lambda x: -x.banker)[:sample_size]:
             if s.banker >= 55:
@@ -2960,9 +2982,15 @@ def main():
     print("║" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").center(68) + "║")
     print("╚" + "═" * 68 + "╝")
     
-    print("\n  ENTRY: BoS UP + Beta ≥1.5 + Banker ≥55 + Theme Gate")
-    print(f"  EXIT:  {TRAILING_STOP_PCT:.0f}% Trailing Stop from highest close")
-    print("         (SELL signal = caution only, NOT automatic exit)")
+    # Show entry/exit criteria (marketing-safe by default, detailed with --verbose)
+    if args.verbose:
+        print("\n  ENTRY: BoS UP + Beta ≥1.5 + Banker ≥55 + Theme Gate")
+        print(f"  EXIT:  {TRAILING_STOP_PCT:.0f}% Trailing Stop from highest close")
+        print("         (SELL signal = caution only, NOT automatic exit)")
+    else:
+        print("\n  ENTRY: 5-Gate Screening (Volatility + Institutional + Theme + Forensic Audit)")
+        print("  EXIT:  Capital Preservation Protocol (systematic risk management)")
+        print("         (Caution signals = tighten stops, NOT automatic exit)")
     
     # Show pipeline based on options
     if args.no_llm:

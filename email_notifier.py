@@ -3,47 +3,60 @@
 EMAIL NOTIFIER - Multiple Recipients Support
 =============================================
 
-Setup:
-    python email_notifier.py setup
+Send email notifications to multiple recipients for scanner alerts.
 
-Add recipients:
-    python email_notifier.py add-recipient someone@example.com
-
-List recipients:
-    python email_notifier.py list
-
-Test:
-    python email_notifier.py test
+Usage:
+    python email_notifier.py setup              # Initial configuration
+    python email_notifier.py test               # Send test email
+    python email_notifier.py list               # List all recipients
+    python email_notifier.py add EMAIL          # Add a recipient
+    python email_notifier.py remove EMAIL       # Remove a recipient
 """
 
-import smtplib
-import json
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from pathlib import Path
 import getpass
+import json
+import smtplib
 import sys
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pathlib import Path
+from typing import Dict, List, Optional
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
 
 CONFIG_FILE = Path(__file__).parent / "email_config.json"
 
 
-def load_config():
-    """Load email configuration."""
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONFIG MANAGEMENT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def load_config() -> Optional[Dict]:
+    """Load email configuration from config file."""
     if not CONFIG_FILE.exists():
         return None
     with open(CONFIG_FILE, 'r') as f:
         return json.load(f)
 
 
-def save_config(config):
-    """Save email configuration."""
+def save_config(config: Dict) -> None:
+    """Save email configuration to config file (with restricted permissions)."""
     with open(CONFIG_FILE, 'w') as f:
         json.dump(config, f, indent=2)
     CONFIG_FILE.chmod(0o600)
 
 
-def setup():
-    """Interactive email setup."""
+# ═══════════════════════════════════════════════════════════════════════════════
+# SETUP & RECIPIENT MANAGEMENT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def setup() -> None:
+    """Interactive email setup wizard."""
     print("\n" + "=" * 50)
     print("EMAIL SETUP")
     print("=" * 50)
@@ -102,8 +115,8 @@ def setup():
     print("\nRun 'python email_notifier.py test' to verify")
 
 
-def add_recipient(email: str):
-    """Add a new recipient."""
+def add_recipient(email: str) -> None:
+    """Add a new recipient to the notification list."""
     config = load_config()
     if not config:
         print("✗ Email not configured. Run: python email_notifier.py setup")
@@ -122,8 +135,8 @@ def add_recipient(email: str):
     print(f"  All recipients: {', '.join(config['recipients'])}")
 
 
-def remove_recipient(email: str):
-    """Remove a recipient."""
+def remove_recipient(email: str) -> None:
+    """Remove a recipient from the notification list."""
     config = load_config()
     if not config:
         print("✗ Email not configured. Run: python email_notifier.py setup")
@@ -139,8 +152,8 @@ def remove_recipient(email: str):
     print(f"  Remaining recipients: {', '.join(config['recipients'])}")
 
 
-def list_recipients():
-    """List all recipients."""
+def list_recipients() -> None:
+    """List all configured recipients."""
     config = load_config()
     if not config:
         print("✗ Email not configured. Run: python email_notifier.py setup")
@@ -153,36 +166,59 @@ def list_recipients():
     print(f"\nFrom: {config.get('from_email', 'Not set')}")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# EMAIL SENDING
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
 def send_email(subject: str, body: str) -> bool:
-    """Send an email to all recipients."""
+    """
+    Send an email to all configured recipients.
+
+    Args:
+        subject: Email subject line
+        body: Email body text
+
+    Returns:
+        True if sent successfully, False otherwise
+
+    Raises:
+        RuntimeError: If email is not configured
+    """
     config = load_config()
     if not config:
         raise RuntimeError("Email not configured. Run: python email_notifier.py setup")
-    
+
     # Support both old and new config format
     recipients = config.get("recipients", [config.get("to_email", config["from_email"])])
-    
+
     try:
         msg = MIMEMultipart()
         msg['From'] = config['from_email']
         msg['To'] = ", ".join(recipients)
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
-        
+
         with smtplib.SMTP(config['smtp_server'], config['smtp_port']) as server:
             server.starttls()
             server.login(config['username'], config['password'])
             server.sendmail(config['from_email'], recipients, msg.as_string())
-        
+
         return True
-        
-    except Exception as e:
-        print(f"Email error: {e}")
+
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"  ✗ Email authentication failed: {e}")
+        return False
+    except smtplib.SMTPException as e:
+        print(f"  ✗ SMTP error: {e}")
+        return False
+    except OSError as e:
+        print(f"  ✗ Network error: {e}")
         return False
 
 
-def test():
-    """Send a test email to all recipients."""
+def test() -> None:
+    """Send a test email to all configured recipients."""
     config = load_config()
     if not config:
         print("✗ Email not configured. Run: python email_notifier.py setup")
@@ -205,7 +241,12 @@ Recipients configured:
         print("✗ Test email failed")
 
 
-def print_usage():
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLI
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def print_usage() -> None:
     """Print usage instructions."""
     print("""
 Email Notifier - Usage:
@@ -215,7 +256,7 @@ Email Notifier - Usage:
   python email_notifier.py list               List all recipients
   python email_notifier.py add EMAIL          Add a recipient
   python email_notifier.py remove EMAIL       Remove a recipient
-  
+
 Examples:
   python email_notifier.py add john@example.com
   python email_notifier.py add jane@example.com

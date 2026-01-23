@@ -12,7 +12,7 @@ Usage:
 """
 
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PATHS
@@ -121,7 +121,7 @@ TWEETS_PER_DAY = 5
 TWEETS_PER_WEEK = 35
 
 # Content types for tweets
-CONTENT_TYPES = [
+CONTENT_TYPES: List[str] = [
     # Original types
     "buy_signal",
     "theme_hot",
@@ -155,7 +155,7 @@ THEME_SCORE_INVESTABLE = 6.0    # >= for INVESTABLE
 THEME_SCORE_SELECTIVE = 4.5     # >= for SELECTIVE
 # Below 4.5 = AVOID
 
-THEME_WEIGHTS = {
+THEME_WEIGHTS: Dict[str, float] = {
     "catalyst": 0.40,    # Upcoming catalysts (40% weight)
     "momentum": 0.25,    # Price/flow momentum (25% weight)
     "crowding": 0.20,    # Positioning/crowding (20% weight)
@@ -188,7 +188,9 @@ CARD_ACCENT_RED = "#ff4444"   # Loss/bearish accent
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-if __name__ == "__main__":
+
+def main() -> None:
+    """Print current configuration values."""
     print("Configuration Values")
     print("=" * 60)
     print(f"\nTrading Parameters:")
@@ -199,5 +201,9 @@ if __name__ == "__main__":
     print(f"  Sonnet: {MODEL_SONNET}")
     print(f"  Opus:   {MODEL_OPUS}")
     print(f"\nTweet Schedule (ET):")
-    for slot, time in SLOT_TIMES_ET.items():
-        print(f"  Slot {slot}: {time} - {SLOTS[slot]}")
+    for slot, slot_time in SLOT_TIMES_ET.items():
+        print(f"  Slot {slot}: {slot_time} - {SLOTS[slot]}")
+
+
+if __name__ == "__main__":
+    main()

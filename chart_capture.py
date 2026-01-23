@@ -103,7 +103,7 @@ def capture_chart(
     ticker: str,
     output_dir: Path,
     date_str: str,
-    sizes: List[tuple] = None
+    sizes: Optional[List[tuple]] = None
 ) -> List[Path]:
     """
     Capture chart for a single ticker at specified sizes.
@@ -192,7 +192,7 @@ def capture_chart(
 def capture_charts(
     tickers: List[str],
     headless: bool = False,
-    output_dir: Path = None,
+    output_dir: Optional[Path] = None,
     skip_wait: bool = False
 ) -> dict:
     """
@@ -321,7 +321,7 @@ def load_tickers_from_portfolio(filepath: Path) -> List[str]:
     return tickers
 
 
-def save_chart_manifest(results: dict, output_dir: Path):
+def save_chart_manifest(results: dict, output_dir: Path) -> None:
     """Save a manifest of captured charts for other scripts to use."""
     manifest = {
         "captured_at": datetime.now().isoformat(),
@@ -339,7 +339,7 @@ def save_chart_manifest(results: dict, output_dir: Path):
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Capture TradingView charts with Playwright")
     parser.add_argument("--ticker", type=str, help="Single ticker to capture")
     parser.add_argument("--tickers", type=str, help="Comma-separated list of tickers")

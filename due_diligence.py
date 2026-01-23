@@ -164,8 +164,8 @@ Take your time to think through this carefully - I'm trusting you with real inve
 # ANALYSIS FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def run_due_diligence(ticker: str, theme_info: str = "Identified as hot sector", 
-                       budget: str = "Standard position size", save_report: bool = False):
+def run_due_diligence(ticker: str, theme_info: str = "Identified as hot sector",
+                       budget: str = "Standard position size", save_report: bool = False) -> tuple:
     """Run comprehensive due diligence using Opus 4.5 with extended thinking."""
     
     ticker = ticker.upper().strip()
@@ -275,8 +275,8 @@ def run_due_diligence(ticker: str, theme_info: str = "Identified as hot sector",
         return None, None
 
 
-def save_analysis_report(ticker: str, theme_info: str, budget: str, 
-                         thinking: str, analysis: str):
+def save_analysis_report(ticker: str, theme_info: str, budget: str,
+                         thinking: str, analysis: str) -> None:
     """Save the full analysis report to a file."""
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -323,7 +323,7 @@ def load_stock_context(ticker: str) -> dict:
                         'beta': row.get('beta', ''),
                         'reasoning': row.get('reasoning', '')
                     }
-    except:
+    except (OSError, csv.Error):
         pass
     
     return {}
@@ -433,7 +433,7 @@ run_dd = run_due_diligence_for_pipeline
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Comprehensive Due Diligence - Final check before investing",
         formatter_class=argparse.RawDescriptionHelpFormatter,

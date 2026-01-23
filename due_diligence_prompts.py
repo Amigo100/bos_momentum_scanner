@@ -332,7 +332,7 @@ def generate_quick_dd_prompt(
     return prompt
 
 
-def print_dd_prompts_for_stocks(stocks: list, output_file: str = None):
+def print_dd_prompts_for_stocks(stocks: list, output_file: Optional[str] = None) -> None:
     """
     Print Deal Memo prompts for a list of stocks that passed the Gatekeeper.
     

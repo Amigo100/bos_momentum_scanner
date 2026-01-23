@@ -334,7 +334,7 @@ def parse_briefing_markdown(briefing_path: Path) -> PortfolioData:
                 try:
                     entry_dt = datetime.strptime(entry_date, "%Y-%m-%d")
                     days_held = (datetime.now() - entry_dt).days
-                except:
+                except ValueError:
                     pass
             data.open_positions.append({
                 'ticker': row[0],
@@ -396,7 +396,7 @@ def load_open_positions_csv(trades_dir: Path, fetch_live_prices: bool = True) ->
                             try:
                                 entry_dt = datetime.strptime(entry_date, "%Y-%m-%d")
                                 days_held = (datetime.now() - entry_dt).days
-                            except:
+                            except ValueError:
                                 pass
 
                         # Map portfolio.csv fields to expected format
@@ -1498,7 +1498,7 @@ def save_prompts(prompts: List[GrokPrompt], data: PortfolioData, output_dir: Pat
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Generate 21 Grok prompts for weekly X content")
     parser.add_argument("--briefing", type=str, help="Path to newsletter briefing markdown file")
     parser.add_argument("--output", type=str, help="Output directory for prompts")

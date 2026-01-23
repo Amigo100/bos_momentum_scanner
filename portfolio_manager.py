@@ -202,13 +202,13 @@ class PortfolioManager:
         'highest_close', 'theme', 'tier', 'signal_type', 'conviction', 'notes'
     ]
     
-    def __init__(self, portfolio_file: Path = None):
+    def __init__(self, portfolio_file: Optional[Path] = None):
         self.portfolio_file = portfolio_file or PORTFOLIO_FILE
         self.trades: List[Trade] = []
         self.spy_data: pd.DataFrame = None
         self._load()
     
-    def _load(self):
+    def _load(self) -> None:
         """Load trades from CSV."""
         if not self.portfolio_file.exists():
             self.trades = []
@@ -222,7 +222,7 @@ class PortfolioManager:
             print(f"  ⚠ Error loading portfolio: {e}")
             self.trades = []
     
-    def _save(self):
+    def _save(self) -> None:
         """Save trades to CSV."""
         # Create backup first
         if self.portfolio_file.exists():
@@ -327,7 +327,7 @@ class PortfolioManager:
     # PRICE UPDATES
     # ───────────────────────────────────────────────────────────────────────────
     
-    def update_prices(self, stocks_dict: Dict = None) -> List[Trade]:
+    def update_prices(self, stocks_dict: Optional[Dict] = None) -> List[Trade]:
         """
         Update current prices for all open positions.
         
@@ -426,7 +426,7 @@ class PortfolioManager:
     # PERFORMANCE METRICS
     # ───────────────────────────────────────────────────────────────────────────
     
-    def _load_spy_data(self):
+    def _load_spy_data(self) -> None:
         """Load S&P 500 data for benchmarking."""
         if self.spy_data is None:
             try:
@@ -466,7 +466,7 @@ class PortfolioManager:
         except (IndexError, KeyError):
             return 0.0
     
-    def calculate_portfolio_return(self, days: int = None, ytd: bool = False) -> Tuple[float, int]:
+    def calculate_portfolio_return(self, days: Optional[int] = None, ytd: bool = False) -> Tuple[float, int]:
         """
         Calculate portfolio return over specified period.
         
@@ -553,7 +553,7 @@ class PortfolioManager:
     # GOOGLE SHEETS EXPORT
     # ───────────────────────────────────────────────────────────────────────────
     
-    def export_for_google_sheets(self, output_file: Path = None) -> Path:
+    def export_for_google_sheets(self, output_file: Optional[Path] = None) -> Path:
         """
         Export portfolio in a format optimized for Google Sheets.
         
@@ -701,7 +701,7 @@ For manual refresh: Ctrl+Shift+E (or Cmd+Shift+E on Mac)
     # MIGRATION
     # ───────────────────────────────────────────────────────────────────────────
     
-    def migrate_from_old_format(self):
+    def migrate_from_old_format(self) -> List[Trade]:
         """Migrate from separate open_positions.csv and trade_log.csv to unified format."""
         
         migrated = []
@@ -760,7 +760,7 @@ For manual refresh: Ctrl+Shift+E (or Cmd+Shift+E on Mac)
     # REPORTING
     # ───────────────────────────────────────────────────────────────────────────
     
-    def print_summary(self):
+    def print_summary(self) -> None:
         """Print portfolio summary to terminal."""
         
         self.update_prices()
@@ -832,7 +832,7 @@ def get_open_position_symbols() -> set:
     return pm.get_open_symbols()
 
 
-def update_portfolio_prices(stocks_dict: Dict = None):
+def update_portfolio_prices(stocks_dict: Optional[Dict] = None) -> None:
     """Update prices for open positions. Called by scanner."""
     pm = get_portfolio_manager()
     pm.update_prices(stocks_dict)
@@ -843,7 +843,7 @@ def update_portfolio_prices(stocks_dict: Dict = None):
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     import argparse
     
     parser = argparse.ArgumentParser(description="Portfolio Manager - Unified Trade Tracking")

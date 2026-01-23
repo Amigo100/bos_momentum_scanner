@@ -169,7 +169,7 @@ def print_summary(candidates: List[Dict], dd_results: List[Dict]):
     print("\n" + "═" * 70)
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Full BoS Pipeline with Due Diligence")
     parser.add_argument("--no-llm", action="store_true", help="Skip ALL LLM steps")
     parser.add_argument("--no-momentum", action="store_true", help="Skip momentum assessor")

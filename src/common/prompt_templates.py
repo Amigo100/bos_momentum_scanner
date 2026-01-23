@@ -7,7 +7,7 @@ Single source of truth for all LLM prompts used across the codebase.
 Enables version control, A/B testing, and consistent prompt patterns.
 
 Usage:
-    from prompt_templates import (
+    from src.common.prompt_templates import (
         render_prompt, get_system_prompt,
         GATEKEEPER_SYSTEM, TWEET_SYSTEM
     )
@@ -17,7 +17,8 @@ Usage:
 """
 
 from string import Template
-from typing import Any, Dict, List, Optional
+from typing import Dict, Any, List, Optional
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SYSTEM PROMPTS
@@ -173,18 +174,45 @@ We need a re-rating event - either earnings surprise, multiple expansion, or bot
 Be thorough but decisive. We're not looking for reasons to reject every stock.
 We're looking for the VARIANT PERCEPTION that makes this a 50%+ winner or the FATAL FLAW that kills it."""
 
+NEWSLETTER_SYSTEM = """You are a professional financial newsletter writer for Sterling Signals on Substack.
+
+AUDIENCE: US active investors and swing traders seeking momentum opportunities.
+
+STYLE:
+- Professional but accessible
+- Data-driven with specific numbers
+- Confident analysis, not hedging language
+- Focus on themes, catalysts, and systematic approach
+
+STRUCTURE:
+- Opening hook that references performance or key insight
+- Market context section
+- Theme analysis with rankings
+- Stock-by-stock breakdown for PASS signals
+- Portfolio update with P&L
+- Week ahead preview
+
+RULES:
+- Never reveal specific system mechanics
+- Use approved marketing vocabulary
+- Always include performance vs SPY when outperforming
+- Include [CHART: TICKER] placeholders for visual content
+"""
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PROMPT TEMPLATES
 # ═══════════════════════════════════════════════════════════════════════════════
 
 TEMPLATES: Dict[str, str] = {
-    # Gatekeeper
+    # ─────────────────────────────────────────────────────────────────────────
+    # Gatekeeper Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "gatekeeper_analysis": """
 Analyze ${ticker} for final quality gate.
 
 TECHNICAL DATA:
-- Price: $${price}
+- Price: $$${price}
 - Theme: ${theme} (${theme_fit})
 - Tier: ${tier}
 
@@ -199,7 +227,9 @@ REQUIRED SEARCHES:
 Based on your analysis, return a JSON decision (PASS/CAUTION/FAIL).
 """,
 
-    # Thematic Step 1 - Theme Discovery
+    # ─────────────────────────────────────────────────────────────────────────
+    # Thematic Analyzer Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "thematic_discovery": """
 ## IDENTIFY TOP 5-7 INVESTABLE THEMES (6-12 Month Horizon)
 
@@ -232,7 +262,6 @@ Return as JSON with structure:
 }
 """,
 
-    # Thematic Step 2 - Ticker Mapping
     "thematic_mapping": """
 ## MAP TICKERS TO THEMES
 
@@ -261,7 +290,9 @@ Return as JSON:
 }
 """,
 
-    # Quick DD
+    # ─────────────────────────────────────────────────────────────────────────
+    # Due Diligence Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "dd_quick": """# QUICK DUE DILIGENCE: ${ticker}
 
 ## Already Passed (No Need to Re-verify)
@@ -306,7 +337,6 @@ Search for recent information on ${ticker} and answer:
 **POSITION SIZE:** [FULL / REDUCED / PASS]
 """,
 
-    # Full DD
     "dd_full": """# DEAL MEMO: ${ticker}
 
 ## Screening Status (Already Passed)
@@ -324,7 +354,7 @@ Search for recent information on ${ticker} and answer:
 ## Investment Parameters
 - Entry: Monday market open
 - Target Hold: 3-12 months
-- Exit: Weekly BoS breakdown OR 20% trailing stop
+- Exit: Weekly BoS breakdown OR trailing stop protocol
 - Minimum Target: 50%+ return
 
 ---
@@ -362,7 +392,9 @@ Is current multiple justified? What multiple at 50%+ target?
 **FATAL FLAW:** [None / Describe issue]
 """,
 
-    # Tweet Generation
+    # ─────────────────────────────────────────────────────────────────────────
+    # Tweet Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "tweet_buy_signal": """Generate ${count} tweets about a new BUY signal.
 
 SIGNAL DATA:
@@ -405,8 +437,8 @@ Return as JSON array.
 
 POSITION DATA:
 - Ticker: ${ticker}
-- Entry: $${entry_price} on ${entry_date}
-- Current: $${current_price}
+- Entry: $$${entry_price} on ${entry_date}
+- Current: $$${current_price}
 - P&L: ${pnl_pct}%
 - Days Held: ${days_held}
 - Theme: ${theme}
@@ -430,7 +462,7 @@ CONTEXT:
 TEMPLATE STYLE:
 "Power Hour Check:
 {Theme} seeing {volume pattern} into the close.
-Our pick ${ticker} currently {direction} {percent}%.
+Our pick $${ticker} currently {direction} {percent}%.
 {Brief observation about relative strength}
 Watching for structural confirmation on the weekly close."
 
@@ -453,24 +485,88 @@ HOOKS TO USE:
 Return as JSON array.
 """,
 
-    # Market Analysis
+    "tweet_roth_ira": """Generate ${count} tweets for Roth IRA / tax-advantaged investors.
+
+CONTEXT:
+- Recent winners: ${recent_winners}
+- YTD performance: ${ytd_return}%
+
+TEMPLATES TO RIFF ON:
+"The Roth IRA hack nobody talks about:
+Instead of holding SPY forever, rotate into momentum winners.
+Tax-free compounding on 30-50% swing trades > 10% annual index returns.
+The system identifies these setups weekly."
+
+"Your Roth doesn't have to be boring index funds.
+Systematic momentum + tax-free compounding = retirement account on steroids."
+
+RULES:
+- Focus on tax-free compounding angle
+- Mention systematic approach
+- Never financial advice
+
+Return as JSON array.
+""",
+
+    "tweet_post_mortem": """Generate ${count} Post-Mortem tweets for stopped-out positions.
+
+STOPPED TRADE DATA:
+- Ticker: ${ticker}
+- Entry: $$${entry_price}
+- Exit: $$${exit_price}
+- Loss: ${loss_pct}%
+- Days Held: ${days_held}
+- Theme: ${theme}
+- Lesson: ${lesson}
+
+TEMPLATE:
+"❌ $${ticker} — Stopped Out
+
+Entry: $$${entry_price}
+Exit: $$${exit_price}
+Loss: ${loss_pct}%
+
+The system protects capital so we live to fight another day.
+No ego, just execution.
+
+{Optional 1-sentence lesson}"
+
+RULES:
+- Never delete losing posts
+- Frame as system working
+- NEVER mention specific stop level percentage
+
+Return as JSON array.
+""",
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Market Analysis Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "market_context": """Generate the market context section for this week's newsletter.
 
 CURRENT DATA:
 - Date: ${date}
-- SPY weekly change: ${spy_change}%
-- QQQ weekly change: ${qqq_change}%
+- Week Ending: ${week_ending}
+
+Use web search to gather:
+1. S&P 500 weekly performance
+2. NASDAQ weekly performance
+3. Key events that moved markets
+4. Sector rotation observations
+5. What to watch next week
 
 Write 3-4 paragraphs covering:
-1. What drove this week's market action
+1. What drove this week's market action (with specific numbers)
 2. Sector rotation observations
-3. What to watch for next week
-4. Any risk factors building
+3. Key events that moved markets
+4. What to watch for next week
 
 TONE: Professional, actionable, no specific predictions.
 """,
 
-    # Newsletter Compilation
+    # ─────────────────────────────────────────────────────────────────────────
+    # Newsletter Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "newsletter_compile": """Compile the weekly Sterling Signals newsletter from these inputs:
 
 MARKET CONTEXT:
@@ -494,7 +590,9 @@ INSTRUCTIONS:
 Output in Markdown format ready for Substack.
 """,
 
-    # Thread Generation
+    # ─────────────────────────────────────────────────────────────────────────
+    # Thread Templates
+    # ─────────────────────────────────────────────────────────────────────────
     "thread_educational": """Generate a 5-tweet educational thread.
 
 TOPIC: ${topic}
@@ -519,10 +617,25 @@ Return as JSON array.
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SYSTEM PROMPT REGISTRY
+# ═══════════════════════════════════════════════════════════════════════════════
+
+SYSTEM_PROMPTS: Dict[str, str] = {
+    'gatekeeper': GATEKEEPER_SYSTEM,
+    'tweet': TWEET_SYSTEM,
+    'thematic': THEMATIC_ANALYZER_SYSTEM,
+    'market': MARKET_ANALYZER_SYSTEM,
+    'dd_quick': DD_QUICK_SYSTEM,
+    'dd_full': DD_FULL_SYSTEM,
+    'newsletter': NEWSLETTER_SYSTEM,
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TEMPLATE FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def render_prompt(template_name: str, **kwargs: Any) -> str:
+def render_prompt(template_name: str, **kwargs) -> str:
     """
     Render a prompt template with provided variables.
 
@@ -533,6 +646,9 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
     Returns:
         Rendered prompt string
 
+    Raises:
+        ValueError: If template name not found
+
     Example:
         prompt = render_prompt('gatekeeper_analysis',
             ticker='AAPL',
@@ -542,7 +658,7 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         )
     """
     if template_name not in TEMPLATES:
-        raise ValueError(f"Unknown template: {template_name}")
+        raise ValueError(f"Unknown template: {template_name}. Available: {list(TEMPLATES.keys())}")
 
     template = Template(TEMPLATES[template_name])
 
@@ -560,24 +676,21 @@ def get_system_prompt(component: str) -> str:
     Get the system prompt for a component.
 
     Args:
-        component: Component name (gatekeeper, tweet, thematic, market, dd_quick, dd_full)
+        component: Component name (gatekeeper, tweet, thematic, market, dd_quick, dd_full, newsletter)
 
     Returns:
         System prompt string
+
+    Raises:
+        ValueError: If component not found
+
+    Example:
+        system = get_system_prompt('gatekeeper')
     """
-    prompts = {
-        'gatekeeper': GATEKEEPER_SYSTEM,
-        'tweet': TWEET_SYSTEM,
-        'thematic': THEMATIC_ANALYZER_SYSTEM,
-        'market': MARKET_ANALYZER_SYSTEM,
-        'dd_quick': DD_QUICK_SYSTEM,
-        'dd_full': DD_FULL_SYSTEM,
-    }
+    if component not in SYSTEM_PROMPTS:
+        raise ValueError(f"Unknown component: {component}. Available: {list(SYSTEM_PROMPTS.keys())}")
 
-    if component not in prompts:
-        raise ValueError(f"Unknown component: {component}. Available: {list(prompts.keys())}")
-
-    return prompts[component]
+    return SYSTEM_PROMPTS[component]
 
 
 def list_templates() -> List[str]:
@@ -585,8 +698,24 @@ def list_templates() -> List[str]:
     return list(TEMPLATES.keys())
 
 
+def list_system_prompts() -> List[str]:
+    """List all available system prompt names."""
+    return list(SYSTEM_PROMPTS.keys())
+
+
 def get_template(template_name: str) -> str:
-    """Get raw template string without rendering."""
+    """
+    Get raw template string without rendering.
+
+    Args:
+        template_name: Name of the template
+
+    Returns:
+        Raw template string
+
+    Raises:
+        ValueError: If template not found
+    """
     if template_name not in TEMPLATES:
         raise ValueError(f"Unknown template: {template_name}")
     return TEMPLATES[template_name]
@@ -597,7 +726,19 @@ def get_template(template_name: str) -> str:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def format_list(items: List[Any], separator: str = ", ") -> str:
-    """Format a list for prompt inclusion."""
+    """
+    Format a list for prompt inclusion.
+
+    Args:
+        items: List to format
+        separator: Separator between items
+
+    Returns:
+        Formatted string
+
+    Example:
+        format_list(['A', 'B', 'C'])  # Returns: "A, B, C"
+    """
     if not items:
         return "None"
     return separator.join(str(item) for item in items)
@@ -610,6 +751,12 @@ def format_dict(d: Dict[str, Any], format_type: str = "bullet") -> str:
     Args:
         d: Dictionary to format
         format_type: 'bullet', 'table', or 'inline'
+
+    Returns:
+        Formatted string
+
+    Example:
+        format_dict({'key': 'value'}, 'bullet')  # Returns: "- key: value"
     """
     if not d:
         return "None"
@@ -622,11 +769,56 @@ def format_dict(d: Dict[str, Any], format_type: str = "bullet") -> str:
         return ", ".join(f"{k}={v}" for k, v in d.items())
 
 
+def format_themes_context(themes: List[Dict[str, Any]]) -> str:
+    """
+    Format themes list for inclusion in prompts.
+
+    Args:
+        themes: List of theme dictionaries
+
+    Returns:
+        Formatted string for prompt context
+    """
+    if not themes:
+        return "No themes available"
+
+    lines = []
+    for theme in themes:
+        name = theme.get('name', 'Unknown')
+        classification = theme.get('classification', '')
+        score = theme.get('composite_score', 0)
+        lines.append(f"- {name} ({classification}): Score {score}/10")
+
+    return "\n".join(lines)
+
+
+def format_tickers_list(tickers: List[str], max_per_line: int = 10) -> str:
+    """
+    Format tickers list for inclusion in prompts.
+
+    Args:
+        tickers: List of ticker symbols
+        max_per_line: Maximum tickers per line
+
+    Returns:
+        Formatted string
+    """
+    if not tickers:
+        return "No tickers"
+
+    lines = []
+    for i in range(0, len(tickers), max_per_line):
+        chunk = tickers[i:i + max_per_line]
+        lines.append(", ".join(chunk))
+
+    return "\n".join(lines)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main() -> None:
+def main():
     """Test prompt templates."""
     import argparse
 
@@ -643,44 +835,53 @@ def main() -> None:
         for name in list_templates():
             print(f"  - {name}")
         print("\nSystem Prompts:")
-        print("  - gatekeeper, tweet, thematic, market, dd_quick, dd_full")
+        for name in list_system_prompts():
+            print(f"  - {name}")
 
     elif args.show:
         try:
             print(f"\n=== {args.show} ===\n")
             print(get_template(args.show))
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"  ✗ Error: {e}")
 
     elif args.system:
         try:
             print(f"\n=== {args.system} System Prompt ===\n")
             print(get_system_prompt(args.system))
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"  ✗ Error: {e}")
 
     elif args.render:
         # Test rendering with sample data
         test_data = {
             'ticker': 'AAPL',
-            'price': 150.00,
+            'price': '150.00',
             'theme': 'AI Infrastructure',
             'theme_fit': 'STRONG',
             'tier': 'TIER1',
             'themes_context': 'Sample themes context...',
-            'count': 3,
-            'conviction': 4,
+            'count': '3',
+            'conviction': '4',
             'catalyst': 'Earnings Feb 15',
-            'theme_score': 8.5
+            'theme_score': '8.5',
+            'beta': '1.8',
+            'banker': '65',
+            'catalyst_summary': 'Earnings Feb 15',
+            'red_flag_level': 'CLEAN',
+            'theme_verdict': 'STRONG FIT',
+            'bullish_factors': 'Strong momentum, Theme leader',
+            'risk_factors': 'High valuation'
         }
         try:
             print(f"\n=== Rendered: {args.render} ===\n")
             print(render_prompt(args.render, **test_data))
         except ValueError as e:
-            print(f"Error: {e}")
+            print(f"  ✗ Error: {e}")
 
     else:
         print("Prompt Templates - Use --list, --show, --system, or --render")
+        print("\n  ✓ Module loaded successfully")
 
 
 if __name__ == "__main__":

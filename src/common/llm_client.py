@@ -8,9 +8,10 @@ Centralized Anthropic API client with:
 - Cost tracking across all API calls
 - Consistent error handling and retries
 - Web search tool integration
+- Extended thinking support (Opus)
 
 Usage:
-    from llm_client import LLMClient
+    from src.common.llm_client import LLMClient, create_client
 
     client = LLMClient()
     response = client.complete(
@@ -23,39 +24,33 @@ Usage:
     print(f"Cost: ${client.get_total_cost():.4f}")
 """
 
-import os
-import time
 import functools
+import logging
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Dict, Optional, Any, Callable
-import logging
+
+from .config import (
+    ANTHROPIC_API_KEY,
+    MODEL_SONNET, MODEL_OPUS,
+    MAX_RETRIES, RATE_LIMIT_COOLDOWN,
+    BACKOFF_FACTOR, BACKOFF_MAX_WAIT, MIN_REQUEST_INTERVAL,
+    COST_INPUT_PER_M, COST_OUTPUT_PER_M, COST_WEB_SEARCH,
+    get_model_max_tokens
+)
+from .logging_config import log_warning, log_error
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Optional Dependencies
+# ─────────────────────────────────────────────────────────────────────────────
 
 try:
     import anthropic
     ANTHROPIC_AVAILABLE = True
 except ImportError:
     ANTHROPIC_AVAILABLE = False
-    print("  ⚠ anthropic package not installed")
-
-# Import config if available
-try:
-    from config import (
-        MODEL_SONNET, MODEL_OPUS,
-        MAX_RETRIES, RATE_LIMIT_COOLDOWN,
-        BACKOFF_FACTOR, BACKOFF_MAX_WAIT,
-        COST_INPUT_PER_M, COST_OUTPUT_PER_M, COST_WEB_SEARCH
-    )
-except ImportError:
-    MODEL_SONNET = "claude-sonnet-4-20250514"
-    MODEL_OPUS = "claude-opus-4-5-20251101"
-    MAX_RETRIES = 5
-    RATE_LIMIT_COOLDOWN = 60.0
-    BACKOFF_FACTOR = 2.0
-    BACKOFF_MAX_WAIT = 300.0
-    COST_INPUT_PER_M = {MODEL_SONNET: 3.00, MODEL_OPUS: 15.00}
-    COST_OUTPUT_PER_M = {MODEL_SONNET: 15.00, MODEL_OPUS: 75.00}
-    COST_WEB_SEARCH = 0.01
+    anthropic = None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -64,7 +59,20 @@ except ImportError:
 
 @dataclass
 class LLMResponse:
-    """Unified response from LLM API call."""
+    """
+    Unified response from LLM API call.
+
+    Attributes:
+        text: Main response text
+        thinking: Extended thinking content (Opus only)
+        input_tokens: Input token count
+        output_tokens: Output token count
+        cost: Cost of this call in USD
+        model: Model used
+        web_searches: Number of web searches performed
+        stop_reason: API stop reason
+        raw_response: Original API response object
+    """
     text: str = ""
     thinking: str = ""
     input_tokens: int = 0
@@ -75,10 +83,30 @@ class LLMResponse:
     stop_reason: str = ""
     raw_response: Any = None
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary (excludes raw_response)."""
+        return {
+            'text': self.text,
+            'thinking': self.thinking,
+            'input_tokens': self.input_tokens,
+            'output_tokens': self.output_tokens,
+            'cost': self.cost,
+            'model': self.model,
+            'web_searches': self.web_searches,
+            'stop_reason': self.stop_reason
+        }
+
 
 @dataclass
 class CostTracker:
-    """Tracks API costs across all calls."""
+    """
+    Tracks API costs across all calls.
+
+    Example:
+        tracker = CostTracker()
+        cost = tracker.add_call(model, input_tokens, output_tokens)
+        print(tracker.get_summary())
+    """
     total_input_tokens: int = 0
     total_output_tokens: int = 0
     total_web_searches: int = 0
@@ -87,8 +115,13 @@ class CostTracker:
     cost_by_model: Dict[str, float] = field(default_factory=dict)
     call_count: int = 0
 
-    def add_call(self, model: str, input_tokens: int, output_tokens: int,
-                 web_searches: int = 0) -> float:
+    def add_call(
+        self,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        web_searches: int = 0
+    ) -> float:
         """
         Record a call and return the cost.
 
@@ -120,8 +153,8 @@ class CostTracker:
 
         return call_cost
 
-    def get_summary(self) -> Dict:
-        """Get cost summary."""
+    def get_summary(self) -> Dict[str, Any]:
+        """Get detailed cost summary."""
         return {
             "total_cost": f"${self.total_cost:.4f}",
             "call_count": self.call_count,
@@ -137,22 +170,50 @@ class CostTracker:
             }
         }
 
+    def reset(self) -> None:
+        """Reset all tracking."""
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
+        self.total_web_searches = 0
+        self.total_cost = 0.0
+        self.calls_by_model = {}
+        self.cost_by_model = {}
+        self.call_count = 0
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # RATE LIMITER
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class RateLimiter:
-    """Handles API rate limiting with exponential backoff."""
+    """
+    Handles API rate limiting with exponential backoff.
+
+    Example:
+        limiter = RateLimiter(min_interval=1.0)
+        limiter.wait_if_needed()  # Waits if too soon since last request
+        # ... make API call ...
+        limiter.record_success()
+    """
 
     def __init__(
         self,
-        min_interval: float = 1.0,
+        min_interval: float = MIN_REQUEST_INTERVAL,
         base_delay: float = 5.0,
-        max_delay: float = 300.0,
-        cooldown: float = 60.0,
+        max_delay: float = BACKOFF_MAX_WAIT,
+        cooldown: float = RATE_LIMIT_COOLDOWN,
         logger: Optional[logging.Logger] = None
     ):
+        """
+        Initialize rate limiter.
+
+        Args:
+            min_interval: Minimum seconds between requests
+            base_delay: Base delay for backoff
+            max_delay: Maximum delay for backoff
+            cooldown: Extra cooldown after multiple rate limits
+            logger: Logger instance
+        """
         self.min_interval = min_interval
         self.base_delay = base_delay
         self.max_delay = max_delay
@@ -207,7 +268,7 @@ class RateLimiter:
         self.request_count += 1
         self.consecutive_rate_limits = 0
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> Dict[str, int]:
         """Get rate limiter statistics."""
         return {
             "total_requests": self.request_count,
@@ -220,13 +281,21 @@ class RateLimiter:
 # DECORATORS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def with_retry(max_attempts: Optional[int] = None, backoff_factor: Optional[float] = None):
+def with_retry(
+    max_attempts: Optional[int] = None,
+    backoff_factor: Optional[float] = None
+) -> Callable:
     """
     Decorator for retrying API calls with exponential backoff.
 
     Args:
         max_attempts: Maximum retry attempts (default from config)
         backoff_factor: Backoff multiplier (default from config)
+
+    Example:
+        @with_retry(max_attempts=3)
+        def make_api_call():
+            ...
     """
     _max_attempts = max_attempts or MAX_RETRIES
     _backoff_factor = backoff_factor or BACKOFF_FACTOR
@@ -234,6 +303,9 @@ def with_retry(max_attempts: Optional[int] = None, backoff_factor: Optional[floa
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
+            if not ANTHROPIC_AVAILABLE:
+                raise ImportError("anthropic package required: pip install anthropic")
+
             last_exception = None
 
             for attempt in range(_max_attempts):
@@ -245,18 +317,18 @@ def with_retry(max_attempts: Optional[int] = None, backoff_factor: Optional[floa
                         5 * (_backoff_factor ** attempt),
                         BACKOFF_MAX_WAIT
                     )
-                    logging.warning(f"Rate limited (attempt {attempt + 1}). Waiting {delay:.1f}s...")
+                    log_warning(f"Rate limited (attempt {attempt + 1}). Waiting {delay:.1f}s...")
                     time.sleep(delay)
                 except anthropic.APIStatusError as e:
                     if e.status_code >= 500:
                         last_exception = e
                         delay = min(2 * (_backoff_factor ** attempt), 60)
-                        logging.warning(f"Server error {e.status_code}. Retrying in {delay:.1f}s...")
+                        log_warning(f"Server error {e.status_code}. Retrying in {delay:.1f}s...")
                         time.sleep(delay)
                     else:
                         raise
                 except Exception as e:
-                    logging.error(f"Unexpected error: {e}")
+                    log_error(f"Unexpected error: {e}")
                     raise
 
             raise last_exception or Exception("Max retries exceeded")
@@ -287,7 +359,7 @@ class LLMClient:
         self,
         model: Optional[str] = None,
         api_key: Optional[str] = None,
-        rate_limit_interval: float = 1.0,
+        rate_limit_interval: float = MIN_REQUEST_INTERVAL,
         logger: Optional[logging.Logger] = None
     ):
         """
@@ -295,15 +367,19 @@ class LLMClient:
 
         Args:
             model: Default model to use (defaults to MODEL_SONNET)
-            api_key: Anthropic API key (defaults to ANTHROPIC_API_KEY env var)
+            api_key: Anthropic API key (defaults to ANTHROPIC_API_KEY)
             rate_limit_interval: Minimum seconds between requests
             logger: Logger instance
+
+        Raises:
+            ImportError: If anthropic package not installed
+            ValueError: If API key not set
         """
         if not ANTHROPIC_AVAILABLE:
             raise ImportError("anthropic package required: pip install anthropic")
 
         self.default_model = model or MODEL_SONNET
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or ANTHROPIC_API_KEY
 
         if not self.api_key:
             raise ValueError("ANTHROPIC_API_KEY not set")
@@ -322,7 +398,7 @@ class LLMClient:
         prompt: str,
         system: Optional[str] = None,
         model: Optional[str] = None,
-        max_tokens: int = 4096,
+        max_tokens: Optional[int] = None,
         web_search: bool = False,
         thinking: bool = False,
         thinking_budget: int = 10000,
@@ -345,10 +421,18 @@ class LLMClient:
 
         Returns:
             LLMResponse with text, tokens, and cost
+
+        Example:
+            response = client.complete(
+                prompt="Analyze AAPL",
+                system="You are a financial analyst",
+                web_search=True
+            )
         """
         self.rate_limiter.wait_if_needed()
 
         model = model or self.default_model
+        max_tokens = max_tokens or get_model_max_tokens(model)
 
         # Build API parameters
         params = {
@@ -382,11 +466,9 @@ class LLMClient:
         self.rate_limiter.record_success()
 
         # Parse response
-        result = self._parse_response(response, model)
+        return self._parse_response(response, model)
 
-        return result
-
-    def _parse_response(self, response, model: str) -> LLMResponse:
+    def _parse_response(self, response: Any, model: str) -> LLMResponse:
         """Parse API response into LLMResponse."""
         result = LLMResponse(
             model=model,
@@ -426,7 +508,7 @@ class LLMClient:
         system: Optional[str] = None,
         model: Optional[str] = None,
         delay_between: float = 2.0,
-        **kwargs: Any
+        **kwargs
     ) -> List[LLMResponse]:
         """
         Make multiple completion requests with delays.
@@ -467,13 +549,17 @@ class LLMClient:
         """Get total cost of all API calls."""
         return self.cost_tracker.total_cost
 
-    def get_cost_summary(self) -> Dict:
+    def get_cost_summary(self) -> Dict[str, Any]:
         """Get detailed cost summary."""
         return self.cost_tracker.get_summary()
 
-    def get_rate_limit_stats(self) -> Dict:
+    def get_rate_limit_stats(self) -> Dict[str, int]:
         """Get rate limiter statistics."""
         return self.rate_limiter.get_stats()
+
+    def reset_cost_tracking(self) -> None:
+        """Reset cost tracking to zero."""
+        self.cost_tracker.reset()
 
     def print_cost_summary(self) -> None:
         """Print formatted cost summary."""
@@ -498,7 +584,12 @@ class LLMClient:
 # HELPER FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def estimate_cost(input_tokens: int, output_tokens: int, model: str) -> float:
+def estimate_cost(
+    input_tokens: int,
+    output_tokens: int,
+    model: str,
+    web_searches: int = 0
+) -> float:
     """
     Estimate cost for a given token count.
 
@@ -506,13 +597,15 @@ def estimate_cost(input_tokens: int, output_tokens: int, model: str) -> float:
         input_tokens: Input token count
         output_tokens: Output token count
         model: Model name
+        web_searches: Number of web searches
 
     Returns:
         Estimated cost in USD
     """
     input_cost = (input_tokens / 1_000_000) * COST_INPUT_PER_M.get(model, 3.0)
     output_cost = (output_tokens / 1_000_000) * COST_OUTPUT_PER_M.get(model, 15.0)
-    return input_cost + output_cost
+    search_cost = web_searches * COST_WEB_SEARCH
+    return input_cost + output_cost + search_cost
 
 
 def create_client(model: Optional[str] = None) -> LLMClient:
@@ -524,15 +617,25 @@ def create_client(model: Optional[str] = None) -> LLMClient:
 
     Returns:
         Configured LLMClient instance
+
+    Example:
+        client = create_client()
+        # or
+        client = create_client(MODEL_OPUS)
     """
     return LLMClient(model=model or MODEL_SONNET)
+
+
+def check_api_key() -> bool:
+    """Check if API key is configured."""
+    return bool(ANTHROPIC_API_KEY)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main() -> int:
+def main():
     """Test LLM client."""
     import argparse
 
@@ -540,8 +643,16 @@ def main() -> int:
     parser.add_argument("--prompt", default="What is 2+2?", help="Test prompt")
     parser.add_argument("--model", default=MODEL_SONNET, help="Model to use")
     parser.add_argument("--web-search", action="store_true", help="Enable web search")
+    parser.add_argument("--check", action="store_true", help="Check API key only")
 
     args = parser.parse_args()
+
+    if args.check:
+        if check_api_key():
+            print("  ✓ API key configured")
+        else:
+            print("  ✗ API key not set")
+        return 0
 
     print(f"Testing LLM Client with model: {args.model}")
     print(f"Prompt: {args.prompt}")
@@ -563,7 +674,7 @@ def main() -> int:
         client.print_cost_summary()
 
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"  ✗ Error: {e}")
         return 1
 
     return 0

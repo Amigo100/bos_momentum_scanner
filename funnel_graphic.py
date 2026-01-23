@@ -146,7 +146,7 @@ def load_signals_data(signals_path: Optional[Path] = None) -> Dict:
             if timestamp:
                 try:
                     date_str = datetime.strptime(timestamp.split()[0], "%Y-%m-%d").strftime("%B %d, %Y")
-                except:
+                except ValueError:
                     date_str = datetime.now().strftime("%B %d, %Y")
             else:
                 date_str = datetime.now().strftime("%B %d, %Y")
@@ -220,7 +220,7 @@ def get_font(size: int, bold: bool = False, mono: bool = False) -> ImageFont.Fre
     # Fallback to default
     try:
         return ImageFont.load_default()
-    except:
+    except (IOError, OSError):
         return None
 
 
@@ -561,7 +561,7 @@ def generate_funnel_graphic(
     return output_path
 
 
-def update_chart_manifest(output_path: Path, data: Dict):
+def update_chart_manifest(output_path: Path, data: Dict) -> None:
     """Update the chart manifest with the new funnel graphic."""
     try:
         if MANIFEST_FILE.exists():
@@ -591,7 +591,7 @@ def update_chart_manifest(output_path: Path, data: Dict):
 # CLI
 # =============================================================================
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Generate funnel visualization for the 5-Gate Filtering System",
         formatter_class=argparse.RawDescriptionHelpFormatter,

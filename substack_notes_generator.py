@@ -463,7 +463,7 @@ def generate_all_notes() -> Dict[str, Path]:
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     import argparse
 
     parser = argparse.ArgumentParser(

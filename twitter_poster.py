@@ -55,7 +55,7 @@ SLOT_TIMES = {
 # X/TWITTER CLIENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def get_clients():
+def get_clients() -> tuple:
     """Initialize Tweepy clients (v1.1 for media, v2 for tweets)."""
     
     # Get credentials from environment
@@ -96,7 +96,7 @@ def get_clients():
 # QUEUE MANAGEMENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_queue(queue_file: Path) -> list:
+def load_queue(queue_file: Path) -> list[Dict]:
     """Load content queue from JSON file."""
     if not queue_file.exists():
         print(f"ERROR: Queue file not found: {queue_file}")
@@ -106,7 +106,7 @@ def load_queue(queue_file: Path) -> list:
         return json.load(f)
 
 
-def save_queue(queue: list, queue_file: Path):
+def save_queue(queue: list[Dict], queue_file: Path) -> None:
     """Save updated queue back to JSON file."""
     with open(queue_file, 'w') as f:
         json.dump(queue, f, indent=2)
@@ -142,7 +142,7 @@ def get_current_slot() -> int:
         return 0  # Outside posting hours
     
 
-def find_next_tweet(queue: list, force: bool = False, target_slot: int = None) -> Optional[Dict]:
+def find_next_tweet(queue: list[Dict], force: bool = False, target_slot: Optional[int] = None) -> Optional[Dict]:
     """Find the next tweet to post based on schedule and slot.
 
     Args:
@@ -272,7 +272,7 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Post scheduled tweets to X")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
     parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")

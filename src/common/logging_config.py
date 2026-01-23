@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-LOGGER - Standardized Logging Utility
-=====================================
+LOGGING CONFIG - Standardized Logging Setup
+============================================
 
 Provides consistent logging across all modules with:
 - Console output with color-coded indicators
-- Optional file logging
+- Optional file output
 - Structured log format
 
 Usage:
-    from logger import get_logger, log_step, log_success, log_warning, log_error
+    from src.common.logging_config import get_logger, log_step, log_success
 
     logger = get_logger(__name__)
     logger.info("Processing started")
@@ -17,15 +17,16 @@ Usage:
     # Or use convenience functions
     log_step("Step 1: Loading data")
     log_success("Loaded 100 items")
-    log_warning("Missing optional field")
-    log_error("Failed to connect")
 """
 
 import logging
 import sys
-import time
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
+
+from .config import TRADES_DIR
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -34,6 +35,7 @@ from typing import Any, Dict, Optional
 DEFAULT_LOG_LEVEL = logging.INFO
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+LOG_FILE_DIR = TRADES_DIR / "logs"
 
 # Console indicators (from STYLE_GUIDE.md)
 INDICATORS = {
@@ -47,17 +49,17 @@ INDICATORS = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CUSTOM FORMATTER
+# CUSTOM FORMATTERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class ConsoleFormatter(logging.Formatter):
     """Custom formatter with colored level indicators."""
 
     COLORS = {
-        'DEBUG': '\033[90m',     # Gray
-        'INFO': '\033[0m',       # Default
-        'WARNING': '\033[93m',   # Yellow
-        'ERROR': '\033[91m',     # Red
+        'DEBUG': '\033[90m',      # Gray
+        'INFO': '\033[0m',        # Default
+        'WARNING': '\033[93m',    # Yellow
+        'ERROR': '\033[91m',      # Red
         'CRITICAL': '\033[91;1m', # Bold Red
     }
     RESET = '\033[0m'
@@ -93,18 +95,29 @@ class SimpleConsoleFormatter(logging.Formatter):
         return f"{indicator}{record.getMessage()}"
 
 
+class FileFormatter(logging.Formatter):
+    """Formatter for file output with full timestamps."""
+
+    def __init__(self):
+        super().__init__(
+            fmt="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+            datefmt=LOG_DATE_FORMAT
+        )
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # LOGGER FACTORY
 # ═══════════════════════════════════════════════════════════════════════════════
 
-_loggers: Dict[str, logging.Logger] = {}
+_loggers: dict = {}
 
 
 def get_logger(
     name: str,
-    level: Optional[int] = None,
+    level: int = None,
     log_file: Optional[Path] = None,
-    simple_format: bool = True
+    simple_format: bool = True,
+    enable_file_logging: bool = False
 ) -> logging.Logger:
     """
     Get or create a logger with standard configuration.
@@ -112,8 +125,9 @@ def get_logger(
     Args:
         name: Logger name (typically __name__)
         level: Log level (default: INFO)
-        log_file: Optional file path for file logging
+        log_file: Specific file path for logging
         simple_format: Use simple format without timestamps (default: True)
+        enable_file_logging: Enable automatic file logging (default: False)
 
     Returns:
         Configured Logger instance
@@ -144,10 +158,13 @@ def get_logger(
         logger.addHandler(console_handler)
 
         # File handler (optional)
-        if log_file:
-            file_handler = logging.FileHandler(log_file)
+        if enable_file_logging or log_file:
+            file_path = log_file or _get_default_log_file(name)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+
+            file_handler = logging.FileHandler(file_path)
             file_handler.setLevel(level or DEFAULT_LOG_LEVEL)
-            file_handler.setFormatter(logging.Formatter(LOG_FORMAT, LOG_DATE_FORMAT))
+            file_handler.setFormatter(FileFormatter())
             logger.addHandler(file_handler)
 
     # Prevent propagation to root logger
@@ -155,6 +172,48 @@ def get_logger(
 
     _loggers[name] = logger
     return logger
+
+
+def _get_default_log_file(name: str) -> Path:
+    """Generate default log file path for a module."""
+    LOG_FILE_DIR.mkdir(parents=True, exist_ok=True)
+    date_str = datetime.now().strftime("%Y%m%d")
+    safe_name = name.replace(".", "_")
+    return LOG_FILE_DIR / f"{safe_name}_{date_str}.log"
+
+
+def configure_root_logger(
+    level: int = logging.INFO,
+    log_file: Optional[Path] = None
+) -> None:
+    """
+    Configure the root logger for the entire application.
+
+    Call this once at application startup for consistent logging.
+
+    Args:
+        level: Log level for root logger
+        log_file: Optional file for all log output
+    """
+    root = logging.getLogger()
+    root.setLevel(level)
+
+    # Clear existing handlers
+    root.handlers.clear()
+
+    # Console handler
+    console = logging.StreamHandler(sys.stdout)
+    console.setLevel(level)
+    console.setFormatter(ConsoleFormatter())
+    root.addHandler(console)
+
+    # File handler
+    if log_file:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(level)
+        file_handler.setFormatter(FileFormatter())
+        root.addHandler(file_handler)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -184,7 +243,6 @@ def log_step(message: str, step_num: Optional[int] = None) -> None:
         log_step("Loading data", 1)
         log_step("Processing")
     """
-    logger = _get_default_logger()
     if step_num:
         print(f"\n  Step {step_num}: {message}...")
     else:
@@ -192,42 +250,22 @@ def log_step(message: str, step_num: Optional[int] = None) -> None:
 
 
 def log_success(message: str) -> None:
-    """
-    Log a success message.
-
-    Example:
-        log_success(f"Loaded {count} items")
-    """
+    """Log a success message."""
     print(f"  {INDICATORS['success']} {message}")
 
 
 def log_warning(message: str) -> None:
-    """
-    Log a warning message.
-
-    Example:
-        log_warning("File not found, using defaults")
-    """
+    """Log a warning message."""
     print(f"  {INDICATORS['warning']} Warning: {message}")
 
 
 def log_error(message: str) -> None:
-    """
-    Log an error message.
-
-    Example:
-        log_error("Invalid configuration")
-    """
+    """Log an error message."""
     print(f"  {INDICATORS['error']} Error: {message}")
 
 
 def log_info(message: str) -> None:
-    """
-    Log an info message.
-
-    Example:
-        log_info(f"Processing {filename}")
-    """
+    """Log an info message."""
     print(f"  {INDICATORS['info']} {message}")
 
 
@@ -238,9 +276,6 @@ def log_debug(message: str, verbose: bool = False) -> None:
     Args:
         message: Debug message
         verbose: Whether to actually print
-
-    Example:
-        log_debug(f"variable = {value}", args.verbose)
     """
     if verbose:
         print(f"  DEBUG: {message}")
@@ -254,11 +289,6 @@ def log_progress(current: int, total: int, prefix: str = "") -> None:
         current: Current item number (1-indexed)
         total: Total items
         prefix: Optional prefix
-
-    Example:
-        for i, item in enumerate(items, 1):
-            log_progress(i, len(items), "Processing")
-            process(item)
     """
     percent = (current / total) * 100 if total > 0 else 0
     prefix_str = f"{prefix}: " if prefix else ""
@@ -275,16 +305,13 @@ def log_section(title: str, char: str = "─", width: int = 70) -> None:
         title: Section title
         char: Divider character
         width: Total width
-
-    Example:
-        log_section("STEP 1: Loading Tickers")
     """
     print(f"\n{char * width}")
     print(f"  {title}")
     print(f"{char * width}")
 
 
-def log_banner(title: str, subtitle: str = None, width: int = 78) -> None:
+def log_banner(title: str, subtitle: Optional[str] = None, width: int = 78) -> None:
     """
     Log a banner header.
 
@@ -292,9 +319,6 @@ def log_banner(title: str, subtitle: str = None, width: int = 78) -> None:
         title: Main title
         subtitle: Optional subtitle
         width: Banner width
-
-    Example:
-        log_banner("BoS MOMENTUM SCANNER", "Weekly Timeframe")
     """
     border = "=" * width
     print(f"\n{border}")
@@ -311,13 +335,6 @@ def log_summary(items: dict, title: str = "Summary") -> None:
     Args:
         items: Key-value pairs to display
         title: Section title
-
-    Example:
-        log_summary({
-            "Total": 100,
-            "Passed": 45,
-            "Failed": 55
-        }, "Scan Results")
     """
     print(f"\n  {title}:")
     for key, value in items.items():
@@ -325,16 +342,7 @@ def log_summary(items: dict, title: str = "Summary") -> None:
 
 
 def log_cost(cost: float, label: str = "Total Cost") -> None:
-    """
-    Log API cost.
-
-    Args:
-        cost: Cost in USD
-        label: Cost label
-
-    Example:
-        log_cost(2.50, "Step 5 Cost")
-    """
+    """Log API cost."""
     print(f"  {label}: ${cost:.4f}")
 
 
@@ -358,14 +366,16 @@ class LoggedOperation:
     def __init__(self, name: str, show_time: bool = True):
         self.name = name
         self.show_time = show_time
-        self.start_time = None
+        self.start_time: float = 0
 
     def __enter__(self) -> 'LoggedOperation':
+        import time
         self.start_time = time.time()
         print(f"  {INDICATORS['step']} {self.name}...", end="", flush=True)
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> bool:
+    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+        import time
         elapsed = time.time() - self.start_time
 
         if exc_type is not None:
@@ -384,8 +394,9 @@ class LoggedOperation:
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main() -> None:
-    """Test logging functions."""
+if __name__ == "__main__":
+    import time
+
     print("Logger Test")
     print("=" * 50)
 
@@ -426,8 +437,9 @@ def main() -> None:
     with LoggedOperation("Simulated operation"):
         time.sleep(0.5)
 
+    # Test file logging
+    logger = get_logger("test_module", enable_file_logging=True)
+    logger.info("Test log message to file")
+    print(f"\n  Log file: {_get_default_log_file('test_module')}")
+
     print("\n✓ All logging functions working correctly")
-
-
-if __name__ == "__main__":
-    main()

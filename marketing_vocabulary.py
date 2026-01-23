@@ -14,7 +14,9 @@ Usage:
         print(f"WARNING: Contains banned terms: {violations}")
 """
 
-from typing import List, Tuple, Dict
+import functools
+import re
+from typing import Callable, Dict, List, Tuple
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # BANNED TERMS - Never use these in public content
@@ -154,7 +156,6 @@ def validate_content(text: str) -> Tuple[bool, List[str]]:
             # Avoid false positives for short terms
             if term in ["RSI", "MACD", "KDJ", "BoS", "BOS", "GMT", "BST"]:
                 # These short terms need word boundary check
-                import re
                 if re.search(rf'\b{re.escape(term)}\b', text, re.IGNORECASE):
                     violations.append(term)
             else:
@@ -227,9 +228,6 @@ def validate_all_tweets(tweets: list) -> Tuple[int, int]:
 # ═══════════════════════════════════════════════════════════════════════════════
 # VALIDATION DECORATOR
 # ═══════════════════════════════════════════════════════════════════════════════
-
-import functools
-from typing import Callable, Union
 
 
 def validate_output(

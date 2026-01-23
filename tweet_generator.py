@@ -1166,7 +1166,7 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
                         entry = float(row.get('entry_price', 0))
                         exit_price = float(row.get('exit_price', 0))
                         pnl = ((exit_price / entry) - 1) * 100 if entry > 0 else 0
-                    except:
+                    except (ValueError, ZeroDivisionError):
                         pnl = 0
 
                     content.closed_trades.append({
@@ -1443,7 +1443,7 @@ THREAD_TOPICS = [
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Generate tweets via Claude API")
     parser.add_argument("--briefing", type=str, help="Path to newsletter briefing")
     parser.add_argument("--output", type=str, help="Output directory")

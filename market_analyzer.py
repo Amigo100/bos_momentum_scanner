@@ -22,6 +22,7 @@ import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
 from dataclasses import dataclass
+from typing import Optional
 
 try:
     import anthropic
@@ -136,7 +137,7 @@ Generate the market context section now, using web search for current data.'''
 # MAIN FUNCTION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def run_market_analysis(client: anthropic.Anthropic = None) -> MarketAnalysisResult:
+def run_market_analysis(client: Optional[anthropic.Anthropic] = None) -> MarketAnalysisResult:
     """
     Generate market analysis using Claude with web search.
 
@@ -203,7 +204,7 @@ def run_market_analysis(client: anthropic.Anthropic = None) -> MarketAnalysisRes
     return result
 
 
-def save_market_analysis(analysis: str, output_path: Path = None) -> Path:
+def save_market_analysis(analysis: str, output_path: Optional[Path] = None) -> Path:
     """Save market analysis to file."""
     if output_path is None:
         output_path = TRADES_DIR / "market_analysis.md"
@@ -222,7 +223,7 @@ def save_market_analysis(analysis: str, output_path: Path = None) -> Path:
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Generate market analysis via Claude + web search")
     parser.add_argument("--output", "-o", type=str, help="Output file path")
     parser.add_argument("--save", "-s", action="store_true", help="Save to file")

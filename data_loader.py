@@ -151,8 +151,8 @@ class BriefingData:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def load_portfolio(
-    portfolio_file: Path = None,
-    status_filter: str = None,
+    portfolio_file: Optional[Path] = None,
+    status_filter: Optional[str] = None,
     calculate_metrics: bool = True
 ) -> List[TradeData]:
     """
@@ -269,7 +269,7 @@ def _calculate_trade_metrics(trade: TradeData) -> None:
 # SIGNALS LOADING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_signals(signals_file: Path = None) -> Dict[str, Any]:
+def load_signals(signals_file: Optional[Path] = None) -> Dict[str, Any]:
     """
     Load signals.json from scanner output.
 
@@ -301,7 +301,7 @@ def load_signals(signals_file: Path = None) -> Dict[str, Any]:
         return {}
 
 
-def load_buy_signals(signals_file: Path = None) -> List[SignalData]:
+def load_buy_signals(signals_file: Optional[Path] = None) -> List[SignalData]:
     """
     Load buy signals as SignalData objects.
 
@@ -342,7 +342,7 @@ def load_buy_signals(signals_file: Path = None) -> List[SignalData]:
     return signals
 
 
-def load_scan_stats(signals_file: Path = None) -> Dict[str, int]:
+def load_scan_stats(signals_file: Optional[Path] = None) -> Dict[str, int]:
     """
     Load scan statistics from signals.json.
 
@@ -359,8 +359,8 @@ def load_scan_stats(signals_file: Path = None) -> Dict[str, int]:
 
 def load_themes(
     source: str = "auto",
-    signals_file: Path = None,
-    cache_file: Path = None
+    signals_file: Optional[Path] = None,
+    cache_file: Optional[Path] = None
 ) -> List[ThemeData]:
     """
     Load themes from signals.json or themes cache.
@@ -417,7 +417,7 @@ def load_themes(
     return themes
 
 
-def get_themes_by_classification(themes: List[ThemeData] = None) -> Dict[str, List[ThemeData]]:
+def get_themes_by_classification(themes: Optional[List[ThemeData]] = None) -> Dict[str, List[ThemeData]]:
     """
     Group themes by classification.
 
@@ -445,7 +445,7 @@ def get_themes_by_classification(themes: List[ThemeData] = None) -> Dict[str, Li
 # BRIEFING PARSING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_briefing_data(briefing_path: Path = None) -> BriefingData:
+def load_briefing_data(briefing_path: Optional[Path] = None) -> BriefingData:
     """
     Parse newsletter briefing markdown to extract portfolio data.
 
@@ -612,7 +612,7 @@ def _parse_positions_table(text: str) -> List[Dict]:
 # CHART MANIFEST
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_chart_manifest(manifest_path: Path = None) -> Dict[str, str]:
+def load_chart_manifest(manifest_path: Optional[Path] = None) -> Dict[str, str]:
     """
     Load chart manifest mapping tickers to chart paths.
 
@@ -726,7 +726,7 @@ def fetch_spy_return(days: int = 30) -> float:
 # TICKERS LOADING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_tickers(tickers_file: Path = None) -> List[str]:
+def load_tickers(tickers_file: Optional[Path] = None) -> List[str]:
     """
     Load tickers from text file.
 
@@ -755,7 +755,7 @@ def load_tickers(tickers_file: Path = None) -> List[str]:
 # CONTENT QUEUE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def load_content_queue(queue_file: Path = None) -> List[Dict]:
+def load_content_queue(queue_file: Optional[Path] = None) -> List[Dict]:
     """
     Load tweet content queue from JSON.
 
@@ -779,7 +779,7 @@ def load_content_queue(queue_file: Path = None) -> List[Dict]:
         return []
 
 
-def save_content_queue(queue: List[Dict], queue_file: Path = None) -> None:
+def save_content_queue(queue: List[Dict], queue_file: Optional[Path] = None) -> None:
     """
     Save tweet content queue to JSON.
 
@@ -801,7 +801,7 @@ def save_content_queue(queue: List[Dict], queue_file: Path = None) -> None:
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> None:
     """Test data loading functions."""
     import argparse
 

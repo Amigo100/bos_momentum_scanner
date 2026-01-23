@@ -215,7 +215,7 @@ def get_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     # Fallback to default (will be small but functional)
     try:
         return ImageFont.load_default()
-    except:
+    except (IOError, OSError):
         return None
 
 
@@ -498,12 +498,12 @@ def generate_tweet_text(data: dict) -> str:
 def update_chart_manifest(image_path: Path, data: dict) -> None:
     """Update chart_manifest.json with the new funnel graphic."""
     manifest = {}
-    
+
     if MANIFEST_PATH.exists():
         try:
             with open(MANIFEST_PATH) as f:
                 manifest = json.load(f)
-        except:
+        except (OSError, json.JSONDecodeError):
             pass
     
     manifest['funnel_graphic'] = {
@@ -524,7 +524,7 @@ def update_chart_manifest(image_path: Path, data: dict) -> None:
     print(f"✓ Manifest updated: {MANIFEST_PATH}")
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Generate funnel visualization graphic",
         formatter_class=argparse.RawDescriptionHelpFormatter,

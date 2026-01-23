@@ -395,8 +395,8 @@ def run_single_dd(
     conviction: int = 0,
     catalyst_summary: str = "",
     red_flag_level: str = "",
-    bullish_factors: List[str] = None,
-    risk_factors: List[str] = None,
+    bullish_factors: Optional[List[str]] = None,
+    risk_factors: Optional[List[str]] = None,
     quick_mode: bool = True,
     use_web_search: bool = True,
     save_report: bool = False
@@ -530,7 +530,7 @@ def run_single_dd(
     return result
 
 
-def save_dd_report(result: DDResult, theme: str, tier: str):
+def save_dd_report(result: DDResult, theme: str, tier: str) -> None:
     """Save DD report to file."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = REPORTS_DIR / f"dd_{result.ticker}_{timestamp}.md"
@@ -564,11 +564,11 @@ def save_dd_report(result: DDResult, theme: str, tier: str):
 
 def run_automated_dd(
     stocks: List[Any],
-    client: anthropic.Anthropic = None,
+    client: Optional[anthropic.Anthropic] = None,
     quick_mode: bool = True,
     use_web_search: bool = True,
     save_reports: bool = False,
-    max_stocks: int = None
+    max_stocks: Optional[int] = None
 ) -> List[DDResult]:
     """
     Run automated due diligence on a list of stocks.
@@ -737,7 +737,7 @@ def apply_dd_to_stocks(stocks: List[Any], dd_results: List[DDResult]) -> List[An
 # STANDALONE TESTING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     """Standalone testing of DD automator."""
     import argparse
 

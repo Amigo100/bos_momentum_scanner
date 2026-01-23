@@ -109,7 +109,7 @@ def get_font(size: int, bold: bool = False, mono: bool = False) -> ImageFont.Fre
     # Fallback to default
     try:
         return ImageFont.load_default()
-    except:
+    except (IOError, OSError):
         return None
 
 
@@ -839,7 +839,7 @@ def generate_alpha_card(
 # MANIFEST UPDATE
 # =============================================================================
 
-def update_chart_manifest(card_type: str, output_path: Path, data: Dict):
+def update_chart_manifest(card_type: str, output_path: Path, data: Dict) -> None:
     """Update the chart manifest with the new card."""
     try:
         if MANIFEST_FILE.exists():
@@ -865,7 +865,7 @@ def update_chart_manifest(card_type: str, output_path: Path, data: Dict):
 # CLI
 # =============================================================================
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description="Generate visual cards for trades and portfolio performance",
         formatter_class=argparse.RawDescriptionHelpFormatter,

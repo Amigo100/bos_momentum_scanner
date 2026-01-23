@@ -358,7 +358,7 @@ def calculate_portfolio_ytd_return() -> float:
                                 pnl_pct = ((current_price / entry_price) - 1) * 100
                                 total_pnl_pct += pnl_pct
                                 open_count += 1
-                        except:
+                        except Exception:
                             pass
 
         if open_count > 0:
@@ -862,7 +862,7 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
     return output_path
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Compile newsletter briefing to HTML for Substack"
     )

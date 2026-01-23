@@ -2040,7 +2040,7 @@ def generate_newsletter_briefing(
                                 'theme': trade.theme,
                                 'status': trade.status
                             })
-                    except:
+                    except Exception:
                         pass
 
             # Get performance summary
@@ -2952,7 +2952,7 @@ SCAN STATS:
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="BoS Momentum Scanner - Weekly Timeframe")
     parser.add_argument("--no-llm", action="store_true", help="Skip ALL LLM gates (technical signals only)")
     parser.add_argument("--no-momentum", action="store_true", help="Skip gatekeeper (keep theme analysis) - faster but less thorough")

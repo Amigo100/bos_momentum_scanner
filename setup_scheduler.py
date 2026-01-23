@@ -50,12 +50,12 @@ DEFAULT_MINUTE = 30
 WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 
-def get_python_path():
+def get_python_path() -> str:
     """Get the path to the Python interpreter."""
     return sys.executable
 
 
-def get_api_key():
+def get_api_key() -> str:
     """Get the Anthropic API key from environment or prompt."""
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -65,7 +65,7 @@ def get_api_key():
     return api_key
 
 
-def create_wrapper_script():
+def create_wrapper_script() -> Path:
     """Create a wrapper script that sets up the environment."""
     wrapper_path = SCANNER_DIR / "run_scanner.sh"
     api_key = get_api_key()
@@ -111,7 +111,7 @@ echo "=== Scanner finished at $(date) ===" >> "$LOG_FILE"
     return wrapper_path
 
 
-def create_launchd_plist(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOUR, minute: int = DEFAULT_MINUTE):
+def create_launchd_plist(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOUR, minute: int = DEFAULT_MINUTE) -> Path:
     """Create a launchd plist for weekly scheduled execution."""
     wrapper_path = create_wrapper_script()
     
@@ -139,7 +139,7 @@ def create_launchd_plist(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOU
     return PLIST_PATH
 
 
-def install(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOUR, minute: int = DEFAULT_MINUTE):
+def install(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOUR, minute: int = DEFAULT_MINUTE) -> None:
     """Install the weekly scheduled task."""
     print("\n" + "=" * 60)
     print("INSTALLING WEEKLY SCHEDULED SCANNER")
@@ -201,7 +201,7 @@ def install(weekday: int = DEFAULT_WEEKDAY, hour: int = DEFAULT_HOUR, minute: in
 """)
 
 
-def uninstall(quiet=False):
+def uninstall(quiet: bool = False) -> None:
     """Remove the scheduled task."""
     if not quiet:
         print("\n" + "=" * 60)
@@ -215,11 +215,11 @@ def uninstall(quiet=False):
     
     # Unload from launchd
     try:
-        subprocess.run(["launchctl", "unload", str(PLIST_PATH)], 
+        subprocess.run(["launchctl", "unload", str(PLIST_PATH)],
                       check=True, capture_output=True)
         if not quiet:
             print("  ✓ Unloaded from launchd")
-    except:
+    except subprocess.CalledProcessError:
         pass
     
     # Remove plist file
@@ -235,7 +235,7 @@ def uninstall(quiet=False):
         print("\n  Schedule removed successfully.")
 
 
-def status():
+def status() -> None:
     """Check scheduler status."""
     print("\n" + "=" * 60)
     print("SCHEDULER STATUS")
@@ -262,19 +262,19 @@ def status():
     try:
         with open(PLIST_PATH, 'rb') as f:
             plist = plistlib.load(f)
-        
+
         schedule = plist.get("StartCalendarInterval", {})
         weekday = schedule.get("Weekday")
         hour = schedule.get("Hour", "??")
         minute = schedule.get("Minute", "??")
-        
+
         if weekday is not None:
             day_name = WEEKDAY_NAMES[weekday]
             print(f"  Schedule: Every {day_name} at {hour:02d}:{minute:02d} (local time)")
         else:
             print(f"  Schedule: Daily at {hour:02d}:{minute:02d} (local time)")
             print(f"  ⚠ Consider reinstalling for weekly schedule (saves API costs)")
-    except:
+    except (OSError, plistlib.InvalidFileException):
         pass
     
     print(f"  Plist: {PLIST_PATH}")
@@ -291,7 +291,7 @@ def status():
                 print(f"    {mtime.strftime('%Y-%m-%d %H:%M')} - {log.name}")
 
 
-def test():
+def test() -> int:
     """Run a test scan now."""
     print("\n" + "=" * 60)
     print("RUNNING TEST SCAN")
@@ -307,7 +307,7 @@ def test():
     return result.returncode
 
 
-def print_usage():
+def print_usage() -> None:
     """Print usage information."""
     print("""
 Scheduler Setup - Automated Weekly Scans

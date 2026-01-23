@@ -451,7 +451,7 @@ def run_gatekeeper_batch(
     return results
 
 
-def print_gatekeeper_result(result: GatekeeperResult):
+def print_gatekeeper_result(result: GatekeeperResult) -> None:
     """Print a single gatekeeper result in a clean format"""
     
     # Decision emoji and color
@@ -539,7 +539,7 @@ def print_gatekeeper_result(result: GatekeeperResult):
     print(f"  └{'─' * 60}┘")
 
 
-def print_gatekeeper_summary(results: List[GatekeeperResult]):
+def print_gatekeeper_summary(results: List[GatekeeperResult]) -> None:
     """Print summary of all gatekeeper results including cost tracking"""
     
     passes = [r for r in results if r.decision == GateDecision.PASS]
@@ -591,7 +591,7 @@ def print_gatekeeper_summary(results: List[GatekeeperResult]):
 # MAIN / CLI
 # =============================================================================
 
-def main():
+def main() -> None:
     """Command-line interface for standalone gatekeeper runs"""
     import argparse
     

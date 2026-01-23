@@ -278,7 +278,7 @@ def get_dd_summary_prompt(dd_report: str = "[PASTE DD REPORT HERE]") -> str:
     return DD_SUMMARY_PROMPT.format(dd_report=dd_report)
 
 
-def print_prompt(prompt: str, title: str):
+def print_prompt(prompt: str, title: str) -> None:
     """Print a prompt with clear boundaries."""
     print("\n" + "=" * 80)
     print(f"  {title}")

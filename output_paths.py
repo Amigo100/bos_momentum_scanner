@@ -26,7 +26,7 @@ Usage:
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -41,7 +41,7 @@ TRADES_DIR = BASE_DIR / "trades"
 # DIRECTORY HELPERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def get_week_identifier(dt: datetime = None) -> str:
+def get_week_identifier(dt: Optional[datetime] = None) -> str:
     """
     Get ISO week identifier string (YYYY-WXX format).
 
@@ -70,7 +70,7 @@ def get_current_dir() -> Path:
     return TRADES_DIR / "current"
 
 
-def get_week_dir(dt: datetime = None) -> Path:
+def get_week_dir(dt: Optional[datetime] = None) -> Path:
     """
     Get the weekly archive directory for a specific date.
 
@@ -166,7 +166,7 @@ def save_to_current_and_archive(content: str, filename: str) -> Tuple[Path, Path
     return current_path, archive_path
 
 
-def copy_to_current_and_archive(source: Path, filename: str = None) -> Tuple[Path, Path]:
+def copy_to_current_and_archive(source: Path, filename: Optional[str] = None) -> Tuple[Path, Path]:
     """
     Copy a file to both current/ and weekly archive directories.
 
@@ -247,7 +247,7 @@ def get_relative_path(path: Path) -> str:
         return str(path)
 
 
-def list_weekly_archives() -> list:
+def list_weekly_archives() -> List[str]:
     """
     List all available weekly archive directories.
 
@@ -265,7 +265,7 @@ def list_weekly_archives() -> list:
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main():
+def main() -> int:
     """Print current output paths and structure."""
     import argparse
 

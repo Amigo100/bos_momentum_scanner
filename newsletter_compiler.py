@@ -27,6 +27,18 @@ try:
 except ImportError:
     anthropic = None
 
+# Import output path helpers
+try:
+    from output_paths import (
+        get_current_dir,
+        get_week_dir,
+        ensure_output_structure,
+        get_relative_path
+    )
+    OUTPUT_PATHS_AVAILABLE = True
+except ImportError:
+    OUTPUT_PATHS_AVAILABLE = False
+
 TRADES_DIR = Path(__file__).parent / "trades"
 CHARTS_DIR = TRADES_DIR / "charts"
 
@@ -178,11 +190,22 @@ def compile_newsletter_llm(
 
 def load_market_analysis() -> str:
     """Load the market analysis file."""
+    # Try current/ folder first, then legacy location
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        market_file = current_dir / "market_analysis.md"
+        if market_file.exists():
+            with open(market_file, 'r') as f:
+                content = f.read()
+                if "## 📊 Market Context" in content:
+                    return content[content.index("## 📊 Market Context"):]
+                return content
+
+    # Fallback to legacy location
     market_file = TRADES_DIR / "market_analysis.md"
     if market_file.exists():
         with open(market_file, 'r') as f:
             content = f.read()
-            # Extract just the analysis part (skip header)
             if "## 📊 Market Context" in content:
                 return content[content.index("## 📊 Market Context"):]
             return content
@@ -191,6 +214,15 @@ def load_market_analysis() -> str:
 
 def load_scanner_briefing() -> str:
     """Load the scanner briefing file."""
+    # Try current/ folder first, then legacy location
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        briefing_file = current_dir / "newsletter_briefing.md"
+        if briefing_file.exists():
+            with open(briefing_file, 'r') as f:
+                return f.read()
+
+    # Fallback to legacy location
     briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
     if briefing_file.exists():
         with open(briefing_file, 'r') as f:
@@ -200,7 +232,18 @@ def load_scanner_briefing() -> str:
 
 def load_dd_results() -> str:
     """Load DD results from signals.json."""
-    signals_file = TRADES_DIR / "signals.json"
+    # Try current/ folder first
+    signals_file = None
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        signals_file = current_dir / "signals.json"
+        if not signals_file.exists():
+            signals_file = None
+
+    # Fallback to legacy location
+    if signals_file is None:
+        signals_file = TRADES_DIR / "signals.json"
+
     if not signals_file.exists():
         return ""
 
@@ -244,6 +287,16 @@ def load_portfolio_status() -> str:
 
 def load_chart_manifest() -> Dict[str, str]:
     """Load the chart manifest."""
+    # Try current/ folder first
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        manifest_file = current_dir / "charts" / "chart_manifest.json"
+        if manifest_file.exists():
+            with open(manifest_file, 'r') as f:
+                data = json.load(f)
+                return data.get("charts", {})
+
+    # Fallback to legacy location
     manifest_file = CHARTS_DIR / "chart_manifest.json"
     if manifest_file.exists():
         with open(manifest_file, 'r') as f:
@@ -621,12 +674,31 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
         substack_url=SUBSTACK_URL
     )
 
-    # Save HTML file
+    # Save to current/ and weekly archive if available
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir, week_dir = ensure_output_structure()
+
+        # Save to current/
+        current_html = current_dir / "newsletter.html"
+        with open(current_html, 'w') as f:
+            f.write(full_html)
+
+        # Save to weekly archive
+        archive_html = week_dir / "newsletter.html"
+        with open(archive_html, 'w') as f:
+            f.write(full_html)
+
+        print(f"\n  ✅ Newsletter compiled:")
+        print(f"     • {get_relative_path(current_html)} (current)")
+        print(f"     • {get_relative_path(archive_html)} (archived)")
+
+    # Also save to legacy location for backwards compatibility
     output_path = TRADES_DIR / "latest_newsletter.html"
     with open(output_path, 'w') as f:
         f.write(full_html)
 
-    print(f"\n  ✅ Newsletter compiled: {output_path}")
+    if not OUTPUT_PATHS_AVAILABLE:
+        print(f"\n  ✅ Newsletter compiled: {output_path}")
 
     # List embedded vs missing charts
     embedded_charts = [t for t in chart_manifest.keys()]

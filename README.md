@@ -1,29 +1,57 @@
-# BoS Momentum Scanner
+# BoS Momentum Scanner - Sterling Signals
 
-A **weekly momentum trading scanner** for US stocks. Identifies high-beta stocks with bullish HMA Pivot signals and strong institutional accumulation, then confirms via LLM-powered thematic analysis.
+A **fully automated weekly momentum trading scanner** for US stocks with integrated content generation for X (Twitter) and Substack newsletter publishing.
 
-**Designed for:** UK trader using Barclays ISA for US stocks, with 4-8 week hold periods.
+**Newsletter:** [Sterling Signals on Substack](https://sterlingsignals.substack.com)
+**X/Twitter:** [@SterlingSignals](https://twitter.com/SterlingSignals)
+
+---
+
+## What This System Does
+
+Every Friday after market close, the system automatically:
+
+1. **Scans 1,800+ US stocks** for momentum signals
+2. **Identifies hot themes** (AI, Energy, Defense, etc.)
+3. **Runs due diligence** on qualifying stocks
+4. **Generates 35 tweets** for the week (5/day)
+5. **Compiles newsletter** ready for Substack
+6. **Creates Substack Notes** for Tuesday/Thursday mid-week updates
+7. **Posts to X** automatically via GitHub Actions
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Install dependencies
-pip install yfinance pandas numpy anthropic
+# Install dependencies
+pip install -r requirements.txt
 
-# 2. Set API key (for LLM features)
+# Set API key
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
 
-# 3. Run technical scan (FREE - no API calls)
-python scanner.py --no-llm
+# Run full Friday pipeline (automated via GitHub Actions)
+./run_friday.sh
 
-# 4. Run with theme analysis (~$0.13)
-python scanner.py --no-momentum
-
-# 5. Run full pipeline (~$0.25)
-python scanner.py
+# Or run scanner only
+python scanner.py --web-search
 ```
+
+---
+
+## Weekly Workflow
+
+| Day | Automated | Manual |
+|-----|-----------|--------|
+| **Friday** | Full scan, DD, tweets, newsletter compilation | - |
+| **Saturday** | Tweet posting (5 posts) | Copy newsletter to Substack, add charts |
+| **Sunday** | Tweet posting (5 posts) | - |
+| **Monday** | Tweet posting (5 posts) | - |
+| **Tuesday** | Tweet posting (5 posts), Substack Note ready | Post Tuesday Note to Substack |
+| **Wednesday** | Tweet posting (5 posts) | - |
+| **Thursday** | Tweet posting (5 posts), Substack Note ready | Post Thursday Note to Substack |
+
+**Only manual steps:** Substack newsletter publish (~10 min) + Tuesday/Thursday notes (~2 min each)
 
 ---
 
@@ -31,186 +59,170 @@ python scanner.py
 
 ### ENTRY (Buy Signal)
 ```
-1. HMA Pivot BUY fires (lower step line changes = bullish structure)
-2. Beta >= 1.5 (high momentum stock)
+1. Weekly HMA Pivot BUY signal (bullish structure break)
+2. Beta >= 1.5 (high momentum)
 3. Banker score > 55 (institutional accumulation)
-4. Stock is in a hot theme/sector (Thematic Analyzer)
-5. → Enter Monday at market open
+4. Hot theme confirmed (PRIME or INVESTABLE)
+5. Gatekeeper PASS decision
+6. Due Diligence confirms
 ```
 
 ### EXIT (Sell Signal)
 ```
 PRIMARY:  20% trailing stop from highest weekly close
-
-CAUTION:  HMA Pivot SELL (upper step changes)
-          - Do NOT automatically exit
-          - Consider tightening stop to 15%
+CAUTION:  Weekly BoS Down → tighten stop to 15%
 ```
 
 ---
 
-## Pipeline Overview
+## Pipeline Architecture
 
 ```
-Universe (4000 tickers)
+Universe (1,800 tickers)
         ↓
    Technical Gate (Beta >= 1.5 + HMA Pivot BUY + Banker > 55)
         ↓
-   Thematic Analyzer (Theme fit: STRONG/GOOD)
+   Thematic Analyzer (Theme classification + stock mapping)
         ↓
-   Momentum Assessor (TRADE / CONSIDER / SKIP)
+   Gatekeeper (PASS / CAUTION / FAIL decisions)
         ↓
-   Due Diligence (PROCEED / CAUTION / WAIT / PASS)
+   Due Diligence (Deal Memo for PASS signals)
         ↓
-   Trade Log + Email
+   Portfolio Update (track positions, P&L, stops)
+        ↓
+   Content Generation (tweets, newsletter, Substack notes)
+        ↓
+   Auto-Posting (X via GitHub Actions)
 ```
 
 ---
 
-## Files
+## Project Files
+
+### Core Pipeline
+| File | Purpose |
+|------|---------|
+| `scanner.py` | Main pipeline orchestrator |
+| `thematic_analyzer.py` | LLM theme discovery and scoring |
+| `gatekeeper.py` | LLM final quality gate |
+| `portfolio_manager.py` | Trade tracking, P&L, Google Sheets export |
+
+### Content Generation
+| File | Purpose |
+|------|---------|
+| `tweet_generator.py` | Generate 35 weekly tweets |
+| `newsletter_compiler.py` | Compile full newsletter with DD |
+| `substack_notes_generator.py` | Tuesday/Thursday mid-week notes |
+| `market_analyzer.py` | Market context analysis |
+| `dd_automator.py` | Automated due diligence |
+
+### Automation
+| File | Purpose |
+|------|---------|
+| `run_friday.sh` | Full Friday pipeline script |
+| `.github/workflows/friday_scan.yml` | Friday scan automation |
+| `.github/workflows/post_content.yml` | Daily tweet posting |
+| `output_paths.py` | Centralized folder structure |
+
+### Utilities
+| File | Purpose |
+|------|---------|
+| `verify_bos.py` | Debug signal calculation |
+| `diagnose_bos.py` | Universe state analysis |
+| `email_notifier.py` | Email notifications |
+| `chart_capture.py` | TradingView chart screenshots |
+
+---
+
+## Output Structure
 
 ```
-scanner.py              # Main integrated pipeline
-thematic_analyzer.py    # Theme identification & mapping
-momentum_assessor.py    # Final trade decision
-due_diligence.py        # Deep analysis (Opus)
-run_full_pipeline.py    # Complete pipeline with DD
-verify_bos.py           # Debug signal calculation
-diagnose_bos.py         # Universe state analysis
-email_notifier.py       # Email notifications
-setup_scheduler.py      # Automated weekly runs
-complete_tickers.txt    # Full ticker universe
-test_tickers.txt        # Smaller test universe
-CLAUDE.md               # Claude Code context
-CLAUDE_CODE_WORKFLOWS.md # Copy-paste prompts
+trades/
+├── current/                    # Latest outputs (symlinked)
+│   ├── newsletter_briefing.md
+│   ├── newsletter.html
+│   ├── tweets.json
+│   └── substack_notes/
+│       ├── tuesday_note.md
+│       └── thursday_note.md
+│
+├── weeks/                      # Weekly archives
+│   ├── 2026-W03/
+│   ├── 2026-W04/
+│   └── ...
+│
+├── charts/                     # Chart images
+│   └── chart_manifest.json
+│
+├── grok_prompts/              # Daily tweet files
+│   ├── latest_grok_prompts.md
+│   ├── monday_prompts.md
+│   └── ...
+│
+├── portfolio.csv              # Source of truth for trades
+├── signals.json               # Latest scan results
+├── analysis_log.csv           # Historical scan data
+└── content_queue.json         # Tweet posting queue
 ```
 
 ---
 
-## Usage
+## Commands Reference
 
-### Basic Scans
+### Full Pipeline
 ```bash
-# Technical only (FREE)
+# Automated Friday run (what GitHub Actions does)
+./run_friday.sh
+
+# Manual full pipeline with web search
+python scanner.py --web-search
+```
+
+### Scanner Options
+```bash
+# Technical scan only (FREE)
 python scanner.py --no-llm
 
-# With themes (~$0.13)
+# With themes, skip gatekeeper
 python scanner.py --no-momentum
 
-# Full pipeline (~$0.25)
-python scanner.py
+# Full pipeline with web search (~$1-3)
+python scanner.py --web-search
 
-# Top N by beta
-python scanner.py --top 100 --no-llm
+# Limit to top N by beta
+python scanner.py --web-search --top 50
 ```
 
-### Full Pipeline with Due Diligence
+### Content Generation
 ```bash
-python run_full_pipeline.py                    # Full pipeline
-python run_full_pipeline.py --top-dd 3         # DD on top 3 only
-python run_full_pipeline.py --budget "£10,000" # Custom budget
-python run_full_pipeline.py --skip-dd          # Skip DD step
+# Generate newsletter
+python newsletter_compiler.py --full
+
+# Generate tweets
+python tweet_generator.py
+
+# Generate Substack notes
+python substack_notes_generator.py
 ```
 
-### Debugging
+### Portfolio Management
 ```bash
-python verify_bos.py NVDA TSLA PLTR    # Check specific tickers
-python diagnose_bos.py 100              # Universe state
+# View portfolio summary
+python portfolio_manager.py --report
+
+# Update prices
+python portfolio_manager.py --update
+
+# Export for Google Sheets
+python portfolio_manager.py --export
 ```
-
-### Automation (macOS)
-```bash
-python setup_scheduler.py install       # Sunday 9:30 PM
-python setup_scheduler.py status        # Check status
-python setup_scheduler.py uninstall     # Remove
-```
-
----
-
-## Signal Criteria
-
-### Gate 1: Technical Signals (Weekly)
-| Criterion | Threshold | Description |
-|-----------|-----------|-------------|
-| Beta | >= 1.5 | High volatility vs SPY |
-| HMA Pivot BUY | TRUE | Lower step line changed |
-| Banker | > 55 | Institutional accumulation |
-
-**Tier Assignment:**
-- TIER 1: Banker > 70 (highest conviction)
-- TIER 2: Banker > 60
-- TIER 3: Banker > 55
-
-### Gate 2: Thematic Analyzer
-Identifies top 5-7 hot themes, maps stocks to themes.
-
-| Theme Rating | Score | Action |
-|--------------|-------|--------|
-| PRIME | >= 7.5 | High conviction |
-| INVESTABLE | 6.0-7.4 | Standard position |
-| SELECTIVE | 4.5-5.9 | Cherry-pick only |
-| AVOID | < 4.5 | Do not invest |
-
-| Fit Verdict | Passes Gate? |
-|-------------|--------------|
-| STRONG FIT | ✓ |
-| GOOD FIT | ✓ |
-| MODERATE/WEAK/NO FIT | ✗ |
-
-### Gate 3: Momentum Assessor
-| Decision | Action |
-|----------|--------|
-| 🟢 TRADE | Enter Monday at market open |
-| 🟡 CONSIDER | Smaller position or skip |
-| 🔴 SKIP | Don't trade |
-
-### Gate 4: Due Diligence
-| Verdict | Action |
-|---------|--------|
-| PROCEED WITH CONVICTION | Full position |
-| PROCEED WITH CAUTION | Reduced size |
-| WAIT FOR BETTER ENTRY | Monitor only |
-| PASS ON THIS ONE | Skip |
-
----
-
-## Cost Comparison
-
-| Mode | Cost/Run | Annual (Weekly) |
-|------|----------|-----------------|
-| `--no-llm` | $0.00 | $0.00 |
-| `--no-momentum` | ~$0.13 | ~$7 |
-| Full pipeline | ~$0.25 | ~$13 |
-| + Due Diligence | ~$0.50 | ~$26 |
-
----
-
-## Using with Claude Code
-
-This project is optimized for use with Claude Code. The `CLAUDE.md` file provides context automatically.
-
-### Recommended Workflow (Saves Money!)
-
-Instead of using built-in API calls, use Claude Code for analysis:
-
-```bash
-# Step 1: Run technical scan (FREE)
-python scanner.py --no-llm
-
-# Step 2: Ask Claude Code to analyze themes
-# Paste candidates into Claude Code, it does analysis for free
-```
-
-This uses your Pro subscription instead of API credits.
-
-See `CLAUDE_CODE_WORKFLOWS.md` for ready-to-use prompts.
 
 ---
 
 ## Environment Variables
 
 ```bash
-# Required for LLM features
+# Required
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
 
 # Optional: Email notifications
@@ -219,37 +231,40 @@ export SMTP_PORT="587"
 export EMAIL_SENDER="you@gmail.com"
 export EMAIL_PASSWORD="app-password"
 export EMAIL_RECIPIENTS="you@gmail.com"
+
+# For X posting (GitHub Secrets)
+TWITTER_API_KEY
+TWITTER_API_SECRET
+TWITTER_ACCESS_TOKEN
+TWITTER_ACCESS_SECRET
 ```
 
 ---
 
-## Output Files
+## Cost Estimate
 
-| File | Description |
-|------|-------------|
-| `data/signals.json` | Latest scan results |
-| `data/pipeline_results.json` | Full pipeline results |
-| `trades/trade_log.csv` | Trade history |
-| `reports/dd_TICKER_*.md` | Due diligence reports |
-| `logs/scan_*.log` | Execution logs |
+| Component | Cost per Run |
+|-----------|--------------|
+| Thematic Analyzer | ~$0.15-0.25 |
+| Gatekeeper (per stock) | ~$0.10-0.20 |
+| Due Diligence (per stock) | ~$0.30-0.50 |
+| Market Analysis | ~$0.10 |
+| Newsletter Compilation | ~$0.20 |
+| **Total Friday Pipeline** | **~$2-5** |
 
 ---
 
-## Example Output
+## Documentation
 
-```
-╔══════════════════════════════════════════════════════════════════════╗
-║             BoS MOMENTUM SCANNER - WEEKLY TIMEFRAME                  ║
-╚══════════════════════════════════════════════════════════════════════╝
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Full system documentation for AI context |
+| `SETUP.md` | External service setup guide |
+| `SYSTEM_OVERVIEW.md` | Marketing & improvement assessment |
+| `docs/archive/` | Historical planning documents |
 
-  ✅ ENTRY CANDIDATES (HMA Pivot BUY):
-  ──────────────────────────────────────────────────────────────────────
-  TIER   SYMBOL     PRICE    BETA   THEME
-  ──────────────────────────────────────────────────────────────────────
-  TIER1  PLTR    $ 188.71    2.45   AI Data Center Infrastructure
-  TIER1  RKLB    $  70.65    2.89   Defense & Aerospace
-  ──────────────────────────────────────────────────────────────────────
+---
 
-  SUMMARY: 2 entry candidates
-    🟢 Enter Monday at market open: PLTR, RKLB
-```
+## License
+
+Private project for Sterling Signals newsletter.

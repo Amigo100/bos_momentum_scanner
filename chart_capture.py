@@ -52,9 +52,41 @@ PLAYWRIGHT_USER_DATA_DIR = os.environ.get(
     str(BASE_DIR / ".playwright_profile")
 )
 
-# Chart sizes
-CHART_SIZE_X = (1200, 630)       # X/Twitter card size
-CHART_SIZE_SUBSTACK = (800, 500)  # Substack embed size
+# Chart sizes - increased height to capture all indicator panes
+CHART_SIZE_X = (1200, 800)       # X/Twitter card size (taller to show all indicators)
+CHART_SIZE_SUBSTACK = (800, 600)  # Substack embed size (taller to show all indicators)
+
+# JavaScript to hide TradingView UI elements that reveal strategy
+HIDE_UI_ELEMENTS_JS = """
+() => {
+    // Hide indicator titles/names in legend
+    document.querySelectorAll('[data-name="legend-source-item"]').forEach(el => {
+        const title = el.querySelector('[class*="title"]');
+        if (title) title.style.display = 'none';
+    });
+
+    // Hide the right-side panels (Alpha panel, etc.)
+    document.querySelectorAll('[class*="right-toolbar"]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('[class*="widgetbar"]').forEach(el => el.style.display = 'none');
+
+    // Hide drawing toolbar
+    document.querySelectorAll('[class*="drawingToolbar"]').forEach(el => el.style.display = 'none');
+
+    // Hide top toolbar items we don't need
+    document.querySelectorAll('[data-name="legend-series-item"]').forEach(el => {
+        // Keep price info, hide indicator names
+        const text = el.textContent || '';
+        if (text.includes('BoS') || text.includes('Banker') || text.includes('HMA') || text.includes('Alpha')) {
+            el.style.display = 'none';
+        }
+    });
+
+    // Alternative: Hide all source titles
+    document.querySelectorAll('[class*="sourcesWrapper"]').forEach(el => el.style.display = 'none');
+
+    return 'UI elements hidden';
+}
+"""
 
 # Wait times (adjust based on your connection speed)
 PAGE_LOAD_WAIT_MS = 8000          # Wait for page to load
@@ -98,18 +130,24 @@ def capture_chart(
     try:
         page.goto(url, timeout=60000, wait_until="domcontentloaded")
         page.wait_for_timeout(PAGE_LOAD_WAIT_MS)
-        
+
         # Wait for indicators to load
-        # You may need to adjust this selector based on your chart
         page.wait_for_timeout(INDICATOR_LOAD_WAIT_MS)
-        
+
+        # Hide UI elements that reveal strategy (indicator names, panels, etc.)
+        try:
+            page.evaluate(HIDE_UI_ELEMENTS_JS)
+            print(f"    ✓ Hidden indicator names and panels")
+            page.wait_for_timeout(500)  # Let DOM update
+        except Exception as e:
+            print(f"    ⚠ Could not hide UI elements: {e}")
+
         # TradingView selectors - try multiple options as DOM changes frequently
         chart_selectors = [
-            "canvas",                          # Main chart canvas
+            ".layout__area--center",           # Center layout area (best for full chart)
             ".chart-markup-table",             # Chart markup container
-            "[data-name='legend-source-item']", # Chart legend area
             ".chart-container",                # Generic container
-            ".layout__area--center",           # Center layout area
+            "canvas",                          # Main chart canvas (fallback)
         ]
 
         chart_element = None
@@ -230,28 +268,57 @@ def load_tickers_from_json(filepath: Path) -> List[str]:
     """Load tickers from a JSON file (scanner output format)."""
     with open(filepath, 'r') as f:
         data = json.load(f)
-    
+
     tickers = []
-    
+
     # Handle different JSON structures
     if isinstance(data, list):
         # List of signal objects
         for item in data:
-            if isinstance(item, dict) and 'ticker' in item:
-                tickers.append(item['ticker'])
+            if isinstance(item, dict):
+                # Try common ticker field names
+                ticker = item.get('ticker') or item.get('symbol')
+                if ticker:
+                    tickers.append(ticker)
             elif isinstance(item, str):
                 tickers.append(item)
     elif isinstance(data, dict):
-        # Dict with signals lists
-        for key in ['pass_signals', 'buy_signals', 'signals', 'tickers']:
+        # Dict with signals lists - check all relevant keys
+        signal_keys = [
+            'pass_signals', 'buy_signals', 'signals', 'tickers',
+            'sell_signals', 'caution_signals'
+        ]
+        for key in signal_keys:
             if key in data:
                 for item in data[key]:
-                    if isinstance(item, dict) and 'ticker' in item:
-                        tickers.append(item['ticker'])
+                    if isinstance(item, dict):
+                        ticker = item.get('ticker') or item.get('symbol')
+                        if ticker:
+                            tickers.append(ticker)
                     elif isinstance(item, str):
                         tickers.append(item)
-    
+
     return list(set(tickers))  # Dedupe
+
+
+def load_tickers_from_portfolio(filepath: Path) -> List[str]:
+    """Load open position tickers from portfolio.csv."""
+    import csv
+
+    tickers = []
+
+    if not filepath.exists():
+        return tickers
+
+    with open(filepath, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row.get('status', '').upper() == 'OPEN':
+                ticker = row.get('ticker')
+                if ticker:
+                    tickers.append(ticker)
+
+    return tickers
 
 
 def save_chart_manifest(results: dict, output_dir: Path):
@@ -277,23 +344,35 @@ def main():
     parser.add_argument("--ticker", type=str, help="Single ticker to capture")
     parser.add_argument("--tickers", type=str, help="Comma-separated list of tickers")
     parser.add_argument("--tickers-from", type=str, help="JSON file with tickers")
+    parser.add_argument("--include-portfolio", action="store_true", help="Also capture charts for open portfolio positions")
     parser.add_argument("--headless", action="store_true", help="Run in headless mode")
     parser.add_argument("--skip-wait", action="store_true", help="Skip the 60s login wait (use after first successful login)")
     parser.add_argument("--output", type=str, help="Output directory")
     args = parser.parse_args()
-    
+
     # Determine tickers to capture
     tickers = []
-    
+
     if args.ticker:
         tickers = [args.ticker.upper()]
     elif args.tickers:
         tickers = [t.strip().upper() for t in args.tickers.split(",")]
     elif args.tickers_from:
         tickers = load_tickers_from_json(Path(args.tickers_from))
-    else:
+
+    # Add portfolio positions if requested
+    if args.include_portfolio:
+        portfolio_path = BASE_DIR / "trades" / "portfolio.csv"
+        portfolio_tickers = load_tickers_from_portfolio(portfolio_path)
+        if portfolio_tickers:
+            print(f"  📁 Adding {len(portfolio_tickers)} open positions from portfolio")
+            tickers.extend(portfolio_tickers)
+            tickers = list(set(tickers))  # Dedupe
+
+    if not tickers:
         print("ERROR: Specify --ticker, --tickers, or --tickers-from")
         print("Example: python chart_capture.py --tickers AAPL,NVDA,PLTR")
+        print("         python chart_capture.py --tickers-from trades/signals.json --include-portfolio")
         sys.exit(1)
     
     if not tickers:

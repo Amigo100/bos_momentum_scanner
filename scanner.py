@@ -74,6 +74,27 @@ except ImportError:
     PORTFOLIO_MANAGER_AVAILABLE = False
     print("  ℹ️  portfolio_manager.py not found - using legacy CSV tracking")
 
+# Output paths for weekly folder structure
+try:
+    from output_paths import (
+        get_current_dir,
+        get_week_dir,
+        ensure_output_structure,
+        get_relative_path
+    )
+    OUTPUT_PATHS_AVAILABLE = True
+except ImportError:
+    OUTPUT_PATHS_AVAILABLE = False
+    # Fallback functions
+    def get_current_dir():
+        return TRADES_DIR
+    def get_week_dir():
+        return TRADES_DIR
+    def ensure_output_structure():
+        return TRADES_DIR, TRADES_DIR
+    def get_relative_path(p):
+        return str(p)
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -2169,32 +2190,48 @@ def save_newsletter_briefing(
     sell_signals: List[SellSignal],
     themes_data: List[dict] = None,
     stats: ScanStats = None,
-    archive: bool = False
+    archive: bool = False,
+    current_dir: Path = None,
+    week_dir: Path = None
 ):
     """Save the newsletter briefing to a markdown file."""
 
     date_str = datetime.now().strftime("%Y%m%d")
 
+    # Use provided dirs or get them
+    if current_dir is None or week_dir is None:
+        current_dir, week_dir = ensure_output_structure()
+
     # Helper for relative paths
     def rel_path(p: Path) -> str:
-        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
+        return get_relative_path(p) if OUTPUT_PATHS_AVAILABLE else str(p)
 
     briefing = generate_newsletter_briefing(confirmed, sell_signals, themes_data, stats)
 
-    # Save as latest (always)
+    # Save to current/ and weekly archive
+    briefing_current = current_dir / "newsletter_briefing.md"
+    briefing_archive = week_dir / "newsletter_briefing.md"
+    with open(briefing_current, 'w') as f:
+        f.write(briefing)
+    with open(briefing_archive, 'w') as f:
+        f.write(briefing)
+
+    # Also save to legacy location for backwards compatibility
     latest_file = TRADES_DIR / "latest_newsletter_briefing.md"
     with open(latest_file, 'w') as f:
         f.write(briefing)
 
-    # Save dated archive only if --archive flag
+    # Save dated archive only if --archive flag (legacy format)
     if archive:
         briefing_file = TRADES_DIR / f"newsletter_briefing_{date_str}.md"
         with open(briefing_file, 'w') as f:
             f.write(briefing)
 
-    print(f"\n  📰 Newsletter briefing: {rel_path(latest_file)}")
+    print(f"\n  📰 Newsletter briefing:")
+    print(f"     • {rel_path(briefing_current)} (current week)")
+    print(f"     • {rel_path(briefing_archive)} (archived)")
     if archive:
-        print(f"     (archived: {rel_path(briefing_file)})")
+        print(f"     • {rel_path(briefing_file)} (dated)")
 
     return latest_file
 
@@ -2653,74 +2690,88 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     date_str = datetime.now().strftime("%Y%m%d")
 
+    # Ensure weekly folder structure exists
+    current_dir, week_dir = ensure_output_structure()
+
     # Helper for relative paths in output
     def rel_path(p: Path) -> str:
-        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
-    
-    # Save signals JSON (confirmed only)
+        return get_relative_path(p) if OUTPUT_PATHS_AVAILABLE else str(p)
+
+    # Build signals JSON data
+    signals_data = {
+        "timestamp": timestamp,
+        "timeframe": "WEEKLY",
+        "entry_criteria": "Weekly BoS Up + Hot Theme + TRADE/CONSIDER decision",
+        "exit_criteria": f"Weekly BoS Down OR {TRAILING_STOP_PCT}% trailing stop",
+        "stats": {
+            "tickers_loaded": stats.tickers_loaded,
+            "data_downloaded": stats.data_downloaded,
+            "beta_gte_2_0": stats.beta_gte_2_0,
+            "weekly_bos_up": stats.bos_bullish,
+            "technical_signals": stats.meets_technical_gate,
+            "theme_confirmed": stats.theme_confirmed,
+            "final_trade": stats.final_trade,
+            "final_consider": stats.final_consider,
+        },
+        "buy_signals": [
+            {
+                "symbol": s.symbol,
+                "tier": s.tier,
+                "price": s.price,
+                "beta": s.beta,
+                "banker": s.banker,
+                "return_20d": s.return_20d,
+                "theme": s.theme,
+                "theme_score": s.theme_score,
+                "pure_play_score": s.pure_play_score,
+                "theme_verdict": s.theme_verdict,
+                "final_decision": s.final_decision,
+                "conviction": s.conviction,
+                "sector_status": s.sector_status,
+                "upside_potential": s.upside_potential,
+                "bullish_factors": s.bullish_factors,
+                "risk_factors": s.risk_factors,
+                "reasoning": s.reasoning,
+                "action": (
+                    "Enter Monday at market open" if s.final_decision == "TRADE"
+                    else "Consider smaller position" if s.final_decision == "CONSIDER"
+                    else "Pending LLM analysis" if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]
+                    else "Review required"
+                ),
+                "dd_verdict": s.dd_verdict,
+                "dd_conviction": s.dd_conviction,
+                "dd_position_size": s.dd_position_size,
+                "dd_key_catalyst": s.dd_key_catalyst,
+                "dd_fatal_flaw": s.dd_fatal_flaw
+            }
+            for s in confirmed
+        ],
+        "sell_signals": [
+            {
+                "symbol": s.symbol,
+                "price": s.price,
+                "reason": s.reason,
+                "entry_price": s.entry_price,
+                "highest_close": s.highest_close,
+                "drawdown_pct": s.drawdown_pct
+            }
+            for s in sell_signals
+        ]
+    }
+
+    # Save signals JSON to current/ and weekly archive
+    signals_json = json.dumps(signals_data, indent=2)
+    signals_current = current_dir / "signals.json"
+    signals_archive = week_dir / "signals.json"
+    with open(signals_current, 'w') as f:
+        f.write(signals_json)
+    with open(signals_archive, 'w') as f:
+        f.write(signals_json)
+
+    # Also save to legacy location for backwards compatibility
     signals_file = TRADES_DIR / "signals.json"
     with open(signals_file, 'w') as f:
-        json.dump({
-            "timestamp": timestamp,
-            "timeframe": "WEEKLY",
-            "entry_criteria": "Weekly BoS Up + Hot Theme + TRADE/CONSIDER decision",
-            "exit_criteria": f"Weekly BoS Down OR {TRAILING_STOP_PCT}% trailing stop",
-            "stats": {
-                "tickers_loaded": stats.tickers_loaded,
-                "data_downloaded": stats.data_downloaded,
-                "beta_gte_2_0": stats.beta_gte_2_0,
-                "weekly_bos_up": stats.bos_bullish,
-                "technical_signals": stats.meets_technical_gate,
-                "theme_confirmed": stats.theme_confirmed,
-                "final_trade": stats.final_trade,
-                "final_consider": stats.final_consider,
-            },
-            "buy_signals": [
-                {
-                    "symbol": s.symbol,
-                    "tier": s.tier,
-                    "price": s.price,
-                    "beta": s.beta,
-                    "banker": s.banker,
-                    "return_20d": s.return_20d,
-                    "theme": s.theme,
-                    "theme_score": s.theme_score,
-                    "pure_play_score": s.pure_play_score,
-                    "theme_verdict": s.theme_verdict,
-                    "final_decision": s.final_decision,
-                    "conviction": s.conviction,
-                    "sector_status": s.sector_status,
-                    "upside_potential": s.upside_potential,
-                    "bullish_factors": s.bullish_factors,
-                    "risk_factors": s.risk_factors,
-                    "reasoning": s.reasoning,
-                    "action": (
-                        "Enter Monday at market open" if s.final_decision == "TRADE"
-                        else "Consider smaller position" if s.final_decision == "CONSIDER"
-                        else "Pending LLM analysis" if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]
-                        else "Review required"
-                    ),
-                    # Due Diligence fields (populated if --dd or --full-dd flag used)
-                    "dd_verdict": s.dd_verdict,
-                    "dd_conviction": s.dd_conviction,
-                    "dd_position_size": s.dd_position_size,
-                    "dd_key_catalyst": s.dd_key_catalyst,
-                    "dd_fatal_flaw": s.dd_fatal_flaw
-                }
-                for s in confirmed
-            ],
-            "sell_signals": [
-                {
-                    "symbol": s.symbol, 
-                    "price": s.price, 
-                    "reason": s.reason,
-                    "entry_price": s.entry_price,
-                    "highest_close": s.highest_close,
-                    "drawdown_pct": s.drawdown_pct
-                }
-                for s in sell_signals
-            ]
-        }, f, indent=2)
+        f.write(signals_json)
     
     # ═══════════════════════════════════════════════════════════════════════════
     # COMPREHENSIVE ANALYSIS LOG - ALL assessed stocks for back-analysis
@@ -2781,28 +2832,38 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     # ═══════════════════════════════════════════════════════════════════════════
     report = generate_report(confirmed, all_assessed, sell_signals, stats, momentum_rejected)
 
-    # Save as latest report (always)
+    # Save report to current/ and weekly archive
+    report_current = current_dir / "report.txt"
+    report_archive = week_dir / "report.txt"
+    with open(report_current, 'w') as f:
+        f.write(report)
+    with open(report_archive, 'w') as f:
+        f.write(report)
+
+    # Also save to legacy location for backwards compatibility
     latest_report = TRADES_DIR / "latest_report.txt"
     with open(latest_report, 'w') as f:
         f.write(report)
 
-    # Save dated archive file only if --archive flag
+    # Save dated archive file only if --archive flag (legacy format)
     if archive:
         report_file = TRADES_DIR / f"report_{date_str}.txt"
         with open(report_file, 'w') as f:
             f.write(report)
 
     print(f"\n  📁 Results saved:")
-    print(f"     • {rel_path(signals_file)}")
+    print(f"     • {rel_path(signals_current)} (current week)")
+    print(f"     • {rel_path(signals_archive)} (archived)")
+    print(f"     • {rel_path(signals_file)} (legacy)")
     print(f"     • {rel_path(analysis_log)}")
-    print(f"     • {rel_path(latest_report)}")
+    print(f"     • {rel_path(report_current)} (current week)")
     if archive:
-        print(f"     • {rel_path(report_file)} (archived)")
+        print(f"     • {rel_path(report_file)} (dated archive)")
 
     # ═══════════════════════════════════════════════════════════════════════════
     # GENERATE NEWSLETTER BRIEFING
     # ═══════════════════════════════════════════════════════════════════════════
-    save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=archive)
+    save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=archive, current_dir=current_dir, week_dir=week_dir)
 
     return report  # Return report for email use
 

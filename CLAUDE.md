@@ -27,11 +27,16 @@ EXIT:   20% trailing stop from highest weekly close OR Weekly BoS Down (tighten 
 
 ### Weekly Schedule
 
-| Day | Activity |
-|-----|----------|
-| **Friday PM** | Run scanner after market close |
-| **Saturday AM** | Review results, write newsletter, publish to Substack |
-| **Mon-Sun** | Post 3 tweets/day from Grok prompts |
+| Day | Automated | Manual |
+|-----|-----------|--------|
+| **Friday PM** | Full scan, DD, tweets, newsletter via GitHub Actions | - |
+| **Saturday AM** | Tweet posting (5/day) | Copy newsletter to Substack, add charts |
+| **Sunday-Monday** | Tweet posting (5/day) | - |
+| **Tuesday** | Tweet posting, Substack Note ready | Post Tuesday "Portfolio Pulse" note |
+| **Wednesday** | Tweet posting (5/day) | - |
+| **Thursday** | Tweet posting, Substack Note ready | Post Thursday "Trade Spotlight" note |
+
+**Only manual steps:** Substack newsletter publish (~10 min) + Tuesday/Thursday notes (~2 min each)
 
 ---
 
@@ -62,10 +67,16 @@ python portfolio_manager.py --migrate       # One-time: migrate legacy files
 
 ### Content Generation
 ```bash
-python grok_prompts_generator.py            # Regenerate 21 weekly prompts
-python newsletter_prompts.py market         # Print market context prompt
-python newsletter_prompts.py compile        # Print newsletter compilation prompt
-python due_diligence_prompts.py TICKER "Theme Name"  # Deep DD prompt
+python tweet_generator.py                   # Generate 35 weekly tweets
+python newsletter_compiler.py --full        # Compile full newsletter with DD
+python substack_notes_generator.py          # Generate Tuesday/Thursday notes
+python market_analyzer.py                   # Generate market context analysis
+python dd_automator.py                      # Run automated due diligence
+```
+
+### Full Pipeline (Automated via GitHub Actions)
+```bash
+./run_friday.sh                             # Complete Friday pipeline
 ```
 
 ### Debugging
@@ -79,35 +90,78 @@ python -m py_compile scanner.py             # Syntax check
 
 ## File Locations Quick Reference
 
-### Output Files (trades/)
+### Output Directory Structure (trades/)
 
-| File | Purpose | Format |
-|------|---------|--------|
-| `portfolio.csv` | **Source of truth** - all trades (open + closed) | CSV |
-| `portfolio_google_sheets.csv` | Export with calculated P&L for Google Sheets | CSV |
-| `portfolio_backups/` | Auto-timestamped backups before changes | CSV |
-| `signals.json` | Latest scan results with full signal data | JSON |
-| `analysis_log.csv` | Historical scan data for backtesting | CSV |
-| `latest_report.txt` | Human-readable scan summary | TXT |
-| `latest_newsletter_briefing.md` | Newsletter data with themes, signals, P&L | Markdown |
-| `grok_prompts/latest_grok_prompts.md` | This week's 21 X/Twitter prompts | Markdown |
-| `grok_prompts/grok_prompts_summary.txt` | Plain text summary of all prompts | TXT |
-| `grok_prompts/{day}_prompts.md` | Day-by-day prompt files (Mon-Sun) | Markdown |
+```
+trades/
+├── current/                        # Latest outputs (always current week)
+│   ├── newsletter_briefing.md      # Scanner briefing for newsletter
+│   ├── newsletter.html             # Compiled newsletter ready for Substack
+│   ├── tweets.json                 # Generated tweets for the week
+│   └── substack_notes/
+│       ├── tuesday_note.md         # "Portfolio Pulse" mid-week update
+│       └── thursday_note.md        # "Trade Spotlight" mid-week update
+│
+├── weeks/                          # Weekly archives (ISO week format)
+│   ├── 2026-W03/                   # Archived week data
+│   ├── 2026-W04/
+│   └── ...
+│
+├── charts/                         # TradingView chart screenshots
+│   └── chart_manifest.json
+│
+├── grok_prompts/                   # Daily tweet prompt files
+│   ├── latest_grok_prompts.md
+│   ├── monday_prompts.md
+│   └── ...
+│
+├── portfolio.csv                   # **Source of truth** - all trades
+├── portfolio_google_sheets.csv     # Export with calculated P&L
+├── portfolio_backups/              # Auto-timestamped backups
+├── signals.json                    # Latest scan results
+├── analysis_log.csv                # Historical scan data
+├── content_queue.json              # Tweet posting queue
+├── latest_report.txt               # Human-readable scan summary (legacy)
+└── latest_newsletter_briefing.md   # Newsletter briefing (legacy symlink)
+```
+
+**Note:** `latest_*` files maintained for backwards compatibility, but primary outputs are in `current/`
 
 ### Source Files
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `scanner.py` | ~3000 | Main pipeline orchestrator |
-| `thematic_analyzer.py` | ~1400 | LLM theme discovery and scoring |
-| `gatekeeper.py` | ~600 | LLM final quality gate |
-| `portfolio_manager.py` | ~900 | Trade tracking, P&L, Google Sheets export |
-| `grok_prompts_generator.py` | ~1500 | 21 weekly X/Twitter prompts |
-| `due_diligence_prompts.py` | ~400 | Deal Memo templates for deep research |
-| `newsletter_prompts.py` | ~300 | Market context and compilation prompts |
-| `email_notifier.py` | ~200 | SMTP email notifications |
-| `setup_scheduler.py` | ~150 | macOS launchd scheduling |
-| `complete_tickers.txt` | ~1800 | Ticker universe |
+#### Core Pipeline
+| File | Purpose |
+|------|---------|
+| `scanner.py` | Main pipeline orchestrator |
+| `thematic_analyzer.py` | LLM theme discovery and scoring |
+| `gatekeeper.py` | LLM final quality gate |
+| `portfolio_manager.py` | Trade tracking, P&L, Google Sheets export |
+| `dd_automator.py` | Automated due diligence for PASS signals |
+
+#### Content Generation
+| File | Purpose |
+|------|---------|
+| `tweet_generator.py` | Generate 35 weekly tweets (5/day) |
+| `newsletter_compiler.py` | Compile full newsletter with DD integration |
+| `substack_notes_generator.py` | Tuesday/Thursday mid-week Substack notes |
+| `market_analyzer.py` | Market context analysis via LLM |
+| `chart_capture.py` | TradingView chart screenshots |
+
+#### Automation & Infrastructure
+| File | Purpose |
+|------|---------|
+| `run_friday.sh` | Full Friday pipeline orchestration |
+| `output_paths.py` | Centralized folder structure management |
+| `.github/workflows/friday_scan.yml` | Friday automated scan |
+| `.github/workflows/post_content.yml` | Daily tweet posting |
+| `email_notifier.py` | SMTP email notifications |
+
+#### Utilities
+| File | Purpose |
+|------|---------|
+| `verify_bos.py` | Debug signal calculation for specific tickers |
+| `diagnose_bos.py` | Universe state analysis |
+| `complete_tickers.txt` | Ticker universe (~1800 stocks) |
 
 ---
 
@@ -862,92 +916,72 @@ Creates plist at `~/Library/LaunchAgents/com.bos.scanner.plist`:
 |-----|---------|----------------|-------------|
 | **yfinance** | Stock data download | None (free) | ~2000 req/hour |
 | **Anthropic Claude** | LLM analysis | `ANTHROPIC_API_KEY` | Tier-based |
+| **Twitter/X API** | Tweet posting | OAuth 1.0a (GitHub Secrets) | 1500 tweets/15 min |
 | **SMTP** | Email notifications | Username/password | Provider-dependent |
+
+---
+
+## Implemented Integrations
+
+### X/Twitter Auto-Posting (IMPLEMENTED)
+
+**Status:** Fully operational via GitHub Actions
+
+**Components:**
+- `tweet_generator.py` - Generates 35 tweets per week (5/day)
+- `content_queue.json` - Tweet queue with posting status
+- `.github/workflows/post_content.yml` - Posts 5 tweets daily
+
+**Configuration (GitHub Secrets):**
+```
+TWITTER_API_KEY
+TWITTER_API_SECRET
+TWITTER_ACCESS_TOKEN
+TWITTER_ACCESS_SECRET
+```
+
+**Schedule:** Posts at 08:00, 10:00, 12:00, 15:00, 18:00 UK time daily
+
+---
+
+### Substack Notes (IMPLEMENTED)
+
+**Status:** Fully operational, generated every Friday
+
+**Components:**
+- `substack_notes_generator.py` - Generates Tuesday/Thursday notes
+- `trades/current/substack_notes/tuesday_note.md` - "Portfolio Pulse" update
+- `trades/current/substack_notes/thursday_note.md` - "Trade Spotlight" update
+
+**Manual step:** Copy notes to Substack Notes interface (~2 min each)
 
 ---
 
 ## Future Integration Opportunities
 
-### X/Twitter Auto-Posting (HIGH PRIORITY)
+### Substack Newsletter Auto-Publish (MEDIUM PRIORITY)
 
 **Current State:**
-- `grok_prompts_generator.py` creates 21 weekly prompts
-- Prompts saved to `trades/grok_prompts/*.md`
-- User manually copies to Grok, then posts to X
-
-**Target State:**
-- Automated 3 posts/day via Twitter API v2
-- Media attachments (charts) included
-- Engagement tracking
-
-**Implementation Plan:**
-
-```python
-# New file: twitter_poster.py
-
-# 1. Authentication (OAuth 2.0 User Context)
-Required environment variables:
-  TWITTER_API_KEY
-  TWITTER_API_SECRET
-  TWITTER_BEARER_TOKEN
-  TWITTER_ACCESS_TOKEN
-  TWITTER_ACCESS_SECRET
-
-# 2. Posting endpoint
-POST /2/tweets
-{
-  "text": "Generated tweet text",
-  "media": {"media_ids": ["123456789"]}  # Optional chart image
-}
-
-# 3. Media upload
-POST /1.1/media/upload.json
-  - Upload chart PNG
-  - Get media_id for attachment
-
-# 4. Scheduling
-- Use APScheduler or cron
-- Post times: 08:00, 12:30, 18:00 UK time
-- Rate limit: 1500 tweets/15 min
-
-# 5. Tracking
-- Store tweet_ids in trades/tweet_log.csv
-- Track engagement (likes, retweets, replies)
-```
-
-**Required Steps:**
-1. Apply for Twitter Developer Account (Elevated access)
-2. Create App in Developer Portal
-3. Generate OAuth 2.0 credentials
-4. Implement `twitter_poster.py`
-5. Add to scanner pipeline or run separately
-
----
-
-### Substack MCP Integration (MEDIUM PRIORITY)
-
-**Current State:**
-- `latest_newsletter_briefing.md` generated by scanner
+- `newsletter_compiler.py --full` generates complete HTML newsletter
 - User manually copies to Substack editor
 - Charts added manually via TradingView screenshots
 
 **Target State:**
-- Automated publication via API or MCP
+- Automated publication via API or browser automation
 - Charts auto-embedded
 
-**Implementation Options:**
+**Options:**
 
 | Option | Feasibility | Notes |
 |--------|-------------|-------|
 | **Email-to-Publish** | High | Substack supports email posting |
 | **Browser Automation** | Medium | Playwright/Selenium, fragile |
 | **Substack API** | Low | No public API currently |
-| **MCP Connector** | Future | Wait for community connector |
 
 **Interim Solution (Email-to-Publish):**
 
 ```python
-# New file: substack_publisher.py
+# Potential: substack_publisher.py
 
 def publish_via_email(newsletter_content, subject):
     """

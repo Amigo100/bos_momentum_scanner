@@ -40,6 +40,18 @@ except ImportError:
     print("ERROR: anthropic not installed. Run: pip install anthropic")
     sys.exit(1)
 
+# Import output path helpers
+try:
+    from output_paths import (
+        get_current_dir,
+        get_week_dir,
+        ensure_output_structure,
+        get_relative_path
+    )
+    OUTPUT_PATHS_AVAILABLE = True
+except ImportError:
+    OUTPUT_PATHS_AVAILABLE = False
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -132,6 +144,26 @@ STYLE GUIDELINES:
 - Professional trader voice, not hype
 - Occasional humor is OK
 - No financial advice disclaimers in tweets (save for bio)
+
+CRITICAL HONESTY + POSITIVITY RULES:
+1. NEVER hide losses or only show winners - always include full P&L picture
+2. NEVER exclude stopped-out trades from portfolio updates
+3. When portfolio is down, frame constructively:
+   - "Down 5% YTD but system working - cutting losers fast"
+   - "3 stops hit this month = capital preserved for better setups"
+   - "Drawdowns are part of momentum trading - here's how we manage them"
+4. Frame losses as LEARNING/DISCIPLINE, not failures:
+   - "Stop hit = system working exactly as designed"
+   - "Cut the loser at -18% before it became -40%"
+   - "Risk management > ego. We'll catch the next one."
+5. When mentioning portfolio, ALWAYS include:
+   - Total unrealized P&L (not just winners)
+   - Any recent stops hit
+   - Win rate if discussing closed trades
+6. Find the positive angle WITHOUT lying:
+   - Market down 10%, we're down 5% = "Outperforming in tough conditions"
+   - Had 2 losers, 1 big winner = "One winner covered both losses + profit"
+   - New to trading, no track record = "Building track record transparently"
 
 CRITICAL: Every tweet MUST either:
 - Link to Substack (sterlingsignals.substack.com)
@@ -252,13 +284,22 @@ Generate {count} tweets about CLOSED trades (wins and losses).
 Recently Closed Trades:
 {json.dumps(content.closed_trades, indent=2)}
 
+CRITICAL: Generate tweets for BOTH wins AND losses. Do not skip losses.
+
 For each:
 - Be TRANSPARENT about P&L (wins AND losses)
 - Explain WHY we exited (stop hit, took profits, thesis changed)
 - Show our risk management in action
 - Link to track record: sterlingsignals.substack.com
 
+FRAMING LOSSES POSITIVELY (without hiding them):
+- Stop hit = "System worked. Cut the loss before it got worse."
+- Multiple losses = "2 losses this month, both under -20%. That's the trailing stop doing its job."
+- Big loss = "Painful but manageable. This is why position sizing matters."
+- Loss after gain = "Gave back some profits but protected the core. On to the next."
+
 Example formats:
+
 WIN: "✅ $RCAT closed for +42%
 
 Entry: $8.50 → Exit: $12.08
@@ -271,15 +312,30 @@ What worked:
 Full trade breakdown 👇
 sterlingsignals.substack.com"
 
-LOSS: "❌ $SMCI stopped out at -18%
+LOSS: "🔴 $SMCI stopped out at -18%
 
 No system wins 100%. Here's what happened:
-• Accounting concerns triggered our stop
-• Cut the loss before -20% max
+• Thesis changed (accounting concerns)
+• 20% trailing stop triggered
+• Loss capped. Capital preserved.
 
-Risk management > ego
+This is exactly why we have rules.
 
-How we bounced back 👇
+Full breakdown 👇
+sterlingsignals.substack.com"
+
+YTD SUMMARY: "📊 2026 track record update:
+
+Closed trades: 12
+Winners: 8 (67% win rate)
+Losers: 4
+
+Avg win: +28%
+Avg loss: -17%
+
+Expectancy: Positive.
+
+Every trade documented 👇
 sterlingsignals.substack.com"
 """
 
@@ -290,25 +346,48 @@ Generate {count} tweets about current open positions.
 Open Positions:
 {json.dumps(content.open_positions, indent=2)}
 
-For each:
-- Current P&L (be transparent)
-- Why still holding
-- Stop level awareness
-- Link to portfolio updates: sterlingsignals.substack.com
+Portfolio Summary:
+- Total positions: {len(content.open_positions)}
+- Recent stops hit: {len([t for t in content.closed_trades if t.get('exit_reason') == 'STOPPED'])} (if any)
+- Unrealized P&L: (calculate from positions)
 
-Example format:
-"📈 Portfolio update: $APLD
+CRITICAL RULES FOR POSITION UPDATES:
+1. ALWAYS show the FULL portfolio picture, not just winners
+2. If any positions are red, INCLUDE them - don't hide losses
+3. If overall portfolio is down, frame constructively:
+   - "Down but managing risk - stops in place"
+   - "Drawdown expected in momentum trading - system handles it"
+4. If recently stopped out, MENTION it as discipline:
+   - "2 stops hit last week, but that's the system working"
+5. Include total unrealized P&L, not cherry-picked winners
 
-Entry: $37.40
-Current: ~$42
-P&L: +12.3%
+Example formats:
 
-Still holding because:
-• Power grid theme accelerating
-• Earnings catalyst in 3 weeks
-• 20% trailing stop = safe
+MIXED PORTFOLIO:
+"📊 Portfolio check: 8 positions
 
-Full portfolio 👇
+🟢 Winners: VNET +12%, WCC +8%, INOD +5%
+🔴 Laggards: APLD -3% (watching stop)
+
+Net unrealized: +4.2%
+
+1 stop hit last week ($SMCI -18%)
+System working. Discipline > ego.
+
+Full breakdown 👇
+sterlingsignals.substack.com"
+
+UNDERWATER PORTFOLIO:
+"📉 Tough week: Portfolio -3.2% unrealized
+
+But here's the thing:
+• All stops intact (no blowups)
+• SPY down 4.5% (we're outperforming)
+• 2 positions showing strength
+
+Drawdowns happen. Risk management keeps us in the game.
+
+How we're positioned 👇
 sterlingsignals.substack.com"
 """
 
@@ -744,21 +823,42 @@ def save_tweets(tweets: List[Tweet], output_dir: Path) -> Path:
     """Save tweets to JSON files."""
     output_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
+    tweets_json = json.dumps([t.to_dict() for t in tweets], indent=2)
 
-    # Full tweets file
+    # Save to current/ and weekly archive if available
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir, week_dir = ensure_output_structure()
+
+        # Save to current/tweets/
+        current_tweets = current_dir / "tweets"
+        current_tweets.mkdir(exist_ok=True)
+        with open(current_tweets / "content_queue.json", 'w') as f:
+            f.write(tweets_json)
+        with open(current_tweets / f"tweets_{date_str}.json", 'w') as f:
+            f.write(tweets_json)
+
+        # Save to weekly archive
+        archive_tweets = week_dir / "tweets"
+        archive_tweets.mkdir(exist_ok=True)
+        with open(archive_tweets / "content_queue.json", 'w') as f:
+            f.write(tweets_json)
+        with open(archive_tweets / f"tweets_{date_str}.json", 'w') as f:
+            f.write(tweets_json)
+
+    # Full tweets file (legacy location)
     tweets_file = output_dir / f"tweets_{date_str}.json"
     with open(tweets_file, 'w') as f:
-        json.dump([t.to_dict() for t in tweets], f, indent=2)
+        f.write(tweets_json)
 
-    # Content queue for twitter_poster.py
+    # Content queue for twitter_poster.py (legacy location)
     queue_file = output_dir / "content_queue.json"
     with open(queue_file, 'w') as f:
-        json.dump([t.to_dict() for t in tweets], f, indent=2)
+        f.write(tweets_json)
 
     # Also save to trades root for easy access
     root_queue = TRADES_DIR / "content_queue.json"
     with open(root_queue, 'w') as f:
-        json.dump([t.to_dict() for t in tweets], f, indent=2)
+        f.write(tweets_json)
 
     return queue_file
 
@@ -796,8 +896,17 @@ def main():
     print("  TWEET GENERATOR - Claude-Powered Content")
     print("═" * 60)
 
-    # Load data
-    briefing_path = Path(args.briefing) if args.briefing else TRADES_DIR / "latest_newsletter_briefing.md"
+    # Load data - try current/ folder first
+    if args.briefing:
+        briefing_path = Path(args.briefing)
+    elif OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        briefing_path = current_dir / "newsletter_briefing.md"
+        if not briefing_path.exists():
+            briefing_path = TRADES_DIR / "latest_newsletter_briefing.md"
+    else:
+        briefing_path = TRADES_DIR / "latest_newsletter_briefing.md"
+
     print(f"\n  📄 Loading: {briefing_path}")
 
     content = load_briefing_data(briefing_path)

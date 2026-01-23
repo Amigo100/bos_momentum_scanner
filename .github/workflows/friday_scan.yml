@@ -190,6 +190,21 @@ jobs:
           fi
 
       # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Substack Notes
+        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        run: |
+          if [ -f "substack_notes_generator.py" ]; then
+            echo "Generating Substack notes for Tuesday + Thursday..."
+            python substack_notes_generator.py
+          else
+            echo "substack_notes_generator.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
       # STEP 6: SAVE ARTIFACTS
       # ═══════════════════════════════════════════════════════════════════════════
 
@@ -198,6 +213,7 @@ jobs:
         with:
           name: scan-results-${{ github.run_id }}
           path: |
+            trades/current/
             trades/latest_newsletter_briefing.md
             trades/latest_newsletter.html
             trades/market_analysis.md
@@ -206,6 +222,14 @@ jobs:
             trades/portfolio.csv
             trades/portfolio_google_sheets.csv
           retention-days: 30
+
+      - name: Upload Substack notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: substack-notes-${{ github.run_id }}
+          path: trades/current/substack_notes/
+          retention-days: 7
+        continue-on-error: true
 
       - name: Upload content queue for daily posting
         uses: actions/upload-artifact@v4
@@ -264,17 +288,29 @@ jobs:
           echo "## Files Generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
+          echo "### New Weekly Structure" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/current" ] && echo "- ✅ trades/current/ (this week's outputs)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/current/newsletter.html" ] && echo "  - newsletter.html (copy to Substack Saturday)" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/current/substack_notes" ] && echo "  - substack_notes/ (Tuesday + Thursday notes)" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/current/tweets" ] && echo "  - tweets/content_queue.json" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### Legacy Files (backwards compatibility)" >> $GITHUB_STEP_SUMMARY
           [ -f "trades/latest_newsletter_briefing.md" ] && echo "- ✅ latest_newsletter_briefing.md" >> $GITHUB_STEP_SUMMARY
           [ -f "trades/market_analysis.md" ] && echo "- ✅ market_analysis.md" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/latest_newsletter.html" ] && echo "- ✅ latest_newsletter.html (ready for Substack)" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets for the week)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/latest_newsletter.html" ] && echo "- ✅ latest_newsletter.html" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
           [ -f "trades/signals.json" ] && echo "- ✅ signals.json" >> $GITHUB_STEP_SUMMARY
           [ -d "trades/charts" ] && echo "- ✅ charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Automation Schedule" >> $GITHUB_STEP_SUMMARY
+          echo "## Weekly Workflow" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Weekly Scan:** Friday 21:30 UTC (4:30 PM EST)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Daily Tweets:** 5 posts/day at 07:00, 09:00, 12:30, 15:30, 19:00 UK" >> $GITHUB_STEP_SUMMARY
+          echo "| Day | Action | File |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Saturday | Publish newsletter | trades/current/newsletter.html |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tuesday | Post Substack note | trades/current/substack_notes/tuesday_note.md |" >> $GITHUB_STEP_SUMMARY
+          echo "| Thursday | Post Substack note | trades/current/substack_notes/thursday_note.md |" >> $GITHUB_STEP_SUMMARY
+          echo "| Daily | Auto-post tweets | Via daily_post.yml |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Completed:** $(date -u)" >> $GITHUB_STEP_SUMMARY

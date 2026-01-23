@@ -189,13 +189,13 @@ else
     if [ -f "chart_capture.py" ]; then
         # Extract tickers from latest signals
         if [ -f "trades/signals.json" ]; then
-            log_step "python3 chart_capture.py --tickers-from trades/signals.json --headless"
-            python3 chart_capture.py --tickers-from trades/signals.json --headless || {
+            log_step "python3 chart_capture.py --tickers-from trades/signals.json --include-portfolio --headless"
+            python3 chart_capture.py --tickers-from trades/signals.json --include-portfolio --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         elif [ -f "trades/latest_signals.json" ]; then
-            log_step "python3 chart_capture.py --tickers-from trades/latest_signals.json --headless"
-            python3 chart_capture.py --tickers-from trades/latest_signals.json --headless || {
+            log_step "python3 chart_capture.py --tickers-from trades/latest_signals.json --include-portfolio --headless"
+            python3 chart_capture.py --tickers-from trades/latest_signals.json --include-portfolio --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         else
@@ -262,7 +262,7 @@ fi
 # STEP 5: GENERATE TWEETS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-log_header "STEP 5: Generating Tweets (21 for the week)"
+log_header "STEP 5: Generating Tweets (35 for the week)"
 
 if [ -f "tweet_generator.py" ]; then
     TWEET_ARGS=""
@@ -282,6 +282,20 @@ else
         log_step "Falling back to grok_prompts_generator.py"
         python3 grok_prompts_generator.py
     fi
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+log_header "STEP 5.5: Generating Substack Notes (Tuesday + Thursday)"
+
+if [ -f "substack_notes_generator.py" ]; then
+    log_step "python3 substack_notes_generator.py"
+    python3 substack_notes_generator.py
+    log_success "Substack notes generated"
+else
+    log_warning "substack_notes_generator.py not found, skipping"
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -323,12 +337,17 @@ fi
 
 log_header "PIPELINE COMPLETE"
 
-echo "  Generated files:"
-echo "    • trades/latest_newsletter_briefing.md"
-[ -f "trades/market_analysis.md" ] && echo "    • trades/market_analysis.md"
-[ -f "trades/content_queue.json" ] && echo "    • trades/content_queue.json"
-[ -d "trades/charts" ] && echo "    • trades/charts/*.png"
-[ -f "trades/latest_newsletter.html" ] && echo "    • trades/latest_newsletter.html"
+echo "  Generated files (new structure):"
+echo "    • trades/current/newsletter.html       ← Copy to Substack Saturday"
+echo "    • trades/current/newsletter_briefing.md"
+echo "    • trades/current/signals.json"
+echo "    • trades/current/substack_notes/"
+echo "        ├── tuesday_note.md                ← Copy to Substack Tuesday"
+echo "        └── thursday_note.md               ← Copy to Substack Thursday"
+[ -d "trades/current/charts" ] && echo "    • trades/current/charts/*.png"
+[ -d "trades/current/tweets" ] && echo "    • trades/current/tweets/content_queue.json"
+echo ""
+echo "  Archived to: trades/weeks/$(date '+%G-W%V')/"
 echo ""
 
 if [ "$TEST_MODE" = true ]; then
@@ -338,12 +357,14 @@ else
     echo "    ✅ Scanner ran with DD (only DD-PASS signals in portfolio)"
     echo "    ✅ Market analysis generated via Claude + web search"
     echo "    ✅ Newsletter compiled with embedded charts"
-    echo "    ✅ 21 tweets generated for the week"
+    echo "    ✅ 35 tweets generated for the week"
+    echo "    ✅ Substack notes for Tuesday + Thursday"
     echo ""
-    echo "  Next steps:"
-    echo "    1. Review newsletter: open trades/latest_newsletter.html"
-    echo "    2. Copy to Substack and publish"
-    echo "    3. Daily tweets will auto-post via twitter_poster.py"
+    echo "  Weekly workflow:"
+    echo "    Saturday:  Copy trades/current/newsletter.html to Substack"
+    echo "    Tuesday:   Copy trades/current/substack_notes/tuesday_note.md to Substack Notes"
+    echo "    Thursday:  Copy trades/current/substack_notes/thursday_note.md to Substack Notes"
+    echo "    Daily:     Tweets auto-post via GitHub Actions"
 fi
 
 echo ""

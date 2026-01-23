@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: Momentum or value - which camp are you in?
+Topic/Question: How long do you typically hold positions?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: The best trade is often the one you don'...
+## Slot 2: Lesson: Entry timing matters more than stock sel...
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Entry timing matters more than stock selection
 
 ---
 

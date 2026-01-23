@@ -27,11 +27,11 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: Theme alignment multiplies momentum...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Theme alignment multiplies momentum
 
 ---
 
@@ -53,11 +53,11 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Lesson: Fresh trends outperform extended trends...
+## Slot 3: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 

@@ -18,6 +18,6 @@ Why we like it:
 • 8 CONSIDER signals
 
 📊 Portfolio: 9 positions
-🏆 Leading: $OUST (+4.3%)
+🏆 Leading: $VNET (+2.0%)
 
 Full analysis in Saturday's Sterling Signals newsletter →

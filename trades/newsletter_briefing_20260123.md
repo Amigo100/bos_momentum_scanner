@@ -27,8 +27,8 @@
 
 **Pipeline Summary:**
 - Tickers scanned: 885
-- Weekly BoS Up: 21
-- Technical signals: 0
+- Weekly BoS Up: 23
+- Technical signals: 23
 - Theme confirmed: 0
 
 ---
@@ -55,4 +55,4 @@ Past performance is not indicative of future results.*
 
 ---
 
-*Generated: 2026-01-23 01:01:29 by BoS Momentum Scanner*
+*Generated: 2026-01-23 22:38:44 by BoS Momentum Scanner*

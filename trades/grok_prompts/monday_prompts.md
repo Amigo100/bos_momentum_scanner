@@ -59,7 +59,7 @@ Ticker: $VNET
 Entry: $10.40 on 09/01/2026
 Theme: Data Center Cooling / Liquid Cooling | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: +0.1% (verify with current price)
+Snapshot P&L: +2.0% (verify with current price)
 
 ---
 

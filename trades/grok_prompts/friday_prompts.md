@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -26,11 +26,11 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Lesson: Weekly timeframes filter out noise...
+## Slot 2: Lesson: The best trade is often the one you don'...
 
 ```
 TRADING LESSON:
-Topic: Weekly timeframes filter out noise
+Topic: The best trade is often the one you don't make
 
 ---
 
@@ -60,7 +60,7 @@ Ticker: $INOD
 Entry: $61.54 on 18/01/2026
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: -1.3% (verify with current price)
+Snapshot P&L: -3.3% (verify with current price)
 
 ---
 

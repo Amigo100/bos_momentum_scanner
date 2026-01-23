@@ -25,11 +25,11 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Lesson: Trailing stops protect gains better than...
+## Slot 2: Lesson: Position sizing determines survival, not...
 
 ```
 TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+Topic: Position sizing determines survival, not returns
 
 ---
 
@@ -59,7 +59,7 @@ Ticker: $CGON
 Entry: $53.92 on 09/01/2026
 Theme: Healthcare / Biotech | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: +3.6% (verify with current price)
+Snapshot P&L: -0.2% (verify with current price)
 
 ---
 

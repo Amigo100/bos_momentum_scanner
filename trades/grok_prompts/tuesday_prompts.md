@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -26,11 +26,11 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: Theme alignment multiplies momentum...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Theme alignment multiplies momentum
 
 ---
 

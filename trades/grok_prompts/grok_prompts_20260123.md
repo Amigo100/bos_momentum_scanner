@@ -8,15 +8,15 @@
 
 ## 📋 Weekly Summary
 
-| Day | Slot 1 (Morning) | Slot 2 (Midday) | Slot 3 (Evening) |
+| Day | Slot 1 (Pre-market) | Slot 2 (Morning) | Slot 3 (Midday) | Slot 4 (Power Hour) | Slot 5 (After-hours) |
 |-----|------------------|-----------------|------------------|
 | Monday | Week Ahead Preview | Market Pulse | Position Update: VNE |
-| Tuesday | Weekly Scanner Stats | Lesson: Position siz | Market Pulse |
-| Wednesday | Market Pulse | Lesson: Trailing sto | Position Update: CGO |
+| Tuesday | Weekly Scanner Stats | Lesson: Theme alignm | Market Pulse |
+| Wednesday | Market Pulse | Lesson: Position siz | Position Update: CGO |
 | Thursday | Weekly Scanner Stats | Lesson: Fresh trends | Market Pulse |
-| Friday | Weekly Scanner Stats | Lesson: Weekly timef | Position Update: INO |
-| Saturday | Newsletter Drop | Lesson: Position siz | Lesson: Fresh trends |
-| Sunday | Sunday Engagement | Lesson: The best tra | Looking Ahead (Soft) |
+| Friday | Weekly Scanner Stats | Lesson: The best tra | Position Update: INO |
+| Saturday | Newsletter Drop | Lesson: Theme alignm | Lesson: Trailing sto |
+| Sunday | Sunday Engagement | Lesson: Entry timing | Looking Ahead (Soft) |
 
 ---
 
@@ -31,7 +31,7 @@
 
 # 📅 MONDAY
 
-## 🌅 Morning: Week Ahead Preview
+## 🌅 Pre-market (08:00 ET): Week Ahead Preview
 
 **Category:** week_ahead
 **Visual:** 'Week Ahead' calendar graphic with key dates
@@ -60,7 +60,7 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## ☀️ Midday: Market Pulse
+## ☀️ Morning (10:00 ET): Market Pulse
 
 **Category:** market_pulse
 **Visual:** Index performance bars or sector heat map
@@ -88,7 +88,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## 🌆 Evening: Position Update: VNET
+## 🌞 Midday (12:30 ET): Position Update: VNET
 
 **Category:** position_update
 **Ticker:** $VNET
@@ -103,7 +103,7 @@ Ticker: $VNET
 Entry: $10.40 on 09/01/2026
 Theme: Data Center Cooling / Liquid Cooling | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: +0.1% (verify with current price)
+Snapshot P&L: +2.0% (verify with current price)
 
 ---
 
@@ -131,7 +131,7 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 TUESDAY
 
-## 🌅 Morning: Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
 
 **Category:** scanner_stats
 **Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
@@ -140,7 +140,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -160,7 +160,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Midday: Lesson: Position sizing determines survival, not...
+## ☀️ Morning (10:00 ET): Lesson: Theme alignment multiplies momentum...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -169,7 +169,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Theme alignment multiplies momentum
 
 ---
 
@@ -189,7 +189,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Market Pulse
+## 🌞 Midday (12:30 ET): Market Pulse
 
 **Category:** market_pulse
 **Visual:** Index performance bars or sector heat map
@@ -219,7 +219,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 # 📅 WEDNESDAY
 
-## 🌅 Morning: Market Pulse
+## 🌅 Pre-market (08:00 ET): Market Pulse
 
 **Category:** market_pulse
 **Visual:** Index performance bars or sector heat map
@@ -247,7 +247,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## ☀️ Midday: Lesson: Trailing stops protect gains better than...
+## ☀️ Morning (10:00 ET): Lesson: Position sizing determines survival, not...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -256,7 +256,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+Topic: Position sizing determines survival, not returns
 
 ---
 
@@ -276,7 +276,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Position Update: CGON
+## 🌞 Midday (12:30 ET): Position Update: CGON
 
 **Category:** position_update
 **Ticker:** $CGON
@@ -291,7 +291,7 @@ Ticker: $CGON
 Entry: $53.92 on 09/01/2026
 Theme: Healthcare / Biotech | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: +3.6% (verify with current price)
+Snapshot P&L: -0.2% (verify with current price)
 
 ---
 
@@ -319,7 +319,7 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 THURSDAY
 
-## 🌅 Morning: Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
 
 **Category:** scanner_stats
 **Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
@@ -328,7 +328,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -348,7 +348,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Midday: Lesson: Fresh trends outperform extended trends...
+## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -377,7 +377,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Market Pulse
+## 🌞 Midday (12:30 ET): Market Pulse
 
 **Category:** market_pulse
 **Visual:** Index performance bars or sector heat map
@@ -407,7 +407,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 # 📅 FRIDAY
 
-## 🌅 Morning: Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
 
 **Category:** scanner_stats
 **Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
@@ -416,7 +416,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 21 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -436,7 +436,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Midday: Lesson: Weekly timeframes filter out noise...
+## ☀️ Morning (10:00 ET): Lesson: The best trade is often the one you don'...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -445,7 +445,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ```
 TRADING LESSON:
-Topic: Weekly timeframes filter out noise
+Topic: The best trade is often the one you don't make
 
 ---
 
@@ -465,7 +465,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Position Update: INOD
+## 🌞 Midday (12:30 ET): Position Update: INOD
 
 **Category:** position_update
 **Ticker:** $INOD
@@ -480,7 +480,7 @@ Ticker: $INOD
 Entry: $61.54 on 18/01/2026
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
 Days Held: ~0
-Snapshot P&L: -1.3% (verify with current price)
+Snapshot P&L: -3.3% (verify with current price)
 
 ---
 
@@ -508,7 +508,7 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 SATURDAY
 
-## 🌅 Morning: Newsletter Drop
+## 🌅 Pre-market (08:00 ET): Newsletter Drop
 
 **Category:** newsletter_drop
 **Visual:** Newsletter header graphic or key insight card
@@ -538,7 +538,7 @@ This is the moment. Make it count.
 
 ---
 
-## ☀️ Midday: Lesson: Position sizing determines survival, not...
+## ☀️ Morning (10:00 ET): Lesson: Theme alignment multiplies momentum...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -547,7 +547,7 @@ This is the moment. Make it count.
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Theme alignment multiplies momentum
 
 ---
 
@@ -567,7 +567,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Lesson: Fresh trends outperform extended trends...
+## 🌞 Midday (12:30 ET): Lesson: Trailing stops protect gains better than...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -576,7 +576,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
@@ -598,7 +598,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 # 📅 SUNDAY
 
-## 🌅 Morning: Sunday Engagement
+## 🌅 Pre-market (08:00 ET): Sunday Engagement
 
 **Category:** engagement
 **Visual:** Optional - question card or simple graphic
@@ -613,7 +613,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: Momentum or value - which camp are you in?
+Topic/Question: How long do you typically hold positions?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -627,7 +627,7 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## ☀️ Midday: Lesson: The best trade is often the one you don'...
+## ☀️ Morning (10:00 ET): Lesson: Entry timing matters more than stock sel...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -636,7 +636,7 @@ Light touch, not a hard sell. Build relationships.
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Entry timing matters more than stock selection
 
 ---
 
@@ -656,7 +656,7 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌆 Evening: Looking Ahead (Soft)
+## 🌞 Midday (12:30 ET): Looking Ahead (Soft)
 
 **Category:** week_ahead
 **Visual:** 'Week Ahead' calendar graphic with key dates
@@ -691,12 +691,14 @@ Energetic but professional. Monday motivation.
 2. **Review the output** - Grok will search for current news
 3. **Edit as needed** - Add your voice, adjust tone
 4. **Add the visual** - Use TradingView charts, Canva graphics, etc.
-5. **Post at optimal times** - Morning (9am), Midday (12pm), Evening (6pm)
+5. **Post at optimal times** - Pre-market (8am ET), Morning (10am ET), Midday (12:30pm ET), Power Hour (3:30pm ET), After-hours (6pm ET)
 
 **Pro Tips:**
-- Morning posts get more visibility
+- Pre-market (8am ET) posts capture early traders
+- Power Hour (3:30pm ET) posts are CRITICAL for US market reaction
 - Engagement posts (questions) work best on Sunday
-- Newsletter drops should go Saturday morning
+- Newsletter drops should go Saturday morning (Eastern Time)
 - Real P&L transparency builds trust
+- Compare performance to SPY/QQQ for credibility
 
 *Generated by Sterling Signals Grok Prompts Generator*

@@ -11,6 +11,8 @@ These prompts are designed for high-reasoning models (Claude Opus, GPT-4, Gemini
 with web search capability.
 """
 
+from typing import Optional
+
 # =============================================================================
 # DEAL MEMO PROMPT - THE "50%+ ALPHA" DEEP DIVE
 # =============================================================================

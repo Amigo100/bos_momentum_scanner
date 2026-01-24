@@ -965,15 +965,15 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         ("Friday", 4, "power_hour"),           # 15:30 ET - Power Hour
         ("Friday", 5, "market_insight"),       # 18:00 ET - Week recap
 
-        # Saturday: Newsletter day - BUY SIGNALS LEAD (most important)
-        ("Saturday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - Fresh signals!
-        ("Saturday", 2, "buy_signal" if len(content.pass_signals) > 1 else "theme_hot"),  # 10:00 ET - More signals or theme
-        ("Saturday", 3, "funnel_graphic" if content.pass_signals else "system_promo"),  # 12:30 ET - Funnel stats
+        # Saturday: Newsletter day - ONE buy signal max (prevents portfolio bloat)
+        ("Saturday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - THE weekly pick
+        ("Saturday", 2, "theme_hot"),          # 10:00 ET - Hot theme context
+        ("Saturday", 3, "funnel_graphic"),     # 12:30 ET - Funnel stats
         ("Saturday", 4, "position_update" if content.open_positions else "educational"),  # 15:30 ET - Portfolio status
         ("Saturday", 5, "engagement"),         # 18:00 ET - Discussion
 
-        # Sunday: Reinforce signals before Monday entry
-        ("Sunday", 1, "buy_signal" if len(content.pass_signals) > 2 else "market_insight"),  # 08:00 ET - Signal reminder
+        # Sunday: Reinforce THE signal before Monday entry
+        ("Sunday", 1, "buy_signal" if content.pass_signals else "market_insight"),  # 08:00 ET - Reinforce the pick
         ("Sunday", 2, "sector_rotation"),      # 10:00 ET - Sector flow preview
         ("Sunday", 3, "position_update" if content.open_positions else "educational"),  # 12:30 ET - Portfolio
         ("Sunday", 4, "theme_hot"),            # 15:30 ET - Hot theme for week
@@ -1153,53 +1153,119 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
         print("  ⚠ Could not import grok_prompts_generator, using basic parsing")
         # Basic fallback parsing could go here
 
-    # Load positions and closed trades from portfolio.csv (authoritative source)
+    # Load positions with LIVE P&L from PortfolioManager (authoritative source)
     portfolio_file = TRADES_DIR / "portfolio.csv"
     if portfolio_file.exists():
         import csv
         open_positions_from_csv = []
-        with open(portfolio_file, 'r') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                status = row.get('status', 'OPEN').upper()
-                if status == 'OPEN':
-                    # Load OPEN positions
-                    try:
-                        entry_price = float(row.get('entry_price', 0) or 0)
-                    except (ValueError, TypeError):
-                        entry_price = 0
-                    open_positions_from_csv.append({
-                        'ticker': row.get('ticker', ''),
-                        'entry_date': row.get('entry_date', ''),
-                        'entry_price': entry_price,
-                        'theme': row.get('theme', ''),
-                        'tier': row.get('tier', ''),
-                        'conviction': row.get('conviction', ''),
-                        'highest_close': row.get('highest_close', ''),
-                    })
-                elif status in ['CLOSED', 'STOPPED']:
-                    # Load CLOSED/STOPPED trades
-                    try:
-                        entry = float(row.get('entry_price', 0))
-                        exit_price = float(row.get('exit_price', 0))
-                        pnl = ((exit_price / entry) - 1) * 100 if entry > 0 else 0
-                    except (ValueError, ZeroDivisionError):
-                        pnl = 0
 
-                    content.closed_trades.append({
-                        'ticker': row['ticker'],
-                        'entry_price': row.get('entry_price'),
-                        'exit_price': row.get('exit_price'),
-                        'exit_date': row.get('exit_date'),
-                        'status': status,
-                        'pnl_pct': pnl,
-                        'theme': row.get('theme')
-                    })
+        # Try to use PortfolioManager for live prices
+        try:
+            from portfolio_manager import PortfolioManager
+            pm = PortfolioManager()
+            pm.update_prices()  # Fetch live prices via yfinance
+
+            for trade in pm.get_open_positions():
+                open_positions_from_csv.append({
+                    'ticker': trade.ticker,
+                    'entry_date': trade.entry_date,
+                    'entry_price': trade.entry_price,
+                    'current_price': trade.current_price,
+                    'pnl_pct': trade.pnl_pct,
+                    'highest_close': trade.highest_close,
+                    'stop_level': trade.stop_level,
+                    'distance_to_stop': trade.distance_to_stop_pct,
+                    'days_held': trade.days_held,
+                    'theme': trade.theme,
+                    'tier': trade.tier,
+                    'conviction': trade.conviction,
+                    'stop_alert': trade.stop_alert,
+                })
+
+            for trade in pm.get_closed_trades():
+                content.closed_trades.append({
+                    'ticker': trade.ticker,
+                    'entry_price': trade.entry_price,
+                    'exit_price': trade.exit_price,
+                    'exit_date': trade.exit_date,
+                    'status': trade.status,
+                    'pnl_pct': trade.pnl_pct,
+                    'theme': trade.theme
+                })
+
+            print(f"  📊 Loaded {len(open_positions_from_csv)} positions with LIVE prices")
+
+        except (ImportError, Exception) as e:
+            print(f"  ⚠ PortfolioManager unavailable ({e}), using basic CSV loading")
+            # Fallback to basic CSV loading without live prices
+            with open(portfolio_file, 'r') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    status = row.get('status', 'OPEN').upper()
+                    if status == 'OPEN':
+                        try:
+                            entry_price = float(row.get('entry_price', 0) or 0)
+                        except (ValueError, TypeError):
+                            entry_price = 0
+                        open_positions_from_csv.append({
+                            'ticker': row.get('ticker', ''),
+                            'entry_date': row.get('entry_date', ''),
+                            'entry_price': entry_price,
+                            'theme': row.get('theme', ''),
+                            'tier': row.get('tier', ''),
+                            'conviction': row.get('conviction', ''),
+                            'highest_close': row.get('highest_close', ''),
+                        })
+                    elif status in ['CLOSED', 'STOPPED']:
+                        try:
+                            entry = float(row.get('entry_price', 0))
+                            exit_price = float(row.get('exit_price', 0))
+                            pnl = ((exit_price / entry) - 1) * 100 if entry > 0 else 0
+                        except (ValueError, ZeroDivisionError):
+                            pnl = 0
+
+                        content.closed_trades.append({
+                            'ticker': row['ticker'],
+                            'entry_price': row.get('entry_price'),
+                            'exit_price': row.get('exit_price'),
+                            'exit_date': row.get('exit_date'),
+                            'status': status,
+                            'pnl_pct': pnl,
+                            'theme': row.get('theme')
+                        })
 
         # Use CSV positions if markdown parsing found none (more reliable)
         if not content.open_positions and open_positions_from_csv:
             print(f"  📊 Loaded {len(open_positions_from_csv)} open positions from portfolio.csv")
             content.open_positions = open_positions_from_csv
+
+        # CRITICAL: Filter out PASS signals that are already in portfolio
+        # This prevents tweeting "new" buy signals for stocks we already own
+        portfolio_tickers = {pos['ticker'].upper() for pos in open_positions_from_csv}
+        original_pass_count = len(content.pass_signals)
+        content.pass_signals = [
+            sig for sig in content.pass_signals
+            if sig.get('ticker', '').upper() not in portfolio_tickers
+        ]
+        if original_pass_count != len(content.pass_signals):
+            removed = original_pass_count - len(content.pass_signals)
+            print(f"  🔄 Filtered {removed} PASS signal(s) already in portfolio")
+
+        # LIMIT: Only keep the highest conviction signal (max 1 per week)
+        # This prevents portfolio bloat - we add max 1 new position per week
+        if len(content.pass_signals) > 1:
+            # Sort by conviction (descending), then by theme score if available
+            content.pass_signals.sort(
+                key=lambda x: (
+                    int(x.get('conviction', 0)) if isinstance(x.get('conviction'), (int, str)) and str(x.get('conviction', '')).isdigit() else 0,
+                    float(x.get('theme_score', 0)) if x.get('theme_score') else 0
+                ),
+                reverse=True
+            )
+            top_signal = content.pass_signals[0]
+            print(f"  🎯 LIMITED to 1 buy signal: {top_signal.get('ticker')} (conviction: {top_signal.get('conviction', 'N/A')})")
+            print(f"     Skipped: {', '.join(s.get('ticker', '?') for s in content.pass_signals[1:])}")
+            content.pass_signals = [top_signal]
 
     # Load chart manifest
     manifest_path = CHARTS_DIR / "chart_manifest.json"

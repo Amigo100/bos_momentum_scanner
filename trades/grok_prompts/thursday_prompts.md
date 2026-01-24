@@ -1,78 +1,88 @@
 # Thursday Prompts
 
-## Slot 1: Weekly Scanner Stats
+## Slot 1: BUY Signal: AMSC
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+PASS: AMSC | Theme: Grid Modernization & Power Infrastructure | Price: $33.28
+Catalyst: Earnings Feb 5 with strong beat history (+575% surprise), $133M Brazil acquisition just closed creating new growth catalyst
 
 ---
 
-You are drafting an X post for @SterlingSignals.
-
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
-
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
-
-```
-
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
-
----
-
-## Slot 2: Lesson: Fresh trends outperform extended trends...
-
-```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
-**Visual:** Rule graphic or annotated chart example
-
----
-
-## Slot 3: Market Pulse
-
-```
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
-
-2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
+Using the scanner output above:
+1. Search for the LATEST news on $AMSC (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
 
 ```
 
-**Visual:** Index performance bars or sector heat map
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for AMSC
+
+---
+
+## Slot 2: Hot Theme: Rare Earth & Critical Minerals Supply Diversification
+
+```
+SCANNER OUTPUT:
+PRIME: Rare Earth & Critical Minerals Supply Diversification
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the theme above:
+1. Search for the LATEST news/developments in Rare Earth & Critical Minerals Supply Diversification (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+
+```
+
+**Visual:** Theme infographic or sector ETF momentum chart for Rare Earth & Critical Minerals Supply Diversification
+
+---
+
+## Slot 3: Watching: RMBS
+
+```
+SCANNER OUTPUT:
+CAUTION: RMBS | Theme: Defense Manufacturing & Supply Chain Resilience | Price: $115.31
+Reason: Earnings binary event in 10 days
+
+---
+
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $RMBS
+2. Draft a visually engaging X post (under 280 characters) that:
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
+
+Educational and compelling. Show that waiting IS a strategy.
+
+```
+
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for RMBS
 
 ---

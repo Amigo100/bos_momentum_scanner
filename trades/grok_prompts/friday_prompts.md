@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 8 | Final PASS: 3
 
 ---
 
@@ -12,7 +12,7 @@ You are drafting an X post for @SterlingSignals.
 
 Using the stats above:
 1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
+   - Leads with the filtering ratio (e.g., "885 stocks → 3 signals")
    - Emphasizes the rigorous 3-gate screening process
    - Creates CURIOSITY about what made the cut
    - Builds FOMO for non-subscribers
@@ -26,29 +26,31 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Lesson: The best trade is often the one you don'...
+## Slot 2: Why I Passed: RMBS
 
 ```
-TRADING LESSON:
-Topic: The best trade is often the one you don't make
+SCANNER OUTPUT:
+EXCLUDED: RMBS | Theme: Defense Manufacturing & Supply Chain Resilience
+Reason: Earnings binary event in 10 days
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $RMBS might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
-**Visual:** Rule graphic or annotated chart example
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
 
 ---
 

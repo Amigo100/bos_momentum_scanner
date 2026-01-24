@@ -26,28 +26,33 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## Slot 2: Market Pulse
+## Slot 2: Hot Theme: Grid Modernization & Power Infrastructure
 
 ```
+SCANNER OUTPUT:
+PRIME: Grid Modernization & Power Infrastructure
+
+---
+
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
-
-2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
+Using the theme above:
+1. Search for the LATEST news/developments in Grid Modernization & Power Infrastructure (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
-**Visual:** Index performance bars or sector heat map
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Modernization & Power Infrastructure
 
 ---
 

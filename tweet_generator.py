@@ -965,18 +965,18 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         ("Friday", 4, "power_hour"),           # 15:30 ET - Power Hour
         ("Friday", 5, "market_insight"),       # 18:00 ET - Week recap
 
-        # Saturday: Newsletter day - heavy promotion
-        ("Saturday", 1, "buy_signal" if content.pass_signals else "system_promo"),
-        ("Saturday", 2, "system_promo"),       # 10:00 ET - System promo
-        ("Saturday", 3, "theme_hot"),          # 12:30 ET - Featured theme
-        ("Saturday", 4, "post_mortem" if stopped_trades else "closed_trade" if content.closed_trades else "educational"),
+        # Saturday: Newsletter day - BUY SIGNALS LEAD (most important)
+        ("Saturday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - Fresh signals!
+        ("Saturday", 2, "buy_signal" if len(content.pass_signals) > 1 else "theme_hot"),  # 10:00 ET - More signals or theme
+        ("Saturday", 3, "funnel_graphic" if content.pass_signals else "system_promo"),  # 12:30 ET - Funnel stats
+        ("Saturday", 4, "position_update" if content.open_positions else "educational"),  # 15:30 ET - Portfolio status
         ("Saturday", 5, "engagement"),         # 18:00 ET - Discussion
 
-        # Sunday: Week ahead planning
-        ("Sunday", 1, "market_insight"),       # 08:00 ET - Week ahead preview
+        # Sunday: Reinforce signals before Monday entry
+        ("Sunday", 1, "buy_signal" if len(content.pass_signals) > 2 else "market_insight"),  # 08:00 ET - Signal reminder
         ("Sunday", 2, "sector_rotation"),      # 10:00 ET - Sector flow preview
-        ("Sunday", 3, "educational"),          # 12:30 ET - Learning
-        ("Sunday", 4, "system_promo"),         # 15:30 ET - Newsletter CTA
+        ("Sunday", 3, "position_update" if content.open_positions else "educational"),  # 12:30 ET - Portfolio
+        ("Sunday", 4, "theme_hot"),            # 15:30 ET - Hot theme for week
         ("Sunday", 5, "engagement"),           # 18:00 ET - Week kickoff poll
     ]
 
@@ -1153,15 +1153,32 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
         print("  ⚠ Could not import grok_prompts_generator, using basic parsing")
         # Basic fallback parsing could go here
 
-    # Load closed trades from portfolio.csv
+    # Load positions and closed trades from portfolio.csv (authoritative source)
     portfolio_file = TRADES_DIR / "portfolio.csv"
     if portfolio_file.exists():
         import csv
+        open_positions_from_csv = []
         with open(portfolio_file, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row.get('status') in ['CLOSED', 'STOPPED']:
-                    # Calculate P&L
+                status = row.get('status', 'OPEN').upper()
+                if status == 'OPEN':
+                    # Load OPEN positions
+                    try:
+                        entry_price = float(row.get('entry_price', 0) or 0)
+                    except (ValueError, TypeError):
+                        entry_price = 0
+                    open_positions_from_csv.append({
+                        'ticker': row.get('ticker', ''),
+                        'entry_date': row.get('entry_date', ''),
+                        'entry_price': entry_price,
+                        'theme': row.get('theme', ''),
+                        'tier': row.get('tier', ''),
+                        'conviction': row.get('conviction', ''),
+                        'highest_close': row.get('highest_close', ''),
+                    })
+                elif status in ['CLOSED', 'STOPPED']:
+                    # Load CLOSED/STOPPED trades
                     try:
                         entry = float(row.get('entry_price', 0))
                         exit_price = float(row.get('exit_price', 0))
@@ -1174,10 +1191,15 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
                         'entry_price': row.get('entry_price'),
                         'exit_price': row.get('exit_price'),
                         'exit_date': row.get('exit_date'),
-                        'status': row.get('status'),
+                        'status': status,
                         'pnl_pct': pnl,
                         'theme': row.get('theme')
                     })
+
+        # Use CSV positions if markdown parsing found none (more reliable)
+        if not content.open_positions and open_positions_from_csv:
+            print(f"  📊 Loaded {len(open_positions_from_csv)} open positions from portfolio.csv")
+            content.open_positions = open_positions_from_csv
 
     # Load chart manifest
     manifest_path = CHARTS_DIR / "chart_manifest.json"

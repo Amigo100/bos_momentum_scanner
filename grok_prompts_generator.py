@@ -251,51 +251,66 @@ def parse_briefing_markdown(briefing_path: Path) -> PortfolioData:
                         if theme_name and not theme_name.startswith('*'):
                             data.avoid_themes.append({'name': theme_name, 'classification': 'AVOID'})
     
-    # Extract PASS signals (🟢)
-    pass_section = re.search(r'### 🟢 PASS - Entry Signals(.*?)(?=###|##|\Z)', content, re.DOTALL)
+    # Extract PASS signals (🟢) - handle both "Entry Signals" and "Ready for Entry" formats
+    pass_section = re.search(r'### 🟢 PASS - (?:Entry Signals|Ready for Entry)(.*?)(?=### 🟡|### ⚠|## 📈|## 📋|\Z)', content, re.DOTALL)
     if pass_section:
-        # Look for ticker blocks
-        ticker_blocks = re.findall(r'#### (\w+)(.*?)(?=####|###|##|\Z)', pass_section.group(1), re.DOTALL)
+        # Look for ticker blocks - use \n---\n or \n#### as delimiter
+        ticker_blocks = re.findall(r'#### ([A-Z]{2,5})\n(.*?)(?=\n---\n|\n####|\Z)', pass_section.group(1), re.DOTALL)
         for ticker, block in ticker_blocks:
+            # Skip "Due Diligence" sections
+            if "Due Diligence" in ticker or "Due Diligence" in block[:50]:
+                continue
             signal = {'ticker': ticker}
-            
-            # Extract price
-            price_match = re.search(r'\*\*Price:\*\*\s*\$?([\d.]+)', block)
+
+            # Extract price from table format: | **Price** | $31.90 |
+            price_match = re.search(r'\*\*Price\*\*\s*\|\s*\$?([\d.]+)', block)
             if price_match:
                 signal['price'] = float(price_match.group(1))
-            
-            # Extract theme
-            theme_match = re.search(r'\*\*Theme:\*\*\s*(.+)', block)
+
+            # Extract theme from table format: | **Theme** | value |
+            theme_match = re.search(r'\*\*Theme\*\*\s*\|\s*(.+?)\s*\|', block)
             if theme_match:
                 signal['theme'] = theme_match.group(1).strip()
-            
-            # Extract catalyst
-            catalyst_match = re.search(r'\*\*Catalyst\*\*\s*\|\s*(.+)', block)
+
+            # Extract catalyst from table format: | **Catalyst** | value |
+            catalyst_match = re.search(r'\*\*Catalyst\*\*\s*\|\s*(.+?)\s*\|', block)
             if catalyst_match:
                 signal['catalyst'] = catalyst_match.group(1).strip()
-            
+
             # Extract analysis/reasoning
             analysis_match = re.search(r'\*\*Analysis:\*\*\s*>\s*(.+)', block)
             if analysis_match:
                 signal['reasoning'] = analysis_match.group(1).strip()
-            
+
+            # Extract conviction from table: | **Conviction** | ★★★★☆ |
+            conviction_match = re.search(r'\*\*Conviction\*\*\s*\|\s*([★☆]+)', block)
+            if conviction_match:
+                stars = conviction_match.group(1).count('★')
+                signal['conviction'] = stars
+
             data.pass_signals.append(signal)
     
-    # Extract CAUTION signals (🟡)
-    caution_section = re.search(r'### 🟡 CAUTION - Watchlist(.*?)(?=###|##|\Z)', content, re.DOTALL)
+    # Extract CAUTION signals (🟡) - handle both "Watchlist" and "Wait or Size Down" formats
+    caution_section = re.search(r'### 🟡 CAUTION - (?:Watchlist|Wait or Size Down)(.*?)(?=## 📈|## 📋|\Z)', content, re.DOTALL)
     if caution_section:
-        ticker_blocks = re.findall(r'#### (\w+)(.*?)(?=####|###|##|\Z)', caution_section.group(1), re.DOTALL)
+        # Look for ticker blocks - use \n---\n or \n#### as delimiter
+        ticker_blocks = re.findall(r'#### ([A-Z]{2,5})\n(.*?)(?=\n---\n|\n####|\Z)', caution_section.group(1), re.DOTALL)
         for ticker, block in ticker_blocks:
+            # Skip "Due Diligence" sections
+            if "Due Diligence" in ticker or "Due Diligence" in block[:50]:
+                continue
             signal = {'ticker': ticker}
-            
-            price_match = re.search(r'\*\*Price:\*\*\s*\$?([\d.]+)', block)
+
+            # Extract price from table format: | **Price** | $14.53 |
+            price_match = re.search(r'\*\*Price\*\*\s*\|\s*\$?([\d.]+)', block)
             if price_match:
                 signal['price'] = float(price_match.group(1))
-            
-            theme_match = re.search(r'\*\*Theme:\*\*\s*(.+)', block)
+
+            # Extract theme from table format: | **Theme** | value |
+            theme_match = re.search(r'\*\*Theme\*\*\s*\|\s*(.+?)\s*\|', block)
             if theme_match:
                 signal['theme'] = theme_match.group(1).strip()
-            
+
             # Look for concerns/risks
             concerns = re.findall(r'^- (.+)$', block, re.MULTILINE)
             if concerns:

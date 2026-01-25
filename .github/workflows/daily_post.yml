@@ -62,18 +62,26 @@ jobs:
             echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
           else
             # Determine slot from cron schedule (Eastern Time via UTC)
+            # Use time ranges to handle GitHub Actions scheduler delays (up to 60min)
             HOUR=$(date -u +%H)
-            MINUTE=$(date -u +%M)
+            HOUR_NUM=$((10#$HOUR))  # Convert to number (handles leading zeros)
 
-            if [ "$HOUR" = "13" ]; then
+            # Slot windows (UTC) - each slot has ~2hr window to handle delays
+            # Slot 1: 13:00-14:59 UTC (08:00-09:59 ET)
+            # Slot 2: 15:00-16:59 UTC (10:00-11:59 ET)
+            # Slot 3: 17:00-19:59 UTC (12:00-14:59 ET)
+            # Slot 4: 20:00-22:59 UTC (15:00-17:59 ET)
+            # Slot 5: 23:00-00:59 UTC (18:00-19:59 ET)
+
+            if [ $HOUR_NUM -ge 13 ] && [ $HOUR_NUM -lt 15 ]; then
               echo "slot=1" >> $GITHUB_OUTPUT    # 08:00 ET - Pre-market
-            elif [ "$HOUR" = "15" ]; then
+            elif [ $HOUR_NUM -ge 15 ] && [ $HOUR_NUM -lt 17 ]; then
               echo "slot=2" >> $GITHUB_OUTPUT    # 10:00 ET - Morning
-            elif [ "$HOUR" = "17" ]; then
+            elif [ $HOUR_NUM -ge 17 ] && [ $HOUR_NUM -lt 20 ]; then
               echo "slot=3" >> $GITHUB_OUTPUT    # 12:30 ET - Midday
-            elif [ "$HOUR" = "20" ]; then
+            elif [ $HOUR_NUM -ge 20 ] && [ $HOUR_NUM -lt 23 ]; then
               echo "slot=4" >> $GITHUB_OUTPUT    # 15:30 ET - Power Hour (CRITICAL)
-            elif [ "$HOUR" = "23" ]; then
+            elif [ $HOUR_NUM -ge 23 ] || [ $HOUR_NUM -lt 1 ]; then
               echo "slot=5" >> $GITHUB_OUTPUT    # 18:00 ET - After-hours
             else
               echo "slot=all" >> $GITHUB_OUTPUT

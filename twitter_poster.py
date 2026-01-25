@@ -26,6 +26,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, List
+from zoneinfo import ZoneInfo
 
 # Load .env file if present (use explicit path relative to this script)
 try:
@@ -121,10 +122,12 @@ def save_queue(queue: list[Dict], queue_file: Path) -> None:
 
 
 def get_current_slot() -> int:
-    """Determine current time slot based on Eastern Time (ET)."""
-    # Note: In production via GitHub Actions, UTC time is converted in workflow
-    # Locally, this assumes system is in ET or adjust accordingly
-    now = datetime.now()
+    """Determine current time slot based on Eastern Time (ET).
+
+    Uses timezone-aware datetime to correctly handle both local and CI environments.
+    """
+    et = ZoneInfo("America/New_York")
+    now = datetime.now(et)
     hour = now.hour
     minute = now.minute
     current_time = hour * 60 + minute
@@ -161,8 +164,9 @@ def find_next_content(queue: list[Dict], force: bool = False, target_slot: Optio
     Returns:
         Next pending content item (single tweet or thread), or None if nothing due
     """
-
-    today = datetime.now().strftime("%Y-%m-%d")
+    # Use Eastern Time for date comparison to match schedule
+    et = ZoneInfo("America/New_York")
+    today = datetime.now(et).strftime("%Y-%m-%d")
     current_slot = get_current_slot()
 
     for tweet in queue:

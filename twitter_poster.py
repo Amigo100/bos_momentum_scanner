@@ -22,9 +22,17 @@ import os
 import sys
 import json
 import argparse
+import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, List
+
+# Load .env file if present (use explicit path relative to this script)
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
+except ImportError:
+    pass  # dotenv not required if env vars set directly
 
 try:
     import tweepy
@@ -142,13 +150,16 @@ def get_current_slot() -> int:
         return 0  # Outside posting hours
     
 
-def find_next_tweet(queue: list[Dict], force: bool = False, target_slot: Optional[int] = None) -> Optional[Dict]:
-    """Find the next tweet to post based on schedule and slot.
+def find_next_content(queue: list[Dict], force: bool = False, target_slot: Optional[int] = None) -> Optional[Dict]:
+    """Find the next content item (tweet or thread) to post based on schedule and slot.
 
     Args:
-        queue: List of tweet dictionaries
+        queue: List of content dictionaries (tweets or threads)
         force: If True, post first pending regardless of schedule
-        target_slot: If specified, only consider tweets for this slot (1, 2, or 3)
+        target_slot: If specified, only consider items for this slot (1-5)
+
+    Returns:
+        Next pending content item (single tweet or thread), or None if nothing due
     """
 
     today = datetime.now().strftime("%Y-%m-%d")
@@ -268,60 +279,167 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
         return False
 
 
+def post_thread(client_v2, api_v1, thread_item: Dict, dry_run: bool = False) -> bool:
+    """Post a 5-tweet thread with reply chaining.
+
+    Posts tweets sequentially, with each tweet (2-5) replying to the previous one.
+    This creates a connected thread on X.
+
+    Args:
+        client_v2: Tweepy v2 client for posting tweets
+        api_v1: Tweepy v1.1 API for media upload
+        thread_item: Queue item with thread_tweets array
+        dry_run: If True, print what would be posted without posting
+
+    Returns:
+        True if all tweets posted successfully, False otherwise
+    """
+    thread_tweets = thread_item.get('thread_tweets', [])
+    thread_id = thread_item.get('id', 'unknown')
+    thread_topic = thread_item.get('thread_topic', 'Thread')
+
+    if not thread_tweets:
+        print(f"  ⚠ No thread tweets found in {thread_id}")
+        return False
+
+    print(f"\n  🧵 Thread: {thread_id}")
+    print(f"  📚 Topic: {thread_topic}")
+    print(f"  📊 Tweets: {len(thread_tweets)}")
+    print(f"  📅 Scheduled: {thread_item.get('scheduled_date')} slot {thread_item.get('slot')}")
+
+    reply_to_id = None  # First tweet has no parent
+
+    for tweet in thread_tweets:
+        text = tweet.get('text', '')
+        number = tweet.get('number', 0)
+        image_path = tweet.get('image_path')
+
+        print(f"\n  ┌─ Tweet {number}/{len(thread_tweets)} ({len(text)} chars)")
+        print(f"  │")
+        for line in text.split('\n'):
+            print(f"  │ {line}")
+        print(f"  │")
+        if image_path:
+            print(f"  │ 📷 Image: {image_path}")
+        if reply_to_id:
+            print(f"  │ ↩️  Replying to: {reply_to_id}")
+        print(f"  └─")
+
+        if dry_run:
+            print(f"  🔸 DRY RUN - would post tweet {number}/{len(thread_tweets)}")
+            tweet['tweet_id'] = f"dry_run_{thread_id}_{number}"
+            reply_to_id = tweet['tweet_id']
+            continue
+
+        try:
+            # Upload media if present (often on tweet 4 for charts)
+            media_ids = None
+            if image_path:
+                media_id = upload_media(api_v1, image_path)
+                if media_id:
+                    media_ids = [media_id]
+
+            # Post tweet (with in_reply_to for tweets 2-5)
+            response = client_v2.create_tweet(
+                text=text,
+                media_ids=media_ids,
+                in_reply_to_tweet_id=reply_to_id  # None for first tweet
+            )
+
+            posted_tweet_id = response.data['id']
+            tweet['tweet_id'] = posted_tweet_id
+            tweet['posted_at'] = datetime.now().isoformat()
+
+            print(f"  ✅ Posted! ID: {posted_tweet_id}")
+
+            # Next tweet replies to this one (creates the chain)
+            reply_to_id = posted_tweet_id
+
+            # Rate limit protection (1 second between tweets)
+            if number < len(thread_tweets):
+                time.sleep(1)
+
+        except tweepy.TweepyException as e:
+            print(f"\n  ✗ Thread failed at tweet {number}: {e}")
+            thread_item['thread_status'] = 'partial'
+            thread_item['error'] = str(e)
+            return False
+
+    # All tweets posted successfully
+    thread_item['thread_status'] = 'complete'
+    thread_item['status'] = 'posted'
+    thread_item['posted_at'] = datetime.now().isoformat()
+    thread_item['tweet_id'] = thread_tweets[0].get('tweet_id')  # Link to thread head
+
+    print(f"\n  🎉 Thread complete!")
+    print(f"  🔗 https://x.com/i/status/{thread_item['tweet_id']}")
+
+    return True
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Post scheduled tweets to X")
+    parser = argparse.ArgumentParser(description="Post scheduled tweets/threads to X")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
     parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")
     parser.add_argument("--queue", type=str, help="Path to content queue JSON")
     parser.add_argument("--slot", type=str, default="all",
-                        help="Which slot to post (1, 2, 3, or 'all')")
+                        help="Which slot to post (1-5 or 'all')")
     args = parser.parse_args()
-    
+
     print("\n" + "═" * 60)
     print("  TWITTER POSTER - Automated X Posting")
     print("═" * 60)
-    
+
     # Load queue
     queue_file = Path(args.queue) if args.queue else QUEUE_FILE
     print(f"\n  📂 Queue: {queue_file}")
-    
+
     queue = load_queue(queue_file)
-    
+
     pending = [t for t in queue if t.get("status") == "pending"]
     posted = [t for t in queue if t.get("status") == "posted"]
-    
+    threads = [t for t in queue if t.get("is_thread", False)]
+
     print(f"  📊 Status: {len(posted)} posted, {len(pending)} pending")
-    
-    # Find next tweet (filter by slot if specified)
+    if threads:
+        thread_pending = [t for t in threads if t.get("status") == "pending"]
+        print(f"  🧵 Threads: {len(thread_pending)} pending of {len(threads)} total")
+
+    # Find next content item (tweet or thread) - filter by slot if specified
     target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
-    tweet = find_next_tweet(queue, force=args.force, target_slot=target_slot)
-    
-    if not tweet:
-        print(f"\n  ℹ️  No tweets due right now")
+    content_item = find_next_content(queue, force=args.force, target_slot=target_slot)
+
+    if not content_item:
+        print(f"\n  ℹ️  No content due right now")
         print(f"     Current slot: {get_current_slot()} ({SLOT_TIMES.get(get_current_slot(), 'outside hours')})")
         print(f"     Today: {datetime.now().strftime('%Y-%m-%d')}")
         return 0
-    
+
     # Initialize clients (skip for dry run if no credentials)
     if args.dry_run:
         client_v2, api_v1 = None, None
     else:
         client_v2, api_v1 = get_clients()
-    
-    # Post tweet
-    success = post_tweet(client_v2, api_v1, tweet, dry_run=args.dry_run)
-    
+
+    # Dispatch based on content type (thread vs single tweet)
+    if content_item.get('is_thread', False):
+        print(f"\n  🧵 Detected: THREAD")
+        success = post_thread(client_v2, api_v1, content_item, dry_run=args.dry_run)
+    else:
+        print(f"\n  📝 Detected: SINGLE TWEET")
+        success = post_tweet(client_v2, api_v1, content_item, dry_run=args.dry_run)
+
     # Save updated queue
     if not args.dry_run:
         save_queue(queue, queue_file)
         print(f"\n  💾 Queue updated: {queue_file}")
-    
+
     print("\n" + "═" * 60)
-    
+
     return 0 if success else 1
 
 

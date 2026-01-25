@@ -34,6 +34,13 @@ from dataclasses import dataclass, field, asdict
 from typing import List, Dict, Optional
 import re
 
+# Load .env file if present (use explicit path relative to this script)
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
+except ImportError:
+    pass  # dotenv not required if env vars set directly
+
 try:
     import anthropic
 except ImportError:
@@ -946,7 +953,7 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
 
         # Wednesday: Educational + PDT-friendly
         ("Wednesday", 1, "pdt_friendly"),      # 08:00 ET - PDT-free swing trading
-        ("Wednesday", 2, "system_promo"),      # 10:00 ET - System feature
+        ("Wednesday", 2, "thread_educational"),# 10:00 ET - 🧵 Educational thread (5 tweets)
         ("Wednesday", 3, "theme_hot"),         # 12:30 ET - Theme spotlight
         ("Wednesday", 4, "power_hour"),        # 15:30 ET - Power Hour
         ("Wednesday", 5, "engagement"),        # 18:00 ET - Community Q&A
@@ -967,7 +974,7 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
 
         # Saturday: Newsletter day - ONE buy signal max (prevents portfolio bloat)
         ("Saturday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - THE weekly pick
-        ("Saturday", 2, "theme_hot"),          # 10:00 ET - Hot theme context
+        ("Saturday", 2, "thread_buy_signal"),  # 10:00 ET - 🧵 Deep dive on signal (5 tweets)
         ("Saturday", 3, "funnel_graphic"),     # 12:30 ET - Funnel stats
         ("Saturday", 4, "position_update" if content.open_positions else "educational"),  # 15:30 ET - Portfolio status
         ("Saturday", 5, "engagement"),         # 18:00 ET - Discussion
@@ -975,19 +982,23 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         # Sunday: Reinforce THE signal before Monday entry
         ("Sunday", 1, "buy_signal" if content.pass_signals else "market_insight"),  # 08:00 ET - Reinforce the pick
         ("Sunday", 2, "sector_rotation"),      # 10:00 ET - Sector flow preview
-        ("Sunday", 3, "position_update" if content.open_positions else "educational"),  # 12:30 ET - Portfolio
+        ("Sunday", 3, "thread_week_ahead"),    # 12:30 ET - 🧵 Week ahead preview (5 tweets)
         ("Sunday", 4, "theme_hot"),            # 15:30 ET - Hot theme for week
         ("Sunday", 5, "engagement"),           # 18:00 ET - Week kickoff poll
     ]
 
-    # Group by category to batch API calls
+    # Group by category to batch API calls (separate threads from regular tweets)
     categories_needed = {}
+    thread_categories = []
     for day, slot, category in categories_schedule:
-        if category not in categories_needed:
-            categories_needed[category] = []
-        categories_needed[category].append((day, slot))
+        if category.startswith('thread_'):
+            thread_categories.append((day, slot, category))
+        else:
+            if category not in categories_needed:
+                categories_needed[category] = []
+            categories_needed[category].append((day, slot))
 
-    # Generate tweets by category
+    # Generate regular tweets by category
     print("\n  🤖 Generating tweets via Claude API...")
 
     generated_by_category = {}
@@ -995,6 +1006,13 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         print(f"    • {category}: {len(slots)} tweets...")
         tweets = generate_tweets_for_category(client, category, content, count=len(slots))
         generated_by_category[category] = tweets
+
+    # Generate threads
+    if thread_categories:
+        print(f"\n  🧵 Generating {len(thread_categories)} thread(s)...")
+        for day, slot, category in thread_categories:
+            print(f"    • {category} for {day} slot {slot}...")
+            # Threads are generated individually during assignment (below)
 
     # Assign tweets to schedule
     category_index = {cat: 0 for cat in categories_needed}
@@ -1029,17 +1047,37 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         "Friday": 6
     }
 
+    # Track threads separately (they're dict format, not Tweet objects)
+    all_content = []  # Will contain both Tweet objects and thread dicts
+
     for day, slot, category in categories_schedule:
         day_offset = day_offset_from_saturday[day]
         scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
 
-        # Get next tweet for this category
-        idx = category_index[category]
+        # Handle threads separately from regular tweets
+        if category.startswith('thread_'):
+            # Generate thread for this slot
+            thread_data = generate_thread_for_schedule(client, category, content, mock=mock)
+            thread_data.update({
+                'id': f"{day.lower()}_{slot}_{category}",
+                'day': day,
+                'slot': slot,
+                'category': category,
+                'scheduled_date': scheduled_date,
+                'status': 'pending',
+                'posted_at': None,
+                'tweet_id': None,
+            })
+            all_content.append(thread_data)
+            continue
+
+        # Regular tweet handling
+        idx = category_index.get(category, 0)
         tweets_for_cat = generated_by_category.get(category, [])
 
         if idx < len(tweets_for_cat):
             tweet_data = tweets_for_cat[idx]
-            category_index[category] += 1
+            category_index[category] = idx + 1
         else:
             # Fallback if not enough tweets generated
             tweet_data = {
@@ -1068,17 +1106,25 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         )
 
         all_tweets.append(tweet)
+        all_content.append(tweet)
 
     # Validate tweets for banned terms
     if MARKETING_VOCABULARY_AVAILABLE:
-        print("\n  🔍 Validating tweets for banned terms...")
+        print("\n  🔍 Validating content for banned terms...")
         total, violations = validate_all_tweets(all_tweets)
         if violations > 0:
             print(f"  ⚠ {violations}/{total} tweets contain banned terms (review recommended)")
         else:
             print(f"  ✓ All {total} tweets passed vocabulary validation")
 
-    return all_tweets
+        # Also validate thread content
+        thread_count = len([c for c in all_content if isinstance(c, dict) and c.get('is_thread')])
+        if thread_count > 0:
+            print(f"  🧵 {thread_count} thread(s) generated (validate manually if needed)")
+
+    # Return all_content which includes both Tweet objects and thread dicts
+    # The save function needs to handle both types
+    return all_content
 
 
 def generate_mock_tweets() -> List[Tweet]:
@@ -1106,20 +1152,59 @@ def generate_mock_tweets() -> List[Tweet]:
         "Wednesday": 4, "Thursday": 5, "Friday": 6
     }
 
+    # Thread slots (matching the real schedule)
+    thread_slots = {
+        ('Saturday', 2): 'thread_buy_signal',
+        ('Wednesday', 2): 'thread_educational',
+        ('Sunday', 3): 'thread_week_ahead',
+    }
+
+    all_content = []
+
     for day in DAYS:
         day_offset = day_offset_from_saturday[day]
         scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
         for slot in [1, 2, 3]:
-            tweets.append(Tweet(
-                id=f"{day.lower()}_{slot}_mock",
-                day=day,
-                slot=slot,
-                category="mock",
-                text=f"[MOCK] {day} {SLOTS[slot]} tweet placeholder",
-                scheduled_date=scheduled_date
-            ))
+            # Check if this slot should be a thread
+            if (day, slot) in thread_slots:
+                category = thread_slots[(day, slot)]
+                thread_data = {
+                    'id': f"{day.lower()}_{slot}_{category}",
+                    'day': day,
+                    'slot': slot,
+                    'category': category,
+                    'is_thread': True,
+                    'thread_topic': f"Mock {category.replace('thread_', '').replace('_', ' ').title()}",
+                    'thread_tweets': [
+                        {'number': 1, 'text': f"🧵 1/5: [MOCK] {category} hook tweet", 'tweet_id': None},
+                        {'number': 2, 'text': f"2/5: [MOCK] Problem statement", 'tweet_id': None},
+                        {'number': 3, 'text': f"3/5: [MOCK] Our solution", 'tweet_id': None},
+                        {'number': 4, 'text': f"4/5: [MOCK] Proof/example", 'tweet_id': None},
+                        {'number': 5, 'text': f"5/5: [MOCK] CTA to sterlingsignals.substack.com", 'tweet_id': None},
+                    ],
+                    'thread_status': 'pending',
+                    'scheduled_date': scheduled_date,
+                    'status': 'pending',
+                    'posted_at': None,
+                    'tweet_id': None,
+                    'ticker': None,
+                    'theme': None,
+                }
+                all_content.append(thread_data)
+            else:
+                # Regular mock tweet
+                tweet = Tweet(
+                    id=f"{day.lower()}_{slot}_mock",
+                    day=day,
+                    slot=slot,
+                    category="mock",
+                    text=f"[MOCK] {day} {SLOTS[slot]} tweet placeholder",
+                    scheduled_date=scheduled_date
+                )
+                tweets.append(tweet)
+                all_content.append(tweet)
 
-    return tweets
+    return all_content
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1239,17 +1324,46 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
             print(f"  📊 Loaded {len(open_positions_from_csv)} open positions from portfolio.csv")
             content.open_positions = open_positions_from_csv
 
-        # CRITICAL: Filter out PASS signals that are already in portfolio
-        # This prevents tweeting "new" buy signals for stocks we already own
-        portfolio_tickers = {pos['ticker'].upper() for pos in open_positions_from_csv}
+        # CRITICAL: Filter out PASS signals that were in portfolio BEFORE this scan
+        # Signals added on the same day as the scan are NEW and should be tweeted
+        # Only filter signals where entry_date < scan_date (previous weeks' positions)
+        scan_date = content.scan_date or datetime.now().strftime("%Y-%m-%d")
+
+        # Build set of tickers that were in portfolio BEFORE this scan
+        pre_existing_tickers = set()
+        for pos in open_positions_from_csv:
+            ticker = pos.get('ticker', '').upper()
+            entry_date = pos.get('entry_date', '')
+
+            # Normalize entry_date to YYYY-MM-DD format for comparison
+            if entry_date:
+                # Handle various date formats
+                for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y']:
+                    try:
+                        parsed_date = datetime.strptime(entry_date, fmt)
+                        entry_date_normalized = parsed_date.strftime('%Y-%m-%d')
+                        break
+                    except ValueError:
+                        continue
+                else:
+                    entry_date_normalized = entry_date  # Use as-is if parsing fails
+
+                # If entry_date is BEFORE scan_date, it's a pre-existing position
+                if entry_date_normalized < scan_date:
+                    pre_existing_tickers.add(ticker)
+                else:
+                    # This is a NEW signal from this week's scan - don't filter it
+                    print(f"  ✨ {ticker} is a NEW signal (entry: {entry_date_normalized}, scan: {scan_date})")
+
         original_pass_count = len(content.pass_signals)
         content.pass_signals = [
             sig for sig in content.pass_signals
-            if sig.get('ticker', '').upper() not in portfolio_tickers
+            if sig.get('ticker', '').upper() not in pre_existing_tickers
         ]
         if original_pass_count != len(content.pass_signals):
             removed = original_pass_count - len(content.pass_signals)
-            print(f"  🔄 Filtered {removed} PASS signal(s) already in portfolio")
+            filtered_tickers = [sig.get('ticker') for sig in content.pass_signals if sig.get('ticker', '').upper() in pre_existing_tickers]
+            print(f"  🔄 Filtered {removed} PASS signal(s) already in portfolio from previous weeks")
 
         # LIMIT: Only keep the highest conviction signal (max 1 per week)
         # This prevents portfolio bloat - we add max 1 new position per week
@@ -1281,11 +1395,38 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
 # OUTPUT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def save_tweets(tweets: List[Tweet], output_dir: Path) -> Path:
-    """Save tweets to JSON files."""
+def save_tweets(content: List, output_dir: Path) -> Path:
+    """Save tweets and threads to JSON files.
+
+    Args:
+        content: List of Tweet objects and/or thread dicts
+        output_dir: Directory to save files
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
-    tweets_json = json.dumps([t.to_dict() for t in tweets], indent=2)
+
+    # Convert to JSON-serializable format
+    # Handle both Tweet objects (need .to_dict()) and thread dicts (already dict)
+    serialized = []
+    for item in content:
+        if isinstance(item, Tweet):
+            serialized.append(item.to_dict())
+        elif isinstance(item, dict):
+            # Thread dict - already serializable
+            serialized.append(item)
+        else:
+            # Fallback
+            serialized.append(item)
+
+    # Sort by scheduled_date and slot to ensure proper posting order
+    def sort_key(item):
+        date = item.get('scheduled_date', '9999-99-99')
+        slot = item.get('slot', 99)
+        return (date, slot)
+
+    serialized = sorted(serialized, key=sort_key)
+
+    tweets_json = json.dumps(serialized, indent=2)
 
     # Save to current/ and weekly archive if available
     if OUTPUT_PATHS_AVAILABLE:
@@ -1325,22 +1466,47 @@ def save_tweets(tweets: List[Tweet], output_dir: Path) -> Path:
     return queue_file
 
 
-def print_summary(tweets: List[Tweet]):
-    """Print summary of generated tweets."""
-    print("\n  📊 Tweet Summary:")
+def print_summary(content: List):
+    """Print summary of generated content (tweets and threads)."""
+    print("\n  📊 Content Summary:")
     print("  " + "─" * 50)
 
+    # Count threads and tweets
+    threads = [c for c in content if isinstance(c, dict) and c.get('is_thread')]
+    tweets = [c for c in content if isinstance(c, Tweet)]
+
+    print(f"\n  📝 Single tweets: {len(tweets)}")
+    print(f"  🧵 Threads: {len(threads)} ({len(threads) * 5} thread tweets)")
+    print(f"  📊 Total content pieces: {len(tweets) + len(threads)}")
+
     for day in DAYS:
-        day_tweets = [t for t in tweets if t.day == day]
-        if day_tweets:
+        # Get items for this day (handle both Tweet objects and thread dicts)
+        day_items = []
+        for c in content:
+            if isinstance(c, Tweet) and c.day == day:
+                day_items.append(('tweet', c))
+            elif isinstance(c, dict) and c.get('day') == day:
+                day_items.append(('thread', c))
+
+        if day_items:
             print(f"\n  📅 {day}:")
-            for t in sorted(day_tweets, key=lambda x: x.slot):
-                slot_name = SLOTS[t.slot]
-                ticker_str = f" ${t.ticker}" if t.ticker else ""
-                chart_str = " 📸" if t.image_path else ""
-                text_preview = t.text[:50] + "..." if len(t.text) > 50 else t.text
-                print(f"     {slot_name:8} [{t.category:15}]{ticker_str}{chart_str}")
-                print(f"              {text_preview}")
+            for item_type, item in sorted(day_items, key=lambda x: x[1].slot if isinstance(x[1], Tweet) else x[1].get('slot', 0)):
+                if item_type == 'tweet':
+                    t = item
+                    slot_name = SLOTS[t.slot]
+                    ticker_str = f" ${t.ticker}" if t.ticker else ""
+                    chart_str = " 📸" if t.image_path else ""
+                    text_preview = t.text[:50] + "..." if len(t.text) > 50 else t.text
+                    print(f"     {slot_name:8} [{t.category:15}]{ticker_str}{chart_str}")
+                    print(f"              {text_preview}")
+                else:
+                    # Thread
+                    t = item
+                    slot_name = SLOTS[t.get('slot', 1)]
+                    ticker_str = f" ${t.get('ticker')}" if t.get('ticker') else ""
+                    topic = t.get('thread_topic', 'Thread')
+                    print(f"     {slot_name:8} 🧵 [{t.get('category', 'thread'):15}]{ticker_str}")
+                    print(f"              {topic} (5 tweets)")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1527,6 +1693,188 @@ THREAD_TOPICS = [
 ]
 
 
+def generate_thread_for_schedule(
+    client: Optional[anthropic.Anthropic],
+    category: str,
+    content: 'WeeklyContent',
+    mock: bool = False
+) -> Dict:
+    """
+    Generate a thread for the weekly schedule.
+
+    Thread categories:
+    - thread_buy_signal: Deep dive on the weekly pick
+    - thread_educational: Rotating through 5 educational topics
+    - thread_week_ahead: Preview of hot themes for upcoming week
+
+    Args:
+        client: Anthropic client (None if mock mode)
+        category: thread_buy_signal, thread_educational, or thread_week_ahead
+        content: Weekly content data with signals, themes, positions
+        mock: If True, generate placeholder thread without API
+
+    Returns:
+        Dict with thread data ready for content_queue.json
+    """
+    # Determine week number for topic rotation (1-5)
+    week_number = datetime.now().isocalendar()[1] % 5 or 5
+
+    if category == "thread_buy_signal":
+        # Deep dive on the weekly pick
+        if content.pass_signals:
+            signal = content.pass_signals[0]
+            ticker = signal.get('ticker', signal.get('symbol', 'UNKNOWN'))
+            theme = signal.get('theme', 'Momentum')
+            topic = "Buy Signal Analysis"
+            context = f"""Deep dive thread on ${ticker} - our weekly signal.
+
+Theme: {theme}
+Key points to cover:
+1. Why this fits our systematic criteria (without revealing specifics)
+2. The theme momentum driving this sector
+3. Risk management approach (Capital Preservation Protocol)
+4. How this fits with current portfolio
+5. CTA to newsletter for full analysis
+
+DO NOT reveal specific indicator names or thresholds."""
+        else:
+            topic = "Signal Methodology"
+            context = "Explain how our 5-gate system identifies opportunities when most traders are chasing breakouts. Focus on systematic advantage."
+
+    elif category == "thread_educational":
+        # Rotate through 5 educational topics each week
+        topic_index = (week_number - 1) % len(THREAD_TOPICS)
+        topic_data = THREAD_TOPICS[topic_index]
+        topic = topic_data['topic']
+        context = topic_data['context']
+
+    elif category == "thread_week_ahead":
+        # Preview hot themes for upcoming week
+        topic = "Week Ahead Preview"
+        hot_themes = []
+        if content.prime_themes:
+            hot_themes = [t.get('name', 'Theme') for t in content.prime_themes[:3]]
+
+        if hot_themes:
+            themes_str = ', '.join(hot_themes)
+            context = f"""Week ahead preview thread for traders.
+
+Hot themes this week: {themes_str}
+
+Cover:
+1. Hook: What's moving into the new week
+2. Theme 1 momentum and why
+3. Theme 2 opportunities
+4. Portfolio positioning / what we're watching
+5. CTA to subscribe for signals
+
+Focus on systematic approach and alpha generation vs SPY."""
+        else:
+            context = "General week ahead preview focusing on market positioning, sector rotation opportunities, and systematic momentum approach."
+    else:
+        # Fallback for unknown thread category
+        topic = "Trading Wisdom"
+        context = "Share systematic trading insights and methodology."
+
+    # Generate thread
+    if mock:
+        # Mock thread for testing
+        thread_tweets = [
+            {'number': 1, 'text': f"🧵 1/5: [{topic}] Thread placeholder - hook tweet about {category}", 'tweet_id': None},
+            {'number': 2, 'text': f"2/5: Problem statement - why most traders struggle with this", 'tweet_id': None},
+            {'number': 3, 'text': f"3/5: Our systematic solution and approach", 'tweet_id': None},
+            {'number': 4, 'text': f"4/5: Specific example or proof point", 'tweet_id': None},
+            {'number': 5, 'text': f"5/5: CTA - Follow for signals, subscribe at sterlingsignals.substack.com", 'tweet_id': None},
+        ]
+    else:
+        # Generate via Claude API
+        thread = generate_thread(topic, context, client)
+        thread_tweets = thread.tweets if thread else []
+
+    return {
+        'is_thread': True,
+        'thread_topic': topic,
+        'thread_tweets': thread_tweets,
+        'thread_status': 'pending',
+        'ticker': content.pass_signals[0].get('ticker', content.pass_signals[0].get('symbol')) if content.pass_signals and category == 'thread_buy_signal' else None,
+        'theme': content.pass_signals[0].get('theme') if content.pass_signals and category == 'thread_buy_signal' else None,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOCIAL GRAPHICS INTEGRATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def attach_social_graphics(content: List) -> List:
+    """
+    Generate social graphics and attach them to content by category.
+
+    Graphics are assigned to tweets that don't already have images:
+    - position_update -> portfolio_dashboard
+    - beat_spy -> beat_spy comparison chart
+    - theme_hot -> theme_card
+    - sector_rotation -> sector_rotation chart
+    - funnel_graphic -> funnel visualization
+    - system_promo -> funnel (reuse)
+
+    Args:
+        content: List of Tweet objects and/or thread dicts
+    """
+    print("\n  📸 Generating social graphics...")
+
+    try:
+        from social_graphics import SocialGraphicsGenerator
+        generator = SocialGraphicsGenerator()
+        graphics = generator.generate_all()
+    except ImportError as e:
+        print(f"    ⚠ Could not import social_graphics: {e}")
+        return content
+    except Exception as e:
+        print(f"    ⚠ Error generating graphics: {e}")
+        return content
+
+    if not graphics:
+        print("    ⚠ No graphics generated")
+        return content
+
+    # Map categories to graphics
+    category_graphics = {
+        'position_update': graphics.get('portfolio_dashboard'),
+        'beat_spy': graphics.get('beat_spy'),
+        'theme_hot': graphics.get('theme_card'),
+        'sector_rotation': graphics.get('sector_rotation'),
+        'funnel_graphic': graphics.get('funnel'),
+        'system_promo': graphics.get('funnel'),  # Reuse funnel
+        'market_insight': graphics.get('sector_rotation'),  # Reuse sector rotation
+    }
+
+    # Attach graphics to content (handle both Tweet objects and thread dicts)
+    attached_count = 0
+    for item in content:
+        if isinstance(item, Tweet):
+            # Tweet object
+            if item.image_path:
+                continue
+            graphic_path = category_graphics.get(item.category)
+            if graphic_path:
+                item.image_path = str(graphic_path)
+                attached_count += 1
+        elif isinstance(item, dict) and not item.get('is_thread'):
+            # Non-thread dict (shouldn't happen but handle it)
+            if item.get('image_path'):
+                continue
+            graphic_path = category_graphics.get(item.get('category'))
+            if graphic_path:
+                item['image_path'] = str(graphic_path)
+                attached_count += 1
+        # Skip threads - they don't get social graphics attached this way
+
+    print(f"    ✓ Attached {attached_count} graphics to tweets")
+    print(f"    📁 Graphics in: {CHARTS_DIR}")
+
+    return content
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1610,6 +1958,9 @@ def main() -> None:
 
     # Generate tweets
     tweets = generate_all_tweets(content, mock=args.mock)
+
+    # Generate social graphics and attach to tweets
+    tweets = attach_social_graphics(tweets)
 
     # Save output
     output_dir = Path(args.output) if args.output else TWEETS_DIR

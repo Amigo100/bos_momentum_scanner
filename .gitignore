@@ -29,6 +29,9 @@ data/themes_cache.json
 # Playwright browser profile (contains login sessions)
 .playwright_profile/
 
+# TradingView authentication cookies (SENSITIVE)
+.tradingview_cookies.json
+
 # Sensitive backup copies
 *.bak
 *copy*.txt
@@ -39,6 +42,10 @@ data/themes_cache.json
 
 # Reports directory (generated, can be large)
 reports/
+
+# Portfolio data (contains entry prices - user-specific)
+trades/portfolio.csv
+trades/portfolio_google_sheets.csv
 
 # Portfolio backups (keep latest only)
 trades/portfolio_backups/

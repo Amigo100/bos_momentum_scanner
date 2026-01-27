@@ -70,11 +70,29 @@ STYLE:
 - Educational - explain WHY, not just WHAT
 - US investor perspective
 - Reference SPY/QQQ comparison when outperforming
+- Use "TEAL signal" branding (not "PASS signal")
+
+CRITICAL MARKETING RULES:
+- NEVER mention losing positions or underwater trades
+- NEVER show full portfolio with individual P&L
+- Only showcase wins above 15% threshold
+- If benchmark comparison is negative, focus on methodology instead
+- Celebrate big wins (25%+, 50%+, 100%+) prominently
+
+HANDLING ZERO SIGNALS WEEK:
+When there are no PASS/TEAL signals this week:
+- This is NORMAL and shows the system's selectivity - NOT a failure
+- Focus the newsletter on themes, market analysis, and watchlist stocks
+- Skip the "NEW TRADES THIS WEEK" section entirely
+- Use subject line: "Week ${WEEK_NUM}: No New Signals | ${THEME_HOOK}"
+- Emphasize: "Sometimes the best trade is no trade"
+- Highlight watchlist/CONSIDER stocks that almost made it
+- Explain what would need to change for them to become TEAL signals
 
 SUBJECT LINE FORMULA:
-Week ${WEEK_NUM}: ${YTD_RETURN}% YTD | ${NEW_SIGNALS} New Signals | ${HOOK_PHRASE}
-Example: "Week 4: +12% YTD | 3 New Buys | Why Power Grid is 2026's Winning Theme"
-ALWAYS lead with performance (even if negative). Reference SPY when outperforming.
+Week ${WEEK_NUM}: ${NEW_SIGNALS} TEAL Signals | ${HOOK_PHRASE}
+Example: "Week 4: 3 TEAL Signals | Why Power Grid is 2026's Winning Theme"
+Focus on new signals and hot themes, not P&L.
 
 FORMAT:
 - Use markdown formatting
@@ -82,7 +100,7 @@ FORMAT:
 - Use tables for data comparison
 - Target 1,500-2,500 words
 - 8-12 minute read time
-- Include Performance vs Benchmark section (Portfolio vs SPY YTD)"""
+- Show ALL TEAL signals (not limited to 1)"""
 
 COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from these inputs:
 
@@ -95,7 +113,7 @@ COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from thes
 ## DUE DILIGENCE RESULTS
 {dd_results}
 
-## PORTFOLIO STATUS
+## WIN HIGHLIGHTS (only show if we have winners above 15%)
 {portfolio_status}
 
 ## PERFORMANCE VS BENCHMARK
@@ -122,6 +140,7 @@ COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from thes
 - Why these are cooling off
 
 **5. NEW TRADES THIS WEEK** 🎯
+(SKIP THIS SECTION if no PASS signals - see below for themes-only format)
 For each DD-PASS signal:
 - Ticker & company name
 - DD Verdict (STRONG BUY / SPEC BUY)
@@ -131,6 +150,13 @@ For each DD-PASS signal:
 - Bear case & counter
 - Risk to monitor
 - [CHART: TICKER] placeholder
+
+**5-ALT. NO NEW SIGNALS THIS WEEK** 🎯
+(USE THIS SECTION ONLY if there are zero PASS signals)
+- Explain this shows the system's selectivity
+- "Sometimes the best trade is no trade"
+- Highlight what the system filtered out and why
+- Focus on patience and discipline
 
 **6. SIGNALS THAT FAILED DD** ⚠️
 For each NO GO:
@@ -143,11 +169,11 @@ For each NO GO:
 - Why waiting
 - What triggers entry
 
-**8. PORTFOLIO UPDATE** 📈
-- Open positions table with P&L
-- Stop distances
-- Any caution/sell signals
-- Recently closed trades
+**8. WIN HIGHLIGHTS** (conditional - only if we have winners above 15%)
+- Showcase closed trades with gains above 15%
+- Celebrate big wins (25%+, 50%+, 100%+)
+- DO NOT mention any losing positions or current P&L
+- Focus on the system working, not individual losses
 
 **9. LOOKING AHEAD**
 - Next week's catalysts
@@ -250,8 +276,12 @@ def load_scanner_briefing() -> str:
     return ""
 
 
-def load_dd_results() -> str:
-    """Load DD results from signals.json."""
+def load_dd_results() -> tuple[str, int]:
+    """Load DD results from signals.json.
+
+    Returns:
+        tuple: (dd_results_text, pass_signal_count)
+    """
     # Try current/ folder first
     signals_file = None
     if OUTPUT_PATHS_AVAILABLE:
@@ -265,13 +295,23 @@ def load_dd_results() -> str:
         signals_file = TRADES_DIR / "signals.json"
 
     if not signals_file.exists():
-        return ""
+        return "", 0
 
     with open(signals_file, 'r') as f:
         data = json.load(f)
 
+    buy_signals = data.get("buy_signals", [])
+
+    # Count PASS signals (not CONSIDER) - CRIT-1: Use PASS, keep TRADE for backwards compat
+    pass_signals = [s for s in buy_signals if s.get("final_decision") in ["PASS", "TRADE"]]
+    pass_count = len(pass_signals)
+
+    # Handle zero PASS signals case
+    if pass_count == 0:
+        return "[No PASS signals this week - themes-only newsletter]", 0
+
     lines = []
-    for signal in data.get("buy_signals", []):
+    for signal in buy_signals:
         if signal.get("dd_verdict"):
             lines.append(f"### {signal['symbol']} - {signal.get('dd_verdict', 'N/A')}")
             lines.append(f"- **Conviction:** {signal.get('dd_conviction', 'N/A')}/10")
@@ -282,25 +322,69 @@ def load_dd_results() -> str:
                 lines.append(f"- **Fatal Flaw:** {signal['dd_fatal_flaw']}")
             lines.append("")
 
-    return "\n".join(lines) if lines else "[DD not yet run]"
+    return "\n".join(lines) if lines else "[DD not yet run]", pass_count
 
 
 def load_portfolio_status() -> str:
-    """Load portfolio status from portfolio.csv."""
+    """Load WIN HIGHLIGHTS only (no portfolio display per marketing overhaul).
+
+    Per marketing safeguards:
+    - NEVER show losing positions publicly
+    - Only show closed trades with gains above 15%
+    - Focus on wins, not current portfolio status
+    """
     portfolio_file = TRADES_DIR / "portfolio.csv"
     if not portfolio_file.exists():
         return ""
 
     import csv
-    lines = ["### Open Positions", ""]
-    lines.append("| Ticker | Entry | Theme | Status |")
-    lines.append("|--------|-------|-------|--------|")
+
+    # Import threshold from config
+    try:
+        from config import MARKETING_THRESHOLDS
+        min_win = MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
+    except ImportError:
+        min_win = 15.0
+
+    # Find closed trades with positive P&L above threshold
+    winners = []
 
     with open(portfolio_file, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            if row.get('status') == 'OPEN':
-                lines.append(f"| {row['ticker']} | ${row['entry_price']} | {row.get('theme', 'N/A')} | {row['status']} |")
+            if row.get('status') in ['CLOSED', 'STOPPED']:
+                try:
+                    entry = float(row.get('entry_price') or 0)
+                    exit_price = float(row.get('exit_price') or 0)
+                    if entry > 0 and exit_price > 0:
+                        pnl_pct = ((exit_price / entry) - 1) * 100
+                        if pnl_pct >= min_win:
+                            winners.append({
+                                'ticker': row['ticker'],
+                                'pnl_pct': pnl_pct,
+                                'theme': row.get('theme', 'N/A'),
+                                'exit_date': row.get('exit_date', '')
+                            })
+                except (ValueError, TypeError):
+                    pass
+
+    if not winners:
+        return ""  # No win highlights to show
+
+    # Sort by P&L descending and take top 5
+    winners = sorted(winners, key=lambda x: x['pnl_pct'], reverse=True)[:5]
+
+    lines = ["### Win Highlights", ""]
+    lines.append("Recent closed trades above 15% gain:")
+    lines.append("")
+    lines.append("| Ticker | Return | Theme |")
+    lines.append("|--------|--------|-------|")
+
+    for w in winners:
+        lines.append(f"| ${w['ticker']} | +{w['pnl_pct']:.1f}% | {w['theme']} |")
+
+    lines.append("")
+    lines.append("*Our 5-gate system identifies momentum opportunities.*")
 
     return "\n".join(lines)
 
@@ -736,9 +820,11 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
 
         # Step 3: Load DD results
         print("\n  Step 3: Due Diligence Results")
-        dd_results = load_dd_results()
-        if dd_results and dd_results != "[DD not yet run]":
-            print("    ✅ Loaded from signals.json")
+        dd_results, pass_count = load_dd_results()
+        if pass_count == 0:
+            print("    ℹ️ No PASS signals this week - generating themes-only newsletter")
+        elif dd_results and dd_results != "[DD not yet run]":
+            print(f"    ✅ Loaded from signals.json ({pass_count} PASS signals)")
         else:
             print("    ⚠️ No DD results - run scanner with --web-search")
 

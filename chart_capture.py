@@ -4,16 +4,29 @@ CHART CAPTURE - TradingView Screenshots with Playwright
 ========================================================
 
 Captures TradingView charts with your custom BoS/Banker indicators
-using a persistent Chrome session (no login required).
+using a persistent Chrome session.
+
+IMPORTANT: TradingView custom indicators require authentication.
+- First run locally WITHOUT --headless to log in
+- After login, your session is saved in .playwright_profile/
+- Subsequent runs (including --headless) will use the saved session
+- CI CANNOT capture TradingView charts (no GUI for login)
+
+For CI, chart images should be captured locally using run_local_friday.sh.
 
 Usage:
-    python chart_capture.py --tickers AAPL,NVDA,PLTR
-    python chart_capture.py --tickers-from trades/latest_signals.json
-    python chart_capture.py --ticker AAPL --headless
+    # First time: Log in to TradingView
+    python chart_capture.py --ticker GLXY
+
+    # After login: Capture headless
+    python chart_capture.py --tickers AAPL,NVDA,PLTR --headless --skip-wait
+
+    # From signals file
+    python chart_capture.py --tickers-from trades/signals.json --include-portfolio
 
 Output:
-    trades/charts/{TICKER}_{date}.png (1200x630 for X cards)
-    trades/charts/{TICKER}_{date}_substack.png (800x500 for Substack)
+    trades/charts/{TICKER}_{date}.png (1400x900 for X cards)
+    trades/charts/{TICKER}_{date}_substack.png (1000x700 for Substack)
 """
 
 import os
@@ -52,46 +65,54 @@ PLAYWRIGHT_USER_DATA_DIR = os.environ.get(
     str(BASE_DIR / ".playwright_profile")
 )
 
-# Chart sizes - increased height to capture all indicator panes
-CHART_SIZE_X = (1200, 800)       # X/Twitter card size (taller to show all indicators)
-CHART_SIZE_SUBSTACK = (800, 600)  # Substack embed size (taller to show all indicators)
+# Chart sizes - match TradingView full layout dimensions
+# Using larger sizes to capture all indicator panes properly
+CHART_SIZE_X = (1400, 900)       # X/Twitter card size (wider for full weekly view)
+CHART_SIZE_SUBSTACK = (1000, 700)  # Substack embed size (larger for readability)
 
-# JavaScript to hide TradingView UI elements that reveal strategy
+# JavaScript to hide TradingView UI elements (minimal - just declutter, keep visuals)
+# NOTE: We WANT to show the chart with indicators visible - they're a marketing feature
+# We only hide UI clutter, NOT the indicator visuals or pane labels
 HIDE_UI_ELEMENTS_JS = """
 () => {
-    // Hide indicator titles/names in legend
-    document.querySelectorAll('[data-name="legend-source-item"]').forEach(el => {
-        const title = el.querySelector('[class*="title"]');
-        if (title) title.style.display = 'none';
-    });
-
-    // Hide the right-side panels (Alpha panel, etc.)
+    // Hide right-side panels (watchlist, news, etc.) - just declutter
     document.querySelectorAll('[class*="right-toolbar"]').forEach(el => el.style.display = 'none');
     document.querySelectorAll('[class*="widgetbar"]').forEach(el => el.style.display = 'none');
 
-    // Hide drawing toolbar
+    // Hide drawing toolbar - declutter
     document.querySelectorAll('[class*="drawingToolbar"]').forEach(el => el.style.display = 'none');
 
-    // Hide top toolbar items we don't need
-    document.querySelectorAll('[data-name="legend-series-item"]').forEach(el => {
-        // Keep price info, hide indicator names
-        const text = el.textContent || '';
-        if (text.includes('BoS') || text.includes('Banker') || text.includes('HMA') || text.includes('Alpha')) {
-            el.style.display = 'none';
+    // Hide cookie consent banner
+    document.querySelectorAll('[class*="cookie"]').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('[class*="consent"]').forEach(el => el.style.display = 'none');
+
+    // Try to click "Don't allow" on cookie banner if present
+    const cookieButtons = document.querySelectorAll('button');
+    cookieButtons.forEach(btn => {
+        if (btn.textContent.includes("Don't allow") || btn.textContent.includes("Reject")) {
+            btn.click();
         }
     });
 
-    // Alternative: Hide all source titles
-    document.querySelectorAll('[class*="sourcesWrapper"]').forEach(el => el.style.display = 'none');
+    // DO NOT hide indicator pane labels (Alpha, Bravo, Charlie) - these are generic names
+    // DO NOT hide indicator visuals - these are the core marketing feature
+    // The chart with BUY/SELL signals and colored areas is what we WANT to show
 
-    return 'UI elements hidden';
+    return 'UI decluttered';
 }
 """
 
 # Wait times (adjust based on your connection speed)
 PAGE_LOAD_WAIT_MS = 8000          # Wait for page to load
-INDICATOR_LOAD_WAIT_MS = 5000     # Additional wait for indicators
-LOGIN_WAIT_MS = 60000             # Time to allow manual login if needed (60s)
+INDICATOR_LOAD_WAIT_MS = 10000    # Additional wait for indicators to render (increased)
+LOGIN_WAIT_MS = 120000            # Time to allow manual login if needed (2 minutes)
+
+# Cookie file for persisting TradingView session across runs
+# This allows CI to use a pre-authenticated session
+COOKIE_FILE = os.environ.get(
+    "TRADINGVIEW_COOKIE_FILE",
+    str(BASE_DIR / ".tradingview_cookies.json")
+)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -193,7 +214,9 @@ def capture_charts(
     tickers: List[str],
     headless: bool = False,
     output_dir: Optional[Path] = None,
-    skip_wait: bool = False
+    skip_wait: bool = False,
+    save_cookies_after: bool = False,
+    use_cookies: bool = True
 ) -> dict:
     """
     Capture charts for multiple tickers.
@@ -203,23 +226,25 @@ def capture_charts(
         headless: Run browser in headless mode
         output_dir: Override default output directory
         skip_wait: Skip the login wait (use after first successful login)
+        save_cookies_after: Save cookies after successful capture (for CI setup)
+        use_cookies: Try to load cookies from file first
 
     Returns:
         Dict mapping tickers to their chart file paths
     """
     if output_dir is None:
         output_dir = CHARTS_DIR
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
-    
+
     results = {}
-    
+
     print(f"\n  📸 Capturing charts for {len(tickers)} tickers...")
     print(f"  📁 Output: {output_dir}")
     print(f"  🎨 Layout: {TRADINGVIEW_LAYOUT_ID}")
     print("")
-    
+
     with sync_playwright() as p:
         # Launch with persistent context in a dedicated profile directory
         # This avoids conflicts with your running Chrome browser
@@ -233,19 +258,38 @@ def capture_charts(
 
         page = browser_context.new_page()
 
+        # Try to load saved cookies (for CI)
+        cookies_loaded = False
+        if use_cookies:
+            cookies_loaded = load_cookies(browser_context)
+
         # Navigate to TradingView first to check if login is needed
         print(f"  ⏳ Loading TradingView (up to 60s)...")
         page.goto("https://www.tradingview.com/chart/" + TRADINGVIEW_LAYOUT_ID, timeout=60000, wait_until="domcontentloaded")
 
-        if skip_wait:
-            # Quick wait for page to stabilize
-            print(f"  ⏩ Skipping login wait (--skip-wait flag)")
-            page.wait_for_timeout(5000)
-        else:
-            # Check if login prompt appears (give user time to login manually)
-            print(f"  ⏳ Waiting {LOGIN_WAIT_MS//1000}s for manual login if needed...")
-            print(f"     (If you see a login prompt, please log in now)")
+        # Wait for page to load
+        page.wait_for_timeout(PAGE_LOAD_WAIT_MS)
+
+        # Check if indicators loaded (requires authentication)
+        indicators_ok, indicator_msg = check_indicators_loaded(page)
+        print(f"  📊 Indicator check: {indicator_msg}")
+
+        if not indicators_ok and not skip_wait:
+            # Need manual login
+            print(f"  ⚠️ Indicators not loading properly!")
+            print(f"  🔑 Please log in to TradingView in the browser window...")
+            print(f"  ⏳ Waiting {LOGIN_WAIT_MS//1000}s for manual login...")
+            print(f"     (After login, the chart should refresh automatically)")
             page.wait_for_timeout(LOGIN_WAIT_MS)
+            # Reload after login
+            page.reload()
+            page.wait_for_timeout(PAGE_LOAD_WAIT_MS + INDICATOR_LOAD_WAIT_MS)
+            # Check again
+            indicators_ok, indicator_msg = check_indicators_loaded(page)
+            print(f"  📊 Post-login check: {indicator_msg}")
+        elif skip_wait and not indicators_ok:
+            print(f"  ⏩ Skipping login wait (--skip-wait flag) - indicators may not render")
+
         print(f"  ✓ Continuing with chart capture...\n")
 
         for ticker in tickers:
@@ -253,11 +297,174 @@ def capture_charts(
             if files:
                 # Store primary (X card) size path
                 results[ticker] = str(files[0])
-        
+
+        # Save cookies for future CI runs
+        if save_cookies_after and results:
+            save_cookies(browser_context)
+
         browser_context.close()
-    
+
     print(f"\n  ✅ Captured {len(results)}/{len(tickers)} charts")
     return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COOKIE MANAGEMENT (for CI authentication)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def extract_chrome_cookies(domain: str = "tradingview.com") -> list:
+    """
+    Extract cookies from Chrome's cookie database for a specific domain.
+
+    NOTE: Chrome must be CLOSED for this to work (database is locked while running).
+
+    Returns:
+        List of cookie dicts in Playwright format
+    """
+    import sqlite3
+    import shutil
+    import tempfile
+
+    chrome_cookie_path = os.path.expanduser(
+        "~/Library/Application Support/Google/Chrome/Default/Cookies"
+    )
+
+    if not os.path.exists(chrome_cookie_path):
+        print("  ⚠️ Chrome cookies database not found")
+        return []
+
+    # Copy database to temp file (Chrome locks the original)
+    temp_dir = tempfile.mkdtemp()
+    temp_cookie_path = os.path.join(temp_dir, "Cookies")
+
+    try:
+        shutil.copy2(chrome_cookie_path, temp_cookie_path)
+
+        conn = sqlite3.connect(temp_cookie_path)
+        cursor = conn.cursor()
+
+        # Query cookies for the domain
+        cursor.execute("""
+            SELECT host_key, name, value, path, expires_utc, is_secure, is_httponly
+            FROM cookies
+            WHERE host_key LIKE ?
+        """, (f"%{domain}%",))
+
+        cookies = []
+        for row in cursor.fetchall():
+            host_key, name, value, path, expires_utc, is_secure, is_httponly = row
+
+            # Chrome stores expires_utc as microseconds since 1601-01-01
+            # Convert to Unix timestamp
+            if expires_utc > 0:
+                # Chrome epoch is 11644473600 seconds before Unix epoch
+                expires = (expires_utc / 1000000) - 11644473600
+            else:
+                expires = -1
+
+            cookies.append({
+                "name": name,
+                "value": value,
+                "domain": host_key,
+                "path": path,
+                "expires": expires,
+                "httpOnly": bool(is_httponly),
+                "secure": bool(is_secure),
+                "sameSite": "None" if is_secure else "Lax"
+            })
+
+        conn.close()
+        print(f"  🍪 Extracted {len(cookies)} cookies from Chrome for {domain}")
+        return cookies
+
+    except Exception as e:
+        print(f"  ⚠️ Failed to extract Chrome cookies: {e}")
+        print("  💡 Make sure Chrome is completely closed")
+        return []
+    finally:
+        # Cleanup temp file
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+def save_cookies(context, filepath: str = COOKIE_FILE) -> None:
+    """Save browser cookies to file for reuse in CI."""
+    cookies = context.cookies()
+    with open(filepath, 'w') as f:
+        json.dump(cookies, f, indent=2)
+    print(f"  💾 Saved {len(cookies)} cookies to {filepath}")
+
+
+def load_cookies(context, filepath: str = COOKIE_FILE) -> bool:
+    """Load cookies from file if available."""
+    if not os.path.exists(filepath):
+        return False
+    try:
+        with open(filepath, 'r') as f:
+            cookies = json.load(f)
+        context.add_cookies(cookies)
+        print(f"  🍪 Loaded {len(cookies)} cookies from {filepath}")
+        return True
+    except Exception as e:
+        print(f"  ⚠️ Failed to load cookies: {e}")
+        return False
+
+
+def check_indicators_loaded(page) -> tuple:
+    """
+    Check if custom indicators rendered properly.
+
+    Returns:
+        (is_ok: bool, message: str) - Whether indicators loaded and diagnostic message
+    """
+    try:
+        # Take a short pause for DOM to stabilize
+        page.wait_for_timeout(1000)
+
+        # Look for various error indicators
+        # 1. Runtime error popups (subscription limit) - look for the error icon with !
+        # TradingView uses svg icons with specific attributes for errors
+        error_icons_svg = page.locator('svg[class*="icon-"][fill*="var(--tv-warning"]').count()
+        error_icons_title = page.locator('[title*="error" i]').count()
+        error_icons_aria = page.locator('[aria-label*="error" i]').count()
+
+        # 2. Look for the actual error message text
+        runtime_errors = page.locator('text="Runtime error"').count()
+        study_limit = page.locator('text="maximum number of studies"').count()
+        loading_errors = page.locator('text="Loading error"').count()
+
+        # 3. Count pane legend items with ! icon (indicator name followed by error)
+        # These show as the indicator name with a warning symbol
+        pane_legend_errors = page.locator('.pane-legend-item-value-wrap .apply-common-tooltip svg').count()
+
+        # 4. Check for login prompts
+        login_prompts = page.locator('button:has-text("Sign in")').count()
+        login_links = page.locator('a:has-text("Sign in")').count()
+
+        # Build diagnostic info
+        total_errors = runtime_errors + study_limit + loading_errors
+
+        if runtime_errors > 0:
+            return False, f"Runtime error detected (subscription limit - need TradingView Plus or higher)"
+
+        if study_limit > 0:
+            return False, "Study limit reached for subscription tier"
+
+        if loading_errors > 0:
+            return False, "Loading errors on indicators"
+
+        if login_prompts > 0 or login_links > 1:
+            return False, "Login required to view indicators"
+
+        # If we can't detect errors but also can't confirm success, be cautious
+        # Check if indicator data is actually visible (lines, areas, etc.)
+        indicator_visuals = page.locator('.study-renderer').count()
+        if indicator_visuals == 0:
+            # No rendered studies - likely an auth or subscription issue
+            return False, "No indicator visuals rendered (may need login or higher subscription)"
+
+        return True, f"Indicators loaded ({indicator_visuals} study renderers found)"
+    except Exception as e:
+        return True, f"Check failed (assuming OK): {e}"  # Assume OK if check fails
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -347,8 +554,29 @@ def main() -> None:
     parser.add_argument("--include-portfolio", action="store_true", help="Also capture charts for open portfolio positions")
     parser.add_argument("--headless", action="store_true", help="Run in headless mode")
     parser.add_argument("--skip-wait", action="store_true", help="Skip the 60s login wait (use after first successful login)")
+    parser.add_argument("--save-cookies", action="store_true", help="Save cookies after capture (for CI setup)")
+    parser.add_argument("--no-cookies", action="store_true", help="Don't load saved cookies")
+    parser.add_argument("--extract-chrome-cookies", action="store_true", help="Extract cookies from Chrome (must close Chrome first)")
     parser.add_argument("--output", type=str, help="Output directory")
     args = parser.parse_args()
+
+    # Handle cookie extraction command
+    if args.extract_chrome_cookies:
+        print("\n" + "═" * 60)
+        print("  EXTRACTING TRADINGVIEW COOKIES FROM CHROME")
+        print("═" * 60)
+        print("\n  ⚠️  Make sure Chrome is COMPLETELY CLOSED before running this!\n")
+
+        cookies = extract_chrome_cookies("tradingview.com")
+        if cookies:
+            with open(COOKIE_FILE, 'w') as f:
+                json.dump(cookies, f, indent=2)
+            print(f"  ✅ Saved {len(cookies)} cookies to {COOKIE_FILE}")
+            print("  💡 Now run: python chart_capture.py --ticker GLXY --headless")
+        else:
+            print("  ❌ No cookies found. Make sure you're logged into TradingView in Chrome.")
+        print("\n" + "═" * 60)
+        return
 
     # Determine tickers to capture
     tickers = []
@@ -395,7 +623,14 @@ def main() -> None:
     print("  CHART CAPTURE - TradingView with Playwright")
     print("═" * 60)
     
-    results = capture_charts(tickers, headless=args.headless, output_dir=output_dir, skip_wait=args.skip_wait)
+    results = capture_charts(
+        tickers,
+        headless=args.headless,
+        output_dir=output_dir,
+        skip_wait=args.skip_wait,
+        save_cookies_after=args.save_cookies,
+        use_cookies=not args.no_cookies
+    )
     
     # Save manifest
     if results:

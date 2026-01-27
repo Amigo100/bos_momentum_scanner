@@ -23,6 +23,8 @@ import sys
 import json
 import argparse
 import time
+import tempfile
+import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, List
@@ -58,6 +60,105 @@ SLOT_TIMES = {
     4: "15:30",  # Power Hour (CRITICAL)
     5: "18:00",  # After-hours
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEDUPLICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def is_duplicate_content(tweet_text: str, queue: List[Dict]) -> bool:
+    """
+    Check if this exact tweet text was already posted.
+
+    Prevents posting duplicate tweets if the generator runs multiple times.
+
+    Args:
+        tweet_text: The text of the tweet to check
+        queue: The content queue list
+
+    Returns:
+        True if a tweet with this exact text was already posted
+    """
+    normalized_text = tweet_text.strip()
+    for item in queue:
+        if item.get('status') == 'posted':
+            posted_text = item.get('text', '').strip()
+            if posted_text == normalized_text:
+                return True
+    return False
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MASTER_TODO_v2: PRE-POST VALIDATION - LAST LINE OF DEFENSE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def validate_before_posting(tweet: Dict) -> tuple:
+    """
+    MASTER_TODO_v2: Final validation before posting to Twitter.
+
+    This is the LAST LINE OF DEFENSE against posting invalid content.
+    It runs right before the tweet is sent to the API.
+
+    Args:
+        tweet: Tweet dict with 'text' key
+
+    Returns:
+        Tuple of (can_post: bool, reason: str)
+    """
+    import re
+
+    text = tweet.get('text', '')
+    category = tweet.get('category', '')
+
+    # BANNED_TERMS to check (critical subset for speed)
+    # MASTER_TODO_v2 compliant
+    CRITICAL_BANNED = [
+        # Strategy internals
+        'HMA', '20% stop', 'Banker >=', 'Beta >=', 'BoS',
+        # Wrong audience (UK ISA, not US Roth)
+        'Roth IRA', 'Roth', 'PDT', '401k',
+        # Internal terms that leaked (MASTER_TODO_v2)
+        'Capital Preservation Protocol', 'Forensic Audit',
+        'Volatility Expansion Criteria', '5th Gate', 'Gate 5',
+        # Non-branded signal terms (use TEAL signal)
+        'proprietary entry', 'proprietary signal',
+    ]
+
+    # KILLED categories
+    KILLED_CATEGORIES = ['roth_ira', 'pdt_friendly', 'position_update', 'weekly_wins']
+
+    # 1. Check for negative P&L (losers)
+    negative_pnl = re.findall(r'-\d+\.?\d*%', text)
+    if negative_pnl:
+        return (False, f"BLOCKED: Negative P&L in tweet: {negative_pnl}")
+
+    # 2. Check for critical banned terms
+    text_lower = text.lower()
+    for term in CRITICAL_BANNED:
+        if term.lower() in text_lower:
+            return (False, f"BLOCKED: Banned term '{term}' in tweet")
+
+    # 3. Check for killed categories
+    if category in KILLED_CATEGORIES:
+        return (False, f"BLOCKED: Killed category '{category}'")
+
+    # 4. Check for US-specific content (wrong audience)
+    us_patterns = [
+        r'\broth\s*ira\b',
+        r'\b401\s*\(?k\)?\b',
+        r'\bpdt\s*(rule)?\b',
+        r'pattern\s+day\s+trad',
+    ]
+    for pattern in us_patterns:
+        if re.search(pattern, text_lower):
+            return (False, f"BLOCKED: US-specific content ({pattern})")
+
+    # 5. Check tweet length
+    char_count = sum(2 if ord(c) > 0xFFFF else 1 for c in text)
+    if char_count > 280:
+        return (False, f"BLOCKED: Tweet too long ({char_count} chars)")
+
+    return (True, "Validation passed")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -106,19 +207,50 @@ def get_clients() -> tuple:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def load_queue(queue_file: Path) -> list[Dict]:
-    """Load content queue from JSON file."""
+    """Load content queue from JSON file.
+
+    Exits with error if file is missing or corrupted (JSON parse error).
+    """
     if not queue_file.exists():
         print(f"ERROR: Queue file not found: {queue_file}")
         sys.exit(1)
-    
-    with open(queue_file, 'r') as f:
-        return json.load(f)
+
+    try:
+        with open(queue_file, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Could not parse queue file: {e}")
+        print(f"       The content_queue.json may be corrupted.")
+        print(f"       File: {queue_file}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERROR: Failed to load queue file: {e}")
+        sys.exit(1)
 
 
 def save_queue(queue: list[Dict], queue_file: Path) -> None:
-    """Save updated queue back to JSON file."""
-    with open(queue_file, 'w') as f:
-        json.dump(queue, f, indent=2)
+    """Save updated queue back to JSON file (atomic write).
+
+    Uses write-to-temp-then-rename pattern to prevent corruption
+    if the process is interrupted mid-write.
+    """
+    # Write to temp file in same directory, then rename (atomic on POSIX)
+    temp_fd, temp_path = tempfile.mkstemp(
+        suffix='.json',
+        dir=queue_file.parent,
+        prefix='.queue_tmp_'
+    )
+    try:
+        with os.fdopen(temp_fd, 'w') as f:
+            json.dump(queue, f, indent=2)
+        # Atomic rename (on POSIX systems)
+        shutil.move(temp_path, queue_file)
+    except Exception as e:
+        # Clean up temp file if something went wrong
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        print(f"ERROR: Failed to save queue: {e}")
+        raise
 
 
 def get_current_slot() -> int:
@@ -229,11 +361,20 @@ def upload_media(api_v1, image_path: str) -> Optional[str]:
 
 def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
     """Post a single tweet with optional media."""
-    
+
     text = tweet.get("text", "")
     image_path = tweet.get("image_path")
     tweet_id = tweet.get("id", "unknown")
-    
+
+    # MASTER_TODO_v2: Pre-post validation - LAST LINE OF DEFENSE
+    can_post, reason = validate_before_posting(tweet)
+    if not can_post:
+        print(f"\n  🚨 {reason}")
+        print(f"  ⛔ Tweet {tweet_id} BLOCKED from posting")
+        tweet['status'] = 'blocked'
+        tweet['block_reason'] = reason
+        return False
+
     print(f"\n  📝 Tweet: {tweet_id}")
     print(f"  📅 Scheduled: {tweet.get('scheduled_date')} slot {tweet.get('slot')}")
     print(f"  📊 Category: {tweet.get('category')}")
@@ -244,7 +385,7 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
     for line in text.split('\n'):
         print(f"  │ {line}")
     print(f"  └{'─' * 50}")
-    
+
     if dry_run:
         print(f"\n  🔸 DRY RUN - would post this tweet")
         if image_path:
@@ -268,12 +409,26 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
         posted_tweet_id = response.data['id']
         print(f"\n  ✅ Posted! Tweet ID: {posted_tweet_id}")
         print(f"  🔗 https://x.com/i/status/{posted_tweet_id}")
-        
+
         # Update tweet record
         tweet['status'] = 'posted'
         tweet['posted_at'] = datetime.now().isoformat()
         tweet['tweet_id'] = posted_tweet_id
-        
+
+        # Register signal tweets for future quoting (milestone celebrations)
+        category = tweet.get('category', '')
+        if category in ['teal_signal', 'buy_signal', 'thread_buy_signal'] and tweet.get('ticker'):
+            try:
+                from self_quote_tracker import register_signal_tweet
+                register_signal_tweet(
+                    ticker=tweet['ticker'],
+                    tweet_id=posted_tweet_id,
+                    entry_price=float(tweet.get('entry_price', 0) or 0),
+                    signal_date=datetime.now().strftime('%Y-%m-%d')
+                )
+            except Exception as e:
+                print(f"  ⚠️ Could not register for quote tracking: {e}")
+
         return True
         
     except tweepy.TweepyException as e:
@@ -281,6 +436,64 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
         tweet['status'] = 'failed'
         tweet['error'] = str(e)
         return False
+
+
+def post_quote_tweet(
+    client_v2,
+    api_v1,
+    text: str,
+    quote_tweet_id: str,
+    dry_run: bool = False
+) -> Optional[str]:
+    """
+    Post a quote tweet referencing an original signal tweet.
+
+    Used for milestone celebrations (25%, 50%, 100% gains) to
+    quote the original TEAL signal announcement.
+
+    Args:
+        client_v2: Tweepy v2 client for posting
+        api_v1: Tweepy v1.1 API (for future media support)
+        text: Tweet text to post
+        quote_tweet_id: Twitter ID of the original tweet to quote
+        dry_run: If True, print without posting
+
+    Returns:
+        New tweet ID if successful, None if failed
+    """
+    # Validate content before posting
+    temp_tweet = {"text": text, "category": "hall_of_fame"}
+    can_post, reason = validate_before_posting(temp_tweet)
+    if not can_post:
+        print(f"  🚨 Cannot post quote: {reason}")
+        return None
+
+    print(f"\n  📝 Quote Tweet")
+    print(f"  🔗 Quoting: {quote_tweet_id}")
+    print(f"\n  Text ({len(text)} chars):")
+    print(f"  ┌{'─' * 50}")
+    for line in text.split('\n'):
+        print(f"  │ {line}")
+    print(f"  └{'─' * 50}")
+
+    if dry_run:
+        print(f"  🔸 DRY RUN - Would quote tweet {quote_tweet_id}")
+        print(f"  🔸 Text: {text[:100]}...")
+        return "dry_run_id"
+
+    try:
+        response = client_v2.create_tweet(
+            text=text,
+            quote_tweet_id=quote_tweet_id
+        )
+        new_tweet_id = response.data['id']
+        print(f"\n  ✅ Posted quote tweet: {new_tweet_id}")
+        print(f"  🔗 https://x.com/i/status/{new_tweet_id}")
+        return new_tweet_id
+
+    except Exception as e:
+        print(f"  ✗ Failed to post quote: {e}")
+        return None
 
 
 def post_thread(client_v2, api_v1, thread_item: Dict, dry_run: bool = False) -> bool:
@@ -428,6 +641,18 @@ def main() -> int:
         client_v2, api_v1 = None, None
     else:
         client_v2, api_v1 = get_clients()
+
+    # Check for duplicate content before posting
+    tweet_text = content_item.get('text', '')
+    if is_duplicate_content(tweet_text, queue):
+        print(f"\n  ⚠️  DUPLICATE DETECTED - This exact tweet was already posted")
+        print(f"     Skipping to prevent duplicate content on X")
+        # Mark as skipped so it doesn't get picked up again
+        content_item['status'] = 'skipped'
+        content_item['skip_reason'] = 'duplicate_content'
+        if not args.dry_run:
+            save_queue(queue, queue_file)
+        return 0
 
     # Dispatch based on content type (thread vs single tweet)
     if content_item.get('is_thread', False):

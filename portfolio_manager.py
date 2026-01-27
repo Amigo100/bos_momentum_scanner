@@ -75,6 +75,54 @@ TRAILING_STOP_PCT = 20.0  # 20% trailing stop
 STOP_WARNING_PCT = 5.0    # Warn when within 5% of stop
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# TICKER VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def is_ticker_valid(ticker: str) -> bool:
+    """
+    Check if a ticker is still valid/actively trading.
+
+    Used to detect delisted stocks in the portfolio.
+
+    Args:
+        ticker: Stock symbol to check
+
+    Returns:
+        True if ticker appears valid, False if likely delisted/invalid
+    """
+    try:
+        info = yf.Ticker(ticker).info
+        # Check for indicators of a valid, trading stock
+        # marketCap > 0 indicates the stock is trading
+        # regularMarketPrice indicates current trading activity
+        has_market_cap = info.get('marketCap', 0) > 0
+        has_price = info.get('regularMarketPrice') is not None
+        has_exchange = info.get('exchange') is not None
+
+        return has_market_cap or has_price or has_exchange
+    except Exception:
+        return False
+
+
+def check_portfolio_for_invalid_tickers(tickers: List[str]) -> List[str]:
+    """
+    Check a list of tickers for any that appear delisted/invalid.
+
+    Args:
+        tickers: List of ticker symbols to check
+
+    Returns:
+        List of invalid/delisted tickers
+    """
+    invalid = []
+    for ticker in tickers:
+        if not is_ticker_valid(ticker):
+            invalid.append(ticker)
+            print(f"    ⚠ Ticker {ticker} appears delisted or invalid")
+    return invalid
+
+
 class TradeStatus(Enum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"      # Manual exit (profit taking, strategic)
@@ -327,23 +375,36 @@ class PortfolioManager:
     # PRICE UPDATES
     # ───────────────────────────────────────────────────────────────────────────
     
-    def update_prices(self, stocks_dict: Optional[Dict] = None) -> List[Trade]:
+    def update_prices(self, stocks_dict: Optional[Dict] = None, check_delisted: bool = False) -> List[Trade]:
         """
         Update current prices for all open positions.
-        
+
         Args:
             stocks_dict: Optional dict of {symbol: Stock} from scanner
                         If not provided, fetches prices via yfinance
-        
+            check_delisted: If True, validate tickers aren't delisted (slower)
+
         Returns:
             List of trades with stop alerts
         """
         open_trades = self.get_open_positions()
         if not open_trades:
             return []
-        
+
         alerts = []
-        
+
+        # Optional: Check for delisted tickers (adds API calls, use sparingly)
+        if check_delisted:
+            symbols = [t.ticker for t in open_trades]
+            invalid = check_portfolio_for_invalid_tickers(symbols)
+            if invalid:
+                print(f"  ⚠️ DELISTED TICKERS DETECTED: {', '.join(invalid)}")
+                print(f"     Consider removing these from portfolio.csv")
+                # Add notes to invalid trades
+                for trade in open_trades:
+                    if trade.ticker in invalid:
+                        trade.notes = f"[DELISTED?] {trade.notes}".strip()
+
         if stocks_dict:
             # Use prices from scanner
             for trade in open_trades:
@@ -476,13 +537,20 @@ class PortfolioManager:
         if not closed:
             return 0.0, 0
         
-        # Filter by date
+        # Filter by date (with error handling for malformed dates)
+        def parse_exit_date(trade):
+            """Safely parse exit date, returns None if malformed."""
+            try:
+                return datetime.strptime(trade.exit_date, "%Y-%m-%d")
+            except (ValueError, AttributeError):
+                return None
+
         if ytd:
             year_start = datetime(datetime.now().year, 1, 1)
-            relevant = [t for t in closed if datetime.strptime(t.exit_date, "%Y-%m-%d") >= year_start]
+            relevant = [t for t in closed if (dt := parse_exit_date(t)) and dt >= year_start]
         elif days:
             cutoff = datetime.now() - timedelta(days=days)
-            relevant = [t for t in closed if datetime.strptime(t.exit_date, "%Y-%m-%d") >= cutoff]
+            relevant = [t for t in closed if (dt := parse_exit_date(t)) and dt >= cutoff]
         else:
             relevant = closed
         

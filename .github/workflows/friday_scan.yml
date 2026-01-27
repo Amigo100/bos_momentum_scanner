@@ -66,12 +66,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Playwright for chart capture
-        if: ${{ github.event.inputs.skip_charts != 'true' }}
-        run: |
-          pip install playwright
-          playwright install chromium
-        continue-on-error: true
+      # Note: Playwright not needed in CI - using mplfinance charts instead
+      # TradingView charts require interactive login (use chart_capture.py locally)
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 1: RUN SCANNER (Technical → Thematic → Gatekeeper → DD)
@@ -116,30 +112,15 @@ jobs:
           echo "scanner_complete=true" >> $GITHUB_OUTPUT
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 2: CAPTURE CHARTS (Optional - may not work in CI)
+      # STEP 2: CHARTS - Captured locally after workflow (TradingView with indicators)
       # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Capture Charts
-        if: ${{ github.event.inputs.skip_charts != 'true' }}
-        run: |
-          if [ -f "chart_capture.py" ]; then
-            if [ -f "trades/signals.json" ]; then
-              echo "Capturing charts from signals.json..."
-              python chart_capture.py --tickers-from trades/signals.json --headless --skip-wait || {
-                echo "Chart capture failed (expected in CI without TradingView login)"
-              }
-            elif [ -f "trades/latest_signals.json" ]; then
-              echo "Capturing charts from latest_signals.json..."
-              python chart_capture.py --tickers-from trades/latest_signals.json --headless --skip-wait || {
-                echo "Chart capture failed (expected in CI without TradingView login)"
-              }
-            else
-              echo "No signals.json found, skipping chart capture"
-            fi
-          else
-            echo "chart_capture.py not found, skipping"
-          fi
-        continue-on-error: true
+      #
+      # TradingView charts require your Pro account login, so they're captured
+      # locally AFTER this workflow completes. Run: ./run_local_friday.sh
+      #
+      # The tweet generator creates content_queue.json with image_path fields
+      # pointing to where charts will be saved. Charts are auto-attached when
+      # twitter_poster.py runs.
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 3: GENERATE MARKET ANALYSIS (Claude + Web Search)
@@ -172,6 +153,21 @@ jobs:
             }
           else
             echo "newsletter_compiler.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 4.5: GENERATE SUBSTACK CONTENT (Mon/Thu/Sat/Sun posts)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Substack Content
+        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        run: |
+          if [ -f "substack_content_generator.py" ]; then
+            echo "Generating Substack posts (Monday/Thursday/Saturday/Sunday)..."
+            python substack_content_generator.py --all || echo "Substack content generation failed (non-critical)"
+          else
+            echo "substack_content_generator.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -230,6 +226,14 @@ jobs:
           name: substack-notes-${{ github.run_id }}
           path: trades/current/substack_notes/
           retention-days: 7
+        continue-on-error: true
+
+      - name: Upload Substack posts
+        uses: actions/upload-artifact@v4
+        with:
+          name: substack-posts-${{ github.run_id }}
+          path: trades/substack_posts/
+          retention-days: 30
         continue-on-error: true
 
       - name: Upload content queue for daily posting
@@ -315,3 +319,35 @@ jobs:
           echo "| Daily | Auto-post tweets | Via daily_post.yml |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Completed:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 9: FAILURE NOTIFICATION (Email alert on critical failures)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Notify on Failure
+        if: failure()
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+        run: |
+          echo "⚠️ Friday Scan FAILED - sending notification..."
+
+          # Check if email_notifier.py exists and email vars are set
+          if [ -f "email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
+            python email_notifier.py \
+              --subject "⚠️ Friday Scan FAILED - $(date '+%Y-%m-%d')" \
+              --body "The Friday weekly scan workflow failed. Check GitHub Actions for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              || echo "Email notification failed"
+          else
+            echo "Email notification not configured - skipping"
+            echo "To enable: set EMAIL_PASSWORD, EMAIL_SENDER, EMAIL_RECIPIENTS secrets"
+          fi
+
+          # Always output to job summary for visibility
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ⚠️ WORKFLOW FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for error details." >> $GITHUB_STEP_SUMMARY
+          echo "Run ID: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY

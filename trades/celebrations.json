@@ -1,0 +1,11 @@
+{
+  "_comment": "Tracks which milestones have been celebrated to prevent duplicate posts",
+  "_format": "ticker: { threshold_pct: date_celebrated_or_null }",
+  "_thresholds": {
+    "25_pct": "Standard milestone (25%+)",
+    "50_pct": "Home run (50%+)",
+    "100_pct": "Hall of fame (100%+)"
+  },
+  "_created": "2026-01-27",
+  "_version": "1.0"
+}

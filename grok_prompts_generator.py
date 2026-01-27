@@ -677,11 +677,11 @@ def create_position_update_prompt(position: Dict, data: PortfolioData) -> GrokPr
     # Include snapshot P&L for context, but prompt asks for LIVE data
     pnl = position.get('pnl', '+0%')
 
+    # CRIT-12.4: Entry prices are PRIVATE - do not expose in public prompts
     prompt = f"""POSITION CONTEXT (may be outdated - look up current price):
 Ticker: ${ticker}
-Entry: ${entry_price:.2f} on {entry_date}
 Theme: {theme} | Tier: {tier}
-Days Held: ~{days_held}
+Held: ~{days_held} days (entry price private)
 Snapshot P&L: {pnl} (verify with current price)
 
 ---
@@ -689,8 +689,8 @@ Snapshot P&L: {pnl} (verify with current price)
 You are drafting an X post for {ACCOUNT_HANDLE}.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of ${ticker}
-2. Calculate the LIVE P&L: ((current_price / {entry_price:.2f}) - 1) * 100
+1. Look up the CURRENT price and recent performance of ${ticker}
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -700,7 +700,7 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: {SUBSTACK_URL}
 
-Example format: "${ticker} update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "${ticker} update: +XX.X% since entry ({days_held} days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 """
@@ -711,7 +711,8 @@ Transparent and timely. Real P&L builds trust.
         category="position_update",
         title=f"Position Update: {ticker}",
         prompt=prompt,
-        visual_suggestion=f"Position card showing {ticker}, Entry ${entry_price:.2f} → Current, live P&L%, chart thumbnail",
+        # CRIT-12.4: Removed entry price from visual suggestion
+        visual_suggestion=f"Position card showing {ticker}, live P&L%, {days_held} days held, chart thumbnail",
         ticker=ticker,
         theme=theme
     )
@@ -723,10 +724,10 @@ def create_sell_signal_prompt(signal: Dict, data: PortfolioData) -> GrokPrompt:
     price = signal.get('price', 0)
     reason = signal.get('reason', 'Technical deterioration')
     pnl = signal.get('pnl', '+0%')
-    entry_price = signal.get('entry_price', 0)
-    
+    # CRIT-12.4: entry_price is PRIVATE - do not expose in public prompts
+
     prompt = f"""CAUTION SIGNAL:
-{ticker}: Sell signal triggered | Current: ${price:.2f} | Entry: ${entry_price:.2f} | P&L: {pnl}
+{ticker}: Sell signal triggered | Current: ${price:.2f} | P&L: {pnl}
 Reason: {reason}
 
 ---
@@ -737,9 +738,9 @@ Using the signal above:
 1. Search for any recent news that might explain ${ticker}'s weakness
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the caution signal transparently
-   - Explains what triggered it (weekly BoS, trailing stop, etc.)
+   - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
    - Shows active risk management in action
-   - Frames this as discipline, not defeat ("This is why we use stops...")
+   - Frames this as discipline, not defeat ("This is why we use systematic exits...")
    - Ends with CTA: {SUBSTACK_URL}
 
 Risk management in action builds more credibility than only showing winners.

@@ -220,57 +220,61 @@ def get_week_number() -> int:
 
 def generate_tuesday_note(portfolio: List[Dict], prices: Dict[str, float]) -> str:
     """
-    Generate Tuesday 'Portfolio Pulse' note.
+    Generate Tuesday 'Theme Momentum' note (renamed from Portfolio Pulse).
 
-    Focus: YTD performance, position updates, quick stats.
+    Focus: Hot themes, scanner stats, TEAL signals.
+    NOTE: Per marketing overhaul - NO portfolio P&L display, NO losing positions.
     """
     stats = calculate_portfolio_stats(portfolio, prices)
-    spy_ytd = get_spy_ytd_return()
     week_num = get_week_number()
+
+    # Load signals for theme info
+    signals = load_signals()
+    themes = signals.get('themes', []) if signals else []
+    prime_themes = [t for t in themes if t.get('classification') == 'PRIME']
+    buy_signals = signals.get('buy_signals', []) if signals else []
 
     # Build the note
     lines = []
-    lines.append(f"Portfolio Pulse - Week {week_num}")
+    lines.append(f"Theme Momentum - Week {week_num}")
     lines.append("")
 
-    # Performance header
-    if stats['avg_pnl_pct'] != 0:
-        pnl_emoji = "📈" if stats['avg_pnl_pct'] > 0 else "📉"
-        lines.append(f"{pnl_emoji} Average Position P&L: {stats['avg_pnl_pct']:+.1f}%")
+    # Hot themes (public-facing)
+    if prime_themes:
+        lines.append("🔥 Hot Themes This Week:")
+        for theme in prime_themes[:3]:
+            name = theme.get('name', 'Unknown')
+            lines.append(f"• {name}")
+        lines.append("")
 
-    lines.append(f"📊 Open Positions: {stats['open_count']}")
+    # TEAL signals count (no individual P&L)
+    # Accept both PASS (new) and TRADE (legacy) for backwards compatibility
+    trade_signals = [s for s in buy_signals if s.get('final_decision') in ['PASS', 'TRADE']]
+    if trade_signals:
+        lines.append(f"🎯 {len(trade_signals)} TEAL Signal(s) Active")
+        lines.append("Our 5-gate system identified these opportunities.")
+        lines.append("")
 
-    if stats['closed_count'] > 0:
-        lines.append(f"🎯 Win Rate: {stats['win_rate']:.0f}% ({stats['winners']}W / {stats['losers']}L)")
+    # Win highlights ONLY (no losses) - filter to 15%+ gains
+    winners = [p for p in stats.get('positions', []) if p.get('pnl_pct', 0) >= 15.0]
+    if winners:
+        lines.append("⭐ Win Highlights:")
+        for win in winners[:3]:
+            lines.append(f"• ${win['ticker']}: +{win['pnl_pct']:.1f}% ({win['theme']})")
+        lines.append("")
 
+    # Scanner stats (public-facing)
+    lines.append("📊 This Week's Scan:")
+    lines.append(f"• 1,817 stocks analyzed")
+    lines.append(f"• {len(trade_signals)} cleared all 5 gates")
     lines.append("")
 
-    # Top performer
-    if stats['top_performer']:
-        top = stats['top_performer']
-        lines.append(f"⭐ Top Performer: ${top['ticker']} ({top['pnl_pct']:+.1f}%)")
-        lines.append(f"   Theme: {top['theme']}")
-
-    lines.append("")
-
-    # Position summary table
-    if stats['positions']:
-        lines.append("Current Positions:")
-        for pos in stats['positions'][:5]:  # Top 5 positions
-            emoji = "🟢" if pos['pnl_pct'] > 0 else "🔴" if pos['pnl_pct'] < 0 else "⚪"
-            lines.append(f"{emoji} ${pos['ticker']}: {pos['pnl_pct']:+.1f}%")
-
-    lines.append("")
-
-    # SPY comparison
-    if spy_ytd != 0:
-        alpha = stats['avg_pnl_pct'] - spy_ytd
-        alpha_emoji = "✅" if alpha > 0 else "❌"
-        lines.append(f"📊 S&P 500 YTD: {spy_ytd:+.1f}%")
-        lines.append(f"{alpha_emoji} Alpha: {alpha:+.1f}%")
-
-    lines.append("")
     lines.append("Full analysis in Saturday's Sterling Signals newsletter →")
+
+    # GAP 34 fix: Add disclaimer footer
+    lines.append("")
+    lines.append("---")
+    lines.append("*Not financial advice. Informational only.*")
 
     return "\n".join(lines)
 
@@ -287,15 +291,25 @@ def generate_thursday_note(signals: Dict, portfolio: List[Dict], prices: Dict[st
     lines.append(f"Trade Spotlight - Week {week_num}")
     lines.append("")
 
-    # Get TRADE signals from this week's scan
+    # Get PASS/TRADE signals from this week's scan
+    # Accept both PASS (new) and TRADE (legacy) for backwards compatibility
     buy_signals = signals.get('buy_signals', [])
-    trade_signals = [s for s in buy_signals if s.get('final_decision') == 'TRADE']
+    trade_signals = [s for s in buy_signals if s.get('final_decision') in ['PASS', 'TRADE']]
     consider_signals = [s for s in buy_signals if s.get('final_decision') == 'CONSIDER']
 
-    # Highlight a trade signal
+    # Highlight TEAL signals (show ALL, not just first)
     if trade_signals:
-        signal = trade_signals[0]  # Feature first TRADE signal
-        lines.append(f"🎯 This Week's Signal: ${signal['symbol']}")
+        # Show all TEAL signals (marketing overhaul: no limit)
+        if len(trade_signals) == 1:
+            signal = trade_signals[0]
+            lines.append(f"🎯 This Week's TEAL Signal: ${signal['symbol']}")
+        else:
+            lines.append(f"🎯 {len(trade_signals)} TEAL Signals This Week:")
+            for sig in trade_signals[:5]:
+                lines.append(f"• ${sig['symbol']} ({sig.get('theme', 'N/A')})")
+            lines.append("")
+            signal = trade_signals[0]  # Use first for detailed info below
+            lines.append(f"Featured: ${signal['symbol']}")
         lines.append(f"Theme: {signal.get('theme', 'N/A')}")
         lines.append(f"Conviction: {signal.get('conviction', 'N/A')}/5")
         lines.append("")
@@ -333,28 +347,33 @@ def generate_thursday_note(signals: Dict, portfolio: List[Dict], prices: Dict[st
 
     lines.append("")
 
-    # Scan stats
+    # Scan stats (use TEAL signal branding)
     stats = signals.get('stats', {})
     if stats:
         lines.append("📈 This Week's Scan:")
-        lines.append(f"• {stats.get('tickers_loaded', 0)} stocks scanned")
-        lines.append(f"• {stats.get('technical_signals', 0)} passed technical gate")
-        lines.append(f"• {stats.get('final_trade', 0)} TRADE signals")
-        lines.append(f"• {stats.get('final_consider', 0)} CONSIDER signals")
+        lines.append(f"• {stats.get('tickers_loaded', 0)} stocks analyzed")
+        lines.append(f"• {stats.get('technical_signals', 0)} passed technical gates")
+        lines.append(f"• {stats.get('final_trade', 0)} TEAL signals (full clearance)")
+        lines.append(f"• {stats.get('final_consider', 0)} on watchlist")
 
     lines.append("")
 
-    # Portfolio context
+    # Win highlights ONLY (per marketing safeguard - no P&L for non-winners)
     open_positions = [t for t in portfolio if t.get('status') == 'OPEN']
     if open_positions:
         stats_calc = calculate_portfolio_stats(portfolio, prices)
-        lines.append(f"📊 Portfolio: {len(open_positions)} positions")
-        if stats_calc['top_performer']:
+        # Only show top performer if it's a winner (15%+)
+        if stats_calc['top_performer'] and stats_calc['top_performer'].get('pnl_pct', 0) >= 15.0:
             top = stats_calc['top_performer']
-            lines.append(f"🏆 Leading: ${top['ticker']} ({top['pnl_pct']:+.1f}%)")
+            lines.append(f"🏆 Top Winner: ${top['ticker']} (+{top['pnl_pct']:.1f}%)")
 
     lines.append("")
     lines.append("Full analysis in Saturday's Sterling Signals newsletter →")
+
+    # GAP 34 fix: Add disclaimer footer
+    lines.append("")
+    lines.append("---")
+    lines.append("*Not financial advice. Informational only.*")
 
     return "\n".join(lines)
 

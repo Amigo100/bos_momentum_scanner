@@ -97,6 +97,45 @@ Even with marketing language, NEVER hide losses:
 
 ---
 
+### Signal Color System (Marketing Upgrade)
+
+Sterling Signals uses a color-coded signal system for public-facing content:
+
+| Color | Emoji | Meaning | Internal Status | Public Name |
+|-------|-------|---------|-----------------|-------------|
+| **TEAL** | 🟢 | BUY | PASS | TEAL Signal |
+| **VIOLET** | 🟣 | EXIT | STOPPED | Exit Alert |
+| **AMBER** | 🟠 | WATCH | CONSIDER | On Our Radar |
+
+**Usage in tweets:**
+- Start buy signals with: `🟢 TEAL Signal: $TICKER`
+- Start exit alerts with: `🟣 VIOLET Alert: $TICKER`
+- Start watchlist with: `🟠 AMBER Watchlist`
+
+### Conviction Language
+
+Replace internal conviction scores with public-facing language:
+
+| Internal Score | Public Language |
+|---------------|-----------------|
+| Conviction 5 | Extremely Bullish |
+| Conviction 4 | Bullish |
+| Conviction 3 | Watching |
+| Conviction 2 | Cautious |
+| Conviction 1 | Do not post publicly |
+
+**BANNED:** Never use "conviction 5", "conviction 4", "conviction score" in public content.
+
+### Entry Price Display Rules
+
+Entry prices can only be shown publicly when:
+- **Closed winners:** Always show entry prices for profitable closed trades
+- **Open positions:** Only show entry prices for positions above **25%** gain
+
+This prevents revealing entries that haven't been validated by performance.
+
+---
+
 ### Weekly Schedule
 
 | Day | Automated | Manual |
@@ -226,8 +265,11 @@ trades/
 | `tweet_generator.py` | Generate 35 weekly tweets (5/day) |
 | `newsletter_compiler.py` | Compile full newsletter with DD integration |
 | `substack_notes_generator.py` | Tuesday/Thursday mid-week Substack notes |
+| `substack_content_generator.py` | **NEW** Mon/Thu/Sat/Sun Substack posts |
 | `market_analyzer.py` | Market context analysis via LLM |
 | `chart_capture.py` | TradingView chart screenshots |
+| `winner_showcase_generator.py` | **NEW** Winner showcase with entry prices |
+| `self_quote_tracker.py` | **NEW** Track tweets for milestone quoting |
 
 #### Automation & Infrastructure
 | File | Purpose |

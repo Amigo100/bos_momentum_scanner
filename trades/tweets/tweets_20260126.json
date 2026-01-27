@@ -1,0 +1,380 @@
+[
+  {
+    "id": "saturday_1_mock",
+    "day": "Saturday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Saturday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-01-31",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "saturday_2_thread_buy_signal",
+    "day": "Saturday",
+    "slot": 2,
+    "category": "thread_buy_signal",
+    "is_thread": true,
+    "thread_topic": "Mock Buy Signal",
+    "thread_tweets": [
+      {
+        "number": 1,
+        "text": "\ud83e\uddf5 1/5: [MOCK] thread_buy_signal hook tweet",
+        "tweet_id": null
+      },
+      {
+        "number": 2,
+        "text": "2/5: [MOCK] Problem statement",
+        "tweet_id": null
+      },
+      {
+        "number": 3,
+        "text": "3/5: [MOCK] Our solution",
+        "tweet_id": null
+      },
+      {
+        "number": 4,
+        "text": "4/5: [MOCK] Proof/example",
+        "tweet_id": null
+      },
+      {
+        "number": 5,
+        "text": "5/5: [MOCK] CTA to sterlingsignals.substack.com",
+        "tweet_id": null
+      }
+    ],
+    "thread_status": "pending",
+    "scheduled_date": "2026-01-31",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null,
+    "ticker": null,
+    "theme": null
+  },
+  {
+    "id": "saturday_3_mock",
+    "day": "Saturday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Saturday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-01-31",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "sunday_1_mock",
+    "day": "Sunday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Sunday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-01",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "sunday_2_mock",
+    "day": "Sunday",
+    "slot": 2,
+    "category": "mock",
+    "text": "[MOCK] Sunday morning tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-01",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "sunday_3_thread_week_ahead",
+    "day": "Sunday",
+    "slot": 3,
+    "category": "thread_week_ahead",
+    "is_thread": true,
+    "thread_topic": "Mock Week Ahead",
+    "thread_tweets": [
+      {
+        "number": 1,
+        "text": "\ud83e\uddf5 1/5: [MOCK] thread_week_ahead hook tweet",
+        "tweet_id": null
+      },
+      {
+        "number": 2,
+        "text": "2/5: [MOCK] Problem statement",
+        "tweet_id": null
+      },
+      {
+        "number": 3,
+        "text": "3/5: [MOCK] Our solution",
+        "tweet_id": null
+      },
+      {
+        "number": 4,
+        "text": "4/5: [MOCK] Proof/example",
+        "tweet_id": null
+      },
+      {
+        "number": 5,
+        "text": "5/5: [MOCK] CTA to sterlingsignals.substack.com",
+        "tweet_id": null
+      }
+    ],
+    "thread_status": "pending",
+    "scheduled_date": "2026-02-01",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null,
+    "ticker": null,
+    "theme": null
+  },
+  {
+    "id": "monday_1_mock",
+    "day": "Monday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Monday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-02",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "monday_2_mock",
+    "day": "Monday",
+    "slot": 2,
+    "category": "mock",
+    "text": "[MOCK] Monday morning tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-02",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "monday_3_mock",
+    "day": "Monday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Monday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-02",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "tuesday_1_mock",
+    "day": "Tuesday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Tuesday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-03",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "tuesday_2_mock",
+    "day": "Tuesday",
+    "slot": 2,
+    "category": "mock",
+    "text": "[MOCK] Tuesday morning tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-03",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "tuesday_3_mock",
+    "day": "Tuesday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Tuesday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-03",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "wednesday_1_mock",
+    "day": "Wednesday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Wednesday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-04",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "wednesday_2_thread_educational",
+    "day": "Wednesday",
+    "slot": 2,
+    "category": "thread_educational",
+    "is_thread": true,
+    "thread_topic": "Mock Educational",
+    "thread_tweets": [
+      {
+        "number": 1,
+        "text": "\ud83e\uddf5 1/5: [MOCK] thread_educational hook tweet",
+        "tweet_id": null
+      },
+      {
+        "number": 2,
+        "text": "2/5: [MOCK] Problem statement",
+        "tweet_id": null
+      },
+      {
+        "number": 3,
+        "text": "3/5: [MOCK] Our solution",
+        "tweet_id": null
+      },
+      {
+        "number": 4,
+        "text": "4/5: [MOCK] Proof/example",
+        "tweet_id": null
+      },
+      {
+        "number": 5,
+        "text": "5/5: [MOCK] CTA to sterlingsignals.substack.com",
+        "tweet_id": null
+      }
+    ],
+    "thread_status": "pending",
+    "scheduled_date": "2026-02-04",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null,
+    "ticker": null,
+    "theme": null
+  },
+  {
+    "id": "wednesday_3_mock",
+    "day": "Wednesday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Wednesday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-04",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "thursday_1_mock",
+    "day": "Thursday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Thursday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-05",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "thursday_2_mock",
+    "day": "Thursday",
+    "slot": 2,
+    "category": "mock",
+    "text": "[MOCK] Thursday morning tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-05",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "thursday_3_mock",
+    "day": "Thursday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Thursday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-05",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "friday_1_mock",
+    "day": "Friday",
+    "slot": 1,
+    "category": "mock",
+    "text": "[MOCK] Friday pre_market tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-06",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "friday_2_mock",
+    "day": "Friday",
+    "slot": 2,
+    "category": "mock",
+    "text": "[MOCK] Friday morning tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-06",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  },
+  {
+    "id": "friday_3_mock",
+    "day": "Friday",
+    "slot": 3,
+    "category": "mock",
+    "text": "[MOCK] Friday midday tweet placeholder",
+    "ticker": null,
+    "theme": null,
+    "image_path": null,
+    "scheduled_date": "2026-02-06",
+    "status": "pending",
+    "posted_at": null,
+    "tweet_id": null
+  }
+]

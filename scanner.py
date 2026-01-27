@@ -10,9 +10,14 @@ ENTRY CRITERIA:
 2. Stock is in a PRIME or INVESTABLE theme (Thematic Analyzer)
 3. Theme fit is STRONG FIT or GOOD FIT
 4. Optional: Run Momentum Assessor for final confirmation
-5. Decision = TRADE → Enter Monday at market open
+5. Decision = PASS → Enter Monday at market open (generates TEAL signal)
 6. Decision = CONSIDER → Smaller position or wait for better entry
 7. Decision = SKIP → Don't trade
+
+SIGNAL TERMINOLOGY (MASTER_TODO_v2):
+- Internal: PASS, CONSIDER, SKIP (scanner decisions)
+- Marketing: "TEAL signal" = PASS signal that cleared all 5 gates
+- Never use "TRADE" in outputs - use "PASS" internally, "TEAL signal" for marketing
 
 THEME CLASSIFICATION (from Thematic Analyzer):
 - PRIME: High conviction theme with strong catalysts + momentum
@@ -30,9 +35,9 @@ EXIT CRITERIA:
 - BACKUP: 20% trailing stop from highest close since entry
 
 CONTEXT:
-- Designed for US active investors and swing traders
 - Weekly timeframe for systematic entries and exits
 - Average hold period: 4-8 weeks (can extend to months)
+- Audience-neutral - no region-specific investment advice
 
 Usage:
     python scanner.py                    # Full pipeline
@@ -158,7 +163,7 @@ class Stock:
     pure_play_score: int = 0
     theme_verdict: str = ""
     # Momentum assessor fields
-    final_decision: str = ""  # TRADE, CONSIDER, SKIP
+    final_decision: str = ""  # PASS, CONSIDER, SKIP (use PASS not TRADE - MASTER_TODO_v2)
     conviction: int = 0
     sector_status: str = ""
     upside_potential: str = ""
@@ -213,8 +218,9 @@ class Stock:
         return self.theme_verdict in ["STRONG FIT", "GOOD FIT"]
     
     def passes_final_gate(self) -> bool:
-        """Check if passes final momentum assessor gate."""
-        return self.final_decision in ["TRADE", "CONSIDER"]
+        """Check if passes final momentum assessor gate (generates TEAL signal)."""
+        # MASTER_TODO_v2: Standardize on PASS, keep TRADE for backwards compat only
+        return self.final_decision in ["PASS", "CONSIDER", "TRADE"]
 
 
 @dataclass
@@ -830,13 +836,13 @@ def run_gatekeeper(signals: List[Stock], top_n: int = None, themes_context: str 
             if stock.symbol in result_map:
                 r = result_map[stock.symbol]
                 
-                # Map GateDecision to final_decision
+                # Map GateDecision to final_decision (CRIT-1: Use PASS not TRADE)
                 if r.decision == GateDecision.PASS:
-                    stock.final_decision = "TRADE"
+                    stock.final_decision = "PASS"
                 elif r.decision == GateDecision.CAUTION:
                     stock.final_decision = "CONSIDER"
                 else:
-                    stock.final_decision = "SKIP"
+                    stock.final_decision = "FAIL"
                 
                 stock.conviction = r.conviction
                 stock.sector_status = r.analyst_trend
@@ -1200,8 +1206,20 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print("  STEP 3: Downloading Data & Calculating Indicators (WEEKLY BoS)")
     print("─" * 70)
     
-    stocks = download_and_process(tickers, benchmark_returns)
-    stats.data_downloaded = len(stocks)
+    # GAP 30 fix: Add error handling for data download
+    try:
+        stocks = download_and_process(tickers, benchmark_returns)
+        stats.data_downloaded = len(stocks)
+
+        # Validate we got a reasonable amount of data
+        expected_count = len(tickers)
+        if len(stocks) < expected_count * 0.3:  # Less than 30% downloaded
+            print(f"  ⚠️ WARNING: Only {len(stocks)}/{expected_count} tickers downloaded ({len(stocks)/expected_count*100:.1f}%)")
+            print(f"     This may indicate yfinance API issues")
+    except Exception as e:
+        print(f"  ❌ ERROR: Data download failed: {e}")
+        print(f"     Cannot continue without stock data")
+        return [], [], [], stats, [], []
 
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 4: Calculate Statistics
@@ -1444,7 +1462,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         )
         
         for s in theme_confirmed:
-            if s.final_decision == "TRADE":
+            if s.final_decision in ["PASS", "TRADE"]:
                 stats.final_trade += 1
             elif s.final_decision == "CONSIDER":
                 stats.final_consider += 1
@@ -1454,7 +1472,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"\n  FINAL DECISION RESULTS:")
         print(f"  ────────────────────────────────────")
         print(f"  Theme confirmed:           {len(theme_confirmed):>5}")
-        print(f"  TRADE:                     {stats.final_trade:>5}")
+        print(f"  PASS (TEAL signals):       {stats.final_trade:>5}")
         print(f"  CONSIDER:                  {stats.final_consider:>5}")
         print(f"  SKIP:                      {stats.final_skip:>5}")
     
@@ -1479,7 +1497,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # This ensures only DD-PASS signals get added to portfolio
     # ─────────────────────────────────────────────────────────────────────────
     
-    # Return: confirmed (TRADE/CONSIDER), all_assessed (theme_confirmed), sell_signals, stats, momentum_rejected
+    # Return: confirmed (PASS/CONSIDER), all_assessed (theme_confirmed), sell_signals, stats, momentum_rejected
     return confirmed, theme_confirmed, sell_signals, stats, momentum_rejected, themes_data
 
 
@@ -1496,7 +1514,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
     
     if confirmed:
         # Separate by decision
-        trades = [s for s in confirmed if s.final_decision == "TRADE"]
+        trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         considers = [s for s in confirmed if s.final_decision == "CONSIDER"]
         
         if trades:
@@ -1558,7 +1576,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
         print(f"    • {stats.bos_bullish} with HMA Pivot BUY")
         print(f"    • {stats.meets_technical_gate} met technical gate")
         print(f"    • {stats.theme_confirmed} passed theme gate")
-        print(f"    • {stats.final_trade} TRADE, {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
+        print(f"    • {stats.final_trade} PASS (TEAL), {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
     
     if sell_signals:
         print(f"\n  ⚠️ CAUTION SIGNALS ({len(sell_signals)}) - Consider Tightening Stops:")
@@ -1605,7 +1623,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     date_display = datetime.now().strftime("%A, %B %d, %Y")
     
     # Separate by decision type
-    trades = [s for s in confirmed if s.final_decision == "TRADE"] if confirmed else []
+    trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]] if confirmed else []
     considers = [s for s in confirmed if s.final_decision == "CONSIDER"] if confirmed else []
     technical_only = [s for s in confirmed if s.final_decision == "TECHNICAL_ONLY"] if confirmed else []
     theme_confirmed = [s for s in confirmed if s.final_decision == "THEME_CONFIRMED"] if confirmed else []
@@ -1633,7 +1651,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     if total_signals > 0:
         lines.append(f"  ✅ {total_signals} entry signal(s) identified")
         if trades:
-            lines.append(f"     • {len(trades)} TRADE - High conviction, enter Monday open")
+            lines.append(f"     • {len(trades)} PASS (TEAL signals) - High conviction, enter Monday open")
         if considers:
             lines.append(f"     • {len(considers)} CONSIDER - Smaller position recommended")
         if theme_confirmed:
@@ -1880,13 +1898,14 @@ def generate_newsletter_briefing(
     lines.append("")
     
     if confirmed:
-        # Separate TRADE (PASS) and CONSIDER (CAUTION) signals
-        trades = [s for s in confirmed if s.final_decision == "TRADE"]
+        # Separate PASS (TEAL signals) and CONSIDER signals
+        # MASTER_TODO_v2: Use PASS internally, "TEAL signal" for marketing
+        trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         considers = [s for s in confirmed if s.final_decision == "CONSIDER"]
         technical_only = [s for s in confirmed if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]]
         
         if trades:
-            lines.append("### 🟢 PASS - Ready for Entry")
+            lines.append("### 🟢 PASS - Ready for Entry (TEAL Signals)")
             lines.append("")
             for s in trades:
                 lines.append(f"#### {s.symbol}")
@@ -2112,12 +2131,14 @@ def generate_newsletter_briefing(
     if sell_signals:
         lines.append("### ⚠️ Caution Signals (Consider Tightening Stops)")
         lines.append("")
-        lines.append("| Ticker | Price | Reason | Entry | High | P&L |")
-        lines.append("|--------|-------|--------|-------|------|-----|")
+        # CRIT-12.5: Entry prices for OPEN positions are PRIVATE
+        # Only show: Ticker, Current Price, Reason, P&L - NOT entry price or highest close
+        lines.append("| Ticker | Current | Reason | P&L |")
+        lines.append("|--------|---------|--------|-----|")
         for s in sell_signals:
             pnl = ((s.price / s.entry_price) - 1) * 100 if s.entry_price > 0 else 0
             pnl_str = f"{pnl:+.1f}%"
-            lines.append(f"| {s.symbol} | ${s.price:.2f} | {s.reason[:40]} | ${s.entry_price:.2f} | ${s.highest_close:.2f} | {pnl_str} |")
+            lines.append(f"| {s.symbol} | ${s.price:.2f} | {s.reason[:40]} | {pnl_str} |")
         lines.append("")
         lines.append("*Note: These are CAUTION signals, not automatic exits. Based on backtesting, trailing stops outperform signal-based exits.*")
         lines.append("")
@@ -2128,8 +2149,10 @@ def generate_newsletter_briefing(
     if open_positions:
         lines.append("### 📈 Open Positions (Live Data)")
         lines.append("")
-        lines.append("| Ticker | Entry | Current | P&L | Days | Stop Distance | Theme |")
-        lines.append("|--------|-------|---------|-----|------|---------------|-------|")
+        # CRIT-12.5: Entry prices for OPEN positions are PRIVATE
+        # Show: Ticker, Theme, Tier, Current P&L%, Holding Period - NOT entry price
+        lines.append("| Ticker | Theme | P&L | Days Held | Stop Distance |")
+        lines.append("|--------|-------|-----|-----------|---------------|")
         for pos in open_positions:
             symbol = pos.get('symbol', 'N/A')
             entry_price = float(pos.get('entry_price', 0))
@@ -2139,12 +2162,12 @@ def generate_newsletter_briefing(
                 pnl_pct = ((current_price / entry_price) - 1) * 100
             days_held = pos.get('days_held', 0)
             distance_to_stop = pos.get('distance_to_stop', 20)
-            theme = pos.get('theme', 'N/A')[:15]
+            theme = pos.get('theme', 'N/A')[:20]
 
             # Color code stop distance
             stop_indicator = "🟢" if distance_to_stop > 15 else "🟡" if distance_to_stop > 10 else "🔴"
 
-            lines.append(f"| {symbol} | ${entry_price:.2f} | ${current_price:.2f} | {pnl_pct:+.1f}% | {days_held} | {stop_indicator} {distance_to_stop:.1f}% | {theme} |")
+            lines.append(f"| {symbol} | {theme} | {pnl_pct:+.1f}% | {days_held}d | {stop_indicator} {distance_to_stop:.1f}% |")
         lines.append("")
         lines.append("*Stop Distance: 🟢 >15% safe | 🟡 10-15% watch | 🔴 <10% alert*")
         lines.append("")
@@ -2166,7 +2189,7 @@ def generate_newsletter_briefing(
     lines.append("")
     
     if confirmed:
-        trade_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        trade_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if trade_stocks:
             lines.append("### Stocks Requiring DD:")
             lines.append("")
@@ -2297,7 +2320,7 @@ def generate_grok_prompts(
     if confirmed:
         # Add PASS signals
         for s in confirmed:
-            if s.final_decision == "TRADE" and s.symbol not in [x.get('ticker') for x in data.pass_signals]:
+            if s.final_decision in ["PASS", "TRADE"] and s.symbol not in [x.get('ticker') for x in data.pass_signals]:
                 data.pass_signals.append({
                     'ticker': s.symbol,
                     'price': s.price,
@@ -2723,7 +2746,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     signals_data = {
         "timestamp": timestamp,
         "timeframe": "WEEKLY",
-        "entry_criteria": "Weekly BoS Up + Hot Theme + TRADE/CONSIDER decision",
+        "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates TEAL signal)",
         "exit_criteria": f"Weekly BoS Down OR {TRAILING_STOP_PCT}% trailing stop",
         "stats": {
             "tickers_loaded": stats.tickers_loaded,
@@ -2732,9 +2755,69 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             "weekly_bos_up": stats.bos_bullish,
             "technical_signals": stats.meets_technical_gate,
             "theme_confirmed": stats.theme_confirmed,
-            "final_trade": stats.final_trade,
+            "final_trade": stats.final_trade,  # Count of PASS signals (TEAL signals)
             "final_consider": stats.final_consider,
         },
+        # Themes data for tweet generator
+        "themes": themes_data if themes_data else [],
+        # PHASE 10: Separated pass_signals (TEAL signals) from consider_signals per MASTER_TODO
+        "pass_signals": [
+            {
+                "symbol": s.symbol,
+                "tier": s.tier,
+                "price": s.price,
+                "beta": s.beta,
+                "banker": s.banker,
+                "return_20d": s.return_20d,
+                "theme": s.theme,
+                "theme_score": s.theme_score,
+                "pure_play_score": s.pure_play_score,
+                "theme_verdict": s.theme_verdict,
+                "final_decision": "PASS",  # Normalize to PASS for downstream
+                "conviction": s.conviction,
+                "sector_status": s.sector_status,
+                "upside_potential": s.upside_potential,
+                "bullish_factors": s.bullish_factors,
+                "risk_factors": s.risk_factors,
+                "reasoning": s.reasoning,
+                "action": "Enter Monday at market open",
+                "dd_verdict": s.dd_verdict,
+                "dd_conviction": s.dd_conviction,
+                "dd_position_size": s.dd_position_size,
+                "dd_key_catalyst": s.dd_key_catalyst,
+                "dd_fatal_flaw": s.dd_fatal_flaw
+            }
+            for s in confirmed if s.final_decision in ["PASS", "TRADE"]  # TRADE for backwards compat
+        ],
+        "consider_signals": [
+            {
+                "symbol": s.symbol,
+                "tier": s.tier,
+                "price": s.price,
+                "beta": s.beta,
+                "banker": s.banker,
+                "return_20d": s.return_20d,
+                "theme": s.theme,
+                "theme_score": s.theme_score,
+                "pure_play_score": s.pure_play_score,
+                "theme_verdict": s.theme_verdict,
+                "final_decision": s.final_decision,
+                "conviction": s.conviction,
+                "sector_status": s.sector_status,
+                "upside_potential": s.upside_potential,
+                "bullish_factors": s.bullish_factors,
+                "risk_factors": s.risk_factors,
+                "reasoning": s.reasoning,
+                "action": "Consider smaller position - watching for gate 5",
+                "dd_verdict": s.dd_verdict,
+                "dd_conviction": s.dd_conviction,
+                "dd_position_size": s.dd_position_size,
+                "dd_key_catalyst": s.dd_key_catalyst,
+                "dd_fatal_flaw": s.dd_fatal_flaw
+            }
+            for s in confirmed if s.final_decision == "CONSIDER"
+        ],
+        # Legacy: buy_signals includes all confirmed for backwards compatibility
         "buy_signals": [
             {
                 "symbol": s.symbol,
@@ -2755,7 +2838,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "risk_factors": s.risk_factors,
                 "reasoning": s.reasoning,
                 "action": (
-                    "Enter Monday at market open" if s.final_decision == "TRADE"
+                    "Enter Monday at market open" if s.final_decision in ["PASS", "TRADE"]
                     else "Consider smaller position" if s.final_decision == "CONSIDER"
                     else "Pending LLM analysis" if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]
                     else "Review required"
@@ -2778,8 +2861,65 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "drawdown_pct": s.drawdown_pct
             }
             for s in sell_signals
-        ]
+        ],
+        # NEW: Historical wins tracking (marketing overhaul)
+        "historical_winners": [],
+        "big_wins": [],
+        "home_runs": [],
     }
+
+    # Populate historical wins from signal_tracker (if available)
+    try:
+        from signal_tracker import load_historical_signals, find_big_wins
+        from config import MARKETING_THRESHOLDS
+
+        historical = load_historical_signals()
+        signals_data["historical_winners"] = [
+            {
+                "ticker": h.ticker,
+                "entry_price": h.entry_price,
+                "current_price": h.current_price,
+                "pnl_pct": h.pnl_pct,
+                "signal_date": h.signal_date,
+                "theme": h.theme,
+            }
+            for h in historical if h.pnl_pct >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
+        ]
+
+        big_wins = find_big_wins(threshold=MARKETING_THRESHOLDS.get('big_win_threshold', 25.0))
+        signals_data["big_wins"] = [
+            {
+                "ticker": w.ticker,
+                "entry_price": w.entry_price,
+                "current_price": w.current_price,
+                "pnl_pct": w.pnl_pct,
+                "signal_date": w.signal_date,
+                "theme": w.theme,
+                "threshold_crossed": w.threshold_crossed,
+            }
+            for w in big_wins
+        ]
+
+        home_runs = find_big_wins(threshold=MARKETING_THRESHOLDS.get('home_run_threshold', 50.0))
+        signals_data["home_runs"] = [
+            {
+                "ticker": w.ticker,
+                "entry_price": w.entry_price,
+                "current_price": w.current_price,
+                "pnl_pct": w.pnl_pct,
+                "signal_date": w.signal_date,
+                "theme": w.theme,
+                "threshold_crossed": w.threshold_crossed,
+            }
+            for w in home_runs
+        ]
+
+        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} winners, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
+
+    except ImportError:
+        print("  ⚠️ signal_tracker not available - historical wins not populated")
+    except Exception as e:
+        print(f"  ⚠️ Error loading historical wins: {e}")
 
     # Save signals JSON to current/ and weekly archive
     signals_json = json.dumps(signals_data, indent=2)
@@ -2843,7 +2983,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 'bullish_factors': bullish[:200],  # Truncate for CSV
                 'risk_factors': risks[:200],
                 'reasoning': reasoning[:300],
-                'passed_all_gates': 'YES' if s.final_decision in ['TRADE', 'CONSIDER'] else 'NO'
+                'passed_all_gates': 'YES' if s.final_decision in ['PASS', 'TRADE', 'CONSIDER'] else 'NO'
             })
     
     # Note: trade_log.csv removed - analysis_log.csv contains all data with passed_all_gates flag
@@ -2902,7 +3042,7 @@ def send_notification(confirmed: List[Stock], sell_signals: List[SellSignal], st
         
         # Generate subject line
         if confirmed or sell_signals:
-            trades = len([s for s in confirmed if s.final_decision in ["TRADE", "TECHNICAL_ONLY", "THEME_CONFIRMED"]]) if confirmed else 0
+            trades = len([s for s in confirmed if s.final_decision in ["PASS", "TRADE", "TECHNICAL_ONLY", "THEME_CONFIRMED"]]) if confirmed else 0
             considers = len([s for s in confirmed if s.final_decision == "CONSIDER"]) if confirmed else 0
             cautions = len(sell_signals) if sell_signals else 0
             
@@ -3054,7 +3194,7 @@ def main() -> int:
     dd_fail_stocks = []
 
     if not args.no_dd and confirmed and not args.no_llm:
-        pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if pass_stocks:
             print("\n" + "─" * 70)
             print("  STEP 7.5: AUTOMATED DUE DILIGENCE")
@@ -3116,7 +3256,7 @@ def main() -> int:
 
     elif args.no_dd and confirmed:
         # DD skipped - warn user that portfolio won't be updated
-        pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if pass_stocks:
             print("\n  ⚠️  DD SKIPPED (--no-dd flag)")
             print(f"     {len(pass_stocks)} TRADE signal(s) will NOT be added to portfolio")
@@ -3128,7 +3268,7 @@ def main() -> int:
     # Print due diligence prompts for stocks that passed
     if confirmed and not args.no_prompts and not args.no_llm:
         # Only print for TRADE (PASS) signals, not CONSIDER (CAUTION)
-        pass_stocks = [s for s in confirmed if s.final_decision == "TRADE"]
+        pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if pass_stocks:
             try:
                 from due_diligence_prompts import print_dd_prompts_for_stocks

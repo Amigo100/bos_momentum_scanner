@@ -59,6 +59,71 @@ try:
 except ImportError:
     OUTPUT_PATHS_AVAILABLE = False
 
+# Import signal tracker for safeguards and big wins
+try:
+    from signal_tracker import (
+        should_post_beat_spy,
+        has_enough_wins,
+        filter_public_positions,
+        get_uncelebrated_wins,
+        mark_as_celebrated,
+        load_historical_signals,
+        calculate_portfolio_vs_spy,
+        filter_expired_consider_signals,
+        check_cold_streak,
+    )
+    SIGNAL_TRACKER_AVAILABLE = True
+except ImportError:
+    SIGNAL_TRACKER_AVAILABLE = False
+    print("  Warning: signal_tracker not available - safeguards disabled")
+
+# Import config for thresholds
+try:
+    from config import (
+        MARKETING_THRESHOLDS,
+        get_fallback_category,
+        is_safeguarded_category,
+        get_highlight_threshold,
+        format_holding_period,
+        TIMEFRAME_DISCLAIMERS,
+        WIN_CATEGORIES,
+        SIGNAL_COLORS,
+        CONVICTION_LANGUAGE,
+        get_signal_emoji,
+        get_conviction_text,
+        can_show_entry_price,
+        BRANDING,
+    )
+    CONFIG_AVAILABLE = True
+except ImportError:
+    CONFIG_AVAILABLE = False
+    MARKETING_THRESHOLDS = {
+        'min_win_to_highlight': 15.0,
+        'big_win_threshold': 25.0,
+        'spy_outperformance_min': 5.0,
+        'min_winners_for_top_performers': 2,  # Phase 9: Renamed from min_winners_for_weekly_wins
+    }
+    # Fallback implementations
+    def get_highlight_threshold(days_held: int) -> float:
+        if days_held <= 7: return 3.0
+        elif days_held <= 14: return 5.0
+        elif days_held <= 30: return 10.0
+        elif days_held <= 60: return 15.0
+        else: return 20.0
+
+    def format_holding_period(days_held: int) -> str:
+        if days_held <= 0: return "held"
+        elif days_held <= 7: return f"{days_held} days"
+        elif days_held <= 30: return f"{days_held // 7} week{'s' if days_held // 7 > 1 else ''}"
+        else: return f"{days_held // 30} month{'s' if days_held // 30 > 1 else ''}"
+
+    TIMEFRAME_DISCLAIMERS = {
+        'short': 'Returns since signal entry.',
+        'medium': 'Total gain since entry, not weekly movement.',
+        'long': 'Sterling Signals targets 50-100% returns over 3-8 month holds. Returns shown are total since signal entry.',
+    }
+    WIN_CATEGORIES = {}
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -70,6 +135,477 @@ TWEETS_DIR = TRADES_DIR / "tweets"
 CHARTS_DIR = TRADES_DIR / "charts"
 
 TWEETS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TWEET VALIDATION (MIN-1)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def validate_tweet_length(tweet_text: str) -> bool:
+    """
+    Validate tweet is under 280 characters.
+
+    Note: Emojis and special characters count as 2 characters on Twitter.
+
+    Args:
+        tweet_text: The tweet text to validate
+
+    Returns:
+        True if tweet is valid length, False otherwise
+    """
+    if not tweet_text:
+        return True
+
+    # Count characters with Twitter's algorithm (emojis = 2 chars)
+    char_count = 0
+    for char in tweet_text:
+        if ord(char) > 0xFFFF:  # Emoji or special char
+            char_count += 2
+        else:
+            char_count += 1
+
+    return char_count <= 280
+
+
+def get_tweet_char_count(tweet_text: str) -> int:
+    """Get the character count using Twitter's algorithm."""
+    if not tweet_text:
+        return 0
+
+    char_count = 0
+    for char in tweet_text:
+        if ord(char) > 0xFFFF:
+            char_count += 2
+        else:
+            char_count += 1
+
+    return char_count
+
+
+def truncate_tweet(tweet_text: str, max_length: int = 275) -> str:
+    """
+    Truncate tweet to fit within max_length, preserving URL at end if present.
+
+    Args:
+        tweet_text: The tweet text to truncate
+        max_length: Maximum character length (default 275 to leave room for ...)
+
+    Returns:
+        Truncated tweet text
+    """
+    if not tweet_text or get_tweet_char_count(tweet_text) <= max_length:
+        return tweet_text
+
+    # Check if there's a URL at the end
+    url_pattern = r'https?://\S+$'
+    match = re.search(url_pattern, tweet_text)
+
+    if match:
+        url = match.group()
+        text_without_url = tweet_text[:match.start()].rstrip()
+        url_length = get_tweet_char_count(url)
+        available = max_length - url_length - 4  # 4 for "... "
+
+        # Truncate text portion
+        truncated_text = ""
+        char_count = 0
+        for char in text_without_url:
+            char_len = 2 if ord(char) > 0xFFFF else 1
+            if char_count + char_len > available:
+                break
+            truncated_text += char
+            char_count += char_len
+
+        return f"{truncated_text.rstrip()}... {url}"
+    else:
+        # No URL, just truncate
+        truncated_text = ""
+        char_count = 0
+        for char in tweet_text:
+            char_len = 2 if ord(char) > 0xFFFF else 1
+            if char_count + char_len > (max_length - 3):  # 3 for "..."
+                break
+            truncated_text += char
+            char_count += char_len
+
+        return f"{truncated_text.rstrip()}..."
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MASTER_TODO_v2: PRE-GENERATION VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def validate_tweet_before_queue(tweet: dict, existing_tweets: list = None) -> tuple:
+    """
+    MASTER_TODO_v2: Run all validations before adding tweet to queue.
+
+    This is a CRITICAL safeguard function that ensures no invalid content
+    is queued for posting.
+
+    Args:
+        tweet: Tweet dict with 'text' and 'category' keys
+        existing_tweets: List of already-queued tweets for ticker frequency check
+
+    Returns:
+        Tuple of (is_valid: bool, errors: list)
+    """
+    errors = []
+    text = tweet.get('text', '')
+    category = tweet.get('category', '')
+
+    if existing_tweets is None:
+        existing_tweets = []
+
+    # Import config items needed for validation
+    try:
+        from config import (
+            BANNED_TERMS,
+            KILLED_CATEGORIES,
+            TICKER_LIMITS,
+            enforce_teal_branding,
+        )
+    except ImportError:
+        # Fallback comprehensive banned terms list
+        BANNED_TERMS = [
+            # Internal technical terms
+            'HMA', 'Hull Moving Average', 'HMA Pivot',
+            'Banker', 'Banker indicator', 'Banker >=',
+            'BoS', 'BOS', 'Break of Structure', 'Weekly BoS',
+            '20% stop', '20% trailing',
+            'Beta >=', 'beta threshold',
+            'Tier 1', 'Tier 2', 'Tier 3', 'TIER1', 'TIER2', 'TIER3',
+            'Gatekeeper',
+            # Internal gate names
+            'Forensic Audit', '5th Gate', 'Gate 5',
+            'Volatility Expansion Criteria', 'Volatility Expansion',
+            'Institutional Accumulation Divergence',
+            'Structural Pivot Confirmation',
+            'Capital Preservation Protocol',
+            # Non-branded signal terms
+            'proprietary entry', 'proprietary signal',
+            'buy signal', 'PASS signal',
+            # Region-specific (audience-neutral - avoid all)
+            'Roth IRA', 'Roth', '401k', '401(k)',
+            'PDT', 'PDT rule', 'pattern day trader',
+            'UK ISA', 'ISA account', 'GMT', 'BST', 'UK Time',
+            # Technical indicators
+            'RSI', 'MACD', 'KDJ',
+        ]
+        KILLED_CATEGORIES = ['roth_ira', 'pdt_friendly', 'position_update', 'weekly_wins']
+        TICKER_LIMITS = {'max_mentions_per_week': 4}
+
+    # 1. Check killed categories
+    if category in KILLED_CATEGORIES:
+        errors.append(f"KILLED CATEGORY: '{category}' is not allowed")
+
+    # 2. Check tweet length
+    if not validate_tweet_length(text):
+        char_count = get_tweet_char_count(text)
+        errors.append(f"TOO LONG: {char_count} chars (max 280)")
+
+    # 3. Check banned terms (with word boundary for short terms)
+    text_lower = text.lower()
+    # Short terms that need word boundary matching to avoid false positives
+    # e.g., "BST" should not match inside "substack"
+    short_terms = ['bst', 'gmt', 'rsi', 'bos', 'hma', 'pdt', 'roth']
+    for term in BANNED_TERMS:
+        term_lower = term.lower()
+        if term_lower in short_terms or len(term_lower) <= 4:
+            # Use word boundary regex for short terms
+            pattern = r'\b' + re.escape(term_lower) + r'\b'
+            if re.search(pattern, text_lower):
+                errors.append(f"BANNED TERM: '{term}' found in tweet")
+        elif term_lower in text_lower:
+            errors.append(f"BANNED TERM: '{term}' found in tweet")
+
+    # 4. Check for negative P&L (losers shown)
+    negative_pnl = re.findall(r'-\d+\.?\d*%', text)
+    if negative_pnl:
+        errors.append(f"LOSER SHOWN: Negative P&L found: {negative_pnl}")
+
+    # 5. Check TEAL branding for signal tweets
+    signal_categories = ['buy_signal', 'thread_buy_signal', 'milestone_alerts', 'early_movers']
+    if category in signal_categories:
+        if 'TEAL' not in text.upper():
+            errors.append("MISSING BRANDING: Signal tweet must contain 'TEAL'")
+
+    # 6. Check holding period for P&L tweets
+    has_pnl = '%' in text and ('+' in text or '-' in text)
+    if has_pnl:
+        holding_indicators = ['week', 'weeks', 'day', 'days', 'month', 'months', 'held', 'holding', 'entry', 'since']
+        if not any(ind in text.lower() for ind in holding_indicators):
+            errors.append("MISSING HOLDING PERIOD: P&L shown without timeframe context")
+
+    # 7. Check US-specific content (wrong audience)
+    us_terms = ['roth', '401k', 'pdt rule', 'pattern day', 'ira ']  # Note: 'ira ' with space to avoid matching in 'sterlingsignals'
+    for term in us_terms:
+        if term in text.lower():
+            errors.append(f"US-SPECIFIC: '{term}' not appropriate for UK audience")
+
+    # 8. Check ticker frequency limits
+    tickers = re.findall(r'\$([A-Z]+)', text)
+    for ticker in tickers:
+        mentions = sum(1 for t in existing_tweets if ticker.upper() in t.get('text', '').upper())
+        if mentions >= TICKER_LIMITS.get('max_mentions_per_week', 4):
+            errors.append(f"TICKER OVEREXPOSED: ${ticker} already mentioned {mentions} times")
+
+    return (len(errors) == 0, errors)
+
+
+def validate_and_fix_tweet(tweet: dict, existing_tweets: list = None) -> dict:
+    """
+    Validate tweet and attempt to fix minor issues.
+
+    Args:
+        tweet: Tweet dict to validate/fix
+        existing_tweets: List of already-queued tweets
+
+    Returns:
+        Fixed tweet dict with 'validation_errors' key if unfixable issues remain
+    """
+    # Import enforce_teal_branding for auto-fix
+    try:
+        from config import enforce_teal_branding
+    except ImportError:
+        def enforce_teal_branding(t):
+            return t.replace('buy signal', 'TEAL signal').replace('Buy signal', 'TEAL signal')
+
+    text = tweet.get('text', '')
+    category = tweet.get('category', '')
+
+    # Auto-fix: Apply TEAL branding
+    signal_categories = ['buy_signal', 'thread_buy_signal', 'milestone_alerts', 'early_movers']
+    if category in signal_categories:
+        text = enforce_teal_branding(text)
+
+    # Auto-fix: Truncate if too long
+    if not validate_tweet_length(text):
+        text = truncate_tweet(text, max_length=275)
+
+    tweet['text'] = text
+
+    # Validate the fixed tweet
+    is_valid, errors = validate_tweet_before_queue(tweet, existing_tweets)
+
+    if not is_valid:
+        tweet['validation_errors'] = errors
+        print(f"  ⚠️ Validation errors for {tweet.get('id', 'unknown')}: {errors}")
+
+    return tweet
+
+
+def validate_and_fix_thread_tweets(tweets: list) -> list:
+    """
+    MASTER_TODO_v2: Validate and fix thread tweets for compliance.
+    
+    Checks:
+    1. TEAL branding in final tweet (CTA)
+    2. No banned terms
+    3. No hashtags at end
+    4. Holding periods on any P&L percentages
+    
+    Args:
+        tweets: List of tweet dicts with 'number' and 'text' keys
+        
+    Returns:
+        Fixed list of tweets
+    """
+    # Import enforce_teal_branding for auto-fix
+    try:
+        from config import enforce_teal_branding
+    except ImportError:
+        def enforce_teal_branding(t):
+            replacements = {
+                'buy signal': 'TEAL signal',
+                'Buy signal': 'TEAL signal',
+                'our signal': 'TEAL signal',
+                'proprietary signal': 'TEAL signal',
+                'proprietary entry': 'TEAL signal',
+            }
+            for old, new in replacements.items():
+                t = t.replace(old, new)
+            return t
+    
+    for tweet in tweets:
+        text = tweet.get('text', '')
+        number = tweet.get('number', 0)
+        
+        # 1. Apply TEAL branding to all tweets
+        text = enforce_teal_branding(text)
+        
+        # 2. Final tweet (5/5) MUST have TEAL branding
+        if number == 5:
+            if 'TEAL' not in text.upper():
+                # Try to insert TEAL branding
+                if 'signal' in text.lower():
+                    text = text.replace('signals', 'TEAL signals')
+                    text = text.replace('signal process', 'TEAL signal process')
+                elif 'sterlingsignals' in text.lower():
+                    # Add before the link
+                    text = text.replace('sterlingsignals', 'Get TEAL signals: sterlingsignals')
+                else:
+                    # Append mention
+                    if 'substack.com' in text:
+                        text = text.replace('substack.com', 'substack.com\n\nTEAL signals weekly.')
+                
+                print(f"  🔧 Added TEAL branding to thread tweet 5")
+        
+        # 3. Remove hashtags at end (they're low-value on X now)
+        import re
+        hashtag_pattern = r'\s*#\w+\s*$'
+        while re.search(hashtag_pattern, text):
+            text = re.sub(hashtag_pattern, '', text)
+            print(f"  🔧 Removed hashtag from thread tweet {number}")
+        
+        # 4. Check for banned terms and warn
+        banned_check = ['Forensic Audit', 'Volatility Expansion', 'Gate 5', '5th Gate', 
+                       'Capital Preservation', 'Roth IRA', '401k', 'PDT']
+        for term in banned_check:
+            if term.lower() in text.lower():
+                print(f"  ⚠️ Thread tweet {number} contains banned term: {term}")
+        
+        tweet['text'] = text
+    
+    return tweets
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PHASE 9: POSITION DISPLAY WITH HOLDING PERIOD
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def calculate_days_held(entry_date: str) -> int:
+    """Calculate days held from entry date string.
+
+    Args:
+        entry_date: Date string in YYYY-MM-DD format
+
+    Returns:
+        Number of days held, or 0 if parsing fails
+    """
+    if not entry_date:
+        return 0
+
+    try:
+        entry = datetime.strptime(entry_date, '%Y-%m-%d')
+        days = (datetime.now() - entry).days
+        return max(0, days)  # Never negative
+    except (ValueError, TypeError):
+        return 0
+
+
+def format_position_with_age(pos: dict) -> str:
+    """Format position with holding period for honest timeframe display.
+
+    Phase 9: Ensures P&L figures always show holding period context to
+    avoid misleading audiences about whether returns are weekly or cumulative.
+
+    Args:
+        pos: Position dict with ticker, pnl_pct, entry_date fields
+
+    Returns:
+        Formatted string like "$AAPL +25.3% (4 weeks)"
+    """
+    ticker = pos.get('ticker', 'UNK')
+    pnl = pos.get('pnl_pct', 0)
+    entry_date = pos.get('entry_date', '')
+
+    # Calculate holding period
+    days_held = calculate_days_held(entry_date)
+    period = format_holding_period(days_held)
+
+    # Format P&L
+    pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+
+    return f"${ticker} {pnl_str} ({period})"
+
+
+def format_positions_for_display(positions: list, max_positions: int = 5) -> str:
+    """Format multiple positions with holding periods for tweet display.
+
+    Args:
+        positions: List of position dicts
+        max_positions: Maximum positions to include
+
+    Returns:
+        Multi-line string with formatted positions
+    """
+    if not positions:
+        return "No positions to display"
+
+    lines = []
+    for pos in positions[:max_positions]:
+        lines.append(format_position_with_age(pos))
+
+    return "\n".join(lines)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# IDEMPOTENCY CHECK
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def check_already_generated(output_dir: Path, scan_date: str = None) -> tuple[bool, int, str]:
+    """Check if tweets have already been generated for this scan date.
+
+    Prevents duplicate content generation when re-running the generator.
+
+    Args:
+        output_dir: Directory containing content_queue.json
+        scan_date: The scan date to check (YYYY-MM-DD). If None, uses today.
+
+    Returns:
+        tuple: (already_generated: bool, pending_count: int, queue_date: str)
+    """
+    queue_file = output_dir / "content_queue.json"
+    if not queue_file.exists():
+        return False, 0, ""
+
+    try:
+        with open(queue_file, 'r') as f:
+            queue = json.load(f)
+    except (json.JSONDecodeError, IOError):
+        return False, 0, ""
+
+    if not queue:
+        return False, 0, ""
+
+    # Check for pending tweets
+    pending = [t for t in queue if t.get('status') == 'pending']
+    if not pending:
+        return False, 0, ""
+
+    # Get the earliest scheduled date from pending tweets
+    scheduled_dates = [t.get('scheduled_date', '') for t in pending if t.get('scheduled_date')]
+    if not scheduled_dates:
+        return False, len(pending), ""
+
+    earliest_date = min(scheduled_dates)
+
+    # If scan_date provided, check if it matches the week of existing content
+    if scan_date:
+        try:
+            scan_dt = datetime.strptime(scan_date, '%Y-%m-%d')
+            earliest_dt = datetime.strptime(earliest_date, '%Y-%m-%d')
+
+            # Check if they're in the same week (within 7 days)
+            days_diff = abs((earliest_dt - scan_dt).days)
+            if days_diff <= 7:
+                return True, len(pending), earliest_date
+        except ValueError:
+            pass
+
+    # Fallback: check if today matches the content week
+    today = datetime.now()
+    try:
+        earliest_dt = datetime.strptime(earliest_date, '%Y-%m-%d')
+        days_diff = abs((earliest_dt - today).days)
+        # If pending content is for this week or next (within 10 days), consider it current
+        if days_diff <= 10:
+            return True, len(pending), earliest_date
+    except ValueError:
+        pass
+
+    return False, len(pending), earliest_date
+
 
 # Sterling Signals branding
 SUBSTACK_URL = "https://sterlingsignals.substack.com"
@@ -84,7 +620,7 @@ MAX_TOKENS = 4000
 # Schedule aligned to US Eastern Time (ET)
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 SLOTS = {
-    1: "pre_market",     # 08:00 ET - Pre-market / Beat SPY / Roth IRA hooks
+    1: "pre_market",     # 08:00 ET - Pre-market / Top performers / Alpha
     2: "morning",        # 10:00 ET - 30min after market open
     3: "midday",         # 12:30 ET - Lunch break engagement
     4: "power_hour",     # 15:30 ET - CRITICAL: Power Hour reaction
@@ -130,11 +666,13 @@ class Tweet:
 @dataclass
 class WeeklyContent:
     """All content for the week."""
-    pass_signals: List[Dict] = field(default_factory=list)
-    caution_signals: List[Dict] = field(default_factory=list)
-    sell_signals: List[Dict] = field(default_factory=list)
+    # Signals (CRIT-2: Separate CONSIDER from CAUTION)
+    pass_signals: List[Dict] = field(default_factory=list)        # PASS - cleared all 5 gates
+    consider_signals: List[Dict] = field(default_factory=list)    # CONSIDER - passed gates 1-4 (bullish watchlist)
+    caution_signals: List[Dict] = field(default_factory=list)     # Open positions with issues (warnings)
+    sell_signals: List[Dict] = field(default_factory=list)        # EXIT - stop triggered
     open_positions: List[Dict] = field(default_factory=list)
-    closed_trades: List[Dict] = field(default_factory=list)  # NEW
+    closed_trades: List[Dict] = field(default_factory=list)
     prime_themes: List[Dict] = field(default_factory=list)
     investable_themes: List[Dict] = field(default_factory=list)
     selective_themes: List[Dict] = field(default_factory=list)
@@ -162,58 +700,76 @@ STYLE GUIDELINES:
 - Data-driven, specific numbers when available
 - Professional trader voice, not hype
 - Occasional humor is OK
-- No financial advice disclaimers in tweets (save for bio)
+- Keep legal disclaimers in bio/newsletter, but NEVER give explicit "buy/sell this stock" advice in tweets
+- Frame all content as educational/observational, not as financial advice
 - All times in Eastern Time (ET)
 
 CRITICAL MARKETING LANGUAGE RULES - BANNED TERMS:
 NEVER use these terms in any tweet:
 - "HMA", "Hull Moving Average", "HMA Pivot"
 - "Banker indicator", "Banker >= 55"
-- "20% trailing stop", "20% stop", "trailing stop"
+- "20% trailing stop", "20% stop"
 - "Beta >= 1.5", "beta threshold"
 - "Break of Structure", "BoS", "BOS", "Weekly BoS"
 - "Tier 1", "Tier 2", "Tier 3", "TIER1", "TIER2", "TIER3"
 - "Gatekeeper"
 - "UK ISA", "ISA account", "GMT", "BST", "UK Time"
 - "RSI", "MACD", "KDJ"
+- "Forensic Audit", "5th Gate", "Gate 5" (use "final gate" or "cleared all gates")
+- "Volatility Expansion Criteria", "Volatility Expansion"
+- "Institutional Accumulation Divergence" (use "institutional accumulation" only)
+- "Structural Pivot Confirmation" (use "technical setup" or "momentum confirmed")
+- "Capital Preservation Protocol" (use "systematic stop" or "trailing stop")
+- "proprietary entry", "proprietary signal" (use "TEAL signal")
+- "buy signal", "Buy signal" (use "TEAL signal")
+- "PASS signal" (use "TEAL signal")
+- "Roth IRA", "Roth", "401k", "401(k)" (audience-neutral - no region-specific)
+- "PDT", "PDT rule", "pattern day trader" (audience-neutral - no region-specific)
 
 APPROVED VOCABULARY - USE THESE INSTEAD:
-- "Structural Pivot Confirmation" (not HMA Pivot)
-- "Institutional Accumulation Divergence" (not Banker indicator)
-- "Volatility Expansion Criteria" (not Beta >= 1.5)
-- "Capital Preservation Protocol" (not 20% trailing stop)
-- "Structural Trend Confirmation" (not Weekly BoS)
-- "The 5th Gate: Forensic Audit" (not Gatekeeper)
-- "Conviction Rating" (not Tier 1/2/3)
-- "Sector Flow Analysis" (not Theme scoring)
+- "TEAL signal" (ALWAYS use this for buy signals - this is our brand)
+- "5-gate screening system" (don't mention individual gate names)
+- "Cleared all gates" or "cleared all 5 gates" (not Forensic Audit, not Gate 5)
+- "Systematic stop" or "trailing stop" (not Capital Preservation Protocol)
+- "Momentum confirmed" or "technical setup confirmed" (not Weekly BoS)
+- "High conviction" (not Tier 1/2/3)
+- "Institutional accumulation" (not "Institutional Accumulation Divergence")
 
-US AUDIENCE CONTENT HOOKS:
+AUDIENCE CONTENT HOOKS (audience-neutral):
 1. BEAT SPY - Alpha over indexing, "Stop indexing. Start selecting."
-2. ROTH IRA - Tax-free compounding, retirement account momentum
-3. PDT-FRIENDLY - No $25k requirement, weekly timeframe, 15 min/week
-4. POWER HOUR - 15:30-16:00 ET market reaction, relative strength
-5. SECTOR ROTATION - Following institutional flows between themes
+2. TIME-FRIENDLY - Weekly timeframe suits busy schedules
+3. POWER HOUR - 15:30-16:00 ET market reaction, relative strength
+4. SECTOR ROTATION - Following institutional flows between themes
 
 APPROVED POWER PHRASES:
 - "Proprietary 5-gate screening system"
 - "Filters 1,800 stocks to 3-5 actionable signals"
-- "Institutional Accumulation Divergence detected"
-- "Structural Pivot Confirmation triggered"
-- "Forensic Audit cleared"
-- "Capital Preservation Protocol activated"
+- "TEAL signal triggered" (NOT "buy signal")
+- "Cleared all 5 gates" (NOT "Forensic Audit cleared")
+- "Systematic exit discipline" (NOT "Capital Preservation Protocol")
 - "The system protects capital so we live to fight another day"
 - "No ego, just execution"
 
 CRITICAL HONESTY + POSITIVITY RULES:
-1. NEVER hide losses or only show winners - always include full P&L picture
-2. NEVER exclude stopped-out trades from portfolio updates
-3. When portfolio is down, frame constructively:
-   - "Down 5% YTD but system working - cutting losers fast"
-   - "SPY down 8%, we're down 5% = outperforming in tough conditions"
-4. Frame losses as LEARNING/DISCIPLINE, not failures:
-   - "Stop hit = Capital Preservation Protocol working as designed"
+1. For position_update tweets, ONLY show winning positions (pre-filtered for you)
+2. When portfolio is down overall, focus on themes and education instead
+3. Frame exits as DISCIPLINE, not failures:
+   - "Stop hit = system working as designed"
+   - "Systematic exit discipline in action"
    - "No ego, just execution. On to the next."
-5. When mentioning portfolio, ALWAYS include SPY comparison when outperforming
+4. When mentioning portfolio returns, ALWAYS include SPY comparison when outperforming
+
+LEGAL COMPLIANCE REQUIREMENTS:
+1. NEVER say "buy this stock" or "you should invest in X" - instead say "what we're watching" or "our system identified"
+2. When showing returns/gains, frame as educational/informational:
+   - "Our screening identified $TICKER +25% since signal" (educational)
+   - NOT "Buy $TICKER for 25% gains" (advice)
+3. NEVER make promises about future returns
+4. Use language that implies analysis/observation, not recommendation:
+   - "Cleared all 5 gates" (observation)
+   - "Showing institutional accumulation" (analysis)
+   - "On our radar" (watching, not recommending)
+5. Full "not financial advice" disclaimer is in bio and newsletter - tweets imply educational purpose
 
 CRITICAL: Every tweet MUST either:
 - Link to Substack (sterlingsignals.substack.com)
@@ -246,32 +802,54 @@ def generate_tweets_for_category(
     """Generate tweets for a specific category using Claude."""
 
     # Build context based on category
-    if category == "buy_signal":
+    if category == "buy_signal" or category == "teal_signal":
+        # Show ALL TEAL signals (no limit - marketing overhaul)
+        num_signals = len(content.pass_signals) if content.pass_signals else 0
+        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
         context = f"""
-Generate {count} tweets about new BUY signals that passed ALL our gates.
+Generate {count} tweets about new TEAL signals that passed ALL our gates.
 
-PASS Signals this week (passed technical + thematic + gatekeeper + DD):
+TEAL Signals this week ({num_signals} total - show ALL of them):
 {json.dumps(content.pass_signals, indent=2)}
+
+IMPORTANT: We now show ALL signals that pass our 5-gate system, not just one.
+If multiple signals, mention all tickers.
 
 For each signal, highlight (use GENERIC language):
 - The ticker with $TICKER format
-- DD verdict (STRONG BUY / SPEC BUY)
+- Conviction level using these EXACT terms: "Extremely Bullish" (conv 5), "Bullish" (conv 4), "Watching" (conv 3)
 - Key catalyst driving the trade
-- Our multi-step proprietary screening process (1800 stocks → ~3 winners)
+- Our multi-step proprietary screening process (1800 stocks → {num_signals} TEAL signals)
 - Link to full analysis: sterlingsignals.substack.com
 
 CRITICAL: Do NOT reveal specific indicator names or formulas.
 Use: "proprietary signals", "smart money accumulation", "theme momentum confirmed"
+Use "TEAL signal" branding (not "PASS signal")
+ALWAYS start with {teal_emoji} TEAL Signal emoji prefix
 
-Example format:
-"🎯 $IESC passes our proprietary 5-gate system
+Example format (single signal):
+"{teal_emoji} TEAL Signal: $IESC
+
+Conviction: Bullish
 
 ✅ Technical entry signal confirmed
 ✅ Smart money accumulation detected
 ✅ Hot theme momentum
-✅ Deep due diligence: STRONG BUY
 
 Full analysis in this week's newsletter 👇
+sterlingsignals.substack.com"
+
+Example format (multiple signals):
+"{teal_emoji} TEAL Signals this week:
+
+$TICKER1 - Extremely Bullish
+$TICKER2 - Bullish
+$TICKER3 - Bullish
+
+All cleared our proprietary 5-gate system.
+1,817 stocks → {num_signals} opportunities.
+
+Full analysis 👇
 sterlingsignals.substack.com"
 """
 
@@ -418,89 +996,61 @@ sterlingsignals.substack.com"
 """
 
     elif category == "position_update":
+        # MASTER_TODO_v2: KILLED CATEGORY - Shows individual P&L
+        # Use top_performers instead (safeguarded, winners only)
+        print(f"  🚨 ERROR: position_update category is KILLED. Using top_performers instead.")
+        return generate_tweets_for_category(client, "top_performers", content, count)
+
+    elif category == "sell_signal" or category == "violet_alert":
+        violet_emoji = get_signal_emoji('VIOLET') if CONFIG_AVAILABLE else '🟣'
+        # Filter to only show profitable exits (never show losses)
+        profitable_exits = [s for s in content.sell_signals if s.get('pnl_pct', 0) > 0] if content.sell_signals else []
+
         context = f"""
-Generate {count} tweets about current open positions.
+Generate {count} tweets about EXIT signals (VIOLET alerts).
 
-Open Positions:
-{json.dumps(content.open_positions, indent=2)}
+CRITICAL: Only show PROFITABLE exits. Never show losing positions.
 
-Portfolio Summary:
-- Total positions: {len(content.open_positions)}
-- Recent stops hit: {len([t for t in content.closed_trades if t.get('exit_reason') == 'STOPPED'])} (if any)
-- Unrealized P&L: (calculate from positions)
+PROFITABLE EXITS (show these):
+{json.dumps(profitable_exits, indent=2) if profitable_exits else "No profitable exits this week"}
 
-CRITICAL RULES FOR POSITION UPDATES (use GENERIC language):
-1. ALWAYS show the FULL portfolio picture, not just winners
-2. If any positions are red, INCLUDE them - don't hide losses
-3. If overall portfolio is down, frame constructively:
-   - "Down but managing risk - exits in place"
-   - "Drawdown expected in momentum trading - system handles it"
-4. If recently stopped out, MENTION it as discipline:
-   - "2 exits triggered last week, but that's disciplined risk management"
-5. Include total unrealized P&L, not cherry-picked winners
-
-CRITICAL: Do NOT mention specific stop percentages or indicator names.
-Use: "risk management", "disciplined exits", "following smart money", "theme momentum"
-
-Example formats:
-
-MIXED PORTFOLIO:
-"📊 Portfolio check: 8 positions
-
-🟢 Winners: VNET +12%, WCC +8%, INOD +5%
-🔴 Laggards: APLD -3% (monitoring closely)
-
-Net unrealized: +4.2%
-
-1 exit triggered last week ($SMCI -18%)
-System working. Discipline > ego.
-
-Full breakdown 👇
-sterlingsignals.substack.com"
-
-UNDERWATER PORTFOLIO:
-"📉 Tough week: Portfolio -3.2% unrealized
-
-But here's the thing:
-• All risk management intact
-• SPY down 4.5% (we're outperforming)
-• 2 positions showing strength
-
-Drawdowns happen. Disciplined exits keep us in the game.
-
-How we're positioned 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "sell_signal":
-        context = f"""
-Generate {count} tweets about SELL signals or caution flags.
-
-Sell Signals:
-{json.dumps(content.sell_signals, indent=2)}
-
-Caution Signals:
+Caution Signals (watching closely):
 {json.dumps(content.caution_signals, indent=2)}
 
-Frame as (use GENERIC language):
+For PROFITABLE exits, frame as (use GENERIC language):
+- System protecting gains
+- Trailing stop worked as designed
+- Disciplined exits lock in profits
+- Our system identifying the right exit timing
+
+For CAUTION signals, frame as:
 - Risk management in action
 - Technical signals showing weakness
-- Protecting gains / cutting losses
-- Our system identifying risks early
+- Tightening stops to protect gains
 
 CRITICAL: Do NOT mention specific indicators like "BoS" or specific stop percentages.
-Use phrases like "technical warning signals", "momentum fading", "risk management triggered"
+Use phrases like "systematic exit", "trailing stop triggered", "protecting gains"
 
-Example format:
-"⚠️ $VNET flashing CAUTION
+TEMPLATE for profitable exit:
+"{violet_emoji} VIOLET Alert: $TICKER
 
-Our proprietary signals showing weakness:
-• Technical momentum fading
-• Tightening risk management
+Trailing stop triggered.
 
-Our system catches these early
+Entry: $XX.XX
+Exit: $XX.XX
+Return: +XX.X%
+Held: X weeks
 
-What's your exit strategy? 👇"
+Systematic exits protect gains.
+
+sterlingsignals.substack.com"
+
+RULES:
+- ALWAYS start with {violet_emoji} VIOLET emoji for exits
+- ONLY show profitable exits (NEVER show losses)
+- Include entry price, exit price, and return percentage for winners
+- Include holding period
+- Focus on the system working as designed
 """
 
     elif category == "system_promo":
@@ -675,22 +1225,49 @@ Our edge: systematic multi-step screening
 What's yours? 👇"
 """
 
-    elif category == "beat_spy":
+    elif category == "beat_spy" or category == "benchmark_alpha":
+        # Get SPY comparison data if available
+        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
+        spy_comparison = None
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                spy_comparison = calculate_portfolio_vs_spy(content.open_positions)
+            except:
+                pass
+
+        # Only generate if actually outperforming (safeguard enforced in schedule)
+        outperformance = spy_comparison.get('outperformance', 0) if spy_comparison else 0
+        portfolio_return = spy_comparison.get('portfolio_return', 0) if spy_comparison else 0
+        spy_return = spy_comparison.get('spy_return', 0) if spy_comparison else 0
+
         context = f"""
-Generate {count} tweets comparing our performance to SPY/QQQ for US active investors.
+Generate {count} tweets comparing our performance to SPY/QQQ for active investors.
+
+PERFORMANCE DATA (use these real numbers):
+- Portfolio Return: {portfolio_return:.1f}%
+- SPY Return: {spy_return:.1f}%
+- Outperformance: {outperformance:.1f}%
 
 Open positions: {json.dumps(content.open_positions[:3], indent=2) if content.open_positions else "None"}
 Hot themes: {[t.get('name') for t in content.prime_themes]}
 
+CRITICAL: Only use benchmark comparison messaging when we have real outperformance data.
+If no data, focus on the methodology rather than specific numbers.
+
 TEMPLATES:
-"SPY is chopping sideways.
+"{teal_emoji} TEAL Signal Alpha
+
+SPY is chopping sideways.
 Meanwhile, the system found 3 sectors breaking out with institutional backing.
 Stop indexing. Start selecting.
 sterlingsignals.substack.com"
 
-"QQQ down 2% this week. Our portfolio: +4.2%
-The difference? We follow smart money into specific themes, not broad exposure.
-This week's breakdown:
+"S&P 500: {'+' if spy_return >= 0 else ''}{spy_return:.1f}%
+TEAL Signals: {'+' if portfolio_return >= 0 else ''}{portfolio_return:.1f}%
+
+The difference? We follow smart money into specific themes.
+Not broad exposure — targeted alpha.
+
 sterlingsignals.substack.com"
 
 "Most portfolios mirror the S&P 500.
@@ -699,102 +1276,63 @@ That's alpha. That's the system.
 sterlingsignals.substack.com"
 
 RULES:
-- Reference SPY/QQQ comparison when outperforming
-- Be factual, not arrogant
+- Only post when genuinely outperforming by 5%+
+- Be factual with real numbers, not arrogant
 - Focus on stock selection vs passive indexing
 - ALWAYS link to newsletter
+- Use {teal_emoji} TEAL emoji when showing outperformance
 """
 
     elif category == "roth_ira":
-        context = f"""
-Generate {count} tweets for Roth IRA / tax-advantaged account investors.
-
-Hot themes: {[t.get('name') for t in content.prime_themes]}
-
-TEMPLATES:
-"The Roth IRA hack nobody talks about:
-Instead of holding SPY forever, rotate into momentum winners.
-Tax-free compounding on 30-50% swing trades > 10% annual index returns.
-The system identifies these setups weekly.
-sterlingsignals.substack.com"
-
-"Your Roth doesn't have to be boring index funds.
-Systematic momentum + tax-free compounding = retirement account on steroids.
-This week's themes: {content.prime_themes[0].get('name') if content.prime_themes else 'Power Grid'}
-sterlingsignals.substack.com"
-
-"Perfect Roth setup:
-Institutional Accumulation Divergence detected.
-Sector Flow Analysis aligned.
-Structural Pivot confirmed.
-Tax-free gains if this runs.
-sterlingsignals.substack.com"
-
-RULES:
-- Focus on tax-free compounding angle
-- Mention systematic approach
-- Use APPROVED vocabulary only
-- Never financial advice
-"""
+        # MASTER_TODO_v2: KILLED CATEGORY - Audience-neutral (avoid region-specific content)
+        print(f"  🚨 ERROR: roth_ira category is KILLED. Using theme_hot instead.")
+        return generate_tweets_for_category(client, "theme_hot", content, count)
 
     elif category == "pdt_friendly":
-        context = f"""
-Generate {count} tweets about PDT-friendly swing trading (no $25k requirement).
-
-TEMPLATES:
-"No PDT worries here.
-We trade weekly signals. Buy Monday, set stops, check Friday.
-Pure swing trading. No 9:30 AM stress.
-sterlingsignals.substack.com"
-
-"Day trading requires:
-- $25k minimum (PDT rule)
-- All-day screen time
-- Split-second decisions
-
-This system requires:
-- Any account size
-- 15 minutes/week
-- Patience
-
-Which sounds sustainable?
-sterlingsignals.substack.com"
-
-"The weekly timeframe advantage:
-✓ No PDT restrictions
-✓ No all-day monitoring
-✓ Clear entry/exit signals
-✓ Works with any schedule
-
-How we trade without the $25k requirement:
-sterlingsignals.substack.com"
-
-RULES:
-- Emphasize weekly timeframe = no PDT issues
-- Focus on minimal time commitment
-- Appeal to busy professionals
-"""
+        # MASTER_TODO_v2: KILLED CATEGORY - Audience-neutral (avoid region-specific content)
+        print(f"  🚨 ERROR: pdt_friendly category is KILLED. Using educational instead.")
+        return generate_tweets_for_category(client, "educational", content, count)
 
     elif category == "power_hour":
+        # MASTER_TODO_v2: power_hour MUST NOT show individual position P&L
+        # Only theme-level market commentary allowed
         context = f"""
 Generate {count} Power Hour reaction tweets (15:30-16:00 ET market hours).
 
-Open positions: {json.dumps(content.open_positions[:3], indent=2) if content.open_positions else "None"}
 Hot themes: {[t.get('name') for t in content.prime_themes]}
+Cold themes: {[t.get('name') for t in content.avoid_themes]}
 
-TEMPLATE:
-"Power Hour Check:
-[THEME_NAME] seeing [HIGH/MODERATE/LOW] volume into the close.
-Our pick $[TICKER] currently [UP/DOWN] [PERCENT]%.
-[Brief observation about relative strength vs market]
-Watching for structural confirmation on the weekly close.
+🚨 CRITICAL SAFEGUARD (MASTER_TODO_v2):
+- NO individual ticker P&L (don't say "$TICKER up/down X%")
+- NO position updates or portfolio commentary
+- ONLY theme-level market observations
+
+TEMPLATES:
+"⚡ POWER HOUR
+
+Watching {content.prime_themes[0].get('name', 'infrastructure') if content.prime_themes else 'key themes'} theme into the close.
+
+Relative strength vs broad market.
+
+Full analysis 👇
+sterlingsignals.substack.com"
+
+"⚡ POWER HOUR
+
+Market rotation visible:
+🔥 {content.prime_themes[0].get('name', 'Growth themes') if content.prime_themes else 'Growth'} showing strength
+❄️ {content.avoid_themes[0].get('name', 'Defensive sectors') if content.avoid_themes else 'Defensive'} lagging
+
+Following institutional flows into the close.
+
 sterlingsignals.substack.com"
 
 RULES:
 - Post during 15:30-16:00 ET window (Power Hour)
-- Reference relative strength vs market
+- Reference theme/sector performance ONLY
+- 🚨 NEVER mention individual stocks or P&L percentages
 - Keep observational, not promotional
-- Mention "structural confirmation" language
+- Mention "structural" or "institutional" language
 """
 
     elif category == "sector_rotation":
@@ -831,18 +1369,18 @@ Generate {count} tweets about our weekly filtering funnel.
 
 Scan stats (use these numbers):
 - Total scanned: 1,817
-- Passed Volatility Expansion: ~485
-- Showed Institutional Accumulation: ~48
+- Passed momentum gates: ~485
+- Showed strong accumulation: ~48
 - Theme aligned: ~17
-- Forensic Audit PASS: {len(content.pass_signals) if content.pass_signals else 6}
+- Cleared all 5 gates: {len(content.pass_signals) if content.pass_signals else 6}
 
 TEMPLATE:
 "This week's scan:
 📊 1,817 stocks analyzed
-📉 485 passed Volatility Expansion Criteria
-🔍 48 showed Institutional Accumulation
+📉 485 showed momentum characteristics
+🔍 48 confirmed strong accumulation
 🎯 17 aligned with hot themes
-✅ {len(content.pass_signals) if content.pass_signals else 6} cleared the Forensic Audit
+✅ {len(content.pass_signals) if content.pass_signals else 6} cleared all 5 gates = TEAL signals
 
 {len(content.pass_signals) if content.pass_signals else 6} actionable signals. Full breakdown in the newsletter.
 sterlingsignals.substack.com"
@@ -883,8 +1421,237 @@ RULES:
 - Use "Capital Preservation Protocol" not "trailing stop"
 """
 
+    elif category == "top_performers" or category == "winner_showcase":
+        # Phase 9: Renamed from weekly_wins to avoid misleading terminology
+        # Filter to only show winning positions (safeguard already checked)
+        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
+        winners = []
+        if SIGNAL_TRACKER_AVAILABLE:
+            winners = filter_public_positions(content.open_positions)
+        else:
+            # Fallback: manually filter to positive P&L only
+            winners = [p for p in content.open_positions if p.get('pnl_pct', 0) >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)]
+
+        # Format positions with holding periods for honest display
+        formatted_positions = format_positions_for_display(winners, max_positions=5)
+
+        # Check if we can show entry prices (above 25% threshold)
+        can_show_entries = any(p.get('pnl_pct', 0) >= 25.0 for p in winners) if winners else False
+
+        context = f"""
+Generate {count} tweets showcasing our top-performing positions (ONLY positive positions).
+
+CRITICAL: Always show holding period with each return.
+Format: "$TICKER +XX% (X weeks held)" NOT just "$TICKER +XX%"
+
+TOP PERFORMING POSITIONS (with holding periods):
+{formatted_positions}
+
+{TIMEFRAME_DISCLAIMERS.get('medium', 'Total gain since entry, not weekly movement.')}
+
+ENTRY PRICE RULE: {"For positions above 25% gain, you MAY show entry prices (e.g., '$XX.XX → $YY.YY')" if can_show_entries else "Do NOT show entry prices (not above 25% threshold)"}
+
+CRITICAL SAFEGUARD: This tweet type ONLY shows winners. Never mention losers.
+
+TEMPLATE:
+"{teal_emoji} TEAL Signal Winners
+
+Best positions since signal entry:
+
+$TICKER1: +XX% (Xw held)
+$TICKER2: +XX% (Xw held)
+$TICKER3: +XX% (Xw held)
+
+Returns measured from entry. Targeting 50-100% over months.
+1,817 stocks scanned → {len(content.pass_signals) if content.pass_signals else 'X'} TEAL signals
+
+Full analysis 👇
+sterlingsignals.substack.com"
+
+RULES:
+- ALWAYS start with {teal_emoji} TEAL emoji
+- ALWAYS include holding period with each P&L (e.g., "4 weeks held")
+- ONLY show positions with positive P&L
+- Never mention any losers or underwater positions
+- Only show entry prices for positions above 25% gain
+- Clarify these are TOTAL returns since entry, not weekly gains
+- Focus on the system identifying these winners
+- Always link to newsletter
+- Use "TEAL signal" not "PASS signal"
+"""
+
+    elif category == "self_quote" or category == "milestone_alerts" or category == "hall_of_fame":
+        # Get uncelebrated wins from signal tracker
+        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
+        big_wins_data = []
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                big_wins_data = get_uncelebrated_wins()
+            except:
+                pass
+
+        context = f"""
+Generate {count} celebration tweets for big wins from past TEAL signals.
+
+CRITICAL: Always include holding period with the return (e.g., "X weeks held")
+CRITICAL: Always include entry price for milestone celebrations (positions above 25%)
+
+BIG WINS TO CELEBRATE (uncelebrated threshold crossings):
+{json.dumps([{{'ticker': w.ticker, 'entry_price': w.entry_price, 'current_price': w.current_price, 'pnl_pct': w.pnl_pct, 'signal_date': w.signal_date, 'theme': w.theme, 'threshold_crossed': w.threshold_crossed}} for w in big_wins_data[:3]], indent=2) if big_wins_data else "No new big wins to celebrate"}
+
+{TIMEFRAME_DISCLAIMERS.get('medium', 'Total gain since entry, not weekly movement.')}
+
+TEMPLATE FOR 25%+ WIN (MILESTONE):
+"{teal_emoji} TEAL Signal Update: $TICKER
+
+Entry: $ENTRY on [DATE]
+Now: $CURRENT (+XX% over X weeks)
+
+Another TEAL signal delivering.
+The 5-gate system works.
+
+More signals every week 👇
+sterlingsignals.substack.com"
+
+TEMPLATE FOR 50%+ WIN (HOME RUN):
+"🏆 HOME RUN: $TICKER
+
+{teal_emoji} TEAL Signal Entry: $ENTRY on [DATE]
+Now: $CURRENT
+Gain: +XX% (X weeks held)
+
+When all 5 gates align, this is what happens.
+Our proprietary system found this before the crowd.
+
+Want signals like this? 👇
+sterlingsignals.substack.com"
+
+TEMPLATE FOR 100%+ WIN (HALL OF FAME):
+"🚀 HALL OF FAME: $TICKER DOUBLED
+
+{teal_emoji} TEAL Signal Entry: $ENTRY on [DATE]
+Current: $CURRENT
+Return: +XXX% (X months held)
+
+This is what disciplined momentum trading delivers.
+Proprietary screening. Systematic execution.
+
+Join the journey 👇
+sterlingsignals.substack.com"
+
+RULES:
+- ALWAYS include entry price for milestone celebrations
+- Each big win gets ONE celebration post per threshold
+- Use the appropriate template based on gain level
+- Always include entry price, signal date, AND holding period
+- Focus on the system, not luck
+- Use "TEAL signal" branding with {teal_emoji} emoji
+"""
+
+    elif category == "consider_spotlight" or category == "amber_watch":
+        amber_emoji = get_signal_emoji('AMBER') if CONFIG_AVAILABLE else '🟠'
+        context = f"""
+Generate {count} tweets about stocks on our watchlist (CONSIDER classification).
+
+WATCHLIST STOCKS (passed gates 1-4, watching gate 5):
+{json.dumps(content.consider_signals[:5], indent=2) if content.consider_signals else "No watchlist stocks this week"}
+
+These are stocks that:
+- Passed technical screening (4/5 gates)
+- Show institutional accumulation
+- Align with hot themes
+- But haven't cleared our final gate yet
+
+TEMPLATE:
+"{amber_emoji} AMBER Watchlist
+
+Stocks cleared 4/5 gates - watching for TEAL:
+
+$TICKER1 at $XX.XX - Theme1
+$TICKER2 at $XX.XX - Theme2
+
+Not TEAL signals yet, but worth watching.
+Save this. We'll update when they clear all 5 gates.
+
+Full watchlist 👇
+sterlingsignals.substack.com"
+
+RULES:
+- ALWAYS start with {amber_emoji} AMBER emoji
+- DO NOT frame as buy recommendations
+- Use "AMBER Watchlist" or "On Our Radar" language
+- Explain they need all 5 gates cleared for TEAL signal
+- Create curiosity without over-promising
+- Use "TEAL signal" when referencing full signals
+- NEVER say "Forensic Audit" - use "final gate" or "full confirmation"
+- NEVER say "Gate 5" - use "final gate" or "all 5 gates"
+- NEVER say "proprietary entry" - use "TEAL signal"
+"""
+
+    elif category == "weekly_recap":
+        # High-engagement weekly summary with color signals
+        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
+        amber_emoji = get_signal_emoji('AMBER') if CONFIG_AVAILABLE else '🟠'
+
+        # Get winners for showcase
+        winners = []
+        if SIGNAL_TRACKER_AVAILABLE:
+            winners = filter_public_positions(content.open_positions)
+        else:
+            winners = [p for p in content.open_positions if p.get('pnl_pct', 0) >= 15.0]
+
+        winners = sorted(winners, key=lambda x: x.get('pnl_pct', 0), reverse=True)[:3]
+
+        # Get SPY comparison
+        spy_comparison = None
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                spy_comparison = calculate_portfolio_vs_spy(content.open_positions)
+            except:
+                pass
+
+        spy_return = spy_comparison.get('spy_return', 0) if spy_comparison else 0
+
+        context = f"""
+Generate {count} high-engagement weekly recap tweets summarizing the week's signals.
+
+THIS WEEK'S TEAL SIGNALS:
+{json.dumps(content.pass_signals[:5], indent=2) if content.pass_signals else "None"}
+
+TOP PERFORMING POSITIONS (show conviction language):
+{json.dumps(winners, indent=2) if winners else "None"}
+
+SPY RETURN THIS PERIOD: {spy_return:+.1f}%
+
+TEMPLATE:
+"{teal_emoji} TEAL signals this week:
+
+$TICKER1 — Extremely Bullish
+$TICKER2 — Bullish
+$TICKER3 — Bullish
+
+Meanwhile... S&P 500: {spy_return:+.1f}%
+
+Our 5-Gate System continues to find asymmetric setups.
+
+Full analysis 👇
+sterlingsignals.substack.com"
+
+CONVICTION LANGUAGE (use these EXACT terms):
+- Conviction 5 = "Extremely Bullish"
+- Conviction 4 = "Bullish"
+- Conviction 3 = "Watching"
+
+RULES:
+- ALWAYS start with {teal_emoji} TEAL emoji
+- Use conviction language (Extremely Bullish, Bullish, Watching)
+- Compare to SPY when outperforming
+- Encourage saves and engagement
+- Link to newsletter
+"""
+
     else:
-        context = f"Generate {count} general financial content tweets. Always link to sterlingsignals.substack.com. Use APPROVED vocabulary - never mention HMA, Banker, BoS, 20% stop, Tier 1/2/3, or UK ISA."
+        context = f"Generate {count} general financial content tweets. Always link to sterlingsignals.substack.com. Use APPROVED vocabulary - never mention HMA, Banker, BoS, 20% stop, Tier 1/2/3, or region-specific terms (ISA, Roth IRA, etc)."
 
     # Call Claude
     try:
@@ -914,8 +1681,14 @@ RULES:
         return []
 
 
-def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Tweet]:
-    """Generate all 21 tweets for the week."""
+def generate_all_tweets(content: WeeklyContent, mock: bool = False, cold_streak_active: bool = False) -> List[Tweet]:
+    """Generate all 21 tweets for the week.
+
+    Args:
+        content: WeeklyContent with all scanner data
+        mock: If True, generate mock tweets without API calls
+        cold_streak_active: If True, reduce position-focused content (GAP 38 fix)
+    """
 
     if mock:
         return generate_mock_tweets()
@@ -936,55 +1709,80 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
     # Slot 1 = 08:00 ET (Pre-market), Slot 4 = 15:30 ET (Power Hour) are CRITICAL
     stopped_trades = [t for t in content.closed_trades if t.get('status') == 'STOPPED'] if content.closed_trades else []
 
+    # Check safeguards for dynamic category selection
+    # These determine whether certain content categories can be posted
+    can_post_beat_spy = False
+    can_post_top_performers = False  # Phase 9: Renamed from can_post_weekly_wins
+    uncelebrated_wins = []
+
+    if SIGNAL_TRACKER_AVAILABLE:
+        try:
+            can_post_beat_spy = should_post_beat_spy(content.open_positions)
+            can_post_top_performers = has_enough_wins(content.open_positions)
+            uncelebrated_wins = get_uncelebrated_wins()
+            print(f"  📊 Safeguard checks: beat_spy={can_post_beat_spy}, top_performers={can_post_top_performers}, uncelebrated_wins={len(uncelebrated_wins)}")
+        except Exception as e:
+            print(f"  ⚠️ Safeguard check failed: {e}")
+
+    # GAP 38 fix: Cold streak enforcement
+    # When in cold streak, disable position-focused categories to avoid drawing attention to losses
+    if cold_streak_active:
+        print(f"  🥶 COLD STREAK ACTIVE - Reducing position-focused content")
+        can_post_beat_spy = False  # Don't compare to SPY during losing streak
+        can_post_top_performers = False  # Don't highlight wins when recent losses
+        uncelebrated_wins = []  # Don't self-quote during cold streak
+    else:
+        print("  ⚠️ Signal tracker not available - using fallback categories")
+
+    # Dynamic category selection based on safeguards
+    # If safeguard fails, use fallback category
+    beat_spy_or_fallback = "beat_spy" if can_post_beat_spy else "engagement"
+    top_performers_or_fallback = "top_performers" if can_post_top_performers else "theme_hot"  # Phase 9: Renamed
+    self_quote_or_fallback = "self_quote" if uncelebrated_wins else "consider_spotlight" if content.consider_signals else "theme_hot"
+
     categories_schedule = [
-        # Monday: Week kickoff - US focus with alpha hooks
-        ("Monday", 1, "beat_spy"),             # 08:00 ET - Alpha hook (pre-market)
-        ("Monday", 2, "theme_hot"),            # 10:00 ET - Theme momentum
-        ("Monday", 3, "position_update"),      # 12:30 ET - Portfolio check
-        ("Monday", 4, "power_hour"),           # 15:30 ET - Power Hour reaction (CRITICAL)
-        ("Monday", 5, "market_insight"),       # 18:00 ET - Week ahead
+        # Saturday: Newsletter day - showcase ALL TEAL signals + performance
+        ("Saturday", 1, top_performers_or_fallback),  # 08:00 ET - Top performers (safeguarded)
+        ("Saturday", 2, "thread_buy_signal"),      # 10:00 ET - 🧵 Deep dive on top signal
+        ("Saturday", 3, "theme_hot"),              # 12:30 ET - Theme momentum
+        ("Saturday", 4, "funnel_graphic"),         # 15:30 ET - Scanner stats
+        ("Saturday", 5, "engagement"),             # 18:00 ET - Poll/discussion
 
-        # Tuesday: Position updates + tax angle
-        ("Tuesday", 1, "roth_ira"),            # 08:00 ET - Tax-advantaged angle
-        ("Tuesday", 2, "position_update"),     # 10:00 ET - Portfolio Pulse day
-        ("Tuesday", 3, "buy_signal" if content.pass_signals else "theme_hot"),
-        ("Tuesday", 4, "power_hour"),          # 15:30 ET - Power Hour
-        ("Tuesday", 5, "educational"),         # 18:00 ET - Trading lesson
+        # Sunday: All TEAL signals + consider spotlight
+        ("Sunday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - ALL TEAL signals
+        ("Sunday", 2, "consider_spotlight" if content.consider_signals else "theme_hot"),  # 10:00 ET - Watchlist stocks
+        ("Sunday", 3, beat_spy_or_fallback),       # 12:30 ET - SPY comparison (safeguarded)
+        ("Sunday", 4, "engagement"),               # 18:00 ET - Community
 
-        # Wednesday: Educational + PDT-friendly
-        ("Wednesday", 1, "pdt_friendly"),      # 08:00 ET - PDT-free swing trading
-        ("Wednesday", 2, "thread_educational"),# 10:00 ET - 🧵 Educational thread (5 tweets)
-        ("Wednesday", 3, "theme_hot"),         # 12:30 ET - Theme spotlight
-        ("Wednesday", 4, "power_hour"),        # 15:30 ET - Power Hour
-        ("Wednesday", 5, "engagement"),        # 18:00 ET - Community Q&A
+        # Monday: Week kickoff + celebrate wins
+        ("Monday", 1, "theme_hot"),                # 08:00 ET - Hot theme
+        ("Monday", 2, self_quote_or_fallback),     # 10:00 ET - Big win celebration (if any)
+        ("Monday", 3, "power_hour"),               # 15:30 ET - Power Hour (CRITICAL)
+        ("Monday", 4, "engagement"),               # 18:00 ET - Discussion
 
-        # Thursday: Trade spotlight + sector rotation
-        ("Thursday", 1, "beat_spy"),           # 08:00 ET - Alpha comparison
-        ("Thursday", 2, "buy_signal" if content.pass_signals else "position_update"),
-        ("Thursday", 3, "sector_rotation"),    # 12:30 ET - Sector flows
-        ("Thursday", 4, "power_hour"),         # 15:30 ET - Power Hour
-        ("Thursday", 5, "educational"),        # 18:00 ET - Risk management
+        # Tuesday: Early movers + education (MASTER_TODO_v2: removed roth_ira - wrong audience)
+        ("Tuesday", 1, "early_movers" if content.open_positions else "theme_hot"),  # 08:00 ET - New signals showing strength
+        ("Tuesday", 2, "theme_hot"),               # 10:00 ET - Theme momentum
+        ("Tuesday", 3, "power_hour"),              # 15:30 ET - Power Hour
+        ("Tuesday", 4, "educational"),             # 18:00 ET - Trading lesson
 
-        # Friday: Scanner tease + Funnel graphic
-        ("Friday", 1, "roth_ira"),             # 08:00 ET - Tax angle
-        ("Friday", 2, "funnel_graphic"),       # 10:00 ET - Weekly funnel visual
-        ("Friday", 3, "system_promo"),         # 12:30 ET - Newsletter teaser
-        ("Friday", 4, "power_hour"),           # 15:30 ET - Power Hour
-        ("Friday", 5, "market_insight"),       # 18:00 ET - Week recap
+        # Wednesday: Consider spotlight + educational (MASTER_TODO_v2: removed pdt_friendly - wrong audience)
+        ("Wednesday", 1, "consider_spotlight" if content.consider_signals else "theme_hot"),  # 08:00 ET - On Our Radar stocks
+        ("Wednesday", 2, "theme_hot"),             # 10:00 ET - Theme spotlight
+        ("Wednesday", 3, "power_hour"),            # 15:30 ET - Power Hour
+        ("Wednesday", 4, "engagement"),            # 18:00 ET - Community Q&A
 
-        # Saturday: Newsletter day - ONE buy signal max (prevents portfolio bloat)
-        ("Saturday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - THE weekly pick
-        ("Saturday", 2, "thread_buy_signal"),  # 10:00 ET - 🧵 Deep dive on signal (5 tweets)
-        ("Saturday", 3, "funnel_graphic"),     # 12:30 ET - Funnel stats
-        ("Saturday", 4, "position_update" if content.open_positions else "educational"),  # 15:30 ET - Portfolio status
-        ("Saturday", 5, "engagement"),         # 18:00 ET - Discussion
+        # Thursday: Alpha comparison + celebrate wins
+        ("Thursday", 1, beat_spy_or_fallback),     # 08:00 ET - SPY comparison (safeguarded)
+        ("Thursday", 2, self_quote_or_fallback),   # 10:00 ET - Big win celebration (if any)
+        ("Thursday", 3, "power_hour"),             # 15:30 ET - Power Hour
+        ("Thursday", 4, "educational"),            # 18:00 ET - Risk management
 
-        # Sunday: Reinforce THE signal before Monday entry
-        ("Sunday", 1, "buy_signal" if content.pass_signals else "market_insight"),  # 08:00 ET - Reinforce the pick
-        ("Sunday", 2, "sector_rotation"),      # 10:00 ET - Sector flow preview
-        ("Sunday", 3, "thread_week_ahead"),    # 12:30 ET - 🧵 Week ahead preview (5 tweets)
-        ("Sunday", 4, "theme_hot"),            # 15:30 ET - Hot theme for week
-        ("Sunday", 5, "engagement"),           # 18:00 ET - Week kickoff poll
+        # Friday: Scanner tease + reinforce signals
+        ("Friday", 1, "buy_signal" if content.pass_signals else "theme_hot"),  # 08:00 ET - Reinforce TEAL signals
+        ("Friday", 2, "funnel_graphic"),           # 10:00 ET - Weekly funnel visual
+        ("Friday", 3, "power_hour"),               # 15:30 ET - Power Hour
+        ("Friday", 4, "theme_hot"),                # 18:00 ET - Theme for week ahead
     ]
 
     # Group by category to batch API calls (separate threads from regular tweets)
@@ -1093,17 +1891,30 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False) -> List[Twee
         if ticker and ticker in content.chart_manifest:
             image_path = content.chart_manifest[ticker]
 
+        # CRITICAL FIX: Always use the SCHEDULED category, not what Claude returned
+        # Claude sometimes returns "system_promo" when we scheduled "consider_spotlight"
+        # The schedule is authoritative - it determines content categorization for analytics
         tweet = Tweet(
             id=f"{day.lower()}_{slot}_{category}",
             day=day,
             slot=slot,
-            category=tweet_data.get("category", category),
+            category=category,  # USE SCHEDULED CATEGORY - not tweet_data.get("category")
             text=tweet_data.get("text", ""),
             ticker=ticker,
             theme=tweet_data.get("theme"),
             image_path=image_path,
             scheduled_date=scheduled_date
         )
+
+        # MASTER_TODO_v2: Validate and fix tweet before adding to queue
+        tweet_dict = tweet.to_dict() if hasattr(tweet, 'to_dict') else {
+            'id': tweet.id, 'text': tweet.text, 'category': tweet.category,
+            'day': tweet.day, 'slot': tweet.slot, 'scheduled_date': tweet.scheduled_date,
+            'ticker': tweet.ticker, 'theme': tweet.theme, 'image_path': tweet.image_path
+        }
+        fixed_tweet = validate_and_fix_tweet(tweet_dict, [t.to_dict() if hasattr(t, 'to_dict') else t for t in all_tweets])
+        # Update tweet with fixed text
+        tweet.text = fixed_tweet.get('text', tweet.text)
 
         all_tweets.append(tweet)
         all_content.append(tweet)
@@ -1225,7 +2036,10 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
         data = parse_briefing_markdown(briefing_path)
 
         content.pass_signals = data.pass_signals
-        content.caution_signals = data.caution_signals
+        # CRIT-2: Use consider_signals for bullish watchlist (passed gates 1-4)
+        # data.caution_signals contains bullish watchlist items (misleading legacy name)
+        content.consider_signals = data.caution_signals  # Bullish watchlist
+        content.caution_signals = []  # Reserved for open position warnings (populated below)
         content.sell_signals = data.sell_signals
         content.open_positions = data.open_positions
         content.prime_themes = data.prime_themes
@@ -1233,6 +2047,16 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
         content.selective_themes = data.selective_themes
         content.avoid_themes = data.avoid_themes
         content.scan_date = data.scan_date
+
+        # Filter expired CONSIDER signals (default 21 days)
+        # Add scan_date to each signal so expiry can be checked
+        if SIGNAL_TRACKER_AVAILABLE and content.consider_signals:
+            for sig in content.consider_signals:
+                if 'signal_date' not in sig and content.scan_date:
+                    sig['signal_date'] = content.scan_date
+            content.consider_signals = filter_expired_consider_signals(
+                content.consider_signals, max_age_days=21
+            )
 
     except ImportError:
         print("  ⚠ Could not import grok_prompts_generator, using basic parsing")
@@ -1335,25 +2159,35 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
             ticker = pos.get('ticker', '').upper()
             entry_date = pos.get('entry_date', '')
 
-            # Normalize entry_date to YYYY-MM-DD format for comparison
+            # Normalize entry_date and compare using datetime objects (not strings)
             if entry_date:
+                entry_dt = None
                 # Handle various date formats
                 for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y']:
                     try:
-                        parsed_date = datetime.strptime(entry_date, fmt)
-                        entry_date_normalized = parsed_date.strftime('%Y-%m-%d')
+                        entry_dt = datetime.strptime(entry_date, fmt)
                         break
                     except ValueError:
                         continue
-                else:
-                    entry_date_normalized = entry_date  # Use as-is if parsing fails
+
+                if entry_dt is None:
+                    # Could not parse entry_date - skip this position to be safe
+                    print(f"  ⚠ Could not parse entry_date for {ticker}: {entry_date}")
+                    continue
+
+                # Parse scan_date for proper datetime comparison
+                try:
+                    scan_dt = datetime.strptime(scan_date, '%Y-%m-%d')
+                except ValueError:
+                    scan_dt = datetime.now()
 
                 # If entry_date is BEFORE scan_date, it's a pre-existing position
-                if entry_date_normalized < scan_date:
+                if entry_dt < scan_dt:
                     pre_existing_tickers.add(ticker)
                 else:
                     # This is a NEW signal from this week's scan - don't filter it
-                    print(f"  ✨ {ticker} is a NEW signal (entry: {entry_date_normalized}, scan: {scan_date})")
+                    entry_str = entry_dt.strftime('%Y-%m-%d')
+                    print(f"  ✨ {ticker} is a NEW signal (entry: {entry_str}, scan: {scan_date})")
 
         original_pass_count = len(content.pass_signals)
         content.pass_signals = [
@@ -1365,10 +2199,9 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
             filtered_tickers = [sig.get('ticker') for sig in content.pass_signals if sig.get('ticker', '').upper() in pre_existing_tickers]
             print(f"  🔄 Filtered {removed} PASS signal(s) already in portfolio from previous weeks")
 
-        # LIMIT: Only keep the highest conviction signal (max 1 per week)
-        # This prevents portfolio bloat - we add max 1 new position per week
-        if len(content.pass_signals) > 1:
-            # Sort by conviction (descending), then by theme score if available
+        # Show all PASS signals (no limit - removed per marketing overhaul)
+        if len(content.pass_signals) > 0:
+            # Sort by conviction (descending), then by theme score for display order
             content.pass_signals.sort(
                 key=lambda x: (
                     int(x.get('conviction', 0)) if isinstance(x.get('conviction'), (int, str)) and str(x.get('conviction', '')).isdigit() else 0,
@@ -1376,10 +2209,7 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
                 ),
                 reverse=True
             )
-            top_signal = content.pass_signals[0]
-            print(f"  🎯 LIMITED to 1 buy signal: {top_signal.get('ticker')} (conviction: {top_signal.get('conviction', 'N/A')})")
-            print(f"     Skipped: {', '.join(s.get('ticker', '?') for s in content.pass_signals[1:])}")
-            content.pass_signals = [top_signal]
+            print(f"  🎯 ALL {len(content.pass_signals)} TEAL signal(s) will be shown: {', '.join(s.get('ticker', '?') for s in content.pass_signals)}")
 
     # Load chart manifest
     manifest_path = CHARTS_DIR / "chart_manifest.json"
@@ -1394,6 +2224,125 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
 # ═══════════════════════════════════════════════════════════════════════════════
 # OUTPUT
 # ═══════════════════════════════════════════════════════════════════════════════
+
+TWITTER_MAX_LENGTH = 280
+
+
+def count_ticker_mentions(tweets: List) -> Dict[str, int]:
+    """Count mentions of each ticker across all tweets.
+
+    Args:
+        tweets: List of Tweet objects or dicts
+
+    Returns:
+        Dict mapping ticker -> mention count
+    """
+    counts = {}
+    for tweet in tweets:
+        # Handle both Tweet objects and dicts
+        if isinstance(tweet, Tweet):
+            text = tweet.text
+            ticker = tweet.ticker
+        elif isinstance(tweet, dict):
+            text = tweet.get('text', '')
+            ticker = tweet.get('ticker', '')
+        else:
+            continue
+
+        # Count $TICKER patterns in text
+        ticker_matches = re.findall(r'\$([A-Z]{1,5})', text)
+        for t in ticker_matches:
+            counts[t] = counts.get(t, 0) + 1
+
+        # Also count explicit ticker field
+        if ticker and ticker not in [t for t in ticker_matches]:
+            counts[ticker] = counts.get(ticker, 0) + 1
+
+    return counts
+
+
+def validate_ticker_frequency(tweets: List, max_mentions: int = None) -> tuple[List[str], Dict[str, int]]:
+    """Check for tickers that appear too many times.
+
+    Args:
+        tweets: List of Tweet objects or dicts
+        max_mentions: Maximum allowed mentions (default from config)
+
+    Returns:
+        tuple: (list of over-mentioned tickers, full counts dict)
+    """
+    # Get threshold from config
+    if max_mentions is None:
+        try:
+            from config import MARKETING_THRESHOLDS
+            max_mentions = MARKETING_THRESHOLDS.get('max_ticker_mentions_per_week', 4)
+        except ImportError:
+            max_mentions = 4
+
+    counts = count_ticker_mentions(tweets)
+    over_mentioned = [t for t, c in counts.items() if c > max_mentions]
+
+    return over_mentioned, counts
+
+
+def validate_tweet_lengths(tweets: List, auto_truncate: bool = True) -> List:
+    """Validate tweet lengths and auto-truncate any over 280 chars.
+
+    Args:
+        tweets: List of Tweet objects or dicts
+        auto_truncate: If True, automatically truncate overlong tweets (default: True)
+
+    Returns:
+        List with overlong tweets truncated (if auto_truncate=True)
+    """
+    warnings = []
+    truncated_count = 0
+
+    for i, tweet in enumerate(tweets):
+        # Handle both Tweet objects and dicts
+        if isinstance(tweet, Tweet):
+            text = tweet.text
+            tweet_id = tweet.id
+        elif isinstance(tweet, dict):
+            text = tweet.get('text', '')
+            tweet_id = tweet.get('id', f'tweet_{i}')
+        else:
+            continue
+
+        length = len(text)
+        if length > TWITTER_MAX_LENGTH:
+            over_by = length - TWITTER_MAX_LENGTH
+
+            if auto_truncate and isinstance(tweet, dict):
+                # Truncate at word boundary with ellipsis
+                truncate_at = TWITTER_MAX_LENGTH - 3  # Room for "..."
+                truncated = text[:truncate_at].rsplit(' ', 1)[0] + '...'
+
+                # Ensure we actually shortened it (in case of very long word)
+                if len(truncated) > TWITTER_MAX_LENGTH:
+                    truncated = text[:truncate_at] + '...'
+
+                tweet['text'] = truncated
+                tweet['_was_truncated'] = True
+                tweet['_original_length'] = length
+                truncated_count += 1
+                warnings.append(f"    🔧 Tweet {tweet_id}: truncated from {length} to {len(truncated)} chars")
+            else:
+                warnings.append(f"    ⚠️ Tweet {tweet_id}: {length} chars (over by {over_by})")
+                if isinstance(tweet, dict):
+                    tweet['_length_warning'] = f"Over {TWITTER_MAX_LENGTH} by {over_by} chars - needs editing"
+
+    if warnings:
+        print("\n  📏 TWEET LENGTH VALIDATION:")
+        for warning in warnings:
+            print(warning)
+        if truncated_count > 0:
+            print(f"\n  🔧 Auto-truncated {truncated_count} tweet(s) to fit {TWITTER_MAX_LENGTH} character limit.\n")
+    else:
+        print(f"  ✅ All tweets under {TWITTER_MAX_LENGTH} characters")
+
+    return tweets
+
 
 def save_tweets(content: List, output_dir: Path) -> Path:
     """Save tweets and threads to JSON files.
@@ -1425,6 +2374,17 @@ def save_tweets(content: List, output_dir: Path) -> Path:
         return (date, slot)
 
     serialized = sorted(serialized, key=sort_key)
+
+    # VALIDATION: Check ticker frequency
+    over_mentioned, ticker_counts = validate_ticker_frequency(serialized)
+    if over_mentioned:
+        print(f"\n  ⚠️  TICKER FREQUENCY WARNING:")
+        for ticker in over_mentioned:
+            print(f"     ${ticker} mentioned {ticker_counts[ticker]} times (max recommended: 4)")
+        print(f"     Consider diversifying content to avoid engagement fatigue.\n")
+
+    # VALIDATION: Check tweet lengths before saving
+    serialized = validate_tweet_lengths(serialized)
 
     tweets_json = json.dumps(serialized, indent=2)
 
@@ -1523,6 +2483,12 @@ Your threads are:
 - Uses line breaks for readability
 - Ends with CTA to Substack
 
+CRITICAL BRANDING REQUIREMENT:
+- ALWAYS use "TEAL signal" when referring to our buy signals
+- NEVER use "buy signal", "proprietary entry", "PASS signal", or "proprietary signal"
+- Our 5-gate system produces "TEAL signals" - this is our brand identity
+- Tweet 5 (CTA) MUST mention "TEAL signals" at least once
+
 Topics you cover:
 - Bottleneck investing (infrastructure, supply chain)
 - Systematic stock selection methodology
@@ -1530,11 +2496,21 @@ Topics you cover:
 - Risk management principles
 - Market psychology and discipline
 
+BANNED TERMS (never use):
+- "Forensic Audit", "Gate 5", "5th Gate"
+- "Volatility Expansion Criteria"
+- "Institutional Accumulation Divergence"
+- "Structural Pivot Confirmation"
+- "Capital Preservation Protocol"
+- "HMA", "Banker indicator", "BoS"
+- "Roth IRA", "401k", "PDT rule"
+
 STYLE:
 - Confident but not arrogant
 - Data-driven with specific examples
 - Accessible to regular investors
 - No jargon, no banned technical terms
+- When showing historical gains, ALWAYS include holding period (e.g., "+90% in 6 months")
 """
 
 THREAD_PROMPT = """Generate a 5-tweet educational thread on this topic:
@@ -1549,9 +2525,15 @@ REQUIREMENTS:
 2. Under 280 characters each
 3. Tweet 1: Hook - provocative question or bold claim
 4. Tweet 2: Problem - why most investors fail at this
-5. Tweet 3: Insight - your systematic solution
-6. Tweet 4: Proof - specific example or data point
-7. Tweet 5: CTA - link to https://sterlingsignals.substack.com
+5. Tweet 3: Insight - your systematic solution (mention "5-gate system")
+6. Tweet 4: Proof - specific example WITH HOLDING PERIOD (e.g., "$NVDA +90% in 6 months", never show gain without timeframe)
+7. Tweet 5: CTA - MUST mention "TEAL signals" and link to https://sterlingsignals.substack.com
+
+CRITICAL RULES:
+- Tweet 5 MUST contain the phrase "TEAL signal" or "TEAL signals"
+- Any percentage gains MUST include holding period (e.g., "+50% in 3 months")
+- NEVER use: "buy signal", "Forensic Audit", "proprietary entry", hashtags
+- DO NOT end with hashtags like #SystematicInvesting - just end with the Substack link
 
 Output as JSON array:
 [
@@ -1622,7 +2604,10 @@ def generate_thread(
         else:
             tweets = [{"number": i, "text": f"[Parse error - tweet {i}]"} for i in range(1, 6)]
 
-        # Validate each tweet
+        # MASTER_TODO_v2: Comprehensive thread validation and auto-fix
+        tweets = validate_and_fix_thread_tweets(tweets)
+
+        # Validate each tweet for banned terms
         if MARKETING_VOCABULARY_AVAILABLE:
             for tweet in tweets:
                 is_valid, violations = validate_content(tweet.get('text', ''))
@@ -1672,23 +2657,23 @@ def save_thread(thread: Thread, output_dir: Path = None) -> Path:
 THREAD_TOPICS = [
     {
         'topic': 'Bottleneck Investing',
-        'context': 'Explain the concept of second-order investing: instead of buying the obvious trend (AI), buy what the trend NEEDS that is in shortage (power, cooling). Use current examples like data centers, grid infrastructure.'
+        'context': 'Explain the concept of second-order investing: instead of buying the obvious trend (AI), buy what the trend NEEDS that is in shortage (power, cooling). Use current examples like data centers, grid infrastructure. Mention that our 5-gate system generates TEAL signals for these bottleneck plays.'
     },
     {
         'topic': 'The 5-Gate System',
-        'context': 'Explain systematic stock selection process without revealing specific gate mechanics. Focus on: starting with 1,800 stocks, filtering through volatility criteria, smart money signals, sector alignment, and final forensic review. Emphasize how filtering down to 3-5 weekly picks reduces noise and improves conviction. DO NOT mention specific indicator names or thresholds.'
+        'context': 'Explain systematic stock selection process that produces TEAL signals. Focus on: starting with 1,800 stocks, filtering through momentum criteria, institutional accumulation signals, sector alignment, and final review. Emphasize how filtering down to 3-5 TEAL signals weekly reduces noise. DO NOT mention: Forensic Audit, HMA, Banker indicator, BoS, or any specific thresholds.'
     },
     {
         'topic': 'Systematic Risk Management',
-        'context': 'Explain capital preservation protocols: predetermined exits, position sizing, never fighting the system. No ego, just execution. The stop hit = system working as designed.'
+        'context': 'Explain systematic stop discipline: predetermined exits, position sizing, never fighting the system. "No ego, just execution." When a stop is hit, the system worked as designed. DO NOT say "Capital Preservation Protocol" - use "systematic stop" or "trailing stop".'
     },
     {
         'topic': 'Following Smart Money',
-        'context': 'Explain how tracking institutional capital flows helps identify winning themes. Focus on sector rotation, following where big money is accumulating, and avoiding crowded retail trades. Use "institutional accumulation signals" and "smart money flows" language.'
+        'context': 'Explain how tracking institutional capital flows helps identify winning themes. Focus on sector rotation, following where big money is accumulating, and avoiding crowded retail trades. Our 5-gate system detects institutional accumulation before breakouts, generating TEAL signals. DO NOT say "Institutional Accumulation Divergence".'
     },
     {
         'topic': 'Beat the Index',
-        'context': 'Explain why systematic momentum selection beats passive indexing: concentration in best setups, active sector rotation timing, disciplined risk management vs buy-and-hope. Reference SPY/QQQ underperformance in choppy markets.'
+        'context': 'Explain why systematic momentum selection beats passive indexing: concentration in best TEAL signal setups, active sector rotation timing, disciplined risk management vs buy-and-hope. Reference SPY underperformance in choppy markets. Our TEAL signals focus capital on highest-conviction opportunities.'
     },
 ]
 
@@ -1802,80 +2787,6 @@ Focus on systematic approach and alpha generation vs SPY."""
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SOCIAL GRAPHICS INTEGRATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def attach_social_graphics(content: List) -> List:
-    """
-    Generate social graphics and attach them to content by category.
-
-    Graphics are assigned to tweets that don't already have images:
-    - position_update -> portfolio_dashboard
-    - beat_spy -> beat_spy comparison chart
-    - theme_hot -> theme_card
-    - sector_rotation -> sector_rotation chart
-    - funnel_graphic -> funnel visualization
-    - system_promo -> funnel (reuse)
-
-    Args:
-        content: List of Tweet objects and/or thread dicts
-    """
-    print("\n  📸 Generating social graphics...")
-
-    try:
-        from social_graphics import SocialGraphicsGenerator
-        generator = SocialGraphicsGenerator()
-        graphics = generator.generate_all()
-    except ImportError as e:
-        print(f"    ⚠ Could not import social_graphics: {e}")
-        return content
-    except Exception as e:
-        print(f"    ⚠ Error generating graphics: {e}")
-        return content
-
-    if not graphics:
-        print("    ⚠ No graphics generated")
-        return content
-
-    # Map categories to graphics
-    category_graphics = {
-        'position_update': graphics.get('portfolio_dashboard'),
-        'beat_spy': graphics.get('beat_spy'),
-        'theme_hot': graphics.get('theme_card'),
-        'sector_rotation': graphics.get('sector_rotation'),
-        'funnel_graphic': graphics.get('funnel'),
-        'system_promo': graphics.get('funnel'),  # Reuse funnel
-        'market_insight': graphics.get('sector_rotation'),  # Reuse sector rotation
-    }
-
-    # Attach graphics to content (handle both Tweet objects and thread dicts)
-    attached_count = 0
-    for item in content:
-        if isinstance(item, Tweet):
-            # Tweet object
-            if item.image_path:
-                continue
-            graphic_path = category_graphics.get(item.category)
-            if graphic_path:
-                item.image_path = str(graphic_path)
-                attached_count += 1
-        elif isinstance(item, dict) and not item.get('is_thread'):
-            # Non-thread dict (shouldn't happen but handle it)
-            if item.get('image_path'):
-                continue
-            graphic_path = category_graphics.get(item.get('category'))
-            if graphic_path:
-                item['image_path'] = str(graphic_path)
-                attached_count += 1
-        # Skip threads - they don't get social graphics attached this way
-
-    print(f"    ✓ Attached {attached_count} graphics to tweets")
-    print(f"    📁 Graphics in: {CHARTS_DIR}")
-
-    return content
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1884,6 +2795,7 @@ def main() -> None:
     parser.add_argument("--briefing", type=str, help="Path to newsletter briefing")
     parser.add_argument("--output", type=str, help="Output directory")
     parser.add_argument("--mock", action="store_true", help="Use mock data (no API)")
+    parser.add_argument("--force", action="store_true", help="Force regeneration even if tweets exist")
     parser.add_argument("--thread", type=str, help="Generate thread on specific topic")
     parser.add_argument("--thread-list", action="store_true", help="List available thread topics")
     args = parser.parse_args()
@@ -1956,14 +2868,39 @@ def main() -> None:
     print(f"     • Cold themes: {len(content.selective_themes) + len(content.avoid_themes)}")
     print(f"     • Charts available: {len(content.chart_manifest)}")
 
-    # Generate tweets
-    tweets = generate_all_tweets(content, mock=args.mock)
-
-    # Generate social graphics and attach to tweets
-    tweets = attach_social_graphics(tweets)
-
-    # Save output
+    # IDEMPOTENCY CHECK: Prevent duplicate generation
     output_dir = Path(args.output) if args.output else TWEETS_DIR
+    already_generated, pending_count, queue_date = check_already_generated(
+        output_dir, content.scan_date
+    )
+
+    if already_generated and not args.force:
+        print(f"\n  ⚠️  TWEETS ALREADY GENERATED")
+        print(f"     {pending_count} pending tweets found (scheduled from {queue_date})")
+        print(f"     Use --force to regenerate and replace existing content")
+        print("\n" + "═" * 60)
+        return
+
+    if args.force and already_generated:
+        print(f"\n  ⚠️  Forcing regeneration ({pending_count} existing tweets will be replaced)")
+
+    # Check for cold streak (circuit breaker)
+    cold_streak_active = False
+    if SIGNAL_TRACKER_AVAILABLE:
+        cold_streak = check_cold_streak()
+        if cold_streak.get('in_cold_streak'):
+            print(f"\n  ⚠️  COLD STREAK DETECTED")
+            print(f"     {cold_streak.get('reason')}")
+            print(f"     Reducing position-focused content (GAP 38 enforcement)")
+            cold_streak_active = True  # GAP 38 fix: Actually enforce the circuit breaker
+        elif cold_streak.get('recent_trades', 0) > 0:
+            win_rate = cold_streak.get('win_rate', 0)
+            print(f"     • Recent win rate: {win_rate:.0%} ({cold_streak.get('recent_trades')} trades)")
+
+    # Generate tweets (pass cold_streak_active for GAP 38 enforcement)
+    tweets = generate_all_tweets(content, mock=args.mock, cold_streak_active=cold_streak_active)
+
+    # Save output (output_dir already defined during idempotency check)
     queue_file = save_tweets(tweets, output_dir)
 
     # Print summary

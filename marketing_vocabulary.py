@@ -40,7 +40,28 @@ BANNED_TERMS: List[str] = [
     "UK ISA", "ISA wrapper", "Barclays ISA", "ISA account",
     "UK investor", "UK investors", "UK trader", "UK traders",
     "GMT", "BST", "UK Time", "UK time", "London time",
-    "GBP/USD", "sterling",
+    "GBP/USD",
+    # NOTE: "sterling" removed - false positive for "Sterling Signals" brand name
+
+    # MASTER_TODO_v2: Internal terms that leaked (now BANNED)
+    "Capital Preservation Protocol",
+    "Forensic Audit",
+    "Volatility Expansion Criteria",
+    "5th Gate", "Gate 5",
+
+    # MASTER_TODO_v2: Non-branded signal terms (use "TEAL signal" instead)
+    "buy signal", "Buy signal", "BUY SIGNAL",
+    "proprietary entry", "proprietary signal",
+    "PASS signal",
+
+    # MASTER_TODO_v2: US-specific (wrong audience - UK ISA investors)
+    "Roth IRA", "Roth",
+    "PDT", "PDT rule", "pattern day trader",
+    "401k", "401(k)",
+
+    # Signal branding violations - MUST use color system
+    "conviction 5", "conviction 4", "conviction 3",
+    "conviction score", "conviction rating",
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -48,15 +69,28 @@ BANNED_TERMS: List[str] = [
 # ═══════════════════════════════════════════════════════════════════════════════
 
 APPROVED_VOCABULARY: Dict[str, str] = {
-    # Internal term → Marketing term
-    "HMA Pivot": "Structural Pivot Confirmation",
-    "Banker indicator": "Institutional Accumulation Divergence",
-    "Beta >= 1.5": "Volatility Expansion Criteria",
-    "20% trailing stop": "Capital Preservation Protocol",
-    "Weekly BoS": "Structural Trend Confirmation",
-    "Gatekeeper": "The 5th Gate: Forensic Audit",
-    "Tier 1/2/3": "Conviction Rating",
-    "Theme scoring": "Sector Flow Analysis",
+    # Internal term → Marketing term (MASTER_TODO_v2 compliant)
+    "HMA Pivot": "momentum confirmed",
+    "Banker indicator": "strong accumulation",
+    "Beta >= 1.5": "volatility characteristics",  # Don't use "Volatility Expansion Criteria" (banned)
+    "20% trailing stop": "trailing stop",  # Don't use "Capital Preservation Protocol" (banned)
+    "Weekly BoS": "momentum confirmed",
+    "Gatekeeper": "cleared all gates",  # Don't use "Forensic Audit" (banned)
+    "Tier 1/2/3": "high conviction",
+    "Theme scoring": "theme alignment",
+    "buy signal": "TEAL signal",
+    "PASS signal": "TEAL signal",
+
+    # Color signal system (Marketing Upgrade)
+    "🟢 TEAL": "TEAL signal emoji",
+    "🟣 VIOLET": "exit alert emoji",
+    "🟠 AMBER": "watchlist emoji",
+
+    # Conviction language (Marketing Upgrade)
+    "Extremely Bullish": "conviction 5 public language",
+    "Bullish": "conviction 4 public language",
+    "Watching": "conviction 3 public language",
+    "Cautious": "conviction 2 public language",
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -70,47 +104,41 @@ POWER_PHRASES: List[str] = [
     "Institutional-grade momentum analysis",
     "Systematic approach that removes emotional bias",
 
-    # Signal detection
-    "Institutional Accumulation Divergence detected",
-    "Structural Pivot Confirmation triggered",
-    "Sector Flow Analysis alignment",
-    "Forensic Audit cleared",
-    "Volatility Expansion Criteria met",
+    # Signal detection (MASTER_TODO_v2 compliant - no banned terms)
+    "TEAL signal triggered",
+    "Cleared all 5 gates",
+    "Strong accumulation detected",
+    "Theme alignment confirmed",
+    "Momentum confirmed",
 
-    # Risk management
-    "Capital Preservation Protocol activated",
+    # Risk management (no "Capital Preservation Protocol" - banned)
     "Systematic exit discipline",
+    "Trailing stop in place",
     "Risk-defined position sizing",
     "The system protects capital so we live to fight another day",
     "No ego, just execution",
 
-    # US investor focus
-    "Tax-free compounding in your Roth",
-    "No PDT restrictions with weekly timeframes",
+    # Audience-neutral - no region-specific references
     "Beat SPY with systematic momentum",
     "Alpha over indexing",
+    "Stop indexing. Start selecting.",
+    "Weekly timeframe suits swing traders",
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# US AUDIENCE HOOKS - New content angles
+# AUDIENCE HOOKS - Audience-neutral content angles
 # ═══════════════════════════════════════════════════════════════════════════════
 
-US_AUDIENCE_HOOKS: Dict[str, List[str]] = {
+AUDIENCE_HOOKS: Dict[str, List[str]] = {
     "beat_spy": [
         "Stop indexing. Start selecting.",
         "SPY gives you average returns. We hunt outliers.",
         "The difference between 10% and 40%? Stock selection.",
         "Most portfolios mirror SPY. Ours hunts alpha.",
     ],
-    "roth_ira": [
-        "Your Roth doesn't have to be boring index funds.",
-        "Tax-free compounding on momentum winners.",
-        "Systematic momentum + Roth = retirement account on steroids.",
-        "30-50% swing trades, zero capital gains tax.",
-    ],
-    "pdt_friendly": [
-        "No PDT worries here. Weekly signals.",
-        "Any account size. No $25k minimum required.",
+    "time_friendly": [
+        "Weekly timeframe suits busy schedules.",
+        "Systematic momentum for patient capital.",
         "15 minutes/week vs all-day stress.",
         "Swing trading that works with your schedule.",
     ],
@@ -124,9 +152,12 @@ US_AUDIENCE_HOOKS: Dict[str, List[str]] = {
         "Money is rotating.",
         "Follow the institutional flows.",
         "Smart money moving from X to Y.",
-        "Sector Flow Analysis shows the shift.",
+        "Theme rotation in action.",
     ],
 }
+
+# Backwards compatibility alias
+US_AUDIENCE_HOOKS = AUDIENCE_HOOKS
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # VALIDATION FUNCTIONS

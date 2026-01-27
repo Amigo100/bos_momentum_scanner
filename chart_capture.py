@@ -295,8 +295,13 @@ def capture_charts(
         for ticker in tickers:
             files = capture_chart(page, ticker, output_dir, date_str)
             if files:
-                # Store primary (X card) size path
-                results[ticker] = str(files[0])
+                # Store primary (X card) size path as RELATIVE path (for CI compatibility)
+                try:
+                    rel_path = files[0].relative_to(BASE_DIR)
+                    results[ticker] = str(rel_path)
+                except ValueError:
+                    # If not relative to BASE_DIR, just use the filename with trades/charts prefix
+                    results[ticker] = f"trades/charts/{files[0].name}"
 
         # Save cookies for future CI runs
         if save_cookies_after and results:

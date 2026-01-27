@@ -192,7 +192,7 @@ jobs:
         with:
           name: content-queue
           path: trades/content_queue.json
-          retention-days: 7
+          retention-days: 14
         if: always()
 
       - name: Report status

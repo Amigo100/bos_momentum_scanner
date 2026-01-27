@@ -2216,7 +2216,21 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
     if manifest_path.exists():
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
-            content.chart_manifest = manifest.get("charts", {})
+            raw_charts = manifest.get("charts", {})
+            # Normalize paths to relative (for CI compatibility)
+            normalized = {}
+            for key, value in raw_charts.items():
+                if isinstance(value, str):
+                    # Convert absolute paths to relative
+                    if '/bos_momentum_scanner/' in value:
+                        value = value.split('/bos_momentum_scanner/')[-1]
+                    normalized[key] = value
+                elif isinstance(value, dict) and value.get("path"):
+                    path = value["path"]
+                    if '/bos_momentum_scanner/' in path:
+                        value["path"] = path.split('/bos_momentum_scanner/')[-1]
+                    normalized[key] = value.get("path", value)
+            content.chart_manifest = normalized
 
     return content
 

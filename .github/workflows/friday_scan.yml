@@ -186,6 +186,15 @@ jobs:
             python grok_prompts_generator.py || true
           fi
 
+      - name: Validate content queue JSON
+        if: ${{ github.event.inputs.skip_tweets != 'true' }}
+        run: |
+          if [ -f "trades/content_queue.json" ]; then
+            python -c "import json; q=json.load(open('trades/content_queue.json')); print(f'Content queue valid: {len(q)} tweets')"
+          else
+            echo "⚠️ No content_queue.json generated"
+          fi
+
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
       # ═══════════════════════════════════════════════════════════════════════════
@@ -241,7 +250,7 @@ jobs:
         with:
           name: content-queue
           path: trades/content_queue.json
-          retention-days: 7
+          retention-days: 14
 
       - name: Upload charts (if captured)
         uses: actions/upload-artifact@v4

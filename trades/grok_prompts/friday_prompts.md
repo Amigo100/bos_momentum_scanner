@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 23 | Theme Fit: 8 | Final PASS: 3
+Scanned: 885 | BoS Up: 17 | Technical Pass: 17 | Theme Fit: 4 | Final PASS: 0
 
 ---
 
@@ -12,7 +12,7 @@ You are drafting an X post for @SterlingSignals.
 
 Using the stats above:
 1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 3 signals")
+   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
    - Emphasizes the rigorous 3-gate screening process
    - Creates CURIOSITY about what made the cut
    - Builds FOMO for non-subscribers
@@ -26,19 +26,19 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Why I Passed: RMBS
+## Slot 2: Why I Passed: PUMP
 
 ```
 SCANNER OUTPUT:
-EXCLUDED: RMBS | Theme: Defense Manufacturing & Supply Chain Resilience
-Reason: Earnings binary event in 10 days
+EXCLUDED: PUMP | Theme: Energy Services & Infrastructure (STRONG FIT)
+Reason: No visible catalyst for re-rating
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 Using the scanner output above:
-1. Search for why $RMBS might be getting attention/hype right now
+1. Search for why $PUMP might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
    - States specifically which gate it failed (technical, thematic, or quality)
@@ -59,18 +59,17 @@ Show process, not arrogance. This builds trust.
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $INOD
-Entry: $61.54 on 18/01/2026
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: -3.3% (verify with current price)
+Held: ~12 days (entry price private)
+Snapshot P&L: -9.9% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $INOD
-2. Calculate the LIVE P&L: ((current_price / 61.54) - 1) * 100
+1. Look up the CURRENT price and recent performance of $INOD
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -80,12 +79,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$INOD update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$INOD update: +XX.X% since entry (12 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing INOD, Entry $61.54 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing INOD, live P&L%, 12 days held, chart thumbnail
 
 ---

@@ -4,7 +4,7 @@
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: GLXY, AMSC, IESC | CAUTION: BTDR, RMBS, CORZ | Top Theme: Grid Modernization & Power Infrastructure
+PASS: None | CAUTION: AMPX, PUMP, MOD | Top Theme: Grid Infrastructure & Power Transmission
 
 ---
 
@@ -27,59 +27,60 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Deep Dive: GLXY
+## Slot 2: Hot Theme: Grid Infrastructure & Power Transmission
 
 ```
 SCANNER OUTPUT:
-PASS: GLXY | Theme: Grid Modernization & Power Infrastructure | Price: $31.90
-Catalyst: Q4 earnings Feb 3 (expected beat after Q3 blowout), growing AI data center infrastructure demand
+PRIME: Grid Infrastructure & Power Transmission
 
 ---
 
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-Using the scanner output above:
-1. Search for the LATEST news on $GLXY (last 7 days)
-2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+Using the theme above:
+1. Search for the LATEST news/developments in Grid Infrastructure & Power Transmission (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
 3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with an attention-grabbing hook that stops the scroll
-   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
-   - Teases the opportunity WITHOUT revealing my entry level
-   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
-**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for GLXY
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Infrastructure & Power Transmission
 
 ---
 
-## Slot 3: Why I Passed: BTDR
+## Slot 3: Caution: OUST
 
 ```
-SCANNER OUTPUT:
-EXCLUDED: BTDR | Theme: Grid Modernization & Power Infrastructure
-Reason: Fresh $1B shelf creates massive dilution threat
+CAUTION SIGNAL:
+OUST: Sell signal triggered | Current: $20.83 | P&L: -21.0%
+Reason: Trailing stop hit (23.5% from high of $27.24)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-Using the scanner output above:
-1. Search for why $BTDR might be getting attention/hype right now
+Using the signal above:
+1. Search for any recent news that might explain $OUST's weakness
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
-   - States specifically which gate it failed (technical, thematic, or quality)
-   - Shows disciplined process over FOMO
-   - References the proprietary 3-gate system
-   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
+   - Acknowledges the caution signal transparently
+   - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
+   - Shows active risk management in action
+   - Frames this as discipline, not defeat ("This is why we use systematic exits...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Show process, not arrogance. This builds trust.
+Risk management in action builds more credibility than only showing winners.
 
 ```
 
-**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+**Visual:** Chart showing the sell signal trigger point for OUST
 
 ---

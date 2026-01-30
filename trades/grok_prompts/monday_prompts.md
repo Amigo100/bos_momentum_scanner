@@ -26,18 +26,18 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## Slot 2: Hot Theme: Grid Modernization & Power Infrastructure
+## Slot 2: Hot Theme: Grid Infrastructure & Power Transmission
 
 ```
 SCANNER OUTPUT:
-PRIME: Grid Modernization & Power Infrastructure
+PRIME: Grid Infrastructure & Power Transmission
 
 ---
 
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
 Using the theme above:
-1. Search for the LATEST news/developments in Grid Modernization & Power Infrastructure (last 7 days)
+1. Search for the LATEST news/developments in Grid Infrastructure & Power Transmission (last 7 days)
 2. Find a specific catalyst, data point, or news event that's driving momentum
 3. Draft a visually engaging X post (under 280 characters) that:
    - Opens with a compelling hook about why this theme matters NOW
@@ -52,7 +52,7 @@ IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post shoul
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Grid Modernization & Power Infrastructure
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Infrastructure & Power Transmission
 
 ---
 
@@ -61,18 +61,17 @@ IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post shoul
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $VNET
-Entry: $10.40 on 09/01/2026
 Theme: Data Center Cooling / Liquid Cooling | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: +2.0% (verify with current price)
+Held: ~21 days (entry price private)
+Snapshot P&L: +1.2% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $VNET
-2. Calculate the LIVE P&L: ((current_price / 10.40) - 1) * 100
+1. Look up the CURRENT price and recent performance of $VNET
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -82,12 +81,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$VNET update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$VNET update: +XX.X% since entry (21 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing VNET, Entry $10.40 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing VNET, live P&L%, 21 days held, chart thumbnail
 
 ---

@@ -25,18 +25,18 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Hot Theme: Rare Earth & Critical Minerals Supply Diversification
+## Slot 2: Hot Theme: Nuclear Energy Renaissance
 
 ```
 SCANNER OUTPUT:
-PRIME: Rare Earth & Critical Minerals Supply Diversification
+PRIME: Nuclear Energy Renaissance
 
 ---
 
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
 Using the theme above:
-1. Search for the LATEST news/developments in Rare Earth & Critical Minerals Supply Diversification (last 7 days)
+1. Search for the LATEST news/developments in Nuclear Energy Renaissance (last 7 days)
 2. Find a specific catalyst, data point, or news event that's driving momentum
 3. Draft a visually engaging X post (under 280 characters) that:
    - Opens with a compelling hook about why this theme matters NOW
@@ -51,42 +51,34 @@ IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post shoul
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Rare Earth & Critical Minerals Supply Diversification
+**Visual:** Theme infographic or sector ETF momentum chart for Nuclear Energy Renaissance
 
 ---
 
-## Slot 3: Position Update: CGON
+## Slot 3: Caution: OUST
 
 ```
-POSITION CONTEXT (may be outdated - look up current price):
-Ticker: $CGON
-Entry: $53.92 on 09/01/2026
-Theme: Healthcare / Biotech | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: -0.2% (verify with current price)
+CAUTION SIGNAL:
+OUST: Sell signal triggered | Current: $20.83 | P&L: -21.0%
+Reason: Trailing stop hit (23.5% from high of $27.24)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $CGON
-2. Calculate the LIVE P&L: ((current_price / 53.92) - 1) * 100
+Using the signal above:
+1. Search for any recent news that might explain $OUST's weakness
+2. Draft a visually engaging X post (under 280 characters) that:
+   - Acknowledges the caution signal transparently
+   - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
+   - Shows active risk management in action
+   - Frames this as discipline, not defeat ("This is why we use systematic exits...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Then draft a visually engaging X post (under 280 characters) that:
-   - States the position with CURRENT P&L (not the snapshot above)
-   - Notes current status based on price action (uptrend, consolidating, pullback)
-   - Search for any recent news on $CGON (last 7 days)
-   - Shows active, systematic portfolio management
-   - Builds credibility through real-time transparency
-   - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
-
-Example format: "$CGON update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
-
-Transparent and timely. Real P&L builds trust.
+Risk management in action builds more credibility than only showing winners.
 
 ```
 
-**Visual:** Position card showing CGON, Entry $53.92 → Current, live P&L%, chart thumbnail
+**Visual:** Chart showing the sell signal trigger point for OUST
 
 ---

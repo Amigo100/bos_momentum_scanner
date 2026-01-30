@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: What's on your watchlist this week?
+Topic/Question: How long do you typically hold positions?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 

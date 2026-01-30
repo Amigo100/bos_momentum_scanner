@@ -1721,204 +1721,161 @@ def print_summary(tweets: List):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# MULTI-ACCOUNT VARIATION GENERATION
+# MULTI-ACCOUNT VARIATION GENERATION (Claude-powered)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Style-specific phrase replacements — applied to every tweet for each account
-# These make tweets sound like different people discussing the same system
+VARIATION_SYSTEM_PROMPT = """You rephrase tweets for the Sterling Signals trading newsletter.
 
-_CONVERSATIONAL_SWAPS = [
-    # Openers — make it casual
-    ("Scanner finished after Friday's close.", "Ran the numbers over the weekend."),
-    ("Ran the scanner after Friday's close.", "Just finished crunching the data."),
-    ("The scanner doesn't lie.", "Numbers don't lie."),
-    ("Not everything works forever.", "Nothing works forever — and that's fine."),
-    ("Most traders overcomplicate entries.", "Honestly, most people overcomplicate this."),
-    # Tone shifts
-    ("Full breakdown in the newsletter", "Wrote it all up in this week's newsletter"),
-    ("Full analysis + entry levels", "I broke it all down with entry levels"),
-    ("Full breakdown:", "Here's the breakdown:"),
-    ("Full methodology:", "How it all works:"),
-    ("Full recap:", "Here's the recap:"),
-    ("Full writeup:", "Wrote it up here:"),
-    ("Full watchlist:", "Watchlist here:"),
-    ("Full portfolio breakdown:", "Portfolio breakdown:"),
-    ("Detailed breakdown:", "Full details:"),
-    ("More setups like this weekly:", "I find setups like this every week:"),
-    ("More setups like this:", "More where that came from:"),
-    ("This week's survivors:", "This week's picks:"),
-    ("Entry prices + full thesis in the newsletter:", "Entry prices and my full take in this week's issue:"),
-    ("How I find them:", "Here's how I find them:"),
-    ("Quality > quantity. Always.", "Less is more. That's the whole strategy."),
-    ("Alpha exists if you know where to look.", "Alpha is out there if you dig for it."),
-    ("That's why.", "Case closed."),
-    ("Simplicity scales.", "Keep it simple. It works."),
-    # CTAs
-    ("Read it here 👇", "Give it a read 👇"),
-    ("Helps me know what to post.", "Would love to know."),
-    ("let's compare notes after Friday's scan.", "I'll share what the scanner found."),
-    # Structural
-    ("Onto the next setup.", "On to the next one."),
-    ("This is what the system is built for.", "This is exactly why I built this system."),
-    ("Still holding. Trailing stop in place.", "Still in. Stops set."),
-    ("The close matters. Eyes on the scanner.", "Close matters. Watching."),
-    ("Are you positioned?", "Positioned yet?"),
-    ("The system says rotate.", "Time to rotate."),
-    ("Patience.", "No rush."),
-    ("Capital freed up for new setups.", "Cash ready for the next play."),
-    ("That's the 5-Gate filter doing its job.", "The filter is doing exactly what it's supposed to."),
-    ("These are the setups the 5-Gate System is built to find.", "This is what the system was designed for."),
-    ("The 5-Gate edge in action.", "The system keeps delivering."),
-    ("The 5-Gate System continues to find asymmetric setups.", "System keeps finding winners."),
-    # Emoji swaps
-    ("⚡ Power Hour:", "⚡ Power Hour check-in:"),
-    ("📊", "📈"),
-    ("👇", "↓"),
-    ("🟡 On my radar:", "🟡 Watching closely:"),
-]
+You will receive the ORIGINAL tweet (account 1) and must produce a rephrased version for a
+different account. The rephrased tweet must:
 
-_DATA_DRIVEN_SWAPS = [
-    # Openers — make it clinical/analytical
-    ("Scanner finished after Friday's close.", "Weekly scan complete — Friday close data processed."),
-    ("Ran the scanner after Friday's close.", "5-Gate scan executed on Friday's closing data."),
-    ("The scanner doesn't lie.", "Data speaks for itself."),
-    ("Not everything works forever.", "Sector rotation confirmed by the data."),
-    ("Most traders overcomplicate entries.", "Entry criteria should be systematic, not subjective."),
-    # Tone shifts — analytical voice
-    ("Full breakdown in the newsletter", "Detailed analysis in this week's report"),
-    ("Full analysis + entry levels", "Complete analysis with entry levels"),
-    ("Full breakdown:", "Analysis:"),
-    ("Full methodology:", "Methodology:"),
-    ("Full recap:", "Recap:"),
-    ("Full writeup:", "Report:"),
-    ("Full watchlist:", "Watchlist:"),
-    ("Full portfolio breakdown:", "Portfolio data:"),
-    ("Detailed breakdown:", "Data breakdown:"),
-    ("More setups like this weekly:", "Systematic setups published weekly:"),
-    ("More setups like this:", "Systematic approach finds more:"),
-    ("This week's survivors:", "Stocks that cleared all filters:"),
-    ("Entry prices + full thesis in the newsletter:", "Entry data and thesis documented here:"),
-    ("How I find them:", "Methodology:"),
-    ("Quality > quantity. Always.", "Signal quality over quantity — every week."),
-    ("Alpha exists if you know where to look.", "Consistent alpha through systematic screening."),
-    ("That's why.", "The numbers explain themselves."),
-    ("Simplicity scales.", "Systematic > discretionary."),
-    # CTAs
-    ("Read it here 👇", "Full report 👇"),
-    ("Helps me know what to post.", "Your input shapes the content."),
-    ("let's compare notes after Friday's scan.", "results published Saturday."),
-    # Structural
-    ("Onto the next setup.", "Scanning for the next setup."),
-    ("This is what the system is built for.", "Systematic edge, repeatable results."),
-    ("Still holding. Trailing stop in place.", "Position active. Stop: trailing from high."),
-    ("The close matters. Eyes on the scanner.", "Monitoring for signal confirmation."),
-    ("Are you positioned?", "Review your exposure."),
-    ("The system says rotate.", "Signal-based rotation triggered."),
-    ("Patience.", "Waiting for confirmation."),
-    ("Capital freed up for new setups.", "Capital reallocated to new signals."),
-    ("That's the 5-Gate filter doing its job.", "5-gate filtration working as designed."),
-    ("These are the setups the 5-Gate System is built to find.", "Exactly the profile the system targets."),
-    ("The 5-Gate edge in action.", "Systematic edge in the data."),
-    ("The 5-Gate System continues to find asymmetric setups.", "Asymmetric setups continue to surface."),
-    # Emoji swaps — more restrained
-    ("⚡ Power Hour:", "Power Hour data:"),
-    ("🟢 ", "GREEN signal — "),
-    ("🔴 ", "EXIT — "),
-    ("👇", "↓"),
-    ("🟡 On my radar:", "Watchlist:"),
-    ("📈", "▲"),
-    ("📊", "▶"),
-    ("✅", "→"),
-]
+1. SAME VOICE — Conversational, personal, casual, first-person. Same personality as the original.
+   Use "I", opinions, short punchy sentences, emojis where natural.
+2. SAME FACTS — Identical tickers ($TICKER), prices, percentages, dates, URLs. Never change data.
+3. DIFFERENT WORDING — Restructure sentences, swap synonyms, reorder points, change the opening
+   hook, vary emoji placement. It should read like a different person making the same point in
+   their own words — not a copy-paste.
+4. COMPLEMENTARY — If the original leads with a question, lead with a statement (or vice versa).
+   If the original lists top-down, try bottom-up. The tweets should feel like they complement
+   each other when seen side by side, not repeat each other.
+5. UNDER 280 CHARACTERS — This is mandatory. Count carefully.
+
+BANNED TERMS (never use): HMA, Banker indicator, Beta >= 1.5, Weekly BoS, Tier 1/2/3,
+conviction score, 20% trailing stop, Gatekeeper, RSI, MACD, KDJ, UK ISA, GMT, BST.
+
+Return ONLY the rephrased tweet text. No quotes, no explanation, no JSON."""
 
 
-def _get_variation_text(category: str, template_id: str, account_key: str, tweet: dict) -> Optional[str]:
-    """Look up account variation text from AUTHENTIC_TEMPLATES and re-populate with data."""
-    var_key = account_key.replace('account', 'account_')  # account2 -> account_2
-
-    templates = AUTHENTIC_TEMPLATES.get(category, [])
-    for tmpl in templates:
-        if tmpl.get('id') == template_id:
-            variations = tmpl.get('account_variations', {})
-            if var_key in variations:
-                data = tweet.get('template_data', {})
-                if data:
-                    return populate_template(variations[var_key], data)
-                return variations[var_key]
-    return None
-
-
-def _apply_style_variation(text: str, account_key: str) -> str:
+def _rephrase_tweet_batch(client, tweets_batch: List[dict], account_label: str) -> List[str]:
     """
-    Apply style-based text transformations to make a tweet sound distinct.
+    Send a batch of tweets to Claude for rephrasing in a single API call.
 
-    account2 (conversational): Casual, first-person, friendly
-    account3 (data_driven): Analytical, clinical, numbers-focused
+    Batches up to 10 tweets per call to balance cost and quality.
+    Returns list of rephrased texts in the same order.
     """
-    if account_key == 'account2':
-        swaps = _CONVERSATIONAL_SWAPS
-    elif account_key == 'account3':
-        swaps = _DATA_DRIVEN_SWAPS
-    else:
-        return text
+    # Build the user prompt with all tweets numbered
+    parts = [f"Rephrase each tweet below for {account_label}. "
+             f"Return exactly {len(tweets_batch)} rephrased tweets, "
+             f"each on its own block separated by\n---\n"
+             f"Preserve all $TICKER cashtags, prices, percentages, and URLs exactly.\n"]
 
-    result = text
-    for old, new in swaps:
-        result = result.replace(old, new)
+    for i, tweet in enumerate(tweets_batch, 1):
+        parts.append(f"TWEET {i}:\n{tweet.get('text', '')}\n")
 
-    return result
+    user_prompt = "\n".join(parts)
+
+    try:
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=4000,
+            system=VARIATION_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}]
+        )
+
+        raw = response.content[0].text.strip()
+
+        # Split on --- separator
+        rephrased = [block.strip() for block in raw.split("---") if block.strip()]
+
+        # If Claude returned wrong count, pad or truncate
+        if len(rephrased) < len(tweets_batch):
+            # Fill missing with originals
+            for i in range(len(rephrased), len(tweets_batch)):
+                rephrased.append(tweets_batch[i].get('text', ''))
+        elif len(rephrased) > len(tweets_batch):
+            rephrased = rephrased[:len(tweets_batch)]
+
+        # Strip any leading "TWEET N:" artifacts Claude might have included
+        import re as _re
+        cleaned = []
+        for text in rephrased:
+            text = _re.sub(r'^TWEET\s*\d+\s*:\s*', '', text, flags=_re.IGNORECASE).strip()
+            text = text.strip('"\'`')
+            cleaned.append(text)
+
+        return cleaned
+
+    except Exception as e:
+        print(f"    Claude API error during rephrasing: {e}")
+        # Fallback: return originals unchanged
+        return [t.get('text', '') for t in tweets_batch]
 
 
 def generate_account_variations(base_queue_path: Path) -> None:
     """
-    Generate variation queues for account2 and account3 from main queue.
+    Generate variation queues for account2 and account3 using Claude to rephrase
+    each tweet in the same casual/personal voice with different wording.
 
-    For each tweet:
-    1. If the template has an explicit account_variation, use it (re-populated with data)
-    2. Otherwise, apply the account's style transformation to the main text
+    Processes tweets in batches of 10 to minimise API calls (~4 calls per account).
     """
+    import time as _time
+
     with open(base_queue_path, 'r') as f:
         base_queue = json.load(f)
+
+    # Initialise Claude client
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("  ERROR: ANTHROPIC_API_KEY required for variation generation.")
+        print("  Falling back to copying main queue for account2/account3.")
+        _fallback_copy(base_queue, base_queue_path)
+        return
+
+    client = anthropic.Anthropic(api_key=api_key)
+    batch_size = 10
 
     for account_key in ['account2', 'account3']:
         account_config = TWITTER_ACCOUNTS.get(account_key)
         if not account_config:
-            print(f"  ⚠️  No config for {account_key}, skipping")
+            print(f"  No config for {account_key}, skipping")
             continue
 
+        account_label = f"Account {account_key[-1]}"
+        print(f"\n  Generating variations for {account_label}...")
+
         variation_queue = []
-        template_variations = 0
-        style_variations = 0
+        rephrased_count = 0
 
-        for tweet in base_queue:
-            varied = dict(tweet)
-            varied['account'] = account_key
+        # Process in batches
+        for batch_start in range(0, len(base_queue), batch_size):
+            batch = base_queue[batch_start:batch_start + batch_size]
+            batch_num = (batch_start // batch_size) + 1
+            total_batches = (len(base_queue) + batch_size - 1) // batch_size
+            print(f"    Batch {batch_num}/{total_batches} ({len(batch)} tweets)...")
 
-            category = tweet.get('category', '')
-            template_id = tweet.get('template_id', '')
+            rephrased_texts = _rephrase_tweet_batch(client, batch, account_label)
 
-            # Priority 1: explicit template variation
-            variation_text = _get_variation_text(category, template_id, account_key, tweet)
-            if variation_text:
-                varied['text'] = variation_text
-                template_variations += 1
-            else:
-                # Priority 2: style-based transformation
-                original_text = tweet.get('text', '')
-                styled_text = _apply_style_variation(original_text, account_key)
-                if styled_text != original_text:
-                    style_variations += 1
-                varied['text'] = styled_text
+            for tweet, new_text in zip(batch, rephrased_texts):
+                varied = dict(tweet)
+                varied['account'] = account_key
+                if new_text != tweet.get('text', ''):
+                    varied['text'] = new_text
+                    varied['generation_method'] = 'claude_variation'
+                    rephrased_count += 1
+                variation_queue.append(varied)
 
-            variation_queue.append(varied)
+            # Rate limit pause between batches
+            if batch_start + batch_size < len(base_queue):
+                _time.sleep(2)
 
         output_path = base_queue_path.parent / account_config['queue_file']
         with open(output_path, 'w') as f:
             json.dump(variation_queue, f, indent=2)
-        total_changed = template_variations + style_variations
         print(f"  {account_key}: {len(variation_queue)} tweets "
-              f"({template_variations} template variations, {style_variations} style transforms, "
-              f"{len(variation_queue) - total_changed} unchanged) → {output_path}")
+              f"({rephrased_count} rephrased by Claude) -> {output_path}")
+
+
+def _fallback_copy(base_queue: list, base_queue_path: Path) -> None:
+    """Copy main queue as-is when Claude API is unavailable."""
+    for account_key in ['account2', 'account3']:
+        account_config = TWITTER_ACCOUNTS.get(account_key, {})
+        queue_file = account_config.get('queue_file')
+        if queue_file:
+            output_path = base_queue_path.parent / queue_file
+            copied = [dict(t, account=account_key) for t in base_queue]
+            with open(output_path, 'w') as f:
+                json.dump(copied, f, indent=2)
+            print(f"  {account_key}: {len(copied)} tweets (UNMODIFIED copy) -> {output_path}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

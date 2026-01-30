@@ -238,6 +238,7 @@ jobs:
             trades/signals.json
             trades/portfolio.csv
             trades/portfolio_google_sheets.csv
+            logs/
           retention-days: 30
 
       - name: Upload Substack notes

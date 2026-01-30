@@ -745,10 +745,85 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
             print(f"\n  ⏹️  Stopping pipeline to avoid wasted time.")
             print(f"\n  💡 TIP: Run with --no-llm to use technical signals only (FREE)")
             return [], "", []  # Return empty to stop pipeline
-        
-        print(f"  ⚠ Theme analysis error: {e}")
+
         import traceback
-        traceback.print_exc()
+        error_detail = traceback.format_exc()
+        print(f"  ⚠ Theme analysis error: {e}")
+        print(error_detail)
+
+        # Log error to file for remote diagnosis
+        try:
+            from pathlib import Path
+            error_log = Path("logs/thematic_error.log")
+            error_log.parent.mkdir(exist_ok=True)
+            from datetime import datetime
+            with open(error_log, "a") as f:
+                f.write(f"\n{'='*60}\n")
+                f.write(f"Thematic Analyzer Error: {datetime.now().isoformat()}\n")
+                f.write(f"Error: {e}\n")
+                f.write(error_detail)
+        except Exception:
+            pass
+
+        # Retry once with fresh analyzer instance
+        print(f"\n  🔄 Retrying thematic analysis with fresh instance...")
+        try:
+            config2 = Config()
+            config2.conservative_rate_limiting = True
+            config2.use_web_search = use_web_search
+            analyzer2 = ThematicAnalyzer(config=config2, verbose=True)
+            themes2 = analyzer2.run_step_1()
+            if themes2:
+                print(f"  ✅ Retry succeeded - {len(themes2)} themes identified")
+                # Rebuild themes context and data
+                themes_context_lines = ["CURRENT HOT INVESTMENT THEMES (from prior thematic analysis):"]
+                themes_context_lines.append("Use these themes - do NOT guess or invent different themes.\n")
+                themes_data = []
+                for t in themes2:
+                    classification = getattr(t, 'classification', 'INVESTABLE')
+                    theme_type = getattr(t, 'theme_type', 'TREND')
+                    themes_context_lines.append(f"  #{t.rank} {t.name}")
+                    themes_context_lines.append(f"     Classification: {classification} | Type: {theme_type} | Score: {t.composite_score:.1f}/10")
+                    if t.thesis_summary:
+                        thesis_short = t.thesis_summary[:200] + "..." if len(t.thesis_summary) > 200 else t.thesis_summary
+                        themes_context_lines.append(f"     Thesis: {thesis_short}")
+                    themes_context_lines.append("")
+                    themes_data.append({
+                        'name': t.name, 'rank': t.rank, 'classification': classification,
+                        'theme_type': theme_type, 'composite_score': t.composite_score,
+                        'thesis_summary': getattr(t, 'thesis_summary', ''),
+                        'key_catalysts': getattr(t, 'key_catalysts', []),
+                        'momentum_score': getattr(t, 'momentum_score', 0),
+                        'catalyst_score': getattr(t, 'catalyst_score', 0),
+                    })
+                themes_context = "\n".join(themes_context_lines)
+                # Run step 2
+                ticker_list = [s.symbol for s in signals]
+                analyses = analyzer2.run_step_2(ticker_list)
+                analysis_map = {a.ticker: a for a in analyses}
+                confirmed = []
+                rejected = []
+                for stock in signals:
+                    if stock.symbol in analysis_map:
+                        a = analysis_map[stock.symbol]
+                        stock.theme = a.primary_theme or ""
+                        stock.theme_score = a.theme_score or 0.0
+                        stock.pure_play_score = a.pure_play_score
+                        stock.theme_verdict = a.verdict
+                        if hasattr(a, 'passes_maturity_gate') and callable(a.passes_maturity_gate):
+                            (confirmed if a.passes_maturity_gate() else rejected).append(stock)
+                        elif a.passes_gate():
+                            confirmed.append(stock)
+                        else:
+                            rejected.append(stock)
+                    else:
+                        stock.theme_verdict = "NOT ANALYZED"
+                        rejected.append(stock)
+                return confirmed, themes_context, themes_data
+        except Exception as e2:
+            print(f"  ⚠ Retry also failed: {e2}")
+
+        # Both attempts failed - pass stocks through with ERROR verdict
         for s in signals:
             s.theme_verdict = "ERROR"
         return signals, "", []

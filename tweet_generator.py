@@ -766,13 +766,21 @@ def populate_template(template: str, data: dict) -> str:
         Populated template string
     """
     result = template
-    
+
     # Standard replacements
     for key, value in data.items():
         placeholder = "{{" + key.upper() + "}}"
         if placeholder in result:
-            result = result.replace(placeholder, str(value))
-    
+            str_val = str(value)
+            # Replace empty/error theme values with sensible fallback
+            if key == 'theme' and (not str_val or str_val in ('', 'None', 'N/A', 'ERROR', 'N/A (ERROR)')):
+                str_val = 'momentum'
+            result = result.replace(placeholder, str_val)
+
+    # Catch any remaining unreplaced {{THEME}} (data had no 'theme' key at all)
+    if '{{THEME}}' in result:
+        result = result.replace('{{THEME}}', 'momentum')
+
     # Always replace SUBSTACK_URL
     result = result.replace("{{SUBSTACK_URL}}", SUBSTACK_URL)
     

@@ -1,87 +1,78 @@
 # Thursday Prompts
 
-## Slot 1: Why I Passed: AMPX
+## Slot 1: Weekly Scanner Stats
 
 ```
-SCANNER OUTPUT:
-EXCLUDED: AMPX | Theme: Critical Materials & Mining (GOOD FIT)
-Reason: Biotech binary risk profile
+SCANNER STATS:
+Scanned: 885 | BoS Up: 23 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-Using the scanner output above:
-1. Search for why $AMPX might be getting attention/hype right now
+Using the stats above:
+1. Draft a visually engaging X post (under 280 characters) that:
+   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
+   - Emphasizes the rigorous 3-gate screening process
+   - Creates CURIOSITY about what made the cut
+   - Builds FOMO for non-subscribers
+   - Strong CTA: https://sterlingsignals.substack.com
+
+This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
+
+```
+
+**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+
+---
+
+## Slot 2: Lesson: Fresh trends outperform extended trends...
+
+```
+TRADING LESSON:
+Topic: Fresh trends outperform extended trends
+
+---
+
+You are drafting an X post for @SterlingSignals.
+
+1. Pick a practical way to illustrate this lesson
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
-   - States specifically which gate it failed (technical, thematic, or quality)
-   - Shows disciplined process over FOMO
-   - References the proprietary 3-gate system
-   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
-
-Show process, not arrogance. This builds trust.
-
-```
-
-**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
-
----
-
-## Slot 2: Hot Theme: Nuclear Energy Renaissance
-
-```
-SCANNER OUTPUT:
-PRIME: Nuclear Energy Renaissance
-
----
-
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
-
-Using the theme above:
-1. Search for the LATEST news/developments in Nuclear Energy Renaissance (last 7 days)
-2. Find a specific catalyst, data point, or news event that's driving momentum
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with a compelling hook about why this theme matters NOW
-   - Uses the specific recent data point or catalyst you found
-   - Shows this is a PRIME theme in my systematic scanner
-   - Teases that I have specific stock picks in this theme
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it accessible to readers who don't follow this sector closely.
-
-IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Nuclear Energy Renaissance
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
-## Slot 3: Watching: PUMP
+## Slot 3: Market Pulse
 
 ```
-SCANNER OUTPUT:
-CAUTION: PUMP | Theme: Energy Services & Infrastructure (STRONG FIT) | Price: $11.50
-Reason: No visible catalyst for re-rating
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
----
+1. Search for TODAY's market performance:
+   - S&P 500, NASDAQ, Russell 2000 moves
+   - What sectors are leading/lagging
+   - Any notable movers or news
 
-You are drafting an X post for @SterlingSignals.
-
-Using the scanner output above:
-1. Search for recent news on $PUMP
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Shows this stock caught my attention (it's on radar)
-   - Explains specifically WHY it's not actionable YET (use the reason above)
-   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
-   - References my proprietary 3-gate screening system
-   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
+   - Opens with the headline move and specific numbers
+   - Notes sector leadership or rotation
+   - Connects to implications for momentum/high-beta stocks
+   - Shows you're actively watching markets
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and compelling. Show that waiting IS a strategy.
+Quick, informed, timely. Show you're in the trenches.
 
 ```
 
-**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for PUMP
+**Visual:** Index performance bars or sector heat map
 
 ---

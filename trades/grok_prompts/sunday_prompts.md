@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Trailing stops protect gains better than...
+## Slot 2: Lesson: The best trade is often the one you don'...
 
 ```
 TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+Topic: The best trade is often the one you don't make
 
 ---
 

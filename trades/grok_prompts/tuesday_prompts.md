@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 17 | Theme Fit: 4 | Final PASS: 0
+Scanned: 885 | BoS Up: 23 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
 
 ---
 
@@ -52,30 +52,27 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Watching: AMPX
+## Slot 3: Market Pulse
 
 ```
-SCANNER OUTPUT:
-CAUTION: AMPX | Theme: Critical Materials & Mining (GOOD FIT) | Price: $12.44
-Reason: Biotech binary risk profile
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
----
+1. Search for TODAY's market performance:
+   - S&P 500, NASDAQ, Russell 2000 moves
+   - What sectors are leading/lagging
+   - Any notable movers or news
 
-You are drafting an X post for @SterlingSignals.
-
-Using the scanner output above:
-1. Search for recent news on $AMPX
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Shows this stock caught my attention (it's on radar)
-   - Explains specifically WHY it's not actionable YET (use the reason above)
-   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
-   - References my proprietary 3-gate screening system
-   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
+   - Opens with the headline move and specific numbers
+   - Notes sector leadership or rotation
+   - Connects to implications for momentum/high-beta stocks
+   - Shows you're actively watching markets
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and compelling. Show that waiting IS a strategy.
+Quick, informed, timely. Show you're in the trenches.
 
 ```
 
-**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for AMPX
+**Visual:** Index performance bars or sector heat map
 
 ---

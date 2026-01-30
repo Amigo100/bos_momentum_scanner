@@ -1858,24 +1858,81 @@ def generate_account_variations(base_queue_path: Path) -> None:
             if batch_start + batch_size < len(base_queue):
                 _time.sleep(2)
 
+        # Rotate slot assignments so accounts post different categories at each time
+        variation_queue = _rotate_slots(variation_queue, account_key)
+
         output_path = base_queue_path.parent / account_config['queue_file']
         with open(output_path, 'w') as f:
             json.dump(variation_queue, f, indent=2)
         print(f"  {account_key}: {len(variation_queue)} tweets "
-              f"({rephrased_count} rephrased by Claude) -> {output_path}")
+              f"({rephrased_count} rephrased by Claude, slots rotated) -> {output_path}")
+
+
+def _rotate_slots(queue: list, account_key: str) -> list:
+    """
+    Rotate slot assignments within each day so that accounts post different
+    categories at the same time.
+
+    Account 1 (main): original order   [1, 2, 3, 4, 5]
+    Account 2:        rotate by +2     [3, 4, 5, 1, 2]  (slot 1 gets what was slot 3, etc.)
+    Account 3:        rotate by +4     [5, 1, 2, 3, 4]  (slot 1 gets what was slot 5, etc.)
+
+    This means at any given time slot, all 3 accounts post different categories.
+    The tweet text/content stays the same — only the slot number and posting time change.
+    """
+    rotation = {'account2': 2, 'account3': 4}.get(account_key, 0)
+    if rotation == 0:
+        return queue
+
+    from collections import defaultdict
+
+    # Group tweets by their scheduled day
+    by_day = defaultdict(list)
+    for tweet in queue:
+        day_key = tweet.get('scheduled_date', '') or tweet.get('day', '')
+        by_day[day_key].append(tweet)
+
+    rotated = []
+    for day_key in sorted(by_day.keys()):
+        day_tweets = sorted(by_day[day_key], key=lambda t: t.get('slot', 0))
+        n = len(day_tweets)
+        if n == 0:
+            continue
+
+        # Collect the original slot numbers and IDs in order
+        original_slots = [t.get('slot', i + 1) for i, t in enumerate(day_tweets)]
+        original_ids = [t.get('id', '') for t in day_tweets]
+
+        # Rotate: tweet at position i gets the slot from position (i + rotation) % n
+        for i, tweet in enumerate(day_tweets):
+            source_idx = (i + rotation) % n
+            tweet['slot'] = original_slots[source_idx]
+            # Update the ID to reflect the new slot
+            if original_ids[i]:
+                parts = original_ids[i].rsplit('_', 2)
+                if len(parts) >= 2:
+                    # Reconstruct ID with new slot: day_slot_category
+                    day_part = tweet.get('day', parts[0]).lower()
+                    cat_part = tweet.get('category', parts[-1] if len(parts) > 2 else '')
+                    tweet['id'] = f"{day_part}_{tweet['slot']}_{cat_part}"
+
+        rotated.extend(day_tweets)
+
+    return rotated
 
 
 def _fallback_copy(base_queue: list, base_queue_path: Path) -> None:
-    """Copy main queue as-is when Claude API is unavailable."""
+    """Copy main queue with rotated slots when Claude API is unavailable."""
     for account_key in ['account2', 'account3']:
         account_config = TWITTER_ACCOUNTS.get(account_key, {})
         queue_file = account_config.get('queue_file')
         if queue_file:
             output_path = base_queue_path.parent / queue_file
             copied = [dict(t, account=account_key) for t in base_queue]
+            copied = _rotate_slots(copied, account_key)
             with open(output_path, 'w') as f:
                 json.dump(copied, f, indent=2)
-            print(f"  {account_key}: {len(copied)} tweets (UNMODIFIED copy) -> {output_path}")
+            print(f"  {account_key}: {len(copied)} tweets (UNMODIFIED text, slots rotated) -> {output_path}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

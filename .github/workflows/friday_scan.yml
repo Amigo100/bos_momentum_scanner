@@ -195,6 +195,17 @@ jobs:
             echo "⚠️ No content_queue.json generated"
           fi
 
+      - name: Generate Tweet Variations (Multi-Account)
+        if: ${{ github.event.inputs.skip_tweets != 'true' }}
+        run: |
+          if [ -f "trades/content_queue.json" ]; then
+            echo "Generating tweet variations for multi-account posting..."
+            python tweet_generator.py --generate-variations || echo "Variation generation failed (non-critical)"
+          else
+            echo "No base queue - skipping variations"
+          fi
+        continue-on-error: true
+
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
       # ═══════════════════════════════════════════════════════════════════════════
@@ -245,11 +256,14 @@ jobs:
           retention-days: 30
         continue-on-error: true
 
-      - name: Upload content queue for daily posting
+      - name: Upload content queues for daily posting
         uses: actions/upload-artifact@v4
         with:
           name: content-queue
-          path: trades/content_queue.json
+          path: |
+            trades/content_queue.json
+            trades/content_queue_account2.json
+            trades/content_queue_account3.json
           retention-days: 14
 
       - name: Upload charts (if captured)

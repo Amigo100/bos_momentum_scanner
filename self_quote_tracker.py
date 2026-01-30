@@ -7,7 +7,7 @@ Tracks original signal tweet IDs for creating quote tweets
 when positions hit milestones (25%, 50%, 100%).
 
 This module enables the self-quote threading system where milestone
-celebrations can reference the original TEAL signal announcement.
+celebrations can reference the original GREEN signal announcement.
 
 Data stored in: trades/tweet_tracking.json
 
@@ -73,7 +73,7 @@ def register_signal_tweet(
     """
     Save original signal tweet ID for future quoting.
 
-    Called when a TEAL signal tweet is posted, so we can later
+    Called when a GREEN signal tweet is posted, so we can later
     quote it when the position hits milestones.
 
     Args:

@@ -111,17 +111,20 @@ def validate_before_posting(tweet: Dict) -> tuple:
     category = tweet.get('category', '')
 
     # BANNED_TERMS to check (critical subset for speed)
-    # MASTER_TODO_v2 compliant
+    # Subset of marketing_vocabulary.BANNED_TERMS — full check below
     CRITICAL_BANNED = [
         # Strategy internals
         'HMA', '20% stop', 'Banker >=', 'Beta >=', 'BoS',
-        # Wrong audience (UK ISA, not US Roth)
+        # Wrong audience
         'Roth IRA', 'Roth', 'PDT', '401k',
-        # Internal terms that leaked (MASTER_TODO_v2)
+        # Internal terms that leaked
         'Capital Preservation Protocol', 'Forensic Audit',
         'Volatility Expansion Criteria', '5th Gate', 'Gate 5',
-        # Non-branded signal terms (use TEAL signal)
+        # Non-branded signal terms
         'proprietary entry', 'proprietary signal',
+        # OLD COLOR SYSTEM (v2.0 - now banned)
+        'TEAL signal', 'TEAL',
+        'purple signal', 'VIOLET',
     ]
 
     # KILLED categories
@@ -138,6 +141,14 @@ def validate_before_posting(tweet: Dict) -> tuple:
         if term.lower() in text_lower:
             return (False, f"BLOCKED: Banned term '{term}' in tweet")
 
+    # 2b. Check for old color system (word-boundary)
+    old_colors = ['teal', 'purple', 'violet', 'amber']
+    for color in old_colors:
+        if re.search(rf'\b{color}\b', text_lower):
+            return (False, f"BLOCKED: Old color '{color}' - use GREEN/RED instead")
+    if '🟣' in text:
+        return (False, "BLOCKED: Old purple emoji - use RED emoji")
+
     # 3. Check for killed categories
     if category in KILLED_CATEGORIES:
         return (False, f"BLOCKED: Killed category '{category}'")
@@ -153,7 +164,16 @@ def validate_before_posting(tweet: Dict) -> tuple:
         if re.search(pattern, text_lower):
             return (False, f"BLOCKED: US-specific content ({pattern})")
 
-    # 5. Check tweet length
+    # 5. Full marketing vocabulary check (secondary defense)
+    try:
+        from marketing_vocabulary import validate_content
+        mv_valid, mv_violations = validate_content(text)
+        if not mv_valid:
+            return (False, f"BLOCKED: Marketing vocabulary violation: {mv_violations[0]}")
+    except ImportError:
+        pass  # marketing_vocabulary not available
+
+    # 6. Check tweet length
     char_count = sum(2 if ord(c) > 0xFFFF else 1 for c in text)
     if char_count > 280:
         return (False, f"BLOCKED: Tweet too long ({char_count} chars)")
@@ -165,25 +185,39 @@ def validate_before_posting(tweet: Dict) -> tuple:
 # X/TWITTER CLIENT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def get_clients() -> tuple:
-    """Initialize Tweepy clients (v1.1 for media, v2 for tweets)."""
-    
-    # Get credentials from environment
-    api_key = os.environ.get("X_API_KEY")
-    api_secret = os.environ.get("X_API_SECRET")
-    access_token = os.environ.get("X_ACCESS_TOKEN")
-    access_secret = os.environ.get("X_ACCESS_SECRET")
-    
+def get_clients(account_key: str = 'main') -> tuple:
+    """Initialize Tweepy clients (v1.1 for media, v2 for tweets).
+
+    Args:
+        account_key: Account identifier ('main', 'account2', 'account3').
+                     Determines which env var prefix to use.
+
+    Returns:
+        Tuple of (client_v2, api_v1) or (None, None) if credentials missing.
+    """
+    try:
+        from config import TWITTER_ACCOUNTS
+        account = TWITTER_ACCOUNTS.get(account_key, TWITTER_ACCOUNTS['main'])
+        prefix = account['env_prefix']
+    except (ImportError, KeyError):
+        prefix = 'X'
+
+    # Get credentials from environment using account-specific prefix
+    api_key = os.environ.get(f"{prefix}_API_KEY")
+    api_secret = os.environ.get(f"{prefix}_API_SECRET")
+    access_token = os.environ.get(f"{prefix}_ACCESS_TOKEN")
+    access_secret = os.environ.get(f"{prefix}_ACCESS_SECRET")
+
     missing = []
-    if not api_key: missing.append("X_API_KEY")
-    if not api_secret: missing.append("X_API_SECRET")
-    if not access_token: missing.append("X_ACCESS_TOKEN")
-    if not access_secret: missing.append("X_ACCESS_SECRET")
-    
+    if not api_key: missing.append(f"{prefix}_API_KEY")
+    if not api_secret: missing.append(f"{prefix}_API_SECRET")
+    if not access_token: missing.append(f"{prefix}_ACCESS_TOKEN")
+    if not access_secret: missing.append(f"{prefix}_ACCESS_SECRET")
+
     if missing:
-        print(f"ERROR: Missing environment variables: {', '.join(missing)}")
-        sys.exit(1)
-    
+        print(f"  ⚠ Missing credentials for {account_key}: {', '.join(missing)}")
+        return None, None
+
     # v2 Client for posting tweets
     client_v2 = tweepy.Client(
         consumer_key=api_key,
@@ -191,15 +225,32 @@ def get_clients() -> tuple:
         access_token=access_token,
         access_token_secret=access_secret
     )
-    
+
     # v1.1 API for media upload (v2 doesn't support media upload well yet)
     auth = tweepy.OAuth1UserHandler(
         api_key, api_secret,
         access_token, access_secret
     )
     api_v1 = tweepy.API(auth)
-    
+
     return client_v2, api_v1
+
+
+def get_queue_path(account_key: str = 'main') -> Path:
+    """Get the content queue file path for a given account.
+
+    Args:
+        account_key: Account identifier ('main', 'account2', 'account3').
+
+    Returns:
+        Path to the account's content_queue JSON file.
+    """
+    try:
+        from config import TWITTER_ACCOUNTS
+        account = TWITTER_ACCOUNTS.get(account_key, TWITTER_ACCOUNTS['main'])
+        return TRADES_DIR / account['queue_file']
+    except (ImportError, KeyError):
+        return QUEUE_FILE
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -359,6 +410,13 @@ def upload_media(api_v1, image_path: str) -> Optional[str]:
         return None
 
 
+def _is_transient_error(e: Exception) -> bool:
+    """Check if a tweepy error is transient (worth retrying)."""
+    err_str = str(e).lower()
+    transient_indicators = ['rate limit', '429', 'timeout', 'connection', '503', '502', 'server error']
+    return any(indicator in err_str for indicator in transient_indicators)
+
+
 def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
     """Post a single tweet with optional media."""
 
@@ -387,9 +445,12 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
     print(f"  └{'─' * 50}")
 
     if dry_run:
-        print(f"\n  🔸 DRY RUN - would post this tweet")
+        print(f"\n  DRY RUN - would post this tweet")
         if image_path:
-            print(f"  🔸 Would attach: {image_path}")
+            print(f"  Would attach: {image_path}")
+        if tweet.get('template_id'):
+            print(f"  Template: {tweet.get('template_id')}")
+        print(f"  Method: {tweet.get('generation_method', 'unknown')}")
         return True
     
     try:
@@ -399,13 +460,25 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
             media_id = upload_media(api_v1, image_path)
             if media_id:
                 media_ids = [media_id]
-        
-        # Post tweet
-        response = client_v2.create_tweet(
-            text=text,
-            media_ids=media_ids
-        )
-        
+
+        # Post tweet with retry logic for transient failures
+        max_retries = 3
+        response = None
+        for attempt in range(max_retries):
+            try:
+                response = client_v2.create_tweet(
+                    text=text,
+                    media_ids=media_ids
+                )
+                break
+            except tweepy.TweepyException as e:
+                if attempt < max_retries - 1 and _is_transient_error(e):
+                    wait = 2 ** (attempt + 1)
+                    print(f"  Retry {attempt+1}/{max_retries} in {wait}s... ({e})")
+                    time.sleep(wait)
+                else:
+                    raise
+
         posted_tweet_id = response.data['id']
         print(f"\n  ✅ Posted! Tweet ID: {posted_tweet_id}")
         print(f"  🔗 https://x.com/i/status/{posted_tweet_id}")
@@ -415,9 +488,17 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
         tweet['posted_at'] = datetime.now().isoformat()
         tweet['tweet_id'] = posted_tweet_id
 
+        # Log generation method for analytics
+        gen_method = tweet.get('generation_method', 'unknown')
+        template_id = tweet.get('template_id', None)
+        if template_id:
+            print(f"  Template: {template_id} (method: {gen_method})")
+        else:
+            print(f"  Generated via: {gen_method}")
+
         # Register signal tweets for future quoting (milestone celebrations)
         category = tweet.get('category', '')
-        if category in ['teal_signal', 'buy_signal', 'thread_buy_signal'] and tweet.get('ticker'):
+        if category in ['buy_signal', 'thread_buy_signal'] and tweet.get('ticker'):
             try:
                 from self_quote_tracker import register_signal_tweet
                 register_signal_tweet(
@@ -430,7 +511,7 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
                 print(f"  ⚠️ Could not register for quote tracking: {e}")
 
         return True
-        
+
     except tweepy.TweepyException as e:
         print(f"\n  ✗ Failed to post: {e}")
         tweet['status'] = 'failed'
@@ -449,7 +530,7 @@ def post_quote_tweet(
     Post a quote tweet referencing an original signal tweet.
 
     Used for milestone celebrations (25%, 50%, 100% gains) to
-    quote the original TEAL signal announcement.
+    quote the original GREEN signal announcement.
 
     Args:
         client_v2: Tweepy v2 client for posting
@@ -598,22 +679,23 @@ def post_thread(client_v2, api_v1, thread_item: Dict, dry_run: bool = False) -> 
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Post scheduled tweets/threads to X")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
-    parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")
-    parser.add_argument("--queue", type=str, help="Path to content queue JSON")
-    parser.add_argument("--slot", type=str, default="all",
-                        help="Which slot to post (1-5 or 'all')")
-    args = parser.parse_args()
+def post_for_account(account_key: str, args, target_slot) -> int:
+    """Post content for a single account.
 
-    print("\n" + "═" * 60)
-    print("  TWITTER POSTER - Automated X Posting")
-    print("═" * 60)
+    Args:
+        account_key: Account identifier ('main', 'account2', 'account3').
+        args: Parsed CLI arguments.
+        target_slot: Target slot number or None for 'all'.
 
-    # Load queue
-    queue_file = Path(args.queue) if args.queue else QUEUE_FILE
-    print(f"\n  📂 Queue: {queue_file}")
+    Returns:
+        0 on success, 1 on failure.
+    """
+    queue_file = Path(args.queue) if args.queue else get_queue_path(account_key)
+    print(f"\n  📂 [{account_key}] Queue: {queue_file}")
+
+    if not queue_file.exists():
+        print(f"  ⚠ [{account_key}] Queue file not found, skipping")
+        return 0
 
     queue = load_queue(queue_file)
 
@@ -621,55 +703,105 @@ def main() -> int:
     posted = [t for t in queue if t.get("status") == "posted"]
     threads = [t for t in queue if t.get("is_thread", False)]
 
-    print(f"  📊 Status: {len(posted)} posted, {len(pending)} pending")
+    print(f"  📊 [{account_key}] Status: {len(posted)} posted, {len(pending)} pending")
     if threads:
         thread_pending = [t for t in threads if t.get("status") == "pending"]
-        print(f"  🧵 Threads: {len(thread_pending)} pending of {len(threads)} total")
+        print(f"  🧵 [{account_key}] Threads: {len(thread_pending)} pending of {len(threads)} total")
 
-    # Find next content item (tweet or thread) - filter by slot if specified
-    target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
     content_item = find_next_content(queue, force=args.force, target_slot=target_slot)
 
     if not content_item:
-        print(f"\n  ℹ️  No content due right now")
-        print(f"     Current slot: {get_current_slot()} ({SLOT_TIMES.get(get_current_slot(), 'outside hours')})")
-        print(f"     Today: {datetime.now().strftime('%Y-%m-%d')}")
+        print(f"\n  ℹ️  [{account_key}] No content due right now")
         return 0
 
-    # Initialize clients (skip for dry run if no credentials)
+    # Initialize clients
     if args.dry_run:
         client_v2, api_v1 = None, None
     else:
-        client_v2, api_v1 = get_clients()
+        client_v2, api_v1 = get_clients(account_key)
+        if client_v2 is None:
+            print(f"  ⚠ [{account_key}] No credentials, skipping")
+            return 0
 
-    # Check for duplicate content before posting
+    # Duplicate check
     tweet_text = content_item.get('text', '')
     if is_duplicate_content(tweet_text, queue):
-        print(f"\n  ⚠️  DUPLICATE DETECTED - This exact tweet was already posted")
-        print(f"     Skipping to prevent duplicate content on X")
-        # Mark as skipped so it doesn't get picked up again
+        print(f"\n  ⚠️  [{account_key}] DUPLICATE DETECTED - skipping")
         content_item['status'] = 'skipped'
         content_item['skip_reason'] = 'duplicate_content'
         if not args.dry_run:
             save_queue(queue, queue_file)
         return 0
 
-    # Dispatch based on content type (thread vs single tweet)
+    # Post
     if content_item.get('is_thread', False):
-        print(f"\n  🧵 Detected: THREAD")
+        print(f"\n  🧵 [{account_key}] Detected: THREAD")
         success = post_thread(client_v2, api_v1, content_item, dry_run=args.dry_run)
     else:
-        print(f"\n  📝 Detected: SINGLE TWEET")
+        print(f"\n  📝 [{account_key}] Detected: SINGLE TWEET")
         success = post_tweet(client_v2, api_v1, content_item, dry_run=args.dry_run)
 
-    # Save updated queue
     if not args.dry_run:
         save_queue(queue, queue_file)
-        print(f"\n  💾 Queue updated: {queue_file}")
-
-    print("\n" + "═" * 60)
+        print(f"\n  💾 [{account_key}] Queue updated: {queue_file}")
 
     return 0 if success else 1
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Post scheduled tweets/threads to X")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
+    parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")
+    parser.add_argument("--queue", type=str, help="Path to content queue JSON")
+    parser.add_argument("--slot", type=str, default="all",
+                        help="Which slot to post (1-5 or 'all')")
+    parser.add_argument("--account", type=str, default="main",
+                        help="Account to post to (main, account2, account3, or all)")
+    args = parser.parse_args()
+
+    print("\n" + "═" * 60)
+    print("  TWITTER POSTER - Automated X Posting")
+    print("═" * 60)
+
+    target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
+
+    if args.account == "all":
+        # Post to all accounts sequentially with staggered delays
+        try:
+            from config import TWITTER_ACCOUNTS
+            accounts = list(TWITTER_ACCOUNTS.keys())
+        except ImportError:
+            accounts = ['main']
+
+        result = 0
+        for i, account_key in enumerate(accounts):
+            print(f"\n{'─' * 60}")
+            print(f"  === Account: {account_key} ===")
+            ret = post_for_account(account_key, args, target_slot)
+            if ret != 0:
+                result = ret
+
+            # Stagger posts between accounts (skip delay after last)
+            if i < len(accounts) - 1:
+                try:
+                    from config import TWITTER_ACCOUNTS as accts
+                    next_account = accounts[i + 1]
+                    delay_min = accts[next_account]['offset_minutes'] - accts[account_key]['offset_minutes']
+                    delay_sec = max(delay_min * 60, 0)
+                except (ImportError, KeyError):
+                    delay_sec = 600  # Default 10 min
+
+                if delay_sec > 0 and not args.dry_run:
+                    print(f"\n  ⏳ Waiting {delay_sec // 60} min before next account...")
+                    time.sleep(delay_sec)
+
+        print(f"\n{'═' * 60}")
+        return result
+    else:
+        # Single account mode
+        result = post_for_account(args.account, args, target_slot)
+        print("\n" + "═" * 60)
+        return result
 
 
 if __name__ == "__main__":

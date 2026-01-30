@@ -1,849 +1,563 @@
-# Sterling Signals Marketing Compliance Audit
+# Audit 07: Marketing Compliance System
 
-**Audit Date:** 2026-01-27
-**Auditor:** Claude Opus 4.5
-**Version:** 1.0
+**Scope:** All marketing rules, vocabulary enforcement, position filtering safeguards, and compliance validation across all public-facing content outputs.
+
+**Files Audited:**
+- `config.py` (lines 262-911) — Marketing thresholds, banned terms, approved terms, helper functions
+- `marketing_vocabulary.py` (341 lines) — Vocabulary validation, power phrases, audience hooks
+- `signal_tracker.py` (lines 690-1061) — Position filtering, cold streak detection, showcase selection
+- `twitter_poster.py` (lines 95-162) — Pre-post validation (last line of defense)
+- `tweet_generator.py` — Generation-time validation (8 checks)
+- `newsletter_compiler.py` — Newsletter validation (warning-only)
+- `substack_notes_generator.py` — Substack notes filtering
+- `substack_content_generator.py` — Substack post filtering
 
 ---
 
 ## Table of Contents
 
-1. [Executive Summary](#executive-summary)
-2. [Marketing Rules Implementation](#marketing-rules-implementation)
-3. [Winning Positions Only Safeguard](#winning-positions-only-safeguard)
-4. [Vocabulary & Language Compliance](#vocabulary--language-compliance)
-5. [Promotional Content Rules](#promotional-content-rules)
-6. [High Performer Selection Algorithm](#high-performer-selection-algorithm)
-7. [Risk Assessment](#risk-assessment)
-8. [Pre-Publication Compliance Checklist](#pre-publication-compliance-checklist)
+1. [Complete Marketing Rules Inventory](#1-complete-marketing-rules-inventory)
+2. [Banned Terms System](#2-banned-terms-system)
+3. [Approved Vocabulary & Branding](#3-approved-vocabulary--branding)
+4. [Position Filtering Safeguards](#4-position-filtering-safeguards)
+5. [High Performer Selection Algorithm](#5-high-performer-selection-algorithm)
+6. [Cold Streak Circuit Breaker](#6-cold-streak-circuit-breaker)
+7. [Validation Architecture](#7-validation-architecture)
+8. [Gaps & Inconsistencies](#8-gaps--inconsistencies)
+9. [Compliance Checklist](#9-compliance-checklist)
+10. [Concerns](#10-concerns)
 
 ---
 
-## Executive Summary
+## 1. Complete Marketing Rules Inventory
 
-The Sterling Signals marketing system implements **comprehensive safeguards** to ensure public content meets compliance standards. Key findings:
+### 1.1 Performance Thresholds (`config.py:266-288`)
 
-| Aspect | Status | Risk Level |
-|--------|--------|------------|
-| Winners-only filtering | Implemented | LOW |
-| Vocabulary validation | Implemented | LOW |
-| Age-based thresholds | Implemented | LOW |
-| Stopped position hiding | Implemented | LOW |
-| SPY comparison safeguards | Implemented | MEDIUM |
-| Performance claim substantiation | Partially Implemented | MEDIUM |
-| Regulatory disclaimers | Implemented | LOW |
+| Key | Value | Purpose |
+|-----|-------|---------|
+| `min_win_to_highlight` | 15.0% | Minimum gain to include in top_performers |
+| `big_win_threshold` | 25.0% | Trigger standalone milestone tweet |
+| `home_run_threshold` | 50.0% | Celebration post, pin candidate |
+| `hall_of_fame_threshold` | 100.0% | Thread-worthy, repeated reference |
+| `spy_outperformance_min` | 5.0% | Must beat SPY by this to use beat_spy content |
+| `min_winners_for_top_performers` | 2 | Need >= 2 winners at 15%+ to post top_performers |
+| `max_loss_to_mention` | -5.0% | Never mention positions worse than this |
+| `cold_streak_threshold` | 3 | Number of losses to trigger cold streak |
+| `cold_streak_lookback_days` | 14 | Days to look back for losses |
+| `max_ticker_mentions_per_week` | 4 | Prevent engagement fatigue |
 
-**Critical Safeguards Verified:**
-- 6 primary safeguard functions protecting public content
-- 61 banned terms with automated detection
-- All losing positions filtered from public display
-- Stopped positions always hidden (even if profitable)
-- Cold streak circuit breaker to pause promotional content
+### 1.2 Ticker Frequency Limits (`config.py:47-51`)
 
----
+| Rule | Value |
+|------|-------|
+| Max mentions per week | 4 |
+| Max consecutive days | 2 |
+| Cooldown after milestone | 2 days |
 
-## Marketing Rules Implementation
+### 1.3 Stopped Position Rules (`config.py:776-783`)
 
-### 1. What Can Be Shown Publicly
+All six rules set to suppress stopped positions from any public content:
 
-#### Signals (Public)
-| Signal Type | Public Name | Can Show? |
-|-------------|-------------|-----------|
+| Rule | Value |
+|------|-------|
+| `show_in_public_content` | **False** |
+| `show_in_newsletter` | **False** |
+| `show_in_top_performers` | **False** |
+| `show_in_any_tweet` | **False** |
+| `internal_tracking` | True (internal only) |
+| `mention_discipline_publicly` | **False** |
+
+### 1.4 Entry Price Display Rules (`config.py:625-629`)
+
+| Rule | Value |
+|------|-------|
+| Show for closed winners | Yes (always) |
+| Show for open positions | Only if P&L >= 25.0% |
+| Below threshold | Entry price hidden |
+
+Implementation at `config.py:680-704` (`can_show_entry_price()`):
+- Closed winners (`status == 'CLOSED' and pnl_pct > 0`): always show
+- Open positions (`status == 'OPEN' and pnl_pct >= 25.0`): show
+- All other cases: hide
+
+### 1.5 Signal Visibility Rules (`config.py:335-366`)
+
+| Signal Type | Public Name | Show Publicly |
+|-------------|-------------|---------------|
 | PASS | TEAL Signal | Yes |
 | CONSIDER | On Our Radar | Yes |
-| WATCHLIST | - | No |
-| CAUTION | - | No |
-| EXIT | - | No |
+| WATCHLIST | *(none)* | No |
+| CAUTION | *(none)* | No |
+| EXIT | *(none)* | No |
 
-**Code Reference:** `config.py:309-340` - `SIGNAL_TYPES` dict
+### 1.6 Conviction Language (`config.py:617-623`)
 
-#### Positions (Public with Restrictions)
-| Position Status | Can Show P&L? | Threshold Required |
-|-----------------|---------------|-------------------|
-| OPEN + Winning (15%+) | Yes | 15% minimum gain |
-| OPEN + Small Win (<15%) | No | - |
-| OPEN + Losing | **NEVER** | - |
-| CLOSED + Winner | Yes | Entry < Exit |
-| CLOSED + Loser | **NEVER** | - |
-| STOPPED (any P&L) | **NEVER** | CRIT-3 Rule |
+| Score | Public Text |
+|-------|-------------|
+| 5 | Extremely Bullish |
+| 4 | Bullish |
+| 3 | Watching |
+| 2 | Cautious |
+| 1 | *(do not post publicly)* |
 
-**Code Reference:** `config.py:634-642` - `STOPPED_POSITION_RULES`
+### 1.7 Killed Categories (`config.py:58-64`)
 
-### 2. What Must NEVER Be Shown
+Categories permanently disabled:
 
-#### Banned Content Categories
-```python
-# config.py:58-64
-KILLED_CATEGORIES = [
-    'roth_ira',          # Wrong audience
-    'pdt_friendly',      # Wrong audience
-    'position_update',   # Shows individual P&L
-    'weekly_wins',       # Misleading terminology
-    'self_quote',        # Renamed to milestone_alerts
-]
-```
+| Category | Reason |
+|----------|--------|
+| `roth_ira` | Wrong audience |
+| `pdt_friendly` | Wrong audience |
+| `position_update` | Shows individual P&L — merged to top_performers |
+| `weekly_wins` | Renamed to top_performers (misleading terminology) |
+| `self_quote` | Renamed to milestone_alerts |
 
-#### Banned Numerical Thresholds
-| Metric | Value | Reason |
-|--------|-------|--------|
-| Max loss to mention | -5.0% | Never mention positions below this |
-| Cold streak trigger | 3 losses | Pause promotional content |
+### 1.8 Safeguarded Categories (`config.py:301-306`)
 
-**Code Reference:** `config.py:253-258` - `MARKETING_THRESHOLDS`
+Categories that require passing a safeguard check before generation:
 
-### 3. Milestone Celebration Thresholds
+| Category | Safeguard Function | Fallback |
+|----------|-------------------|----------|
+| `top_performers` | `has_enough_wins` | `theme_hot` |
+| `beat_spy` | `should_post_beat_spy` | `engagement` |
+| `self_quote` | `has_uncelebrated_wins` | `consider_spotlight` |
+| `closed_trade` | `has_winning_closed_trades` | `educational` |
 
-| Threshold | Name | Action | Emoji |
-|-----------|------|--------|-------|
-| 25% | Standard | Celebrate once | 📈 |
-| 50% | Home Run | Celebrate once, pin candidate | 🚀 |
-| 100% | Hall of Fame | Celebrate once, thread-worthy | 🏆 |
+### 1.9 Age-Based Highlight Thresholds (`config.py:826-848`)
 
-**Celebration Rules:**
-- Each threshold can only be celebrated ONCE per ticker
-- Tracked in `trades/celebrations.json`
-- Function: `mark_as_celebrated(ticker, threshold)`
+| Days Held | Min P&L to Highlight |
+|-----------|---------------------|
+| 0-7 | 3.0% |
+| 8-14 | 5.0% |
+| 15-30 | 10.0% |
+| 31-60 | 15.0% |
+| 60+ | 20.0% |
 
-**Code Reference:** `config.py:570-589` - `CELEBRATION_TIERS`
+### 1.10 Timeframe Disclaimers (`config.py:769-773`)
 
-### 4. Age-Based Display Thresholds
-
-Minimum P&L required for public display based on holding period:
-
-| Days Held | Min P&L | Category | Rationale |
-|-----------|---------|----------|-----------|
-| 0-7 | 3.0% | New positions | Just need to be green |
-| 8-14 | 5.0% | Early momentum | Showing promise |
-| 15-30 | 10.0% | Building | Solid start |
-| 31-60 | 15.0% | Standard | Full threshold |
-| 61+ | 20.0% | Mature | Should be performing |
-
-**Code Reference:** `config.py:685-706` - `get_highlight_threshold()`
-
-```python
-def get_highlight_threshold(days_held: int) -> float:
-    if days_held <= 7:
-        return 3.0
-    elif days_held <= 14:
-        return 5.0
-    elif days_held <= 30:
-        return 10.0
-    elif days_held <= 60:
-        return 15.0
-    else:
-        return 20.0
-```
-
-### 5. Performance Requirements for Showcase
-
-#### Top Performers Category
-- Minimum winners: 2
-- Minimum P&L per winner: 15%
-- Safeguard function: `has_enough_wins()`
-- Fallback if failed: `theme_hot`
-
-#### Beat SPY Category
-- Minimum outperformance: 5% alpha
-- Comparison method: Matched holding periods (CRIT-4)
-- Safeguard function: `should_post_beat_spy()`
-- Fallback if failed: `engagement`
-
-#### Milestone Alerts Category
-- Requires uncelebrated wins at 25/50/100% thresholds
-- Safeguard function: `has_uncelebrated_wins()`
-- Fallback if failed: `consider_spotlight`
-
-**Code Reference:** `config.py:275-289` - `SAFEGUARDED_CATEGORIES` and `CATEGORY_FALLBACKS`
+Three disclaimer lengths available:
+- **Short:** "Returns since signal entry."
+- **Medium:** "Total gain since entry, not weekly movement."
+- **Long:** "Sterling Signals targets 50-100% returns over 3-8 month holds. Returns shown are total since signal entry."
 
 ---
 
-## Winning Positions Only Safeguard
+## 2. Banned Terms System
 
-### Definition of "Winning"
+### 2.1 Two Separate Banned Term Lists
 
-A position is considered "winning" when:
-1. `pnl_pct >= 0` (any positive return)
-2. `status != 'STOPPED'` (even profitable stopped positions are hidden)
+**CRITICAL FINDING:** There are two independent banned term lists that are NOT synchronized.
 
-For public showcase (top_performers):
-- `pnl_pct >= 15.0%` (standard threshold)
-- Or age-adjusted threshold (see above)
+#### `config.py:373-410` — 40 terms across 7 categories
 
-### All Code Paths That Display Position Data
+```
+Strategy internals:  HMA, Hull Moving Average, HMA Pivot, Banker indicator,
+                     Banker >= 55, Banker score, 20% trailing stop, 20% stop,
+                     Beta >= 1.5, Break of Structure, BoS, BOS,
+                     Tier 1, Tier 2, Tier 3, Gatekeeper
 
-#### Path 1: Newsletter - `load_portfolio_status()`
-**File:** `newsletter_compiler.py:328-389`
+Geographic:          UK ISA, ISA account, GMT, BST, UK Time
 
-```python
-def load_portfolio_status() -> str:
-    """Load WIN HIGHLIGHTS only (no portfolio display per marketing overhaul)."""
-    # Filter: status in ['CLOSED', 'STOPPED']
-    # Filter: pnl_pct >= 15.0 (MARKETING_THRESHOLDS['min_win_to_highlight'])
-    # Returns: Top 5 winners sorted by P&L
+Branding:            PASS signal, weekly winners, this week we nailed
+
+Technical:           RSI, MACD, KDJ
+
+Leaked internals:    Capital Preservation Protocol, Forensic Audit,
+                     Volatility Expansion Criteria, 5th Gate, Gate 5
+
+Non-branded signals: buy signal, proprietary entry, proprietary signal
+
+US-specific:         Roth IRA, Roth, PDT, PDT rule, pattern day trader,
+                     401k, 401(k)
 ```
 
-**Safeguard:** Yes - Only shows 15%+ winners
+#### `marketing_vocabulary.py:25-65` — 45 terms (superset)
 
-#### Path 2: Substack Notes - Tuesday Note
-**File:** `substack_notes_generator.py:221-279`
+Additional terms not in `config.py`:
+- `Banker ≥ 55` (unicode variant)
+- `Beta ≥ 1.5` (unicode variant)
+- `HMA pivot` (lowercase variant)
+- `banker indicator` (lowercase variant)
+- `Banker >=` (partial match)
+- `Beta >=` (partial match)
+- `Weekly BoS`, `weekly bos`, `Weekly pivot`
+- `ISA wrapper`, `Barclays ISA`
+- `UK investor(s)`, `UK trader(s)`, `UK time`, `London time`, `GBP/USD`
+- `Buy signal`, `BUY SIGNAL` (case variants)
+- `conviction 5/4/3`, `conviction score`, `conviction rating`
+- `TIER1`, `TIER2`, `TIER3` (no-space variants)
 
-```python
-def generate_tuesday_note(portfolio, prices):
-    # Filter: winners = [p for p in positions if p.get('pnl_pct', 0) >= 15.0]
-    # Shows: Top 3 winners only
+### 2.2 Validation Differences
+
+| Aspect | `config.py` `contains_banned_term()` | `marketing_vocabulary.py` `validate_content()` |
+|--------|--------------------------------------|-----------------------------------------------|
+| **Location** | `config.py:898-911` | `marketing_vocabulary.py:166-203` |
+| **Term count** | 40 | 45 |
+| **Method** | Substring match (case-insensitive) | Substring + word boundary for short terms |
+| **Short term handling** | None — substring only | 7 terms use `\b` regex: RSI, MACD, KDJ, BoS, BOS, GMT, BST |
+| **Return type** | `bool` | `Tuple[bool, List[str]]` (includes violation list) |
+| **Deduplication** | None | Yes (preserves order) |
+
+### 2.3 Third Hardcoded List in `twitter_poster.py:115-125`
+
+The pre-post validation uses a **hardcoded subset of only 13 terms**:
+
 ```
-
-**Safeguard:** Yes - 15% threshold applied
-
-#### Path 3: Substack Notes - Thursday Note
-**File:** `substack_notes_generator.py:282-378`
-
-```python
-def generate_thursday_note(signals, portfolio, prices):
-    # Filter: Only shows top performer IF pnl_pct >= 15.0
-    if stats_calc['top_performer'] and stats_calc['top_performer'].get('pnl_pct', 0) >= 15.0:
-```
-
-**Safeguard:** Yes - 15% threshold applied
-
-#### Path 4: Tweet Generator - top_performers
-**File:** `tweet_generator.py:1387-1411`
-
-```python
-# Safeguard check first
-if SIGNAL_TRACKER_AVAILABLE:
-    can_post_top_performers = has_enough_wins(content.open_positions)
-
-# Filter applied
-filtered = filter_public_positions(content.open_positions)
-# Fallback filter
-winners = [p for p in filtered if p.get('pnl_pct', 0) >= min_win_threshold]
-```
-
-**Safeguard:** Yes - Double-filtered
-
-#### Path 5: Tweet Generator - self_quote (milestones)
-**File:** `tweet_generator.py:1438-1492`
-
-```python
-# Only uncelebrated big wins (25%+)
-uncelebrated_wins = get_uncelebrated_wins()
-```
-
-**Safeguard:** Yes - Requires 25%+ and uncelebrated
-
-#### Path 6: Tweet Generator - beat_spy
-**File:** `tweet_generator.py:1198-1243`
-
-```python
-# Safeguard: calculate_portfolio_vs_spy() must return should_post_beat_spy=True
-result = calculate_portfolio_vs_spy(content.open_positions)
-```
-
-**Safeguard:** Yes - Requires 5% outperformance
-
-### Master Filter Function
-
-**File:** `signal_tracker.py:690-741`
-
-```python
-def filter_public_positions(positions: List[Dict]) -> List[Dict]:
-    """
-    Filter positions to only include winners for public content.
-    CRITICAL: Never expose losing positions publicly.
-    """
-    public_positions = []
-    for pos in positions:
-        # CRIT-3: Never show stopped positions publicly
-        status = pos.get('status', 'OPEN')
-        if status == 'STOPPED':
-            continue
-
-        # Calculate P&L
-        if entry_price > 0:
-            pnl_pct = ((current_price / entry_price) - 1) * 100
-
-        # CRITICAL: Only include positive P&L
-        if pnl_pct >= 0:
-            pos_copy = dict(pos)
-            pos_copy['pnl_pct'] = pnl_pct
-            public_positions.append(pos_copy)
-
-    # Sort by P&L descending
-    return sorted(public_positions, key=lambda x: x.get('pnl_pct', 0), reverse=True)
-```
-
-### Edge Cases Handled
-
-#### Edge Case 1: Position Flips from Winning to Losing
-- **Scenario:** Position was +20% last week, now -5%
-- **Handling:** Automatically filtered out by `pnl_pct >= 0` check
-- **Risk:** LOW - Real-time P&L calculation via yfinance
-
-#### Edge Case 2: Stopped Position with Positive P&L
-- **Scenario:** Stop triggered at +10% (profit-taking or BoS down)
-- **Handling:** `status == 'STOPPED'` check filters BEFORE P&L check
-- **Rule:** CRIT-3 - Never show stopped positions publicly
-- **Risk:** LOW
-
-#### Edge Case 3: Breakeven Position (0.0% P&L)
-- **Scenario:** Position exactly at entry price
-- **Handling:** `pnl_pct >= 0` includes breakeven
-- **Note:** Won't appear in top_performers (needs 15%)
-- **Risk:** LOW
-
-#### Edge Case 4: Price Fetch Failure
-- **Scenario:** yfinance fails to fetch current price
-- **Handling:** Falls back to entry price (shows 0% P&L)
-- **Warning:** Logged at `signal_tracker.py:174-184`
-- **Risk:** MEDIUM - Could show stale data
-
-### Verification: No Path Bypasses Safeguard
-
-| Code Path | Safeguard Applied | Filter Function | Verified |
-|-----------|-------------------|-----------------|----------|
-| Newsletter | Yes | `load_portfolio_status()` | ✓ |
-| Tuesday Note | Yes | Inline filter (15%) | ✓ |
-| Thursday Note | Yes | Inline filter (15%) | ✓ |
-| top_performers | Yes | `filter_public_positions()` | ✓ |
-| self_quote | Yes | `get_uncelebrated_wins()` | ✓ |
-| beat_spy | Yes | `should_post_beat_spy()` | ✓ |
-| closed_trade | Yes | `has_winning_closed_trades()` | ✓ |
-
-**Finding:** All public display paths have safeguards. No bypass paths identified.
-
----
-
-## Vocabulary & Language Compliance
-
-### Complete Internal → Marketing Term Mapping
-
-| Internal Term | Marketing Alternative | Status |
-|---------------|----------------------|--------|
-| HMA Pivot | momentum confirmed | REQUIRED |
-| Hull Moving Average | momentum confirmed | REQUIRED |
-| Banker indicator | strong accumulation | REQUIRED |
-| Banker >= 55 | strong accumulation | REQUIRED |
-| Beta >= 1.5 | volatility characteristics | REQUIRED |
-| 20% trailing stop | trailing stop | REQUIRED |
-| Break of Structure (BoS) | momentum confirmed | REQUIRED |
-| Weekly BoS | momentum confirmed | REQUIRED |
-| Gatekeeper | cleared all gates | REQUIRED |
-| Gate 5 / 5th Gate | cleared all gates | REQUIRED |
-| Tier 1/2/3 | high conviction | REQUIRED |
-| Theme scoring | theme alignment | REQUIRED |
-| buy signal | **TEAL signal** | REQUIRED |
-| PASS signal | **TEAL signal** | REQUIRED |
-| proprietary signal | **TEAL signal** | REQUIRED |
-
-**Code Reference:** `marketing_vocabulary.py:67-79` - `APPROVED_VOCABULARY`
-
-### Banned Terms (Complete List - 61 Terms)
-
-#### Technical Indicators (Never Reveal)
-```
-HMA, Hull Moving Average, HMA Pivot, HMA pivot
-Banker indicator, Banker >= 55, Banker ≥ 55, Banker >=, banker indicator
-20% trailing stop, 20% stop, trailing stop
-Beta >= 1.5, Beta ≥ 1.5, beta threshold, Beta >=
-Break of Structure, BoS, BOS, Weekly BoS, weekly bos
-Tier 1, Tier 2, Tier 3, TIER1, TIER2, TIER3
-Gatekeeper, Weekly pivot
-RSI, MACD, KDJ
-```
-
-#### Leaked Internal Terms (Now Banned)
-```
-Capital Preservation Protocol
-Forensic Audit
-Volatility Expansion Criteria
-5th Gate, Gate 5
-Structural Pivot Confirmation (use sparingly)
-Institutional Accumulation Divergence (use sparingly)
-```
-
-#### Non-Branded Signal Terms
-```
-buy signal, Buy signal, BUY SIGNAL
+HMA, 20% stop, Banker >=, Beta >=, BoS,
+Roth IRA, Roth, PDT, 401k,
+Capital Preservation Protocol, Forensic Audit,
+Volatility Expansion Criteria, 5th Gate, Gate 5,
 proprietary entry, proprietary signal
-PASS signal
 ```
 
-#### Region-Specific Terms
-```
-UK ISA, ISA wrapper, Barclays ISA, ISA account
-UK investor, UK investors, UK trader, UK traders
-GMT, BST, UK Time, UK time, London time
-GBP/USD
-Roth IRA, Roth
-PDT, PDT rule, pattern day trader
-401k, 401(k)
-```
-
-**Code Reference:** `marketing_vocabulary.py:25-61` - `BANNED_TERMS`
-
-### Where Translations Are Applied
-
-| Component | Validation Point | Function |
-|-----------|-----------------|----------|
-| Tweet Generator | Pre-queue | `validate_tweet_before_queue()` |
-| Newsletter Compiler | Post-LLM | `validate_content()` |
-| Substack Notes | Pre-save | `validate_content()` |
-| All Functions | Decorator | `@validate_output()` |
-
-### Validation Function
-
-**File:** `marketing_vocabulary.py:151-188`
-
-```python
-def validate_content(text: str) -> Tuple[bool, List[str]]:
-    """
-    Check content for banned terms.
-    Returns: (is_valid, list_of_violations)
-    """
-    violations = []
-    text_lower = text.lower()
-
-    for term in BANNED_TERMS:
-        if term.lower() in text_lower:
-            # Short terms need word boundary check
-            if term in ["RSI", "MACD", "KDJ", "BoS", "BOS", "GMT", "BST"]:
-                if re.search(rf'\b{re.escape(term)}\b', text, re.IGNORECASE):
-                    violations.append(term)
-            else:
-                violations.append(term)
-
-    return len(violations) == 0, violations
-```
-
-### Automatic TEAL Branding Enforcement
-
-**File:** `config.py:418-443`
-
-```python
-def enforce_teal_branding(text: str) -> str:
-    """Replace non-branded signal terms with TEAL branding."""
-    replacements = {
-        'buy signal': 'TEAL signal',
-        'Buy signal': 'TEAL signal',
-        'BUY SIGNAL': 'TEAL SIGNAL',
-        'proprietary entry': 'TEAL signal',
-        'proprietary signal': 'TEAL signal',
-        'PASS signal': 'TEAL signal',
-    }
-    for old, new in replacements.items():
-        text = text.replace(old, new)
-    return text
-```
-
-### Terms Missing Translation
-
-| Internal Term | Currently Used | Recommended Marketing Term |
-|---------------|----------------|---------------------------|
-| CONSIDER signal | "On Our Radar" | ✓ Approved |
-| CAUTION signal | (not public) | N/A |
-| Highest close | (internal) | "trailing reference" |
-| Stop distance | (internal) | "risk buffer" |
-
-**Finding:** All public-facing terms have approved translations.
+**Missing from this critical last-line-of-defense check:**
+- All geographic terms (UK ISA, GMT, BST, etc.)
+- Technical indicators (RSI, MACD, KDJ)
+- Branding terms (PASS signal, weekly winners)
+- Hull Moving Average, Break of Structure (long forms)
+- Tier 1/2/3, Gatekeeper
+- All `marketing_vocabulary.py`-only terms
 
 ---
 
-## Promotional Content Rules
+## 3. Approved Vocabulary & Branding
 
-### System Description (Approved Language)
+### 3.1 Internal-to-Public Vocabulary Mapping (`marketing_vocabulary.py:71-94`)
 
-**Power Phrases (marketing_vocabulary.py:85-111):**
+| Internal Term | Approved Public Term |
+|---------------|---------------------|
+| HMA Pivot | momentum confirmed |
+| Banker indicator | strong accumulation |
+| Beta >= 1.5 | volatility characteristics |
+| 20% trailing stop | trailing stop |
+| Weekly BoS | momentum confirmed |
+| Gatekeeper | cleared all gates |
+| Tier 1/2/3 | high conviction |
+| Theme scoring | theme alignment |
+| buy signal | TEAL signal |
+| PASS signal | TEAL signal |
 
-```
-System Description:
-- "Proprietary 5-gate screening system"
-- "Filters 1,800 stocks to 3-5 actionable signals"
-- "Institutional-grade momentum analysis"
-- "Systematic approach that removes emotional bias"
+### 3.2 TEAL Branding Enforcement (`config.py:444-469`)
 
-Signal Detection:
-- "TEAL signal triggered"
-- "Cleared all 5 gates"
-- "Strong accumulation detected"
-- "Theme alignment confirmed"
-- "Momentum confirmed"
+`enforce_teal_branding()` performs 10 text replacements:
 
-Risk Management:
-- "Systematic exit discipline"
-- "Trailing stop in place"
-- "Risk-defined position sizing"
-- "The system protects capital so we live to fight another day"
-- "No ego, just execution"
+| From | To |
+|------|-----|
+| buy signal | TEAL signal |
+| Buy signal | TEAL signal |
+| BUY SIGNAL | TEAL SIGNAL |
+| proprietary entry | TEAL signal |
+| proprietary signal | TEAL signal |
+| our signal | TEAL signal |
+| new signal | TEAL signal |
+| passes our criteria | triggers a TEAL signal |
+| cleared our system | triggers a TEAL signal |
+| PASS signal | TEAL signal |
 
-Performance:
-- "Beat SPY with systematic momentum"
-- "Alpha over indexing"
-- "Stop indexing. Start selecting."
-```
+### 3.3 Signal Color System (`config.py:596-615`)
 
-### Claims Made About Methodology
+| Color | Emoji | Meaning | Internal Status | Public Name |
+|-------|-------|---------|-----------------|-------------|
+| TEAL | 🟢 | BUY | PASS | TEAL Signal |
+| VIOLET | 🟣 | EXIT | STOPPED | Exit Alert |
+| AMBER | 🟠 | WATCH | CONSIDER | On Our Radar |
 
-| Claim | Substantiation | Verifiable |
-|-------|----------------|------------|
-| "Filters 1,800 stocks" | Ticker count in `complete_tickers.txt` | Yes |
-| "5-gate screening system" | Code implements 5 gates | Yes |
-| "3-5 actionable signals" | `signals.json` output count | Yes |
-| "Institutional-grade" | Marketing term (subjective) | No |
-| "Systematic approach" | Automated pipeline | Yes |
+### 3.4 Power Phrases (`marketing_vocabulary.py:100-126`)
 
-### Performance Claims
+13 approved phrases across 3 categories:
+- **System description** (4): "Proprietary 5-gate screening system", "Filters 1,800 stocks to 3-5 actionable signals", etc.
+- **Signal detection** (5): "TEAL signal triggered", "Cleared all 5 gates", etc.
+- **Risk management** (4): "Systematic exit discipline", "Trailing stop in place", etc.
 
-| Claim Type | Requirement | Code Reference |
-|------------|-------------|----------------|
-| Beat SPY | 5% minimum outperformance | `should_post_beat_spy()` |
-| Top performers | 15% minimum gain | `has_enough_wins()` |
-| Milestones | Actual P&L at threshold | `get_uncelebrated_wins()` |
-| Win rate | Calculated from closed trades | `calculate_portfolio_stats()` |
+### 3.5 Audience Hooks (`marketing_vocabulary.py:132-157`)
 
-**Substantiation:** All performance claims must be calculated from actual `portfolio.csv` data.
+4 categories × 4 hooks = 16 approved phrases:
+- `beat_spy` — Alpha over indexing messaging
+- `time_friendly` — Weekly timeframe for busy schedules
+- `power_hour` — Market close / volume confirmation
+- `sector_rotation` — Institutional flow following
 
-### Automatic Disclaimers
+---
 
-#### Timeframe Disclaimers (config.py:628-632)
+## 4. Position Filtering Safeguards
 
+### 4.1 `filter_public_positions()` (`signal_tracker.py:690-741`)
+
+The primary filter for all public content:
+
+1. **STOPPED positions removed** — `status == 'STOPPED'` skipped entirely
+2. **Negative P&L removed** — Only `pnl_pct >= 0` included
+3. **Price fetching** — If `pnl_pct` not pre-calculated, fetches current prices via yfinance
+4. **Sort descending** — Best performers first
+
+### 4.2 `has_enough_wins()` (`signal_tracker.py:615-658`)
+
+Gate for `top_performers` category:
+- Loads open positions from portfolio
+- Requires >= 2 positions with P&L >= 15%
+- If fewer than 2 winners, falls back to `theme_hot`
+
+### 4.3 `should_post_beat_spy()` (`signal_tracker.py:609-612`)
+
+Gate for `beat_spy` category:
+- Delegates to `calculate_portfolio_vs_spy()` or `calculate_fair_spy_comparison()`
+- SPY comparison uses matched holding periods (`SPY_COMPARISON_METHOD = 'matched_period'`)
+- Must outperform SPY by >= 5%
+
+### 4.4 `get_winners_for_showcase()` (`signal_tracker.py:751-812`)
+
+For public showcase content:
+- Threshold: >= 25% P&L
+- Max 5 positions returned
+- Entry price rules applied via `can_show_entry_price()`
+- Calculates days held for holding period display
+- Sorted by P&L descending
+
+### 4.5 Negative P&L Regex Check (`twitter_poster.py:131-133`)
+
+Pre-post validation blocks any tweet containing negative P&L patterns:
 ```python
-TIMEFRAME_DISCLAIMERS = {
-    'short': 'Returns since signal entry.',
-    'medium': 'Total gain since entry, not weekly movement.',
-    'long': 'Sterling Signals targets 50-100% returns over 3-8 month holds. '
-            'Returns shown are total since signal entry.',
-}
-```
-
-#### Required in All Content:
-- Position returns must include holding period ("X weeks")
-- Newsletter footer includes standard disclaimer
-- Substack Notes include: "*Not financial advice. Informational only.*"
-
-#### Tweet Validation Check (tweet_generator.py:329)
-```python
-# Check #6: Holding period required with P&L
-required_terms = ['week', 'weeks', 'day', 'days', 'month', 'months', 'held', 'holding', 'entry', 'since']
-if not any(term in text.lower() for term in required_terms):
-    errors.append("MISSING HOLDING PERIOD: P&L shown without timeframe context")
+negative_pnl = re.findall(r'-\d+\.?\d*%', text)
+if negative_pnl:
+    return (False, f"BLOCKED: Negative P&L in tweet: {negative_pnl}")
 ```
 
 ---
 
-## High Performer Selection Algorithm
+## 5. High Performer Selection Algorithm
 
-### Selection Criteria
+### 5.1 Selection Flow
 
-**File:** `config.py:597-625` - `WIN_CATEGORIES`
-
-#### Top Performers
-```python
-{
-    'description': 'Best open positions by TOTAL return since signal entry',
-    'threshold': 15.0,        # Minimum % gain
-    'min_positions': 2,       # Need at least 2
-    'public_name': 'Top Performers',
-    'tweet_frequency': 'weekly',
-}
+```
+Portfolio CSV
+  ↓
+filter_public_positions()
+  ├── Remove STOPPED positions
+  ├── Remove negative P&L
+  └── Sort by P&L descending
+  ↓
+get_winners_for_showcase(threshold=25.0, max=5)
+  ├── Filter to >= 25% P&L
+  ├── Apply entry price display rules
+  │   ├── Closed winners: always show entry
+  │   ├── Open >= 25%: show entry
+  │   └── Open < 25%: hide entry
+  ├── Calculate days held
+  └── Return top 5 by P&L
 ```
 
-#### Early Movers
-```python
-{
-    'description': 'NEW signals (< 2 weeks old) showing early strength',
-    'max_age_days': 14,       # Maximum position age
-    'threshold': 5.0,         # Lower threshold for new positions
-    'public_name': 'Early Momentum',
-    'tweet_frequency': 'when_available',
-}
-```
+### 5.2 Celebration/Milestone Tiers (`config.py:711-730`)
 
-#### Milestone Alerts
-```python
-{
-    'description': 'Positions crossing key thresholds (25%, 50%, 100%)',
-    'thresholds': [25, 50, 100],
-    'public_name': 'Milestone Alert',
-    'tweet_frequency': 'when_crossed',
-}
-```
+| Tier | Threshold | Emoji | Headline |
+|------|-----------|-------|----------|
+| Standard | 25% | 📈 | MILESTONE ALERT |
+| Home Run | 50% | 🚀 | HOME RUN |
+| Hall of Fame | 100% | 🏆 | HALL OF FAME |
 
-### Recency vs Magnitude Balancing
+Celebrations tracked in `trades/celebrations.json` to avoid duplicate posts. Keys: `25_pct_celebrated`, `50_pct_celebrated`, `100_pct_celebrated`.
 
-The system uses **separate categories** to handle the tension between recency and magnitude:
+### 5.3 Win Categories (`config.py:738-766`)
 
-| Category | Recency Priority | Magnitude Priority |
-|----------|------------------|-------------------|
-| top_performers | Low (any age) | High (15%+ required) |
-| early_movers | High (< 14 days) | Low (5% required) |
-| milestone_alerts | Medium | High (25/50/100%) |
-
-### Rotation to Avoid Repetitive Content
-
-**Ticker Frequency Limits (config.py:47-51):**
-```python
-TICKER_LIMITS = {
-    'max_mentions_per_week': 4,        # Max times ticker can appear
-    'max_consecutive_days': 2,         # Max consecutive days
-    'cooldown_after_milestone': 2,     # Days to wait after celebration
-}
-```
-
-**Enforcement Function (config.py:446-457):**
-```python
-def check_ticker_frequency(ticker: str, existing_tweets: list) -> bool:
-    mentions = sum(1 for t in existing_tweets if ticker.upper() in t.get('text', '').upper())
-    return mentions < TICKER_LIMITS['max_mentions_per_week']
-```
-
-### Cold Streak Circuit Breaker
-
-**File:** `signal_tracker.py:924-997`
-
-When 3+ consecutive losses in 14 days:
-- `can_post_beat_spy = False`
-- `can_post_top_performers = False`
-- `uncelebrated_wins = []` (cleared)
-
-```python
-def check_cold_streak(lookback_days: int = 14, threshold: int = 3) -> Dict:
-    """
-    Returns:
-        - in_cold_streak: bool
-        - recent_losses: int
-        - recent_trades: int
-        - should_reduce_posting: bool
-    """
-```
+| Category | Description | Threshold | Frequency |
+|----------|-------------|-----------|-----------|
+| `top_performers` | Best open positions by total return | 15% | Weekly |
+| `early_movers` | New signals (< 14 days) showing strength | 5% | When available |
+| `milestone_alerts` | Positions crossing 25%/50%/100% | Varies | When crossed |
+| `recent_wins` | Closed in profit within 14 days | 15% | When available |
 
 ---
 
-## Risk Assessment
+## 6. Cold Streak Circuit Breaker
 
-### Could Automated Content Be Misleading?
+### 6.1 Detection (`signal_tracker.py:988-1061`)
 
-| Scenario | Risk | Mitigation | Residual Risk |
-|----------|------|------------|---------------|
-| Stale P&L data | MEDIUM | Real-time yfinance fetch | LOW |
-| Missing timeframe context | HIGH | Validation check (line 329) | LOW |
-| Showing stopped losses | HIGH | CRIT-3 rule enforcement | LOW |
-| Misleading "weekly wins" | MEDIUM | Renamed to "top_performers" | LOW |
-| Unfair SPY comparison | HIGH | CRIT-4 matched periods | LOW |
-| Cherry-picking winners | MEDIUM | Age-based thresholds | LOW |
+**Trigger:** >= 3 losses in the most recent 3 closed trades within 14 days.
 
-### Are All Performance Claims Verifiable?
+**Algorithm:**
+1. Load closed trades from portfolio
+2. Filter to exits within lookback period (14 days)
+3. Sort by exit date (most recent first)
+4. Count losses in the most recent N trades (N = threshold)
+5. If losses >= threshold → cold streak active
 
-| Claim | Verifiable | Source |
-|-------|------------|--------|
-| Individual P&L % | Yes | `portfolio.csv` + yfinance |
-| Beat SPY % | Yes | Calculated at runtime |
-| Win rate | Yes | `portfolio.csv` closed trades |
-| Signal count | Yes | `signals.json` |
-| Ticker filtered count | Yes | Scanner output |
+**Output:** Dict with `in_cold_streak`, `recent_losses`, `consecutive_losses`, `win_rate`, `should_reduce_posting`, `reason`.
 
-**Finding:** All quantitative claims are derived from verifiable data sources.
+### 6.2 Effect on Content
 
-### Regulatory Considerations
-
-#### FCA (UK) / SEC (US) Considerations
-
-| Requirement | Implementation | Status |
-|-------------|----------------|--------|
-| Not financial advice disclaimer | Footer on all content | ✓ |
-| Returns are historical | Timeframe disclaimers | ✓ |
-| Past performance caveat | Standard disclaimer | ✓ |
-| No guaranteed returns | Not claimed | ✓ |
-| Risk disclosure | "Risk-defined" language | ✓ |
-
-#### Potential Issues
-
-1. **"Institutional-grade"** - Subjective claim, not regulated term
-   - Risk: LOW (common marketing language)
-
-2. **"TEAL signal"** - Proprietary branding
-   - Risk: LOW (clearly branded, not financial advice)
-
-3. **Performance comparisons to SPY**
-   - Risk: MEDIUM if not clearly disclosed
-   - Mitigation: Matched period comparison (CRIT-4)
-
-4. **Win rate claims**
-   - Risk: MEDIUM if cherry-picked
-   - Mitigation: Calculated from all closed trades
-
-#### Missing Disclosures (Recommendation)
-
-Consider adding to footer:
-- "Trading involves substantial risk of loss"
-- "Returns shown are for informational purposes only"
-- "Not intended for any specific jurisdiction"
+When `in_cold_streak == True`:
+- `beat_spy` category suppressed → falls back to `engagement`
+- `top_performers` category suppressed → falls back to `theme_hot`
+- `milestone_alerts` suppressed → falls back to `consider_spotlight`
+- Posting frequency recommendations reduced
 
 ---
 
-## Pre-Publication Compliance Checklist
+## 7. Validation Architecture
 
-### Before Publishing ANY Public Content
-
-Run this checklist before posting tweets, newsletters, or Substack notes.
-
-#### 1. Content Validation
+### 7.1 Four-Layer Validation Pipeline
 
 ```
-[ ] Run validate_content(text) - no banned terms
-[ ] Confirm "TEAL signal" branding (not "buy signal", "PASS signal")
-[ ] Check tweet length (max 280 chars)
-[ ] Verify no internal terminology leaked
+LAYER 1: CONFIG (config.py)
+  └── Banned terms, thresholds, killed categories defined
+
+LAYER 2: GENERATION (tweet_generator.py)
+  └── 8 checks at tweet creation time:
+      1. Banned terms (imports from config.py)
+      2. TEAL branding enforcement
+      3. Character count <= 280
+      4. Killed category rejection
+      5. Safeguard function checks
+      6. Negative P&L filtering
+      7. Ticker frequency limits
+      8. Entry price display rules
+
+LAYER 3: BATCH (marketing_vocabulary.py)
+  └── validate_all_tweets() — batch check of entire queue
+      Uses marketing_vocabulary.py BANNED_TERMS (45 terms)
+      Word boundary matching for short terms
+
+LAYER 4: POSTING (twitter_poster.py)
+  └── validate_before_posting() — 5 checks:
+      1. Negative P&L regex
+      2. Hardcoded 13-term banned check ← GAP
+      3. Killed category check (4 of 5 categories)
+      4. US-specific regex patterns
+      5. Character count
 ```
 
-**Automated:** `tweet_generator.py:232` - `validate_tweet_before_queue()`
+### 7.2 Newsletter Validation
 
-#### 2. Position Data Checks
+`newsletter_compiler.py` (lines 878-886):
+- Calls `validate_content()` from `marketing_vocabulary.py`
+- **WARNING-only** — does not block publication
+- Relies on LLM system prompt compliance for loss suppression (no programmatic enforcement)
 
-```
-[ ] All positions displayed have pnl_pct >= 0
-[ ] No STOPPED positions shown
-[ ] Top performers have pnl_pct >= 15%
-[ ] Holding period included with every P&L figure
-[ ] No entry prices exposed publicly
-```
+### 7.3 Substack Notes Validation
 
-**Automated:** `signal_tracker.py:690` - `filter_public_positions()`
+`substack_notes_generator.py`:
+- Filters to positions >= 15% P&L (safe by design)
+- No explicit banned term check (relies on LLM prompt compliance)
 
-#### 3. Safeguard Verification
+### 7.4 Substack Content Validation
 
-```
-[ ] top_performers: has_enough_wins() returns True
-[ ] beat_spy: should_post_beat_spy() returns True
-[ ] milestone_alerts: has_uncelebrated_wins() returns True
-[ ] closed_trade: has_winning_closed_trades() returns True
-```
-
-**Automated:** `tweet_generator.py:1598-1628` - Safeguard checks
-
-#### 4. Cold Streak Check
-
-```
-[ ] check_cold_streak() returns in_cold_streak=False
-[ ] If in cold streak: skip beat_spy, top_performers, milestone_alerts
-```
-
-**Automated:** `signal_tracker.py:924` - `check_cold_streak()`
-
-#### 5. Ticker Frequency Check
-
-```
-[ ] No ticker mentioned > 4 times this week
-[ ] No ticker in consecutive days > 2
-[ ] Milestone tickers have 2-day cooldown
-```
-
-**Automated:** `config.py:446` - `check_ticker_frequency()`
-
-#### 6. Disclaimer Inclusion
-
-```
-[ ] Newsletter has standard footer disclaimer
-[ ] Substack Notes include "Not financial advice"
-[ ] Performance figures include timeframe context
-```
-
-**Manual verification required**
-
-#### 7. Final Visual Check
-
-```
-[ ] No negative percentages visible
-[ ] No losing positions in content
-[ ] Charts show correct tickers
-[ ] Links point to correct destinations
-```
-
-**Manual verification required**
+`substack_content_generator.py`:
+- Entry price shown only for positions >= 25% gain
+- No explicit banned term check (relies on LLM prompt compliance)
 
 ---
 
-### Quick Validation Command
+## 8. Gaps & Inconsistencies
 
-Create a pre-publish validation script:
+### GAP-1: Divergent Banned Term Lists (HIGH)
 
-```python
-#!/usr/bin/env python3
-"""Pre-publish compliance check."""
+Three independent lists with different term counts:
+- `config.py`: 40 terms
+- `marketing_vocabulary.py`: 45 terms
+- `twitter_poster.py`: 13 terms (hardcoded)
 
-from marketing_vocabulary import validate_content, validate_all_tweets
-from signal_tracker import (
-    filter_public_positions,
-    has_enough_wins,
-    should_post_beat_spy,
-    check_cold_streak,
-)
-from config import check_ticker_frequency
+`twitter_poster.py` is the **last line of defense** but has the fewest terms. A term like "RSI" or "PASS signal" could pass through if the generation-time check missed it.
 
-def run_compliance_check(content_queue: list) -> bool:
-    """Run all compliance checks on content queue."""
+### GAP-2: No P&L Re-verification at Posting Time (HIGH)
 
-    print("=" * 60)
-    print("MARKETING COMPLIANCE CHECK")
-    print("=" * 60)
+Tweets are generated on Friday with snapshot P&L data. They post throughout the following week. A position that was +30% on Friday could be -5% by Wednesday. The tweet still shows +30%. There is no re-verification of P&L at posting time.
 
-    # 1. Vocabulary check
-    total, violations = validate_all_tweets(content_queue)
-    print(f"\n1. Vocabulary: {total - violations}/{total} passed")
+### GAP-3: Newsletter Loss Suppression is LLM-Only (HIGH)
 
-    # 2. Safeguard checks
-    print(f"\n2. Safeguards:")
-    print(f"   - has_enough_wins: {has_enough_wins()}")
-    print(f"   - should_post_beat_spy: {should_post_beat_spy()}")
+The newsletter compiler relies entirely on the LLM system prompt to suppress losses. There is no programmatic check that the rendered HTML excludes losing positions. A single LLM compliance failure could expose loss data in a published newsletter.
 
-    # 3. Cold streak
-    cold_streak = check_cold_streak()
-    print(f"\n3. Cold Streak: {cold_streak['in_cold_streak']}")
+### GAP-4: `contains_banned_term()` in config.py Lacks Word Boundaries (MEDIUM)
 
-    # 4. Overall result
-    all_passed = violations == 0 and not cold_streak['in_cold_streak']
+`config.py:898-911` uses pure substring matching. The term "BoS" would match "Bostonian" or "emboss". `marketing_vocabulary.py` correctly uses word boundary regex for short terms, but `config.py` does not.
 
-    print(f"\n{'=' * 60}")
-    print(f"RESULT: {'PASS' if all_passed else 'FAIL'}")
-    print(f"{'=' * 60}")
+### GAP-5: Self-Test False Expectations (`marketing_vocabulary.py:377-391`) (LOW)
 
-    return all_passed
+Two test cases appear to have inverted expected values:
+- `"Roth IRA compounding strategy"` → expected `True` (valid), but "Roth IRA" and "Roth" are both banned
+- `"The 5th Gate: Forensic Audit cleared"` → expected `True` (valid), but "5th Gate" and "Forensic Audit" are both banned
 
-if __name__ == "__main__":
-    import json
-    with open("trades/content_queue.json") as f:
-        queue = json.load(f)
-    run_compliance_check(queue)
-```
+### GAP-6: `twitter_poster.py` Killed Categories Missing `self_quote` (LOW)
+
+The hardcoded `KILLED_CATEGORIES` in `twitter_poster.py:128` lists 4 categories but config.py lists 5 (missing `self_quote`). Minor since `self_quote` was renamed to `milestone_alerts`.
+
+### GAP-7: `trailing stop` is Banned in marketing_vocabulary.py but Approved in config.py (MEDIUM)
+
+- `marketing_vocabulary.py:29` bans `"trailing stop"` (full string)
+- `config.py` APPROVED_TERMS `'risk'` list includes `"trailing stop"` as approved
+- `marketing_vocabulary.py` APPROVED_VOCABULARY maps "20% trailing stop" → "trailing stop"
+
+This creates a contradiction: "trailing stop" is both an approved replacement AND a banned term.
+
+### GAP-8: No Validation on Multi-Account Variations (MEDIUM)
+
+`tweet_generator.py --generate-variations` produces variation tweets for accounts 2 and 3 via LLM rephrasing. These variations may not pass through the same validation pipeline as the original tweets. The LLM could introduce banned terms in rephrased versions.
 
 ---
 
-## File Reference
+## 9. Compliance Checklist
 
-| File | Purpose |
-|------|---------|
-| `marketing_vocabulary.py` | Banned terms, validation functions |
-| `config.py` | Thresholds, safeguarded categories, helper functions |
-| `signal_tracker.py` | Filter functions, celebration tracking |
-| `tweet_generator.py` | Pre-queue validation, safeguard checks |
-| `newsletter_compiler.py` | Portfolio status filtering |
-| `substack_notes_generator.py` | Note generation with filters |
+### Pre-Publication Checklist (Run Before Any Public Post)
+
+#### A. Content Validation
+
+- [ ] **A1.** Run `validate_content()` from `marketing_vocabulary.py` against all text — zero violations
+- [ ] **A2.** Verify no negative P&L values appear anywhere in content (regex: `-\d+\.?\d*%`)
+- [ ] **A3.** Verify no stopped positions appear in any public-facing section
+- [ ] **A4.** Verify "TEAL signal" used instead of "buy signal", "PASS signal", "proprietary signal"
+- [ ] **A5.** Verify no killed category content present (roth_ira, pdt_friendly, position_update, weekly_wins, self_quote)
+
+#### B. Position Data Integrity
+
+- [ ] **B1.** All P&L figures are current (not stale from generation time)
+- [ ] **B2.** Entry prices shown only for closed winners OR open positions >= 25%
+- [ ] **B3.** No STOPPED positions included in any showcase, top performers, or position list
+- [ ] **B4.** SPY comparison uses matched holding periods (not 30-day or YTD)
+- [ ] **B5.** At least 2 winners at >= 15% before posting `top_performers` content
+
+#### C. Banned Term Scan
+
+- [ ] **C1.** No strategy internals: HMA, Banker, Beta >= 1.5, BoS, Gatekeeper, Tier 1/2/3
+- [ ] **C2.** No geographic leaks: UK ISA, GMT, BST, UK Time, London time, GBP/USD
+- [ ] **C3.** No technical indicators: RSI, MACD, KDJ
+- [ ] **C4.** No leaked internal marketing terms: Capital Preservation Protocol, Forensic Audit, Volatility Expansion Criteria, 5th Gate, Gate 5
+- [ ] **C5.** No non-branded signal terms: buy signal, proprietary entry, proprietary signal, PASS signal
+- [ ] **C6.** No US-specific terms: Roth IRA, Roth, PDT, 401k, 401(k), pattern day trader
+- [ ] **C7.** No conviction score references: conviction 5/4/3, conviction score, conviction rating
+
+#### D. Branding & Formatting
+
+- [ ] **D1.** TEAL branding applied to all signal references
+- [ ] **D2.** Signal color emoji matches signal type (🟢 TEAL, 🟣 VIOLET, 🟠 AMBER)
+- [ ] **D3.** Conviction scores expressed as language (Extremely Bullish, Bullish, etc.) not numbers
+- [ ] **D4.** Timeframe disclaimer present where returns are mentioned
+- [ ] **D5.** Tweet character count <= 280
+
+#### E. Cold Streak Check
+
+- [ ] **E1.** Run `check_cold_streak()` — if active, suppress beat_spy, top_performers, milestone content
+- [ ] **E2.** Verify ticker mention frequency <= 4/week per ticker
+
+#### F. Newsletter-Specific
+
+- [ ] **F1.** Newsletter HTML does not contain any losing positions in showcase sections
+- [ ] **F2.** Newsletter disclaimer present
+- [ ] **F3.** All chart placeholders have corresponding images
+- [ ] **F4.** Performance summary matches portfolio.csv source data
 
 ---
 
-## Summary: Critical Safeguards
+## 10. Concerns
 
-| Safeguard | Function | Threshold | Fallback |
-|-----------|----------|-----------|----------|
-| Public positions | `filter_public_positions()` | pnl_pct >= 0 | Empty list |
-| Top performers | `has_enough_wins()` | 2+ at 15% | theme_hot |
-| Beat SPY | `should_post_beat_spy()` | 5% alpha | engagement |
-| Milestones | `has_uncelebrated_wins()` | 25/50/100% | consider_spotlight |
-| Closed trades | `has_winning_closed_trades()` | entry < exit | educational |
-| Cold streak | `check_cold_streak()` | 3 losses/14 days | Pause promotions |
-
-**Audit Conclusion:** The marketing compliance system is **well-implemented** with multiple layers of safeguards. All identified code paths that display position data are protected. No bypass paths were found.
+| ID | Severity | Description |
+|----|----------|-------------|
+| C-1 | **HIGH** | Three divergent banned term lists (config: 40, vocabulary: 45, poster: 13). `twitter_poster.py` last-line-of-defense uses hardcoded subset of only 13 terms. Should import from `marketing_vocabulary.py`. |
+| C-2 | **HIGH** | No P&L re-verification at posting time. Stale data from Friday generation could show inaccurate gains for tweets posted Monday-Thursday. |
+| C-3 | **HIGH** | Newsletter loss suppression relies entirely on LLM prompt compliance with no programmatic enforcement. |
+| C-4 | **MEDIUM** | `"trailing stop"` is simultaneously banned (marketing_vocabulary.py:29) and approved (config.py APPROVED_TERMS). Contradictory rules. |
+| C-5 | **MEDIUM** | `config.py:contains_banned_term()` uses substring matching without word boundaries, risking false positives for short terms (BoS, RSI, BST). |
+| C-6 | **MEDIUM** | Multi-account tweet variations not validated through the same pipeline as original tweets. LLM rephrasing could introduce banned terms. |
+| C-7 | **LOW** | Self-test in `marketing_vocabulary.py:377-391` has 2 test cases with likely inverted expected values (Roth IRA and 5th Gate tests expect valid=True but contain banned terms). |
+| C-8 | **LOW** | `twitter_poster.py` killed categories list missing `self_quote` (has 4 of 5 from config.py). |
 
 ---
 
-*End of Marketing Compliance Audit*
+*Generated: 2026-01-29 | Auditor: Claude Code*

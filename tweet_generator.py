@@ -1,38 +1,44 @@
 #!/usr/bin/env python3
 """
-TWEET GENERATOR - Claude-Powered Final Tweet Generation
-========================================================
+TWEET GENERATOR - Hybrid Template + Claude-Powered Tweet Generation
+====================================================================
 
-Generates 21 ready-to-post tweets for the week based on scanner outputs.
-Uses Claude API to create engaging financial content directly.
+Generates 21+ ready-to-post tweets for the week based on scanner outputs.
+Uses authentic templates with Claude API fallback for variation.
 
-NEW CONTENT TYPES:
-- Closed trades with P&L commentary
-- Hot themes and why they're hot
-- Cold themes and why to avoid
-- System methodology highlights
-- Buy signals with DD verdicts
-- All linked back to Substack
+NEW v2 FEATURES:
+- Authentic template library with personal voice
+- GREEN (buy) / RED (sell) signal terminology  
+- Friday weekly close price references throughout
+- 25%+ threshold enforcement for position updates
+- Multi-account template variations
+- Template usage tracking for variety
+- Comparison mode: Claude vs Templates vs Hybrid
 
 Usage:
     python tweet_generator.py                              # Uses latest briefing
     python tweet_generator.py --briefing PATH              # Specific briefing file
     python tweet_generator.py --mock                       # Use mock data (no API)
+    python tweet_generator.py --compare                    # Generate comparison output
 
 Output:
-    trades/tweets/tweets_{date}.json       # All 21 tweets with metadata
+    trades/tweets/tweets_{date}.json       # All tweets with metadata
     trades/tweets/content_queue.json       # Ready for twitter_poster.py
+    trades/tweets/comparison_output.json   # When --compare used
 """
 
 import os
 import sys
 import json
 import argparse
+import random
+import hashlib
 from datetime import datetime, timedelta
 from pathlib import Path
 from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 import re
+import copy
 
 # Load .env file if present (use explicit path relative to this script)
 try:
@@ -93,539 +99,27 @@ try:
         get_conviction_text,
         can_show_entry_price,
         BRANDING,
+        TWITTER_ACCOUNTS,
     )
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
+    TWITTER_ACCOUNTS = {}
     MARKETING_THRESHOLDS = {
-        'min_win_to_highlight': 15.0,
-        'big_win_threshold': 25.0,
-        'spy_outperformance_min': 5.0,
-        'min_winners_for_top_performers': 2,  # Phase 9: Renamed from min_winners_for_weekly_wins
+        'min_pnl_for_highlight': 25.0,
+        'min_pnl_for_entry_price': 25.0,
+        'early_mover_threshold': 5.0,
     }
-    # Fallback implementations
-    def get_highlight_threshold(days_held: int) -> float:
-        if days_held <= 7: return 3.0
-        elif days_held <= 14: return 5.0
-        elif days_held <= 30: return 10.0
-        elif days_held <= 60: return 15.0
-        else: return 20.0
-
-    def format_holding_period(days_held: int) -> str:
-        if days_held <= 0: return "held"
-        elif days_held <= 7: return f"{days_held} days"
-        elif days_held <= 30: return f"{days_held // 7} week{'s' if days_held // 7 > 1 else ''}"
-        else: return f"{days_held // 30} month{'s' if days_held // 30 > 1 else ''}"
-
-    TIMEFRAME_DISCLAIMERS = {
-        'short': 'Returns since signal entry.',
-        'medium': 'Total gain since entry, not weekly movement.',
-        'long': 'Sterling Signals targets 50-100% returns over 3-8 month holds. Returns shown are total since signal entry.',
-    }
-    WIN_CATEGORIES = {}
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# CONFIGURATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-BASE_DIR = Path(__file__).resolve().parent
-TRADES_DIR = BASE_DIR / "trades"
-TWEETS_DIR = TRADES_DIR / "tweets"
-CHARTS_DIR = TRADES_DIR / "charts"
-
-TWEETS_DIR.mkdir(parents=True, exist_ok=True)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TWEET VALIDATION (MIN-1)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def validate_tweet_length(tweet_text: str) -> bool:
-    """
-    Validate tweet is under 280 characters.
-
-    Note: Emojis and special characters count as 2 characters on Twitter.
-
-    Args:
-        tweet_text: The tweet text to validate
-
-    Returns:
-        True if tweet is valid length, False otherwise
-    """
-    if not tweet_text:
-        return True
-
-    # Count characters with Twitter's algorithm (emojis = 2 chars)
-    char_count = 0
-    for char in tweet_text:
-        if ord(char) > 0xFFFF:  # Emoji or special char
-            char_count += 2
-        else:
-            char_count += 1
-
-    return char_count <= 280
-
-
-def get_tweet_char_count(tweet_text: str) -> int:
-    """Get the character count using Twitter's algorithm."""
-    if not tweet_text:
-        return 0
-
-    char_count = 0
-    for char in tweet_text:
-        if ord(char) > 0xFFFF:
-            char_count += 2
-        else:
-            char_count += 1
-
-    return char_count
-
-
-def truncate_tweet(tweet_text: str, max_length: int = 275) -> str:
-    """
-    Truncate tweet to fit within max_length, preserving URL at end if present.
-
-    Args:
-        tweet_text: The tweet text to truncate
-        max_length: Maximum character length (default 275 to leave room for ...)
-
-    Returns:
-        Truncated tweet text
-    """
-    if not tweet_text or get_tweet_char_count(tweet_text) <= max_length:
-        return tweet_text
-
-    # Check if there's a URL at the end
-    url_pattern = r'https?://\S+$'
-    match = re.search(url_pattern, tweet_text)
-
-    if match:
-        url = match.group()
-        text_without_url = tweet_text[:match.start()].rstrip()
-        url_length = get_tweet_char_count(url)
-        available = max_length - url_length - 4  # 4 for "... "
-
-        # Truncate text portion
-        truncated_text = ""
-        char_count = 0
-        for char in text_without_url:
-            char_len = 2 if ord(char) > 0xFFFF else 1
-            if char_count + char_len > available:
-                break
-            truncated_text += char
-            char_count += char_len
-
-        return f"{truncated_text.rstrip()}... {url}"
-    else:
-        # No URL, just truncate
-        truncated_text = ""
-        char_count = 0
-        for char in tweet_text:
-            char_len = 2 if ord(char) > 0xFFFF else 1
-            if char_count + char_len > (max_length - 3):  # 3 for "..."
-                break
-            truncated_text += char
-            char_count += char_len
-
-        return f"{truncated_text.rstrip()}..."
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# MASTER_TODO_v2: PRE-GENERATION VALIDATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def validate_tweet_before_queue(tweet: dict, existing_tweets: list = None) -> tuple:
-    """
-    MASTER_TODO_v2: Run all validations before adding tweet to queue.
-
-    This is a CRITICAL safeguard function that ensures no invalid content
-    is queued for posting.
-
-    Args:
-        tweet: Tweet dict with 'text' and 'category' keys
-        existing_tweets: List of already-queued tweets for ticker frequency check
-
-    Returns:
-        Tuple of (is_valid: bool, errors: list)
-    """
-    errors = []
-    text = tweet.get('text', '')
-    category = tweet.get('category', '')
-
-    if existing_tweets is None:
-        existing_tweets = []
-
-    # Import config items needed for validation
-    try:
-        from config import (
-            BANNED_TERMS,
-            KILLED_CATEGORIES,
-            TICKER_LIMITS,
-            enforce_teal_branding,
-        )
-    except ImportError:
-        # Fallback comprehensive banned terms list
-        BANNED_TERMS = [
-            # Internal technical terms
-            'HMA', 'Hull Moving Average', 'HMA Pivot',
-            'Banker', 'Banker indicator', 'Banker >=',
-            'BoS', 'BOS', 'Break of Structure', 'Weekly BoS',
-            '20% stop', '20% trailing',
-            'Beta >=', 'beta threshold',
-            'Tier 1', 'Tier 2', 'Tier 3', 'TIER1', 'TIER2', 'TIER3',
-            'Gatekeeper',
-            # Internal gate names
-            'Forensic Audit', '5th Gate', 'Gate 5',
-            'Volatility Expansion Criteria', 'Volatility Expansion',
-            'Institutional Accumulation Divergence',
-            'Structural Pivot Confirmation',
-            'Capital Preservation Protocol',
-            # Non-branded signal terms
-            'proprietary entry', 'proprietary signal',
-            'buy signal', 'PASS signal',
-            # Region-specific (audience-neutral - avoid all)
-            'Roth IRA', 'Roth', '401k', '401(k)',
-            'PDT', 'PDT rule', 'pattern day trader',
-            'UK ISA', 'ISA account', 'GMT', 'BST', 'UK Time',
-            # Technical indicators
-            'RSI', 'MACD', 'KDJ',
-        ]
-        KILLED_CATEGORIES = ['roth_ira', 'pdt_friendly', 'position_update', 'weekly_wins']
-        TICKER_LIMITS = {'max_mentions_per_week': 4}
-
-    # 1. Check killed categories
-    if category in KILLED_CATEGORIES:
-        errors.append(f"KILLED CATEGORY: '{category}' is not allowed")
-
-    # 2. Check tweet length
-    if not validate_tweet_length(text):
-        char_count = get_tweet_char_count(text)
-        errors.append(f"TOO LONG: {char_count} chars (max 280)")
-
-    # 3. Check banned terms (with word boundary for short terms)
-    text_lower = text.lower()
-    # Short terms that need word boundary matching to avoid false positives
-    # e.g., "BST" should not match inside "substack"
-    short_terms = ['bst', 'gmt', 'rsi', 'bos', 'hma', 'pdt', 'roth']
-    for term in BANNED_TERMS:
-        term_lower = term.lower()
-        if term_lower in short_terms or len(term_lower) <= 4:
-            # Use word boundary regex for short terms
-            pattern = r'\b' + re.escape(term_lower) + r'\b'
-            if re.search(pattern, text_lower):
-                errors.append(f"BANNED TERM: '{term}' found in tweet")
-        elif term_lower in text_lower:
-            errors.append(f"BANNED TERM: '{term}' found in tweet")
-
-    # 4. Check for negative P&L (losers shown)
-    negative_pnl = re.findall(r'-\d+\.?\d*%', text)
-    if negative_pnl:
-        errors.append(f"LOSER SHOWN: Negative P&L found: {negative_pnl}")
-
-    # 5. Check TEAL branding for signal tweets
-    signal_categories = ['buy_signal', 'thread_buy_signal', 'milestone_alerts', 'early_movers']
-    if category in signal_categories:
-        if 'TEAL' not in text.upper():
-            errors.append("MISSING BRANDING: Signal tweet must contain 'TEAL'")
-
-    # 6. Check holding period for P&L tweets
-    has_pnl = '%' in text and ('+' in text or '-' in text)
-    if has_pnl:
-        holding_indicators = ['week', 'weeks', 'day', 'days', 'month', 'months', 'held', 'holding', 'entry', 'since']
-        if not any(ind in text.lower() for ind in holding_indicators):
-            errors.append("MISSING HOLDING PERIOD: P&L shown without timeframe context")
-
-    # 7. Check US-specific content (wrong audience)
-    us_terms = ['roth', '401k', 'pdt rule', 'pattern day', 'ira ']  # Note: 'ira ' with space to avoid matching in 'sterlingsignals'
-    for term in us_terms:
-        if term in text.lower():
-            errors.append(f"US-SPECIFIC: '{term}' not appropriate for UK audience")
-
-    # 8. Check ticker frequency limits
-    tickers = re.findall(r'\$([A-Z]+)', text)
-    for ticker in tickers:
-        mentions = sum(1 for t in existing_tweets if ticker.upper() in t.get('text', '').upper())
-        if mentions >= TICKER_LIMITS.get('max_mentions_per_week', 4):
-            errors.append(f"TICKER OVEREXPOSED: ${ticker} already mentioned {mentions} times")
-
-    return (len(errors) == 0, errors)
-
-
-def validate_and_fix_tweet(tweet: dict, existing_tweets: list = None) -> dict:
-    """
-    Validate tweet and attempt to fix minor issues.
-
-    Args:
-        tweet: Tweet dict to validate/fix
-        existing_tweets: List of already-queued tweets
-
-    Returns:
-        Fixed tweet dict with 'validation_errors' key if unfixable issues remain
-    """
-    # Import enforce_teal_branding for auto-fix
-    try:
-        from config import enforce_teal_branding
-    except ImportError:
-        def enforce_teal_branding(t):
-            return t.replace('buy signal', 'TEAL signal').replace('Buy signal', 'TEAL signal')
-
-    text = tweet.get('text', '')
-    category = tweet.get('category', '')
-
-    # Auto-fix: Apply TEAL branding
-    signal_categories = ['buy_signal', 'thread_buy_signal', 'milestone_alerts', 'early_movers']
-    if category in signal_categories:
-        text = enforce_teal_branding(text)
-
-    # Auto-fix: Truncate if too long
-    if not validate_tweet_length(text):
-        text = truncate_tweet(text, max_length=275)
-
-    tweet['text'] = text
-
-    # Validate the fixed tweet
-    is_valid, errors = validate_tweet_before_queue(tweet, existing_tweets)
-
-    if not is_valid:
-        tweet['validation_errors'] = errors
-        print(f"  ⚠️ Validation errors for {tweet.get('id', 'unknown')}: {errors}")
-
-    return tweet
-
-
-def validate_and_fix_thread_tweets(tweets: list) -> list:
-    """
-    MASTER_TODO_v2: Validate and fix thread tweets for compliance.
-    
-    Checks:
-    1. TEAL branding in final tweet (CTA)
-    2. No banned terms
-    3. No hashtags at end
-    4. Holding periods on any P&L percentages
-    
-    Args:
-        tweets: List of tweet dicts with 'number' and 'text' keys
-        
-    Returns:
-        Fixed list of tweets
-    """
-    # Import enforce_teal_branding for auto-fix
-    try:
-        from config import enforce_teal_branding
-    except ImportError:
-        def enforce_teal_branding(t):
-            replacements = {
-                'buy signal': 'TEAL signal',
-                'Buy signal': 'TEAL signal',
-                'our signal': 'TEAL signal',
-                'proprietary signal': 'TEAL signal',
-                'proprietary entry': 'TEAL signal',
-            }
-            for old, new in replacements.items():
-                t = t.replace(old, new)
-            return t
-    
-    for tweet in tweets:
-        text = tweet.get('text', '')
-        number = tweet.get('number', 0)
-        
-        # 1. Apply TEAL branding to all tweets
-        text = enforce_teal_branding(text)
-        
-        # 2. Final tweet (5/5) MUST have TEAL branding
-        if number == 5:
-            if 'TEAL' not in text.upper():
-                # Try to insert TEAL branding
-                if 'signal' in text.lower():
-                    text = text.replace('signals', 'TEAL signals')
-                    text = text.replace('signal process', 'TEAL signal process')
-                elif 'sterlingsignals' in text.lower():
-                    # Add before the link
-                    text = text.replace('sterlingsignals', 'Get TEAL signals: sterlingsignals')
-                else:
-                    # Append mention
-                    if 'substack.com' in text:
-                        text = text.replace('substack.com', 'substack.com\n\nTEAL signals weekly.')
-                
-                print(f"  🔧 Added TEAL branding to thread tweet 5")
-        
-        # 3. Remove hashtags at end (they're low-value on X now)
-        import re
-        hashtag_pattern = r'\s*#\w+\s*$'
-        while re.search(hashtag_pattern, text):
-            text = re.sub(hashtag_pattern, '', text)
-            print(f"  🔧 Removed hashtag from thread tweet {number}")
-        
-        # 4. Check for banned terms and warn
-        banned_check = ['Forensic Audit', 'Volatility Expansion', 'Gate 5', '5th Gate', 
-                       'Capital Preservation', 'Roth IRA', '401k', 'PDT']
-        for term in banned_check:
-            if term.lower() in text.lower():
-                print(f"  ⚠️ Thread tweet {number} contains banned term: {term}")
-        
-        tweet['text'] = text
-    
-    return tweets
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 9: POSITION DISPLAY WITH HOLDING PERIOD
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def calculate_days_held(entry_date: str) -> int:
-    """Calculate days held from entry date string.
-
-    Args:
-        entry_date: Date string in YYYY-MM-DD format
-
-    Returns:
-        Number of days held, or 0 if parsing fails
-    """
-    if not entry_date:
-        return 0
-
-    try:
-        entry = datetime.strptime(entry_date, '%Y-%m-%d')
-        days = (datetime.now() - entry).days
-        return max(0, days)  # Never negative
-    except (ValueError, TypeError):
-        return 0
-
-
-def format_position_with_age(pos: dict) -> str:
-    """Format position with holding period for honest timeframe display.
-
-    Phase 9: Ensures P&L figures always show holding period context to
-    avoid misleading audiences about whether returns are weekly or cumulative.
-
-    Args:
-        pos: Position dict with ticker, pnl_pct, entry_date fields
-
-    Returns:
-        Formatted string like "$AAPL +25.3% (4 weeks)"
-    """
-    ticker = pos.get('ticker', 'UNK')
-    pnl = pos.get('pnl_pct', 0)
-    entry_date = pos.get('entry_date', '')
-
-    # Calculate holding period
-    days_held = calculate_days_held(entry_date)
-    period = format_holding_period(days_held)
-
-    # Format P&L
-    pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
-
-    return f"${ticker} {pnl_str} ({period})"
-
-
-def format_positions_for_display(positions: list, max_positions: int = 5) -> str:
-    """Format multiple positions with holding periods for tweet display.
-
-    Args:
-        positions: List of position dicts
-        max_positions: Maximum positions to include
-
-    Returns:
-        Multi-line string with formatted positions
-    """
-    if not positions:
-        return "No positions to display"
-
-    lines = []
-    for pos in positions[:max_positions]:
-        lines.append(format_position_with_age(pos))
-
-    return "\n".join(lines)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# IDEMPOTENCY CHECK
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def check_already_generated(output_dir: Path, scan_date: str = None) -> tuple[bool, int, str]:
-    """Check if tweets have already been generated for this scan date.
-
-    Prevents duplicate content generation when re-running the generator.
-
-    Args:
-        output_dir: Directory containing content_queue.json
-        scan_date: The scan date to check (YYYY-MM-DD). If None, uses today.
-
-    Returns:
-        tuple: (already_generated: bool, pending_count: int, queue_date: str)
-    """
-    queue_file = output_dir / "content_queue.json"
-    if not queue_file.exists():
-        return False, 0, ""
-
-    try:
-        with open(queue_file, 'r') as f:
-            queue = json.load(f)
-    except (json.JSONDecodeError, IOError):
-        return False, 0, ""
-
-    if not queue:
-        return False, 0, ""
-
-    # Check for pending tweets
-    pending = [t for t in queue if t.get('status') == 'pending']
-    if not pending:
-        return False, 0, ""
-
-    # Get the earliest scheduled date from pending tweets
-    scheduled_dates = [t.get('scheduled_date', '') for t in pending if t.get('scheduled_date')]
-    if not scheduled_dates:
-        return False, len(pending), ""
-
-    earliest_date = min(scheduled_dates)
-
-    # If scan_date provided, check if it matches the week of existing content
-    if scan_date:
-        try:
-            scan_dt = datetime.strptime(scan_date, '%Y-%m-%d')
-            earliest_dt = datetime.strptime(earliest_date, '%Y-%m-%d')
-
-            # Check if they're in the same week (within 7 days)
-            days_diff = abs((earliest_dt - scan_dt).days)
-            if days_diff <= 7:
-                return True, len(pending), earliest_date
-        except ValueError:
-            pass
-
-    # Fallback: check if today matches the content week
-    today = datetime.now()
-    try:
-        earliest_dt = datetime.strptime(earliest_date, '%Y-%m-%d')
-        days_diff = abs((earliest_dt - today).days)
-        # If pending content is for this week or next (within 10 days), consider it current
-        if days_diff <= 10:
-            return True, len(pending), earliest_date
-    except ValueError:
-        pass
-
-    return False, len(pending), earliest_date
-
-
-# Sterling Signals branding
-SUBSTACK_URL = "https://sterlingsignals.substack.com"
-ACCOUNT_HANDLE = "@SterlingSignals"
-
-# Claude model for tweet generation
-MODEL = "claude-sonnet-4-20250514"
-MAX_TOKENS = 4000
-
-# Days and slots (increased from 3 to 5 per day to better use X API limits)
-# X free tier allows ~50 tweets/day (1,500/month)
-# Schedule aligned to US Eastern Time (ET)
-DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-SLOTS = {
-    1: "pre_market",     # 08:00 ET - Pre-market / Top performers / Alpha
-    2: "morning",        # 10:00 ET - 30min after market open
-    3: "midday",         # 12:30 ET - Lunch break engagement
-    4: "power_hour",     # 15:30 ET - CRITICAL: Power Hour reaction
-    5: "after_hours"     # 18:00 ET - After-hours / engagement
-}
+    def format_holding_period(days):
+        if days < 7:
+            return f"{days} days" if days != 1 else "1 day"
+        weeks = days // 7
+        return f"{weeks} weeks" if weeks != 1 else "1 week"
+    def can_show_entry_price(pnl_pct, status='OPEN'):
+        return pnl_pct >= 25.0 or status == 'CLOSED'
+    def get_conviction_text(conviction):
+        mapping = {5: "Extremely Bullish", 4: "Bullish", 3: "Watching", 2: "Cautious", 1: "Neutral"}
+        return mapping.get(conviction, "Bullish")
 
 # Import marketing vocabulary for validation
 try:
@@ -637,7 +131,505 @@ try:
 except ImportError:
     MARKETING_VOCABULARY_AVAILABLE = False
     BANNED_TERMS = []
+    def validate_content(text):
+        return True, []
+    def validate_all_tweets(tweets):
+        return len(tweets), 0
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONSTANTS AND CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Directory setup
+SCRIPT_DIR = Path(__file__).resolve().parent
+TRADES_DIR = SCRIPT_DIR / "trades"
+TWEETS_DIR = TRADES_DIR / "tweets"
+TWEETS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Sterling Signals branding
+SUBSTACK_URL = "https://sterlingsignals.substack.com"
+ACCOUNT_HANDLE = "@SterlingSignals"
+
+# Claude model for tweet generation
+MODEL = "claude-sonnet-4-20250514"
+MAX_TOKENS = 4000
+
+# Days and slots (5 per day to use X API limits)
+DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+SLOTS = {
+    1: "pre_market",     # 08:00 ET - Pre-market / Top performers
+    2: "morning",        # 10:00 ET - 30min after market open
+    3: "midday",         # 12:30 ET - Lunch break engagement
+    4: "power_hour",     # 15:30 ET - Power Hour reaction
+    5: "after_hours"     # 18:00 ET - After-hours / engagement
+}
+
+# Thresholds for template selection
+TEMPLATE_THRESHOLDS = {
+    'min_pnl_for_position_update': 25.0,
+    'min_pnl_for_closed_win': 25.0,
+    'min_pnl_for_entry_price': 25.0,
+    'early_mover_threshold': 5.0,
+}
+
+# Signal terminology (GREEN = buy, RED = sell)
+SIGNAL_EMOJI = {
+    'green': '🟢',
+    'red': '🔴',
+    'consider': '🟡',
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# WEEKLY CLOSE PHRASING - Natural variation for Friday references
+# ═══════════════════════════════════════════════════════════════════════════════
+
+WEEKLY_CLOSE_PHRASES = [
+    "Friday's close",
+    "as of Friday",
+    "ended the week at",
+    "last week's close",
+    "the latest weekly close",
+]
+
+WEEKLY_CLOSE_PAST_PHRASES = [
+    "as of the latest weekly close",
+    "based on Friday's close",
+    "from Friday's scan",
+    "after Friday's close",
+]
+
+def get_weekly_close_phrase(style='standard'):
+    """Get a natural weekly close phrase for variety."""
+    if style == 'past':
+        return random.choice(WEEKLY_CLOSE_PAST_PHRASES)
+    return random.choice(WEEKLY_CLOSE_PHRASES)
+
+def maybe_vary_phrase(template_text, probability=0.3):
+    """Randomly vary weekly close phrasing in template.
+    
+    Only swaps phrases when grammatically appropriate (phrase followed by colon or period).
+    """
+    if random.random() >= probability:
+        return template_text
+    
+    # Only swap "Friday's close" type phrases when they appear as standalone references
+    # Don't swap mid-sentence phrases that would break grammar
+    safe_swaps = {
+        "Friday's close:": ["as of Friday:", "last week's close:"],
+        "as of Friday.": ["as of the latest weekly close.", "based on Friday's close."],
+        "ended the week at": ["closed Friday at"],
+        "closed Friday at": ["ended the week at"],
+    }
+    
+    for original, replacements in safe_swaps.items():
+        if original in template_text:
+            replacement = random.choice(replacements)
+            return template_text.replace(original, replacement, 1)
+    
+    return template_text
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AUTHENTIC TEMPLATE LIBRARY - Personal voice, Friday references
+# ═══════════════════════════════════════════════════════════════════════════════
+
+AUTHENTIC_TEMPLATES = {
+    # -------------------------------------------------------------------------
+    # CATEGORY 1: BUY SIGNAL (GREEN signals)
+    # -------------------------------------------------------------------------
+    'buy_signal': [
+        {
+            'id': 'buy_1',
+            'text': "🟢 ${{TICKER}} showed up in Friday's scan.\n\nClosed the week at ${{PRICE}}. {{CONVICTION_TEXT}}.\n\nFull breakdown in the newsletter 👇\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'price', 'conviction'],
+            'account_variations': {
+                'account_2': "🟢 GREEN signal: ${{TICKER}}\n\nFriday's close: ${{PRICE}}\nConviction: {{CONVICTION_TEXT}}\n\nDetails in this week's issue:\n{{SUBSTACK_URL}}",
+                'account_3': "${{TICKER}} cleared all 5 gates as of Friday.\n\n🟢 Weekly close: ${{PRICE}}\n\nAnalysis:\n{{SUBSTACK_URL}}"
+            }
+        },
+        {
+            'id': 'buy_2', 
+            'text': "Ran the scanner after Friday's close.\n\nHere's what passed all 5 gates:\n\n{{SIGNAL_LIST}}\n\nFull analysis + entry levels 👇\n{{SUBSTACK_URL}}",
+            'requires': ['signal_list'],
+            'account_variations': {
+                'account_2': "Friday scan complete.\n\n🟢 GREEN signals this week:\n{{SIGNAL_LIST}}\n\nDetailed breakdown:\n{{SUBSTACK_URL}}",
+                'account_3': "5-Gate Scanner Results (Friday close):\n\n{{SIGNAL_LIST}}\n\nFull writeup:\n{{SUBSTACK_URL}}"
+            }
+        },
+        {
+            'id': 'buy_3',
+            'text': "🟢 New GREEN signal: ${{TICKER}}\n\nEnded the week at ${{PRICE}} — {{CONVICTION_TEXT}}\n\n{{THEME}} theme showing strength.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'price', 'conviction', 'theme'],
+        },
+        {
+            'id': 'buy_4',
+            'text': "{{NUM_SIGNALS}} stocks cleared all gates this week.\n\n🟢 Top conviction:\n${{TICKER}} — {{CONVICTION_TEXT}}\nFriday's close: ${{PRICE}}\n\n{{SUBSTACK_URL}}",
+            'requires': ['num_signals', 'ticker', 'price', 'conviction'],
+        },
+        {
+            'id': 'buy_5',
+            'text': "The scanner doesn't lie.\n\n🟢 ${{TICKER}} passed all 5 gates as of Friday's close at ${{PRICE}}.\n\nThis week's full signal list:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'price'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 2: TOP PERFORMERS (25%+ ONLY)
+    # -------------------------------------------------------------------------
+    'top_performers': [
+        {
+            'id': 'top_1',
+            'text': "Current positions as of Friday's close:\n\n{{WINNERS_LIST}}\n\nEntry prices + full thesis in the newsletter:\n{{SUBSTACK_URL}}",
+            'requires': ['winners_list'],
+            'min_pnl': 25.0,
+            'account_variations': {
+                'account_2': "Portfolio update (Friday close):\n\n{{WINNERS_LIST}}\n\nAll positions tracked here:\n{{SUBSTACK_URL}}",
+                'account_3': "Where we stand after last week:\n\n{{WINNERS_LIST}}\n\n{{SUBSTACK_URL}}"
+            }
+        },
+        {
+            'id': 'top_2',
+            'text': "${{TICKER}} update:\n\nEntry: ${{ENTRY}}\nFriday's close: ${{CURRENT}}\nReturn: +{{PNL}}% ({{WEEKS_HELD}})\n\nStill holding. Trailing stop in place.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'current', 'pnl', 'weeks_held'],
+            'min_pnl': 25.0,
+        },
+        {
+            'id': 'top_3',
+            'text': "The 5-Gate System at work:\n\n${{TICKER}}: +{{PNL}}%\nEntry: ${{ENTRY}} → Friday: ${{CURRENT}}\nHeld: {{WEEKS_HELD}}\n\nMore setups like this weekly:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'current', 'pnl', 'weeks_held'],
+            'min_pnl': 25.0,
+        },
+        {
+            'id': 'top_4',
+            'text': "{{THEME}} has been good to us.\n\n${{TICKER}}: +{{PNL}}% since entry\nFriday's close: ${{CURRENT}}\n\nFull portfolio breakdown:\n{{SUBSTACK_URL}}",
+            'requires': ['theme', 'ticker', 'pnl', 'current'],
+            'min_pnl': 25.0,
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 3: CLOSED TRADE (25%+ winners only)
+    # -------------------------------------------------------------------------
+    'closed_trade': [
+        {
+            'id': 'closed_1',
+            'text': "Closed ${{TICKER}} last week.\n\nEntry: ${{ENTRY}}\nExit: ${{EXIT}}\nReturn: +{{PNL}}%\nHeld: {{WEEKS_HELD}}\n\nOnto the next setup.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'exit', 'pnl', 'weeks_held'],
+            'min_pnl': 25.0,
+        },
+        {
+            'id': 'closed_2',
+            'text': "${{TICKER}} trade complete.\n\n+{{PNL}}% in {{WEEKS_HELD}}\n\nEntry at ${{ENTRY}}, exited at ${{EXIT}} as of Friday.\n\nThis is what the system is built for.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'exit', 'pnl', 'weeks_held'],
+            'min_pnl': 25.0,
+        },
+        {
+            'id': 'closed_3',
+            'text': "Trade recap: ${{TICKER}}\n\n🟢 Entry: ${{ENTRY}}\n🔴 Exit: ${{EXIT}}\n📈 Result: +{{PNL}}%\n⏱️ Duration: {{WEEKS_HELD}}\n\nNext week's signals drop Saturday:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'exit', 'pnl', 'weeks_held'],
+            'min_pnl': 25.0,
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 4: SELL SIGNAL (RED - neutral framing, NO P&L)
+    # -------------------------------------------------------------------------
+    'sell_signal': [
+        {
+            'id': 'sell_1',
+            'text': "🔴 Exited ${{TICKER}} at last week's close.\n\nTime to move on. The system says rotate.\n\nCurrent open positions:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker'],
+        },
+        {
+            'id': 'sell_2',
+            'text': "Rotating out of ${{TICKER}} as of Friday.\n\n{{THEME}} momentum slowing. Following the signals.\n\nUpdated portfolio:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'theme'],
+        },
+        {
+            'id': 'sell_3',
+            'text': "🔴 RED signal on ${{TICKER}}.\n\nClosed the position last week. Capital freed up for new setups.\n\nThis week's scan:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 5: THEME HOT
+    # -------------------------------------------------------------------------
+    'theme_hot': [
+        {
+            'id': 'hot_1',
+            'text': "{{THEME}} ended the week on fire.\n\n${{TICKER1}}, ${{TICKER2}}, ${{TICKER3}} all closed strong Friday.\n\nTheme rotation is real. Are you positioned?\n\n{{SUBSTACK_URL}}",
+            'requires': ['theme', 'ticker1', 'ticker2', 'ticker3'],
+        },
+        {
+            'id': 'hot_2',
+            'text': "{{THEME}} showing up in the scanner again.\n\nThis sector has been printing GREEN signals for weeks.\n\nLatest picks:\n{{SUBSTACK_URL}}",
+            'requires': ['theme'],
+        },
+        {
+            'id': 'hot_3',
+            'text': "Sector spotlight: {{THEME}}\n\nMultiple stocks from this theme passed Friday's scan.\n\nMomentum is real. Full breakdown:\n{{SUBSTACK_URL}}",
+            'requires': ['theme'],
+            'account_variations': {
+                'account_2': "{{THEME}} continues to dominate the scanner.\n\nFriday's results speak for themselves.\n\nAnalysis:\n{{SUBSTACK_URL}}",
+                'account_3': "Theme watch: {{THEME}}\n\nStrong closes across the sector Friday.\n\n{{SUBSTACK_URL}}"
+            }
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 6: THEME COLD
+    # -------------------------------------------------------------------------
+    'theme_cold': [
+        {
+            'id': 'cold_1',
+            'text': "Rotation showing up as of last week.\n\nMoney leaving {{COLD_THEME}}, flowing into {{HOT_THEME}}.\n\nThe scanner sees it first.\n\n{{SUBSTACK_URL}}",
+            'requires': ['cold_theme', 'hot_theme'],
+        },
+        {
+            'id': 'cold_2',
+            'text': "{{COLD_THEME}} went quiet in Friday's scan.\n\nNo new signals. Existing positions on watch.\n\nWhere the momentum is now:\n{{SUBSTACK_URL}}",
+            'requires': ['cold_theme'],
+        },
+        {
+            'id': 'cold_3',
+            'text': "Not everything works forever.\n\n{{COLD_THEME}} cooling off based on Friday's data.\n\nRotating capital to stronger themes:\n{{SUBSTACK_URL}}",
+            'requires': ['cold_theme'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 7: FUNNEL GRAPHIC
+    # -------------------------------------------------------------------------
+    'funnel_graphic': [
+        {
+            'id': 'funnel_1',
+            'text': "Scanner finished after Friday's close.\n\n{{TOTAL}} stocks analyzed\n{{GATE1}} passed Gate 1\n{{GATE2}} passed Gate 2\n{{GATE3}} passed Gate 3\n{{GATE4}} passed Gate 4\n{{FINAL}} made the cut ✅\n\n{{SUBSTACK_URL}}",
+            'requires': ['total', 'final'],
+        },
+        {
+            'id': 'funnel_2',
+            'text': "The funnel in action:\n\n{{TOTAL}} stocks → {{FINAL}} GREEN signals\n\nThat's the 5-Gate filter doing its job.\n\nThis week's survivors:\n{{SUBSTACK_URL}}",
+            'requires': ['total', 'final'],
+        },
+        {
+            'id': 'funnel_3',
+            'text': "Friday scan stats:\n\n📊 {{TOTAL}} stocks scanned\n✅ {{FINAL}} passed all 5 gates\n\nQuality > quantity. Always.\n\n{{SUBSTACK_URL}}",
+            'requires': ['total', 'final'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 8: EDUCATIONAL (evergreen content)
+    # -------------------------------------------------------------------------
+    'educational': [
+        {
+            'id': 'edu_1',
+            'text': "Why I trade weekly signals:\n\n• Less noise than daily\n• Clearer trend confirmation\n• Better risk management\n• No pattern day trader restrictions\n\nHow I find them:\n{{SUBSTACK_URL}}",
+            'requires': [],
+        },
+        {
+            'id': 'edu_2',
+            'text': "The 5-Gate System in 30 seconds:\n\nGate 1: Trend alignment\nGate 2: Momentum confirmation\nGate 3: Volume validation\nGate 4: Institutional footprint\nGate 5: Risk/reward setup\n\nFull methodology:\n{{SUBSTACK_URL}}",
+            'requires': [],
+        },
+        {
+            'id': 'edu_3',
+            'text': "Most traders overcomplicate entries.\n\nI look for 5 things. That's it.\n\nIf all 5 align, I take the trade.\nIf not, I wait.\n\nSimplicity scales.\n\n{{SUBSTACK_URL}}",
+            'requires': [],
+        },
+        {
+            'id': 'edu_4',
+            'text': "Position sizing matters more than entry price.\n\nI never risk more than I'm willing to lose on any single trade.\n\nThe math behind my approach:\n{{SUBSTACK_URL}}",
+            'requires': [],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 9: BEAT SPY
+    # -------------------------------------------------------------------------
+    'beat_spy': [
+        {
+            'id': 'spy_1',
+            'text': "Last week:\n\nSPY: {{SPY_PCT}}%\nOur positions: +{{OUR_PCT}}% average\n\nAlpha exists if you know where to look.\n\n{{SUBSTACK_URL}}",
+            'requires': ['spy_pct', 'our_pct'],
+        },
+        {
+            'id': 'spy_2',
+            'text': "Portfolio vs benchmark (as of Friday's close):\n\n📈 Our average: +{{OUR_PCT}}%\n📊 SPY: {{SPY_PCT}}%\n\nThe 5-Gate edge in action.\n\n{{SUBSTACK_URL}}",
+            'requires': ['spy_pct', 'our_pct'],
+        },
+        {
+            'id': 'spy_3',
+            'text': "Why stock pick when you can just buy SPY?\n\nBecause last week:\nSPY: {{SPY_PCT}}%\nUs: +{{OUR_PCT}}%\n\nThat's why.\n\n{{SUBSTACK_URL}}",
+            'requires': ['spy_pct', 'our_pct'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 10: ENGAGEMENT
+    # -------------------------------------------------------------------------
+    'engagement': [
+        {
+            'id': 'engage_1',
+            'text': "Drop a ticker below.\n\nI'll chart the top 3 this weekend and share what the 5-Gate System says.\n\n👇",
+            'requires': [],
+        },
+        {
+            'id': 'engage_2',
+            'text': "What sector are you most bullish on heading into next week?\n\n🔋 Energy\n💻 Tech\n🏥 Healthcare\n🏦 Financials\n\nReply with your pick 👇",
+            'requires': [],
+        },
+        {
+            'id': 'engage_3',
+            'text': "Quick question:\n\nDo you prefer to see:\nA) More signal breakdowns\nB) More trade recaps\nC) More educational content\n\nHelps me know what to post.\n\n👇",
+            'requires': [],
+        },
+        {
+            'id': 'engage_4',
+            'text': "Weekend homework:\n\nPick your top 3 stocks for next week.\n\nComment below — let's compare notes after Friday's scan.\n\n👇",
+            'requires': [],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 11: POWER HOUR (theme-focused)
+    # -------------------------------------------------------------------------
+    'power_hour': [
+        {
+            'id': 'power_1',
+            'text': "⚡ Power Hour:\n\n{{THEME}} showing relative strength into Friday's close.\n\nWatching for follow-through next week.\n\n{{SUBSTACK_URL}}",
+            'requires': ['theme'],
+        },
+        {
+            'id': 'power_2',
+            'text': "⚡ Power Hour watch:\n\nVolume picking up in {{THEME}} names.\n\nThe close matters. Eyes on the scanner.\n\n{{SUBSTACK_URL}}",
+            'requires': ['theme'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 12: CONSIDER SPOTLIGHT (watchlist - not full GREEN)
+    # -------------------------------------------------------------------------
+    'consider_spotlight': [
+        {
+            'id': 'consider_1',
+            'text': "🟡 On my radar: ${{TICKER}}\n\nCleared 4 of 5 gates. Waiting for final confirmation.\n\nEnded the week at ${{PRICE}}.\n\nFull watchlist:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'price'],
+        },
+        {
+            'id': 'consider_2',
+            'text': "Watchlist update:\n\n${{TICKER}} — almost there.\n\nFriday's close: ${{PRICE}}\n\nOne more gate to clear. Patience.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'price'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 13: SELF QUOTE (milestone celebrations)
+    # -------------------------------------------------------------------------
+    'self_quote': [
+        {
+            'id': 'quote_1',
+            'text': "Remember when I posted about ${{TICKER}} at ${{OLD_PRICE}}?\n\nFriday's close: ${{CURRENT}}\n\n+{{PNL}}% since the call.\n\nThat's what following the system looks like.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'old_price', 'current', 'pnl'],
+            'min_pnl': 25.0,
+        },
+        {
+            'id': 'quote_2',
+            'text': "${{TICKER}} hit a milestone.\n\n+{{PNL}}% since entry.\n\nThese are the setups the 5-Gate System is built to find.\n\nHow it works:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'pnl'],
+            'min_pnl': 25.0,
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 14: NEWSLETTER CTA
+    # -------------------------------------------------------------------------
+    'newsletter': [
+        {
+            'id': 'news_1',
+            'text': "New newsletter just dropped.\n\nThis week (based on Friday's scan):\n• {{NUM_SIGNALS}} new GREEN signals\n• Updated portfolio status\n• Theme rotation analysis\n\nRead it here 👇\n{{SUBSTACK_URL}}",
+            'requires': ['num_signals'],
+        },
+        {
+            'id': 'news_2',
+            'text': "Saturday morning reading:\n\nFresh signals from Friday's close.\nFull breakdown. No fluff.\n\n{{SUBSTACK_URL}}",
+            'requires': [],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 15: WEEKLY RECAP
+    # -------------------------------------------------------------------------
+    'weekly_recap': [
+        {
+            'id': 'recap_1',
+            'text': "🟢 GREEN signals this week:\n\n{{SIGNAL_LIST}}\n\nMeanwhile... SPY: {{SPY_PCT}}%\n\nThe 5-Gate System continues to find asymmetric setups.\n\n{{SUBSTACK_URL}}",
+            'requires': ['signal_list', 'spy_pct'],
+        },
+        {
+            'id': 'recap_2',
+            'text': "Week in review:\n\n✅ {{NUM_SIGNALS}} new signals\n📈 Top performer: ${{TOP_TICKER}} (+{{TOP_PNL}}%)\n🎯 Win rate holding steady\n\nFull recap:\n{{SUBSTACK_URL}}",
+            'requires': ['num_signals', 'top_ticker', 'top_pnl'],
+        },
+    ],
+
+    # -------------------------------------------------------------------------
+    # CATEGORY 16: EARLY MOVERS
+    # -------------------------------------------------------------------------
+    'early_movers': [
+        {
+            'id': 'early_1',
+            'text': "Early mover alert:\n\n${{TICKER}} already up +{{PNL}}% since Friday's GREEN signal.\n\nEntry: ${{ENTRY}}\nCurrent: ${{CURRENT}}\n\nMore setups like this:\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'entry', 'current', 'pnl'],
+        },
+        {
+            'id': 'early_2',
+            'text': "New signal, quick start:\n\n${{TICKER}}: +{{PNL}}% already\n\nThis is why I scan on Fridays and post Saturdays.\n\n{{SUBSTACK_URL}}",
+            'requires': ['ticker', 'pnl'],
+        },
+    ],
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEMPLATE TRACKING - Ensure variety across the week
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TemplateTracker:
+    """Track used templates to ensure variety."""
+    
+    def __init__(self):
+        self.used_templates = {}  # category -> set of template_ids
+        self.used_tickers = {}    # ticker -> count
+        
+    def mark_used(self, category: str, template_id: str, ticker: str = None):
+        """Mark a template as used."""
+        if category not in self.used_templates:
+            self.used_templates[category] = set()
+        self.used_templates[category].add(template_id)
+        
+        if ticker:
+            self.used_tickers[ticker] = self.used_tickers.get(ticker, 0) + 1
+    
+    def get_unused_templates(self, category: str) -> List[dict]:
+        """Get templates not yet used for a category."""
+        if category not in AUTHENTIC_TEMPLATES:
+            return []
+        
+        used = self.used_templates.get(category, set())
+        return [t for t in AUTHENTIC_TEMPLATES[category] if t['id'] not in used]
+    
+    def is_ticker_overused(self, ticker: str, max_count: int = 4) -> bool:
+        """Check if ticker has been mentioned too many times."""
+        return self.used_tickers.get(ticker, 0) >= max_count
+    
+    def reset(self):
+        """Reset for new week."""
+        self.used_templates = {}
+        self.used_tickers = {}
+
+
+# Global tracker instance
+template_tracker = TemplateTracker()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DATA STRUCTURES
@@ -658,6 +650,8 @@ class Tweet:
     status: str = "pending"
     posted_at: Optional[str] = None
     tweet_id: Optional[str] = None
+    template_id: Optional[str] = None
+    generation_method: str = "template"  # template, claude, hybrid
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -666,11 +660,10 @@ class Tweet:
 @dataclass
 class WeeklyContent:
     """All content for the week."""
-    # Signals (CRIT-2: Separate CONSIDER from CAUTION)
-    pass_signals: List[Dict] = field(default_factory=list)        # PASS - cleared all 5 gates
-    consider_signals: List[Dict] = field(default_factory=list)    # CONSIDER - passed gates 1-4 (bullish watchlist)
-    caution_signals: List[Dict] = field(default_factory=list)     # Open positions with issues (warnings)
-    sell_signals: List[Dict] = field(default_factory=list)        # EXIT - stop triggered
+    pass_signals: List[Dict] = field(default_factory=list)
+    consider_signals: List[Dict] = field(default_factory=list)
+    caution_signals: List[Dict] = field(default_factory=list)
+    sell_signals: List[Dict] = field(default_factory=list)
     open_positions: List[Dict] = field(default_factory=list)
     closed_trades: List[Dict] = field(default_factory=list)
     prime_themes: List[Dict] = field(default_factory=list)
@@ -682,10 +675,523 @@ class WeeklyContent:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CLAUDE TWEET GENERATION
+# HELPER FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-TWEET_SYSTEM_PROMPT = """You are a financial content writer for Sterling Signals, a momentum trading newsletter on Substack targeting US active investors and swing traders.
+def get_tweet_char_count(text: str) -> int:
+    """Calculate Twitter character count (handles Unicode)."""
+    count = 0
+    for char in text:
+        if ord(char) > 0xFFFF:
+            count += 2
+        else:
+            count += 1
+    return count
+
+
+def validate_tweet_length(text: str, max_length: int = 280) -> bool:
+    """Check if tweet is within character limit."""
+    return get_tweet_char_count(text) <= max_length
+
+
+def truncate_tweet(tweet_text: str, max_length: int = 280) -> str:
+    """Truncate tweet to fit within limit, preserving URL if present."""
+    if validate_tweet_length(tweet_text, max_length):
+        return tweet_text
+    
+    url_pattern = r'https?://\S+$'
+    match = re.search(url_pattern, tweet_text)
+    
+    if match:
+        url = match.group()
+        text_without_url = tweet_text[:match.start()].rstrip()
+        url_length = get_tweet_char_count(url)
+        available = max_length - url_length - 4
+        
+        truncated = ""
+        count = 0
+        for char in text_without_url:
+            char_len = 2 if ord(char) > 0xFFFF else 1
+            if count + char_len > available:
+                break
+            truncated += char
+            count += char_len
+        
+        return f"{truncated.rstrip()}... {url}"
+    else:
+        truncated = ""
+        count = 0
+        for char in tweet_text:
+            char_len = 2 if ord(char) > 0xFFFF else 1
+            if count + char_len > (max_length - 3):
+                break
+            truncated += char
+            count += char_len
+        return f"{truncated.rstrip()}..."
+
+
+def calculate_days_held(entry_date: str) -> int:
+    """Calculate days held from entry date to today."""
+    if not entry_date:
+        return 0
+    try:
+        entry_dt = datetime.strptime(entry_date, '%Y-%m-%d')
+        days = (datetime.now() - entry_dt).days
+        return max(1, days)  # Minimum 1 day
+    except ValueError:
+        return 0
+
+
+def format_weeks_held(days: int) -> str:
+    """Format days held as weeks for display."""
+    if days < 7:
+        return f"{days} days" if days != 1 else "1 day"
+    weeks = days // 7
+    return f"{weeks} weeks" if weeks != 1 else "1 week"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEMPLATE POPULATION FUNCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def populate_template(template: str, data: dict) -> str:
+    """
+    Replace {{PLACEHOLDER}} markers with actual data values.
+    
+    Args:
+        template: Template string with {{PLACEHOLDER}} markers
+        data: Dictionary of values to substitute
+        
+    Returns:
+        Populated template string
+    """
+    result = template
+    
+    # Standard replacements
+    for key, value in data.items():
+        placeholder = "{{" + key.upper() + "}}"
+        if placeholder in result:
+            result = result.replace(placeholder, str(value))
+    
+    # Always replace SUBSTACK_URL
+    result = result.replace("{{SUBSTACK_URL}}", SUBSTACK_URL)
+    
+    # Apply random variation to weekly close phrasing (30% chance)
+    result = maybe_vary_phrase(result, probability=0.3)
+    
+    return result
+
+
+def build_template_data(category: str, content: WeeklyContent, 
+                        template: dict = None) -> Optional[dict]:
+    """
+    Build data dictionary for populating a template.
+    
+    Returns None if required data is unavailable.
+    Enforces 25% threshold for position updates and closed trades.
+    """
+    data = {}
+    
+    # -------------------------------------------------------------------------
+    # BUY SIGNAL
+    # -------------------------------------------------------------------------
+    if category == 'buy_signal':
+        if not content.pass_signals:
+            return None
+        
+        # Single signal format
+        if template and 'ticker' in template.get('requires', []):
+            signal = content.pass_signals[0]
+            data['ticker'] = signal.get('ticker', '')
+            data['price'] = f"{signal.get('current_price', signal.get('price', 0)):.2f}"
+            data['conviction'] = signal.get('conviction', 4)
+            data['conviction_text'] = get_conviction_text(signal.get('conviction', 4))
+            data['theme'] = signal.get('theme', 'Momentum')
+        
+        # Multi-signal list format
+        if template and 'signal_list' in template.get('requires', []):
+            signals = content.pass_signals[:5]
+            lines = []
+            for s in signals:
+                conv_text = get_conviction_text(s.get('conviction', 4))
+                lines.append(f"🟢 ${s.get('ticker', '')} — {conv_text}")
+            data['signal_list'] = "\n".join(lines)
+        
+        data['num_signals'] = len(content.pass_signals)
+        
+    # -------------------------------------------------------------------------
+    # TOP PERFORMERS (25%+ only)
+    # -------------------------------------------------------------------------
+    elif category == 'top_performers':
+        # Filter to 25%+ winners only
+        min_pnl = TEMPLATE_THRESHOLDS['min_pnl_for_position_update']
+        winners = [p for p in content.open_positions 
+                   if p.get('pnl_pct', 0) >= min_pnl]
+        
+        if not winners:
+            return None  # No qualifying winners
+        
+        winners = sorted(winners, key=lambda x: x.get('pnl_pct', 0), reverse=True)
+        
+        # Build winners list
+        lines = []
+        for w in winners[:5]:
+            ticker = w.get('ticker', '')
+            pnl = w.get('pnl_pct', 0)
+            days = calculate_days_held(w.get('entry_date', ''))
+            period = format_weeks_held(days)
+            lines.append(f"${ticker}: +{pnl:.1f}% ({period})")
+        data['winners_list'] = "\n".join(lines)
+        
+        # Single winner data for specific templates
+        top = winners[0]
+        data['ticker'] = top.get('ticker', '')
+        data['entry'] = f"{top.get('entry_price', 0):.2f}"
+        data['current'] = f"{top.get('current_price', 0):.2f}"
+        data['pnl'] = f"{top.get('pnl_pct', 0):.1f}"
+        data['weeks_held'] = format_weeks_held(calculate_days_held(top.get('entry_date', '')))
+        data['theme'] = top.get('theme', 'Momentum')
+        
+    # -------------------------------------------------------------------------
+    # CLOSED TRADE (25%+ only)
+    # -------------------------------------------------------------------------
+    elif category == 'closed_trade':
+        # Filter to 25%+ closed winners only
+        min_pnl = TEMPLATE_THRESHOLDS['min_pnl_for_closed_win']
+        closed_winners = []
+        
+        for t in content.closed_trades:
+            entry = t.get('entry_price', 0)
+            exit_p = t.get('exit_price', t.get('current_price', 0))
+            if entry > 0:
+                pnl = ((exit_p - entry) / entry) * 100
+                if pnl >= min_pnl:
+                    t['calculated_pnl'] = pnl
+                    closed_winners.append(t)
+        
+        if not closed_winners:
+            return None
+        
+        trade = closed_winners[0]
+        data['ticker'] = trade.get('ticker', '')
+        data['entry'] = f"{trade.get('entry_price', 0):.2f}"
+        data['exit'] = f"{trade.get('exit_price', trade.get('current_price', 0)):.2f}"
+        data['pnl'] = f"{trade.get('calculated_pnl', 0):.1f}"
+        
+        days = calculate_days_held(trade.get('entry_date', ''))
+        data['weeks_held'] = format_weeks_held(days)
+        
+    # -------------------------------------------------------------------------
+    # SELL SIGNAL (neutral - no P&L)
+    # -------------------------------------------------------------------------
+    elif category == 'sell_signal':
+        if not content.sell_signals:
+            return None
+        
+        signal = content.sell_signals[0]
+        data['ticker'] = signal.get('ticker', '')
+        data['theme'] = signal.get('theme', 'Sector')
+        
+    # -------------------------------------------------------------------------
+    # THEME HOT
+    # -------------------------------------------------------------------------
+    elif category == 'theme_hot':
+        hot_themes = content.prime_themes + content.investable_themes
+        if not hot_themes:
+            return None
+        
+        theme = hot_themes[0]
+        data['theme'] = theme.get('name', theme.get('theme', 'Momentum'))
+        
+        # Get tickers from this theme OR from pass_signals if no theme match
+        theme_name = data['theme'].lower()
+        theme_tickers = [p.get('ticker', '') for p in content.open_positions 
+                        if theme_name in p.get('theme', '').lower()]
+        
+        # If not enough tickers from positions, use pass_signals
+        if len(theme_tickers) < 3 and content.pass_signals:
+            signal_tickers = [s.get('ticker', '') for s in content.pass_signals 
+                             if theme_name in s.get('theme', '').lower()]
+            theme_tickers = list(set(theme_tickers + signal_tickers))
+        
+        # If still not enough, grab top signals regardless of theme
+        if len(theme_tickers) < 3 and content.pass_signals:
+            for s in content.pass_signals:
+                if s.get('ticker') not in theme_tickers:
+                    theme_tickers.append(s.get('ticker', ''))
+                if len(theme_tickers) >= 3:
+                    break
+        
+        # Ensure we have unique tickers
+        unique_tickers = list(dict.fromkeys(theme_tickers))[:3]
+        
+        if len(unique_tickers) >= 3:
+            data['ticker1'] = unique_tickers[0]
+            data['ticker2'] = unique_tickers[1]
+            data['ticker3'] = unique_tickers[2]
+        elif len(unique_tickers) == 2:
+            data['ticker1'] = unique_tickers[0]
+            data['ticker2'] = unique_tickers[1]
+            data['ticker3'] = unique_tickers[0]  # Repeat first if only 2
+        elif len(unique_tickers) == 1:
+            # Only one ticker - skip templates requiring 3 tickers
+            pass
+            
+    # -------------------------------------------------------------------------
+    # THEME COLD
+    # -------------------------------------------------------------------------
+    elif category == 'theme_cold':
+        cold_themes = content.selective_themes + content.avoid_themes
+        if not cold_themes:
+            return None
+        
+        data['cold_theme'] = cold_themes[0].get('name', cold_themes[0].get('theme', 'Sector'))
+        
+        hot_themes = content.prime_themes + content.investable_themes
+        if hot_themes:
+            data['hot_theme'] = hot_themes[0].get('name', hot_themes[0].get('theme', 'Momentum'))
+        else:
+            data['hot_theme'] = 'other sectors'
+            
+    # -------------------------------------------------------------------------
+    # FUNNEL GRAPHIC
+    # -------------------------------------------------------------------------
+    elif category == 'funnel_graphic':
+        # Use scan stats if available
+        data['total'] = '200+'
+        data['gate1'] = '~150'
+        data['gate2'] = '~80'
+        data['gate3'] = '~40'
+        data['gate4'] = '~15'
+        data['final'] = str(len(content.pass_signals)) if content.pass_signals else '5'
+        
+    # -------------------------------------------------------------------------
+    # BEAT SPY
+    # -------------------------------------------------------------------------
+    elif category == 'beat_spy':
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                spy_data = calculate_portfolio_vs_spy(content.open_positions)
+                if spy_data:
+                    data['spy_pct'] = f"{spy_data.get('spy_return', 0):+.1f}"
+                    data['our_pct'] = f"{spy_data.get('portfolio_return', 0):.1f}"
+                else:
+                    return None
+            except:
+                return None
+        else:
+            return None
+            
+    # -------------------------------------------------------------------------
+    # CONSIDER SPOTLIGHT
+    # -------------------------------------------------------------------------
+    elif category == 'consider_spotlight':
+        if not content.consider_signals:
+            return None
+        
+        signal = content.consider_signals[0]
+        data['ticker'] = signal.get('ticker', '')
+        data['price'] = f"{signal.get('current_price', signal.get('price', 0)):.2f}"
+        
+    # -------------------------------------------------------------------------
+    # SELF QUOTE (milestone - 25%+ only)
+    # -------------------------------------------------------------------------
+    elif category == 'self_quote':
+        # Get uncelebrated wins from tracker
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                wins = get_uncelebrated_wins()
+                if wins:
+                    win = wins[0]
+                    data['ticker'] = win.get('ticker', '')
+                    data['old_price'] = f"{win.get('entry_price', 0):.2f}"
+                    data['current'] = f"{win.get('current_price', 0):.2f}"
+                    data['pnl'] = f"{win.get('pnl_pct', 0):.1f}"
+                else:
+                    return None
+            except:
+                return None
+        else:
+            return None
+            
+    # -------------------------------------------------------------------------
+    # NEWSLETTER
+    # -------------------------------------------------------------------------
+    elif category == 'newsletter':
+        data['num_signals'] = len(content.pass_signals)
+        
+    # -------------------------------------------------------------------------
+    # WEEKLY RECAP
+    # -------------------------------------------------------------------------
+    elif category == 'weekly_recap':
+        if content.pass_signals:
+            lines = []
+            for s in content.pass_signals[:5]:
+                conv_text = get_conviction_text(s.get('conviction', 4))
+                lines.append(f"${s.get('ticker', '')} — {conv_text}")
+            data['signal_list'] = "\n".join(lines)
+        
+        data['num_signals'] = len(content.pass_signals)
+        
+        # SPY comparison
+        if SIGNAL_TRACKER_AVAILABLE:
+            try:
+                spy_data = calculate_portfolio_vs_spy(content.open_positions)
+                if spy_data:
+                    data['spy_pct'] = f"{spy_data.get('spy_return', 0):+.1f}"
+            except:
+                data['spy_pct'] = "flat"
+        else:
+            data['spy_pct'] = "N/A"
+        
+        # Top performer
+        winners = sorted(content.open_positions, 
+                        key=lambda x: x.get('pnl_pct', 0), reverse=True)
+        if winners:
+            data['top_ticker'] = winners[0].get('ticker', '')
+            data['top_pnl'] = f"{winners[0].get('pnl_pct', 0):.1f}"
+            
+    # -------------------------------------------------------------------------
+    # EARLY MOVERS
+    # -------------------------------------------------------------------------
+    elif category == 'early_movers':
+        threshold = TEMPLATE_THRESHOLDS['early_mover_threshold']
+        early = [p for p in content.open_positions 
+                 if p.get('pnl_pct', 0) >= threshold 
+                 and calculate_days_held(p.get('entry_date', '')) <= 14]
+        
+        if not early:
+            return None
+        
+        mover = early[0]
+        data['ticker'] = mover.get('ticker', '')
+        data['entry'] = f"{mover.get('entry_price', 0):.2f}"
+        data['current'] = f"{mover.get('current_price', 0):.2f}"
+        data['pnl'] = f"{mover.get('pnl_pct', 0):.1f}"
+        
+    # -------------------------------------------------------------------------
+    # POWER HOUR
+    # -------------------------------------------------------------------------
+    elif category == 'power_hour':
+        hot_themes = content.prime_themes + content.investable_themes
+        if hot_themes:
+            data['theme'] = hot_themes[0].get('name', hot_themes[0].get('theme', 'Momentum'))
+        else:
+            data['theme'] = 'momentum names'
+            
+    # -------------------------------------------------------------------------
+    # EDUCATIONAL / ENGAGEMENT (no data required)
+    # -------------------------------------------------------------------------
+    elif category in ['educational', 'engagement']:
+        pass  # These templates don't need data
+        
+    return data
+
+
+def select_and_populate_template(category: str, content: WeeklyContent,
+                                  account: str = 'account_1') -> Optional[dict]:
+    """
+    Select an unused template and populate it with data.
+    
+    Args:
+        category: Tweet category
+        content: WeeklyContent with scanner data
+        account: Which account (for variations)
+        
+    Returns:
+        Dict with populated tweet or None if no valid template/data
+    """
+    # Get unused templates for this category
+    available = template_tracker.get_unused_templates(category)
+    
+    if not available:
+        # All templates used - reset and try again
+        if category in AUTHENTIC_TEMPLATES:
+            available = AUTHENTIC_TEMPLATES[category]
+        else:
+            return None
+    
+    # Shuffle for variety
+    random.shuffle(available)
+    
+    for template in available:
+        # Check min_pnl requirement
+        min_pnl = template.get('min_pnl', 0)
+        
+        # Build data for this template
+        data = build_template_data(category, content, template)
+        
+        if data is None:
+            continue  # Data requirements not met
+        
+        # Get template text (with account variation if available)
+        if account != 'account_1' and 'account_variations' in template:
+            text = template['account_variations'].get(account, template['text'])
+        else:
+            text = template['text']
+        
+        # Populate template
+        populated = populate_template(text, data)
+        
+        # Validate length
+        if not validate_tweet_length(populated):
+            populated = truncate_tweet(populated)
+        
+        # Validate content
+        is_valid, violations = validate_content(populated)
+        if not is_valid:
+            print(f"  ⚠️ Template {template['id']} has violations: {violations}")
+            continue
+        
+        # Mark as used
+        template_tracker.mark_used(category, template['id'], data.get('ticker'))
+        
+        return {
+            'category': category,
+            'text': populated,
+            'ticker': data.get('ticker'),
+            'theme': data.get('theme'),
+            'template_id': template['id'],
+            'template_data': data,
+            'generation_method': 'template'
+        }
+    
+    return None  # No valid template found
+
+
+def get_fallback_category(original_category: str, content: WeeklyContent) -> str:
+    """
+    Get fallback category when original can't be populated.
+    
+    When no 25%+ winners exist, substitute hot theme or engagement.
+    """
+    fallback_map = {
+        'top_performers': 'theme_hot',
+        'closed_trade': 'theme_hot',
+        'self_quote': 'consider_spotlight',
+        'beat_spy': 'engagement',
+        'early_movers': 'theme_hot',
+        'consider_spotlight': 'theme_hot',
+    }
+    
+    fallback = fallback_map.get(original_category, 'engagement')
+    
+    # Check if fallback has data
+    if fallback == 'theme_hot':
+        if not (content.prime_themes or content.investable_themes):
+            return 'engagement'
+    elif fallback == 'consider_spotlight':
+        if not content.consider_signals:
+            return 'engagement'
+    
+    return fallback
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLAUDE API GENERATION (Fallback)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+TWEET_SYSTEM_PROMPT = """You are a financial content writer for Sterling Signals, a momentum trading newsletter on Substack targeting US active investors.
 
 Your task is to write engaging tweets for X/Twitter that:
 1. Highlight trading signals, themes, and market insights
@@ -693,1329 +1199,405 @@ Your task is to write engaging tweets for X/Twitter that:
 3. Include relevant $TICKER cashtags
 4. Stay under 280 characters
 5. Use emojis sparingly but effectively
-6. ALWAYS include link to newsletter or call-to-action
 
-STYLE GUIDELINES:
+CRITICAL TERMINOLOGY:
+- Use 🟢 GREEN signal for BUY signals (not TEAL)
+- Use 🔴 RED signal for SELL signals (not purple)
+- Always reference "Friday's close" or "as of the latest weekly close" for prices
+- Never mention internal terms: HMA, Banker, BoS, RSI, MACD, Tier 1/2/3
+
+STYLE:
 - Confident but not arrogant
-- Data-driven, specific numbers when available
-- Professional trader voice, not hype
-- Occasional humor is OK
-- Keep legal disclaimers in bio/newsletter, but NEVER give explicit "buy/sell this stock" advice in tweets
-- Frame all content as educational/observational, not as financial advice
-- All times in Eastern Time (ET)
+- Data-driven with specific numbers
+- Authentic voice, not corporate marketing
+- Always include link to sterlingsignals.substack.com
 
-CRITICAL MARKETING LANGUAGE RULES - BANNED TERMS:
-NEVER use these terms in any tweet:
-- "HMA", "Hull Moving Average", "HMA Pivot"
-- "Banker indicator", "Banker >= 55"
-- "20% trailing stop", "20% stop"
-- "Beta >= 1.5", "beta threshold"
-- "Break of Structure", "BoS", "BOS", "Weekly BoS"
-- "Tier 1", "Tier 2", "Tier 3", "TIER1", "TIER2", "TIER3"
-- "Gatekeeper"
-- "UK ISA", "ISA account", "GMT", "BST", "UK Time"
-- "RSI", "MACD", "KDJ"
-- "Forensic Audit", "5th Gate", "Gate 5" (use "final gate" or "cleared all gates")
-- "Volatility Expansion Criteria", "Volatility Expansion"
-- "Institutional Accumulation Divergence" (use "institutional accumulation" only)
-- "Structural Pivot Confirmation" (use "technical setup" or "momentum confirmed")
-- "Capital Preservation Protocol" (use "systematic stop" or "trailing stop")
-- "proprietary entry", "proprietary signal" (use "TEAL signal")
-- "buy signal", "Buy signal" (use "TEAL signal")
-- "PASS signal" (use "TEAL signal")
-- "Roth IRA", "Roth", "401k", "401(k)" (audience-neutral - no region-specific)
-- "PDT", "PDT rule", "pattern day trader" (audience-neutral - no region-specific)
-
-APPROVED VOCABULARY - USE THESE INSTEAD:
-- "TEAL signal" (ALWAYS use this for buy signals - this is our brand)
-- "5-gate screening system" (don't mention individual gate names)
-- "Cleared all gates" or "cleared all 5 gates" (not Forensic Audit, not Gate 5)
-- "Systematic stop" or "trailing stop" (not Capital Preservation Protocol)
-- "Momentum confirmed" or "technical setup confirmed" (not Weekly BoS)
-- "High conviction" (not Tier 1/2/3)
-- "Institutional accumulation" (not "Institutional Accumulation Divergence")
-
-AUDIENCE CONTENT HOOKS (audience-neutral):
-1. BEAT SPY - Alpha over indexing, "Stop indexing. Start selecting."
-2. TIME-FRIENDLY - Weekly timeframe suits busy schedules
-3. POWER HOUR - 15:30-16:00 ET market reaction, relative strength
-4. SECTOR ROTATION - Following institutional flows between themes
-
-APPROVED POWER PHRASES:
-- "Proprietary 5-gate screening system"
-- "Filters 1,800 stocks to 3-5 actionable signals"
-- "TEAL signal triggered" (NOT "buy signal")
-- "Cleared all 5 gates" (NOT "Forensic Audit cleared")
-- "Systematic exit discipline" (NOT "Capital Preservation Protocol")
-- "The system protects capital so we live to fight another day"
-- "No ego, just execution"
-
-CRITICAL HONESTY + POSITIVITY RULES:
-1. For position_update tweets, ONLY show winning positions (pre-filtered for you)
-2. When portfolio is down overall, focus on themes and education instead
-3. Frame exits as DISCIPLINE, not failures:
-   - "Stop hit = system working as designed"
-   - "Systematic exit discipline in action"
-   - "No ego, just execution. On to the next."
-4. When mentioning portfolio returns, ALWAYS include SPY comparison when outperforming
-
-LEGAL COMPLIANCE REQUIREMENTS:
-1. NEVER say "buy this stock" or "you should invest in X" - instead say "what we're watching" or "our system identified"
-2. When showing returns/gains, frame as educational/informational:
-   - "Our screening identified $TICKER +25% since signal" (educational)
-   - NOT "Buy $TICKER for 25% gains" (advice)
-3. NEVER make promises about future returns
-4. Use language that implies analysis/observation, not recommendation:
-   - "Cleared all 5 gates" (observation)
-   - "Showing institutional accumulation" (analysis)
-   - "On our radar" (watching, not recommending)
-5. Full "not financial advice" disclaimer is in bio and newsletter - tweets imply educational purpose
-
-CRITICAL: Every tweet MUST either:
-- Link to Substack (sterlingsignals.substack.com)
-- Ask an engaging question
-- Highlight our 5-gate proprietary screening system
-
-STRUCTURE:
-- Hook in first line
-- Key insight or data point
-- CTA or question to drive engagement
-
-Return tweets as a JSON array with this structure:
-[
-  {
-    "category": "buy_signal|theme_hot|theme_cold|closed_trade|position_update|sell_signal|system_promo|market_insight|educational|engagement|beat_spy|roth_ira|pdt_friendly|power_hour|sector_rotation|funnel_graphic|post_mortem",
-    "ticker": "AAPL" or null,
-    "theme": "AI Infrastructure" or null,
-    "text": "The actual tweet text under 280 chars"
-  }
-]
-"""
+25% RULE: Only mention entry prices or specific P&L for positions that are up 25% or more. For losers or small winners, use neutral language without numbers."""
 
 
-def generate_tweets_for_category(
-    client: anthropic.Anthropic,
-    category: str,
-    content: WeeklyContent,
-    count: int = 3
-) -> List[Dict]:
-    """Generate tweets for a specific category using Claude."""
-
+def generate_claude_tweet(client, category: str, content: WeeklyContent) -> Optional[dict]:
+    """
+    Generate a tweet using Claude API as fallback.
+    
+    Used when templates can't be populated with available data.
+    """
     # Build context based on category
-    if category == "buy_signal" or category == "teal_signal":
-        # Show ALL TEAL signals (no limit - marketing overhaul)
-        num_signals = len(content.pass_signals) if content.pass_signals else 0
-        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
-        context = f"""
-Generate {count} tweets about new TEAL signals that passed ALL our gates.
-
-TEAL Signals this week ({num_signals} total - show ALL of them):
-{json.dumps(content.pass_signals, indent=2)}
-
-IMPORTANT: We now show ALL signals that pass our 5-gate system, not just one.
-If multiple signals, mention all tickers.
-
-For each signal, highlight (use GENERIC language):
-- The ticker with $TICKER format
-- Conviction level using these EXACT terms: "Extremely Bullish" (conv 5), "Bullish" (conv 4), "Watching" (conv 3)
-- Key catalyst driving the trade
-- Our multi-step proprietary screening process (1800 stocks → {num_signals} TEAL signals)
-- Link to full analysis: sterlingsignals.substack.com
-
-CRITICAL: Do NOT reveal specific indicator names or formulas.
-Use: "proprietary signals", "smart money accumulation", "theme momentum confirmed"
-Use "TEAL signal" branding (not "PASS signal")
-ALWAYS start with {teal_emoji} TEAL Signal emoji prefix
-
-Example format (single signal):
-"{teal_emoji} TEAL Signal: $IESC
-
-Conviction: Bullish
-
-✅ Technical entry signal confirmed
-✅ Smart money accumulation detected
-✅ Hot theme momentum
-
-Full analysis in this week's newsletter 👇
-sterlingsignals.substack.com"
-
-Example format (multiple signals):
-"{teal_emoji} TEAL Signals this week:
-
-$TICKER1 - Extremely Bullish
-$TICKER2 - Bullish
-$TICKER3 - Bullish
-
-All cleared our proprietary 5-gate system.
-1,817 stocks → {num_signals} opportunities.
-
-Full analysis 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "theme_hot":
-        context = f"""
-Generate {count} tweets about HOT themes (PRIME and INVESTABLE).
-
-PRIME Themes (highest conviction):
-{json.dumps(content.prime_themes, indent=2)}
-
-INVESTABLE Themes:
-{json.dumps(content.investable_themes, indent=2)}
-
-For each tweet (use language about following money/institutions):
-- Explain WHY the theme is hot NOW (specific catalyst)
-- Mention institutional/smart money flows
-- Frame as bottleneck plays or contrarian opportunities
-- Connect to our scanner identifying these opportunities
-- Link to newsletter for stock picks: sterlingsignals.substack.com
-
-CRITICAL: Focus on "following the money", "institutional flows", "bottleneck themes"
-
-Example format:
-"🔥 AI Cooling is THIS week's hottest theme
-
-Why? Hyperscalers spending $100B+ on data centers
-Institutional money piling into bottleneck plays
-
-Our proprietary system flagged this theme early 👇
-sterlingsignals.substack.com"
-
-"💰 Following institutional flows into Power Grid
-
-Smart money knows: AI needs power
-Grid infrastructure = bottleneck play of the decade
-
-Where we're positioned 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "theme_cold":
-        context = f"""
-Generate {count} tweets about themes to AVOID or be SELECTIVE with.
-
-SELECTIVE Themes (mixed signals):
-{json.dumps(content.selective_themes, indent=2)}
-
-AVOID Themes (stay away):
-{json.dumps(content.avoid_themes, indent=2)}
-
-Frame these as (contrarian/patience angle):
-- Risk warnings for crowded trades (institutions exiting)
-- Themes losing momentum (smart money rotating out)
-- Our system helping avoid these traps
-- Patience > FOMO - wait for better setups
-
-CRITICAL: Focus on "crowded trades", "smart money exiting", "patience over FOMO"
-
-Example format:
-"❄️ Quantum Computing is cooling off
-
-Why we're avoiding:
-- Crowded trade - everyone's in
-- Smart money rotating out
-- No near-term catalysts
-
-Patience > FOMO. Our system keeps us out of traps.
-
-What themes are you avoiding? 👇"
-
-"🚫 When everyone's bullish, be cautious
-
-Crowded themes = smart money exits first
-Retail holds the bag
-
-Our contrarian signals help us avoid these traps
-
-Current themes to avoid 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "closed_trade":
-        context = f"""
-Generate {count} tweets about CLOSED trades (wins and losses).
-
-Recently Closed Trades:
-{json.dumps(content.closed_trades, indent=2)}
-
-CRITICAL: Generate tweets for BOTH wins AND losses. Do not skip losses.
-
-For each (use GENERIC language - no specific percentages for stops):
-- Be TRANSPARENT about P&L (wins AND losses)
-- Explain WHY we exited (risk management triggered, took profits, thesis changed)
-- Show disciplined risk management in action
-- Link to track record: sterlingsignals.substack.com
-
-FRAMING LOSSES POSITIVELY (without hiding them):
-- Stop hit = "System worked. Cut the loss before it got worse."
-- Multiple losses = "2 losses this month, both contained. That's disciplined risk management."
-- Big loss = "Painful but manageable. This is why position sizing matters."
-- Loss after gain = "Gave back some profits but protected the core. On to the next."
-
-CRITICAL: Do NOT mention specific stop percentages or indicator names.
-
-Example formats:
-
-WIN: "✅ $RCAT closed for +42%
-
-Entry: $8.50 → Exit: $12.08
-
-What worked:
-• Drone theme stayed hot
-• Earnings beat expectations
-• Disciplined exit preserved gains
-
-Full trade breakdown 👇
-sterlingsignals.substack.com"
-
-LOSS: "🔴 $SMCI stopped out at -18%
-
-No system wins 100%. Here's what happened:
-• Thesis changed (accounting concerns)
-• Risk management triggered
-• Loss capped. Capital preserved.
-
-This is exactly why we have rules.
-
-Full breakdown 👇
-sterlingsignals.substack.com"
-
-YTD SUMMARY: "📊 2026 track record update:
-
-Closed trades: 12
-Winners: 8 (67% win rate)
-Losers: 4
-
-Avg win: +28%
-Avg loss: -17%
-
-Expectancy: Positive.
-
-Every trade documented 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "position_update":
-        # MASTER_TODO_v2: KILLED CATEGORY - Shows individual P&L
-        # Use top_performers instead (safeguarded, winners only)
-        print(f"  🚨 ERROR: position_update category is KILLED. Using top_performers instead.")
-        return generate_tweets_for_category(client, "top_performers", content, count)
-
-    elif category == "sell_signal" or category == "violet_alert":
-        violet_emoji = get_signal_emoji('VIOLET') if CONFIG_AVAILABLE else '🟣'
-        # Filter to only show profitable exits (never show losses)
-        profitable_exits = [s for s in content.sell_signals if s.get('pnl_pct', 0) > 0] if content.sell_signals else []
-
-        context = f"""
-Generate {count} tweets about EXIT signals (VIOLET alerts).
-
-CRITICAL: Only show PROFITABLE exits. Never show losing positions.
-
-PROFITABLE EXITS (show these):
-{json.dumps(profitable_exits, indent=2) if profitable_exits else "No profitable exits this week"}
-
-Caution Signals (watching closely):
-{json.dumps(content.caution_signals, indent=2)}
-
-For PROFITABLE exits, frame as (use GENERIC language):
-- System protecting gains
-- Trailing stop worked as designed
-- Disciplined exits lock in profits
-- Our system identifying the right exit timing
-
-For CAUTION signals, frame as:
-- Risk management in action
-- Technical signals showing weakness
-- Tightening stops to protect gains
-
-CRITICAL: Do NOT mention specific indicators like "BoS" or specific stop percentages.
-Use phrases like "systematic exit", "trailing stop triggered", "protecting gains"
-
-TEMPLATE for profitable exit:
-"{violet_emoji} VIOLET Alert: $TICKER
-
-Trailing stop triggered.
-
-Entry: $XX.XX
-Exit: $XX.XX
-Return: +XX.X%
-Held: X weeks
-
-Systematic exits protect gains.
-
-sterlingsignals.substack.com"
-
-RULES:
-- ALWAYS start with {violet_emoji} VIOLET emoji for exits
-- ONLY show profitable exits (NEVER show losses)
-- Include entry price, exit price, and return percentage for winners
-- Include holding period
-- Focus on the system working as designed
-"""
-
-    elif category == "system_promo":
-        context = f"""
-Generate {count} tweets promoting our proprietary scanning system.
-
-KEY SELLING POINTS (use generic language):
-1. Multi-step proprietary screening (1800 stocks → 3-5 winners)
-2. Smart money / institutional flow tracking
-3. Theme momentum identification (hot vs cold themes)
-4. Technical entry and exit signals
-5. Rigorous due diligence on every signal
-6. Disciplined risk management
-
-CRITICAL: DO NOT reveal specific formulas, indicator names, or parameters.
-Create mystery and intrigue. Use phrases like:
-- "proprietary indicators"
-- "smart money accumulation signals"
-- "institutional flow tracking"
-- "systematic approach"
-
-ALWAYS link to newsletter: sterlingsignals.substack.com
-
-Example formats:
-"🔬 How we filter 1,800 stocks to 3 STRONG BUYs:
-
-Step 1: Technical breakout confirmed ✅
-Step 2: Smart money accumulation ✅
-Step 3: Theme momentum aligned ✅
-Step 4: Quality gate passed ✅
-Step 5: Deep due diligence ✅
-
-99% of stocks fail our screening.
-
-See what passed this week 👇
-sterlingsignals.substack.com"
-
-"📊 Following the smart money
-
-Our proprietary indicators track institutional accumulation.
-
-When big money flows in, we pay attention.
-
-This week: 3 stocks showing heavy accumulation
-
-Free analysis 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "market_insight":
-        context = f"""
-Generate {count} tweets about market outlook for the week.
-
-Current hot themes: {[t.get('name') for t in content.prime_themes + content.investable_themes]}
-Current positions: {[p.get('ticker') for p in content.open_positions]}
-
-Topics:
-- Week ahead preview
-- Sector rotation observations
-- Macro factors affecting momentum stocks
-- Link to full analysis: sterlingsignals.substack.com
-
-Example format:
-"📅 Week ahead: What momentum traders need to watch
-
-🔹 NVDA earnings Wednesday
-🔹 Fed minutes Thursday
-🔹 PCE data Friday
-
-Our scanner is positioned in Power Grid & AI Cooling
-
-Full week preview 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "educational":
-        context = f"""
-Generate {count} educational tweets about momentum trading.
-
-Topics to cover (use GENERIC language, no specific formulas):
-- Identifying breakouts using technical signals
-- Theme investing approach (follow institutional flows)
-- Disciplined risk management (protect capital)
-- Why patience beats FOMO
-- Position sizing principles
-- Following smart money into hot themes
-- Avoiding crowded/cold themes
-
-CRITICAL: Do NOT reveal specific indicators, percentages, or formulas.
-Use phrases like "proprietary signals", "disciplined exits", "systematic approach"
-
-ALWAYS tie back to our system and newsletter.
-
-Example formats:
-"📚 Why we use WEEKLY charts
-
-Daily = too much noise
-Monthly = too slow
-
-Weekly timeframes:
-→ Catch major trend changes
-→ Filter out fake breakouts
-→ Perfect for swing trades
-
-Our proprietary system uses this 👇
-sterlingsignals.substack.com"
-
-"💡 Disciplined risk management
-
-The difference between pros and amateurs:
-
-✅ Predetermined exit strategy
-✅ Never move stops down
-✅ Cut losers fast, let winners run
-
-Simple rules. Saves accounts.
-
-How we manage risk 👇
-sterlingsignals.substack.com"
-
-"🎯 Theme investing = following the money
-
-Smart money rotates into hot themes
-Retail chases after the move
-
-Our system identifies theme momentum BEFORE the crowd
-
-Current hot theme analysis 👇
-sterlingsignals.substack.com"
-"""
-
-    elif category == "engagement":
-        context = f"""
-Generate {count} engagement tweets (questions, polls, discussions).
-
-Examples:
-- "What sectors are you watching this week?"
-- "How do you handle positions at all-time highs?"
-- "Biggest lesson from your last losing trade?"
-- "Do you have a systematic exit strategy?"
-- "What themes are you following right now?"
-- "Patience or FOMO - which wins more often?"
-
-CRITICAL: Do NOT mention specific percentages, indicator names, or formula details.
-Keep it generic and engaging.
-
-STILL mention Sterling Signals or link where natural.
-
-Example format:
-"🤔 Quick poll for traders:
-
-Your position is up 30%. Do you:
-
-A) Take profits
-B) Trail your stop
-C) Add to winner
-D) Let it ride
-
-Reply with your strategy 👇
-
-How we handle this at sterlingsignals.substack.com"
-
-"💭 What's your edge in this market?
-
-Theme momentum?
-Technical signals?
-Fundamental analysis?
-All of the above?
-
-Our edge: systematic multi-step screening
-
-What's yours? 👇"
-"""
-
-    elif category == "beat_spy" or category == "benchmark_alpha":
-        # Get SPY comparison data if available
-        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
-        spy_comparison = None
-        if SIGNAL_TRACKER_AVAILABLE:
-            try:
-                spy_comparison = calculate_portfolio_vs_spy(content.open_positions)
-            except:
-                pass
-
-        # Only generate if actually outperforming (safeguard enforced in schedule)
-        outperformance = spy_comparison.get('outperformance', 0) if spy_comparison else 0
-        portfolio_return = spy_comparison.get('portfolio_return', 0) if spy_comparison else 0
-        spy_return = spy_comparison.get('spy_return', 0) if spy_comparison else 0
-
-        context = f"""
-Generate {count} tweets comparing our performance to SPY/QQQ for active investors.
-
-PERFORMANCE DATA (use these real numbers):
-- Portfolio Return: {portfolio_return:.1f}%
-- SPY Return: {spy_return:.1f}%
-- Outperformance: {outperformance:.1f}%
-
-Open positions: {json.dumps(content.open_positions[:3], indent=2) if content.open_positions else "None"}
-Hot themes: {[t.get('name') for t in content.prime_themes]}
-
-CRITICAL: Only use benchmark comparison messaging when we have real outperformance data.
-If no data, focus on the methodology rather than specific numbers.
-
-TEMPLATES:
-"{teal_emoji} TEAL Signal Alpha
-
-SPY is chopping sideways.
-Meanwhile, the system found 3 sectors breaking out with institutional backing.
-Stop indexing. Start selecting.
-sterlingsignals.substack.com"
-
-"S&P 500: {'+' if spy_return >= 0 else ''}{spy_return:.1f}%
-TEAL Signals: {'+' if portfolio_return >= 0 else ''}{portfolio_return:.1f}%
-
-The difference? We follow smart money into specific themes.
-Not broad exposure — targeted alpha.
-
-sterlingsignals.substack.com"
-
-"Most portfolios mirror the S&P 500.
-Ours hunts the 3-5 stocks each week that institutions are quietly accumulating BEFORE the breakout.
-That's alpha. That's the system.
-sterlingsignals.substack.com"
-
-RULES:
-- Only post when genuinely outperforming by 5%+
-- Be factual with real numbers, not arrogant
-- Focus on stock selection vs passive indexing
-- ALWAYS link to newsletter
-- Use {teal_emoji} TEAL emoji when showing outperformance
-"""
-
-    elif category == "roth_ira":
-        # MASTER_TODO_v2: KILLED CATEGORY - Audience-neutral (avoid region-specific content)
-        print(f"  🚨 ERROR: roth_ira category is KILLED. Using theme_hot instead.")
-        return generate_tweets_for_category(client, "theme_hot", content, count)
-
-    elif category == "pdt_friendly":
-        # MASTER_TODO_v2: KILLED CATEGORY - Audience-neutral (avoid region-specific content)
-        print(f"  🚨 ERROR: pdt_friendly category is KILLED. Using educational instead.")
-        return generate_tweets_for_category(client, "educational", content, count)
-
-    elif category == "power_hour":
-        # MASTER_TODO_v2: power_hour MUST NOT show individual position P&L
-        # Only theme-level market commentary allowed
-        context = f"""
-Generate {count} Power Hour reaction tweets (15:30-16:00 ET market hours).
-
-Hot themes: {[t.get('name') for t in content.prime_themes]}
-Cold themes: {[t.get('name') for t in content.avoid_themes]}
-
-🚨 CRITICAL SAFEGUARD (MASTER_TODO_v2):
-- NO individual ticker P&L (don't say "$TICKER up/down X%")
-- NO position updates or portfolio commentary
-- ONLY theme-level market observations
-
-TEMPLATES:
-"⚡ POWER HOUR
-
-Watching {content.prime_themes[0].get('name', 'infrastructure') if content.prime_themes else 'key themes'} theme into the close.
-
-Relative strength vs broad market.
-
-Full analysis 👇
-sterlingsignals.substack.com"
-
-"⚡ POWER HOUR
-
-Market rotation visible:
-🔥 {content.prime_themes[0].get('name', 'Growth themes') if content.prime_themes else 'Growth'} showing strength
-❄️ {content.avoid_themes[0].get('name', 'Defensive sectors') if content.avoid_themes else 'Defensive'} lagging
-
-Following institutional flows into the close.
-
-sterlingsignals.substack.com"
-
-RULES:
-- Post during 15:30-16:00 ET window (Power Hour)
-- Reference theme/sector performance ONLY
-- 🚨 NEVER mention individual stocks or P&L percentages
-- Keep observational, not promotional
-- Mention "structural" or "institutional" language
-"""
-
-    elif category == "sector_rotation":
-        context = f"""
-Generate {count} tweets about sector rotation and institutional flow shifts.
-
-Hot themes: {[t.get('name') for t in content.prime_themes]}
-Cold themes: {[t.get('name') for t in content.avoid_themes]}
-
-TEMPLATES:
-"Money is rotating.
-Out of: [COLD_THEME]
-Into: [HOT_THEME]
-The system detected this shift 2 weeks ago. Our [THEME] picks are up.
-Don't fight the flow.
-sterlingsignals.substack.com"
-
-"Sector rotation in real-time:
-[THEME_1]: 🔥 Institutional accumulation surging
-[THEME_2]: 📈 Structural breakouts confirmed
-[THEME_3]: ❄️ Smart money exiting
-The system follows the flow. This week's picks:
-sterlingsignals.substack.com"
-
-RULES:
-- Reference specific theme rotation
-- Use "institutional flows" language
-- Mention Sector Flow Analysis
-"""
-
-    elif category == "funnel_graphic":
-        context = f"""
-Generate {count} tweets about our weekly filtering funnel.
-
-Scan stats (use these numbers):
-- Total scanned: 1,817
-- Passed momentum gates: ~485
-- Showed strong accumulation: ~48
-- Theme aligned: ~17
-- Cleared all 5 gates: {len(content.pass_signals) if content.pass_signals else 6}
-
-TEMPLATE:
-"This week's scan:
-📊 1,817 stocks analyzed
-📉 485 showed momentum characteristics
-🔍 48 confirmed strong accumulation
-🎯 17 aligned with hot themes
-✅ {len(content.pass_signals) if content.pass_signals else 6} cleared all 5 gates = TEAL signals
-
-{len(content.pass_signals) if content.pass_signals else 6} actionable signals. Full breakdown in the newsletter.
-sterlingsignals.substack.com"
-
-RULES:
-- Use APPROVED vocabulary (not HMA, Banker, BoS, etc.)
-- Show the funnel progression with specific numbers
-- End with newsletter CTA
-- High viral potential - show the work done
-"""
-
-    elif category == "post_mortem":
-        stopped_trades = [t for t in content.closed_trades if t.get('status') == 'STOPPED'] if content.closed_trades else []
-        context = f"""
-Generate Post-Mortem Card tweets for stopped-out positions.
-
-Stopped trades: {json.dumps(stopped_trades, indent=2) if stopped_trades else "None this week"}
-
-TEMPLATE (Post-Mortem Card format):
-"❌ $[TICKER] — Stopped Out
-
-Entry: $[ENTRY_PRICE]
-Exit: $[EXIT_PRICE]
-Loss: -[LOSS_PERCENT]%
-
-The system protects capital so we live to fight another day.
-No ego, just execution.
-
-[Optional 1-sentence lesson]
-sterlingsignals.substack.com"
-
-RULES:
-- Post IMMEDIATELY when stop hits
-- Never delete losing trade posts
-- Frame positively (Capital Preservation Protocol working)
-- Optional brief lesson learned
-- NEVER mention "20%" stop level
-- Use "Capital Preservation Protocol" not "trailing stop"
-"""
-
-    elif category == "top_performers" or category == "winner_showcase":
-        # Phase 9: Renamed from weekly_wins to avoid misleading terminology
-        # Filter to only show winning positions (safeguard already checked)
-        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
-        winners = []
-        if SIGNAL_TRACKER_AVAILABLE:
-            winners = filter_public_positions(content.open_positions)
+    context_parts = [f"Generate 1 tweet for category: {category}"]
+    
+    if category == 'buy_signal' and content.pass_signals:
+        signals = content.pass_signals[:3]
+        context_parts.append(f"\nGREEN signals this week:\n{json.dumps(signals, indent=2)}")
+        
+    elif category == 'top_performers':
+        winners = [p for p in content.open_positions if p.get('pnl_pct', 0) >= 25]
+        if winners:
+            context_parts.append(f"\nTop performers (25%+):\n{json.dumps(winners[:3], indent=2)}")
         else:
-            # Fallback: manually filter to positive P&L only
-            winners = [p for p in content.open_positions if p.get('pnl_pct', 0) >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)]
-
-        # Format positions with holding periods for honest display
-        formatted_positions = format_positions_for_display(winners, max_positions=5)
-
-        # Check if we can show entry prices (above 25% threshold)
-        can_show_entries = any(p.get('pnl_pct', 0) >= 25.0 for p in winners) if winners else False
-
-        context = f"""
-Generate {count} tweets showcasing our top-performing positions (ONLY positive positions).
-
-CRITICAL: Always show holding period with each return.
-Format: "$TICKER +XX% (X weeks held)" NOT just "$TICKER +XX%"
-
-TOP PERFORMING POSITIONS (with holding periods):
-{formatted_positions}
-
-{TIMEFRAME_DISCLAIMERS.get('medium', 'Total gain since entry, not weekly movement.')}
-
-ENTRY PRICE RULE: {"For positions above 25% gain, you MAY show entry prices (e.g., '$XX.XX → $YY.YY')" if can_show_entries else "Do NOT show entry prices (not above 25% threshold)"}
-
-CRITICAL SAFEGUARD: This tweet type ONLY shows winners. Never mention losers.
-
-TEMPLATE:
-"{teal_emoji} TEAL Signal Winners
-
-Best positions since signal entry:
-
-$TICKER1: +XX% (Xw held)
-$TICKER2: +XX% (Xw held)
-$TICKER3: +XX% (Xw held)
-
-Returns measured from entry. Targeting 50-100% over months.
-1,817 stocks scanned → {len(content.pass_signals) if content.pass_signals else 'X'} TEAL signals
-
-Full analysis 👇
-sterlingsignals.substack.com"
-
-RULES:
-- ALWAYS start with {teal_emoji} TEAL emoji
-- ALWAYS include holding period with each P&L (e.g., "4 weeks held")
-- ONLY show positions with positive P&L
-- Never mention any losers or underwater positions
-- Only show entry prices for positions above 25% gain
-- Clarify these are TOTAL returns since entry, not weekly gains
-- Focus on the system identifying these winners
-- Always link to newsletter
-- Use "TEAL signal" not "PASS signal"
-"""
-
-    elif category == "self_quote" or category == "milestone_alerts" or category == "hall_of_fame":
-        # Get uncelebrated wins from signal tracker
-        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
-        big_wins_data = []
-        if SIGNAL_TRACKER_AVAILABLE:
-            try:
-                big_wins_data = get_uncelebrated_wins()
-            except:
-                pass
-
-        context = f"""
-Generate {count} celebration tweets for big wins from past TEAL signals.
-
-CRITICAL: Always include holding period with the return (e.g., "X weeks held")
-CRITICAL: Always include entry price for milestone celebrations (positions above 25%)
-
-BIG WINS TO CELEBRATE (uncelebrated threshold crossings):
-{json.dumps([{{'ticker': w.ticker, 'entry_price': w.entry_price, 'current_price': w.current_price, 'pnl_pct': w.pnl_pct, 'signal_date': w.signal_date, 'theme': w.theme, 'threshold_crossed': w.threshold_crossed}} for w in big_wins_data[:3]], indent=2) if big_wins_data else "No new big wins to celebrate"}
-
-{TIMEFRAME_DISCLAIMERS.get('medium', 'Total gain since entry, not weekly movement.')}
-
-TEMPLATE FOR 25%+ WIN (MILESTONE):
-"{teal_emoji} TEAL Signal Update: $TICKER
-
-Entry: $ENTRY on [DATE]
-Now: $CURRENT (+XX% over X weeks)
-
-Another TEAL signal delivering.
-The 5-gate system works.
-
-More signals every week 👇
-sterlingsignals.substack.com"
-
-TEMPLATE FOR 50%+ WIN (HOME RUN):
-"🏆 HOME RUN: $TICKER
-
-{teal_emoji} TEAL Signal Entry: $ENTRY on [DATE]
-Now: $CURRENT
-Gain: +XX% (X weeks held)
-
-When all 5 gates align, this is what happens.
-Our proprietary system found this before the crowd.
-
-Want signals like this? 👇
-sterlingsignals.substack.com"
-
-TEMPLATE FOR 100%+ WIN (HALL OF FAME):
-"🚀 HALL OF FAME: $TICKER DOUBLED
-
-{teal_emoji} TEAL Signal Entry: $ENTRY on [DATE]
-Current: $CURRENT
-Return: +XXX% (X months held)
-
-This is what disciplined momentum trading delivers.
-Proprietary screening. Systematic execution.
-
-Join the journey 👇
-sterlingsignals.substack.com"
-
-RULES:
-- ALWAYS include entry price for milestone celebrations
-- Each big win gets ONE celebration post per threshold
-- Use the appropriate template based on gain level
-- Always include entry price, signal date, AND holding period
-- Focus on the system, not luck
-- Use "TEAL signal" branding with {teal_emoji} emoji
-"""
-
-    elif category == "consider_spotlight" or category == "amber_watch":
-        amber_emoji = get_signal_emoji('AMBER') if CONFIG_AVAILABLE else '🟠'
-        context = f"""
-Generate {count} tweets about stocks on our watchlist (CONSIDER classification).
-
-WATCHLIST STOCKS (passed gates 1-4, watching gate 5):
-{json.dumps(content.consider_signals[:5], indent=2) if content.consider_signals else "No watchlist stocks this week"}
-
-These are stocks that:
-- Passed technical screening (4/5 gates)
-- Show institutional accumulation
-- Align with hot themes
-- But haven't cleared our final gate yet
-
-TEMPLATE:
-"{amber_emoji} AMBER Watchlist
-
-Stocks cleared 4/5 gates - watching for TEAL:
-
-$TICKER1 at $XX.XX - Theme1
-$TICKER2 at $XX.XX - Theme2
-
-Not TEAL signals yet, but worth watching.
-Save this. We'll update when they clear all 5 gates.
-
-Full watchlist 👇
-sterlingsignals.substack.com"
-
-RULES:
-- ALWAYS start with {amber_emoji} AMBER emoji
-- DO NOT frame as buy recommendations
-- Use "AMBER Watchlist" or "On Our Radar" language
-- Explain they need all 5 gates cleared for TEAL signal
-- Create curiosity without over-promising
-- Use "TEAL signal" when referencing full signals
-- NEVER say "Forensic Audit" - use "final gate" or "full confirmation"
-- NEVER say "Gate 5" - use "final gate" or "all 5 gates"
-- NEVER say "proprietary entry" - use "TEAL signal"
-"""
-
-    elif category == "weekly_recap":
-        # High-engagement weekly summary with color signals
-        teal_emoji = get_signal_emoji('TEAL') if CONFIG_AVAILABLE else '🟢'
-        amber_emoji = get_signal_emoji('AMBER') if CONFIG_AVAILABLE else '🟠'
-
-        # Get winners for showcase
-        winners = []
-        if SIGNAL_TRACKER_AVAILABLE:
-            winners = filter_public_positions(content.open_positions)
-        else:
-            winners = [p for p in content.open_positions if p.get('pnl_pct', 0) >= 15.0]
-
-        winners = sorted(winners, key=lambda x: x.get('pnl_pct', 0), reverse=True)[:3]
-
-        # Get SPY comparison
-        spy_comparison = None
-        if SIGNAL_TRACKER_AVAILABLE:
-            try:
-                spy_comparison = calculate_portfolio_vs_spy(content.open_positions)
-            except:
-                pass
-
-        spy_return = spy_comparison.get('spy_return', 0) if spy_comparison else 0
-
-        context = f"""
-Generate {count} high-engagement weekly recap tweets summarizing the week's signals.
-
-THIS WEEK'S TEAL SIGNALS:
-{json.dumps(content.pass_signals[:5], indent=2) if content.pass_signals else "None"}
-
-TOP PERFORMING POSITIONS (show conviction language):
-{json.dumps(winners, indent=2) if winners else "None"}
-
-SPY RETURN THIS PERIOD: {spy_return:+.1f}%
-
-TEMPLATE:
-"{teal_emoji} TEAL signals this week:
-
-$TICKER1 — Extremely Bullish
-$TICKER2 — Bullish
-$TICKER3 — Bullish
-
-Meanwhile... S&P 500: {spy_return:+.1f}%
-
-Our 5-Gate System continues to find asymmetric setups.
-
-Full analysis 👇
-sterlingsignals.substack.com"
-
-CONVICTION LANGUAGE (use these EXACT terms):
-- Conviction 5 = "Extremely Bullish"
-- Conviction 4 = "Bullish"
-- Conviction 3 = "Watching"
-
-RULES:
-- ALWAYS start with {teal_emoji} TEAL emoji
-- Use conviction language (Extremely Bullish, Bullish, Watching)
-- Compare to SPY when outperforming
-- Encourage saves and engagement
-- Link to newsletter
-"""
-
-    else:
-        context = f"Generate {count} general financial content tweets. Always link to sterlingsignals.substack.com. Use APPROVED vocabulary - never mention HMA, Banker, BoS, 20% stop, Tier 1/2/3, or region-specific terms (ISA, Roth IRA, etc)."
-
-    # Call Claude
+            context_parts.append("\nNo 25%+ winners. Generate a theme_hot tweet instead.")
+            
+    elif category == 'theme_hot':
+        themes = content.prime_themes + content.investable_themes
+        if themes:
+            context_parts.append(f"\nHot themes:\n{json.dumps(themes[:2], indent=2)}")
+            
+    elif category == 'sell_signal' and content.sell_signals:
+        context_parts.append(f"\nSell signal (use neutral language, NO P&L):\n{json.dumps(content.sell_signals[0], indent=2)}")
+    
+    context_parts.append(f"\nAlways end with: sterlingsignals.substack.com")
+    context_parts.append("\nReturn ONLY the tweet text, no JSON or explanations.")
+    
+    context = "\n".join(context_parts)
+    
     try:
         response = client.messages.create(
             model=MODEL,
-            max_tokens=MAX_TOKENS,
+            max_tokens=500,
             system=TWEET_SYSTEM_PROMPT,
-            messages=[
-                {"role": "user", "content": context}
-            ]
+            messages=[{"role": "user", "content": context}]
         )
-
-        # Extract JSON from response
-        response_text = response.content[0].text
-
-        # Try to parse JSON (handle markdown code blocks)
-        json_match = re.search(r'\[[\s\S]*\]', response_text)
-        if json_match:
-            tweets = json.loads(json_match.group())
-            return tweets
+        
+        text = response.content[0].text.strip()
+        
+        # Clean up any markdown or quotes
+        text = text.strip('"\'`')
+        
+        if validate_tweet_length(text):
+            return {
+                'category': category,
+                'text': text,
+                'ticker': None,
+                'theme': None,
+                'template_id': None,
+                'generation_method': 'claude'
+            }
         else:
-            print(f"  ⚠ Could not parse JSON for {category}")
-            return []
-
+            return {
+                'category': category,
+                'text': truncate_tweet(text),
+                'ticker': None,
+                'theme': None,
+                'template_id': None,
+                'generation_method': 'claude'
+            }
+            
     except Exception as e:
-        print(f"  ✗ Error generating {category} tweets: {e}")
-        return []
+        print(f"  ✗ Claude API error for {category}: {e}")
+        return None
 
 
-def generate_all_tweets(content: WeeklyContent, mock: bool = False, cold_streak_active: bool = False) -> List[Tweet]:
-    """Generate all 21 tweets for the week.
+# ═══════════════════════════════════════════════════════════════════════════════
+# HYBRID GENERATION - Templates with Claude fallback
+# ═══════════════════════════════════════════════════════════════════════════════
 
+def generate_tweet_hybrid(client, category: str, content: WeeklyContent,
+                          account: str = 'account_1') -> dict:
+    """
+    Generate a tweet using hybrid approach:
+    1. Try template first
+    2. If no valid template, try fallback category template
+    3. If still no template, use Claude API
+    
+    Returns tweet dict with generation_method field.
+    """
+    # Step 1: Try template for original category
+    tweet = select_and_populate_template(category, content, account)
+    
+    if tweet:
+        return tweet
+    
+    # Step 2: Try fallback category template
+    fallback = get_fallback_category(category, content)
+    if fallback != category:
+        tweet = select_and_populate_template(fallback, content, account)
+        if tweet:
+            tweet['original_category'] = category
+            tweet['category'] = fallback  # Update to actual category used
+            return tweet
+    
+    # Step 3: Claude API fallback
+    if client:
+        tweet = generate_claude_tweet(client, category, content)
+        if tweet:
+            return tweet
+    
+    # Final fallback: placeholder
+    return {
+        'category': category,
+        'text': f"[Placeholder: {category} - insufficient data for template]",
+        'ticker': None,
+        'theme': None,
+        'template_id': None,
+        'generation_method': 'placeholder'
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMPARISON MODE - Generate Claude, Template, and Hybrid versions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def generate_comparison_output(content: WeeklyContent, client) -> dict:
+    """
+    Generate comparison output showing Claude vs Templates vs Hybrid.
+    
+    Returns dict with all three versions for each scheduled slot.
+    """
+    comparison = {
+        'generated_at': datetime.now().isoformat(),
+        'scan_date': content.scan_date,
+        'comparisons': []
+    }
+    
+    # Sample of key categories to compare
+    test_categories = [
+        'buy_signal',
+        'top_performers',
+        'theme_hot',
+        'sell_signal',
+        'educational',
+        'engagement',
+        'beat_spy',
+        'funnel_graphic',
+    ]
+    
+    for category in test_categories:
+        entry = {
+            'category': category,
+            'template_version': None,
+            'claude_version': None,
+            'hybrid_version': None,
+        }
+        
+        # Template version
+        template_tweet = select_and_populate_template(category, content)
+        if template_tweet:
+            entry['template_version'] = {
+                'text': template_tweet['text'],
+                'template_id': template_tweet.get('template_id'),
+                'char_count': get_tweet_char_count(template_tweet['text'])
+            }
+        
+        # Claude version
+        claude_tweet = generate_claude_tweet(client, category, content)
+        if claude_tweet:
+            entry['claude_version'] = {
+                'text': claude_tweet['text'],
+                'char_count': get_tweet_char_count(claude_tweet['text'])
+            }
+        
+        # Hybrid version (reset tracker to get fresh selection)
+        template_tracker.reset()
+        hybrid_tweet = generate_tweet_hybrid(client, category, content)
+        entry['hybrid_version'] = {
+            'text': hybrid_tweet['text'],
+            'method': hybrid_tweet.get('generation_method'),
+            'template_id': hybrid_tweet.get('template_id'),
+            'char_count': get_tweet_char_count(hybrid_tweet['text'])
+        }
+        
+        comparison['comparisons'].append(entry)
+    
+    return comparison
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MAIN GENERATION FUNCTION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def generate_all_tweets(content: WeeklyContent, mock: bool = False,
+                        cold_streak_active: bool = False) -> List:
+    """
+    Generate all tweets for the week using hybrid approach.
+    
     Args:
         content: WeeklyContent with all scanner data
-        mock: If True, generate mock tweets without API calls
-        cold_streak_active: If True, reduce position-focused content (GAP 38 fix)
+        mock: If True, generate mock tweets without API
+        cold_streak_active: If True, reduce position-focused content
     """
-
     if mock:
         return generate_mock_tweets()
-
+    
     # Initialize Claude client
     api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("ERROR: Set ANTHROPIC_API_KEY environment variable")
-        sys.exit(1)
-
-    client = anthropic.Anthropic(api_key=api_key)
-
-    all_tweets = []
-
-    # Category distribution across the week - US AUDIENCE FOCUS
-    # 35 total = 5 per day × 7 days (X API allows ~50/day)
-    # Schedule aligned to Eastern Time (ET)
-    # Slot 1 = 08:00 ET (Pre-market), Slot 4 = 15:30 ET (Power Hour) are CRITICAL
-    stopped_trades = [t for t in content.closed_trades if t.get('status') == 'STOPPED'] if content.closed_trades else []
-
-    # Check safeguards for dynamic category selection
-    # These determine whether certain content categories can be posted
+    client = None
+    if api_key:
+        client = anthropic.Anthropic(api_key=api_key)
+    else:
+        print("  ⚠️ No ANTHROPIC_API_KEY - template-only mode")
+    
+    # Reset template tracker for fresh week
+    template_tracker.reset()
+    
+    all_content = []
+    
+    # Check safeguards
     can_post_beat_spy = False
-    can_post_top_performers = False  # Phase 9: Renamed from can_post_weekly_wins
+    can_post_top_performers = False
     uncelebrated_wins = []
-
-    if SIGNAL_TRACKER_AVAILABLE:
+    
+    if SIGNAL_TRACKER_AVAILABLE and not cold_streak_active:
         try:
             can_post_beat_spy = should_post_beat_spy(content.open_positions)
             can_post_top_performers = has_enough_wins(content.open_positions)
             uncelebrated_wins = get_uncelebrated_wins()
-            print(f"  📊 Safeguard checks: beat_spy={can_post_beat_spy}, top_performers={can_post_top_performers}, uncelebrated_wins={len(uncelebrated_wins)}")
         except Exception as e:
             print(f"  ⚠️ Safeguard check failed: {e}")
-
-    # GAP 38 fix: Cold streak enforcement
-    # When in cold streak, disable position-focused categories to avoid drawing attention to losses
+    
     if cold_streak_active:
-        print(f"  🥶 COLD STREAK ACTIVE - Reducing position-focused content")
-        can_post_beat_spy = False  # Don't compare to SPY during losing streak
-        can_post_top_performers = False  # Don't highlight wins when recent losses
-        uncelebrated_wins = []  # Don't self-quote during cold streak
-    else:
-        print("  ⚠️ Signal tracker not available - using fallback categories")
-
-    # Dynamic category selection based on safeguards
-    # If safeguard fails, use fallback category
+        print("  🥶 COLD STREAK ACTIVE - Reducing position-focused content")
+        can_post_beat_spy = False
+        can_post_top_performers = False
+        uncelebrated_wins = []
+    
+    # Dynamic category selection
     beat_spy_or_fallback = "beat_spy" if can_post_beat_spy else "engagement"
-    top_performers_or_fallback = "top_performers" if can_post_top_performers else "theme_hot"  # Phase 9: Renamed
-    self_quote_or_fallback = "self_quote" if uncelebrated_wins else "consider_spotlight" if content.consider_signals else "theme_hot"
-
+    top_performers_or_fallback = "top_performers" if can_post_top_performers else "theme_hot"
+    self_quote_or_fallback = "self_quote" if uncelebrated_wins else (
+        "consider_spotlight" if content.consider_signals else "theme_hot"
+    )
+    
+    # Weekly schedule
     categories_schedule = [
-        # Saturday: Newsletter day - showcase ALL TEAL signals + performance
-        ("Saturday", 1, top_performers_or_fallback),  # 08:00 ET - Top performers (safeguarded)
-        ("Saturday", 2, "thread_buy_signal"),      # 10:00 ET - 🧵 Deep dive on top signal
-        ("Saturday", 3, "theme_hot"),              # 12:30 ET - Theme momentum
-        ("Saturday", 4, "funnel_graphic"),         # 15:30 ET - Scanner stats
-        ("Saturday", 5, "engagement"),             # 18:00 ET - Poll/discussion
+        # Saturday: Newsletter day
+        ("Saturday", 1, top_performers_or_fallback),
+        ("Saturday", 2, "buy_signal" if content.pass_signals else "funnel_graphic"),
+        ("Saturday", 3, "theme_hot"),
+        ("Saturday", 4, "funnel_graphic"),
+        ("Saturday", 5, "engagement"),
+        
+        # Sunday: All signals + watchlist
+        ("Sunday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),
+        ("Sunday", 2, "consider_spotlight" if content.consider_signals else "theme_hot"),
+        ("Sunday", 3, beat_spy_or_fallback),
+        ("Sunday", 4, "engagement"),
+        ("Sunday", 5, "educational"),
 
-        # Sunday: All TEAL signals + consider spotlight
-        ("Sunday", 1, "buy_signal" if content.pass_signals else "funnel_graphic"),  # 08:00 ET - ALL TEAL signals
-        ("Sunday", 2, "consider_spotlight" if content.consider_signals else "theme_hot"),  # 10:00 ET - Watchlist stocks
-        ("Sunday", 3, beat_spy_or_fallback),       # 12:30 ET - SPY comparison (safeguarded)
-        ("Sunday", 4, "engagement"),               # 18:00 ET - Community
+        # Monday: Week kickoff
+        ("Monday", 1, "theme_hot"),
+        ("Monday", 2, self_quote_or_fallback),
+        ("Monday", 3, "power_hour"),
+        ("Monday", 4, "engagement"),
+        ("Monday", 5, "educational"),
 
-        # Monday: Week kickoff + celebrate wins
-        ("Monday", 1, "theme_hot"),                # 08:00 ET - Hot theme
-        ("Monday", 2, self_quote_or_fallback),     # 10:00 ET - Big win celebration (if any)
-        ("Monday", 3, "power_hour"),               # 15:30 ET - Power Hour (CRITICAL)
-        ("Monday", 4, "engagement"),               # 18:00 ET - Discussion
+        # Tuesday: Education
+        ("Tuesday", 1, "early_movers" if content.open_positions else "theme_hot"),
+        ("Tuesday", 2, "theme_hot"),
+        ("Tuesday", 3, "power_hour"),
+        ("Tuesday", 4, "educational"),
+        ("Tuesday", 5, "engagement"),
 
-        # Tuesday: Early movers + education (MASTER_TODO_v2: removed roth_ira - wrong audience)
-        ("Tuesday", 1, "early_movers" if content.open_positions else "theme_hot"),  # 08:00 ET - New signals showing strength
-        ("Tuesday", 2, "theme_hot"),               # 10:00 ET - Theme momentum
-        ("Tuesday", 3, "power_hour"),              # 15:30 ET - Power Hour
-        ("Tuesday", 4, "educational"),             # 18:00 ET - Trading lesson
+        # Wednesday: Watchlist + education
+        ("Wednesday", 1, "consider_spotlight" if content.consider_signals else "theme_hot"),
+        ("Wednesday", 2, "theme_hot"),
+        ("Wednesday", 3, "power_hour"),
+        ("Wednesday", 4, "engagement"),
+        ("Wednesday", 5, "educational"),
 
-        # Wednesday: Consider spotlight + educational (MASTER_TODO_v2: removed pdt_friendly - wrong audience)
-        ("Wednesday", 1, "consider_spotlight" if content.consider_signals else "theme_hot"),  # 08:00 ET - On Our Radar stocks
-        ("Wednesday", 2, "theme_hot"),             # 10:00 ET - Theme spotlight
-        ("Wednesday", 3, "power_hour"),            # 15:30 ET - Power Hour
-        ("Wednesday", 4, "engagement"),            # 18:00 ET - Community Q&A
+        # Thursday: Alpha + wins
+        ("Thursday", 1, beat_spy_or_fallback),
+        ("Thursday", 2, self_quote_or_fallback),
+        ("Thursday", 3, "power_hour"),
+        ("Thursday", 4, "educational"),
+        ("Thursday", 5, "engagement"),
 
-        # Thursday: Alpha comparison + celebrate wins
-        ("Thursday", 1, beat_spy_or_fallback),     # 08:00 ET - SPY comparison (safeguarded)
-        ("Thursday", 2, self_quote_or_fallback),   # 10:00 ET - Big win celebration (if any)
-        ("Thursday", 3, "power_hour"),             # 15:30 ET - Power Hour
-        ("Thursday", 4, "educational"),            # 18:00 ET - Risk management
-
-        # Friday: Scanner tease + reinforce signals
-        ("Friday", 1, "buy_signal" if content.pass_signals else "theme_hot"),  # 08:00 ET - Reinforce TEAL signals
-        ("Friday", 2, "funnel_graphic"),           # 10:00 ET - Weekly funnel visual
-        ("Friday", 3, "power_hour"),               # 15:30 ET - Power Hour
-        ("Friday", 4, "theme_hot"),                # 18:00 ET - Theme for week ahead
+        # Friday: Scanner tease
+        ("Friday", 1, "buy_signal" if content.pass_signals else "theme_hot"),
+        ("Friday", 2, "funnel_graphic"),
+        ("Friday", 3, "power_hour"),
+        ("Friday", 4, "newsletter"),
+        ("Friday", 5, "engagement"),
     ]
-
-    # Group by category to batch API calls (separate threads from regular tweets)
-    categories_needed = {}
-    thread_categories = []
-    for day, slot, category in categories_schedule:
-        if category.startswith('thread_'):
-            thread_categories.append((day, slot, category))
-        else:
-            if category not in categories_needed:
-                categories_needed[category] = []
-            categories_needed[category].append((day, slot))
-
-    # Generate regular tweets by category
-    print("\n  🤖 Generating tweets via Claude API...")
-
-    generated_by_category = {}
-    for category, slots in categories_needed.items():
-        print(f"    • {category}: {len(slots)} tweets...")
-        tweets = generate_tweets_for_category(client, category, content, count=len(slots))
-        generated_by_category[category] = tweets
-
-    # Generate threads
-    if thread_categories:
-        print(f"\n  🧵 Generating {len(thread_categories)} thread(s)...")
-        for day, slot, category in thread_categories:
-            print(f"    • {category} for {day} slot {slot}...")
-            # Threads are generated individually during assignment (below)
-
-    # Assign tweets to schedule
-    category_index = {cat: 0 for cat in categories_needed}
-
-    # Calculate dates for the week
-    # When run on Friday (after scan), schedule tweets starting Saturday
-    # When run on other days, schedule starting from next Saturday
-    today = datetime.now()
-    current_weekday = today.weekday()  # 0=Monday, 4=Friday, 5=Saturday, 6=Sunday
-
-    if current_weekday == 4:  # Friday - start from tomorrow (Saturday)
-        days_until_saturday = 1
-    elif current_weekday == 5:  # Saturday - start from today
-        days_until_saturday = 0
-    elif current_weekday == 6:  # Sunday - start from yesterday (use current week)
-        days_until_saturday = -1
-    else:  # Mon-Thu - start from this coming Saturday
-        days_until_saturday = 5 - current_weekday
-
-    # start_date is Saturday - calculate offsets from Saturday
-    # Saturday=0, Sunday=1, Monday=2, Tuesday=3, Wednesday=4, Thursday=5, Friday=6
-    start_date = today + timedelta(days=days_until_saturday)
-
-    # Map day names to offsets from Saturday
-    day_offset_from_saturday = {
-        "Saturday": 0,
-        "Sunday": 1,
-        "Monday": 2,
-        "Tuesday": 3,
-        "Wednesday": 4,
-        "Thursday": 5,
-        "Friday": 6
-    }
-
-    # Track threads separately (they're dict format, not Tweet objects)
-    all_content = []  # Will contain both Tweet objects and thread dicts
-
-    for day, slot, category in categories_schedule:
-        day_offset = day_offset_from_saturday[day]
-        scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
-
-        # Handle threads separately from regular tweets
-        if category.startswith('thread_'):
-            # Generate thread for this slot
-            thread_data = generate_thread_for_schedule(client, category, content, mock=mock)
-            thread_data.update({
-                'id': f"{day.lower()}_{slot}_{category}",
-                'day': day,
-                'slot': slot,
-                'category': category,
-                'scheduled_date': scheduled_date,
-                'status': 'pending',
-                'posted_at': None,
-                'tweet_id': None,
-            })
-            all_content.append(thread_data)
-            continue
-
-        # Regular tweet handling
-        idx = category_index.get(category, 0)
-        tweets_for_cat = generated_by_category.get(category, [])
-
-        if idx < len(tweets_for_cat):
-            tweet_data = tweets_for_cat[idx]
-            category_index[category] = idx + 1
-        else:
-            # Fallback if not enough tweets generated
-            tweet_data = {
-                "category": category,
-                "text": f"[Placeholder: {category} tweet for {day} {SLOTS[slot]}]",
-                "ticker": None,
-                "theme": None
-            }
-
-        # Find chart path if ticker present
-        image_path = None
-        ticker = tweet_data.get("ticker")
-        if ticker and ticker in content.chart_manifest:
-            image_path = content.chart_manifest[ticker]
-
-        # CRITICAL FIX: Always use the SCHEDULED category, not what Claude returned
-        # Claude sometimes returns "system_promo" when we scheduled "consider_spotlight"
-        # The schedule is authoritative - it determines content categorization for analytics
-        tweet = Tweet(
-            id=f"{day.lower()}_{slot}_{category}",
-            day=day,
-            slot=slot,
-            category=category,  # USE SCHEDULED CATEGORY - not tweet_data.get("category")
-            text=tweet_data.get("text", ""),
-            ticker=ticker,
-            theme=tweet_data.get("theme"),
-            image_path=image_path,
-            scheduled_date=scheduled_date
-        )
-
-        # MASTER_TODO_v2: Validate and fix tweet before adding to queue
-        tweet_dict = tweet.to_dict() if hasattr(tweet, 'to_dict') else {
-            'id': tweet.id, 'text': tweet.text, 'category': tweet.category,
-            'day': tweet.day, 'slot': tweet.slot, 'scheduled_date': tweet.scheduled_date,
-            'ticker': tweet.ticker, 'theme': tweet.theme, 'image_path': tweet.image_path
-        }
-        fixed_tweet = validate_and_fix_tweet(tweet_dict, [t.to_dict() if hasattr(t, 'to_dict') else t for t in all_tweets])
-        # Update tweet with fixed text
-        tweet.text = fixed_tweet.get('text', tweet.text)
-
-        all_tweets.append(tweet)
-        all_content.append(tweet)
-
-    # Validate tweets for banned terms
-    if MARKETING_VOCABULARY_AVAILABLE:
-        print("\n  🔍 Validating content for banned terms...")
-        total, violations = validate_all_tweets(all_tweets)
-        if violations > 0:
-            print(f"  ⚠ {violations}/{total} tweets contain banned terms (review recommended)")
-        else:
-            print(f"  ✓ All {total} tweets passed vocabulary validation")
-
-        # Also validate thread content
-        thread_count = len([c for c in all_content if isinstance(c, dict) and c.get('is_thread')])
-        if thread_count > 0:
-            print(f"  🧵 {thread_count} thread(s) generated (validate manually if needed)")
-
-    # Return all_content which includes both Tweet objects and thread dicts
-    # The save function needs to handle both types
-    return all_content
-
-
-def generate_mock_tweets() -> List[Tweet]:
-    """Generate mock tweets for testing without API calls."""
-    tweets = []
-
-    # Same logic as generate_all_tweets - start from Saturday
+    
+    # Calculate dates
     today = datetime.now()
     current_weekday = today.weekday()
-
+    
     if current_weekday == 4:  # Friday
         days_until_saturday = 1
     elif current_weekday == 5:  # Saturday
         days_until_saturday = 0
     elif current_weekday == 6:  # Sunday
         days_until_saturday = -1
-    else:  # Mon-Thu
+    else:
         days_until_saturday = 5 - current_weekday
-
+    
     start_date = today + timedelta(days=days_until_saturday)
-
-    # Day offsets from Saturday
+    
     day_offset_from_saturday = {
         "Saturday": 0, "Sunday": 1, "Monday": 2, "Tuesday": 3,
         "Wednesday": 4, "Thursday": 5, "Friday": 6
     }
-
-    # Thread slots (matching the real schedule)
-    thread_slots = {
-        ('Saturday', 2): 'thread_buy_signal',
-        ('Wednesday', 2): 'thread_educational',
-        ('Sunday', 3): 'thread_week_ahead',
-    }
-
-    all_content = []
-
-    for day in DAYS:
+    
+    print("\n  🤖 Generating tweets (hybrid: templates + Claude fallback)...")
+    
+    for day, slot, category in categories_schedule:
         day_offset = day_offset_from_saturday[day]
         scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
-        for slot in [1, 2, 3]:
-            # Check if this slot should be a thread
-            if (day, slot) in thread_slots:
-                category = thread_slots[(day, slot)]
-                thread_data = {
-                    'id': f"{day.lower()}_{slot}_{category}",
-                    'day': day,
-                    'slot': slot,
-                    'category': category,
-                    'is_thread': True,
-                    'thread_topic': f"Mock {category.replace('thread_', '').replace('_', ' ').title()}",
-                    'thread_tweets': [
-                        {'number': 1, 'text': f"🧵 1/5: [MOCK] {category} hook tweet", 'tweet_id': None},
-                        {'number': 2, 'text': f"2/5: [MOCK] Problem statement", 'tweet_id': None},
-                        {'number': 3, 'text': f"3/5: [MOCK] Our solution", 'tweet_id': None},
-                        {'number': 4, 'text': f"4/5: [MOCK] Proof/example", 'tweet_id': None},
-                        {'number': 5, 'text': f"5/5: [MOCK] CTA to sterlingsignals.substack.com", 'tweet_id': None},
-                    ],
-                    'thread_status': 'pending',
-                    'scheduled_date': scheduled_date,
-                    'status': 'pending',
-                    'posted_at': None,
-                    'tweet_id': None,
-                    'ticker': None,
-                    'theme': None,
-                }
-                all_content.append(thread_data)
-            else:
-                # Regular mock tweet
-                tweet = Tweet(
-                    id=f"{day.lower()}_{slot}_mock",
-                    day=day,
-                    slot=slot,
-                    category="mock",
-                    text=f"[MOCK] {day} {SLOTS[slot]} tweet placeholder",
-                    scheduled_date=scheduled_date
-                )
-                tweets.append(tweet)
-                all_content.append(tweet)
-
+        
+        # Generate tweet using hybrid approach
+        tweet_data = generate_tweet_hybrid(client, category, content)
+        
+        # Find chart if ticker present
+        image_path = None
+        ticker = tweet_data.get('ticker')
+        if ticker and ticker in content.chart_manifest:
+            image_path = content.chart_manifest[ticker]
+        
+        tweet = Tweet(
+            id=f"{day.lower()}_{slot}_{category}",
+            day=day,
+            slot=slot,
+            category=tweet_data.get('category', category),
+            text=tweet_data.get('text', ''),
+            ticker=ticker,
+            theme=tweet_data.get('theme'),
+            image_path=image_path,
+            scheduled_date=scheduled_date,
+            template_id=tweet_data.get('template_id'),
+            generation_method=tweet_data.get('generation_method', 'unknown')
+        )
+        
+        all_content.append(tweet)
+        
+        method_emoji = {
+            'template': '📝',
+            'claude': '🤖',
+            'hybrid': '🔄',
+            'placeholder': '⚠️'
+        }.get(tweet.generation_method, '❓')
+        
+        print(f"    {method_emoji} {day} slot {slot}: {category}")
+    
+    # Validation
+    if MARKETING_VOCABULARY_AVAILABLE:
+        print("\n  🔍 Validating content...")
+        total, violations = validate_all_tweets(all_content)
+        if violations > 0:
+            print(f"  ⚠️ {violations}/{total} tweets have violations")
+        else:
+            print(f"  ✅ All {total} tweets passed validation")
+    
     return all_content
+
+
+def generate_mock_tweets() -> List:
+    """Generate mock tweets for testing."""
+    tweets = []
+    today = datetime.now()
+    
+    for day in DAYS:
+        for slot in [1, 2, 3, 4]:
+            tweet = Tweet(
+                id=f"{day.lower()}_{slot}_mock",
+                day=day,
+                slot=slot,
+                category="mock",
+                text=f"[MOCK] {day} slot {slot} placeholder tweet",
+                scheduled_date=today.strftime("%Y-%m-%d"),
+                generation_method="mock"
+            )
+            tweets.append(tweet)
+    
+    return tweets
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2025,21 +1607,17 @@ def generate_mock_tweets() -> List[Tweet]:
 def load_briefing_data(briefing_path: Path) -> WeeklyContent:
     """Load data from newsletter briefing markdown."""
     content = WeeklyContent()
-
+    
     if not briefing_path.exists():
-        print(f"  ⚠ Briefing not found: {briefing_path}")
+        print(f"  ⚠️ Briefing not found: {briefing_path}")
         return content
-
-    # Import the parsing function from grok_prompts_generator if available
+    
     try:
         from grok_prompts_generator import parse_briefing_markdown
         data = parse_briefing_markdown(briefing_path)
-
+        
         content.pass_signals = data.pass_signals
-        # CRIT-2: Use consider_signals for bullish watchlist (passed gates 1-4)
-        # data.caution_signals contains bullish watchlist items (misleading legacy name)
-        content.consider_signals = data.caution_signals  # Bullish watchlist
-        content.caution_signals = []  # Reserved for open position warnings (populated below)
+        content.consider_signals = data.caution_signals  # Legacy naming
         content.sell_signals = data.sell_signals
         content.open_positions = data.open_positions
         content.prime_themes = data.prime_themes
@@ -2047,50 +1625,30 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
         content.selective_themes = data.selective_themes
         content.avoid_themes = data.avoid_themes
         content.scan_date = data.scan_date
-
-        # Filter expired CONSIDER signals (default 21 days)
-        # Add scan_date to each signal so expiry can be checked
-        if SIGNAL_TRACKER_AVAILABLE and content.consider_signals:
-            for sig in content.consider_signals:
-                if 'signal_date' not in sig and content.scan_date:
-                    sig['signal_date'] = content.scan_date
-            content.consider_signals = filter_expired_consider_signals(
-                content.consider_signals, max_age_days=21
-            )
-
+        
     except ImportError:
-        print("  ⚠ Could not import grok_prompts_generator, using basic parsing")
-        # Basic fallback parsing could go here
-
-    # Load positions with LIVE P&L from PortfolioManager (authoritative source)
+        print("  ⚠️ Could not import grok_prompts_generator")
+    
+    # Load live portfolio data
     portfolio_file = TRADES_DIR / "portfolio.csv"
     if portfolio_file.exists():
-        import csv
-        open_positions_from_csv = []
-
-        # Try to use PortfolioManager for live prices
         try:
             from portfolio_manager import PortfolioManager
             pm = PortfolioManager()
-            pm.update_prices()  # Fetch live prices via yfinance
-
+            pm.update_prices()
+            
+            content.open_positions = []
             for trade in pm.get_open_positions():
-                open_positions_from_csv.append({
+                content.open_positions.append({
                     'ticker': trade.ticker,
                     'entry_date': trade.entry_date,
                     'entry_price': trade.entry_price,
                     'current_price': trade.current_price,
                     'pnl_pct': trade.pnl_pct,
-                    'highest_close': trade.highest_close,
-                    'stop_level': trade.stop_level,
-                    'distance_to_stop': trade.distance_to_stop_pct,
-                    'days_held': trade.days_held,
                     'theme': trade.theme,
-                    'tier': trade.tier,
                     'conviction': trade.conviction,
-                    'stop_alert': trade.stop_alert,
                 })
-
+            
             for trade in pm.get_closed_trades():
                 content.closed_trades.append({
                     'ticker': trade.ticker,
@@ -2098,767 +1656,305 @@ def load_briefing_data(briefing_path: Path) -> WeeklyContent:
                     'exit_price': trade.exit_price,
                     'exit_date': trade.exit_date,
                     'status': trade.status,
-                    'pnl_pct': trade.pnl_pct,
-                    'theme': trade.theme
                 })
-
-            print(f"  📊 Loaded {len(open_positions_from_csv)} positions with LIVE prices")
-
-        except (ImportError, Exception) as e:
-            print(f"  ⚠ PortfolioManager unavailable ({e}), using basic CSV loading")
-            # Fallback to basic CSV loading without live prices
-            with open(portfolio_file, 'r') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    status = row.get('status', 'OPEN').upper()
-                    if status == 'OPEN':
-                        try:
-                            entry_price = float(row.get('entry_price', 0) or 0)
-                        except (ValueError, TypeError):
-                            entry_price = 0
-                        open_positions_from_csv.append({
-                            'ticker': row.get('ticker', ''),
-                            'entry_date': row.get('entry_date', ''),
-                            'entry_price': entry_price,
-                            'theme': row.get('theme', ''),
-                            'tier': row.get('tier', ''),
-                            'conviction': row.get('conviction', ''),
-                            'highest_close': row.get('highest_close', ''),
-                        })
-                    elif status in ['CLOSED', 'STOPPED']:
-                        try:
-                            entry = float(row.get('entry_price', 0))
-                            exit_price = float(row.get('exit_price', 0))
-                            pnl = ((exit_price / entry) - 1) * 100 if entry > 0 else 0
-                        except (ValueError, ZeroDivisionError):
-                            pnl = 0
-
-                        content.closed_trades.append({
-                            'ticker': row['ticker'],
-                            'entry_price': row.get('entry_price'),
-                            'exit_price': row.get('exit_price'),
-                            'exit_date': row.get('exit_date'),
-                            'status': status,
-                            'pnl_pct': pnl,
-                            'theme': row.get('theme')
-                        })
-
-        # Use CSV positions if markdown parsing found none (more reliable)
-        if not content.open_positions and open_positions_from_csv:
-            print(f"  📊 Loaded {len(open_positions_from_csv)} open positions from portfolio.csv")
-            content.open_positions = open_positions_from_csv
-
-        # CRITICAL: Filter out PASS signals that were in portfolio BEFORE this scan
-        # Signals added on the same day as the scan are NEW and should be tweeted
-        # Only filter signals where entry_date < scan_date (previous weeks' positions)
-        scan_date = content.scan_date or datetime.now().strftime("%Y-%m-%d")
-
-        # Build set of tickers that were in portfolio BEFORE this scan
-        pre_existing_tickers = set()
-        for pos in open_positions_from_csv:
-            ticker = pos.get('ticker', '').upper()
-            entry_date = pos.get('entry_date', '')
-
-            # Normalize entry_date and compare using datetime objects (not strings)
-            if entry_date:
-                entry_dt = None
-                # Handle various date formats
-                for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%m/%d/%Y']:
-                    try:
-                        entry_dt = datetime.strptime(entry_date, fmt)
-                        break
-                    except ValueError:
-                        continue
-
-                if entry_dt is None:
-                    # Could not parse entry_date - skip this position to be safe
-                    print(f"  ⚠ Could not parse entry_date for {ticker}: {entry_date}")
-                    continue
-
-                # Parse scan_date for proper datetime comparison
-                try:
-                    scan_dt = datetime.strptime(scan_date, '%Y-%m-%d')
-                except ValueError:
-                    scan_dt = datetime.now()
-
-                # If entry_date is BEFORE scan_date, it's a pre-existing position
-                if entry_dt < scan_dt:
-                    pre_existing_tickers.add(ticker)
-                else:
-                    # This is a NEW signal from this week's scan - don't filter it
-                    entry_str = entry_dt.strftime('%Y-%m-%d')
-                    print(f"  ✨ {ticker} is a NEW signal (entry: {entry_str}, scan: {scan_date})")
-
-        original_pass_count = len(content.pass_signals)
-        content.pass_signals = [
-            sig for sig in content.pass_signals
-            if sig.get('ticker', '').upper() not in pre_existing_tickers
-        ]
-        if original_pass_count != len(content.pass_signals):
-            removed = original_pass_count - len(content.pass_signals)
-            filtered_tickers = [sig.get('ticker') for sig in content.pass_signals if sig.get('ticker', '').upper() in pre_existing_tickers]
-            print(f"  🔄 Filtered {removed} PASS signal(s) already in portfolio from previous weeks")
-
-        # Show all PASS signals (no limit - removed per marketing overhaul)
-        if len(content.pass_signals) > 0:
-            # Sort by conviction (descending), then by theme score for display order
-            content.pass_signals.sort(
-                key=lambda x: (
-                    int(x.get('conviction', 0)) if isinstance(x.get('conviction'), (int, str)) and str(x.get('conviction', '')).isdigit() else 0,
-                    float(x.get('theme_score', 0)) if x.get('theme_score') else 0
-                ),
-                reverse=True
-            )
-            print(f"  🎯 ALL {len(content.pass_signals)} TEAL signal(s) will be shown: {', '.join(s.get('ticker', '?') for s in content.pass_signals)}")
-
-    # Load chart manifest
-    manifest_path = CHARTS_DIR / "chart_manifest.json"
-    if manifest_path.exists():
-        with open(manifest_path, 'r') as f:
-            manifest = json.load(f)
-            raw_charts = manifest.get("charts", {})
-            # Normalize paths to relative (for CI compatibility)
-            normalized = {}
-            for key, value in raw_charts.items():
-                if isinstance(value, str):
-                    # Convert absolute paths to relative
-                    if '/bos_momentum_scanner/' in value:
-                        value = value.split('/bos_momentum_scanner/')[-1]
-                    normalized[key] = value
-                elif isinstance(value, dict) and value.get("path"):
-                    path = value["path"]
-                    if '/bos_momentum_scanner/' in path:
-                        value["path"] = path.split('/bos_momentum_scanner/')[-1]
-                    normalized[key] = value.get("path", value)
-            content.chart_manifest = normalized
-
+                
+        except ImportError:
+            pass
+    
     return content
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# OUTPUT
+# OUTPUT FUNCTIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-TWITTER_MAX_LENGTH = 280
-
-
-def count_ticker_mentions(tweets: List) -> Dict[str, int]:
-    """Count mentions of each ticker across all tweets.
-
-    Args:
-        tweets: List of Tweet objects or dicts
-
-    Returns:
-        Dict mapping ticker -> mention count
-    """
-    counts = {}
-    for tweet in tweets:
-        # Handle both Tweet objects and dicts
-        if isinstance(tweet, Tweet):
-            text = tweet.text
-            ticker = tweet.ticker
-        elif isinstance(tweet, dict):
-            text = tweet.get('text', '')
-            ticker = tweet.get('ticker', '')
-        else:
-            continue
-
-        # Count $TICKER patterns in text
-        ticker_matches = re.findall(r'\$([A-Z]{1,5})', text)
-        for t in ticker_matches:
-            counts[t] = counts.get(t, 0) + 1
-
-        # Also count explicit ticker field
-        if ticker and ticker not in [t for t in ticker_matches]:
-            counts[ticker] = counts.get(ticker, 0) + 1
-
-    return counts
-
-
-def validate_ticker_frequency(tweets: List, max_mentions: int = None) -> tuple[List[str], Dict[str, int]]:
-    """Check for tickers that appear too many times.
-
-    Args:
-        tweets: List of Tweet objects or dicts
-        max_mentions: Maximum allowed mentions (default from config)
-
-    Returns:
-        tuple: (list of over-mentioned tickers, full counts dict)
-    """
-    # Get threshold from config
-    if max_mentions is None:
-        try:
-            from config import MARKETING_THRESHOLDS
-            max_mentions = MARKETING_THRESHOLDS.get('max_ticker_mentions_per_week', 4)
-        except ImportError:
-            max_mentions = 4
-
-    counts = count_ticker_mentions(tweets)
-    over_mentioned = [t for t, c in counts.items() if c > max_mentions]
-
-    return over_mentioned, counts
-
-
-def validate_tweet_lengths(tweets: List, auto_truncate: bool = True) -> List:
-    """Validate tweet lengths and auto-truncate any over 280 chars.
-
-    Args:
-        tweets: List of Tweet objects or dicts
-        auto_truncate: If True, automatically truncate overlong tweets (default: True)
-
-    Returns:
-        List with overlong tweets truncated (if auto_truncate=True)
-    """
-    warnings = []
-    truncated_count = 0
-
-    for i, tweet in enumerate(tweets):
-        # Handle both Tweet objects and dicts
-        if isinstance(tweet, Tweet):
-            text = tweet.text
-            tweet_id = tweet.id
-        elif isinstance(tweet, dict):
-            text = tweet.get('text', '')
-            tweet_id = tweet.get('id', f'tweet_{i}')
-        else:
-            continue
-
-        length = len(text)
-        if length > TWITTER_MAX_LENGTH:
-            over_by = length - TWITTER_MAX_LENGTH
-
-            if auto_truncate and isinstance(tweet, dict):
-                # Truncate at word boundary with ellipsis
-                truncate_at = TWITTER_MAX_LENGTH - 3  # Room for "..."
-                truncated = text[:truncate_at].rsplit(' ', 1)[0] + '...'
-
-                # Ensure we actually shortened it (in case of very long word)
-                if len(truncated) > TWITTER_MAX_LENGTH:
-                    truncated = text[:truncate_at] + '...'
-
-                tweet['text'] = truncated
-                tweet['_was_truncated'] = True
-                tweet['_original_length'] = length
-                truncated_count += 1
-                warnings.append(f"    🔧 Tweet {tweet_id}: truncated from {length} to {len(truncated)} chars")
-            else:
-                warnings.append(f"    ⚠️ Tweet {tweet_id}: {length} chars (over by {over_by})")
-                if isinstance(tweet, dict):
-                    tweet['_length_warning'] = f"Over {TWITTER_MAX_LENGTH} by {over_by} chars - needs editing"
-
-    if warnings:
-        print("\n  📏 TWEET LENGTH VALIDATION:")
-        for warning in warnings:
-            print(warning)
-        if truncated_count > 0:
-            print(f"\n  🔧 Auto-truncated {truncated_count} tweet(s) to fit {TWITTER_MAX_LENGTH} character limit.\n")
-    else:
-        print(f"  ✅ All tweets under {TWITTER_MAX_LENGTH} characters")
-
-    return tweets
-
-
-def save_tweets(content: List, output_dir: Path) -> Path:
-    """Save tweets and threads to JSON files.
-
-    Args:
-        content: List of Tweet objects and/or thread dicts
-        output_dir: Directory to save files
-    """
+def save_tweets(tweets: List, output_dir: Path) -> Path:
+    """Save tweets to JSON files."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    date_str = datetime.now().strftime("%Y%m%d")
-
-    # Convert to JSON-serializable format
-    # Handle both Tweet objects (need .to_dict()) and thread dicts (already dict)
-    serialized = []
-    for item in content:
-        if isinstance(item, Tweet):
-            serialized.append(item.to_dict())
-        elif isinstance(item, dict):
-            # Thread dict - already serializable
-            serialized.append(item)
+    
+    # Convert to dicts
+    queue = []
+    for item in tweets:
+        if hasattr(item, 'to_dict'):
+            queue.append(item.to_dict())
         else:
-            # Fallback
-            serialized.append(item)
-
-    # Sort by scheduled_date and slot to ensure proper posting order
-    def sort_key(item):
-        date = item.get('scheduled_date', '9999-99-99')
-        slot = item.get('slot', 99)
-        return (date, slot)
-
-    serialized = sorted(serialized, key=sort_key)
-
-    # VALIDATION: Check ticker frequency
-    over_mentioned, ticker_counts = validate_ticker_frequency(serialized)
-    if over_mentioned:
-        print(f"\n  ⚠️  TICKER FREQUENCY WARNING:")
-        for ticker in over_mentioned:
-            print(f"     ${ticker} mentioned {ticker_counts[ticker]} times (max recommended: 4)")
-        print(f"     Consider diversifying content to avoid engagement fatigue.\n")
-
-    # VALIDATION: Check tweet lengths before saving
-    serialized = validate_tweet_lengths(serialized)
-
-    tweets_json = json.dumps(serialized, indent=2)
-
-    # Save to current/ and weekly archive if available
-    if OUTPUT_PATHS_AVAILABLE:
-        current_dir, week_dir = ensure_output_structure()
-
-        # Save to current/tweets/
-        current_tweets = current_dir / "tweets"
-        current_tweets.mkdir(exist_ok=True)
-        with open(current_tweets / "content_queue.json", 'w') as f:
-            f.write(tweets_json)
-        with open(current_tweets / f"tweets_{date_str}.json", 'w') as f:
-            f.write(tweets_json)
-
-        # Save to weekly archive
-        archive_tweets = week_dir / "tweets"
-        archive_tweets.mkdir(exist_ok=True)
-        with open(archive_tweets / "content_queue.json", 'w') as f:
-            f.write(tweets_json)
-        with open(archive_tweets / f"tweets_{date_str}.json", 'w') as f:
-            f.write(tweets_json)
-
-    # Full tweets file (legacy location)
-    tweets_file = output_dir / f"tweets_{date_str}.json"
-    with open(tweets_file, 'w') as f:
-        f.write(tweets_json)
-
-    # Content queue for twitter_poster.py (legacy location)
+            queue.append(item)
+    
+    # Save main queue
     queue_file = output_dir / "content_queue.json"
     with open(queue_file, 'w') as f:
-        f.write(tweets_json)
-
-    # Also save to trades root for easy access
-    root_queue = TRADES_DIR / "content_queue.json"
-    with open(root_queue, 'w') as f:
-        f.write(tweets_json)
-
+        json.dump(queue, f, indent=2)
+    
+    # Save dated backup
+    date_str = datetime.now().strftime("%Y%m%d")
+    backup_file = output_dir / f"tweets_{date_str}.json"
+    with open(backup_file, 'w') as f:
+        json.dump(queue, f, indent=2)
+    
     return queue_file
 
 
-def print_summary(content: List):
-    """Print summary of generated content (tweets and threads)."""
-    print("\n  📊 Content Summary:")
+def print_summary(tweets: List):
+    """Print generation summary."""
+    print("\n  📊 Generation Summary:")
     print("  " + "─" * 50)
-
-    # Count threads and tweets
-    threads = [c for c in content if isinstance(c, dict) and c.get('is_thread')]
-    tweets = [c for c in content if isinstance(c, Tweet)]
-
-    print(f"\n  📝 Single tweets: {len(tweets)}")
-    print(f"  🧵 Threads: {len(threads)} ({len(threads) * 5} thread tweets)")
-    print(f"  📊 Total content pieces: {len(tweets) + len(threads)}")
-
-    for day in DAYS:
-        # Get items for this day (handle both Tweet objects and thread dicts)
-        day_items = []
-        for c in content:
-            if isinstance(c, Tweet) and c.day == day:
-                day_items.append(('tweet', c))
-            elif isinstance(c, dict) and c.get('day') == day:
-                day_items.append(('thread', c))
-
-        if day_items:
-            print(f"\n  📅 {day}:")
-            for item_type, item in sorted(day_items, key=lambda x: x[1].slot if isinstance(x[1], Tweet) else x[1].get('slot', 0)):
-                if item_type == 'tweet':
-                    t = item
-                    slot_name = SLOTS[t.slot]
-                    ticker_str = f" ${t.ticker}" if t.ticker else ""
-                    chart_str = " 📸" if t.image_path else ""
-                    text_preview = t.text[:50] + "..." if len(t.text) > 50 else t.text
-                    print(f"     {slot_name:8} [{t.category:15}]{ticker_str}{chart_str}")
-                    print(f"              {text_preview}")
-                else:
-                    # Thread
-                    t = item
-                    slot_name = SLOTS[t.get('slot', 1)]
-                    ticker_str = f" ${t.get('ticker')}" if t.get('ticker') else ""
-                    topic = t.get('thread_topic', 'Thread')
-                    print(f"     {slot_name:8} 🧵 [{t.get('category', 'thread'):15}]{ticker_str}")
-                    print(f"              {topic} (5 tweets)")
+    
+    # Count by method
+    methods = {}
+    for t in tweets:
+        method = t.generation_method if hasattr(t, 'generation_method') else t.get('generation_method', 'unknown')
+        methods[method] = methods.get(method, 0) + 1
+    
+    for method, count in sorted(methods.items()):
+        emoji = {'template': '📝', 'claude': '🤖', 'placeholder': '⚠️'}.get(method, '❓')
+        print(f"    {emoji} {method}: {count}")
+    
+    # Count by category
+    print("\n  By category:")
+    categories = {}
+    for t in tweets:
+        cat = t.category if hasattr(t, 'category') else t.get('category', 'unknown')
+        categories[cat] = categories.get(cat, 0) + 1
+    
+    for cat, count in sorted(categories.items(), key=lambda x: -x[1]):
+        print(f"    • {cat}: {count}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# THREAD GENERATION
+# MULTI-ACCOUNT VARIATION GENERATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-THREAD_SYSTEM = """You are writing an educational X/Twitter thread for @SterlingSignals.
+# Style-specific phrase replacements — applied to every tweet for each account
+# These make tweets sound like different people discussing the same system
 
-Your threads are:
-- 5 tweets long (numbered 1/5, 2/5, etc.)
-- Educational and value-driven
-- Each tweet stands alone but builds a narrative
-- Under 280 characters per tweet
-- Uses line breaks for readability
-- Ends with CTA to Substack
-
-CRITICAL BRANDING REQUIREMENT:
-- ALWAYS use "TEAL signal" when referring to our buy signals
-- NEVER use "buy signal", "proprietary entry", "PASS signal", or "proprietary signal"
-- Our 5-gate system produces "TEAL signals" - this is our brand identity
-- Tweet 5 (CTA) MUST mention "TEAL signals" at least once
-
-Topics you cover:
-- Bottleneck investing (infrastructure, supply chain)
-- Systematic stock selection methodology
-- Theme momentum analysis
-- Risk management principles
-- Market psychology and discipline
-
-BANNED TERMS (never use):
-- "Forensic Audit", "Gate 5", "5th Gate"
-- "Volatility Expansion Criteria"
-- "Institutional Accumulation Divergence"
-- "Structural Pivot Confirmation"
-- "Capital Preservation Protocol"
-- "HMA", "Banker indicator", "BoS"
-- "Roth IRA", "401k", "PDT rule"
-
-STYLE:
-- Confident but not arrogant
-- Data-driven with specific examples
-- Accessible to regular investors
-- No jargon, no banned technical terms
-- When showing historical gains, ALWAYS include holding period (e.g., "+90% in 6 months")
-"""
-
-THREAD_PROMPT = """Generate a 5-tweet educational thread on this topic:
-
-TOPIC: {topic}
-
-CONTEXT:
-{context}
-
-REQUIREMENTS:
-1. Each tweet numbered (1/5, 2/5, etc.)
-2. Under 280 characters each
-3. Tweet 1: Hook - provocative question or bold claim
-4. Tweet 2: Problem - why most investors fail at this
-5. Tweet 3: Insight - your systematic solution (mention "5-gate system")
-6. Tweet 4: Proof - specific example WITH HOLDING PERIOD (e.g., "$NVDA +90% in 6 months", never show gain without timeframe)
-7. Tweet 5: CTA - MUST mention "TEAL signals" and link to https://sterlingsignals.substack.com
-
-CRITICAL RULES:
-- Tweet 5 MUST contain the phrase "TEAL signal" or "TEAL signals"
-- Any percentage gains MUST include holding period (e.g., "+50% in 3 months")
-- NEVER use: "buy signal", "Forensic Audit", "proprietary entry", hashtags
-- DO NOT end with hashtags like #SystematicInvesting - just end with the Substack link
-
-Output as JSON array:
-[
-  {{"number": 1, "text": "..."}},
-  {{"number": 2, "text": "..."}},
-  ...
+_CONVERSATIONAL_SWAPS = [
+    # Openers — make it casual
+    ("Scanner finished after Friday's close.", "Ran the numbers over the weekend."),
+    ("Ran the scanner after Friday's close.", "Just finished crunching the data."),
+    ("The scanner doesn't lie.", "Numbers don't lie."),
+    ("Not everything works forever.", "Nothing works forever — and that's fine."),
+    ("Most traders overcomplicate entries.", "Honestly, most people overcomplicate this."),
+    # Tone shifts
+    ("Full breakdown in the newsletter", "Wrote it all up in this week's newsletter"),
+    ("Full analysis + entry levels", "I broke it all down with entry levels"),
+    ("Full breakdown:", "Here's the breakdown:"),
+    ("Full methodology:", "How it all works:"),
+    ("Full recap:", "Here's the recap:"),
+    ("Full writeup:", "Wrote it up here:"),
+    ("Full watchlist:", "Watchlist here:"),
+    ("Full portfolio breakdown:", "Portfolio breakdown:"),
+    ("Detailed breakdown:", "Full details:"),
+    ("More setups like this weekly:", "I find setups like this every week:"),
+    ("More setups like this:", "More where that came from:"),
+    ("This week's survivors:", "This week's picks:"),
+    ("Entry prices + full thesis in the newsletter:", "Entry prices and my full take in this week's issue:"),
+    ("How I find them:", "Here's how I find them:"),
+    ("Quality > quantity. Always.", "Less is more. That's the whole strategy."),
+    ("Alpha exists if you know where to look.", "Alpha is out there if you dig for it."),
+    ("That's why.", "Case closed."),
+    ("Simplicity scales.", "Keep it simple. It works."),
+    # CTAs
+    ("Read it here 👇", "Give it a read 👇"),
+    ("Helps me know what to post.", "Would love to know."),
+    ("let's compare notes after Friday's scan.", "I'll share what the scanner found."),
+    # Structural
+    ("Onto the next setup.", "On to the next one."),
+    ("This is what the system is built for.", "This is exactly why I built this system."),
+    ("Still holding. Trailing stop in place.", "Still in. Stops set."),
+    ("The close matters. Eyes on the scanner.", "Close matters. Watching."),
+    ("Are you positioned?", "Positioned yet?"),
+    ("The system says rotate.", "Time to rotate."),
+    ("Patience.", "No rush."),
+    ("Capital freed up for new setups.", "Cash ready for the next play."),
+    ("That's the 5-Gate filter doing its job.", "The filter is doing exactly what it's supposed to."),
+    ("These are the setups the 5-Gate System is built to find.", "This is what the system was designed for."),
+    ("The 5-Gate edge in action.", "The system keeps delivering."),
+    ("The 5-Gate System continues to find asymmetric setups.", "System keeps finding winners."),
+    # Emoji swaps
+    ("⚡ Power Hour:", "⚡ Power Hour check-in:"),
+    ("📊", "📈"),
+    ("👇", "↓"),
+    ("🟡 On my radar:", "🟡 Watching closely:"),
 ]
-"""
 
-
-@dataclass
-class Thread:
-    """Represents a multi-tweet thread."""
-    id: str
-    topic: str
-    tweets: List[Dict]  # [{number: 1, text: "..."}, ...]
-    generated_at: str = ""
-    scheduled_date: str = ""
-
-
-def generate_thread(
-    topic: str,
-    context: str = "",
-    client: Optional[anthropic.Anthropic] = None
-) -> Thread:
-    """
-    Generate a 5-tweet educational thread.
-
-    Args:
-        topic: Thread topic (e.g., "bottleneck investing", "systematic selection")
-        context: Additional context for personalization
-        client: Anthropic client (creates one if not provided)
-
-    Returns:
-        Thread object with 5 tweets
-    """
-    if client is None:
-        api_key = os.environ.get("ANTHROPIC_API_KEY")
-        if not api_key:
-            print("  ⚠️ ANTHROPIC_API_KEY not set")
-            return Thread(
-                id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
-                topic=topic,
-                tweets=[{"number": i, "text": f"[Thread {i}/5 placeholder]"} for i in range(1, 6)],
-                generated_at=datetime.now().isoformat()
-            )
-        client = anthropic.Anthropic(api_key=api_key)
-
-    prompt = THREAD_PROMPT.format(
-        topic=topic,
-        context=context or "General educational content for momentum investors."
-    )
-
-    try:
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=2000,
-            system=THREAD_SYSTEM,
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        response_text = response.content[0].text
-
-        # Parse JSON response
-        json_match = re.search(r'\[[\s\S]*\]', response_text)
-        if json_match:
-            tweets = json.loads(json_match.group())
-        else:
-            tweets = [{"number": i, "text": f"[Parse error - tweet {i}]"} for i in range(1, 6)]
-
-        # MASTER_TODO_v2: Comprehensive thread validation and auto-fix
-        tweets = validate_and_fix_thread_tweets(tweets)
-
-        # Validate each tweet for banned terms
-        if MARKETING_VOCABULARY_AVAILABLE:
-            for tweet in tweets:
-                is_valid, violations = validate_content(tweet.get('text', ''))
-                if not is_valid:
-                    print(f"  ⚠️ Thread tweet {tweet.get('number')} contains banned terms: {violations}")
-
-        return Thread(
-            id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
-            topic=topic,
-            tweets=tweets,
-            generated_at=datetime.now().isoformat()
-        )
-
-    except Exception as e:
-        print(f"  ⚠️ Thread generation error: {e}")
-        return Thread(
-            id=f"thread_{datetime.now():%Y%m%d_%H%M%S}",
-            topic=topic,
-            tweets=[{"number": i, "text": f"[Error: {e}]"} for i in range(1, 6)],
-            generated_at=datetime.now().isoformat()
-        )
-
-
-def save_thread(thread: Thread, output_dir: Path = None) -> Path:
-    """Save thread to JSON file."""
-    if output_dir is None:
-        output_dir = TWEETS_DIR
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    filename = f"thread_{datetime.now():%Y%m%d_%H%M%S}.json"
-    output_path = output_dir / filename
-
-    with open(output_path, 'w') as f:
-        json.dump({
-            'id': thread.id,
-            'topic': thread.topic,
-            'tweets': thread.tweets,
-            'generated_at': thread.generated_at,
-            'scheduled_date': thread.scheduled_date
-        }, f, indent=2)
-
-    print(f"  Thread saved: {output_path}")
-    return output_path
-
-
-THREAD_TOPICS = [
-    {
-        'topic': 'Bottleneck Investing',
-        'context': 'Explain the concept of second-order investing: instead of buying the obvious trend (AI), buy what the trend NEEDS that is in shortage (power, cooling). Use current examples like data centers, grid infrastructure. Mention that our 5-gate system generates TEAL signals for these bottleneck plays.'
-    },
-    {
-        'topic': 'The 5-Gate System',
-        'context': 'Explain systematic stock selection process that produces TEAL signals. Focus on: starting with 1,800 stocks, filtering through momentum criteria, institutional accumulation signals, sector alignment, and final review. Emphasize how filtering down to 3-5 TEAL signals weekly reduces noise. DO NOT mention: Forensic Audit, HMA, Banker indicator, BoS, or any specific thresholds.'
-    },
-    {
-        'topic': 'Systematic Risk Management',
-        'context': 'Explain systematic stop discipline: predetermined exits, position sizing, never fighting the system. "No ego, just execution." When a stop is hit, the system worked as designed. DO NOT say "Capital Preservation Protocol" - use "systematic stop" or "trailing stop".'
-    },
-    {
-        'topic': 'Following Smart Money',
-        'context': 'Explain how tracking institutional capital flows helps identify winning themes. Focus on sector rotation, following where big money is accumulating, and avoiding crowded retail trades. Our 5-gate system detects institutional accumulation before breakouts, generating TEAL signals. DO NOT say "Institutional Accumulation Divergence".'
-    },
-    {
-        'topic': 'Beat the Index',
-        'context': 'Explain why systematic momentum selection beats passive indexing: concentration in best TEAL signal setups, active sector rotation timing, disciplined risk management vs buy-and-hope. Reference SPY underperformance in choppy markets. Our TEAL signals focus capital on highest-conviction opportunities.'
-    },
+_DATA_DRIVEN_SWAPS = [
+    # Openers — make it clinical/analytical
+    ("Scanner finished after Friday's close.", "Weekly scan complete — Friday close data processed."),
+    ("Ran the scanner after Friday's close.", "5-Gate scan executed on Friday's closing data."),
+    ("The scanner doesn't lie.", "Data speaks for itself."),
+    ("Not everything works forever.", "Sector rotation confirmed by the data."),
+    ("Most traders overcomplicate entries.", "Entry criteria should be systematic, not subjective."),
+    # Tone shifts — analytical voice
+    ("Full breakdown in the newsletter", "Detailed analysis in this week's report"),
+    ("Full analysis + entry levels", "Complete analysis with entry levels"),
+    ("Full breakdown:", "Analysis:"),
+    ("Full methodology:", "Methodology:"),
+    ("Full recap:", "Recap:"),
+    ("Full writeup:", "Report:"),
+    ("Full watchlist:", "Watchlist:"),
+    ("Full portfolio breakdown:", "Portfolio data:"),
+    ("Detailed breakdown:", "Data breakdown:"),
+    ("More setups like this weekly:", "Systematic setups published weekly:"),
+    ("More setups like this:", "Systematic approach finds more:"),
+    ("This week's survivors:", "Stocks that cleared all filters:"),
+    ("Entry prices + full thesis in the newsletter:", "Entry data and thesis documented here:"),
+    ("How I find them:", "Methodology:"),
+    ("Quality > quantity. Always.", "Signal quality over quantity — every week."),
+    ("Alpha exists if you know where to look.", "Consistent alpha through systematic screening."),
+    ("That's why.", "The numbers explain themselves."),
+    ("Simplicity scales.", "Systematic > discretionary."),
+    # CTAs
+    ("Read it here 👇", "Full report 👇"),
+    ("Helps me know what to post.", "Your input shapes the content."),
+    ("let's compare notes after Friday's scan.", "results published Saturday."),
+    # Structural
+    ("Onto the next setup.", "Scanning for the next setup."),
+    ("This is what the system is built for.", "Systematic edge, repeatable results."),
+    ("Still holding. Trailing stop in place.", "Position active. Stop: trailing from high."),
+    ("The close matters. Eyes on the scanner.", "Monitoring for signal confirmation."),
+    ("Are you positioned?", "Review your exposure."),
+    ("The system says rotate.", "Signal-based rotation triggered."),
+    ("Patience.", "Waiting for confirmation."),
+    ("Capital freed up for new setups.", "Capital reallocated to new signals."),
+    ("That's the 5-Gate filter doing its job.", "5-gate filtration working as designed."),
+    ("These are the setups the 5-Gate System is built to find.", "Exactly the profile the system targets."),
+    ("The 5-Gate edge in action.", "Systematic edge in the data."),
+    ("The 5-Gate System continues to find asymmetric setups.", "Asymmetric setups continue to surface."),
+    # Emoji swaps — more restrained
+    ("⚡ Power Hour:", "Power Hour data:"),
+    ("🟢 ", "GREEN signal — "),
+    ("🔴 ", "EXIT — "),
+    ("👇", "↓"),
+    ("🟡 On my radar:", "Watchlist:"),
+    ("📈", "▲"),
+    ("📊", "▶"),
+    ("✅", "→"),
 ]
 
 
-def generate_thread_for_schedule(
-    client: Optional[anthropic.Anthropic],
-    category: str,
-    content: 'WeeklyContent',
-    mock: bool = False
-) -> Dict:
+def _get_variation_text(category: str, template_id: str, account_key: str, tweet: dict) -> Optional[str]:
+    """Look up account variation text from AUTHENTIC_TEMPLATES and re-populate with data."""
+    var_key = account_key.replace('account', 'account_')  # account2 -> account_2
+
+    templates = AUTHENTIC_TEMPLATES.get(category, [])
+    for tmpl in templates:
+        if tmpl.get('id') == template_id:
+            variations = tmpl.get('account_variations', {})
+            if var_key in variations:
+                data = tweet.get('template_data', {})
+                if data:
+                    return populate_template(variations[var_key], data)
+                return variations[var_key]
+    return None
+
+
+def _apply_style_variation(text: str, account_key: str) -> str:
     """
-    Generate a thread for the weekly schedule.
+    Apply style-based text transformations to make a tweet sound distinct.
 
-    Thread categories:
-    - thread_buy_signal: Deep dive on the weekly pick
-    - thread_educational: Rotating through 5 educational topics
-    - thread_week_ahead: Preview of hot themes for upcoming week
-
-    Args:
-        client: Anthropic client (None if mock mode)
-        category: thread_buy_signal, thread_educational, or thread_week_ahead
-        content: Weekly content data with signals, themes, positions
-        mock: If True, generate placeholder thread without API
-
-    Returns:
-        Dict with thread data ready for content_queue.json
+    account2 (conversational): Casual, first-person, friendly
+    account3 (data_driven): Analytical, clinical, numbers-focused
     """
-    # Determine week number for topic rotation (1-5)
-    week_number = datetime.now().isocalendar()[1] % 5 or 5
-
-    if category == "thread_buy_signal":
-        # Deep dive on the weekly pick
-        if content.pass_signals:
-            signal = content.pass_signals[0]
-            ticker = signal.get('ticker', signal.get('symbol', 'UNKNOWN'))
-            theme = signal.get('theme', 'Momentum')
-            topic = "Buy Signal Analysis"
-            context = f"""Deep dive thread on ${ticker} - our weekly signal.
-
-Theme: {theme}
-Key points to cover:
-1. Why this fits our systematic criteria (without revealing specifics)
-2. The theme momentum driving this sector
-3. Risk management approach (Capital Preservation Protocol)
-4. How this fits with current portfolio
-5. CTA to newsletter for full analysis
-
-DO NOT reveal specific indicator names or thresholds."""
-        else:
-            topic = "Signal Methodology"
-            context = "Explain how our 5-gate system identifies opportunities when most traders are chasing breakouts. Focus on systematic advantage."
-
-    elif category == "thread_educational":
-        # Rotate through 5 educational topics each week
-        topic_index = (week_number - 1) % len(THREAD_TOPICS)
-        topic_data = THREAD_TOPICS[topic_index]
-        topic = topic_data['topic']
-        context = topic_data['context']
-
-    elif category == "thread_week_ahead":
-        # Preview hot themes for upcoming week
-        topic = "Week Ahead Preview"
-        hot_themes = []
-        if content.prime_themes:
-            hot_themes = [t.get('name', 'Theme') for t in content.prime_themes[:3]]
-
-        if hot_themes:
-            themes_str = ', '.join(hot_themes)
-            context = f"""Week ahead preview thread for traders.
-
-Hot themes this week: {themes_str}
-
-Cover:
-1. Hook: What's moving into the new week
-2. Theme 1 momentum and why
-3. Theme 2 opportunities
-4. Portfolio positioning / what we're watching
-5. CTA to subscribe for signals
-
-Focus on systematic approach and alpha generation vs SPY."""
-        else:
-            context = "General week ahead preview focusing on market positioning, sector rotation opportunities, and systematic momentum approach."
+    if account_key == 'account2':
+        swaps = _CONVERSATIONAL_SWAPS
+    elif account_key == 'account3':
+        swaps = _DATA_DRIVEN_SWAPS
     else:
-        # Fallback for unknown thread category
-        topic = "Trading Wisdom"
-        context = "Share systematic trading insights and methodology."
+        return text
 
-    # Generate thread
-    if mock:
-        # Mock thread for testing
-        thread_tweets = [
-            {'number': 1, 'text': f"🧵 1/5: [{topic}] Thread placeholder - hook tweet about {category}", 'tweet_id': None},
-            {'number': 2, 'text': f"2/5: Problem statement - why most traders struggle with this", 'tweet_id': None},
-            {'number': 3, 'text': f"3/5: Our systematic solution and approach", 'tweet_id': None},
-            {'number': 4, 'text': f"4/5: Specific example or proof point", 'tweet_id': None},
-            {'number': 5, 'text': f"5/5: CTA - Follow for signals, subscribe at sterlingsignals.substack.com", 'tweet_id': None},
-        ]
-    else:
-        # Generate via Claude API
-        thread = generate_thread(topic, context, client)
-        thread_tweets = thread.tweets if thread else []
+    result = text
+    for old, new in swaps:
+        result = result.replace(old, new)
 
-    return {
-        'is_thread': True,
-        'thread_topic': topic,
-        'thread_tweets': thread_tweets,
-        'thread_status': 'pending',
-        'ticker': content.pass_signals[0].get('ticker', content.pass_signals[0].get('symbol')) if content.pass_signals and category == 'thread_buy_signal' else None,
-        'theme': content.pass_signals[0].get('theme') if content.pass_signals and category == 'thread_buy_signal' else None,
-    }
+    return result
+
+
+def generate_account_variations(base_queue_path: Path) -> None:
+    """
+    Generate variation queues for account2 and account3 from main queue.
+
+    For each tweet:
+    1. If the template has an explicit account_variation, use it (re-populated with data)
+    2. Otherwise, apply the account's style transformation to the main text
+    """
+    with open(base_queue_path, 'r') as f:
+        base_queue = json.load(f)
+
+    for account_key in ['account2', 'account3']:
+        account_config = TWITTER_ACCOUNTS.get(account_key)
+        if not account_config:
+            print(f"  ⚠️  No config for {account_key}, skipping")
+            continue
+
+        variation_queue = []
+        template_variations = 0
+        style_variations = 0
+
+        for tweet in base_queue:
+            varied = dict(tweet)
+            varied['account'] = account_key
+
+            category = tweet.get('category', '')
+            template_id = tweet.get('template_id', '')
+
+            # Priority 1: explicit template variation
+            variation_text = _get_variation_text(category, template_id, account_key, tweet)
+            if variation_text:
+                varied['text'] = variation_text
+                template_variations += 1
+            else:
+                # Priority 2: style-based transformation
+                original_text = tweet.get('text', '')
+                styled_text = _apply_style_variation(original_text, account_key)
+                if styled_text != original_text:
+                    style_variations += 1
+                varied['text'] = styled_text
+
+            variation_queue.append(varied)
+
+        output_path = base_queue_path.parent / account_config['queue_file']
+        with open(output_path, 'w') as f:
+            json.dump(variation_queue, f, indent=2)
+        total_changed = template_variations + style_variations
+        print(f"  {account_key}: {len(variation_queue)} tweets "
+              f"({template_variations} template variations, {style_variations} style transforms, "
+              f"{len(variation_queue) - total_changed} unchanged) → {output_path}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate tweets via Claude API")
+def main():
+    parser = argparse.ArgumentParser(description="Generate tweets via hybrid templates + Claude")
     parser.add_argument("--briefing", type=str, help="Path to newsletter briefing")
     parser.add_argument("--output", type=str, help="Output directory")
     parser.add_argument("--mock", action="store_true", help="Use mock data (no API)")
-    parser.add_argument("--force", action="store_true", help="Force regeneration even if tweets exist")
-    parser.add_argument("--thread", type=str, help="Generate thread on specific topic")
-    parser.add_argument("--thread-list", action="store_true", help="List available thread topics")
+    parser.add_argument("--force", action="store_true", help="Force regeneration")
+    parser.add_argument("--compare", action="store_true", help="Generate comparison output")
+    parser.add_argument("--generate-variations", action="store_true",
+                        help="Generate account2/account3 variation queues from main queue")
     args = parser.parse_args()
 
-    # Thread topic list mode
-    if args.thread_list:
-        print("\n  Available Thread Topics:")
-        print("  " + "─" * 50)
-        for i, t in enumerate(THREAD_TOPICS, 1):
-            print(f"\n  {i}. {t['topic']}")
-            print(f"     {t['context'][:80]}...")
-        print("\n  Usage: python tweet_generator.py --thread \"Bottleneck Investing\"")
-        return
-
-    # Thread generation mode
-    if args.thread:
+    # Handle --generate-variations early (no data loading needed)
+    if args.generate_variations:
         print("\n" + "═" * 60)
-        print("  THREAD GENERATOR")
+        print("  GENERATING MULTI-ACCOUNT VARIATIONS")
         print("═" * 60)
-
-        # Find matching topic
-        topic_match = next((t for t in THREAD_TOPICS if args.thread.lower() in t['topic'].lower()), None)
-
-        if topic_match:
-            print(f"\n  📝 Generating thread: {topic_match['topic']}")
-            thread = generate_thread(topic_match['topic'], topic_match['context'])
+        base_path = TRADES_DIR / "content_queue.json"
+        if base_path.exists():
+            generate_account_variations(base_path)
+            print("\n  Done!")
         else:
-            print(f"\n  📝 Generating thread: {args.thread}")
-            thread = generate_thread(args.thread)
-
-        # Save thread
-        output_dir = Path(args.output) if args.output else TWEETS_DIR
-        save_thread(thread, output_dir)
-
-        # Print preview
-        print("\n  Thread Preview:")
-        print("  " + "─" * 50)
-        for tweet in thread.tweets:
-            print(f"\n  {tweet.get('number', '?')}/5:")
-            print(f"  {tweet.get('text', '[empty]')}")
-
-        print("\n" + "═" * 60)
+            print(f"\n  ERROR: Base queue not found: {base_path}")
+        print("═" * 60)
         return
 
     print("\n" + "═" * 60)
-    print("  TWEET GENERATOR - Claude-Powered Content")
+    print("  TWEET GENERATOR v2 - Hybrid Templates + Claude")
     print("═" * 60)
-
-    # Load data - try current/ folder first
+    
+    # Load data
     if args.briefing:
         briefing_path = Path(args.briefing)
     elif OUTPUT_PATHS_AVAILABLE:
@@ -2868,58 +1964,75 @@ def main() -> None:
             briefing_path = TRADES_DIR / "latest_newsletter_briefing.md"
     else:
         briefing_path = TRADES_DIR / "latest_newsletter_briefing.md"
-
+    
     print(f"\n  📄 Loading: {briefing_path}")
-
     content = load_briefing_data(briefing_path)
-
+    
     print(f"  📊 Data loaded:")
-    print(f"     • PASS signals: {len(content.pass_signals)}")
+    print(f"     • GREEN signals: {len(content.pass_signals)}")
     print(f"     • Open positions: {len(content.open_positions)}")
     print(f"     • Closed trades: {len(content.closed_trades)}")
-    print(f"     • Sell signals: {len(content.sell_signals)}")
     print(f"     • Hot themes: {len(content.prime_themes) + len(content.investable_themes)}")
-    print(f"     • Cold themes: {len(content.selective_themes) + len(content.avoid_themes)}")
-    print(f"     • Charts available: {len(content.chart_manifest)}")
-
-    # IDEMPOTENCY CHECK: Prevent duplicate generation
-    output_dir = Path(args.output) if args.output else TWEETS_DIR
-    already_generated, pending_count, queue_date = check_already_generated(
-        output_dir, content.scan_date
-    )
-
-    if already_generated and not args.force:
-        print(f"\n  ⚠️  TWEETS ALREADY GENERATED")
-        print(f"     {pending_count} pending tweets found (scheduled from {queue_date})")
-        print(f"     Use --force to regenerate and replace existing content")
+    
+    # Comparison mode
+    if args.compare:
+        print("\n  🔬 COMPARISON MODE - Generating Claude vs Templates vs Hybrid")
+        
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            print("  ✗ ERROR: ANTHROPIC_API_KEY required for comparison mode")
+            return
+        
+        client = anthropic.Anthropic(api_key=api_key)
+        comparison = generate_comparison_output(content, client)
+        
+        output_dir = Path(args.output) if args.output else TWEETS_DIR
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        comparison_file = output_dir / "comparison_output.json"
+        with open(comparison_file, 'w') as f:
+            json.dump(comparison, f, indent=2)
+        
+        print(f"\n  📁 Comparison saved: {comparison_file}")
+        
+        # Print preview
+        print("\n  Preview:")
+        print("  " + "─" * 50)
+        for entry in comparison['comparisons']:
+            print(f"\n  Category: {entry['category']}")
+            
+            if entry['template_version']:
+                print(f"  📝 TEMPLATE ({entry['template_version']['char_count']} chars):")
+                print(f"     {entry['template_version']['text'][:100]}...")
+            
+            if entry['claude_version']:
+                print(f"  🤖 CLAUDE ({entry['claude_version']['char_count']} chars):")
+                print(f"     {entry['claude_version']['text'][:100]}...")
+            
+            print(f"  🔄 HYBRID (method: {entry['hybrid_version']['method']}):")
+            print(f"     {entry['hybrid_version']['text'][:100]}...")
+        
         print("\n" + "═" * 60)
         return
-
-    if args.force and already_generated:
-        print(f"\n  ⚠️  Forcing regeneration ({pending_count} existing tweets will be replaced)")
-
-    # Check for cold streak (circuit breaker)
+    
+    # Check cold streak
     cold_streak_active = False
     if SIGNAL_TRACKER_AVAILABLE:
         cold_streak = check_cold_streak()
         if cold_streak.get('in_cold_streak'):
-            print(f"\n  ⚠️  COLD STREAK DETECTED")
-            print(f"     {cold_streak.get('reason')}")
-            print(f"     Reducing position-focused content (GAP 38 enforcement)")
-            cold_streak_active = True  # GAP 38 fix: Actually enforce the circuit breaker
-        elif cold_streak.get('recent_trades', 0) > 0:
-            win_rate = cold_streak.get('win_rate', 0)
-            print(f"     • Recent win rate: {win_rate:.0%} ({cold_streak.get('recent_trades')} trades)")
-
-    # Generate tweets (pass cold_streak_active for GAP 38 enforcement)
+            print(f"\n  ⚠️ COLD STREAK: {cold_streak.get('reason')}")
+            cold_streak_active = True
+    
+    # Generate tweets
     tweets = generate_all_tweets(content, mock=args.mock, cold_streak_active=cold_streak_active)
-
-    # Save output (output_dir already defined during idempotency check)
+    
+    # Save output
+    output_dir = Path(args.output) if args.output else TRADES_DIR
     queue_file = save_tweets(tweets, output_dir)
-
+    
     # Print summary
     print_summary(tweets)
-
+    
     print(f"\n  ✅ Generated {len(tweets)} tweets")
     print(f"  📁 Content queue: {queue_file}")
     print("\n" + "═" * 60)

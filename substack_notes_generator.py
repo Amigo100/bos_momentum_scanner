@@ -222,7 +222,7 @@ def generate_tuesday_note(portfolio: List[Dict], prices: Dict[str, float]) -> st
     """
     Generate Tuesday 'Theme Momentum' note (renamed from Portfolio Pulse).
 
-    Focus: Hot themes, scanner stats, TEAL signals.
+    Focus: Hot themes, scanner stats, GREEN signals.
     NOTE: Per marketing overhaul - NO portfolio P&L display, NO losing positions.
     """
     stats = calculate_portfolio_stats(portfolio, prices)
@@ -247,11 +247,11 @@ def generate_tuesday_note(portfolio: List[Dict], prices: Dict[str, float]) -> st
             lines.append(f"• {name}")
         lines.append("")
 
-    # TEAL signals count (no individual P&L)
+    # GREEN signals count (no individual P&L)
     # Accept both PASS (new) and TRADE (legacy) for backwards compatibility
     trade_signals = [s for s in buy_signals if s.get('final_decision') in ['PASS', 'TRADE']]
     if trade_signals:
-        lines.append(f"🎯 {len(trade_signals)} TEAL Signal(s) Active")
+        lines.append(f"🎯 {len(trade_signals)} GREEN Signal(s) Active")
         lines.append("Our 5-gate system identified these opportunities.")
         lines.append("")
 
@@ -297,14 +297,14 @@ def generate_thursday_note(signals: Dict, portfolio: List[Dict], prices: Dict[st
     trade_signals = [s for s in buy_signals if s.get('final_decision') in ['PASS', 'TRADE']]
     consider_signals = [s for s in buy_signals if s.get('final_decision') == 'CONSIDER']
 
-    # Highlight TEAL signals (show ALL, not just first)
+    # Highlight GREEN signals (show ALL, not just first)
     if trade_signals:
-        # Show all TEAL signals (marketing overhaul: no limit)
+        # Show all GREEN signals (marketing overhaul: no limit)
         if len(trade_signals) == 1:
             signal = trade_signals[0]
-            lines.append(f"🎯 This Week's TEAL Signal: ${signal['symbol']}")
+            lines.append(f"🎯 This Week's GREEN Signal: ${signal['symbol']}")
         else:
-            lines.append(f"🎯 {len(trade_signals)} TEAL Signals This Week:")
+            lines.append(f"🎯 {len(trade_signals)} GREEN Signals This Week:")
             for sig in trade_signals[:5]:
                 lines.append(f"• ${sig['symbol']} ({sig.get('theme', 'N/A')})")
             lines.append("")
@@ -347,13 +347,13 @@ def generate_thursday_note(signals: Dict, portfolio: List[Dict], prices: Dict[st
 
     lines.append("")
 
-    # Scan stats (use TEAL signal branding)
+    # Scan stats (use GREEN signal branding)
     stats = signals.get('stats', {})
     if stats:
         lines.append("📈 This Week's Scan:")
         lines.append(f"• {stats.get('tickers_loaded', 0)} stocks analyzed")
         lines.append(f"• {stats.get('technical_signals', 0)} passed technical gates")
-        lines.append(f"• {stats.get('final_trade', 0)} TEAL signals (full clearance)")
+        lines.append(f"• {stats.get('final_trade', 0)} GREEN signals (full clearance)")
         lines.append(f"• {stats.get('final_consider', 0)} on watchlist")
 
     lines.append("")

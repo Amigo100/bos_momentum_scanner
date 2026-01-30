@@ -166,9 +166,9 @@ def generate_winner_showcase_tweet() -> Optional[str]:
     if not winners:
         return None
 
-    teal_emoji = get_signal_emoji('TEAL')
+    green_emoji = get_signal_emoji('GREEN')
 
-    lines = [f"{teal_emoji} TEAL Signal Winners\n"]
+    lines = [f"{green_emoji} GREEN Signal Winners\n"]
     lines.append("Top performers since entry:\n")
 
     for winner in winners:
@@ -186,7 +186,7 @@ def generate_winner_showcase_tweet() -> Optional[str]:
 
     lines.append("")
     lines.append("Entry prices shown for 25%+ gains.")
-    lines.append("Returns measured from TEAL signal entry.")
+    lines.append("Returns measured from GREEN signal entry.")
     lines.append(f"\n{BRANDING['substack_url']}")
 
     tweet = "\n".join(lines)
@@ -201,9 +201,9 @@ def generate_winner_showcase_tweet() -> Optional[str]:
 
 def generate_winner_showcase_tweet_short(winners: List[Dict]) -> str:
     """Generate a shorter version of the winner showcase tweet."""
-    teal_emoji = get_signal_emoji('TEAL')
+    green_emoji = get_signal_emoji('GREEN')
 
-    lines = [f"{teal_emoji} TEAL Winners\n"]
+    lines = [f"{green_emoji} GREEN Winners\n"]
 
     for winner in winners[:3]:
         ticker = winner['ticker']

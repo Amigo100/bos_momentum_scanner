@@ -4,12 +4,12 @@ SUBSTACK CONTENT GENERATOR
 ==========================
 
 Generates formatted content for Substack posts following the Sterling Signals
-color signal system (TEAL/VIOLET/AMBER).
+color signal system (GREEN/RED/CONSIDER).
 
 Content Calendar:
 - Monday: Market Analysis - Market context + top performers
 - Thursday: Theme Spotlight - Hot theme deep dive
-- Saturday: Weekly Signals - Full TEAL/VIOLET/AMBER recap
+- Saturday: Weekly Signals - Full GREEN/RED/CONSIDER recap
 - Sunday: Deep Dive - Single stock analysis
 
 Usage:
@@ -110,7 +110,7 @@ def generate_monday_market_analysis() -> str:
 
     content = f"""# Market Outlook: Week of {week_start}
 
-{get_signal_emoji('TEAL')} **TEAL Signals Active**
+{get_signal_emoji('GREEN')} **GREEN Signals Active**
 
 ## Market Context
 
@@ -161,7 +161,7 @@ institutional flow patterns.
 
 *{BRANDING['signal_tagline']}*
 
-Full analysis and TEAL signals: {BRANDING['substack_url']}
+Full analysis and GREEN signals: {BRANDING['substack_url']}
 """
 
     return content
@@ -192,7 +192,7 @@ def generate_thursday_theme_spotlight() -> str:
 
     content = f"""# Theme Watch: {theme_name}
 
-{get_signal_emoji('TEAL')} **Theme Classification: {top_theme.get('classification', 'INVESTABLE')}**
+{get_signal_emoji('GREEN')} **Theme Classification: {top_theme.get('classification', 'INVESTABLE')}**
 
 ## Overview
 
@@ -213,7 +213,7 @@ def generate_thursday_theme_spotlight() -> str:
 
     if theme_stocks:
         content += f"""
-## {get_signal_emoji('TEAL')} TEAL Signals in This Theme
+## {get_signal_emoji('GREEN')} GREEN Signals in This Theme
 
 """
         for stock in theme_stocks[:5]:
@@ -236,7 +236,7 @@ def generate_thursday_theme_spotlight() -> str:
 def generate_saturday_weekly_signals() -> str:
     """Generate Saturday weekly signals recap.
 
-    Content: Full TEAL/VIOLET/AMBER recap for the week.
+    Content: Full GREEN/RED/CONSIDER recap for the week.
     """
     signals = load_signals()
     positions = load_portfolio()
@@ -244,16 +244,16 @@ def generate_saturday_weekly_signals() -> str:
     today = datetime.now()
     date_str = today.strftime("%B %d, %Y")
 
-    content = f"""# TEAL Signals: {date_str}
+    content = f"""# GREEN Signals: {date_str}
 
 ## Weekly Signal Recap
 
 """
 
-    # TEAL signals (PASS)
+    # GREEN signals (PASS)
     buy_signals = signals.get('buy_signals', [])
     if buy_signals:
-        content += f"### {get_signal_emoji('TEAL')} TEAL Signals (Full Entry)\n\n"
+        content += f"### {get_signal_emoji('GREEN')} GREEN Signals (Full Entry)\n\n"
         for signal in buy_signals:
             ticker = signal.get('symbol', 'UNKNOWN')
             theme = signal.get('theme', 'Unknown')
@@ -265,27 +265,27 @@ def generate_saturday_weekly_signals() -> str:
             content += f"- Theme: {theme}\n"
             content += f"- Conviction: {conviction_text}\n\n"
 
-    # AMBER signals (CONSIDER/watchlist)
+    # CONSIDER signals (watchlist)
     caution_signals = signals.get('caution_signals', [])
     consider_signals = [s for s in signals.get('buy_signals', [])
                        if s.get('final_decision') == 'CONSIDER']
 
     watchlist = caution_signals + consider_signals
     if watchlist:
-        content += f"### {get_signal_emoji('AMBER')} AMBER Watchlist\n\n"
-        content += "These stocks cleared 4/5 gates - watching for TEAL:\n\n"
+        content += f"### {get_signal_emoji('CONSIDER')} CONSIDER Watchlist\n\n"
+        content += "These stocks cleared 4/5 gates - watching for GREEN:\n\n"
         for signal in watchlist[:5]:
             ticker = signal.get('symbol', 'UNKNOWN')
             reason = signal.get('reason', signal.get('catalyst_summary', 'Under review'))
             content += f"- **${ticker}** - {reason[:100]}\n"
         content += "\n"
 
-    # VIOLET alerts (exits)
+    # RED alerts (exits)
     sell_signals = signals.get('sell_signals', [])
     profitable_exits = [s for s in sell_signals if float(s.get('pnl_pct', 0)) > 0]
 
     if profitable_exits:
-        content += f"### {get_signal_emoji('VIOLET')} VIOLET Alerts (Exits)\n\n"
+        content += f"### {get_signal_emoji('RED')} RED Alerts (Exits)\n\n"
         for signal in profitable_exits:
             ticker = signal.get('symbol', 'UNKNOWN')
             pnl = float(signal.get('pnl_pct', 0))
@@ -301,7 +301,7 @@ def generate_saturday_weekly_signals() -> str:
 - Tickers Scanned: {stats.get('tickers_loaded', 'N/A')}
 - Weekly Momentum Up: {stats.get('weekly_bos_up', 'N/A')}
 - Theme Confirmed: {stats.get('theme_confirmed', 'N/A')}
-- Final TEAL Signals: {stats.get('final_trade', 0)}
+- Final GREEN Signals: {stats.get('final_trade', 0)}
 
 """
 
@@ -318,7 +318,7 @@ Full analysis: {BRANDING['substack_url']}
 def generate_sunday_deep_dive(ticker: Optional[str] = None) -> str:
     """Generate Sunday deep dive content.
 
-    Content: Single stock analysis for the top TEAL signal.
+    Content: Single stock analysis for the top GREEN signal.
 
     Args:
         ticker: Optional specific ticker to analyze. If None, uses top signal.
@@ -327,7 +327,7 @@ def generate_sunday_deep_dive(ticker: Optional[str] = None) -> str:
     buy_signals = signals.get('buy_signals', [])
 
     if not buy_signals:
-        return "# Deep Dive\n\nNo TEAL signals available for deep dive."
+        return "# Deep Dive\n\nNo GREEN signals available for deep dive."
 
     # Find the target stock
     target = None
@@ -352,7 +352,7 @@ def generate_sunday_deep_dive(ticker: Optional[str] = None) -> str:
 
     content = f"""# Deep Dive: ${ticker}
 
-{get_signal_emoji('TEAL')} **TEAL Signal Analysis**
+{get_signal_emoji('GREEN')} **GREEN Signal Analysis**
 
 ## Overview
 
@@ -386,7 +386,7 @@ def generate_sunday_deep_dive(ticker: Optional[str] = None) -> str:
 
 ${ticker} has cleared all 5 gates of our systematic screening process.
 The combination of theme alignment, technical momentum, and catalyst timing
-makes this a high-conviction TEAL signal.
+makes this a high-conviction GREEN signal.
 
 ---
 

@@ -70,7 +70,7 @@ STYLE:
 - Educational - explain WHY, not just WHAT
 - US investor perspective
 - Reference SPY/QQQ comparison when outperforming
-- Use "TEAL signal" branding (not "PASS signal")
+- Use "GREEN signal" branding (not "PASS signal")
 
 CRITICAL MARKETING RULES:
 - NEVER mention losing positions or underwater trades
@@ -80,18 +80,18 @@ CRITICAL MARKETING RULES:
 - Celebrate big wins (25%+, 50%+, 100%+) prominently
 
 HANDLING ZERO SIGNALS WEEK:
-When there are no PASS/TEAL signals this week:
+When there are no PASS/GREEN signals this week:
 - This is NORMAL and shows the system's selectivity - NOT a failure
 - Focus the newsletter on themes, market analysis, and watchlist stocks
 - Skip the "NEW TRADES THIS WEEK" section entirely
 - Use subject line: "Week ${WEEK_NUM}: No New Signals | ${THEME_HOOK}"
 - Emphasize: "Sometimes the best trade is no trade"
 - Highlight watchlist/CONSIDER stocks that almost made it
-- Explain what would need to change for them to become TEAL signals
+- Explain what would need to change for them to become GREEN signals
 
 SUBJECT LINE FORMULA:
-Week ${WEEK_NUM}: ${NEW_SIGNALS} TEAL Signals | ${HOOK_PHRASE}
-Example: "Week 4: 3 TEAL Signals | Why Power Grid is 2026's Winning Theme"
+Week ${WEEK_NUM}: ${NEW_SIGNALS} GREEN Signals | ${HOOK_PHRASE}
+Example: "Week 4: 3 GREEN Signals | Why Power Grid is 2026's Winning Theme"
 Focus on new signals and hot themes, not P&L.
 
 FORMAT:
@@ -100,7 +100,7 @@ FORMAT:
 - Use tables for data comparison
 - Target 1,500-2,500 words
 - 8-12 minute read time
-- Show ALL TEAL signals (not limited to 1)"""
+- Show ALL GREEN signals (not limited to 1)"""
 
 COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from these inputs:
 
@@ -874,6 +874,17 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
 
         with open(briefing_path, 'r') as f:
             md_content = f.read()
+
+    # Check for negative P&L or STOPPED positions leaking into newsletter
+    import re as _re
+    negative_pnl_matches = _re.findall(r'-\d+\.?\d*%', md_content)
+    stopped_mentions = _re.findall(r'\bSTOPPED\b', md_content)
+    if negative_pnl_matches:
+        print(f"\n  ⚠️ WARNING: Negative P&L found in newsletter: {negative_pnl_matches}")
+        print("     Review before publishing — losses should not appear in public content.")
+    if stopped_mentions:
+        print(f"\n  ⚠️ WARNING: STOPPED positions mentioned in newsletter ({len(stopped_mentions)}x)")
+        print("     Review before publishing — stopped positions should not be showcased.")
 
     # Validate content for banned marketing terms
     if MARKETING_VOCABULARY_AVAILABLE:

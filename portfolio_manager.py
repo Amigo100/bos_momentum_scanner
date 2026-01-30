@@ -179,7 +179,7 @@ class Trade:
         
         if self.entry_price > 0 and price_for_calc > 0:
             self.pnl_pct = ((price_for_calc / self.entry_price) - 1) * 100
-            self.pnl_usd = (price_for_calc - self.entry_price) * 100  # Assumes 100 shares
+            self.pnl_usd = (price_for_calc - self.entry_price) * 100  # Notional: assumes 100 shares per position
         
         # Stop level (20% below highest close)
         if self.highest_close > 0:
@@ -271,19 +271,39 @@ class PortfolioManager:
             self.trades = []
     
     def _save(self) -> None:
-        """Save trades to CSV."""
+        """Save trades to CSV using atomic write (temp file + rename)."""
+        import tempfile
+        import shutil
+
         # Create backup first
         if self.portfolio_file.exists():
             backup_file = BACKUP_DIR / f"portfolio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            import shutil
             shutil.copy(self.portfolio_file, backup_file)
-        
-        # Write updated portfolio
-        with open(self.portfolio_file, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=self.CSV_FIELDNAMES)
-            writer.writeheader()
-            for trade in self.trades:
-                writer.writerow(trade.to_csv_row())
+
+            # Cleanup old backups (keep last 30)
+            backups = sorted(BACKUP_DIR.glob("portfolio_*.csv"))
+            if len(backups) > 30:
+                for old in backups[:-30]:
+                    old.unlink()
+
+        # Atomic write: write to temp file then rename
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w', dir=str(self.portfolio_file.parent),
+                suffix='.csv', delete=False, newline='', encoding='utf-8'
+            ) as f:
+                writer = csv.DictWriter(f, fieldnames=self.CSV_FIELDNAMES)
+                writer.writeheader()
+                for trade in self.trades:
+                    writer.writerow(trade.to_csv_row())
+                temp_path = f.name
+            os.replace(temp_path, str(self.portfolio_file))
+        except Exception:
+            # Clean up temp file on failure
+            import pathlib
+            if 'temp_path' in locals() and pathlib.Path(temp_path).exists():
+                pathlib.Path(temp_path).unlink()
+            raise
     
     # ───────────────────────────────────────────────────────────────────────────
     # TRADE MANAGEMENT
@@ -375,7 +395,7 @@ class PortfolioManager:
     # PRICE UPDATES
     # ───────────────────────────────────────────────────────────────────────────
     
-    def update_prices(self, stocks_dict: Optional[Dict] = None, check_delisted: bool = False) -> List[Trade]:
+    def update_prices(self, stocks_dict: Optional[Dict] = None, check_delisted: bool = True) -> List[Trade]:
         """
         Update current prices for all open positions.
 
@@ -569,8 +589,9 @@ class PortfolioManager:
         open_trades = self.get_open_positions()
         closed_trades = self.get_closed_trades()
         
-        # Calculate unrealized P&L for open positions
-        unrealized_pnl = sum(t.pnl_pct for t in open_trades if t.pnl_pct != 0)
+        # Calculate average unrealized P&L for open positions
+        open_with_pnl = [t for t in open_trades if t.pnl_pct != 0]
+        unrealized_pnl = sum(t.pnl_pct for t in open_with_pnl) / len(open_with_pnl) if open_with_pnl else 0.0
         
         # Win rate
         winners = [t for t in closed_trades if t.pnl_pct > 0]

@@ -30,10 +30,21 @@ on:
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  # Main account
   X_API_KEY: ${{ secrets.X_API_KEY }}
   X_API_SECRET: ${{ secrets.X_API_SECRET }}
   X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
   X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+  # Account 2
+  X2_API_KEY: ${{ secrets.X2_API_KEY }}
+  X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
+  X2_ACCESS_TOKEN: ${{ secrets.X2_ACCESS_TOKEN }}
+  X2_ACCESS_SECRET: ${{ secrets.X2_ACCESS_SECRET }}
+  # Account 3
+  X3_API_KEY: ${{ secrets.X3_API_KEY }}
+  X3_API_SECRET: ${{ secrets.X3_API_SECRET }}
+  X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
+  X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
 
 jobs:
   post-tweet:
@@ -122,21 +133,24 @@ jobs:
           echo "To fix: Run friday_scan.yml manually or check artifact status"
           exit 1
 
-      - name: Post tweet
+      - name: Post to all accounts (staggered)
         id: post
         run: |
           SLOT="${{ steps.slot.outputs.slot }}"
           DRY_RUN="${{ steps.slot.outputs.dry_run }}"
+          DRY_FLAG=""
+          if [ "$DRY_RUN" = "true" ]; then DRY_FLAG="--dry-run"; fi
 
-          echo "Posting slot: $SLOT"
-          echo "Dry run: $DRY_RUN"
+          echo "=== Posting to main account ==="
+          python twitter_poster.py --slot $SLOT --account main $DRY_FLAG || true
 
-          if [ "$DRY_RUN" = "true" ]; then
-            echo "DRY RUN - Would post tweet for slot $SLOT"
-            python twitter_poster.py --slot $SLOT --dry-run
-          else
-            python twitter_poster.py --slot $SLOT
-          fi
+          echo "=== Waiting 10 min for account 2 ==="
+          sleep 600
+          python twitter_poster.py --slot $SLOT --account account2 $DRY_FLAG || true
+
+          echo "=== Waiting 10 min for account 3 ==="
+          sleep 600
+          python twitter_poster.py --slot $SLOT --account account3 $DRY_FLAG || true
 
       - name: Check Milestone Quote Opportunities
         if: success()
@@ -170,7 +184,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add trades/content_queue.json 2>/dev/null || true
+          git add trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json 2>/dev/null || true
           git add trades/tweet_tracking.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
@@ -187,11 +201,14 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Upload updated content queue
+      - name: Upload updated content queues
         uses: actions/upload-artifact@v4
         with:
           name: content-queue
-          path: trades/content_queue.json
+          path: |
+            trades/content_queue.json
+            trades/content_queue_account2.json
+            trades/content_queue_account3.json
           retention-days: 14
         if: always()
 

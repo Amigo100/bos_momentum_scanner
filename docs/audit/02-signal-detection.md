@@ -1,920 +1,606 @@
 # Sterling Signals - Signal Detection System Audit
 
 **Document:** `docs/audit/02-signal-detection.md`
-**Audit Date:** January 28, 2026
+**Audit Date:** January 29, 2026
 **System Version:** BoS Momentum Scanner v2.x
-
----
-
-## Executive Summary
-
-The Sterling Signals scanner uses a **5-Gate entry system** with **dual exit triggers**. This document traces every condition that generates BUY or SELL signals, the code paths involved, and validates backtesting findings against live implementation.
-
-**Key Finding:** The system is well-implemented with proper alternating signal logic. However, the documented "10% baseline entry" feature was NOT found in code, and the backtested exit strategy (trailing stop) contradicts the marketed "BoS exit" approach.
+**Source Files Audited:** `scanner.py`, `portfolio_manager.py`, `config.py`
 
 ---
 
 ## Table of Contents
 
-1. [BUY Signal Conditions](#1-buy-signal-conditions)
-2. [SELL Signal Conditions](#2-sell-signal-conditions)
-3. [Code Path Tracing](#3-code-path-tracing)
-4. [Anti-Whipsaw Mechanisms](#4-anti-whipsaw-mechanisms)
-5. [Backtesting Validation](#5-backtesting-validation)
+1. [Buy Signal Conditions](#1-buy-signal-conditions)
+2. [Sell Signal Conditions](#2-sell-signal-conditions)
+3. [Code Path Traces](#3-code-path-traces)
+4. [HMA Pivot BoS: Alternating Signal Logic](#4-hma-pivot-bos-alternating-signal-logic)
+5. [Indicator Formulas](#5-indicator-formulas)
 6. [Truth Tables](#6-truth-tables)
-7. [Discrepancies & Concerns](#7-discrepancies--concerns)
+7. [Backtesting Findings vs Live Code](#7-backtesting-findings-vs-live-code)
+8. [Discrepancies & Concerns](#8-discrepancies--concerns)
 
 ---
 
-## 1. BUY Signal Conditions
+## 1. Buy Signal Conditions
 
-### 1.1 Overview: 5-Gate Entry System
+A stock must pass **all five gates** sequentially to generate a BUY signal.
 
-A stock must pass ALL 5 gates to generate a "TEAL signal" (BUY):
+### Gate 1: Beta Filter (Technical)
+
+| Condition | Threshold | Code Location |
+|-----------|-----------|---------------|
+| `stock.beta >= 1.5` | BETA_SIGNAL = 1.5 | `scanner.py:187`, `scanner.py:118-119` |
+
+- Calculated as `Cov(stock, SPY) / Var(SPY)` over 1 year of daily returns
+- Minimum 60 data points required (`scanner.py:287`)
+- If Beta < 1.5, Banker and BoS are **never calculated** (`scanner.py:573-576`)
+
+### Gate 2: Weekly BoS Bullish (Technical)
+
+| Condition | Trigger | Code Location |
+|-----------|---------|---------------|
+| `stock.bos_bullish == True` | Lower step line changed on weekly HMA | `scanner.py:464-465` |
+
+- HMA period: 21, pivot lookback k=1, applied to weekly HL2
+- Daily data resampled to weekly with Friday anchor (`scanner.py:415-421`)
+- Signal fires when `current_lower != prev_lower` (new pivot low on HMA)
+
+### Gate 3: Banker >= 55 (Technical / Tier Assignment)
+
+| Condition | Tier | Code Location |
+|-----------|------|---------------|
+| `banker > 70` | TIER1 | `scanner.py:208` |
+| `banker > 60` | TIER2 | `scanner.py:210` |
+| `banker > 55` | TIER3 | `scanner.py:212` |
+| `banker <= 55` | Rejected (no tier) | `scanner.py:213` returns `""` |
+
+- `get_tier()` returns empty string if `meets_technical_criteria()` is False
+- A stock with no tier is excluded from `technical_signals` list (`scanner.py:1356`)
+
+### Gate 4: Theme Confirmation (LLM)
+
+| Condition | Requirement | Code Location |
+|-----------|-------------|---------------|
+| Theme classification | PRIME or INVESTABLE | `thematic_analyzer.py` |
+| Theme fit verdict | STRONG FIT or GOOD FIT | `scanner.py:1405` |
+
+### Gate 5: Gatekeeper Decision (LLM)
+
+| Condition | Requirement | Code Location |
+|-----------|-------------|---------------|
+| `final_decision` | "PASS" or "TRADE" | `scanner.py:1464-1465` |
+| Conviction | 1-5 scale (informational) | `gatekeeper.py` |
+
+**"CONSIDER"** signals are tracked as watchlist items, not buy signals.
+
+### Combined Buy Signal Formula
 
 ```
-GATE 1: Beta >= 1.5           [Technical - Mandatory]
-GATE 2: Weekly BoS UP         [Technical - Mandatory]
-GATE 3: Banker >= 55          [Technical - Mandatory]
-GATE 4: Theme Fit             [LLM - Optional via --no-llm]
-GATE 5: Gatekeeper PASS       [LLM - Optional via --no-llm]
+BUY = (Beta >= 1.5)
+    AND (bos_bullish == True)        -- weekly HMA lower step changed
+    AND (Banker > 55)                -- price above 20-day VWAP
+    AND (Theme in [PRIME, INVESTABLE] AND Fit in [STRONG, GOOD])
+    AND (Gatekeeper == PASS)
 ```
 
 ---
 
-### 1.2 Gate 1: Beta Requirement
+## 2. Sell Signal Conditions
 
-**Threshold:** `Beta >= 1.5`
+### Exit Condition 1: Weekly BoS Down (CAUTION)
 
-**Location:** `config.py` line 75, `scanner.py` lines 283-297
+| Condition | Trigger | Code Location |
+|-----------|---------|---------------|
+| `stock.bos_bearish == True` | Upper step line changed on weekly HMA | `scanner.py:468-469`, `scanner.py:965` |
 
-**Calculation Formula:**
+**Important:** This is documented as a CAUTION signal, **not an automatic exit**. The recommendation is to tighten the trailing stop from 20% to 15%. However, the code in `_check_sell_signals_portfolio_manager()` at line 965 **does** call `pm.flag_exit()` at line 982, which sets the trade status to CLOSED/STOPPED.
+
+> **DISCREPANCY D1:** See [Section 8](#8-discrepancies--concerns).
+
+### Exit Condition 2: 20% Trailing Stop (AUTOMATIC)
+
+| Condition | Trigger | Code Location |
+|-----------|---------|---------------|
+| `drawdown_pct >= 20.0` | Price fell 20%+ from highest close since entry | `scanner.py:969`, `portfolio_manager.py:471` |
+
+- `TRAILING_STOP_PCT = 20.0` (`scanner.py:133`)
+- Stop level = `highest_close * 0.80` (`portfolio_manager.py:184-186`)
+- `highest_close` updated continuously while position is OPEN
+
+### Exit Condition 3: Manual Exit
+
+| Method | Status Set | Code Location |
+|--------|-----------|---------------|
+| `portfolio_manager.flag_exit()` | "CLOSED" (unless reason contains "stop") | `portfolio_manager.py:333-352` |
+| `portfolio_manager.py --exit TICKER` | "CLOSED" or "STOPPED" | CLI interface |
+
+### Stop Alert (Warning, Not Exit)
+
+| Condition | Threshold | Code Location |
+|-----------|-----------|---------------|
+| `distance_to_stop_pct <= 5.0` | STOP_WARNING_PCT = 5.0 | `portfolio_manager.py:191` |
+
+Displays warning emoji in Google Sheets export; does not trigger exit.
+
+### Combined Sell Signal Formula
+
+```
+SELL = (bos_bearish == True)         -- CAUTION: flags exit in code
+    OR (drawdown >= 20%)             -- AUTOMATIC: trailing stop
+    OR (manual exit by trader)
+```
+
+---
+
+## 3. Code Path Traces
+
+### 3.1 Buy Signal: Entry to Output
+
+```
+main() [scanner.py:1150]
+  │
+  ├─ Step 3: download_and_process() [scanner.py:524]
+  │   ├─ returns = df['Close'].pct_change()
+  │   ├─ stock.beta = calculate_beta(returns, spy_returns) [line 570]
+  │   ├─ if beta >= 1.5:                                   [line 573]
+  │   │   ├─ stock.banker = calculate_banker(df)            [line 574]
+  │   │   ├─ stock.bos_bullish, stock.bos_bearish, ... = calculate_bos(df) [line 575]
+  │   │   └─ stock.tier = stock.get_tier()                  [line 576]
+  │   └─ stock.momentum_4w = ... (tracked, not filtered)    [line 578-589]
+  │
+  ├─ Step 4: Pre-filter by Beta                             [line 1231]
+  │   └─ high_beta_stocks = [s for s in stocks if s.beta >= BETA_MIN]
+  │
+  ├─ Step 5: Technical Gate                                 [line 1349]
+  │   └─ for stock in high_beta_stocks:
+  │       └─ if stock.meets_technical_criteria():            [line 1353]
+  │           └─ return beta >= 1.5 AND bos_bullish          [line 187]
+  │           └─ if stock.tier:                              [line 1356]
+  │               └─ technical_signals.append(stock)
+  │
+  ├─ Step 6: Thematic Gate                                  [line 1405]
+  │   └─ theme_confirmed = run_thematic_gate(technical_signals)
+  │       └─ Filter: theme in [PRIME, INVESTABLE], fit in [STRONG, GOOD]
+  │
+  ├─ Step 7: Gatekeeper Gate                                [line 1457]
+  │   └─ confirmed = run_gatekeeper(theme_confirmed)
+  │       └─ Filter: final_decision in [PASS, TRADE]
+  │
+  └─ Output: confirmed list → signals.json, portfolio.csv
+```
+
+### 3.2 Sell Signal: Detection to Output
+
+```
+main() [scanner.py:1150]
+  │
+  ├─ Step 8: check_sell_signals(stocks)                     [line 1575]
+  │   └─ check_sell_signals() [line 913]
+  │       └─ _check_sell_signals_portfolio_manager()        [line 931]
+  │           ├─ pm.get_open_positions()                    [line 938]
+  │           ├─ for each open trade:
+  │           │   ├─ Update highest_close                   [line 952-953]
+  │           │   ├─ Calculate drawdown_pct                 [line 956-959]
+  │           │   ├─ Check bos_bearish → CAUTION            [line 965]
+  │           │   ├─ Check drawdown >= 20% → STOP           [line 969]
+  │           │   └─ If triggered: pm.flag_exit()           [line 982]
+  │           └─ return sell_signals
+  │
+  └─ Output: sell_signals printed as caution alerts
+```
+
+### 3.3 BoS Calculation: Daily Data to Signal
+
+```
+calculate_bos(df, hma_length=21, pivot_k=1)                [line 385]
+  │
+  ├─ Resample daily → weekly (Friday anchor)                [line 415-421]
+  │   OHLCV: Open=first, High=max, Low=min, Close=last, Volume=sum
+  │
+  ├─ Calculate HL2 = (High + Low) / 2                       [line 427]
+  │
+  ├─ Calculate HMA(HL2, 21)                                  [line 430]
+  │   └─ calculate_hma(hl2, 21)                              [line 333]
+  │       ├─ half_length = 10                                [line 339]
+  │       ├─ sqrt_length = 4                                 [line 340]
+  │       ├─ wma_half = WMA(hl2, 10)                         [line 347]
+  │       ├─ wma_full = WMA(hl2, 21)                         [line 348]
+  │       ├─ raw_hma = 2 * wma_half - wma_full               [line 350]
+  │       └─ hma = WMA(raw_hma, 4)                           [line 351]
+  │
+  ├─ Find pivots on HMA (k=1)                               [line 433]
+  │   └─ find_pivots(hma, 1)                                 [line 356]
+  │       ├─ Pivot HIGH: hma[i] > hma[i-1] AND hma[i] > hma[i+1]
+  │       │   AND unique maximum (no ties)                   [line 369-371]
+  │       ├─ Pivot LOW: hma[i] < hma[i-1] AND hma[i] < hma[i+1]
+  │       │   AND unique minimum (no ties)                   [line 374-376]
+  │       └─ Pivots confirmed k=1 bars AFTER occurrence      [line 371, 376]
+  │
+  ├─ Build step lines                                        [line 435-448]
+  │   ├─ upper: carry forward last pivot HIGH value
+  │   └─ lower: carry forward last pivot LOW value
+  │
+  └─ Fire signals                                            [line 463-469]
+      ├─ bos_up = (current_lower != prev_lower)  → BUY
+      └─ bos_down = (current_upper != prev_upper) → SELL
+```
+
+---
+
+## 4. HMA Pivot BoS: Alternating Signal Logic
+
+### How Alternation Works
+
+The HMA Pivot method produces naturally alternating signals because:
+
+1. **HMA smooths price action** into a single curve
+2. **Pivots on HMA alternate**: low → high → low → high (by definition of local extrema on a smooth curve)
+3. **Step lines change in sequence**: lower step changes (BUY) → upper step changes (SELL) → lower step changes (BUY)
+
+### Signal State Machine
+
+```
+                 ┌──────────────────────┐
+                 │                      │
+                 ▼                      │
+     ┌───────────────────┐    ┌───────────────────┐
+     │   BULLISH (BUY)   │    │  BEARISH (SELL)    │
+     │                   │    │                    │
+     │ lower step changed│    │ upper step changed │
+     └─────────┬─────────┘    └─────────┬──────────┘
+               │                        │
+               │   Next pivot is HIGH   │
+               └────────────────────────┘
+```
+
+### Can Both Fire Simultaneously?
+
+**Theoretically possible but extremely unlikely.** Both `bos_up` and `bos_down` could be True on the same bar if:
+- A pivot HIGH and a pivot LOW are both confirmed on the same weekly bar
+- This would require k=1, meaning the HMA had both a local max and local min within 3 consecutive bars
+
+The code does **not** enforce mutual exclusivity. Both flags are independently calculated (`scanner.py:464-469`).
+
+### No Explicit State Tracking
+
+There is **no `last_signal_type` variable** in the code. The alternation relies entirely on the mathematical properties of HMA pivots. The code does not track or enforce signal ordering.
+
+### Pivot Confirmation Delay
+
+Pivots are confirmed `k=1` bars after occurrence (`scanner.py:371, 376`):
 ```python
-def calculate_beta(returns: pd.Series, benchmark_returns: pd.Series) -> float:
-    """
-    Beta = Covariance(stock, SPY) / Variance(SPY)
-
-    Period: 1 year daily data
-    Minimum data points: 60 trading days
-    Benchmark: SPY (S&P 500 ETF)
-    """
-    aligned = pd.DataFrame({'stock': returns, 'bench': benchmark_returns}).dropna()
-    if len(aligned) < 60:
-        return 0.0
-
-    cov = aligned['stock'].cov(aligned['bench'])
-    var = aligned['bench'].var()
-    beta = cov / var
-    return round(float(beta), 2)
+pivot_highs.iloc[i + k] = center_val   # Confirmed 1 bar later
 ```
 
-**Rationale:** High-beta stocks (>1.5) amplify market moves, providing better momentum opportunities.
-
-**Typical Filter Rate:** ~52% pass (937 tickers → ~485 with Beta >= 1.5)
+This means:
+- A pivot detected at week N is assigned to week N+1
+- The signal fires on the weekly bar **after** the pivot forms
+- This introduces a 1-week delay from pivot formation to signal
 
 ---
 
-### 1.3 Gate 2: Weekly HMA Pivot BoS (Break of Structure)
+## 5. Indicator Formulas
 
-**Condition:** `bos_bullish == True` (Weekly BoS UP)
-
-**Location:** `scanner.py` lines 385-490
-
-#### 1.3.1 HMA Calculation
-
-**Formula:** `HMA(n) = WMA(2 * WMA(n/2) - WMA(n), sqrt(n))`
-
-**Parameters:**
-- Period: `n = 21` (weekly bars)
-- Input: `HL2 = (High + Low) / 2`
-- Timeframe: Weekly (resampled from daily at Friday close)
-
-```python
-def calculate_hma(data: pd.Series, length: int = 21) -> pd.Series:
-    """Hull Moving Average - smoother than SMA/EMA, less lag."""
-    half_length = int(length / 2)
-    sqrt_length = int(np.sqrt(length))
-
-    wma_half = data.rolling(half_length).apply(wma_weights, raw=True)
-    wma_full = data.rolling(length).apply(wma_weights, raw=True)
-
-    raw_hma = 2 * wma_half - wma_full
-    hma = raw_hma.rolling(sqrt_length).apply(wma_weights, raw=True)
-    return hma
-```
-
-#### 1.3.2 Pivot Detection
-
-**Function:** `find_pivots()` (scanner.py lines 361-382)
-
-**Parameters:**
-- Lookback window: `k = 1` (1 bar on each side)
-- Confirmation delay: 1 bar (signal confirmed after pivot forms)
-
-**Logic:**
-```python
-def find_pivots(series: pd.Series, k: int = 1) -> Tuple[pd.Series, pd.Series]:
-    """
-    Pivot HIGH: HMA[i] > HMA[i-1] AND HMA[i] > HMA[i+1]
-    Pivot LOW:  HMA[i] < HMA[i-1] AND HMA[i] < HMA[i+1]
-    """
-    pivot_highs = pd.Series(np.nan, index=series.index)
-    pivot_lows = pd.Series(np.nan, index=series.index)
-
-    for i in range(k, len(series) - k):
-        # Check for pivot high
-        is_high = all(series.iloc[i] > series.iloc[i-j] for j in range(1, k+1))
-        is_high &= all(series.iloc[i] > series.iloc[i+j] for j in range(1, k+1))
-        if is_high:
-            pivot_highs.iloc[i] = series.iloc[i]
-
-        # Check for pivot low
-        is_low = all(series.iloc[i] < series.iloc[i-j] for j in range(1, k+1))
-        is_low &= all(series.iloc[i] < series.iloc[i+j] for j in range(1, k+1))
-        if is_low:
-            pivot_lows.iloc[i] = series.iloc[i]
-
-    return pivot_highs, pivot_lows
-```
-
-#### 1.3.3 BoS Signal Generation
-
-**Function:** `calculate_bos()` (scanner.py lines 385-490)
-
-**Step Lines:**
-- Upper step line = Most recent pivot HIGH value (carried forward)
-- Lower step line = Most recent pivot LOW value (carried forward)
-
-**Signal Definition:**
-```python
-# BUY Signal (bos_bullish = True)
-# Lower step line CHANGED = New pivot low formed on HMA
-bos_up = (
-    not pd.isna(current_lower) and
-    not pd.isna(prev_lower) and
-    current_lower != prev_lower
-)
-
-# SELL Signal (bos_bearish = True)
-# Upper step line CHANGED = New pivot high formed on HMA
-bos_down = (
-    not pd.isna(current_upper) and
-    not pd.isna(prev_upper) and
-    current_upper != prev_upper
-)
-```
-
-**Data Requirements:**
-- Minimum daily bars: 60 (line 411)
-- Minimum weekly bars: `hma_length + pivot_k + 5 = 27` weeks
-
-**Typical Filter Rate:** ~10% of high-beta stocks pass (485 → ~48 with BoS UP)
-
----
-
-### 1.4 Gate 3: Banker Indicator (Institutional Accumulation)
-
-**Threshold:** `Banker >= 55`
-
-**Location:** `scanner.py` lines 300-330, `config.py` lines 76-78
-
-**Formula:**
-```python
-def calculate_banker(df: pd.DataFrame, period: int = 20) -> float:
-    """
-    Banker measures deviation from 20-day VWAP, scaled to 50-centered score.
-
-    Formula: banker = 50 + ((close / vwap_20d - 1) * 100 * 5)
-
-    Where:
-    - vwap_20d = sum(typical_price * volume) / sum(volume) over 20 days
-    - typical_price = (High + Low + Close) / 3
-    """
-    typical_price = (df['High'] + df['Low'] + df['Close']) / 3
-    vwap = (typical_price * df['Volume']).rolling(period).sum() / df['Volume'].rolling(period).sum()
-
-    deviation_pct = (df['Close'].iloc[-1] / vwap.iloc[-1] - 1) * 100
-    banker = 50 + (deviation_pct * 5)
-
-    return round(banker, 1)
-```
-
-**Tier Assignment:**
-
-| Banker Score | VWAP Deviation | Tier | Meaning |
-|--------------|----------------|------|---------|
-| > 70 | +4% above | TIER1 | Strong institutional accumulation |
-| 60-70 | +2-4% above | TIER2 | Moderate accumulation |
-| 55-60 | +1-2% above | TIER3 | Slight accumulation (entry minimum) |
-| < 55 | < +1% | - | Insufficient accumulation |
-
-**Typical Filter Rate:** ~92% of BoS UP stocks pass (48 → ~44 with Banker >= 55)
-
----
-
-### 1.5 Gate 4: Thematic Analyzer (LLM)
-
-**Condition:** `theme_verdict in ["STRONG FIT", "GOOD FIT"]`
-
-**Location:** `scanner.py` lines 614-756, `thematic_analyzer.py`
-
-**Process:**
-1. LLM identifies top 5 investment themes
-2. Each stock mapped to best-fit theme
-3. Theme fit scored: STRONG FIT, GOOD FIT, MODERATE FIT, POOR FIT
-
-**Theme Classification Thresholds:**
-
-| Theme Score | Classification | Actionable? |
-|-------------|---------------|-------------|
-| >= 7.5 | PRIME | Yes |
-| 6.0 - 7.5 | INVESTABLE | Yes |
-| 4.5 - 6.0 | SELECTIVE | Watchlist |
-| < 4.5 | AVOID | No |
-
-**Fields Added:**
-- `stock.theme` - Theme name
-- `stock.theme_score` - 0-10 composite score
-- `stock.pure_play_score` - 0-100% theme purity
-- `stock.theme_verdict` - STRONG/GOOD/MODERATE/POOR FIT
-
-**Typical Filter Rate:** ~39% pass (44 technical → ~17 theme-confirmed)
-
----
-
-### 1.6 Gate 5: Gatekeeper (LLM Final Quality Gate)
-
-**Condition:** `final_decision == "PASS"`
-
-**Location:** `scanner.py` lines 763-896, `gatekeeper.py`
-
-**Analysis Per Stock:**
-1. **Catalyst Check:** Earnings, events within 90 days
-2. **Red Flag Scan:** Auditor issues, insider selling, SEC investigations
-3. **Sentiment Analysis:** Analyst trends, short interest
-4. **Conviction Score:** 1-5 assessment
-
-**Decision Matrix:**
-
-| Decision | Mapped To | Meaning | Action |
-|----------|-----------|---------|--------|
-| PASS | `final_decision = "PASS"` | All clear | Enter position |
-| CAUTION | `final_decision = "CONSIDER"` | Some concerns | Watchlist only |
-| FAIL | Filtered out | Red flags | Skip entirely |
-
-**Immediate Disqualifiers (→ FAIL):**
-- Auditor resignation or delayed 10-K
-- CFO/CEO departure within 60 days
-- Shelf offering (S-3) filed in last 30 days
-- Active SEC/DOJ investigation
-- Earnings in < 5 trading days
-
-**Typical Filter Rate:** ~35-40% get PASS (17 → 6-7 TEAL signals)
-
----
-
-### 1.7 Complete BUY Signal Requirements Summary
+### 5.1 Beta
 
 ```
-TEAL SIGNAL (BUY) = ALL of:
-├─ Beta >= 1.5
-├─ Weekly HMA Pivot BoS UP (lower step line changed)
-├─ Banker >= 55 (1%+ above 20-day VWAP)
-├─ Theme: STRONG FIT or GOOD FIT (with --llm)
-└─ Gatekeeper: PASS decision (with --llm)
+Beta = Cov(R_stock, R_spy) / Var(R_spy)
+
+Where:
+  R_stock = daily close-to-close returns over ~1 year
+  R_spy   = daily SPY returns over same period
+  Minimum 60 aligned data points required
 ```
 
----
+**Code:** `scanner.py:283-297`
 
-## 2. SELL Signal Conditions
-
-### 2.1 Overview: Dual Exit System
-
-The system has **two independent exit triggers**:
+### 5.2 Banker (Institutional Accumulation)
 
 ```
-EXIT 1 (PRIMARY):   20% Trailing Stop from highest close
-EXIT 2 (ADVISORY):  Weekly BoS DOWN → Tighten stop to 15%
+Typical_Price = (High + Low + Close) / 3
+VWAP_20 = Sum(TP * Volume, 20 days) / Sum(Volume, 20 days)
+Deviation% = (Close / VWAP_20 - 1) * 100
+Banker = CLAMP(50 + Deviation% * 5, 0, 100)
+
+Interpretation:
+  Banker = 50  → Price at VWAP (neutral)
+  Banker = 55  → Price 1% above VWAP (TIER3 threshold)
+  Banker = 60  → Price 2% above VWAP (TIER2 threshold)
+  Banker = 70  → Price 4% above VWAP (TIER1 threshold)
 ```
 
-**Important:** Backtesting showed trailing stop (+539% returns) >> signal exits (+294% returns).
+**Code:** `scanner.py:300-330`
 
----
-
-### 2.2 Primary Exit: 20% Trailing Stop
-
-**Threshold:** `TRAILING_STOP_PCT = 20.0`
-
-**Location:** `config.py` line 71, `scanner.py` lines 969, 1035
-
-**Implementation:**
-
-```python
-def check_trailing_stop(trade: Trade, current_price: float) -> Tuple[bool, str]:
-    """
-    Check if position hit 20% trailing stop.
-
-    Stop level = highest_close * (1 - 0.20)
-    Triggered when: current_price <= stop_level
-    """
-    if trade.highest_close <= 0:
-        return False, ""
-
-    drawdown_pct = ((trade.highest_close - current_price) / trade.highest_close) * 100
-
-    if drawdown_pct >= TRAILING_STOP_PCT:  # 20.0
-        return True, f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${trade.highest_close:.2f})"
-
-    return False, ""
-```
-
-**Highest Close Tracking:**
-- Updated in `portfolio_manager.py` lines 464-465
-- `highest_close = max(highest_close, current_price)` on each update
-
-**Example:**
-```
-Entry: $100
-Peak (highest_close): $150
-Stop level: $150 * 0.80 = $120
-Current: $118 → STOPPED (21.3% drawdown)
-```
-
----
-
-### 2.3 Advisory Exit: Weekly BoS DOWN
-
-**Condition:** `bos_bearish == True`
-
-**Location:** `scanner.py` lines 965, 1593-1597
-
-**Logic:**
-```python
-if stock.bos_bearish:
-    sell_reason = "Weekly BoS Down (price breaking structure low)"
-    # ADVISORY: Tighten stop to 15%, do NOT auto-exit
-```
-
-**CRITICAL NOTE:** This is NOT an automatic exit trigger!
-```python
-# From scanner.py lines 1593-1597:
-print(f"  EXIT STRATEGY (Backtested +539% avg vs +294% with signal exits):")
-print(f"    • USE: 20% trailing stop from highest weekly close")
-print(f"    • CAUTION: HMA Pivot SELL = tighten stop to 15%, don't exit")
-print(f"    • DO NOT automatically exit on SELL signal")
-```
-
-**Action on BoS DOWN:**
-1. Issue caution alert
-2. Tighten stop from 20% → 15% (advisory)
-3. Continue holding until trailing stop hits
-
----
-
-### 2.4 Stop Tightening Logic
-
-**Thresholds:**
-- Normal stop: `TRAILING_STOP_PCT = 20.0%`
-- Tightened stop: `TIGHTEN_STOP_PCT = 15.0%`
-- Warning zone: `STOP_WARNING_PCT = 5.0%` (alert when within 5% of stop)
-
-**Location:** `config.py` lines 71-73
-
----
-
-### 2.5 Manual Exit Capabilities
-
-**Function:** `portfolio_manager.py` → `flag_exit()`
-
-```python
-def flag_exit(self, ticker: str, exit_price: float, reason: str = "Manual exit"):
-    """
-    Manually exit a position.
-
-    Sets:
-    - status = "CLOSED" (manual) or "STOPPED" (trailing stop)
-    - exit_date = today
-    - exit_price = provided price
-    - notes += reason
-    """
-```
-
-**CLI Usage:**
-```bash
-python portfolio_manager.py --exit TICKER --exit-price 15.00 --reason "Taking profits"
-```
-
----
-
-### 2.6 Time-Based Exit Rules
-
-**Finding:** NO time-based exit rules exist in the codebase.
-
-- No maximum holding period
-- No forced exit after X weeks/months
-- Positions can be held indefinitely until stop hit
-
----
-
-### 2.7 Complete SELL Signal Requirements Summary
+### 5.3 Hull Moving Average (HMA)
 
 ```
-EXIT TRIGGER = ANY of:
-├─ 20% Trailing Stop: current_price <= highest_close * 0.80
-└─ Manual Exit: User-initiated via CLI or direct CSV edit
+HMA(series, n) = WMA(2 * WMA(series, n/2) - WMA(series, n), sqrt(n))
 
-ADVISORY (Non-Exit):
-└─ Weekly BoS DOWN: Tighten stop to 15%, issue alert
+Where:
+  WMA(x, n) = (x_1*1 + x_2*2 + ... + x_n*n) / (1 + 2 + ... + n)
+  n = 21 (weekly bars)
+  Input series = HL2 = (weekly_High + weekly_Low) / 2
+
+  For n=21:
+    half_length = 10
+    sqrt_length = 4
 ```
 
----
+**Code:** `scanner.py:333-353`
 
-## 3. Code Path Tracing
-
-### 3.1 BUY Signal Path: Raw Data → Signal → Portfolio
+### 5.4 Pivot Detection
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 1: Data Download                                           │
-│ Function: download_and_process() [scanner.py:524-607]           │
-│ Input: List of ticker symbols                                   │
-│ Output: Dict[str, Stock] with indicators calculated             │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 2: Calculate Beta                                          │
-│ Function: calculate_beta() [scanner.py:283-297]                 │
-│ For each stock: stock.beta = cov(returns, SPY) / var(SPY)       │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 3: Calculate Banker                                        │
-│ Function: calculate_banker() [scanner.py:300-330]               │
-│ For each stock: stock.banker = 50 + (deviation_from_vwap * 5)   │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 4: Calculate Weekly BoS                                    │
-│ Function: calculate_bos() [scanner.py:385-490]                  │
-│ For each stock:                                                 │
-│   - Resample daily → weekly                                     │
-│   - Calculate HMA(21) on HL2                                    │
-│   - Find pivots (k=1)                                           │
-│   - Build step lines                                            │
-│   - stock.bos_bullish = (lower_step_line changed)               │
-│   - stock.bos_bearish = (upper_step_line changed)               │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 5: Technical Gate Filter                                   │
-│ Location: [scanner.py:1341-1373]                                │
-│ Filter: beta >= 1.5 AND bos_bullish AND banker >= 55            │
-│ Output: technical_signals list                                  │
-│ Side effect: Assign tier (TIER1/2/3) based on banker            │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 6: Thematic Analyzer (Optional)                            │
-│ Function: run_thematic_gate() [scanner.py:614-756]              │
-│ For each technical signal:                                      │
-│   - Map to best-fit theme                                       │
-│   - Score theme alignment                                       │
-│   - Filter: STRONG FIT or GOOD FIT only                         │
-│ Output: theme_confirmed list                                    │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 7: Gatekeeper (Optional)                                   │
-│ Function: run_gatekeeper() [scanner.py:763-896]                 │
-│ For each theme-confirmed signal:                                │
-│   - Analyze catalysts, red flags, sentiment                     │
-│   - Assign: PASS / CONSIDER / FAIL                              │
-│ Output: confirmed list (PASS + CONSIDER only)                   │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 8: Record to Portfolio                                     │
-│ Function: add_trade_from_stock() [portfolio_manager.py:321-331] │
-│ For each PASS signal:                                           │
-│   - Create Trade object from Stock                              │
-│   - Set status = "OPEN"                                         │
-│   - Set entry_date = today                                      │
-│   - Set entry_price = current price                             │
-│   - Append to portfolio.csv                                     │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 9: Record to signals.json                                  │
-│ Function: save_results() [scanner.py:2700+]                     │
-│ Write: buy_signals[], sell_signals[], themes[], stats{}         │
-└─────────────────────────────────────────────────────────────────┘
+Pivot HIGH at bar i:
+  HMA[i] > HMA[i-1] AND HMA[i] > HMA[i+1]
+  AND HMA[i] is unique max in window (no ties)
+  Confirmed at bar i+1
+
+Pivot LOW at bar i:
+  HMA[i] < HMA[i-1] AND HMA[i] < HMA[i+1]
+  AND HMA[i] is unique min in window (no ties)
+  Confirmed at bar i+1
 ```
 
-### 3.2 SELL Signal Path: Position Check → Exit → Update
+**Code:** `scanner.py:356-382`
+
+### 5.5 Trailing Stop
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 1: Load Open Positions                                     │
-│ Function: get_open_positions() [portfolio_manager.py]           │
-│ Read: portfolio.csv where status == "OPEN"                      │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 2: Check Each Position                                     │
-│ Function: check_sell_signals() [scanner.py:913-1072]            │
-│ For each open position:                                         │
-│   a) Get current price (yfinance)                               │
-│   b) Check if stock has bos_bearish (BoS DOWN)                  │
-│   c) Calculate drawdown from highest_close                      │
-│   d) If drawdown >= 20%: Create SellSignal                      │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 3: Flag Exit in Portfolio                                  │
-│ Function: flag_exit() [portfolio_manager.py:333-352]            │
-│ Update:                                                         │
-│   - status = "STOPPED"                                          │
-│   - exit_date = today                                           │
-│   - exit_price = current price                                  │
-│   - notes += exit reason                                        │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 4: Save Updated Portfolio                                  │
-│ Function: _save() [portfolio_manager.py:273-286]                │
-│ Write: Updated portfolio.csv                                    │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ STEP 5: Record to signals.json                                  │
-│ Append to sell_signals[] array                                  │
-└─────────────────────────────────────────────────────────────────┘
+highest_close = max(entry_price, all subsequent closes while OPEN)
+stop_level    = highest_close * (1 - 20/100) = highest_close * 0.80
+drawdown_pct  = (highest_close - current_price) / highest_close * 100
+
+EXIT when: drawdown_pct >= 20.0
 ```
 
----
-
-## 4. Anti-Whipsaw Mechanisms
-
-### 4.1 HMA Pivot Alternating Signal Logic
-
-**The primary anti-whipsaw mechanism is INHERENT in the HMA pivot detection.**
-
-**How it works:**
-
-```
-Time →    T1      T2      T3      T4      T5
-HMA:      /\      __      \/      __      /\
-         HIGH    ---     LOW     ---    HIGH
-
-Signals:   -      SELL     -      BUY      -
-                  (H)            (L)
-
-The system ALTERNATES between:
-- Pivot HIGH (potential SELL)
-- Pivot LOW (potential BUY)
-
-You CANNOT get consecutive BUYs or SELLs because:
-- After a LOW pivot (BUY), HMA must make a HIGH before another LOW
-- After a HIGH pivot (SELL), HMA must make a LOW before another HIGH
-```
-
-**Code Location:** `scanner.py` lines 464-469
-
-```python
-# These are MUTUALLY EXCLUSIVE due to pivot detection
-bos_up = (lower_step_line changed)   # BUY - requires new pivot LOW
-bos_down = (upper_step_line changed) # SELL - requires new pivot HIGH
-```
-
-### 4.2 Pivot Confirmation Delay
-
-**The `k=1` lookback creates a 1-bar confirmation delay:**
-
-- Pivot is only confirmed when the NEXT bar shows direction change
-- This prevents premature signals on temporary reversals
-- For weekly timeframe: 1-week delay after pivot forms
-
-### 4.3 CONSIDER Signal Expiry
-
-**Location:** `signal_tracker.py` lines 875-917
-
-```python
-def filter_expired_consider_signals(signals: List[Dict], max_age_days: int = 21) -> List[Dict]:
-    """
-    Remove CONSIDER signals older than 21 days.
-    Prevents stale watchlist stocks from being repeatedly mentioned.
-    """
-```
-
-### 4.4 Rate Limiting (API Protection)
-
-**Location:** `config.py` lines 104-107
-
-```python
-INTER_STEP_DELAY = 30.0      # 30 sec between analyzer and gatekeeper
-INTER_STOCK_DELAY = 8.0      # 8 sec between gatekeeper calls
-RATE_LIMIT_COOLDOWN = 60.0   # 60 sec cooldown on rate limit error
-BACKOFF_FACTOR = 2.0         # Exponential backoff multiplier
-```
-
-### 4.5 Ticker Mention Limits (Content Generation)
-
-**Location:** `config.py` lines 47-51
-
-```python
-TICKER_LIMITS = {
-    'max_mentions_per_week': 4,        # Can't mention same ticker > 4x/week
-    'max_consecutive_days': 2,         # Can't mention same ticker 3+ days in row
-    'cooldown_after_milestone': 2,     # 2-day cooldown after milestone celebration
-}
-```
-
----
-
-## 5. Backtesting Validation
-
-### 5.1 HMA Pivot Entries vs Breakout Entries
-
-**Documented Preference:** HMA Pivot entries preferred over breakout entries
-
-**Code Validation:** ✅ CONFIRMED
-
-**Location:** `scanner.py` lines 388-396 (comments)
-
-```python
-# NOTE: We use HMA PIVOT method which produces alternating B-S-B-S signals
-# Alternative "price crossing step line" method does NOT alternate properly
-# and produces unreliable entry/exit signals
-```
-
-**Implementation:** The system ONLY uses HMA pivot-based signals, not price crossovers.
-
----
-
-### 5.2 Entry Within 10% of HMA Baseline
-
-**Documented Preference:** Entry within 10% of HMA baseline
-
-**Code Validation:** ❌ NOT FOUND
-
-**Search Results:** No code implements a "10% of HMA baseline" filter.
-
-**Possible Explanations:**
-1. Feature was removed in a prior version
-2. Documentation refers to a different system
-3. Banker indicator (VWAP-based) serves similar purpose
-
-**Closest Equivalent:** Banker indicator measures deviation from 20-day VWAP, providing similar "not too extended" filtering.
-
----
-
-### 5.3 Fresh Trends Under 4 Weeks
-
-**Documented Preference:** Prioritize trends under 4 weeks old
-
-**Code Validation:** ⚠️ REMOVED
-
-**Location:** `scanner.py` lines 127-131, 189-195
-
-```python
-# BACKTEST RESULT: 4-week momentum filter REDUCED returns
-# from +9.2% to +6.1% across 4000+ stocks
-
-def passes_momentum_filter(stock: Stock) -> bool:
-    """DEPRECATED: Always returns True - filter disabled"""
-    return True  # Filter removed based on backtest results
-```
-
-**Current State:** 4-week momentum is TRACKED but NOT FILTERED. The `passes_momentum_filter()` function always returns True.
-
----
-
-### 5.4 BoS Bearish Exit Preference
-
-**Documented Preference:** Exit on BoS Bearish signal
-
-**Code Validation:** ⚠️ CONTRADICTED BY BACKTEST
-
-**Location:** `scanner.py` lines 1593-1597
-
-```python
-print(f"  EXIT STRATEGY (Backtested +539% avg vs +294% with signal exits):")
-print(f"    • USE: 20% trailing stop from highest weekly close")
-print(f"    • CAUTION: HMA Pivot SELL = tighten stop to 15%, don't exit")
-print(f"    • DO NOT automatically exit on SELL signal")
-```
-
-**Actual Implementation:**
-- BoS Bearish triggers an ADVISORY (tighten stop to 15%)
-- BoS Bearish does NOT trigger automatic exit
-- 20% trailing stop is the PRIMARY exit mechanism
-
-**Backtest Evidence:**
-- Trailing stop strategy: +539% average returns
-- Signal-based exits: +294% average returns
-- **Trailing stop outperforms by 83%**
-
----
-
-### 5.5 Backtesting Summary Table
-
-| Feature | Documented | Implemented | Status |
-|---------|------------|-------------|--------|
-| HMA Pivot entries | Yes | Yes | ✅ CONFIRMED |
-| 10% baseline entry | Yes | No | ❌ NOT FOUND |
-| Fresh trends <4 weeks | Yes | Disabled | ⚠️ REMOVED |
-| BoS Bearish exit | Yes | Advisory only | ⚠️ MODIFIED |
-| 20% trailing stop | Yes | Yes (PRIMARY) | ✅ CONFIRMED |
+**Code:** `portfolio_manager.py:184-186`, `scanner.py:969`
 
 ---
 
 ## 6. Truth Tables
 
-### 6.1 BUY Signal Truth Table
+### 6.1 Technical Gate
 
-| Beta >= 1.5 | BoS UP | Banker >= 55 | Theme Fit | Gatekeeper | Result |
-|:-----------:|:------:|:------------:|:---------:|:----------:|:------:|
-| ❌ | - | - | - | - | FILTERED |
-| ✅ | ❌ | - | - | - | FILTERED |
-| ✅ | ✅ | ❌ | - | - | FILTERED |
-| ✅ | ✅ | ✅ | ❌ | - | FILTERED (with LLM) |
-| ✅ | ✅ | ✅ | ✅ | FAIL | FILTERED |
-| ✅ | ✅ | ✅ | ✅ | CAUTION | **CONSIDER** (watchlist) |
-| ✅ | ✅ | ✅ | ✅ | PASS | **TEAL SIGNAL** (buy) |
-| ✅ | ✅ | ✅ | - | - | **TEAL SIGNAL** (--no-llm mode) |
+| Beta >= 1.5 | bos_bullish | Banker > 55 | Result |
+|:-----------:|:-----------:|:-----------:|:------:|
+| F | F | F | REJECT |
+| F | F | T | REJECT |
+| F | T | F | REJECT |
+| F | T | T | REJECT |
+| T | F | F | REJECT |
+| T | F | T | REJECT |
+| T | T | F | REJECT (no tier) |
+| **T** | **T** | **T** | **PASS** |
 
-### 6.2 SELL Signal Truth Table
+All three conditions must be True. Only the last row passes.
 
-| Drawdown >= 20% | BoS DOWN | Status | Action |
-|:---------------:|:--------:|:------:|:------:|
-| ❌ | ❌ | OPEN | Hold position |
-| ❌ | ✅ | OPEN | **ADVISORY**: Tighten stop to 15% |
-| ✅ | ❌ | STOPPED | **EXIT**: Trailing stop hit |
-| ✅ | ✅ | STOPPED | **EXIT**: Trailing stop hit |
+### 6.2 Tier Assignment (Given Technical Gate PASS)
 
-### 6.3 Tier Assignment Truth Table
+| Banker Range | Tier |
+|:------------:|:----:|
+| > 70 | TIER1 |
+| > 60, <= 70 | TIER2 |
+| > 55, <= 60 | TIER3 |
+| <= 55 | (rejected, no tier) |
 
-| Banker Score | Tier | Public Description |
-|:------------:|:----:|:-------------------|
-| < 55 | - | Does not qualify |
-| 55 - 60 | TIER3 | Slight accumulation |
-| 60 - 70 | TIER2 | Moderate accumulation |
-| > 70 | TIER1 | Strong accumulation |
+### 6.3 Theme Gate
 
-### 6.4 Theme Classification Truth Table
+| Classification | Fit Verdict | Result |
+|:--------------:|:-----------:|:------:|
+| PRIME | STRONG FIT | **PASS** |
+| PRIME | GOOD FIT | **PASS** |
+| PRIME | MODERATE FIT | REJECT |
+| PRIME | POOR FIT | REJECT |
+| INVESTABLE | STRONG FIT | **PASS** |
+| INVESTABLE | GOOD FIT | **PASS** |
+| INVESTABLE | MODERATE/POOR | REJECT |
+| SELECTIVE | Any | REJECT |
+| AVOID | Any | REJECT |
 
-| Theme Score | Classification | Actionable? | Pass Gate 4? |
-|:-----------:|:--------------:|:-----------:|:------------:|
-| < 4.5 | AVOID | No | ❌ |
-| 4.5 - 6.0 | SELECTIVE | Watchlist | ❌ |
-| 6.0 - 7.5 | INVESTABLE | Yes | ✅ |
-| >= 7.5 | PRIME | Yes | ✅ |
+### 6.4 Gatekeeper Gate
 
-### 6.5 Combined Signal Flow (Typical Week)
+| Decision | Result |
+|:--------:|:------:|
+| PASS / TRADE | **BUY SIGNAL** |
+| CONSIDER | Watchlist (no buy) |
+| CAUTION | Watchlist (no buy) |
+| FAIL / SKIP | Rejected |
 
+### 6.5 Sell Signal Priority
+
+| bos_bearish | drawdown >= 20% | Result |
+|:-----------:|:---------------:|:------:|
+| F | F | No signal |
+| F | T | **TRAILING STOP** (automatic) |
+| T | F | **BoS DOWN** (caution) |
+| T | T | **BoS DOWN** (checked first due to `elif`) |
+
+Note: The `elif` at line 969 means if `bos_bearish` is True, the trailing stop check is skipped. Both conditions flagging a sell is handled by the BoS check taking priority.
+
+### 6.6 Full Pipeline Funnel (Typical Numbers)
+
+| Stage | Input | Output | Pass Rate |
+|:-----:|:-----:|:------:|:---------:|
+| Universe | ~1,800 | ~1,800 | 100% |
+| Beta >= 1.5 | ~1,800 | ~485 | ~27% |
+| BoS Bullish | ~485 | ~48 | ~10% |
+| Banker >= 55 (Tier) | ~48 | ~44 | ~92% |
+| Theme Confirmed | ~44 | ~17 | ~39% |
+| Gatekeeper PASS | ~17 | ~6 | ~35% |
+
+---
+
+## 7. Backtesting Findings vs Live Code
+
+### Finding 1: Momentum Filter Hurts Returns
+
+**Documented claim** (`scanner.py:127-130`):
+> Momentum filter (<10%) REDUCED returns from +9.2% to +6.1% on average across 4000+ stocks
+
+**Live code status:**
+- `passes_momentum_filter()` at line 189-195 **always returns True** (filter disabled)
+- `momentum_4w` is still calculated (`scanner.py:578-589`) but used only for informational display
+- `meets_all_technical_criteria()` at line 197-202 calls `meets_technical_criteria()` only
+
+**Verdict: CONSISTENT.** Filter removed as backtesting recommended.
+
+### Finding 2: Trailing Stop > Signal-Based Exit
+
+**Documented claim** (`scanner.py:1760-1763`):
+> Signal-based exits: +294% average return
+> Trailing stop exits: +539% average return
+
+**Live code status:**
+- Primary exit method in code is `TRAILING_STOP_PCT = 20.0` (`scanner.py:133`)
+- BoS Down is documented as "tighten stop to 15%, do NOT auto-exit" (`scanner.py:1595`)
+
+**Verdict: INCONSISTENT.** See Discrepancy D1 below.
+
+### Finding 3: HMA Pivot Entries (10% of Baseline)
+
+**Documented claim** (from CLAUDE.md):
+> HMA Pivot entries were roughly 10% of baseline (total opportunities very limited)
+
+**Live code status:**
+- Typical pipeline: ~48 BoS bullish out of ~485 high-beta stocks = ~10%
+- This matches the documented finding
+
+**Verdict: CONSISTENT.**
+
+### Finding 4: Fresh Trends < 4 Weeks
+
+**Documented claim**: Fresh trends (entered within 4 weeks of signal) performed better.
+
+**Live code status:**
+- No explicit "fresh trend" filter exists in the code
+- `momentum_4w` is tracked but not used as a gate
+- The weekly BoS signal inherently fires on the most recent bar only (`scanner.py:464-465` checks last vs second-to-last weekly bar)
+
+**Verdict: PARTIALLY CONSISTENT.** The BoS signal only fires on the current week's bar, which naturally captures "fresh" signals. However, there is no explicit recency check.
+
+---
+
+## 8. Discrepancies & Concerns
+
+### D1: BoS Bearish Is BOTH a Caution AND an Auto-Exit (CRITICAL)
+
+**Documentation says** (`scanner.py:1595`):
 ```
-UNIVERSE: 937 tickers
-    ↓ (Beta >= 1.5)
-BETA PASS: ~485 (52%)
-    ↓ (BoS UP)
-BOS PASS: ~48 (10%)
-    ↓ (Banker >= 55)
-TECHNICAL: ~44 (92%)
-    ↓ (Theme fit)
-THEME CONFIRMED: ~17 (39%)
-    ↓ (Gatekeeper)
-TEAL SIGNALS: 6-7 PASS (35-40%)
-WATCHLIST: 5-10 CONSIDER
+⚠️  This is NOT an automatic exit - use trailing stop
 ```
 
----
-
-## 7. Discrepancies & Concerns
-
-### 7.1 CRITICAL: 10% Baseline Entry Logic Missing
-
-**Documented:** "Entry within 10% of HMA baseline"
-**Found:** ❌ NO IMPLEMENTATION
-
-**Impact:** Medium - Documented feature not implemented. Users may expect this filtering.
-
-**Recommendation:** Either implement or remove from documentation.
-
----
-
-### 7.2 CRITICAL: Exit Strategy Mismatch
-
-**Documented:** "Exit on BoS Bearish signal"
-**Actual:** BoS Bearish is ADVISORY only; 20% trailing stop is primary exit
-
-**Impact:** HIGH - Marketing may mislead users about exit methodology.
-
-**Evidence:**
+And (`scanner.py:1595-1596`):
 ```
-Backtest Results:
-- Trailing stop: +539% average
-- Signal exits: +294% average
+CAUTION: HMA Pivot SELL = tighten stop to 15%, don't exit
+DO NOT automatically exit on SELL signal
 ```
 
-**Recommendation:** Update marketing to reflect trailing stop as primary exit.
+**But the code does** (`scanner.py:965, 982`):
+```python
+if stock.bos_bearish:
+    sell_reason = f"Weekly BoS Down (price breaking structure low)"
+    ...
+    pm.flag_exit(symbol, current_price, reason=sell_reason)
+```
+
+`flag_exit()` sets `trade.status = "CLOSED"` and records an exit date/price. This **is** an automatic exit.
+
+**Impact:** The backtesting found trailing stops (+539%) outperform signal exits (+294%). The code contradicts its own documented recommendation by auto-exiting on BoS bearish.
+
+**Recommendation:** Either:
+1. Remove `pm.flag_exit()` from the BoS bearish branch and only generate a warning, OR
+2. Implement the documented "tighten to 15%" behavior programmatically
+
+### D2: No "Tighten to 15%" Implementation
+
+The documentation repeatedly recommends tightening the trailing stop from 20% to 15% when BoS bearish fires. There is **no code that implements this**. The trailing stop is always 20% (`TRAILING_STOP_PCT = 20.0` is a constant).
+
+**Recommendation:** Add a per-trade `stop_pct` field that defaults to 20% and narrows to 15% on BoS bearish.
+
+### D3: Duplicate Threshold Constants
+
+Constants are defined in **both** `config.py` and `scanner.py`:
+
+| Constant | scanner.py | config.py |
+|----------|-----------|-----------|
+| BETA_MIN | Line 118 (1.5) | Defined |
+| BANKER_TIER1 | Line 123 (70.0) | Defined |
+| TRAILING_STOP_PCT | Line 133 (20.0) | Defined |
+
+If values diverge, behavior depends on which module is imported. `scanner.py` uses its own local constants.
+
+### D4: `meets_technical_criteria()` vs Pipeline Usage
+
+`meets_technical_criteria()` checks only `beta >= 1.5 AND bos_bullish` (line 187). But the pipeline **also** requires `Banker > 55` (via `get_tier()` returning non-empty). The method name is misleading since it doesn't capture all technical criteria.
+
+### D5: Both bos_bullish and bos_bearish Can Be True Simultaneously
+
+The code calculates both independently (`scanner.py:464-469`). There is no mutual exclusion enforced. If both fire on the same bar, a stock could simultaneously:
+- Pass the technical gate (bos_bullish = True)
+- Trigger a sell signal on existing positions (bos_bearish = True)
+
+This is an edge case but could cause contradictory signals.
+
+### D6: Sell Signal `elif` Masks Trailing Stop When BoS Bearish
+
+At `scanner.py:969`, the trailing stop check uses `elif`:
+```python
+if stock.bos_bearish:
+    sell_reason = "Weekly BoS Down..."
+elif drawdown_pct >= TRAILING_STOP_PCT:
+    sell_reason = "Trailing stop hit..."
+```
+
+If a stock has **both** BoS bearish AND has hit 20% drawdown, only the BoS reason is recorded. The more severe condition (actual stop hit) is masked. The trade is still flagged for exit either way, but the recorded reason may be misleading.
+
+### D7: `highest_close` Updated in Multiple Places
+
+`highest_close` is updated in:
+1. `scanner.py:952-953` (in `_check_sell_signals_portfolio_manager`)
+2. `portfolio_manager.py:174-175` (in `calculate_metrics`)
+3. `portfolio_manager.py:464-465` (in `check_stop_signals`)
+
+The scanner update (1) happens during the weekly scan, but (2) and (3) happen when prices are refreshed. If `portfolio_manager.py --update` runs independently, `highest_close` updates outside the scanner's awareness. This is correct behavior but worth noting for traceability.
+
+### D8: Legacy Sell Path Still Exists
+
+`_check_sell_signals_legacy()` (`scanner.py:996-1072`) reads from `open_positions.csv`, a deprecated file. If `PORTFOLIO_MANAGER_AVAILABLE` is False (import failure), the system falls back to this legacy path silently. The legacy path has identical logic but bypasses `portfolio_manager.py`'s `flag_exit()` method.
 
 ---
 
-### 7.3 MODERATE: Momentum Filter Silently Disabled
+## Appendix A: Key Line References
 
-**Documented:** "Fresh trends under 4 weeks prioritized"
-**Actual:** Filter disabled based on backtest (-3.1% return reduction)
-
-**Impact:** Low - Correct decision based on evidence, but creates documentation drift.
-
-**Recommendation:** Remove from documentation or clearly mark as deprecated.
-
----
-
-### 7.4 LOW: Pivot Confirmation Lag Not Documented
-
-**Issue:** HMA pivots are confirmed 1 week AFTER they form (k=1 lookback)
-
-**Impact:** Users may not understand signal timing.
-
-**Example:**
-- Pivot forms on Week 10
-- Signal confirmed on Week 11
-- Entry happens Week 12 (Friday scan)
-- Stock may have moved 5-15% before entry
-
-**Recommendation:** Document the 1-week confirmation lag in user-facing materials.
-
----
-
-### 7.5 LOW: Manual Stop Tightening Not Automated
-
-**Issue:** BoS DOWN advises "tighten stop to 15%" but doesn't automatically adjust.
-
-**Current Behavior:**
-1. BoS DOWN detected
-2. Alert issued: "Tighten stop to 15%"
-3. User must MANUALLY adjust (no automatic enforcement)
-
-**Recommendation:** Consider automating stop adjustment or clearly document manual requirement.
+| Item | File | Line(s) |
+|------|------|---------|
+| Stock dataclass | scanner.py | 148-219 |
+| SellSignal dataclass | scanner.py | 903-911 |
+| meets_technical_criteria() | scanner.py | 185-187 |
+| passes_momentum_filter() (disabled) | scanner.py | 189-195 |
+| get_tier() | scanner.py | 204-214 |
+| calculate_beta() | scanner.py | 283-297 |
+| calculate_banker() | scanner.py | 300-330 |
+| calculate_hma() | scanner.py | 333-353 |
+| find_pivots() | scanner.py | 356-382 |
+| calculate_bos() | scanner.py | 385-490 |
+| BUY signal condition | scanner.py | 464-465 |
+| SELL signal condition | scanner.py | 468-469 |
+| download_and_process() | scanner.py | 524-599 |
+| bos_bullish/bearish assigned | scanner.py | 575 |
+| check_sell_signals() | scanner.py | 913-928 |
+| BoS bearish exit check | scanner.py | 965 |
+| Trailing stop exit check | scanner.py | 969 |
+| flag_exit() call | scanner.py | 982 |
+| Technical gate loop | scanner.py | 1349-1363 |
+| Theme gate | scanner.py | 1405 |
+| Gatekeeper gate | scanner.py | 1457-1470 |
+| Caution output text | scanner.py | 1590-1597 |
+| Trade dataclass | portfolio_manager.py | 131-166 |
+| calculate_metrics() | portfolio_manager.py | 168-204 |
+| flag_exit() | portfolio_manager.py | 333-352 |
+| check_stop_signals() | portfolio_manager.py | 448-484 |
+| TRAILING_STOP_PCT | scanner.py | 133 |
+| STOP_WARNING_PCT | portfolio_manager.py | 75 |
 
 ---
 
-### 7.6 INFO: No Time-Based Exits
-
-**Observation:** System has no maximum holding period.
-
-**Implications:**
-- Positions can be held indefinitely
-- No forced exit after poor performance duration
-- Relies entirely on 20% trailing stop
-
-**Status:** Design choice, not a bug.
-
----
-
-## Appendix A: Key Function Reference
-
-| Function | File | Lines | Purpose |
-|----------|------|-------|---------|
-| `calculate_beta()` | scanner.py | 283-297 | Beta calculation vs SPY |
-| `calculate_banker()` | scanner.py | 300-330 | Institutional accumulation score |
-| `calculate_hma()` | scanner.py | 333-353 | Hull Moving Average |
-| `find_pivots()` | scanner.py | 361-382 | Pivot high/low detection |
-| `calculate_bos()` | scanner.py | 385-490 | Break of Structure signals |
-| `check_sell_signals()` | scanner.py | 913-1072 | Exit condition checking |
-| `run_thematic_gate()` | scanner.py | 614-756 | Theme analysis integration |
-| `run_gatekeeper()` | scanner.py | 763-896 | Final quality gate |
-| `add_trade_from_stock()` | portfolio_manager.py | 321-331 | Record new position |
-| `flag_exit()` | portfolio_manager.py | 333-352 | Record position exit |
-
----
-
-## Appendix B: Threshold Quick Reference
-
-| Parameter | Value | Purpose |
-|-----------|-------|---------|
-| `BETA_THRESHOLD` | 1.5 | Minimum beta for entry |
-| `BANKER_TIER1` | 70 | Strong accumulation |
-| `BANKER_TIER2` | 60 | Moderate accumulation |
-| `BANKER_TIER3` | 55 | Entry minimum |
-| `TRAILING_STOP_PCT` | 20.0 | Primary exit trigger |
-| `TIGHTEN_STOP_PCT` | 15.0 | Advisory tightening on BoS DOWN |
-| `STOP_WARNING_PCT` | 5.0 | Alert threshold |
-| `HMA_LENGTH` | 21 | HMA period (weekly bars) |
-| `PIVOT_K` | 1 | Pivot lookback window |
-| `THEME_PRIME` | 7.5 | Top theme score |
-| `THEME_INVESTABLE` | 6.0 | Good theme score |
-| `MIN_TRADING_DAYS` | 60 | Minimum for valid beta |
-
----
-
-## Document Control
-
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2026-01-28 | Claude Code Audit | Initial comprehensive audit |
-
----
-
-*End of Document*
+*End of Signal Detection Audit*

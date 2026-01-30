@@ -10,14 +10,14 @@ ENTRY CRITERIA:
 2. Stock is in a PRIME or INVESTABLE theme (Thematic Analyzer)
 3. Theme fit is STRONG FIT or GOOD FIT
 4. Optional: Run Momentum Assessor for final confirmation
-5. Decision = PASS → Enter Monday at market open (generates TEAL signal)
+5. Decision = PASS → Enter Monday at market open (generates GREEN signal)
 6. Decision = CONSIDER → Smaller position or wait for better entry
 7. Decision = SKIP → Don't trade
 
 SIGNAL TERMINOLOGY (MASTER_TODO_v2):
 - Internal: PASS, CONSIDER, SKIP (scanner decisions)
-- Marketing: "TEAL signal" = PASS signal that cleared all 5 gates
-- Never use "TRADE" in outputs - use "PASS" internally, "TEAL signal" for marketing
+- Marketing: "GREEN signal" = PASS signal that cleared all 5 gates
+- Never use "TRADE" in outputs - use "PASS" internally, "GREEN signal" for marketing
 
 THEME CLASSIFICATION (from Thematic Analyzer):
 - PRIME: High conviction theme with strong catalysts + momentum
@@ -63,21 +63,25 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+# Import thresholds from centralized config (single source of truth)
+from config import (
+    BETA_THRESHOLD,
+    BANKER_TIER1 as _CFG_BANKER_TIER1,
+    BANKER_TIER2 as _CFG_BANKER_TIER2,
+    BANKER_TIER3 as _CFG_BANKER_TIER3,
+    TRAILING_STOP_PCT as _CFG_TRAILING_STOP_PCT,
+)
+
 # Portfolio Manager Integration (unified trade tracking)
-# Falls back to legacy CSV handling if portfolio_manager.py not found
-try:
-    from portfolio_manager import (
-        PortfolioManager,
-        get_portfolio_manager,
-        add_trade_to_portfolio,
-        check_portfolio_stops,
-        get_open_position_symbols,
-        update_portfolio_prices
-    )
-    PORTFOLIO_MANAGER_AVAILABLE = True
-except ImportError:
-    PORTFOLIO_MANAGER_AVAILABLE = False
-    print("  ℹ️  portfolio_manager.py not found - using legacy CSV tracking")
+from portfolio_manager import (
+    PortfolioManager,
+    get_portfolio_manager,
+    add_trade_to_portfolio,
+    check_portfolio_stops,
+    get_open_position_symbols,
+    update_portfolio_prices
+)
+PORTFOLIO_MANAGER_AVAILABLE = True  # Hard dependency as of audit remediation
 
 # Output paths for weekly folder structure
 try:
@@ -114,23 +118,18 @@ LOGS_DIR = BASE_DIR / "logs"
 TRADES_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
-# Thresholds
-BETA_MIN = 1.5           # Pre-filter threshold
-BETA_SIGNAL = 1.5        # Signal requirement
-
-# Banker thresholds (new scale: 0-100, centered at 50)
-# 50 = at VWAP (neutral), >50 = above VWAP (accumulation)
-BANKER_TIER1 = 70.0      # Strong accumulation (price ~4%+ above VWAP)
-BANKER_TIER2 = 60.0      # Moderate accumulation (price ~2%+ above VWAP)
-BANKER_TIER3 = 55.0      # Slight accumulation (price ~1%+ above VWAP)
+# Thresholds — imported from config.py (single source of truth)
+BETA_MIN = BETA_THRESHOLD
+BETA_SIGNAL = BETA_THRESHOLD
+BANKER_TIER1 = float(_CFG_BANKER_TIER1)
+BANKER_TIER2 = float(_CFG_BANKER_TIER2)
+BANKER_TIER3 = float(_CFG_BANKER_TIER3)
+TRAILING_STOP_PCT = float(_CFG_TRAILING_STOP_PCT)
 
 # Note: 4-week momentum filter was removed based on backtest results
 # Backtest showed filtering by momentum (<10%) actually REDUCED returns
 # from +9.2% to +6.1% on average across 4000+ stocks
 # Momentum is still tracked for informational purposes but not used as a gate
-
-# Trading parameters
-TRAILING_STOP_PCT = 20.0  # 20% trailing stop from highest close
 
 
 def rel_path(p: Path) -> str:
@@ -183,8 +182,8 @@ class Stock:
     dd_fatal_flaw: str = ""       # Extracted fatal flaw (if NO GO)
 
     def meets_technical_criteria(self) -> bool:
-        """Check if stock meets technical signal criteria."""
-        return self.beta >= BETA_SIGNAL and self.bos_bullish
+        """Check if stock meets technical signal criteria (Beta + BoS + Banker)."""
+        return self.beta >= BETA_SIGNAL and self.bos_bullish and self.banker >= BANKER_TIER3
     
     def passes_momentum_filter(self) -> bool:
         """
@@ -218,16 +217,15 @@ class Stock:
         return self.theme_verdict in ["STRONG FIT", "GOOD FIT"]
     
     def passes_final_gate(self) -> bool:
-        """Check if passes final momentum assessor gate (generates TEAL signal)."""
-        # MASTER_TODO_v2: Standardize on PASS, keep TRADE for backwards compat only
-        return self.final_decision in ["PASS", "CONSIDER", "TRADE"]
+        """Check if passes final momentum assessor gate (generates GREEN signal)."""
+        return self.final_decision in ["PASS", "CONSIDER"]
 
 
 @dataclass
 class ScanStats:
     tickers_loaded: int = 0
     data_downloaded: int = 0
-    beta_gte_1_8: int = 0
+    beta_gte_1_5: int = 0
     beta_gte_2_0: int = 0
     bos_bullish: int = 0
     bos_bearish: int = 0
@@ -921,11 +919,7 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
     2. BACKUP: 20% trailing stop from highest close since entry
     """
     
-    # Use portfolio_manager if available
-    if PORTFOLIO_MANAGER_AVAILABLE:
-        return _check_sell_signals_portfolio_manager(stocks)
-    else:
-        return _check_sell_signals_legacy(stocks)
+    return _check_sell_signals_portfolio_manager(stocks)
 
 
 def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[SellSignal]:
@@ -959,17 +953,11 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
                 drawdown_pct = 0
             
             # CHECK EXIT CRITERIA
-            sell_reason = None
-            
-            # PRIMARY: Weekly BoS Down
-            if stock.bos_bearish:
-                sell_reason = f"Weekly BoS Down (price breaking structure low)"
-            
-            # BACKUP: 20% trailing stop
-            elif drawdown_pct >= TRAILING_STOP_PCT:
+            # BoS bearish and trailing stop are checked independently
+
+            # Trailing stop — actual exit trigger
+            if drawdown_pct >= TRAILING_STOP_PCT:
                 sell_reason = f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${trade.highest_close:.2f})"
-            
-            if sell_reason:
                 sell_signals.append(SellSignal(
                     symbol=symbol,
                     price=current_price,
@@ -978,8 +966,19 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
                     highest_close=trade.highest_close,
                     drawdown_pct=drawdown_pct
                 ))
-                # Flag the trade as exited in portfolio
                 pm.flag_exit(symbol, current_price, reason=sell_reason)
+
+            # BoS bearish — caution signal only (tighten stop, don't exit)
+            elif stock.bos_bearish:
+                sell_signals.append(SellSignal(
+                    symbol=symbol,
+                    price=current_price,
+                    reason="Weekly BoS Down - Tighten stop to 15%",
+                    entry_price=trade.entry_price,
+                    highest_close=trade.highest_close,
+                    drawdown_pct=drawdown_pct
+                ))
+                # Do NOT call pm.flag_exit() — position stays open
 
         # Note: Prices will be updated in main() when export_for_google_sheets() is called
         # No need for duplicate pm.update_prices() here
@@ -992,84 +991,6 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
         traceback.print_exc()
         return []
 
-
-def _check_sell_signals_legacy(stocks: Dict[str, Stock]) -> List[SellSignal]:
-    """Check sell signals using legacy open_positions.csv."""
-    open_positions_file = TRADES_DIR / "open_positions.csv"
-    
-    if not open_positions_file.exists():
-        return []
-    
-    sell_signals = []
-    updated_positions = []
-    
-    try:
-        with open(open_positions_file, 'r') as f:
-            reader = csv.DictReader(f)
-            rows = list(reader)
-        
-        for row in rows:
-            symbol = row.get('symbol', row.get('ticker', '')).upper()
-            entry_price = float(row.get('entry_price', 0))
-            highest_close = float(row.get('highest_close', entry_price))
-            
-            if symbol not in stocks:
-                updated_positions.append(row)
-                continue
-            
-            stock = stocks[symbol]
-            current_price = stock.price
-            
-            if current_price > highest_close:
-                highest_close = current_price
-            
-            if highest_close > 0:
-                drawdown_pct = ((highest_close - current_price) / highest_close) * 100
-            else:
-                drawdown_pct = 0
-            
-            sell_reason = None
-            
-            if stock.bos_bearish:
-                sell_reason = f"Weekly BoS Down (price breaking structure low)"
-            elif drawdown_pct >= TRAILING_STOP_PCT:
-                sell_reason = f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${highest_close:.2f})"
-            
-            if sell_reason:
-                sell_signals.append(SellSignal(
-                    symbol=symbol,
-                    price=current_price,
-                    reason=sell_reason,
-                    entry_price=entry_price,
-                    highest_close=highest_close,
-                    drawdown_pct=drawdown_pct
-                ))
-            else:
-                updated_row = row.copy()
-                updated_row['highest_close'] = str(highest_close)
-                updated_row['current_price'] = str(current_price)
-                updated_row['drawdown_pct'] = f"{drawdown_pct:.1f}"
-                updated_positions.append(updated_row)
-        
-        if rows:
-            fieldnames = list(rows[0].keys())
-            if 'highest_close' not in fieldnames:
-                fieldnames.append('highest_close')
-            if 'current_price' not in fieldnames:
-                fieldnames.append('current_price')
-            if 'drawdown_pct' not in fieldnames:
-                fieldnames.append('drawdown_pct')
-            
-            with open(open_positions_file, 'w', newline='') as f:
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(updated_positions)
-        
-        return sell_signals
-        
-    except Exception as e:
-        print(f"  ⚠ Error checking sell signals (legacy): {e}")
-        return []
 
 
 def add_to_open_positions(stock: Stock):
@@ -1232,7 +1153,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     
     for stock in stocks.values():
         if stock.beta >= BETA_MIN:
-            stats.beta_gte_1_8 += 1
+            stats.beta_gte_1_5 += 1
             high_beta_stocks.append(stock)
         if stock.beta >= BETA_SIGNAL:
             stats.beta_gte_2_0 += 1
@@ -1261,7 +1182,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print(f"  Data downloaded:          {stats.data_downloaded:>6}")
     if verbose:
         # Internal terminology for debugging
-        print(f"  Beta >= 1.5:              {stats.beta_gte_1_8:>6}")
+        print(f"  Beta >= 1.5:              {stats.beta_gte_1_5:>6}")
         print(f"  Beta >= 2.0:              {stats.beta_gte_2_0:>6}")
         print(f"  ────────────────────────────────────")
         print(f"  HMA Pivot BUY (entry):    {stats.bos_bullish:>6}")
@@ -1272,7 +1193,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"  Banker > 55 (Slight):     {stats.banker_gt_2:>6}")
     else:
         # Marketing-safe terminology
-        print(f"  Volatility Expansion:     {stats.beta_gte_1_8:>6}")
+        print(f"  Volatility Expansion:     {stats.beta_gte_1_5:>6}")
         print(f"  High Volatility:          {stats.beta_gte_2_0:>6}")
         print(f"  ────────────────────────────────────")
         print(f"  Structural Breakouts:     {stats.bos_bullish:>6}")
@@ -1472,7 +1393,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"\n  FINAL DECISION RESULTS:")
         print(f"  ────────────────────────────────────")
         print(f"  Theme confirmed:           {len(theme_confirmed):>5}")
-        print(f"  PASS (TEAL signals):       {stats.final_trade:>5}")
+        print(f"  PASS (GREEN signals):      {stats.final_trade:>5}")
         print(f"  CONSIDER:                  {stats.final_consider:>5}")
         print(f"  SKIP:                      {stats.final_skip:>5}")
     
@@ -1576,7 +1497,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
         print(f"    • {stats.bos_bullish} with HMA Pivot BUY")
         print(f"    • {stats.meets_technical_gate} met technical gate")
         print(f"    • {stats.theme_confirmed} passed theme gate")
-        print(f"    • {stats.final_trade} PASS (TEAL), {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
+        print(f"    • {stats.final_trade} PASS (GREEN), {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
     
     if sell_signals:
         print(f"\n  ⚠️ CAUTION SIGNALS ({len(sell_signals)}) - Consider Tightening Stops:")
@@ -1651,7 +1572,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     if total_signals > 0:
         lines.append(f"  ✅ {total_signals} entry signal(s) identified")
         if trades:
-            lines.append(f"     • {len(trades)} PASS (TEAL signals) - High conviction, enter Monday open")
+            lines.append(f"     • {len(trades)} PASS (GREEN signals) - High conviction, enter Monday open")
         if considers:
             lines.append(f"     • {len(considers)} CONSIDER - Smaller position recommended")
         if theme_confirmed:
@@ -1673,7 +1594,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append("─" * 72)
     lines.append(f"  Universe scanned:          {stats.tickers_loaded:>6}")
     lines.append(f"  Data retrieved:            {stats.data_downloaded:>6}")
-    lines.append(f"  High beta (≥1.5):          {stats.beta_gte_1_8:>6}")
+    lines.append(f"  High beta (≥1.5):          {stats.beta_gte_1_5:>6}")
     lines.append("")
     lines.append(f"  BoS BUY signals:           {stats.bos_bullish:>6}")
     lines.append(f"  Met technical gate:        {stats.meets_technical_gate:>6}")
@@ -1898,14 +1819,14 @@ def generate_newsletter_briefing(
     lines.append("")
     
     if confirmed:
-        # Separate PASS (TEAL signals) and CONSIDER signals
-        # MASTER_TODO_v2: Use PASS internally, "TEAL signal" for marketing
+        # Separate PASS (GREEN signals) and CONSIDER signals
+        # MASTER_TODO_v2: Use PASS internally, "GREEN signal" for marketing
         trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         considers = [s for s in confirmed if s.final_decision == "CONSIDER"]
         technical_only = [s for s in confirmed if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]]
         
         if trades:
-            lines.append("### 🟢 PASS - Ready for Entry (TEAL Signals)")
+            lines.append("### 🟢 PASS - Ready for Entry (GREEN Signals)")
             lines.append("")
             for s in trades:
                 lines.append(f"#### {s.symbol}")
@@ -2746,7 +2667,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     signals_data = {
         "timestamp": timestamp,
         "timeframe": "WEEKLY",
-        "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates TEAL signal)",
+        "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates GREEN signal)",
         "exit_criteria": f"Weekly BoS Down OR {TRAILING_STOP_PCT}% trailing stop",
         "stats": {
             "tickers_loaded": stats.tickers_loaded,
@@ -2755,12 +2676,12 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             "weekly_bos_up": stats.bos_bullish,
             "technical_signals": stats.meets_technical_gate,
             "theme_confirmed": stats.theme_confirmed,
-            "final_trade": stats.final_trade,  # Count of PASS signals (TEAL signals)
+            "final_trade": stats.final_trade,  # Count of PASS signals (GREEN signals)
             "final_consider": stats.final_consider,
         },
         # Themes data for tweet generator
         "themes": themes_data if themes_data else [],
-        # PHASE 10: Separated pass_signals (TEAL signals) from consider_signals per MASTER_TODO
+        # PHASE 10: Separated pass_signals (GREEN signals) from consider_signals per MASTER_TODO
         "pass_signals": [
             {
                 "symbol": s.symbol,

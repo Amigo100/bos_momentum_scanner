@@ -465,11 +465,15 @@ def calculate_portfolio_vs_spy(positions: List[Dict] = None) -> Dict:
 
     portfolio_return = total_pnl / position_count if position_count > 0 else 0.0
 
-    # Get SPY return (30 days as default comparison)
-    spy_return = fetch_spy_return(30)
-
-    # Calculate outperformance
-    outperformance = portfolio_return - spy_return
+    # Use matched-period SPY comparison (fair alpha calculation)
+    fair = calculate_fair_spy_comparison(positions)
+    if fair.get('can_compare'):
+        spy_return = fair['spy_return']
+        outperformance = fair['alpha']
+    else:
+        # Fallback: 30-day calendar window (less accurate)
+        spy_return = fetch_spy_return(30)
+        outperformance = portfolio_return - spy_return
 
     # Check threshold
     threshold = MARKETING_THRESHOLDS.get('spy_outperformance_min', 5.0)
@@ -484,6 +488,7 @@ def calculate_portfolio_vs_spy(positions: List[Dict] = None) -> Dict:
         'outperformance': outperformance,
         'should_post_beat_spy': should_post_beat_spy,
         'winners': winners[:5],  # Top 5 winners
+        'comparison_type': 'matched_period' if fair.get('can_compare') else 'calendar_30d',
     }
 
 

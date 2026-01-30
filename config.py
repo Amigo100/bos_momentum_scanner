@@ -11,6 +11,7 @@ Usage:
     )
 """
 
+import re
 from pathlib import Path
 from typing import Dict, List
 
@@ -60,7 +61,6 @@ KILLED_CATEGORIES: List[str] = [
     'pdt_friendly',      # Wrong audience (UK investors, not US)
     'position_update',   # Shows individual P&L - merged to top_performers
     'weekly_wins',       # Renamed to top_performers (misleading terminology)
-    'self_quote',        # Renamed to milestone_alerts
 ]
 
 
@@ -125,6 +125,32 @@ COST_WEB_SEARCH = 0.01  # Per search
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# MULTI-ACCOUNT X/TWITTER CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+TWITTER_ACCOUNTS: Dict[str, Dict] = {
+    'main': {
+        'env_prefix': 'X',
+        'queue_file': 'content_queue.json',
+        'offset_minutes': 0,
+        'variation_style': 'original',
+    },
+    'account2': {
+        'env_prefix': 'X2',
+        'queue_file': 'content_queue_account2.json',
+        'offset_minutes': 10,
+        'variation_style': 'conversational',
+    },
+    'account3': {
+        'env_prefix': 'X3',
+        'queue_file': 'content_queue_account3.json',
+        'offset_minutes': 20,
+        'variation_style': 'data_driven',
+    },
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TWEET SCHEDULING (Eastern Time)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -159,7 +185,7 @@ SLOT_TIMES_UTC: Dict[int, str] = {
 # ═══════════════════════════════════════════════════════════════════════════════
 
 TWEETS_PER_DAY = 5
-TWEETS_PER_WEEK = 25  # MOD-1: Fixed from 35 (Sat=5, Sun=5, Mon=5, Tue=5, Wed=5 = 25)
+TWEETS_PER_WEEK = 35  # 5 slots × 7 days
 
 # Content types for tweets
 # NOTE: roth_ira, pdt_friendly, position_update are KILLED - see KILLED_CATEGORIES
@@ -263,7 +289,7 @@ MARKETING_THRESHOLDS: Dict[str, float] = {
 
 # Signal classifications for content
 SIGNAL_CLASSIFICATIONS: Dict[str, str] = {
-    'PASS': 'Cleared all 5 gates - full TEAL recommendation',
+    'PASS': 'Cleared all 5 gates - full GREEN recommendation',
     'CONSIDER': 'Cleared gates 1-4, watching for gate 5',
     'WATCHLIST': 'Strong technical setup, theme alignment pending',
     'CAUTION': 'Open position showing weakness',
@@ -299,7 +325,7 @@ CELEBRATION_KEYS: Dict[float, str] = {
 }
 
 # Signal branding (public-facing)
-SIGNAL_BRAND = "TEAL signal"  # Instead of "PASS signal"
+SIGNAL_BRAND = "GREEN signal"  # Instead of "PASS signal"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -308,8 +334,8 @@ SIGNAL_BRAND = "TEAL signal"  # Instead of "PASS signal"
 
 SIGNAL_TYPES: Dict[str, Dict] = {
     'PASS': {
-        'description': 'Cleared all 5 gates - full TEAL signal',
-        'public_name': 'TEAL Signal',
+        'description': 'Cleared all 5 gates - full GREEN signal',
+        'public_name': 'GREEN Signal',
         'gates_required': [1, 2, 3, 4, 5],
         'show_publicly': True,
     },
@@ -358,7 +384,7 @@ BANNED_TERMS: List[str] = [
     'UK ISA', 'ISA account', 'GMT', 'BST', 'UK Time',
 
     # Branding consistency
-    'PASS signal',      # Use "TEAL signal"
+    'PASS signal',      # Use "GREEN signal"
     'weekly winners',   # Misleading - positions held months
     'this week we nailed',  # Misleading timeframe
 
@@ -372,12 +398,18 @@ BANNED_TERMS: List[str] = [
     '5th Gate',               # Say "cleared all gates" instead
     'Gate 5',                 # Say "cleared all gates" instead
 
-    # MASTER_TODO_v2: Non-branded signal terms - MUST use "TEAL signal"
-    'buy signal',             # Use "TEAL signal"
-    'proprietary entry',      # Use "TEAL signal"
-    'proprietary signal',     # Use "TEAL signal"
+    # Non-branded signal terms - MUST use "GREEN signal"
+    'proprietary entry',      # Use "GREEN signal"
+    'proprietary signal',     # Use "GREEN signal"
 
-    # MASTER_TODO_v2: US-specific (wrong audience)
+    # OLD COLOR SYSTEM (v2.0 - now banned, use GREEN/RED)
+    'TEAL signal', 'TEAL', 'teal',
+    'purple signal', 'purple', 'PURPLE',
+    'VIOLET signal', 'VIOLET', 'violet',
+    '🟣',  # Old purple emoji
+    'AMBER signal', 'AMBER', 'amber',
+
+    # US-specific (wrong audience)
     'Roth IRA', 'Roth',
     'PDT', 'PDT rule', 'pattern day trader',
     '401k', '401(k)',
@@ -390,9 +422,9 @@ BANNED_TERMS: List[str] = [
 
 APPROVED_TERMS: Dict[str, List[str]] = {
     'signals': [
-        'TEAL signal',
-        'TEAL signal fires',
-        'triggers a TEAL signal',
+        'GREEN signal',
+        'GREEN signal fires',
+        'triggers a GREEN signal',
         'cleared all 5 gates',
     ],
     'system': [
@@ -415,28 +447,25 @@ APPROVED_TERMS: Dict[str, List[str]] = {
 }
 
 
-def enforce_teal_branding(text: str) -> str:
-    """Replace non-branded signal terms with TEAL branding.
+def enforce_green_branding(text: str) -> str:
+    """Replace non-branded signal terms with GREEN branding.
 
-    MASTER_TODO_v2: All signal references MUST use 'TEAL signal'.
+    All signal references MUST use 'GREEN signal'.
 
     Args:
         text: Text to process
 
     Returns:
-        Text with TEAL branding applied
+        Text with GREEN branding applied
     """
     replacements = {
-        'buy signal': 'TEAL signal',
-        'Buy signal': 'TEAL signal',
-        'BUY SIGNAL': 'TEAL SIGNAL',
-        'proprietary entry': 'TEAL signal',
-        'proprietary signal': 'TEAL signal',
-        'our signal': 'TEAL signal',
-        'new signal': 'TEAL signal',
-        'passes our criteria': 'triggers a TEAL signal',
-        'cleared our system': 'triggers a TEAL signal',
-        'PASS signal': 'TEAL signal',
+        'TEAL signal': 'GREEN signal',
+        'TEAL SIGNAL': 'GREEN SIGNAL',
+        'PASS signal': 'GREEN signal',
+        'proprietary entry': 'GREEN signal',
+        'proprietary signal': 'GREEN signal',
+        'passes our criteria': 'triggers a GREEN signal',
+        'cleared our system': 'triggers a GREEN signal',
     }
     for old, new in replacements.items():
         text = text.replace(old, new)
@@ -499,13 +528,13 @@ IMAGE_PATTERNS: Dict[str, str] = {
 WEEKLY_SCHEDULE: Dict[str, List[tuple]] = {
     'Saturday': [
         (1, 'top_performers'),     # Safeguarded
-        (2, 'thread_buy_signal'),  # Deep dive on top TEAL signal
+        (2, 'thread_buy_signal'),  # Deep dive on top GREEN signal
         (3, 'theme_hot'),
         (4, 'funnel_graphic'),
         (5, 'engagement'),
     ],
     'Sunday': [
-        (1, 'buy_signal'),         # All TEAL signals
+        (1, 'buy_signal'),         # All GREEN signals
         (2, 'consider_spotlight'), # On Our Radar stocks
         (3, 'beat_spy'),           # Safeguarded
         (4, 'theme_hot'),
@@ -553,11 +582,11 @@ WEEKLY_SCHEDULE: Dict[str, List[tuple]] = {
 # ═══════════════════════════════════════════════════════════════════════════════
 
 BRANDING: Dict[str, str] = {
-    'signal_name': 'TEAL signal',
-    'signal_tagline': 'TEAL means go.',
+    'signal_name': 'GREEN signal',
+    'signal_tagline': 'GREEN means go.',
     'system_name': '5-Gate System',
-    'buy_color': 'TEAL',
-    'sell_color': 'VIOLET',
+    'buy_color': 'GREEN',
+    'sell_color': 'RED',
     'substack_url': 'https://sterlingsignals.substack.com',
     'twitter_handle': '@SterlingSignals',
 }
@@ -568,20 +597,20 @@ BRANDING: Dict[str, str] = {
 # ═══════════════════════════════════════════════════════════════════════════════
 
 SIGNAL_COLORS: Dict[str, Dict] = {
-    'TEAL': {
+    'GREEN': {
         'emoji': '🟢',
         'meaning': 'BUY',
         'internal_status': 'PASS',
-        'public_name': 'TEAL Signal',
+        'public_name': 'GREEN Signal',
     },
-    'VIOLET': {
-        'emoji': '🟣',
+    'RED': {
+        'emoji': '🔴',
         'meaning': 'EXIT',
         'internal_status': 'STOPPED',
         'public_name': 'Exit Alert',
     },
-    'AMBER': {
-        'emoji': '🟠',
+    'CONSIDER': {
+        'emoji': '🟡',
         'meaning': 'WATCH',
         'internal_status': 'CONSIDER',
         'public_name': 'On Our Radar',
@@ -615,7 +644,7 @@ SUBSTACK_CONTENT: Dict[str, Dict] = {
     },
     'saturday': {
         'type': 'weekly_signals',
-        'title_format': 'TEAL Signals: {date}',
+        'title_format': 'GREEN Signals: {date}',
         'filename': 'saturday_weekly_signals.html',
     },
     'sunday': {
@@ -627,10 +656,10 @@ SUBSTACK_CONTENT: Dict[str, Dict] = {
 
 
 def get_signal_emoji(signal_type: str) -> str:
-    """Get emoji for signal type (TEAL, VIOLET, AMBER).
+    """Get emoji for signal type (GREEN, RED, CONSIDER).
 
     Args:
-        signal_type: The signal type key (TEAL, VIOLET, AMBER)
+        signal_type: The signal type key (GREEN, RED, CONSIDER)
 
     Returns:
         Emoji string for the signal type, empty string if not found
@@ -872,6 +901,9 @@ def get_position_age_category(entry_date: str) -> str:
 def contains_banned_term(text: str) -> bool:
     """Check if text contains any banned terms.
 
+    Uses word-boundary matching for short terms to avoid false positives
+    (e.g. 'BoS' in 'Bostonian').
+
     Args:
         text: Text to check
 
@@ -879,9 +911,15 @@ def contains_banned_term(text: str) -> bool:
         True if any banned term is found
     """
     text_lower = text.lower()
+    short_terms = {'RSI', 'MACD', 'KDJ', 'BoS', 'BOS', 'GMT', 'BST',
+                   'HMA', 'PDT', 'TEAL', 'teal', 'AMBER', 'amber'}
     for term in BANNED_TERMS:
         if term.lower() in text_lower:
-            return True
+            if term in short_terms:
+                if re.search(rf'\b{re.escape(term)}\b', text, re.IGNORECASE):
+                    return True
+            else:
+                return True
     return False
 
 

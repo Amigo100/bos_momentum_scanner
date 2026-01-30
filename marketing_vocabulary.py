@@ -6,6 +6,8 @@ MARKETING VOCABULARY - Centralized Marketing Language Enforcement
 This module provides vocabulary validation for all public-facing content
 to ensure compliance with MARKETING_GUIDE.md rules.
 
+Version: 2.0 (GREEN/RED signal system - replaces TEAL/purple)
+
 Usage:
     from marketing_vocabulary import validate_content, APPROVED_VOCABULARY, BANNED_TERMS
 
@@ -26,7 +28,7 @@ BANNED_TERMS: List[str] = [
     # Technical indicators (internal system names)
     "HMA", "Hull Moving Average", "HMA Pivot", "HMA pivot",
     "Banker indicator", "Banker >= 55", "Banker ≥ 55", "Banker >=", "banker indicator",
-    "20% trailing stop", "20% stop", "trailing stop",
+    "20% trailing stop", "20% stop",
     "Beta >= 1.5", "Beta ≥ 1.5", "beta threshold", "Beta >=",
     "Break of Structure", "BoS", "BOS", "Weekly BoS", "weekly bos",
     "Tier 1", "Tier 2", "Tier 3", "TIER1", "TIER2", "TIER3",
@@ -36,30 +38,36 @@ BANNED_TERMS: List[str] = [
     # Specific technical indicators
     "RSI", "MACD", "KDJ",
 
+    # OLD COLOR SYSTEM (v2.0 - now banned, use GREEN/RED)
+    "TEAL signal", "TEAL", "teal signal", "teal",
+    "purple signal", "purple", "PURPLE",
+    "VIOLET signal", "VIOLET", "violet",
+    "🟣",  # Old purple emoji
+    "AMBER signal", "AMBER", "amber",
+
     # Outdated audience references (UK)
     "UK ISA", "ISA wrapper", "Barclays ISA", "ISA account",
     "UK investor", "UK investors", "UK trader", "UK traders",
     "GMT", "BST", "UK Time", "UK time", "London time",
     "GBP/USD",
-    # NOTE: "sterling" removed - false positive for "Sterling Signals" brand name
+    # NOTE: "sterling" not banned - false positive for "Sterling Signals" brand name
 
-    # MASTER_TODO_v2: Internal terms that leaked (now BANNED)
+    # Internal terms that leaked (BANNED)
     "Capital Preservation Protocol",
     "Forensic Audit",
     "Volatility Expansion Criteria",
     "5th Gate", "Gate 5",
 
-    # MASTER_TODO_v2: Non-branded signal terms (use "TEAL signal" instead)
-    "buy signal", "Buy signal", "BUY SIGNAL",
+    # Non-branded signal terms (use "GREEN signal" instead)
     "proprietary entry", "proprietary signal",
     "PASS signal",
 
-    # MASTER_TODO_v2: US-specific (wrong audience - UK ISA investors)
+    # US-specific retirement accounts (wrong audience context)
     "Roth IRA", "Roth",
     "PDT", "PDT rule", "pattern day trader",
     "401k", "401(k)",
 
-    # Signal branding violations - MUST use color system
+    # Signal branding violations - MUST use conviction language
     "conviction 5", "conviction 4", "conviction 3",
     "conviction score", "conviction rating",
 ]
@@ -69,24 +77,30 @@ BANNED_TERMS: List[str] = [
 # ═══════════════════════════════════════════════════════════════════════════════
 
 APPROVED_VOCABULARY: Dict[str, str] = {
-    # Internal term → Marketing term (MASTER_TODO_v2 compliant)
+    # Internal term → Marketing term
     "HMA Pivot": "momentum confirmed",
     "Banker indicator": "strong accumulation",
-    "Beta >= 1.5": "volatility characteristics",  # Don't use "Volatility Expansion Criteria" (banned)
-    "20% trailing stop": "trailing stop",  # Don't use "Capital Preservation Protocol" (banned)
+    "Beta >= 1.5": "volatility characteristics",
+    "20% trailing stop": "trailing stop",
     "Weekly BoS": "momentum confirmed",
-    "Gatekeeper": "cleared all gates",  # Don't use "Forensic Audit" (banned)
+    "Gatekeeper": "cleared all gates",
     "Tier 1/2/3": "high conviction",
     "Theme scoring": "theme alignment",
-    "buy signal": "TEAL signal",
-    "PASS signal": "TEAL signal",
 
-    # Color signal system (Marketing Upgrade)
-    "🟢 TEAL": "TEAL signal emoji",
-    "🟣 VIOLET": "exit alert emoji",
-    "🟠 AMBER": "watchlist emoji",
+    # NEW Color signal system (v2.0 - GREEN/RED)
+    "🟢 GREEN": "buy signal emoji",
+    "🔴 RED": "exit/sell signal emoji", 
+    "🟡 CONSIDER": "watchlist signal emoji",
 
-    # Conviction language (Marketing Upgrade)
+    # Migration mappings (old → new)
+    "TEAL signal": "GREEN signal",
+    "VIOLET signal": "RED signal",
+    "purple signal": "RED signal",
+    "AMBER signal": "CONSIDER signal",
+    "buy signal": "GREEN signal",
+    "PASS signal": "GREEN signal",
+
+    # Conviction language (public-facing)
     "Extremely Bullish": "conviction 5 public language",
     "Bullish": "conviction 4 public language",
     "Watching": "conviction 3 public language",
@@ -104,25 +118,31 @@ POWER_PHRASES: List[str] = [
     "Institutional-grade momentum analysis",
     "Systematic approach that removes emotional bias",
 
-    # Signal detection (MASTER_TODO_v2 compliant - no banned terms)
-    "TEAL signal triggered",
+    # Signal detection (v2.0 - GREEN/RED)
+    "GREEN signal triggered",
+    "RED signal - time to rotate",
     "Cleared all 5 gates",
     "Strong accumulation detected",
     "Theme alignment confirmed",
     "Momentum confirmed",
 
-    # Risk management (no "Capital Preservation Protocol" - banned)
+    # Risk management
     "Systematic exit discipline",
     "Trailing stop in place",
     "Risk-defined position sizing",
     "The system protects capital so we live to fight another day",
     "No ego, just execution",
 
-    # Audience-neutral - no region-specific references
+    # Performance framing
     "Beat SPY with systematic momentum",
     "Alpha over indexing",
     "Stop indexing. Start selecting.",
     "Weekly timeframe suits swing traders",
+    
+    # Friday/weekly references
+    "As of Friday's close",
+    "Based on the latest weekly close",
+    "Friday's scan results",
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -154,6 +174,12 @@ AUDIENCE_HOOKS: Dict[str, List[str]] = {
         "Smart money moving from X to Y.",
         "Theme rotation in action.",
     ],
+    "friday_close": [
+        "Scanner ran after Friday's close.",
+        "As of the latest weekly close.",
+        "Friday's results are in.",
+        "Week-ending momentum check.",
+    ],
 }
 
 # Backwards compatibility alias
@@ -184,9 +210,10 @@ def validate_content(text: str) -> Tuple[bool, List[str]]:
     for term in BANNED_TERMS:
         # Case-insensitive check for most terms
         if term.lower() in text_lower:
-            # Avoid false positives for short terms
-            if term in ["RSI", "MACD", "KDJ", "BoS", "BOS", "GMT", "BST"]:
-                # These short terms need word boundary check
+            # Avoid false positives for short terms - need word boundary check
+            short_terms = ["RSI", "MACD", "KDJ", "BoS", "BOS", "GMT", "BST", 
+                          "HMA", "PDT", "TEAL", "teal"]
+            if term in short_terms:
                 if re.search(rf'\b{re.escape(term)}\b', text, re.IGNORECASE):
                     violations.append(term)
             else:
@@ -201,6 +228,36 @@ def validate_content(text: str) -> Tuple[bool, List[str]]:
             unique_violations.append(v)
 
     return len(unique_violations) == 0, unique_violations
+
+
+def validate_green_red_consistency(text: str) -> Tuple[bool, List[str]]:
+    """
+    Ensure tweets use GREEN/RED terminology consistently.
+    Flags any use of old TEAL/purple/VIOLET terms.
+    
+    Args:
+        text: Content to validate
+        
+    Returns:
+        Tuple of (is_valid, list_of_issues)
+    """
+    old_terms = {
+        'TEAL': 'GREEN',
+        'teal': 'GREEN', 
+        'purple': 'RED',
+        'VIOLET': 'RED',
+        'violet': 'RED',
+        'AMBER': 'CONSIDER',
+        'amber': 'CONSIDER',
+        '🟣': '🔴',
+    }
+    
+    issues = []
+    for old, new in old_terms.items():
+        if old in text:
+            issues.append(f"Replace '{old}' with '{new}'")
+    
+    return len(issues) == 0, issues
 
 
 def log_violations(content_type: str, violations: List[str]) -> None:
@@ -246,12 +303,21 @@ def validate_all_tweets(tweets: list) -> Tuple[int, int]:
         text = tweet.get('text') if isinstance(tweet, dict) else getattr(tweet, 'text', '')
         tweet_id = tweet.get('id', f'tweet_{i}') if isinstance(tweet, dict) else getattr(tweet, 'id', f'tweet_{i}')
 
+        # Check banned terms
         is_valid, violations = validate_content(text)
+        
+        # Also check GREEN/RED consistency
+        color_valid, color_issues = validate_green_red_consistency(text)
+        
         total += 1
 
         if not is_valid:
             violations_found += 1
             log_violations(f"Tweet {tweet_id}", violations)
+        
+        if not color_valid:
+            violations_found += 1
+            print(f"  ⚠ WARNING: Tweet {tweet_id} uses old color terms: {color_issues}")
 
     return total, violations_found
 
@@ -345,49 +411,83 @@ def validated_content(text: str, content_type: str = "content") -> str:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 CONTENT_TYPES = [
-    # Original types
+    # Signal announcements
     "buy_signal",
+    "sell_signal",
+    "consider_spotlight",
+    
+    # Performance (safeguarded - require 25%+)
+    "top_performers",
+    "closed_trade",
+    "self_quote",
+    "beat_spy",
+    "early_movers",
+    
+    # Theme content
     "theme_hot",
     "theme_cold",
-    "closed_trade",
-    "position_update",
-    "sell_signal",
-    "system_promo",
-    "market_insight",
+    
+    # Engagement
     "educational",
     "engagement",
-
-    # New US-focused types
-    "beat_spy",
-    "roth_ira",
-    "pdt_friendly",
     "power_hour",
-    "sector_rotation",
+    
+    # System/funnel
     "funnel_graphic",
-    "post_mortem",
-    "win_card",
-    "alpha_card",
+    "newsletter",
+    "weekly_recap",
+    
+    # Threads
+    "thread_buy_signal",
+    "thread_educational",
+]
+
+# Categories that were deprecated
+DEPRECATED_CONTENT_TYPES = [
+    "roth_ira",       # Wrong audience
+    "pdt_friendly",   # Wrong audience  
+    "position_update", # Renamed to top_performers
+    "weekly_wins",    # Merged into top_performers
 ]
 
 
 if __name__ == "__main__":
     # Test validation
-    print("Testing marketing vocabulary validation...\n")
+    print("Testing marketing vocabulary validation (v2.0 - GREEN/RED)...\n")
 
     test_cases = [
         ("Clean tweet about momentum", True),
         ("Our HMA Pivot signals are strong", False),
         ("Using 20% trailing stop for risk", False),
-        ("Institutional Accumulation Divergence detected", True),
+        ("🟢 GREEN signal on $NVDA", True),
+        ("🟢 TEAL signal on $NVDA", False),  # Old term
+        ("🔴 RED signal - rotating out", True),
+        ("Purple signal means sell", False),  # Old term
         ("UK ISA investors should consider", False),
-        ("Roth IRA compounding strategy", True),
+        ("Roth IRA compounding strategy", False),
         ("The Gatekeeper passed this signal", False),
-        ("The 5th Gate: Forensic Audit cleared", True),
+        ("Cleared all 5 gates - Extremely Bullish", True),
+        ("As of Friday's close: $142.50", True),
     ]
 
+    passed = 0
+    failed = 0
+    
     for text, expected_valid in test_cases:
         is_valid, violations = validate_content(text)
         status = "✓" if is_valid == expected_valid else "✗"
-        print(f"{status} '{text[:50]}...' -> Valid: {is_valid}, Violations: {violations}")
+        
+        if is_valid == expected_valid:
+            passed += 1
+        else:
+            failed += 1
+            
+        print(f"{status} '{text[:50]}...'")
+        print(f"   Expected: {'valid' if expected_valid else 'invalid'}, Got: {'valid' if is_valid else 'invalid'}")
+        if violations:
+            print(f"   Violations: {violations}")
+        print()
 
-    print("\n✓ Validation tests complete")
+    print(f"\n{'='*50}")
+    print(f"Results: {passed} passed, {failed} failed")
+    print("✓ Validation tests complete")

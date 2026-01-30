@@ -1,6 +1,6 @@
 # 📱 GROK PROMPTS - Weekly X/Twitter Content
 
-**Generated:** January 24, 2026
+**Generated:** January 30, 2026
 **Account:** @SterlingSignals
 **Substack:** https://sterlingsignals.substack.com
 
@@ -11,19 +11,21 @@
 | Day | Slot 1 (Pre-market) | Slot 2 (Morning) | Slot 3 (Midday) | Slot 4 (Power Hour) | Slot 5 (After-hours) |
 |-----|------------------|-----------------|------------------|
 | Monday | Week Ahead Preview | Market Pulse | Position Update: VNE |
-| Tuesday | Weekly Scanner Stats | Lesson: Entry timing | Market Pulse |
-| Wednesday | Market Pulse | Lesson: Fresh trends | Position Update: CGO |
-| Thursday | Weekly Scanner Stats | Lesson: Fresh trends | Market Pulse |
-| Friday | Weekly Scanner Stats | Lesson: Theme alignm | Position Update: INO |
-| Saturday | Newsletter Drop | Lesson: Entry timing | Lesson: Fresh trends |
-| Sunday | Sunday Engagement | Lesson: The best tra | Looking Ahead (Soft) |
+| Tuesday | BUY Signal: MOD | Lesson: Entry timing | Watching: AMPX |
+| Wednesday | Market Pulse | Lesson: Trailing sto | Position Update: CGO |
+| Thursday | BUY Signal: LUMN | Lesson: The best tra | Watching: PUMP |
+| Friday | Weekly Scanner Stats | Why I Passed: PUMP | Position Update: INO |
+| Saturday | Newsletter Drop | Deep Dive: MOD | Why I Passed: AMPX |
+| Sunday | Sunday Engagement | Lesson: Trailing sto | Looking Ahead (Soft) |
 
 ---
 
 ## 📊 Portfolio Context
 
 **Current State:**
-- **Open Positions:** VNET, CGON, INOD, OUST, APLD, WCC, IESC, STRL, AAON
+- **PASS Signals:** MOD, LUMN
+- **CAUTION Signals:** AMPX, PUMP, VAL
+- **Open Positions:** VNET, CGON, INOD, APLD, WCC, IESC, STRL, AAON, GLXY, AMSC, MOD, LUMN
 
 **Themes:**
 
@@ -93,25 +95,24 @@ Quick, informed, timely. Show you're in the trenches.
 **Category:** position_update
 **Ticker:** $VNET
 **Theme:** Data Center Cooling / Liquid Cooling
-**Visual:** Position card showing VNET, Entry $10.40 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing VNET, live P&L%, 21 days held, chart thumbnail
 
 ### Prompt (Copy to Grok)
 
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $VNET
-Entry: $10.40 on 09/01/2026
 Theme: Data Center Cooling / Liquid Cooling | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: +2.0% (verify with current price)
+Held: ~21 days (entry price private)
+Snapshot P&L: +1.2% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $VNET
-2. Calculate the LIVE P&L: ((current_price / 10.40) - 1) * 100
+1. Look up the CURRENT price and recent performance of $VNET
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -121,7 +122,7 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$VNET update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$VNET update: +XX.X% since entry (21 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
@@ -131,30 +132,35 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 TUESDAY
 
-## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): BUY Signal: MOD
 
-**Category:** scanner_stats
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+**Category:** buy_signal
+**Ticker:** $MOD
+**Theme:** N/A (ERROR)
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for MOD
 
 ### Prompt (Copy to Grok)
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+PASS: MOD | Theme: N/A (ERROR) | Price: $184.66
+Catalyst: Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
+Using the scanner output above:
+1. Search for the LATEST news on $MOD (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
 
 ```
 
@@ -189,29 +195,34 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌞 Midday (12:30 ET): Market Pulse
+## 🌞 Midday (12:30 ET): Watching: AMPX
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** watchlist
+**Ticker:** $AMPX
+**Theme:** N/A (ERROR)
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for AMPX
 
 ### Prompt (Copy to Grok)
 
 ```
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+SCANNER OUTPUT:
+CAUTION: AMPX | Theme: N/A (ERROR) | Price: $12.44
+Reason: Could not complete analysis
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $AMPX
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
@@ -247,7 +258,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
+## ☀️ Morning (10:00 ET): Lesson: Trailing stops protect gains better than...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -256,7 +267,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
@@ -281,25 +292,24 @@ Educational and actionable. Make them think "I should follow this person."
 **Category:** position_update
 **Ticker:** $CGON
 **Theme:** Healthcare / Biotech
-**Visual:** Position card showing CGON, Entry $53.92 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing CGON, live P&L%, 21 days held, chart thumbnail
 
 ### Prompt (Copy to Grok)
 
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $CGON
-Entry: $53.92 on 09/01/2026
 Theme: Healthcare / Biotech | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: -0.2% (verify with current price)
+Held: ~21 days (entry price private)
+Snapshot P&L: -3.5% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $CGON
-2. Calculate the LIVE P&L: ((current_price / 53.92) - 1) * 100
+1. Look up the CURRENT price and recent performance of $CGON
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -309,7 +319,7 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$CGON update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$CGON update: +XX.X% since entry (21 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
@@ -319,36 +329,41 @@ Transparent and timely. Real P&L builds trust.
 
 # 📅 THURSDAY
 
-## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): BUY Signal: LUMN
 
-**Category:** scanner_stats
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+**Category:** buy_signal
+**Ticker:** $LUMN
+**Theme:** N/A (ERROR)
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for LUMN
 
 ### Prompt (Copy to Grok)
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+PASS: LUMN | Theme: N/A (ERROR) | Price: $8.82
+Catalyst: Palantir partnership $200M+ multi-year deal (Oct 2025), Q4 earnings Feb 10 with momentum from strong Q3 beat
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
+Using the scanner output above:
+1. Search for the LATEST news on $LUMN (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
 
 ```
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
+## ☀️ Morning (10:00 ET): Lesson: The best trade is often the one you don'...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -357,7 +372,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: The best trade is often the one you don't make
 
 ---
 
@@ -377,29 +392,34 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌞 Midday (12:30 ET): Market Pulse
+## 🌞 Midday (12:30 ET): Watching: PUMP
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** watchlist
+**Ticker:** $PUMP
+**Theme:** N/A (ERROR)
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for PUMP
 
 ### Prompt (Copy to Grok)
 
 ```
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+SCANNER OUTPUT:
+CAUTION: PUMP | Theme: N/A (ERROR) | Price: $11.49
+Reason: CFO David Schorlemer departing March 3, 2025 (succession planned)
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @SterlingSignals.
+
+Using the scanner output above:
+1. Search for recent news on $PUMP
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
@@ -416,7 +436,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 23 | Technical Pass: 0 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 17 | Technical Pass: 5 | Theme Fit: 5 | Final PASS: 2
 
 ---
 
@@ -424,7 +444,7 @@ You are drafting an X post for @SterlingSignals.
 
 Using the stats above:
 1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
+   - Leads with the filtering ratio (e.g., "885 stocks → 2 signals")
    - Emphasizes the rigorous 3-gate screening process
    - Creates CURIOSITY about what made the cut
    - Builds FOMO for non-subscribers
@@ -436,30 +456,34 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Theme alignment multiplies momentum...
+## ☀️ Morning (10:00 ET): Why I Passed: PUMP
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** why_passed
+**Ticker:** $PUMP
+**Theme:** N/A (ERROR)
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Theme alignment multiplies momentum
+SCANNER OUTPUT:
+EXCLUDED: PUMP | Theme: N/A (ERROR)
+Reason: CFO David Schorlemer departing March 3, 2025 (succession planned)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $PUMP might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
@@ -470,25 +494,24 @@ Educational and actionable. Make them think "I should follow this person."
 **Category:** position_update
 **Ticker:** $INOD
 **Theme:** Power Grid Infrastructure & Electrical Equipment
-**Visual:** Position card showing INOD, Entry $61.54 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing INOD, live P&L%, 12 days held, chart thumbnail
 
 ### Prompt (Copy to Grok)
 
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $INOD
-Entry: $61.54 on 18/01/2026
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: -3.3% (verify with current price)
+Held: ~12 days (entry price private)
+Snapshot P&L: -9.9% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $INOD
-2. Calculate the LIVE P&L: ((current_price / 61.54) - 1) * 100
+1. Look up the CURRENT price and recent performance of $INOD
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -498,7 +521,7 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$INOD update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$INOD update: +XX.X% since entry (12 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
@@ -517,7 +540,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: None | CAUTION: None | Top Theme: Multiple themes
+PASS: MOD, LUMN | CAUTION: AMPX, PUMP, VAL | Top Theme: Multiple themes
 
 ---
 
@@ -538,59 +561,68 @@ This is the moment. Make it count.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Entry timing matters more than stock sel...
+## ☀️ Morning (10:00 ET): Deep Dive: MOD
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** buy_signal
+**Ticker:** $MOD
+**Theme:** N/A (ERROR)
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for MOD
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Entry timing matters more than stock selection
+SCANNER OUTPUT:
+PASS: MOD | Theme: N/A (ERROR) | Price: $184.66
+Catalyst: Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the scanner output above:
+1. Search for the LATEST news on $MOD (last 7 days)
+2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with an attention-grabbing hook that stops the scroll
+   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
+   - Teases the opportunity WITHOUT revealing my entry level
+   - Creates urgency ("This just triggered..." or "Fresh signal...")
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+
+```
+
+---
+
+## 🌞 Midday (12:30 ET): Why I Passed: AMPX
+
+**Category:** why_passed
+**Ticker:** $AMPX
+**Theme:** N/A (ERROR)
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+
+### Prompt (Copy to Grok)
+
+```
+SCANNER OUTPUT:
+EXCLUDED: AMPX | Theme: N/A (ERROR)
+Reason: Could not complete analysis
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $AMPX might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
 
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
----
-
-## 🌞 Midday (12:30 ET): Lesson: Fresh trends outperform extended trends...
-
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
-
-### Prompt (Copy to Grok)
-
-```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
+Show process, not arrogance. This builds trust.
 
 ```
 
@@ -613,7 +645,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: How long do you typically hold positions?
+Topic/Question: Momentum or value - which camp are you in?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -627,7 +659,7 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: The best trade is often the one you don'...
+## ☀️ Morning (10:00 ET): Lesson: Trailing stops protect gains better than...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -636,7 +668,7 @@ Light touch, not a hard sell. Build relationships.
 
 ```
 TRADING LESSON:
-Topic: The best trade is often the one you don't make
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 

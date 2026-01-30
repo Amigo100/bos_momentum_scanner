@@ -25,11 +25,11 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Lesson: Fresh trends outperform extended trends...
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
@@ -56,18 +56,17 @@ Educational and actionable. Make them think "I should follow this person."
 ```
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $CGON
-Entry: $53.92 on 09/01/2026
 Theme: Healthcare / Biotech | Tier: TIER1
-Days Held: ~0
-Snapshot P&L: -0.2% (verify with current price)
+Held: ~21 days (entry price private)
+Snapshot P&L: -3.5% (verify with current price)
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $CGON
-2. Calculate the LIVE P&L: ((current_price / 53.92) - 1) * 100
+1. Look up the CURRENT price and recent performance of $CGON
+2. Use the snapshot P&L as a reference, but verify current performance
 
 Then draft a visually engaging X post (under 280 characters) that:
    - States the position with CURRENT P&L (not the snapshot above)
@@ -77,12 +76,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$CGON update: +XX.X% since entry. [Recent development]. Uptrend intact. Full portfolio → [link]"
+Example format: "$CGON update: +XX.X% since entry (21 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing CGON, Entry $53.92 → Current, live P&L%, chart thumbnail
+**Visual:** Position card showing CGON, live P&L%, 21 days held, chart thumbnail
 
 ---

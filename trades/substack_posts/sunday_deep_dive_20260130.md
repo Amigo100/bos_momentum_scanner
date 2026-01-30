@@ -1,19 +1,19 @@
-# Deep Dive: $AMPX
+# Deep Dive: $MOD
 
-🟢 **TEAL Signal Analysis**
+🟢 **GREEN Signal Analysis**
 
 ## Overview
 
 | Metric | Value |
 |--------|-------|
-| Price | $12.44 |
-| Theme | Critical Materials & Mining |
-| Conviction | Watching |
-| Beta | 2.48 |
+| Price | $184.66 |
+| Theme |  |
+| Conviction | Bullish |
+| Beta | 1.96 |
 
 ## Thesis
 
-AMPX appears to be a biotech company misaligned with the Critical Materials & Mining theme assignment. Without current pipeline data, earnings timeline, or clinical catalyst visibility, this presents dead money risk despite potential asymmetric biotech upside.
+MOD is a pure-play beneficiary of AI data center buildout with 119% data center revenue growth and strong execution on $100M capacity expansion. Strong analyst coverage (Strong Buy) with 30%+ upside targets. Minor concern on earnings timing but fundamental thesis intact.
 
 ## Catalyst Summary
 
@@ -21,24 +21,26 @@ Near-term catalysts identified through systematic analysis.
 
 ## Bullish Factors
 
-- Small biotech with potential asymmetric upside
-- Critical Materials theme momentum could provide sector rotation tailwinds
+- Data center revenue grew 119% to $644M in fiscal 2025
+- $100M US manufacturing expansion completing
+- Strong AI/data center theme with $2B revenue target by 2028
+- $180M new orders secured recently
+- Multiple product innovations (Cooling AI, immersion cooling)
 
 ## Risk Factors
 
-- Biotech binary risk profile
-- No visible catalyst timeline
-- Potential theme misalignment
-- Clinical trial execution risk
+- Earnings volatility with report in 5 days
+- High valuation expectations already priced in
+- Customer concentration risk in hyperscale data center operators
 
 ## Bottom Line
 
-$AMPX has cleared all 5 gates of our systematic screening process.
+$MOD has cleared all 5 gates of our systematic screening process.
 The combination of theme alignment, technical momentum, and catalyst timing
-makes this a high-conviction TEAL signal.
+makes this a high-conviction GREEN signal.
 
 ---
 
-*TEAL means go.*
+*GREEN means go.*
 
 https://sterlingsignals.substack.com

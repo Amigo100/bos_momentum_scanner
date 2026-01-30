@@ -17,32 +17,77 @@
 
 ## 🔥 Hot Themes This Week
 
-### PRIME Themes (Highest Conviction)
-
-**Grid Infrastructure & Power Transmission** (BOTTLENECK)
-- Score: 8.2/10
-- Thesis: AI data centers require 10-100x more power than traditional facilities, creating massive bottleneck in grid infrastructure. Transformer shortages and grid upgrade needs create multi-year investment cycle in less crowded space.
-- Catalysts: AI data center power demands creating grid strain, Infrastructure bill funding deployment accelerating, Utility capex increases for grid modernization
-
-**Nuclear Energy Renaissance** (TREND)
-- Score: 8.1/10
-- Thesis: Nuclear power experiencing renaissance driven by AI power demands and clean energy needs. Early stage of multi-decade cycle with strong policy support and tech company adoption.
-- Catalysts: Major tech companies signing nuclear power deals, SMR licensing approvals accelerating, Uranium supply constraints with demand revival
-
-**Defense Industrial Base Expansion** (TREND)
-- Score: 7.6/10
-- Thesis: Defense spending surge driven by geopolitical tensions creating multi-year manufacturing capacity expansion cycle. Supply chain constraints favor established contractors with production capability.
-- Catalysts: FY2025 defense budget increases, NATO spending commitments acceleration, Reshoring of defense manufacturing
-
-### INVESTABLE Themes (Good Opportunities)
-
-- **Energy Services & Infrastructure** (TREND) - Score: 7.0/10
-- **Critical Materials & Mining** (BOTTLENECK) - Score: 7.2/10
-- **Regional Banks Recovery** (CONTRARIAN) - Score: 6.8/10
+*Theme data not available - run scanner with LLM gates enabled*
 
 ---
 
 ## 🎯 Signal Candidates (Passed All Gates)
+
+### 🟢 PASS - Ready for Entry (GREEN Signals)
+
+#### MOD
+
+| Metric | Value |
+|--------|-------|
+| **Price** | $184.66 |
+| **Theme** | N/A (ERROR) |
+| **Tier** | TIER1 |
+| **Beta** | 1.96 |
+| **Banker** | 100 |
+| **Conviction** | ★★★★☆ |
+| **Catalyst** | Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028 |
+| **Red Flags** | MINOR |
+
+**Bullish Factors:**
+- Data center revenue grew 119% to $644M in fiscal 2025
+- $100M US manufacturing expansion completing
+- Strong AI/data center theme with $2B revenue target by 2028
+
+**Risk Factors:**
+- Earnings volatility with report in 5 days
+- High valuation expectations already priced in
+- Customer concentration risk in hyperscale data center operators
+
+**Analysis:**
+> MOD is a pure-play beneficiary of AI data center buildout with 119% data center revenue growth and strong execution on $100M capacity expansion. Strong analyst coverage (Strong Buy) with 30%+ upside targets. Minor concern on earnings timing but fundamental thesis intact.
+
+**Recommended Action:** Consider waiting until after Feb 4 earnings or enter with smaller position size due to binary earnings risk
+
+📸 **[CHART: MOD]** - *Add TradingView screenshot*
+
+---
+
+#### LUMN
+
+| Metric | Value |
+|--------|-------|
+| **Price** | $8.82 |
+| **Theme** | N/A (ERROR) |
+| **Tier** | TIER1 |
+| **Beta** | 1.94 |
+| **Banker** | 71 |
+| **Conviction** | ★★★★☆ |
+| **Catalyst** | Palantir partnership $200M+ multi-year deal (Oct 2025), Q4 earnings Feb 10 with momentum from strong Q3 beat |
+| **Red Flags** | CLEAN |
+
+**Bullish Factors:**
+- Major Palantir AI partnership worth $200M+ validates transformation thesis
+- Strong CFO insider buying - 40K shares at $4.44 in Aug 2025, CEO buying 135K shares
+- Q3 2025 beat with revenue decline slowing to 4.2% vs worse expectations
+
+**Risk Factors:**
+- Legacy telecom revenue decline continues despite improvement
+- High debt load despite refinancing
+- Execution risk on AI transformation strategy
+
+**Analysis:**
+> <cite index="21-5,22-3,28-4">The major Palantir partnership announced in October 2025, valued at over $200M, represents a significant catalyst validating LUMN's AI infrastructure transformation story</cite>. <cite index="11-1,11-4,20-9,20-10">Strong insider buying with CFO purchasing 40,000 shares at $4.44 demonstrates management confidence</cite>. <cite index="4-7,4-9">Recent Q3 earnings beat with revenue decline slowing to 4.2% shows operational improvement</cite>.
+
+**Recommended Action:** Enter position ahead of Feb 10 earnings - Palantir partnership provides significant re-rating catalyst with earnings likely to show continued momentum
+
+📸 **[CHART: LUMN]** - *Add TradingView screenshot*
+
+---
 
 ### 🟡 CAUTION - Wait or Size Down
 
@@ -51,20 +96,18 @@
 | Metric | Value |
 |--------|-------|
 | **Price** | $12.44 |
-| **Theme** | Critical Materials & Mining (GOOD FIT) |
+| **Theme** | N/A (ERROR) |
 | **Tier** | TIER1 |
-| **Conviction** | ★★★☆☆ |
-| **Catalyst** | No clear near-term catalyst identified - biotech requires pipeline updates |
+| **Conviction** | ☆☆☆☆☆ |
+| **Catalyst** | Analysis failed |
 
 **Concerns:**
-- Biotech binary risk profile
-- No visible catalyst timeline
-- Potential theme misalignment
+- Could not complete analysis
 
 **Analysis:**
-> AMPX appears to be a biotech company misaligned with the Critical Materials & Mining theme assignment. Without current pipeline data, earnings timeline, or clinical catalyst visibility, this presents dead money risk despite potential asymmetric biotech upside.
+> Analysis failed after 5 attempts
 
-**Recommended Action:** Require updated fundamental research on pipeline status, upcoming catalysts, and cash runway before position entry. Consider theme reassignment.
+**Recommended Action:** Manual review required
 
 📸 **[CHART: AMPX]** - *Add TradingView screenshot*
 
@@ -74,47 +117,23 @@
 
 | Metric | Value |
 |--------|-------|
-| **Price** | $11.50 |
-| **Theme** | Energy Services & Infrastructure (STRONG FIT) |
+| **Price** | $11.49 |
+| **Theme** | N/A (ERROR) |
 | **Tier** | TIER1 |
 | **Conviction** | ★★★☆☆ |
-| **Catalyst** | No clear near-term catalyst identified - needs current earnings calendar and contract announcements |
+| **Catalyst** | Earnings Feb 19, 2025 (after recent beat of 300% surprise), PROPWR power segment contracts expanding (360 MW on order) |
 
 **Concerns:**
-- No visible catalyst for re-rating
-- Small cap energy services can be volatile
-- Need current financial health assessment
+- CFO David Schorlemer departing March 3, 2025 (succession planned)
+- Earnings binary risk in 20 days
+- Pressure pumping cyclical headwinds in 2025
 
 **Analysis:**
-> Strong thematic fit but lacks identifiable catalyst for 50-100% move. Energy services theme is solid but without earnings date, recent contracts, or specific growth drivers, this appears to be dead money despite good sector positioning.
+> Strong catalyst setup with Feb 19 earnings after 300% surprise and expanding PROPWR power contracts providing asymmetric upside. CFO departure is managed transition with interim successor named. Near-term earnings create timing risk but positive momentum intact.
 
-**Recommended Action:** Gather current catalyst calendar and recent 8-K filings before entry - need specific catalyst within 90 days to justify position
+**Recommended Action:** Consider position sizing for earnings volatility or wait until post-Feb 19 if risk-averse. PROPWR expansion story provides 6-month catalyst runway.
 
 📸 **[CHART: PUMP]** - *Add TradingView screenshot*
-
----
-
-#### MOD
-
-| Metric | Value |
-|--------|-------|
-| **Price** | $185.04 |
-| **Theme** | Grid Infrastructure & Power Transmission (GOOD FIT) |
-| **Tier** | TIER1 |
-| **Conviction** | ★★★☆☆ |
-| **Catalyst** | No clear near-term catalyst identified - need current earnings calendar and pipeline updates |
-
-**Concerns:**
-- No visible catalyst for 50-100% move
-- Cyclical industrial exposure to economic slowdown
-- Need current data on earnings timing and analyst coverage
-
-**Analysis:**
-> Strong thematic fit in prime Grid Infrastructure theme but lacking identifiable catalyst for asymmetric returns. Information gaps prevent full risk assessment of governance and timing factors.
-
-**Recommended Action:** Gather current earnings calendar, recent SEC filings, and analyst coverage before position entry - dead money risk without catalyst
-
-📸 **[CHART: MOD]** - *Add TradingView screenshot*
 
 ---
 
@@ -122,35 +141,27 @@
 
 | Metric | Value |
 |--------|-------|
-| **Price** | $57.72 |
-| **Theme** | Energy Services & Infrastructure (STRONG FIT) |
+| **Price** | $57.73 |
+| **Theme** | N/A (ERROR) |
 | **Tier** | TIER1 |
 | **Conviction** | ★★★☆☆ |
-| **Catalyst** | Quarterly earnings likely within 30-45 days, potential for LNG project awards and infrastructure spending benefits |
+| **Catalyst** | Q1 2025 earnings expected May 07 with 211% YoY growth estimate, offshore drilling demand upturn |
 
 **Concerns:**
-- Earnings timing uncertainty could create binary risk
-- Energy services can be cyclical and project-dependent
-- Need verification of current financial health and governance
+- Cyclical energy exposure to oil price volatility
+- Recent COO/CFO selling activity
+- Analyst price targets below current level
 
 **Analysis:**
-> VAL fits strongly in a hot investable theme with multi-year tailwinds from energy infrastructure spending. However, without current data on earnings timing, governance issues, or analyst sentiment, there's insufficient information to make a confident PASS decision.
+> VAL shows strong operational momentum with massive earnings beats and CEO buying, but faces headwinds from recent C-suite selling and neutral analyst sentiment. The 97-day catalyst timeline creates opportunity but requires patience in a volatile energy sector.
 
-**Recommended Action:** Obtain current earnings date, recent SEC filings, and analyst coverage before position entry - if earnings >15 days out and no red flags, likely PASS
+**Recommended Action:** Wait for pullback to $52-55 range or strong oil price momentum before entry
 
 📸 **[CHART: VAL]** - *Add TradingView screenshot*
 
 ---
 
 ## 📈 Portfolio Update
-
-### ⚠️ Caution Signals (Consider Tightening Stops)
-
-| Ticker | Current | Reason | P&L |
-|--------|---------|--------|-----|
-| OUST | $20.83 | Trailing stop hit (23.5% from high of $2 | -21.0% |
-
-*Note: These are CAUTION signals, not automatic exits. Based on backtesting, trailing stops outperform signal-based exits.*
 
 ### 📈 Open Positions
 
@@ -162,6 +173,35 @@
 
 *Run due diligence separately in Claude web interface using the prompts from `due_diligence_prompts.py`*
 
+### Stocks Requiring DD:
+
+- [ ] **MOD** - Unknown theme
+- [ ] **LUMN** - Unknown theme
+
+### DD Output Placeholders:
+
+#### MOD Due Diligence
+
+> **[PASTE DD OUTPUT HERE]**
+>
+> Key items to extract:
+> - Elevator pitch
+> - Specific catalysts with dates
+> - Bear case and rebuttal
+> - Math to 50%
+> - Final verdict
+
+#### LUMN Due Diligence
+
+> **[PASTE DD OUTPUT HERE]**
+>
+> Key items to extract:
+> - Elevator pitch
+> - Specific catalysts with dates
+> - Bear case and rebuttal
+> - Math to 50%
+> - Final verdict
+
 ---
 
 ## 📝 Disclaimer
@@ -172,4 +212,4 @@ Past performance is not indicative of future results.*
 
 ---
 
-*Generated: 2026-01-30 21:55:07 by BoS Momentum Scanner*
+*Generated: 2026-01-30 23:28:52 by BoS Momentum Scanner*

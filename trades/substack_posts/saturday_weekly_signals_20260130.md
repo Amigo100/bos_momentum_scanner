@@ -1,43 +1,46 @@
-# TEAL Signals: January 30, 2026
+# GREEN Signals: January 30, 2026
 
 ## Weekly Signal Recap
 
-### 🟢 TEAL Signals (Full Entry)
+### 🟢 GREEN Signals (Full Entry)
 
 **$AMPX** at $12.44
-- Theme: Critical Materials & Mining
+- Theme: 
 - Conviction: Watching
 
-**$PUMP** at $11.50
-- Theme: Energy Services & Infrastructure
+**$PUMP** at $11.49
+- Theme: 
 - Conviction: Watching
 
-**$MOD** at $185.04
-- Theme: Grid Infrastructure & Power Transmission
+**$MOD** at $184.66
+- Theme: 
+- Conviction: Bullish
+
+**$LUMN** at $8.82
+- Theme: 
+- Conviction: Bullish
+
+**$VAL** at $57.73
+- Theme: 
 - Conviction: Watching
 
-**$VAL** at $57.72
-- Theme: Energy Services & Infrastructure
-- Conviction: Watching
+### 🟡 CONSIDER Watchlist
 
-### 🟠 AMBER Watchlist
-
-These stocks cleared 4/5 gates - watching for TEAL:
+These stocks cleared 4/5 gates - watching for GREEN:
 
 - **$AMPX** - Under review
 - **$PUMP** - Under review
-- **$MOD** - Under review
 - **$VAL** - Under review
 
 ## Scan Statistics
 
 - Tickers Scanned: 885
 - Weekly Momentum Up: 17
-- Theme Confirmed: 4
-- Final TEAL Signals: 0
+- Theme Confirmed: 5
+- Final GREEN Signals: 2
 
 ---
 
-*TEAL means go.*
+*GREEN means go.*
 
 Full analysis: https://sterlingsignals.substack.com

@@ -1,13 +1,11 @@
 Theme Momentum - Week 5
 
-🔥 Hot Themes This Week:
-• Grid Infrastructure & Power Transmission
-• Nuclear Energy Renaissance
-• Defense Industrial Base Expansion
+🎯 2 GREEN Signal(s) Active
+Our 5-gate system identified these opportunities.
 
 📊 This Week's Scan:
 • 1,817 stocks analyzed
-• 0 cleared all 5 gates
+• 2 cleared all 5 gates
 
 Full analysis in Saturday's Sterling Signals newsletter →
 

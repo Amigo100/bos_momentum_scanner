@@ -1,111 +1,91 @@
 {
-  "timestamp": "2026-01-30 21:55:06",
+  "timestamp": "2026-01-30 23:28:49",
   "timeframe": "WEEKLY",
-  "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates TEAL signal)",
+  "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates GREEN signal)",
   "exit_criteria": "Weekly BoS Down OR 20.0% trailing stop",
   "stats": {
     "tickers_loaded": 885,
     "data_downloaded": 885,
     "beta_gte_2_0": 323,
     "weekly_bos_up": 17,
-    "technical_signals": 17,
-    "theme_confirmed": 4,
-    "final_trade": 0,
-    "final_consider": 4
+    "technical_signals": 5,
+    "theme_confirmed": 5,
+    "final_trade": 2,
+    "final_consider": 3
   },
-  "themes": [
+  "themes": [],
+  "pass_signals": [
     {
-      "name": "Grid Infrastructure & Power Transmission",
-      "rank": 1,
-      "classification": "PRIME",
-      "theme_type": "BOTTLENECK",
-      "composite_score": 8.2,
-      "thesis_summary": "AI data centers require 10-100x more power than traditional facilities, creating massive bottleneck in grid infrastructure. Transformer shortages and grid upgrade needs create multi-year investment cycle in less crowded space.",
-      "key_catalysts": [
-        "AI data center power demands creating grid strain",
-        "Infrastructure bill funding deployment accelerating",
-        "Utility capex increases for grid modernization"
+      "symbol": "MOD",
+      "tier": "TIER1",
+      "price": 184.66,
+      "beta": 1.96,
+      "banker": 100,
+      "return_20d": 31.1,
+      "theme": "",
+      "theme_score": 0.0,
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
+      "final_decision": "PASS",
+      "conviction": 4,
+      "sector_status": "BULLISH",
+      "upside_potential": "High (50%+)",
+      "bullish_factors": [
+        "Data center revenue grew 119% to $644M in fiscal 2025",
+        "$100M US manufacturing expansion completing",
+        "Strong AI/data center theme with $2B revenue target by 2028",
+        "$180M new orders secured recently",
+        "Multiple product innovations (Cooling AI, immersion cooling)"
       ],
-      "momentum_score": 7,
-      "catalyst_score": 9
+      "risk_factors": [
+        "Earnings volatility with report in 5 days",
+        "High valuation expectations already priced in",
+        "Customer concentration risk in hyperscale data center operators"
+      ],
+      "reasoning": "MOD is a pure-play beneficiary of AI data center buildout with 119% data center revenue growth and strong execution on $100M capacity expansion. Strong analyst coverage (Strong Buy) with 30%+ upside targets. Minor concern on earnings timing but fundamental thesis intact.",
+      "action": "Enter Monday at market open",
+      "dd_verdict": "SPEC BUY",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_key_catalyst": "** Q3 fiscal 2026 earnings on Feb 4, 2026, after market close - the company's first earnings after elevating Data Centers to a separate segment led by Art Laszlo effective April 1st, plus ongoing capa",
+      "dd_fatal_flaw": ""
     },
     {
-      "name": "Nuclear Energy Renaissance",
-      "rank": 2,
-      "classification": "PRIME",
-      "theme_type": "TREND",
-      "composite_score": 8.1,
-      "thesis_summary": "Nuclear power experiencing renaissance driven by AI power demands and clean energy needs. Early stage of multi-decade cycle with strong policy support and tech company adoption.",
-      "key_catalysts": [
-        "Major tech companies signing nuclear power deals",
-        "SMR licensing approvals accelerating",
-        "Uranium supply constraints with demand revival"
+      "symbol": "LUMN",
+      "tier": "TIER1",
+      "price": 8.82,
+      "beta": 1.94,
+      "banker": 71.3,
+      "return_20d": 14.7,
+      "theme": "",
+      "theme_score": 0.0,
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
+      "final_decision": "PASS",
+      "conviction": 4,
+      "sector_status": "NEUTRAL",
+      "upside_potential": "High (50%+)",
+      "bullish_factors": [
+        "Major Palantir AI partnership worth $200M+ validates transformation thesis",
+        "Strong CFO insider buying - 40K shares at $4.44 in Aug 2025, CEO buying 135K shares",
+        "Q3 2025 beat with revenue decline slowing to 4.2% vs worse expectations",
+        "$1B+ in new PCF deals signed, $10B+ total pipeline driving recurring revenue",
+        "Successful $2.4B debt refinancing reducing interest expense by $135M annually"
       ],
-      "momentum_score": 9,
-      "catalyst_score": 9
-    },
-    {
-      "name": "Defense Industrial Base Expansion",
-      "rank": 3,
-      "classification": "PRIME",
-      "theme_type": "TREND",
-      "composite_score": 7.6,
-      "thesis_summary": "Defense spending surge driven by geopolitical tensions creating multi-year manufacturing capacity expansion cycle. Supply chain constraints favor established contractors with production capability.",
-      "key_catalysts": [
-        "FY2025 defense budget increases",
-        "NATO spending commitments acceleration",
-        "Reshoring of defense manufacturing"
+      "risk_factors": [
+        "Legacy telecom revenue decline continues despite improvement",
+        "High debt load despite refinancing",
+        "Execution risk on AI transformation strategy"
       ],
-      "momentum_score": 7,
-      "catalyst_score": 8
-    },
-    {
-      "name": "Energy Services & Infrastructure",
-      "rank": 4,
-      "classification": "INVESTABLE",
-      "theme_type": "TREND",
-      "composite_score": 7.0,
-      "thesis_summary": "Energy security focus driving domestic production and infrastructure investment. Services companies benefit from multi-year capex cycle with less commodity price sensitivity.",
-      "key_catalysts": [
-        "Domestic energy production incentives",
-        "Energy infrastructure investment tax credits",
-        "LNG export capacity expansion"
-      ],
-      "momentum_score": 8,
-      "catalyst_score": 7
-    },
-    {
-      "name": "Critical Materials & Mining",
-      "rank": 5,
-      "classification": "INVESTABLE",
-      "theme_type": "BOTTLENECK",
-      "composite_score": 7.2,
-      "thesis_summary": "Critical materials bottleneck across multiple themes (AI, defense, energy) creating supply constraints. Reshoring initiatives provide multi-year demand visibility in under-owned sector.",
-      "key_catalysts": [
-        "Critical minerals reshoring initiatives",
-        "Copper demand for AI infrastructure",
-        "Lithium demand recovery"
-      ],
-      "momentum_score": 7,
-      "catalyst_score": 7
-    },
-    {
-      "name": "Regional Banks Recovery",
-      "rank": 6,
-      "classification": "INVESTABLE",
-      "theme_type": "CONTRARIAN",
-      "composite_score": 6.8,
-      "thesis_summary": "Regional banks showing improving fundamentals as worst-case credit scenarios fail to materialize. Early stage recovery play in unloved sector with rate tailwinds.",
-      "key_catalysts": [
-        "Net interest margin stabilization",
-        "Commercial real estate stress peaking",
-        "Regional economic strength"
-      ],
-      "momentum_score": 7,
-      "catalyst_score": 6
+      "reasoning": "<cite index=\"21-5,22-3,28-4\">The major Palantir partnership announced in October 2025, valued at over $200M, represents a significant catalyst validating LUMN's AI infrastructure transformation story</cite>. <cite index=\"11-1,11-4,20-9,20-10\">Strong insider buying with CFO purchasing 40,000 shares at $4.44 demonstrates management confidence</cite>. <cite index=\"4-7,4-9\">Recent Q3 earnings beat with revenue decline slowing to 4.2% shows operational improvement</cite>.",
+      "action": "Enter Monday at market open",
+      "dd_verdict": "SPEC BUY",
+      "dd_conviction": 6,
+      "dd_position_size": "REDUCED",
+      "dd_key_catalyst": "** Q4 2025 earnings on Feb 10, 2026 with potential to beat guidance and management targeting EBITDA >$3.5B in 2026 (vs current ~$3.4B)",
+      "dd_fatal_flaw": "** Management expects EBITDA to decline YoY in 2025 due to legacy declines and transformation costs - execution risk is enormous with massive operational transformation underway while hemorrhaging leg"
     }
   ],
-  "pass_signals": [],
   "consider_signals": [
     {
       "symbol": "AMPX",
@@ -113,26 +93,20 @@
       "price": 12.44,
       "beta": 2.48,
       "banker": 100,
-      "return_20d": 42.4,
-      "theme": "Critical Materials & Mining",
+      "return_20d": 42.3,
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 85,
-      "theme_verdict": "GOOD FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
-      "conviction": 3,
-      "sector_status": "NEUTRAL",
+      "conviction": 0,
+      "sector_status": "UNKNOWN",
       "upside_potential": "Uncertain",
-      "bullish_factors": [
-        "Small biotech with potential asymmetric upside",
-        "Critical Materials theme momentum could provide sector rotation tailwinds"
-      ],
+      "bullish_factors": [],
       "risk_factors": [
-        "Biotech binary risk profile",
-        "No visible catalyst timeline",
-        "Potential theme misalignment",
-        "Clinical trial execution risk"
+        "Could not complete analysis"
       ],
-      "reasoning": "AMPX appears to be a biotech company misaligned with the Critical Materials & Mining theme assignment. Without current pipeline data, earnings timeline, or clinical catalyst visibility, this presents dead money risk despite potential asymmetric biotech upside.",
+      "reasoning": "Analysis failed after 5 attempts",
       "action": "Consider smaller position - watching for gate 5",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -143,62 +117,32 @@
     {
       "symbol": "PUMP",
       "tier": "TIER1",
-      "price": 11.5,
+      "price": 11.49,
       "beta": 2.05,
-      "banker": 95.2,
-      "return_20d": 17.1,
-      "theme": "Energy Services & Infrastructure",
+      "banker": 94.7,
+      "return_20d": 17.0,
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 95,
-      "theme_verdict": "STRONG FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
       "conviction": 3,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "Uncertain",
+      "sector_status": "BULLISH",
+      "upside_potential": "High (50%+)",
       "bullish_factors": [
-        "Strong theme fit in energy infrastructure buildout",
-        "Energy services less commodity price sensitive",
-        "Multi-year capex cycle thesis intact"
+        "Recent 300% earnings surprise ($0.12 vs $0.03 estimate)",
+        "PROPWR power segment securing major contracts (190 MW recent, 360 MW total)",
+        "8 analysts consensus 'Buy' rating, 106% YoY earnings growth expected",
+        "CFO bought shares at $6.86 in November (insider confidence)",
+        "Strong balance sheet vs peer group"
       ],
       "risk_factors": [
-        "No visible catalyst for re-rating",
-        "Small cap energy services can be volatile",
-        "Need current financial health assessment"
+        "CFO David Schorlemer departing March 3, 2025 (succession planned)",
+        "Earnings binary risk in 20 days",
+        "Pressure pumping cyclical headwinds in 2025",
+        "Stock down significantly from highs despite recent gains"
       ],
-      "reasoning": "Strong thematic fit but lacks identifiable catalyst for 50-100% move. Energy services theme is solid but without earnings date, recent contracts, or specific growth drivers, this appears to be dead money despite good sector positioning.",
-      "action": "Consider smaller position - watching for gate 5",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
-      "dd_fatal_flaw": ""
-    },
-    {
-      "symbol": "MOD",
-      "tier": "TIER1",
-      "price": 185.04,
-      "beta": 1.96,
-      "banker": 100,
-      "return_20d": 31.4,
-      "theme": "Grid Infrastructure & Power Transmission",
-      "theme_score": 0.0,
-      "pure_play_score": 40,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "CONSIDER",
-      "conviction": 3,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "Uncertain",
-      "bullish_factors": [
-        "Strong theme alignment with AI power infrastructure bottleneck",
-        "Modine's heat transfer tech critical for data center cooling",
-        "Multi-year grid upgrade cycle tailwind"
-      ],
-      "risk_factors": [
-        "No visible catalyst for 50-100% move",
-        "Cyclical industrial exposure to economic slowdown",
-        "Need current data on earnings timing and analyst coverage"
-      ],
-      "reasoning": "Strong thematic fit in prime Grid Infrastructure theme but lacking identifiable catalyst for asymmetric returns. Information gaps prevent full risk assessment of governance and timing factors.",
+      "reasoning": "Strong catalyst setup with Feb 19 earnings after 300% surprise and expanding PROPWR power contracts providing asymmetric upside. CFO departure is managed transition with interim successor named. Near-term earnings create timing risk but positive momentum intact.",
       "action": "Consider smaller position - watching for gate 5",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -209,29 +153,29 @@
     {
       "symbol": "VAL",
       "tier": "TIER1",
-      "price": 57.72,
+      "price": 57.73,
       "beta": 1.57,
-      "banker": 75.7,
+      "banker": 75.8,
       "return_20d": 10.7,
-      "theme": "Energy Services & Infrastructure",
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 90,
-      "theme_verdict": "STRONG FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
       "conviction": 3,
       "sector_status": "NEUTRAL",
       "upside_potential": "High (50%+)",
       "bullish_factors": [
-        "Strong fit in hot Energy Services theme with 7.0/10 score",
-        "Benefits from multi-year energy infrastructure capex cycle",
-        "Less commodity price sensitivity as services provider"
+        "Strong Q4 2024 earnings beat (+53% vs consensus)",
+        "CEO insider buying in March 2025 shows confidence",
+        "Offshore drilling sector momentum with oil recovery"
       ],
       "risk_factors": [
-        "Earnings timing uncertainty could create binary risk",
-        "Energy services can be cyclical and project-dependent",
-        "Need verification of current financial health and governance"
+        "Cyclical energy exposure to oil price volatility",
+        "Recent COO/CFO selling activity",
+        "Analyst price targets below current level"
       ],
-      "reasoning": "VAL fits strongly in a hot investable theme with multi-year tailwinds from energy infrastructure spending. However, without current data on earnings timing, governance issues, or analyst sentiment, there's insufficient information to make a confident PASS decision.",
+      "reasoning": "VAL shows strong operational momentum with massive earnings beats and CEO buying, but faces headwinds from recent C-suite selling and neutral analyst sentiment. The 97-day catalyst timeline creates opportunity but requires patience in a volatile energy sector.",
       "action": "Consider smaller position - watching for gate 5",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -247,26 +191,20 @@
       "price": 12.44,
       "beta": 2.48,
       "banker": 100,
-      "return_20d": 42.4,
-      "theme": "Critical Materials & Mining",
+      "return_20d": 42.3,
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 85,
-      "theme_verdict": "GOOD FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
-      "conviction": 3,
-      "sector_status": "NEUTRAL",
+      "conviction": 0,
+      "sector_status": "UNKNOWN",
       "upside_potential": "Uncertain",
-      "bullish_factors": [
-        "Small biotech with potential asymmetric upside",
-        "Critical Materials theme momentum could provide sector rotation tailwinds"
-      ],
+      "bullish_factors": [],
       "risk_factors": [
-        "Biotech binary risk profile",
-        "No visible catalyst timeline",
-        "Potential theme misalignment",
-        "Clinical trial execution risk"
+        "Could not complete analysis"
       ],
-      "reasoning": "AMPX appears to be a biotech company misaligned with the Critical Materials & Mining theme assignment. Without current pipeline data, earnings timeline, or clinical catalyst visibility, this presents dead money risk despite potential asymmetric biotech upside.",
+      "reasoning": "Analysis failed after 5 attempts",
       "action": "Consider smaller position",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -277,29 +215,32 @@
     {
       "symbol": "PUMP",
       "tier": "TIER1",
-      "price": 11.5,
+      "price": 11.49,
       "beta": 2.05,
-      "banker": 95.2,
-      "return_20d": 17.1,
-      "theme": "Energy Services & Infrastructure",
+      "banker": 94.7,
+      "return_20d": 17.0,
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 95,
-      "theme_verdict": "STRONG FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
       "conviction": 3,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "Uncertain",
+      "sector_status": "BULLISH",
+      "upside_potential": "High (50%+)",
       "bullish_factors": [
-        "Strong theme fit in energy infrastructure buildout",
-        "Energy services less commodity price sensitive",
-        "Multi-year capex cycle thesis intact"
+        "Recent 300% earnings surprise ($0.12 vs $0.03 estimate)",
+        "PROPWR power segment securing major contracts (190 MW recent, 360 MW total)",
+        "8 analysts consensus 'Buy' rating, 106% YoY earnings growth expected",
+        "CFO bought shares at $6.86 in November (insider confidence)",
+        "Strong balance sheet vs peer group"
       ],
       "risk_factors": [
-        "No visible catalyst for re-rating",
-        "Small cap energy services can be volatile",
-        "Need current financial health assessment"
+        "CFO David Schorlemer departing March 3, 2025 (succession planned)",
+        "Earnings binary risk in 20 days",
+        "Pressure pumping cyclical headwinds in 2025",
+        "Stock down significantly from highs despite recent gains"
       ],
-      "reasoning": "Strong thematic fit but lacks identifiable catalyst for 50-100% move. Energy services theme is solid but without earnings date, recent contracts, or specific growth drivers, this appears to be dead money despite good sector positioning.",
+      "reasoning": "Strong catalyst setup with Feb 19 earnings after 300% surprise and expanding PROPWR power contracts providing asymmetric upside. CFO departure is managed transition with interim successor named. Near-term earnings create timing risk but positive momentum intact.",
       "action": "Consider smaller position",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -310,62 +251,99 @@
     {
       "symbol": "MOD",
       "tier": "TIER1",
-      "price": 185.04,
+      "price": 184.66,
       "beta": 1.96,
       "banker": 100,
-      "return_20d": 31.4,
-      "theme": "Grid Infrastructure & Power Transmission",
+      "return_20d": 31.1,
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 40,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "CONSIDER",
-      "conviction": 3,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "Uncertain",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
+      "final_decision": "PASS",
+      "conviction": 4,
+      "sector_status": "BULLISH",
+      "upside_potential": "High (50%+)",
       "bullish_factors": [
-        "Strong theme alignment with AI power infrastructure bottleneck",
-        "Modine's heat transfer tech critical for data center cooling",
-        "Multi-year grid upgrade cycle tailwind"
+        "Data center revenue grew 119% to $644M in fiscal 2025",
+        "$100M US manufacturing expansion completing",
+        "Strong AI/data center theme with $2B revenue target by 2028",
+        "$180M new orders secured recently",
+        "Multiple product innovations (Cooling AI, immersion cooling)"
       ],
       "risk_factors": [
-        "No visible catalyst for 50-100% move",
-        "Cyclical industrial exposure to economic slowdown",
-        "Need current data on earnings timing and analyst coverage"
+        "Earnings volatility with report in 5 days",
+        "High valuation expectations already priced in",
+        "Customer concentration risk in hyperscale data center operators"
       ],
-      "reasoning": "Strong thematic fit in prime Grid Infrastructure theme but lacking identifiable catalyst for asymmetric returns. Information gaps prevent full risk assessment of governance and timing factors.",
-      "action": "Consider smaller position",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
+      "reasoning": "MOD is a pure-play beneficiary of AI data center buildout with 119% data center revenue growth and strong execution on $100M capacity expansion. Strong analyst coverage (Strong Buy) with 30%+ upside targets. Minor concern on earnings timing but fundamental thesis intact.",
+      "action": "Enter Monday at market open",
+      "dd_verdict": "SPEC BUY",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_key_catalyst": "** Q3 fiscal 2026 earnings on Feb 4, 2026, after market close - the company's first earnings after elevating Data Centers to a separate segment led by Art Laszlo effective April 1st, plus ongoing capa",
       "dd_fatal_flaw": ""
+    },
+    {
+      "symbol": "LUMN",
+      "tier": "TIER1",
+      "price": 8.82,
+      "beta": 1.94,
+      "banker": 71.3,
+      "return_20d": 14.7,
+      "theme": "",
+      "theme_score": 0.0,
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
+      "final_decision": "PASS",
+      "conviction": 4,
+      "sector_status": "NEUTRAL",
+      "upside_potential": "High (50%+)",
+      "bullish_factors": [
+        "Major Palantir AI partnership worth $200M+ validates transformation thesis",
+        "Strong CFO insider buying - 40K shares at $4.44 in Aug 2025, CEO buying 135K shares",
+        "Q3 2025 beat with revenue decline slowing to 4.2% vs worse expectations",
+        "$1B+ in new PCF deals signed, $10B+ total pipeline driving recurring revenue",
+        "Successful $2.4B debt refinancing reducing interest expense by $135M annually"
+      ],
+      "risk_factors": [
+        "Legacy telecom revenue decline continues despite improvement",
+        "High debt load despite refinancing",
+        "Execution risk on AI transformation strategy"
+      ],
+      "reasoning": "<cite index=\"21-5,22-3,28-4\">The major Palantir partnership announced in October 2025, valued at over $200M, represents a significant catalyst validating LUMN's AI infrastructure transformation story</cite>. <cite index=\"11-1,11-4,20-9,20-10\">Strong insider buying with CFO purchasing 40,000 shares at $4.44 demonstrates management confidence</cite>. <cite index=\"4-7,4-9\">Recent Q3 earnings beat with revenue decline slowing to 4.2% shows operational improvement</cite>.",
+      "action": "Enter Monday at market open",
+      "dd_verdict": "SPEC BUY",
+      "dd_conviction": 6,
+      "dd_position_size": "REDUCED",
+      "dd_key_catalyst": "** Q4 2025 earnings on Feb 10, 2026 with potential to beat guidance and management targeting EBITDA >$3.5B in 2026 (vs current ~$3.4B)",
+      "dd_fatal_flaw": "** Management expects EBITDA to decline YoY in 2025 due to legacy declines and transformation costs - execution risk is enormous with massive operational transformation underway while hemorrhaging leg"
     },
     {
       "symbol": "VAL",
       "tier": "TIER1",
-      "price": 57.72,
+      "price": 57.73,
       "beta": 1.57,
-      "banker": 75.7,
+      "banker": 75.8,
       "return_20d": 10.7,
-      "theme": "Energy Services & Infrastructure",
+      "theme": "",
       "theme_score": 0.0,
-      "pure_play_score": 90,
-      "theme_verdict": "STRONG FIT",
+      "pure_play_score": 0,
+      "theme_verdict": "ERROR",
       "final_decision": "CONSIDER",
       "conviction": 3,
       "sector_status": "NEUTRAL",
       "upside_potential": "High (50%+)",
       "bullish_factors": [
-        "Strong fit in hot Energy Services theme with 7.0/10 score",
-        "Benefits from multi-year energy infrastructure capex cycle",
-        "Less commodity price sensitivity as services provider"
+        "Strong Q4 2024 earnings beat (+53% vs consensus)",
+        "CEO insider buying in March 2025 shows confidence",
+        "Offshore drilling sector momentum with oil recovery"
       ],
       "risk_factors": [
-        "Earnings timing uncertainty could create binary risk",
-        "Energy services can be cyclical and project-dependent",
-        "Need verification of current financial health and governance"
+        "Cyclical energy exposure to oil price volatility",
+        "Recent COO/CFO selling activity",
+        "Analyst price targets below current level"
       ],
-      "reasoning": "VAL fits strongly in a hot investable theme with multi-year tailwinds from energy infrastructure spending. However, without current data on earnings timing, governance issues, or analyst sentiment, there's insufficient information to make a confident PASS decision.",
+      "reasoning": "VAL shows strong operational momentum with massive earnings beats and CEO buying, but faces headwinds from recent C-suite selling and neutral analyst sentiment. The 97-day catalyst timeline creates opportunity but requires patience in a volatile energy sector.",
       "action": "Consider smaller position",
       "dd_verdict": "",
       "dd_conviction": 0,
@@ -374,16 +352,7 @@
       "dd_fatal_flaw": ""
     }
   ],
-  "sell_signals": [
-    {
-      "symbol": "OUST",
-      "price": 20.83,
-      "reason": "Trailing stop hit (23.5% from high of $27.24)",
-      "entry_price": 26.36,
-      "highest_close": 27.24,
-      "drawdown_pct": 23.53157121879589
-    }
-  ],
+  "sell_signals": [],
   "historical_winners": [],
   "big_wins": [],
   "home_runs": []

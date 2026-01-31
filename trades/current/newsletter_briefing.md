@@ -1,4 +1,4 @@
-# Weekly Scanner Briefing - Week Ending January 30, 2026
+# Weekly Scanner Briefing - Week Ending January 31, 2026
 
 ---
 
@@ -17,7 +17,33 @@
 
 ## 🔥 Hot Themes This Week
 
-*Theme data not available - run scanner with LLM gates enabled*
+### PRIME Themes (Highest Conviction)
+
+**AI Power Infrastructure & Grid Modernization** (BOTTLENECK)
+- Score: 8.8/10
+- Thesis: AI's exponential growth is constrained by power availability, not compute or capital. With 68 GW needed by 2027 and grid connections taking 4-7 years, power infrastructure companies solving this bottleneck will see sustained multi-year demand with pricing power.
+- Catalysts: AI data centers need 10-68 GW additional power by 2027, Trump's 300 GW nuclear capacity target by 2030, Grid connection wait times now 4-7 years in key regions
+
+**Defense Supply Chain Solutions & Manufacturing** (BOTTLENECK)
+- Score: 8.5/10
+- Thesis: Defense spending surge is constrained by manufacturing capacity and supply chain resilience rather than budget allocation. Companies solving F-35 component shortages, ammunition production bottlenecks, and critical material sourcing will capture outsized demand.
+- Catalysts: Russell 2000 A&D forecasted 358% earnings growth in 2025, Europe defense spending to double by 2030 ($650-750B), DoD supply chain resilience programs ramping up
+
+**Nuclear Renaissance & Uranium** (TREND)
+- Score: 8.4/10
+- Thesis: Nuclear power is the only baseload clean energy source capable of meeting AI's 24/7 power demands at scale. With policy support, uranium supply constraints, and long development lead times, the sector offers multi-year growth with supply-demand imbalances.
+- Catalysts: Trump targeting 300 GW new nuclear by 2030, Three Mile Island restart for Microsoft, 18 GW annual nuclear capacity additions forecasted 2025-2040
+
+**Critical Materials & Rare Earth Processing** (BOTTLENECK)
+- Score: 7.9/10
+- Thesis: China's rare earth restrictions expose critical Western vulnerabilities in AI, defense, and clean energy supply chains. Companies building processing capacity outside China will benefit from supply security premiums and government support.
+- Catalysts: China rare earth export restrictions tightening, Defense Production Act applications for critical materials, AI chip advanced packaging bottlenecks
+
+### INVESTABLE Themes (Good Opportunities)
+
+- **Memory & Semiconductor Packaging** (BOTTLENECK) - Score: 7.0/10
+- **European Banks & Financial Services** (CONTRARIAN) - Score: 6.8/10
+- **Healthcare & Biotechnology Recovery** (CONTRARIAN) - Score: 6.6/10
 
 ---
 
@@ -25,35 +51,35 @@
 
 ### 🟢 PASS - Ready for Entry (GREEN Signals)
 
-#### MOD
+#### AMPX
 
 | Metric | Value |
 |--------|-------|
-| **Price** | $184.66 |
-| **Theme** | N/A (ERROR) |
+| **Price** | $12.44 |
+| **Theme** | Critical Materials & Rare Earth Processing (GOOD FIT) |
 | **Tier** | TIER1 |
-| **Beta** | 1.96 |
+| **Beta** | 2.48 |
 | **Banker** | 100 |
 | **Conviction** | ★★★★☆ |
-| **Catalyst** | Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028 |
+| **Catalyst** | Q4 2025 earnings expected March 20, 2025 with 120%+ revenue growth, Nokia partnership expansion, defense contracts via NDAA compliance |
 | **Red Flags** | MINOR |
 
 **Bullish Factors:**
-- Data center revenue grew 119% to $644M in fiscal 2025
-- $100M US manufacturing expansion completing
-- Strong AI/data center theme with $2B revenue target by 2028
+- 173% YoY Q3 revenue growth with beat and raise
+- Strong defense/aviation focus aligns with NDAA compliance theme
+- 7 Buy ratings, 0 Holds, avg target $17.17 (+53% upside)
 
 **Risk Factors:**
-- Earnings volatility with report in 5 days
-- High valuation expectations already priced in
-- Customer concentration risk in hyperscale data center operators
+- 25.5M share dilution just completed
+- CTO selling large blocks under 10b5-1
+- High beta (3.04) creates volatility risk
 
 **Analysis:**
-> MOD is a pure-play beneficiary of AI data center buildout with 119% data center revenue growth and strong execution on $100M capacity expansion. Strong analyst coverage (Strong Buy) with 30%+ upside targets. Minor concern on earnings timing but fundamental thesis intact.
+> Strong catalyst setup with Q4 earnings expected to show 120%+ growth and continued defense momentum. ATM dilution is concerning but provides war chest for scaling. Insider selling under 10b5-1 plans after 400% run is normal profit-taking.
 
-**Recommended Action:** Consider waiting until after Feb 4 earnings or enter with smaller position size due to binary earnings risk
+**Recommended Action:** Enter position Monday - catalyst timing is optimal with Q4 earnings ~7 weeks out, allowing position build before binary event
 
-📸 **[CHART: MOD]** - *Add TradingView screenshot*
+📸 **[CHART: AMPX]** - *Add TradingView screenshot*
 
 ---
 
@@ -62,28 +88,28 @@
 | Metric | Value |
 |--------|-------|
 | **Price** | $8.82 |
-| **Theme** | N/A (ERROR) |
+| **Theme** | AI Power Infrastructure & Grid Modernization (STRONG FIT) |
 | **Tier** | TIER1 |
 | **Beta** | 1.94 |
 | **Banker** | 71 |
 | **Conviction** | ★★★★☆ |
-| **Catalyst** | Palantir partnership $200M+ multi-year deal (Oct 2025), Q4 earnings Feb 10 with momentum from strong Q3 beat |
-| **Red Flags** | CLEAN |
+| **Catalyst** | Q4 2025 earnings Feb 10 (expected beat after Q3 surprise), $200M Palantir partnership driving revenue, PCF deals pipeline $10B+, 34M fiber miles expansion by 2028 |
+| **Red Flags** | MINOR |
 
 **Bullish Factors:**
-- Major Palantir AI partnership worth $200M+ validates transformation thesis
-- Strong CFO insider buying - 40K shares at $4.44 in Aug 2025, CEO buying 135K shares
-- Q3 2025 beat with revenue decline slowing to 4.2% vs worse expectations
+- Palantir $200M partnership validates AI infrastructure thesis and provides multi-year revenue stream
+- $10B+ PCF pipeline with $400-500M recurring revenue by 2028 - major transformation from legacy telecom
+- Stock up 46% in 2025 but analyst targets still at $7.56 median vs $8.82 current - room for upgrades
 
 **Risk Factors:**
-- Legacy telecom revenue decline continues despite improvement
-- High debt load despite refinancing
-- Execution risk on AI transformation strategy
+- Earnings binary risk in 10 days - could see volatility if guidance disappoints
+- Legacy telecom revenue declining 4.2% YoY - transformation execution risk
+- High debt burden despite refinancing - financial leverage remains elevated
 
 **Analysis:**
-> <cite index="21-5,22-3,28-4">The major Palantir partnership announced in October 2025, valued at over $200M, represents a significant catalyst validating LUMN's AI infrastructure transformation story</cite>. <cite index="11-1,11-4,20-9,20-10">Strong insider buying with CFO purchasing 40,000 shares at $4.44 demonstrates management confidence</cite>. <cite index="4-7,4-9">Recent Q3 earnings beat with revenue decline slowing to 4.2% shows operational improvement</cite>.
+> LUMN presents strong asymmetric setup with clear catalyst (Palantir partnership driving AI infrastructure narrative) and significant upside potential. The $200M Palantir deal validates the AI power infrastructure thesis and creates recurring revenue stream. With $10B+ PCF pipeline and massive fiber expansion plans, LUMN is positioning as critical AI backbone. Earnings in 10 days present binary risk but Q3 beat suggests momentum.
 
-**Recommended Action:** Enter position ahead of Feb 10 earnings - Palantir partnership provides significant re-rating catalyst with earnings likely to show continued momentum
+**Recommended Action:** Enter position but size appropriately for earnings volatility - consider waiting until Feb 11 if risk-averse, or enter with tight stops before Feb 10 earnings
 
 📸 **[CHART: LUMN]** - *Add TradingView screenshot*
 
@@ -91,73 +117,51 @@
 
 ### 🟡 CAUTION - Wait or Size Down
 
-#### AMPX
-
-| Metric | Value |
-|--------|-------|
-| **Price** | $12.44 |
-| **Theme** | N/A (ERROR) |
-| **Tier** | TIER1 |
-| **Conviction** | ☆☆☆☆☆ |
-| **Catalyst** | Analysis failed |
-
-**Concerns:**
-- Could not complete analysis
-
-**Analysis:**
-> Analysis failed after 5 attempts
-
-**Recommended Action:** Manual review required
-
-📸 **[CHART: AMPX]** - *Add TradingView screenshot*
-
----
-
 #### PUMP
 
 | Metric | Value |
 |--------|-------|
 | **Price** | $11.49 |
-| **Theme** | N/A (ERROR) |
+| **Theme** | AI Power Infrastructure & Grid Modernization (GOOD FIT) |
 | **Tier** | TIER1 |
 | **Conviction** | ★★★☆☆ |
-| **Catalyst** | Earnings Feb 19, 2025 (after recent beat of 300% surprise), PROPWR power segment contracts expanding (360 MW on order) |
+| **Catalyst** | Q4 earnings Feb 19, PROPWR power segment expansion with 360 MW on order, recent Coterra Energy microgrid contract |
 
 **Concerns:**
-- CFO David Schorlemer departing March 3, 2025 (succession planned)
-- Earnings binary risk in 20 days
-- Pressure pumping cyclical headwinds in 2025
+- Earnings in 19 days creates binary risk
+- CFO departure creates leadership uncertainty
+- Recent dilution may pressure stock
 
 **Analysis:**
-> Strong catalyst setup with Feb 19 earnings after 300% surprise and expanding PROPWR power contracts providing asymmetric upside. CFO departure is managed transition with interim successor named. Near-term earnings create timing risk but positive momentum intact.
+> PUMP fits AI power theme well with growing PROPWR segment serving energy infrastructure bottleneck. However, earnings proximity and CFO departure create timing risks despite strong catalyst momentum.
 
-**Recommended Action:** Consider position sizing for earnings volatility or wait until post-Feb 19 if risk-averse. PROPWR expansion story provides 6-month catalyst runway.
+**Recommended Action:** Wait until after Feb 19 earnings to assess both results and management stability before entry
 
 📸 **[CHART: PUMP]** - *Add TradingView screenshot*
 
 ---
 
-#### VAL
+#### MOD
 
 | Metric | Value |
 |--------|-------|
-| **Price** | $57.73 |
-| **Theme** | N/A (ERROR) |
+| **Price** | $184.66 |
+| **Theme** | AI Power Infrastructure & Grid Modernization (STRONG FIT) |
 | **Tier** | TIER1 |
 | **Conviction** | ★★★☆☆ |
-| **Catalyst** | Q1 2025 earnings expected May 07 with 211% YoY growth estimate, offshore drilling demand upturn |
+| **Catalyst** | Earnings Feb 4 2025 after close, strong data center growth driving capacity expansion |
 
 **Concerns:**
-- Cyclical energy exposure to oil price volatility
-- Recent COO/CFO selling activity
-- Analyst price targets below current level
+- Binary earnings risk in 4 trading days
+- CEO reduced position by 11.8% recently
+- Moderate short interest at 10.45%
 
 **Analysis:**
-> VAL shows strong operational momentum with massive earnings beats and CEO buying, but faces headwinds from recent C-suite selling and neutral analyst sentiment. The 97-day catalyst timeline creates opportunity but requires patience in a volatile energy sector.
+> MOD has strong fundamentals with perfect AI infrastructure theme fit and bullish analyst sentiment, but earnings in 4 days creates significant binary risk that outweighs the positive setup for immediate entry.
 
-**Recommended Action:** Wait for pullback to $52-55 range or strong oil price momentum before entry
+**Recommended Action:** Wait until after Feb 4 earnings - enter on any post-earnings dip if results meet expectations
 
-📸 **[CHART: VAL]** - *Add TradingView screenshot*
+📸 **[CHART: MOD]** - *Add TradingView screenshot*
 
 ---
 
@@ -175,12 +179,12 @@
 
 ### Stocks Requiring DD:
 
-- [ ] **MOD** - Unknown theme
-- [ ] **LUMN** - Unknown theme
+- [ ] **AMPX** - Critical Materials & Rare Earth Processing
+- [ ] **LUMN** - AI Power Infrastructure & Grid Modernization
 
 ### DD Output Placeholders:
 
-#### MOD Due Diligence
+#### AMPX Due Diligence
 
 > **[PASTE DD OUTPUT HERE]**
 >
@@ -212,4 +216,4 @@ Past performance is not indicative of future results.*
 
 ---
 
-*Generated: 2026-01-30 23:28:52 by BoS Momentum Scanner*
+*Generated: 2026-01-31 00:03:14 by BoS Momentum Scanner*

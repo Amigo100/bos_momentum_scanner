@@ -1,18 +1,18 @@
 # Tuesday Prompts
 
-## Slot 1: BUY Signal: MOD
+## Slot 1: BUY Signal: AMPX
 
 ```
 SCANNER OUTPUT:
-PASS: MOD | Theme: N/A (ERROR) | Price: $184.66
-Catalyst: Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028
+PASS: AMPX | Theme: Critical Materials & Rare Earth Processing (GOOD FIT) | Price: $12.44
+Catalyst: Q4 2025 earnings expected March 20, 2025 with 120%+ revenue growth, Nokia partnership expansion, defense contracts via NDAA compliance
 
 ---
 
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
 Using the scanner output above:
-1. Search for the LATEST news on $MOD (last 7 days)
+1. Search for the LATEST news on $AMPX (last 7 days)
 2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
 3. Draft a visually engaging X post (under 280 characters) that:
    - Opens with an attention-grabbing hook that stops the scroll
@@ -25,15 +25,15 @@ Make it punchy and impossible to scroll past. This is a RARE signal - we scan 18
 
 ```
 
-**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for MOD
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for AMPX
 
 ---
 
-## Slot 2: Lesson: Entry timing matters more than stock sel...
+## Slot 2: Lesson: Trailing stops protect gains better than...
 
 ```
 TRADING LESSON:
-Topic: Entry timing matters more than stock selection
+Topic: Trailing stops protect gains better than fixed targets
 
 ---
 
@@ -55,19 +55,19 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Watching: AMPX
+## Slot 3: Watching: PUMP
 
 ```
 SCANNER OUTPUT:
-CAUTION: AMPX | Theme: N/A (ERROR) | Price: $12.44
-Reason: Could not complete analysis
+CAUTION: PUMP | Theme: AI Power Infrastructure & Grid Modernization (GOOD FIT) | Price: $11.49
+Reason: Earnings in 19 days creates binary risk
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 Using the scanner output above:
-1. Search for recent news on $AMPX
+1. Search for recent news on $PUMP
 2. Draft a visually engaging X post (under 280 characters) that:
    - Shows this stock caught my attention (it's on radar)
    - Explains specifically WHY it's not actionable YET (use the reason above)
@@ -79,6 +79,6 @@ Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
-**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for AMPX
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for PUMP
 
 ---

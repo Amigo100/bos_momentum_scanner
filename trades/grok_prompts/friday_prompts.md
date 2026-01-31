@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 17 | Technical Pass: 5 | Theme Fit: 5 | Final PASS: 2
+Scanned: 885 | BoS Up: 17 | Technical Pass: 5 | Theme Fit: 4 | Final PASS: 2
 
 ---
 
@@ -26,19 +26,19 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Why I Passed: PUMP
+## Slot 2: Why I Passed: MOD
 
 ```
 SCANNER OUTPUT:
-EXCLUDED: PUMP | Theme: N/A (ERROR)
-Reason: CFO David Schorlemer departing March 3, 2025 (succession planned)
+EXCLUDED: MOD | Theme: AI Power Infrastructure & Grid Modernization (STRONG FIT)
+Reason: Binary earnings risk in 4 trading days
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 Using the scanner output above:
-1. Search for why $PUMP might be getting attention/hype right now
+1. Search for why $MOD might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
    - States specifically which gate it failed (technical, thematic, or quality)
@@ -60,7 +60,7 @@ Show process, not arrogance. This builds trust.
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $INOD
 Theme: Power Grid Infrastructure & Electrical Equipment | Tier: TIER1
-Held: ~12 days (entry price private)
+Held: ~13 days (entry price private)
 Snapshot P&L: -9.9% (verify with current price)
 
 ---
@@ -79,12 +79,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$INOD update: +XX.X% since entry (12 days held). [Recent development]. Full portfolio → [link]"
+Example format: "$INOD update: +XX.X% since entry (13 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing INOD, live P&L%, 12 days held, chart thumbnail
+**Visual:** Position card showing INOD, live P&L%, 13 days held, chart thumbnail
 
 ---

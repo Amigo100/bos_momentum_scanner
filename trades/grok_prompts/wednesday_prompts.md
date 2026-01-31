@@ -25,29 +25,33 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Lesson: Trailing stops protect gains better than...
+## Slot 2: Hot Theme: Defense Supply Chain Solutions & Manufacturing
 
 ```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+SCANNER OUTPUT:
+PRIME: Defense Supply Chain Solutions & Manufacturing
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Supply Chain Solutions & Manufacturing (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
-**Visual:** Rule graphic or annotated chart example
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Solutions & Manufacturing
 
 ---
 
@@ -57,7 +61,7 @@ Educational and actionable. Make them think "I should follow this person."
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $CGON
 Theme: Healthcare / Biotech | Tier: TIER1
-Held: ~21 days (entry price private)
+Held: ~22 days (entry price private)
 Snapshot P&L: -3.5% (verify with current price)
 
 ---
@@ -76,12 +80,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$CGON update: +XX.X% since entry (21 days held). [Recent development]. Full portfolio → [link]"
+Example format: "$CGON update: +XX.X% since entry (22 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing CGON, live P&L%, 21 days held, chart thumbnail
+**Visual:** Position card showing CGON, live P&L%, 22 days held, chart thumbnail
 
 ---

@@ -4,7 +4,7 @@
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: MOD, LUMN | CAUTION: AMPX, PUMP, VAL | Top Theme: Multiple themes
+PASS: AMPX, LUMN | CAUTION: PUMP, MOD | Top Theme: AI Power Infrastructure & Grid Modernization
 
 ---
 
@@ -27,19 +27,19 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Deep Dive: MOD
+## Slot 2: Deep Dive: AMPX
 
 ```
 SCANNER OUTPUT:
-PASS: MOD | Theme: N/A (ERROR) | Price: $184.66
-Catalyst: Earnings Feb 4 (Q1 2026), $100M capacity expansion completing H2 2025, $2B revenue target by 2028
+PASS: AMPX | Theme: Critical Materials & Rare Earth Processing (GOOD FIT) | Price: $12.44
+Catalyst: Q4 2025 earnings expected March 20, 2025 with 120%+ revenue growth, Nokia partnership expansion, defense contracts via NDAA compliance
 
 ---
 
 You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
 
 Using the scanner output above:
-1. Search for the LATEST news on $MOD (last 7 days)
+1. Search for the LATEST news on $AMPX (last 7 days)
 2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
 3. Draft a visually engaging X post (under 280 characters) that:
    - Opens with an attention-grabbing hook that stops the scroll
@@ -52,23 +52,23 @@ Make it punchy and impossible to scroll past. This is a RARE signal - we scan 18
 
 ```
 
-**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for MOD
+**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for AMPX
 
 ---
 
-## Slot 3: Why I Passed: AMPX
+## Slot 3: Why I Passed: PUMP
 
 ```
 SCANNER OUTPUT:
-EXCLUDED: AMPX | Theme: N/A (ERROR)
-Reason: Could not complete analysis
+EXCLUDED: PUMP | Theme: AI Power Infrastructure & Grid Modernization (GOOD FIT)
+Reason: Earnings in 19 days creates binary risk
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 Using the scanner output above:
-1. Search for why $AMPX might be getting attention/hype right now
+1. Search for why $PUMP might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
    - States specifically which gate it failed (technical, thematic, or quality)

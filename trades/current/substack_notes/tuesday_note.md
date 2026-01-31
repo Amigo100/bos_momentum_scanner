@@ -1,5 +1,10 @@
 Theme Momentum - Week 5
 
+🔥 Hot Themes This Week:
+• AI Power Infrastructure & Grid Modernization
+• Defense Supply Chain Solutions & Manufacturing
+• Nuclear Renaissance & Uranium
+
 🎯 2 GREEN Signal(s) Active
 Our 5-gate system identified these opportunities.
 

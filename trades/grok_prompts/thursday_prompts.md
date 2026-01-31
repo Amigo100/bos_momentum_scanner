@@ -4,8 +4,8 @@
 
 ```
 SCANNER OUTPUT:
-PASS: LUMN | Theme: N/A (ERROR) | Price: $8.82
-Catalyst: Palantir partnership $200M+ multi-year deal (Oct 2025), Q4 earnings Feb 10 with momentum from strong Q3 beat
+PASS: LUMN | Theme: AI Power Infrastructure & Grid Modernization (STRONG FIT) | Price: $8.82
+Catalyst: Q4 2025 earnings Feb 10 (expected beat after Q3 surprise), $200M Palantir partnership driving revenue, PCF deals pipeline $10B+, 34M fiber miles expansion by 2028
 
 ---
 
@@ -29,45 +29,49 @@ Make it punchy and impossible to scroll past. This is a RARE signal - we scan 18
 
 ---
 
-## Slot 2: Lesson: The best trade is often the one you don'...
-
-```
-TRADING LESSON:
-Topic: The best trade is often the one you don't make
-
----
-
-You are drafting an X post for @SterlingSignals.
-
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
-   - Ends with CTA: https://sterlingsignals.substack.com
-
-Educational and actionable. Make them think "I should follow this person."
-
-```
-
-**Visual:** Rule graphic or annotated chart example
-
----
-
-## Slot 3: Watching: PUMP
+## Slot 2: Hot Theme: Defense Supply Chain Solutions & Manufacturing
 
 ```
 SCANNER OUTPUT:
-CAUTION: PUMP | Theme: N/A (ERROR) | Price: $11.49
-Reason: CFO David Schorlemer departing March 3, 2025 (succession planned)
+PRIME: Defense Supply Chain Solutions & Manufacturing
+
+---
+
+You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Supply Chain Solutions & Manufacturing (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
+   - Ends with CTA: https://sterlingsignals.substack.com
+
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+
+```
+
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Solutions & Manufacturing
+
+---
+
+## Slot 3: Watching: MOD
+
+```
+SCANNER OUTPUT:
+CAUTION: MOD | Theme: AI Power Infrastructure & Grid Modernization (STRONG FIT) | Price: $184.66
+Reason: Binary earnings risk in 4 trading days
 
 ---
 
 You are drafting an X post for @SterlingSignals.
 
 Using the scanner output above:
-1. Search for recent news on $PUMP
+1. Search for recent news on $MOD
 2. Draft a visually engaging X post (under 280 characters) that:
    - Shows this stock caught my attention (it's on radar)
    - Explains specifically WHY it's not actionable YET (use the reason above)
@@ -79,6 +83,6 @@ Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
-**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for PUMP
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for MOD
 
 ---

@@ -10,7 +10,7 @@ Theme: Community building, light touch
 
 You are drafting a light, engagement-focused X post for @SterlingSignals.
 
-Topic/Question: Momentum or value - which camp are you in?
+Topic/Question: How long do you typically hold positions?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Trailing stops protect gains better than...
+## Slot 2: Lesson: Theme alignment multiplies momentum...
 
 ```
 TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
+Topic: Theme alignment multiplies momentum
 
 ---
 

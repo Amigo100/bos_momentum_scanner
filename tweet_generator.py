@@ -488,6 +488,7 @@ AUTHENTIC_TEMPLATES = {
             'id': 'engage_4',
             'text': "Weekend homework:\n\nPick your top 3 stocks for next week.\n\nComment below — let's compare notes after Friday's scan.\n\n👇",
             'requires': [],
+            'valid_days': ['Saturday', 'Sunday'],
         },
     ],
 
@@ -497,13 +498,15 @@ AUTHENTIC_TEMPLATES = {
     'power_hour': [
         {
             'id': 'power_1',
-            'text': "⚡ Power Hour:\n\n{{THEME}} showing relative strength into Friday's close.\n\nWatching for follow-through next week.\n\n{{SUBSTACK_URL}}",
+            'text': "⚡ Power Hour:\n\n{{THEME}} showing relative strength into {{MARKET_REFERENCE}}.\n\nWatching for follow-through.\n\n{{SUBSTACK_URL}}",
             'requires': ['theme'],
+            'valid_days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         },
         {
             'id': 'power_2',
             'text': "⚡ Power Hour watch:\n\nVolume picking up in {{THEME}} names.\n\nThe close matters. Eyes on the scanner.\n\n{{SUBSTACK_URL}}",
             'requires': ['theme'],
+            'valid_days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         },
     ],
 
@@ -622,6 +625,22 @@ class TemplateTracker:
         """Check if ticker has been mentioned too many times."""
         return self.used_tickers.get(ticker, 0) >= max_count
     
+    def is_category_exhausted(self, category: str) -> bool:
+        """Check if all templates for a category have been used this week."""
+        if category not in AUTHENTIC_TEMPLATES:
+            return True
+        used = self.used_templates.get(category, set())
+        return len(used) >= len(AUTHENTIC_TEMPLATES[category])
+
+    def get_usage_stats(self) -> dict:
+        """Get template usage statistics for debugging."""
+        stats = {}
+        for category in AUTHENTIC_TEMPLATES:
+            total = len(AUTHENTIC_TEMPLATES[category])
+            used = len(self.used_templates.get(category, set()))
+            stats[category] = {'used': used, 'total': total, 'remaining': total - used}
+        return stats
+
     def reset(self):
         """Reset for new week."""
         self.used_templates = {}
@@ -790,15 +809,29 @@ def populate_template(template: str, data: dict) -> str:
     return result
 
 
-def build_template_data(category: str, content: WeeklyContent, 
-                        template: dict = None) -> Optional[dict]:
+def build_template_data(category: str, content: WeeklyContent,
+                        template: dict = None, day: str = None) -> Optional[dict]:
     """
     Build data dictionary for populating a template.
-    
+
     Returns None if required data is unavailable.
     Enforces 25% threshold for position updates and closed trades.
     """
     data = {}
+
+    # Day-aware market reference
+    if day in ('Friday',):
+        data['market_reference'] = "today's close"
+        data['day_context'] = "today"
+    elif day in ('Saturday', 'Sunday'):
+        data['market_reference'] = "Friday's close"
+        data['day_context'] = "this weekend"
+    elif day in ('Monday',):
+        data['market_reference'] = "Friday's close"
+        data['day_context'] = "based on Friday's data"
+    else:  # Tue-Thu or None
+        data['market_reference'] = "the latest scan"
+        data['day_context'] = "this week"
     
     # -------------------------------------------------------------------------
     # BUY SIGNAL
@@ -940,10 +973,10 @@ def build_template_data(category: str, content: WeeklyContent,
         elif len(unique_tickers) == 2:
             data['ticker1'] = unique_tickers[0]
             data['ticker2'] = unique_tickers[1]
-            data['ticker3'] = unique_tickers[0]  # Repeat first if only 2
+            # Don't set ticker3 — template validation will skip hot_1
         elif len(unique_tickers) == 1:
-            # Only one ticker - skip templates requiring 3 tickers
-            pass
+            data['ticker1'] = unique_tickers[0]
+            # Don't set ticker2/ticker3 — skip multi-ticker templates
             
     # -------------------------------------------------------------------------
     # THEME COLD
@@ -1097,28 +1130,34 @@ def build_template_data(category: str, content: WeeklyContent,
 
 
 def select_and_populate_template(category: str, content: WeeklyContent,
-                                  account: str = 'account_1') -> Optional[dict]:
+                                  account: str = 'account_1',
+                                  day: str = None) -> Optional[dict]:
     """
     Select an unused template and populate it with data.
-    
+
     Args:
         category: Tweet category
         content: WeeklyContent with scanner data
         account: Which account (for variations)
-        
+        day: Day of week for day-aware filtering (e.g., 'Saturday')
+
     Returns:
         Dict with populated tweet or None if no valid template/data
     """
     # Get unused templates for this category
     available = template_tracker.get_unused_templates(category)
-    
+
     if not available:
-        # All templates used - reset and try again
-        if category in AUTHENTIC_TEMPLATES:
-            available = AUTHENTIC_TEMPLATES[category]
-        else:
+        # All templates exhausted for this category — trigger Claude fallback
+        return None
+
+    # Filter by valid_days if day is specified
+    if day and available:
+        available = [t for t in available
+                     if 'valid_days' not in t or day in t['valid_days']]
+        if not available:
             return None
-    
+
     # Shuffle for variety
     random.shuffle(available)
     
@@ -1127,11 +1166,17 @@ def select_and_populate_template(category: str, content: WeeklyContent,
         min_pnl = template.get('min_pnl', 0)
         
         # Build data for this template
-        data = build_template_data(category, content, template)
+        data = build_template_data(category, content, template, day=day)
         
         if data is None:
             continue  # Data requirements not met
-        
+
+        # Check all required fields are present and non-empty
+        required = template.get('requires', [])
+        missing = [r for r in required if r.lower() not in data or not data.get(r.lower())]
+        if missing:
+            continue  # Skip this template, try next one
+
         # Get template text (with account variation if available)
         if account != 'account_1' and 'account_variations' in template:
             text = template['account_variations'].get(account, template['text'])
@@ -1167,32 +1212,50 @@ def select_and_populate_template(category: str, content: WeeklyContent,
     return None  # No valid template found
 
 
-def get_fallback_category(original_category: str, content: WeeklyContent) -> str:
+def get_fallback_category(original_category: str, content: WeeklyContent,
+                          used_fallbacks: set = None) -> str:
     """
     Get fallback category when original can't be populated.
-    
-    When no 25%+ winners exist, substitute hot theme or engagement.
+    Uses a chain of fallbacks to ensure variety.
+
+    Args:
+        original_category: The category we tried to generate
+        content: WeeklyContent for checking data availability
+        used_fallbacks: Set of categories already used as fallbacks today
     """
-    fallback_map = {
-        'top_performers': 'theme_hot',
-        'closed_trade': 'theme_hot',
-        'self_quote': 'consider_spotlight',
-        'beat_spy': 'engagement',
-        'early_movers': 'theme_hot',
-        'consider_spotlight': 'theme_hot',
+    if used_fallbacks is None:
+        used_fallbacks = set()
+
+    fallback_chains = {
+        'top_performers': ['theme_hot', 'funnel_graphic', 'educational', 'engagement'],
+        'closed_trade': ['theme_hot', 'buy_signal', 'educational', 'engagement'],
+        'self_quote': ['consider_spotlight', 'theme_hot', 'educational', 'engagement'],
+        'beat_spy': ['funnel_graphic', 'theme_hot', 'educational', 'engagement'],
+        'early_movers': ['theme_hot', 'consider_spotlight', 'educational', 'engagement'],
+        'consider_spotlight': ['theme_hot', 'educational', 'engagement'],
+        'buy_signal': ['theme_hot', 'funnel_graphic', 'educational', 'engagement'],
+        'theme_hot': ['funnel_graphic', 'educational', 'engagement'],
+        'power_hour': ['theme_hot', 'educational', 'engagement'],
+        'newsletter': ['funnel_graphic', 'educational', 'engagement'],
     }
-    
-    fallback = fallback_map.get(original_category, 'engagement')
-    
-    # Check if fallback has data
-    if fallback == 'theme_hot':
-        if not (content.prime_themes or content.investable_themes):
-            return 'engagement'
-    elif fallback == 'consider_spotlight':
-        if not content.consider_signals:
-            return 'engagement'
-    
-    return fallback
+
+    chain = fallback_chains.get(original_category, ['educational', 'engagement'])
+
+    for fallback in chain:
+        if fallback in used_fallbacks:
+            continue
+        if fallback == 'theme_hot':
+            if not (content.prime_themes or content.investable_themes):
+                continue
+        elif fallback == 'consider_spotlight':
+            if not content.consider_signals:
+                continue
+        elif fallback == 'buy_signal':
+            if not content.pass_signals:
+                continue
+        return fallback
+
+    return 'engagement'
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1298,25 +1361,26 @@ def generate_claude_tweet(client, category: str, content: WeeklyContent) -> Opti
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def generate_tweet_hybrid(client, category: str, content: WeeklyContent,
-                          account: str = 'account_1') -> dict:
+                          account: str = 'account_1', day: str = None,
+                          used_fallbacks: set = None) -> dict:
     """
     Generate a tweet using hybrid approach:
     1. Try template first
     2. If no valid template, try fallback category template
     3. If still no template, use Claude API
-    
+
     Returns tweet dict with generation_method field.
     """
     # Step 1: Try template for original category
-    tweet = select_and_populate_template(category, content, account)
-    
+    tweet = select_and_populate_template(category, content, account, day=day)
+
     if tweet:
         return tweet
-    
+
     # Step 2: Try fallback category template
-    fallback = get_fallback_category(category, content)
+    fallback = get_fallback_category(category, content, used_fallbacks)
     if fallback != category:
-        tweet = select_and_populate_template(fallback, content, account)
+        tweet = select_and_populate_template(fallback, content, account, day=day)
         if tweet:
             tweet['original_category'] = category
             tweet['category'] = fallback  # Update to actual category used
@@ -1434,7 +1498,15 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False,
     
     # Reset template tracker for fresh week
     template_tracker.reset()
-    
+
+    # Check building phase
+    phase_info = check_building_phase(content)
+    if phase_info['is_building_phase']:
+        print("\n  📊 BUILDING PHASE DETECTED")
+        print(f"     Positions: {phase_info['total_positions']} total, {phase_info['green_positions']} green")
+        print(f"     Win rate: {phase_info['win_rate']:.1f}%")
+        print("     Content focus: Process > Performance")
+
     all_content = []
     
     # Check safeguards
@@ -1536,13 +1608,22 @@ def generate_all_tweets(content: WeeklyContent, mock: bool = False,
     }
     
     print("\n  🤖 Generating tweets (hybrid: templates + Claude fallback)...")
-    
+
+    used_fallbacks_today = set()
+
     for day, slot, category in categories_schedule:
+        # Reset fallback tracking each day
+        if slot == 1:
+            used_fallbacks_today = set()
+
         day_offset = day_offset_from_saturday[day]
         scheduled_date = (start_date + timedelta(days=day_offset)).strftime("%Y-%m-%d")
-        
+
         # Generate tweet using hybrid approach
-        tweet_data = generate_tweet_hybrid(client, category, content)
+        tweet_data = generate_tweet_hybrid(client, category, content, day=day,
+                                           used_fallbacks=used_fallbacks_today)
+        if tweet_data.get('original_category'):
+            used_fallbacks_today.add(tweet_data.get('category', ''))
         
         # Find chart if ticker present
         image_path = None
@@ -1735,10 +1816,9 @@ def print_summary(tweets: List):
 VARIATION_SYSTEM_PROMPT = """You rephrase tweets for the Sterling Signals trading newsletter.
 
 You will receive the ORIGINAL tweet (account 1) and must produce a rephrased version for a
-different account. The rephrased tweet must:
+different account persona. The rephrased tweet must:
 
-1. SAME VOICE — Conversational, personal, casual, first-person. Same personality as the original.
-   Use "I", opinions, short punchy sentences, emojis where natural.
+1. MATCH THE PERSONA — Adopt the specified persona's tone, traits, and occasional signature phrases.
 2. SAME FACTS — Identical tickers ($TICKER), prices, percentages, dates, URLs. Never change data.
 3. DIFFERENT WORDING — Restructure sentences, swap synonyms, reorder points, change the opening
    hook, vary emoji placement. It should read like a different person making the same point in
@@ -1746,7 +1826,8 @@ different account. The rephrased tweet must:
 4. COMPLEMENTARY — If the original leads with a question, lead with a statement (or vice versa).
    If the original lists top-down, try bottom-up. The tweets should feel like they complement
    each other when seen side by side, not repeat each other.
-5. UNDER 280 CHARACTERS — This is mandatory. Count carefully.
+5. DAY-AWARE — Respect the day context. Avoid blocked phrases for that day.
+6. UNDER 280 CHARACTERS — This is mandatory. Count carefully.
 
 BANNED TERMS (never use): HMA, Banker indicator, Beta >= 1.5, Weekly BoS, Tier 1/2/3,
 conviction score, 20% trailing stop, Gatekeeper, RSI, MACD, KDJ, UK ISA, GMT, BST.
@@ -1754,21 +1835,38 @@ conviction score, 20% trailing stop, Gatekeeper, RSI, MACD, KDJ, UK ISA, GMT, BS
 Return ONLY the rephrased tweet text. No quotes, no explanation, no JSON."""
 
 
-def _rephrase_tweet_batch(client, tweets_batch: List[dict], account_label: str) -> List[str]:
+def _rephrase_tweet_batch(client, tweets_batch: List[dict], account_key: str) -> List[str]:
     """
     Send a batch of tweets to Claude for rephrasing in a single API call.
 
+    Uses persona and day context for more natural variation.
     Batches up to 10 tweets per call to balance cost and quality.
     Returns list of rephrased texts in the same order.
     """
+    from config import get_persona, get_day_context
+
+    persona = get_persona(account_key)
+    persona_block = (
+        f"PERSONA: {persona['name']} ({persona['archetype']})\n"
+        f"Tone: {persona['voice']['tone']}\n"
+        f"Traits: {', '.join(persona['voice']['traits'])}\n"
+        f"Signature phrases you may weave in: {', '.join(persona['signature_phrases'][:2])}"
+    )
+
     # Build the user prompt with all tweets numbered
-    parts = [f"Rephrase each tweet below for {account_label}. "
-             f"Return exactly {len(tweets_batch)} rephrased tweets, "
-             f"each on its own block separated by\n---\n"
-             f"Preserve all $TICKER cashtags, prices, percentages, and URLs exactly.\n"]
+    parts = [
+        f"Rephrase each tweet below in the voice of the following persona.\n\n"
+        f"{persona_block}\n\n"
+        f"Return exactly {len(tweets_batch)} rephrased tweets, "
+        f"each on its own block separated by\n---\n"
+        f"Preserve all $TICKER cashtags, prices, percentages, and URLs exactly.\n"
+    ]
 
     for i, tweet in enumerate(tweets_batch, 1):
-        parts.append(f"TWEET {i}:\n{tweet.get('text', '')}\n")
+        day = tweet.get('day', '')
+        day_rules = get_day_context(day)
+        day_note = f" [DAY: {day} — avoid: {', '.join(day_rules.get('blocked_phrases', [])[:3])}]" if day else ""
+        parts.append(f"TWEET {i}{day_note}:\n{tweet.get('text', '')}\n")
 
     user_prompt = "\n".join(parts)
 
@@ -1787,7 +1885,6 @@ def _rephrase_tweet_batch(client, tweets_batch: List[dict], account_label: str) 
 
         # If Claude returned wrong count, pad or truncate
         if len(rephrased) < len(tweets_batch):
-            # Fill missing with originals
             for i in range(len(rephrased), len(tweets_batch)):
                 rephrased.append(tweets_batch[i].get('text', ''))
         elif len(rephrased) > len(tweets_batch):
@@ -1805,8 +1902,52 @@ def _rephrase_tweet_batch(client, tweets_batch: List[dict], account_label: str) 
 
     except Exception as e:
         print(f"    Claude API error during rephrasing: {e}")
-        # Fallback: return originals unchanged
         return [t.get('text', '') for t in tweets_batch]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BUILDING PHASE DETECTION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def check_building_phase(content) -> dict:
+    """
+    Check if we're in "building phase" (no big winners yet).
+    Returns dict with phase info and content guidance.
+    """
+    winners_25_plus = [
+        p for p in content.open_positions
+        if p.get('pnl_pct', 0) >= 25.0
+    ]
+    winners_15_plus = [
+        p for p in content.open_positions
+        if p.get('pnl_pct', 0) >= 15.0
+    ]
+    total_positions = len(content.open_positions)
+    green_positions = len([p for p in content.open_positions if p.get('pnl_pct', 0) > 0])
+    is_building = len(winners_25_plus) == 0
+
+    guidance = "Normal operation - showcase winners and performance."
+    if is_building:
+        parts = ["BUILDING PHASE: Focus on process over results."]
+        if content.pass_signals:
+            parts.append(f"- Highlight {len(content.pass_signals)} new GREEN signals")
+        if content.consider_signals:
+            parts.append(f"- {len(content.consider_signals)} stocks on watchlist")
+        if content.prime_themes:
+            parts.append(f"- Theme momentum in {content.prime_themes[0].get('name', 'sector')}")
+        parts.append("- Avoid 'Crushing it' / 'Winning streak' language")
+        parts.append("- Focus on educational content about the 5-Gate System")
+        guidance = "\n".join(parts)
+
+    return {
+        'is_building_phase': is_building,
+        'has_big_winners': len(winners_25_plus) > 0,
+        'has_solid_winners': len(winners_15_plus) > 0,
+        'total_positions': total_positions,
+        'green_positions': green_positions,
+        'win_rate': (green_positions / total_positions * 100) if total_positions > 0 else 0,
+        'content_guidance': guidance,
+    }
 
 
 def generate_account_variations(base_queue_path: Path) -> None:

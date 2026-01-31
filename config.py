@@ -151,6 +151,122 @@ TWITTER_ACCOUNTS: Dict[str, Dict] = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ACCOUNT PERSONAS - Distinct voices for multi-account content
+# ═══════════════════════════════════════════════════════════════════════════════
+
+PERSONAS: Dict[str, Dict] = {
+    'main': {
+        'name': 'The System',
+        'archetype': 'Analyst',
+        'voice': {
+            'tone': 'authoritative',
+            'formality': 'professional',
+            'traits': ['data-driven', 'precise', 'confident'],
+        },
+        'focus': ['scanner_results', 'signal_announcements', 'system_performance'],
+        'signature_phrases': [
+            "The scanner doesn't lie.",
+            "Data drives decisions.",
+            "That's the 5-Gate System in action.",
+            "Quality over quantity. Always.",
+        ],
+    },
+    'account2': {
+        'name': 'The Mentor',
+        'archetype': 'Teacher',
+        'voice': {
+            'tone': 'conversational',
+            'formality': 'approachable',
+            'traits': ['helpful', 'patient', 'encouraging'],
+        },
+        'focus': ['educational', 'process_explanation', 'trading_psychology'],
+        'signature_phrases': [
+            "Here's why this matters...",
+            "Let me break this down.",
+            "The lesson here:",
+            "Most traders miss this.",
+        ],
+    },
+    'account3': {
+        'name': 'The Trader',
+        'archetype': 'Practitioner',
+        'voice': {
+            'tone': 'direct',
+            'formality': 'casual',
+            'traits': ['action-oriented', 'confident', 'punchy'],
+        },
+        'focus': ['real_time_market_color', 'power_hour', 'theme_momentum'],
+        'signature_phrases': [
+            "Eyes on this one.",
+            "The close matters.",
+            "Momentum is real.",
+            "Let's see how this plays out.",
+        ],
+    },
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DAY-AWARE CONTENT RULES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+DAY_CONTENT_RULES: Dict[str, Dict] = {
+    'Saturday': {
+        'context': 'Newsletter dropped, weekend recap',
+        'allowed_phrases': ['Friday close', 'This week', 'Weekend', 'Saturday morning'],
+        'blocked_phrases': ['Today', 'Right now', 'Power hour', 'Into the close'],
+        'time_reference': "Friday's close",
+    },
+    'Sunday': {
+        'context': 'Prep for week ahead',
+        'allowed_phrases': ['This week', 'Looking ahead', 'Weekend', 'Next week'],
+        'blocked_phrases': ['Today', 'Power hour', 'Into the close'],
+        'time_reference': "Friday's close",
+    },
+    'Monday': {
+        'context': 'Week kickoff',
+        'allowed_phrases': ['This week', 'Based on Friday', 'New week'],
+        'blocked_phrases': ['Weekend homework', 'Saturday'],
+        'time_reference': "Friday's close",
+    },
+    'Tuesday': {
+        'context': 'Mid-early week',
+        'allowed_phrases': ['This week', 'Early movers', 'Building'],
+        'blocked_phrases': ['Weekend', 'Friday close', 'Saturday'],
+        'time_reference': "the weekly scan",
+    },
+    'Wednesday': {
+        'context': 'Mid-week check-in',
+        'allowed_phrases': ['Mid-week', 'This week', 'Halfway'],
+        'blocked_phrases': ['Weekend', 'Friday close', 'Saturday'],
+        'time_reference': "the weekly scan",
+    },
+    'Thursday': {
+        'context': 'Building to Friday scan',
+        'allowed_phrases': ['Tomorrow', 'Friday scan', 'Almost Friday'],
+        'blocked_phrases': ['Weekend homework', 'Last Friday', 'Saturday'],
+        'time_reference': "tomorrow's scan",
+    },
+    'Friday': {
+        'context': 'Scan day',
+        'allowed_phrases': ['Today', "Today's close", 'Power hour', 'Scanner running', 'Fresh scan'],
+        'blocked_phrases': ['Last week', 'Weekend homework', 'Next Friday'],
+        'time_reference': "today's close",
+    },
+}
+
+
+def get_day_context(day: str) -> Dict:
+    """Get content rules for a specific day."""
+    return DAY_CONTENT_RULES.get(day, DAY_CONTENT_RULES['Saturday'])
+
+
+def get_persona(account_id: str) -> Dict:
+    """Get persona definition for an account."""
+    return PERSONAS.get(account_id, PERSONAS['main'])
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # TWEET SCHEDULING (Eastern Time)
 # ═══════════════════════════════════════════════════════════════════════════════
 

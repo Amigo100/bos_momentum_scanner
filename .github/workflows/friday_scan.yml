@@ -175,36 +175,28 @@ jobs:
       # STEP 5: GENERATE TWEETS (35 for the week - 5 per day)
       # ═══════════════════════════════════════════════════════════════════════════
 
-      - name: Generate Tweets
+      - name: Generate Tweets (3 accounts × 35 tweets)
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          if [ -f "tweet_generator.py" ]; then
-            echo "Generating 35 tweets via Claude API..."
-            python tweet_generator.py
+          if [ -f "reaction_generator.py" ]; then
+            echo "Generating 105 tweets (3 accounts) via reaction_generator..."
+            python reaction_generator.py --output trades/
           else
-            echo "tweet_generator.py not found, falling back to grok_prompts_generator.py"
-            python grok_prompts_generator.py || true
+            echo "reaction_generator.py not found, falling back to tweet_generator.py"
+            python tweet_generator.py || true
           fi
 
       - name: Validate content queue JSON
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          if [ -f "trades/content_queue.json" ]; then
-            python -c "import json; q=json.load(open('trades/content_queue.json')); print(f'Content queue valid: {len(q)} tweets')"
-          else
-            echo "⚠️ No content_queue.json generated"
-          fi
-
-      - name: Generate Tweet Variations (Multi-Account)
-        if: ${{ github.event.inputs.skip_tweets != 'true' }}
-        run: |
-          if [ -f "trades/content_queue.json" ]; then
-            echo "Generating tweet variations for multi-account posting..."
-            python tweet_generator.py --generate-variations || echo "Variation generation failed (non-critical)"
-          else
-            echo "No base queue - skipping variations"
-          fi
-        continue-on-error: true
+          for f in trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json; do
+            if [ -f "$f" ]; then
+              COUNT=$(python -c "import json; print(len(json.load(open('$f'))))")
+              echo "✅ $f: $COUNT tweets"
+            else
+              echo "⚠️ Missing: $f"
+            fi
+          done
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)

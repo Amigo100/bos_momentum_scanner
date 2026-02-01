@@ -27,14 +27,22 @@ THE TIME SLOTS (Eastern Time):
 - Slot 5 (6pm): End of day, newsletter CTAs, looking ahead
 
 CONTENT CATEGORIES (distribute across slots):
-- scanner_result: New signals, what passed/failed, gate analysis
-- performance: Portfolio winners/losers, honest P&L
-- theme_analysis: Hot/cold sectors, why themes are working
-- educational: Teaching moments, past mistakes, concepts explained
+- scanner_result: New signals WITH TICKERS AND PRICES, gate analysis
+- performance: Portfolio winners with receipts (entry → current, % gain)
+- theme_analysis: Hot/cold sectors WITH ALL TICKERS in the theme
+- educational: Teaching moments using SPECIFIC EXAMPLES ($TICKER did X)
 - engagement: Questions to followers, observations that invite replies
-- watchlist: Stocks being monitored but not yet signaled
+- watchlist: Stocks being monitored WITH PRICES and what's missing
 - newsletter_cta: Drive newsletter signups (EXACTLY 2 per account)
-- process: Trading discipline, patience, system trust
+- process: Trading discipline WITH PROOF (not vague platitudes)
+
+{content_phase_guidance}
+
+FINTWIT RULES (CRITICAL — enforce these in assignments):
+- Every scanner_result and theme_analysis assignment MUST include tickers
+- Every performance assignment MUST reference a specific winner
+- NEVER assign "generic system trust" or "vague theme talk" — always include data
+- Banned topics: loser-focused content, "still bleeding", "quality over quantity"
 
 COORDINATION RULES (CRITICAL):
 1. NO SAME-SLOT COLLISIONS: If Alex mentions $AMPX in slot 2, Rozalia and James must NOT mention $AMPX in slot 2
@@ -59,25 +67,25 @@ TODAY'S DATA BRIEFING:
 OUTPUT FORMAT — Return ONLY this JSON, no explanation:
 {{
   "Alex": {{
-    "slot_1": {{"category": "...", "topic": "one-sentence instruction for the writer", "tickers": ["TICK"], "include_url": false}},
-    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}},
-    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}}
+    "slot_1": {{"category": "...", "topic": "one-sentence instruction for the writer", "tickers": ["TICK"], "include_url": false, "attach_chart": false}},
+    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}},
+    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}}
   }},
   "Rozalia": {{
-    "slot_1": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}},
-    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}}
+    "slot_1": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}},
+    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}}
   }},
   "James": {{
-    "slot_1": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}},
-    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false}},
-    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true}}
+    "slot_1": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_2": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}},
+    "slot_3": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_4": {{"category": "...", "topic": "...", "tickers": [], "include_url": false, "attach_chart": false}},
+    "slot_5": {{"category": "...", "topic": "...", "tickers": [], "include_url": true, "attach_chart": false}}
   }}
 }}
 """
@@ -140,6 +148,15 @@ def create_editorial_plan(
     day_idx = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].index(day_name)
     ticker_max = 3 if day_idx <= 2 else 2
 
+    # Content phase guidance
+    content_phase = getattr(market_ctx, 'content_phase', 'EARLY')
+    phase_guides = {
+        'EARLY': "CONTENT PHASE: EARLY — Focus on scanner results (WITH PRICES), educational, theme exploration with tickers. No fabricated performance.",
+        'BUILDING': "CONTENT PHASE: BUILDING — Positions are green. Show momentum with numbers. Mix new signals with green position updates.",
+        'ESTABLISHED': "CONTENT PHASE: ESTABLISHED — 25%+ winners exist. Lead with receipts. Show entry→current. Quote past calls.",
+    }
+    content_phase_guidance = phase_guides.get(content_phase, phase_guides['EARLY'])
+
     prompt = EDITORIAL_BOARD_PROMPT.format(
         day_name=day_name,
         morning_briefing=morning_briefing,
@@ -148,6 +165,7 @@ def create_editorial_plan(
         temporal_rules=temporal_rules,
         week_context=week_context,
         ticker_max_per_day=ticker_max,
+        content_phase_guidance=content_phase_guidance,
     )
 
     try:

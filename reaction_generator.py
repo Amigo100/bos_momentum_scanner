@@ -44,6 +44,12 @@ except ImportError:
 from morning_briefing import generate_morning_briefing
 from editorial_board import create_editorial_plan, validate_editorial_plan
 
+try:
+    import yfinance as yf
+    HAS_YFINANCE = True
+except ImportError:
+    HAS_YFINANCE = False
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -105,32 +111,32 @@ class Persona:
     day_tendencies: dict
 
 
-@dataclass 
+@dataclass
 class MarketContext:
     """What happened this week - for personas to react to."""
     scan_date: str
-    
+
     # Signals
     green_signals: List[dict]  # PASS signals with ticker, price, theme
     consider_signals: List[dict]  # CONSIDER signals
     signal_count: int
-    
+
     # Portfolio state
     open_positions: List[dict]  # ticker, pnl_pct, days_held, entry_price
     winners: List[dict]  # 25%+ positions
     losers: List[dict]  # Negative positions (for honesty)
-    
+
     # Recent closes
     closed_trades: List[dict]  # Recent closed with P&L
-    
+
     # Themes
     hot_themes: List[str]
-    
+
     # Metrics
     total_positions: int
     green_count: int
     portfolio_vs_spy: float
-    
+
     # Flags
     is_quiet_week: bool  # Few or no signals
     has_big_winner: bool  # 25%+ position
@@ -138,6 +144,15 @@ class MarketContext:
 
     # Charts
     chart_manifest: Dict[str, str] = field(default_factory=dict)  # ticker -> image_path
+
+    # Theme enrichment: theme_name -> [{ticker, price, status, theme_score}]
+    theme_tickers: Dict[str, List[Dict]] = field(default_factory=dict)
+
+    # Content phase: EARLY / BUILDING / ESTABLISHED
+    content_phase: str = "EARLY"
+
+    # Scan funnel stats
+    scan_stats: Dict[str, int] = field(default_factory=dict)
 
 
 @dataclass
@@ -384,6 +399,335 @@ def get_temporal_reference(day_name: str) -> dict:
 # LOADERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def detect_content_phase(positions: List[dict], winners: List[dict]) -> str:
+    """Determine content phase based on portfolio state."""
+    if not positions:
+        return "EARLY"
+    big_winners = [p for p in positions if p.get('pnl_pct', 0) >= 25]
+    if big_winners:
+        return "ESTABLISHED"
+    green = [p for p in positions if p.get('pnl_pct', 0) > 0]
+    if green:
+        return "BUILDING"
+    return "EARLY"
+
+
+def load_chart_manifest() -> Dict[str, str]:
+    """Scan trades/charts/ and trades/graphics/ for chart images. Returns ticker -> path."""
+    manifest = {}
+    base = Path(__file__).parent / "trades"
+    for subdir in ["charts", "graphics"]:
+        d = base / subdir
+        if not d.exists():
+            continue
+        for f in d.glob("*.png"):
+            ticker = f.stem.split('_')[0].upper()
+            # Prefer most recent file per ticker
+            if ticker not in manifest or f.stat().st_mtime > Path(manifest[ticker]).stat().st_mtime:
+                manifest[ticker] = str(f)
+    return manifest
+
+
+def fetch_current_prices(tickers: List[str]) -> Dict[str, float]:
+    """Fetch current prices for tickers via yfinance. Returns ticker -> price."""
+    if not HAS_YFINANCE or not tickers:
+        return {}
+    try:
+        unique = list(set(tickers))
+        data = yf.download(unique, period='1d', progress=False, threads=True)
+        prices = {}
+        if 'Close' in data.columns if hasattr(data.columns, '__iter__') else False:
+            close = data['Close']
+            if hasattr(close, 'columns'):
+                for ticker in close.columns:
+                    val = close[ticker].dropna()
+                    if len(val) > 0:
+                        prices[ticker] = round(float(val.iloc[-1]), 2)
+            else:
+                # Single ticker
+                val = close.dropna()
+                if len(val) > 0 and len(unique) == 1:
+                    prices[unique[0]] = round(float(val.iloc[-1]), 2)
+        return prices
+    except Exception as e:
+        print(f"  ⚠️ yfinance price fetch failed: {e}")
+        return {}
+
+
+def build_theme_ticker_map(scanner_data: dict) -> Dict[str, List[Dict]]:
+    """
+    Build a map of theme -> [tickers] from scanner data (signals.json).
+    Each ticker has: ticker, price, status (SIGNAL/WATCHLIST/IN_THEME), theme_score.
+    """
+    theme_map: Dict[str, List[Dict]] = {}
+
+    # Try loading thematic_analysis_latest.json first, fall back to signals.json
+    base = Path(__file__).parent / "trades"
+    full_signals = {}
+    for fname in ["thematic_analysis_latest.json", "signals.json"]:
+        fpath = base / fname
+        if fpath.exists():
+            try:
+                with open(fpath) as f:
+                    full_signals = json.load(f)
+                break
+            except (json.JSONDecodeError, OSError):
+                continue
+
+    # Build from themes in full signals
+    for theme_data in full_signals.get('themes', []):
+        theme_name = theme_data.get('name', '')
+        if not theme_name:
+            continue
+        theme_map.setdefault(theme_name, [])
+
+    # Map buy_signals (PASS) into themes
+    for sig in full_signals.get('buy_signals', []) + scanner_data.get('pass_signals', []):
+        theme = sig.get('theme', '')
+        if not theme:
+            continue
+        ticker = sig.get('symbol') or sig.get('ticker', '')
+        price = sig.get('price') or sig.get('close_price', 0)
+        decision = sig.get('final_decision', 'PASS')
+        status = 'SIGNAL' if decision == 'PASS' else 'WATCHLIST'
+        entry = {'ticker': ticker, 'price': price, 'status': status, 'theme_score': sig.get('theme_score', 0)}
+        theme_map.setdefault(theme, [])
+        # Avoid duplicates
+        if not any(t['ticker'] == ticker for t in theme_map[theme]):
+            theme_map[theme].append(entry)
+
+    # Map consider_signals into themes as WATCHLIST
+    for sig in full_signals.get('consider_signals', []) + scanner_data.get('consider_signals', []):
+        theme = sig.get('theme', '')
+        if not theme:
+            continue
+        ticker = sig.get('symbol') or sig.get('ticker', '')
+        price = sig.get('price') or sig.get('close_price', 0)
+        entry = {'ticker': ticker, 'price': price, 'status': 'WATCHLIST', 'theme_score': sig.get('theme_score', 0)}
+        theme_map.setdefault(theme, [])
+        if not any(t['ticker'] == ticker for t in theme_map[theme]):
+            theme_map[theme].append(entry)
+
+    return theme_map
+
+
+def build_structured_data_blocks(ctx: MarketContext) -> str:
+    """
+    Build clearly labeled, prioritized data blocks for the Writer prompt.
+    Replaces the old build_market_section() with richer, more actionable data.
+    """
+    blocks = []
+
+    blocks.append("═" * 59)
+    blocks.append("YOUR DATA — USE THIS IN YOUR TWEETS")
+    blocks.append("═" * 59)
+
+    # 🟢 NEW BUY SIGNALS
+    blocks.append("\n🟢 NEW BUY SIGNALS (MUST name these with prices):")
+    if ctx.green_signals:
+        for sig in ctx.green_signals:
+            ticker = sig.get('ticker', '?')
+            price = sig.get('close_price') or sig.get('price', '?')
+            theme = sig.get('theme', '')
+            blocks.append(f"  ${ticker} at ${price} — {theme} — passed all 5 gates")
+    else:
+        blocks.append("  (None this week — scanner came up empty)")
+
+    # 🟡 WATCHLIST
+    blocks.append("\n🟡 WATCHLIST (close to signal, not yet triggered):")
+    if ctx.consider_signals:
+        for sig in ctx.consider_signals:
+            ticker = sig.get('ticker', '?')
+            price = sig.get('close_price') or sig.get('price', '?')
+            blocks.append(f"  ${ticker} at ${price} — needs confirmation")
+    else:
+        blocks.append("  (None on watchlist)")
+
+    # 📊 WINNERS
+    blocks.append("\n📊 WINNERS (show receipts — entry → current):")
+    if ctx.winners:
+        for w in ctx.winners:
+            ticker = w.get('ticker', '?')
+            pnl = w.get('pnl_pct', 0)
+            entry = w.get('entry_price')
+            days = w.get('days_held', 0)
+            if entry:
+                current = entry * (1 + pnl / 100)
+                blocks.append(f"  ${ticker} from ${entry} to ${current:.2f} (+{pnl:.1f}%) — held {days} days")
+            else:
+                blocks.append(f"  ${ticker}: +{pnl:.1f}% — held {days} days")
+    else:
+        blocks.append("  (No 25%+ winners yet — focus on new signals and process)")
+
+    # 🔥 HOT THEMES → TICKERS
+    blocks.append("\n🔥 HOT THEMES → TICKERS:")
+    if ctx.theme_tickers:
+        for theme_name, tickers in ctx.theme_tickers.items():
+            signals = [t for t in tickers if t['status'] == 'SIGNAL']
+            watchlist = [t for t in tickers if t['status'] == 'WATCHLIST']
+            in_theme = [t for t in tickers if t['status'] == 'IN_THEME']
+
+            blocks.append(f"  {theme_name}:")
+            if signals:
+                sig_parts = [f"${t['ticker']} ${t['price']}" for t in signals]
+                blocks.append(f"    Signals: {', '.join(sig_parts)}")
+            if watchlist:
+                watch_parts = [f"${t['ticker']} ${t['price']}" for t in watchlist]
+                blocks.append(f"    Watching: {', '.join(watch_parts)}")
+            if in_theme:
+                theme_parts = [f"${t['ticker']}" for t in in_theme]
+                blocks.append(f"    In theme: {', '.join(theme_parts)}")
+    elif ctx.hot_themes:
+        for theme in ctx.hot_themes:
+            blocks.append(f"  {theme}")
+    else:
+        blocks.append("  (No strong themes identified)")
+
+    # 📈 PORTFOLIO SNAPSHOT
+    blocks.append(f"\n📈 PORTFOLIO SNAPSHOT:")
+    blocks.append(f"  {ctx.total_positions} open | {ctx.green_count} green, {len(ctx.losers)} red | {'+' if ctx.portfolio_vs_spy > 0 else ''}{ctx.portfolio_vs_spy:.1f}% vs SPY")
+    blocks.append(f"  Phase: {ctx.content_phase}")
+    if ctx.content_phase == "EARLY":
+        blocks.append("  (No 25%+ winners — focus on process + new signals)")
+    elif ctx.content_phase == "BUILDING":
+        blocks.append("  (Positions are green — show momentum, stay humble)")
+    else:
+        blocks.append("  (25%+ winners — show receipts!)")
+
+    # 🔢 SCAN FUNNEL
+    stats = ctx.scan_stats
+    if stats:
+        scanned = stats.get('tickers_loaded') or stats.get('stocks_scanned', '~1,800')
+        beta = stats.get('beta_gte_2_0') or stats.get('beta_gte_1_5', '?')
+        momentum = stats.get('weekly_bos_up', '?')
+        final = stats.get('final_trade', len(ctx.green_signals))
+        blocks.append(f"\n🔢 SCAN FUNNEL:")
+        blocks.append(f"  {scanned} scanned → {beta} high beta → {momentum} momentum → {final} BUY")
+    else:
+        blocks.append(f"\n🔢 SCAN FUNNEL:")
+        blocks.append(f"  ~1,800 scanned → {ctx.signal_count} passed all gates")
+
+    return '\n'.join(blocks)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FINTWIT VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+BANNED_PHRASES = [
+    "theme keeps delivering", "system keeps working", "trust the process",
+    "2 signals", "2 survivors", "quality over quantity", "the scanner found",
+    "still bleeding", "loser", "dragging down", "dragging you",
+    "picks and shovels",
+]
+
+LOSER_PATTERNS = [
+    r'the red\b', r'still bleeding', r'keep losing', r'\bred position',
+    r'stubborn loser', r'watching.*lose', r'debate the exit',
+    r'down.*portfolio', r'biggest loser',
+]
+
+
+def check_banned_phrases(text: str) -> List[str]:
+    """Scan text for banned phrases. Returns list of violations."""
+    issues = []
+    text_lower = text.lower()
+    for phrase in BANNED_PHRASES:
+        if phrase.lower() in text_lower:
+            issues.append(f"FAIL: banned phrase '{phrase}'")
+    return issues
+
+
+def check_loser_focus(text: str) -> bool:
+    """Detect emphasis on losing positions. Returns True if loser-focused."""
+    for pattern in LOSER_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            return True
+    return False
+
+
+def validate_fintwit_style(tweet, assignment: dict = None) -> List[str]:
+    """Validate tweet against FinTwit style rules. Returns list of issues (FAIL/WARN)."""
+    issues = []
+    text = tweet.text if hasattr(tweet, 'text') else tweet.get('text', '')
+    category = tweet.category if hasattr(tweet, 'category') else tweet.get('category', '')
+
+    tickers = re.findall(r'\$[A-Z]{2,5}', text)
+    has_ticker = bool(tickers)
+    has_price = bool(re.search(r'\$\d+\.?\d*', text))
+    has_pct = bool(re.search(r'[+-]?\d+\.?\d*%', text))
+    has_numbers = bool(re.search(r'\d{2,}', text))
+
+    if category == 'scanner_result':
+        if not has_ticker:
+            issues.append("FAIL: scanner_result must name the signal tickers")
+        if not has_price:
+            issues.append("FAIL: scanner_result must include entry prices")
+    elif category == 'theme_analysis':
+        if len(tickers) < 2:
+            issues.append("FAIL: theme_analysis should list 2+ tickers")
+        if not (has_price or has_pct):
+            issues.append("WARN: theme_analysis should include prices or percentages")
+    elif category == 'performance':
+        if not has_ticker:
+            issues.append("FAIL: performance must name specific winners")
+        if not has_pct:
+            issues.append("FAIL: performance must show percentage gains")
+    elif category == 'watchlist':
+        if not has_ticker:
+            issues.append("FAIL: watchlist must name the stocks being watched")
+        if not has_price:
+            issues.append("WARN: watchlist should include current prices")
+    elif category == 'newsletter_cta':
+        if 'substack' not in text.lower() and 'sterlingsignals' not in text.lower():
+            issues.append("FAIL: newsletter_cta must include URL")
+    elif category == 'funnel_graphic':
+        if not has_numbers:
+            issues.append("FAIL: funnel_graphic must include scan numbers")
+        if not has_ticker:
+            issues.append("WARN: funnel_graphic should name signal tickers")
+
+    # Banned phrases
+    issues.extend(check_banned_phrases(text))
+
+    # Loser focus
+    if check_loser_focus(text):
+        issues.append("FAIL: loser-focused content detected")
+
+    return issues
+
+
+def build_fallback_tweet(category: str, ctx: MarketContext, slot: int) -> str:
+    """Generate a deterministic data-rich fallback tweet when regeneration fails."""
+    if category == 'scanner_result' and ctx.green_signals:
+        sig = ctx.green_signals[0]
+        return f"${sig.get('ticker', '?')} at ${sig.get('close_price', sig.get('price', '?'))} — cleared all 5 gates Friday.\n\nFull breakdown in the newsletter:\n{NEWSLETTER_URL}"
+    elif category == 'theme_analysis' and ctx.theme_tickers:
+        theme = list(ctx.theme_tickers.keys())[0]
+        tickers = ctx.theme_tickers[theme][:3]
+        ticker_str = ', '.join(f"${t['ticker']} at ${t['price']}" for t in tickers if t.get('price'))
+        return f"{theme}:\n\n{ticker_str}\n\n{NEWSLETTER_URL}"
+    elif category == 'performance' and ctx.winners:
+        w = ctx.winners[0]
+        entry = w.get('entry_price', 0)
+        pnl = w.get('pnl_pct', 0)
+        if entry:
+            current = entry * (1 + pnl / 100)
+            return f"${w['ticker']} from ${entry} to ${current:.2f}.\n\n+{pnl:.1f}% in {w.get('days_held', 0)} days.\n\n{NEWSLETTER_URL}"
+        return f"${w['ticker']}: +{pnl:.1f}% and holding.\n\n{NEWSLETTER_URL}"
+    elif category == 'watchlist' and ctx.consider_signals:
+        sig = ctx.consider_signals[0]
+        return f"${sig.get('ticker', '?')} at ${sig.get('close_price', sig.get('price', '?'))} — on the watchlist.\n\nNot a signal yet. Watching for confirmation."
+    elif category == 'funnel_graphic':
+        scanned = ctx.scan_stats.get('tickers_loaded', ctx.scan_stats.get('stocks_scanned', '1,800'))
+        technical = ctx.scan_stats.get('technical_signals', ctx.scan_stats.get('beta_gte_1_5', '?'))
+        passed = ctx.scan_stats.get('final_trade', len(ctx.green_signals))
+        ticker_str = ' '.join(f'${s.get("ticker", "?")}' for s in ctx.green_signals[:4])
+        return f"{scanned} stocks scanned → {technical} technical → {passed} signals.\n\n{ticker_str + ' made the cut.' if ticker_str.strip() else 'Selectivity is the edge.'}\n\n{NEWSLETTER_URL}"
+    else:
+        return f"Markets do their thing. We do ours.\n\nWeekly scanner breakdown:\n{NEWSLETTER_URL}"
+
+
 def load_persona(persona_file: str) -> Persona:
     """Load a persona from YAML file."""
     path = PERSONAS_DIR / persona_file
@@ -414,35 +758,70 @@ def load_examples() -> dict:
 
 def create_market_context(scanner_data: dict, portfolio_data: dict) -> MarketContext:
     """Transform raw data into readable market context."""
-    
+
     positions = portfolio_data.get('positions', [])
     closed = portfolio_data.get('closed_trades', [])
-    
+
     green_signals = scanner_data.get('pass_signals', [])
     consider_signals = scanner_data.get('consider_signals', [])
-    
+
     winners = [p for p in positions if p.get('pnl_pct', 0) >= 25]
     losers = [p for p in positions if p.get('pnl_pct', 0) < 0]
     green_positions = [p for p in positions if p.get('pnl_pct', 0) > 0]
-    
+
     hot_themes = []
     for theme in scanner_data.get('prime_themes', []):
         hot_themes.append(theme.get('name', theme) if isinstance(theme, dict) else theme)
     for theme in scanner_data.get('investable_themes', []):
         hot_themes.append(theme.get('name', theme) if isinstance(theme, dict) else theme)
-    
-    # Load chart manifest if available
-    chart_manifest = {}
-    charts_dir = Path(__file__).parent / "trades" / "charts"
-    if charts_dir.exists():
-        for chart_file in charts_dir.glob("*.png"):
-            ticker = chart_file.stem.split('_')[0].upper()
-            chart_manifest[ticker] = str(chart_file)
 
+    # Load chart manifest from trades/charts/ and trades/graphics/
+    chart_manifest = load_chart_manifest()
     # Also check scanner_data for chart paths
     for signal in green_signals + consider_signals:
         if signal.get('chart_path'):
-            chart_manifest[signal['ticker']] = signal['chart_path']
+            ticker = signal.get('ticker') or signal.get('symbol', '')
+            chart_manifest[ticker] = signal['chart_path']
+
+    # Build theme ticker map from scanner data + signals.json
+    theme_tickers = build_theme_ticker_map(scanner_data)
+
+    # Refresh prices via yfinance (non-blocking)
+    all_tickers = []
+    for theme_list in theme_tickers.values():
+        all_tickers.extend(t['ticker'] for t in theme_list if t.get('ticker'))
+    all_tickers.extend(p.get('ticker', '') for p in positions if p.get('ticker'))
+    live_prices = fetch_current_prices(all_tickers)
+    if live_prices:
+        print(f"  📊 Refreshed prices for {len(live_prices)} tickers via yfinance")
+        # Update theme ticker prices
+        for theme_list in theme_tickers.values():
+            for t in theme_list:
+                if t['ticker'] in live_prices:
+                    t['price'] = live_prices[t['ticker']]
+        # Update position prices
+        for p in positions:
+            ticker = p.get('ticker', '')
+            if ticker in live_prices:
+                p['current_price'] = live_prices[ticker]
+                if p.get('entry_price'):
+                    p['pnl_pct'] = round((live_prices[ticker] / p['entry_price'] - 1) * 100, 1)
+
+    # Detect content phase
+    content_phase = detect_content_phase(positions, winners)
+
+    # Scan funnel stats
+    scan_stats = scanner_data.get('scan_stats', {})
+    # Also try loading from signals.json
+    if not scan_stats:
+        signals_file = Path(__file__).parent / "trades" / "signals.json"
+        if signals_file.exists():
+            try:
+                with open(signals_file) as f:
+                    full = json.load(f)
+                    scan_stats = full.get('stats', {})
+            except (json.JSONDecodeError, OSError):
+                pass
 
     return MarketContext(
         scan_date=scanner_data.get('scan_date', datetime.now().strftime('%Y-%m-%d')),
@@ -452,8 +831,8 @@ def create_market_context(scanner_data: dict, portfolio_data: dict) -> MarketCon
         open_positions=positions,
         winners=winners,
         losers=losers,
-        closed_trades=closed[:5],  # Recent 5
-        hot_themes=hot_themes[:3],  # Top 3
+        closed_trades=closed[:5],
+        hot_themes=hot_themes[:3],
         total_positions=len(positions),
         green_count=len(green_positions),
         portfolio_vs_spy=portfolio_data.get('vs_spy', 0),
@@ -461,6 +840,9 @@ def create_market_context(scanner_data: dict, portfolio_data: dict) -> MarketCon
         has_big_winner=len(winners) > 0,
         has_new_signals=len(green_signals) > 0,
         chart_manifest=chart_manifest,
+        theme_tickers=theme_tickers,
+        content_phase=content_phase,
+        scan_stats=scan_stats,
     )
 
 
@@ -556,70 +938,6 @@ HOW YOU TALK:
 YOUR APPROACH:
 - You share: {', '.join(persona.content_approach.get('what_he_shares', [])[:4])}
 - You avoid: {', '.join(persona.content_approach.get('what_he_doesnt_share', [])[:4])}
-"""
-
-
-def build_market_section(ctx: MarketContext) -> str:
-    """Build the market data section."""
-    
-    # Signals summary
-    if ctx.green_signals:
-        signals_text = "NEW SIGNALS THIS WEEK:\n"
-        for sig in ctx.green_signals[:3]:
-            ticker = sig.get('ticker', 'UNKNOWN')
-            price = sig.get('close_price') or sig.get('price', 'N/A')
-            theme = sig.get('theme', '')
-            signals_text += f"  🟢 ${ticker} at ${price}"
-            if theme:
-                signals_text += f" ({theme})"
-            signals_text += "\n"
-    else:
-        signals_text = "NEW SIGNALS: None this week. Scanner came up empty.\n"
-    
-    # Consider signals
-    if ctx.consider_signals:
-        signals_text += "\nWATCHLIST (passed most gates, waiting for confirmation):\n"
-        for sig in ctx.consider_signals[:3]:
-            ticker = sig.get('ticker', 'UNKNOWN')
-            price = sig.get('close_price') or sig.get('price', 'N/A')
-            signals_text += f"  🟡 ${ticker} at ${price}\n"
-    
-    # Winners
-    winners_text = ""
-    if ctx.winners:
-        winners_text = "\nBIG WINNERS (25%+ gains):\n"
-        for w in ctx.winners[:3]:
-            ticker = w.get('ticker')
-            pnl = w.get('pnl_pct', 0)
-            entry = w.get('entry_price')
-            days = w.get('days_held', 0)
-            winners_text += f"  ${ticker}: +{pnl:.1f}%"
-            if entry:
-                winners_text += f" (entry ${entry})"
-            winners_text += f" - held {days} days\n"
-    
-    # Portfolio summary
-    portfolio_text = f"""
-PORTFOLIO SNAPSHOT:
-- {ctx.total_positions} open positions
-- {ctx.green_count} in the green, {len(ctx.losers)} in the red
-- vs SPY: {'+' if ctx.portfolio_vs_spy > 0 else ''}{ctx.portfolio_vs_spy:.1f}%
-"""
-    
-    # Themes
-    if ctx.hot_themes:
-        portfolio_text += f"- Hot themes: {', '.join(ctx.hot_themes)}\n"
-    
-    return f"""
-## WHAT HAPPENED (as of {ctx.scan_date})
-
-{signals_text}
-{winners_text}
-{portfolio_text}
-
-WEEK SUMMARY:
-- {'Quiet week - no new signals' if ctx.is_quiet_week else f'{ctx.signal_count} new signals'}
-- {'You have a big winner to talk about!' if ctx.has_big_winner else 'No 25%+ winners yet - focus on process'}
 """
 
 
@@ -782,11 +1100,15 @@ def build_generation_prompt(
 
 {build_persona_section(persona)}
 
-{build_market_section(market_ctx)}
+{build_structured_data_blocks(market_ctx)}
 
 {build_day_section(day_ctx, persona)}
 
 {anti_repetition}
+
+{FINTWIT_EXAMPLES}
+
+{_get_phase_guidance(market_ctx.content_phase)}
 
 {build_examples_section(persona_key, examples, market_ctx)}
 
@@ -1252,6 +1574,41 @@ def calculate_scheduled_date(scan_date: str, day_name: str) -> str:
 PERSONA_NAME_MAP = {'main': 'Alex', 'account2': 'Rozalia', 'account3': 'James'}
 
 
+def _get_phase_guidance(phase: str) -> str:
+    """Return phase-specific content guidance for the writer prompt."""
+    if phase == "EARLY":
+        return """## CONTENT PHASE: EARLY (limited track record)
+Focus on: What the scanner found (WITH PRICES), educational content, theme exploration with full ticker lists, watchlist analysis.
+Do NOT: Fabricate performance data, exaggerate results, imply a longer track record.
+Tone: Confident in the system's design, humble about results so far."""
+    elif phase == "BUILDING":
+        return """## CONTENT PHASE: BUILDING (positions are green, building track record)
+Focus on: Green momentum ("$AMPX up 8% from $12.44 entry"), new signals, theme analysis with tickers, process/patience WITH specific examples.
+Do NOT: Overstate results. Show the numbers honestly."""
+    elif phase == "ESTABLISHED":
+        return """## CONTENT PHASE: ESTABLISHED (25%+ winners — show receipts)
+Focus on: Performance receipts, quote past calls, theme analysis with winners, scanner results showing the system finds winners.
+Lead with proof: "$NVDA from $450 to $596. That's +32.5% in 45 days." """
+    return ""
+
+
+FINTWIT_EXAMPLES = """
+GOOD TWEET EXAMPLES (match this style):
+scanner_result: "$AMPX at $12.44 and $LUMN at $8.82 — both cleared all 5 gates Friday.\\n\\n1,817 scanned. 2 survived.\\n\\nFull breakdown 👇"
+theme_analysis: "AI infrastructure delivering again:\\n\\n$AMPX at $12.44 (power)\\n$LUMN at $8.82 (fiber)\\nAlso watching: $EOSE at $7.15\\n\\nTheme score: 8.2/10"
+performance: "$NVDA from $450 entry to $596.\\n\\nThat's +32.5% in 45 days.\\n\\nSystem said hold. Glad I listened."
+watchlist: "$PUMP at $11.49 — passed 4 of 5 gates.\\n\\nMissing: volume confirmation.\\n\\nBreak above $12 with volume = signal.\\n\\nOn the radar."
+educational: "Why $AMPX triggered:\\n\\n✅ Momentum confirmed\\n✅ Volume 2x average\\n✅ Theme score 8.2/10\\n✅ No red flags\\n\\nThis is what a clean signal looks like."
+
+BAD TWEET EXAMPLES (NEVER write like this):
+❌ "AI infrastructure theme keeps delivering. Not the sexy chip plays..."
+❌ "Portfolio check: 3 green, 1 red. The red? $INTC. Still bleeding..."
+❌ "Scanner found 2 survivors this week. Quality over quantity."
+❌ "Systematic beats emotional every time."
+❌ "The system keeps working. Trust the process."
+"""
+
+
 def build_assigned_prompt(
     persona: Persona,
     persona_key: str,
@@ -1295,6 +1652,8 @@ SLOT {slot_num} ({SLOTS[slot_num]['time']}):
 
 {build_examples_section(persona_key, examples, market_ctx)}
 
+{FINTWIT_EXAMPLES}
+
 ## YOUR ASSIGNMENTS FROM THE EDITORIAL BOARD
 
 The Managing Editor has planned today's content. Follow these assignments:
@@ -1303,12 +1662,38 @@ The Managing Editor has planned today's content. Follow these assignments:
 
 ## MARKET DATA (reference as needed)
 
-{build_market_section(market_ctx)}
+{build_structured_data_blocks(market_ctx)}
 {temporal_note}
 
 {f'''## AVOIDANCE RULES (CRITICAL — WILL BE ENFORCED)
 {avoidance_guidance}
 ''' if avoidance_guidance else ''}
+
+## FINTWIT STYLE RULES (CRITICAL)
+
+ALWAYS DO:
+1. Lead with $TICKER and price: "$AMPX at $12.44"
+2. List multiple tickers when discussing themes
+3. Show receipts for winners: "$NVDA from $450 to $596 (+32.5%)"
+4. Give specific levels: "break above $13 = game on"
+5. Keep it punchy and action-oriented
+6. Attach value in every tweet — a ticker, a price, a level, a receipt
+
+NEVER DO:
+1. Vague theme talk without naming stocks
+2. Say "2 signals this week" without naming them
+3. Focus on losers or red positions — winners only
+4. Generic "system works" / "trust the process" without proof
+5. Long philosophical musings with no actionable data
+6. Cliffhanger tweets that promise content but don't deliver it
+
+BANNED PHRASES (will be rejected if used):
+"theme keeps delivering", "system keeps working", "trust the process",
+"2 signals", "2 survivors", "quality over quantity", "the scanner found",
+"still bleeding", "loser", "dragging down", "picks and shovels" (unless followed by tickers)
+
+{_get_phase_guidance(market_ctx.content_phase)}
+
 ## RULES
 1. Each tweet MUST be under 280 characters
 2. Follow the assigned category and topic for each slot
@@ -1347,8 +1732,10 @@ def generate_day_tweets_with_board(
     account_id: str,
     editorial_assignments: dict,
     tracker: Optional[ContentTracker] = None,
+    generation_report: Optional[Dict] = None,
 ) -> List[GeneratedTweet]:
-    """Generate tweets for one account for one day, guided by editorial assignments."""
+    """Generate tweets for one account for one day, guided by editorial assignments.
+    Includes FinTwit validation with regeneration loop."""
 
     persona_name = PERSONA_NAME_MAP.get(account_id, 'Alex')
     assignments = editorial_assignments.get(persona_name, {})
@@ -1404,6 +1791,82 @@ def generate_day_tweets_with_board(
                 char_count=len(text),
             ))
 
+        # FinTwit validation + regeneration loop
+        MAX_REGEN = 2
+        for tweet in tweets:
+            slot_key = f'slot_{tweet.slot}'
+            assignment = assignments.get(slot_key, {})
+            style_issues = validate_fintwit_style(tweet, assignment)
+            fails = [i for i in style_issues if i.startswith('FAIL')]
+
+            if fails and generation_report is not None:
+                generation_report['initial_fails'] = generation_report.get('initial_fails', 0) + 1
+
+            for attempt in range(MAX_REGEN):
+                if not fails:
+                    break
+                # Regenerate with feedback
+                feedback = '; '.join(fails)
+                regen_prompt = f"""You are {persona.name}. Rewrite this tweet for slot {tweet.slot} ({tweet.time}).
+
+ORIGINAL (REJECTED): {tweet.text}
+
+REJECTION REASONS: {feedback}
+
+CATEGORY: {tweet.category}
+ASSIGNMENT: {assignment.get('topic', 'Write naturally')}
+TICKERS TO USE: {', '.join(f'${t}' for t in assignment.get('tickers', []))}
+
+DATA AVAILABLE:
+{build_structured_data_blocks(market_ctx)}
+
+RULES: Lead with $TICKER and price. No banned phrases. No loser focus. Under 280 chars.
+
+Write ONLY the replacement tweet text."""
+
+                try:
+                    regen_resp = client.messages.create(
+                        model=MODEL,
+                        max_tokens=400,
+                        messages=[{"role": "user", "content": regen_prompt}],
+                    )
+                    new_text = regen_resp.content[0].text.strip().strip('"')
+                    if len(new_text) <= 280:
+                        tweet.text = new_text
+                        tweet.char_count = len(new_text)
+                        tweet.mentioned_tickers = extract_tickers(new_text)
+                        tweet.has_url = NEWSLETTER_URL in new_text or 'substack' in new_text.lower()
+                        tweet.generation_method = 'reaction_regen'
+                        style_issues = validate_fintwit_style(tweet, assignment)
+                        fails = [i for i in style_issues if i.startswith('FAIL')]
+                        if generation_report is not None:
+                            generation_report['regen_attempts'] = generation_report.get('regen_attempts', 0) + 1
+                except Exception:
+                    break
+
+            # Final fallback: deterministic data-rich tweet
+            if fails:
+                fallback_text = build_fallback_tweet(tweet.category, market_ctx, tweet.slot)
+                if len(fallback_text) <= 280:
+                    tweet.text = fallback_text
+                    tweet.char_count = len(fallback_text)
+                    tweet.mentioned_tickers = extract_tickers(fallback_text)
+                    tweet.has_url = NEWSLETTER_URL in fallback_text or 'substack' in fallback_text.lower()
+                    tweet.generation_method = 'fallback_data'
+                if generation_report is not None:
+                    generation_report['fallbacks'] = generation_report.get('fallbacks', 0) + 1
+
+            if not fails and generation_report is not None:
+                generation_report['passed'] = generation_report.get('passed', 0) + 1
+
+        # Attach charts
+        for tweet in tweets:
+            if not tweet.image_path:
+                for ticker in tweet.mentioned_tickers:
+                    if ticker in market_ctx.chart_manifest:
+                        tweet.image_path = market_ctx.chart_manifest[ticker]
+                        break
+
         return tweets
 
     except Exception as e:
@@ -1434,6 +1897,7 @@ CRITICAL CONSTRAINTS:
 - Stay in character as {persona.name}
 - Keep under 260 characters
 - Do NOT write cliffhanger tweets
+- BANNED WORDS (never use): {', '.join(f'"{p}"' for p in BANNED_PHRASES)}
 
 ALTERNATIVE ANGLES: Process/discipline, general market observation (no tickers), engagement question, educational concept, theme analysis without naming stocks.
 
@@ -1493,12 +1957,20 @@ def regenerate_flagged_tweets(
             avoid_items = extract_avoid_from_flag(flag_reason)
 
             for attempt in range(MAX_REGEN_ATTEMPTS):
-                new_text = regenerate_single_tweet(client, tweet, avoid_items, persona)
+                try:
+                    new_text = regenerate_single_tweet(client, tweet, avoid_items, persona)
+                except Exception as e:
+                    print(f"    ⚠️ Regen API failed: {e}")
+                    break
 
                 # Check the new tweet against tracker
                 violations = tracker.check_tweet(new_text, account_id, persona.name)
 
-                if not violations and len(new_text) <= 280:
+                # Also check for banned phrases and loser focus
+                banned = check_banned_phrases(new_text)
+                loser = check_loser_focus(new_text)
+
+                if not violations and not banned and not loser and len(new_text) <= 280:
                     tweet['text'] = new_text
                     tweet['char_count'] = len(new_text)
                     tweet['generation_method'] = 'reaction_regenerated'
@@ -1548,6 +2020,9 @@ def generate_weekly_content_v2(
     print(f"📅 Scan date: {market_ctx.scan_date}")
     print(f"📊 Signals: {market_ctx.signal_count} GREEN, {len(market_ctx.consider_signals)} CONSIDER")
     print(f"💼 Positions: {market_ctx.total_positions} open ({market_ctx.green_count} green)")
+    print(f"📋 Content phase: {market_ctx.content_phase}")
+    if market_ctx.chart_manifest:
+        print(f"📷 Charts available: {', '.join(f'${t}' for t in market_ctx.chart_manifest.keys())}")
     if market_ctx.has_big_winner:
         print(f"🏆 Big winners: {len(market_ctx.winners)}")
 
@@ -1560,6 +2035,13 @@ def generate_weekly_content_v2(
     week_tracker = {'tickers_featured': {}}
     # Cache personas for regeneration
     personas_cache = {}
+    # Generation report for validation tracking
+    generation_report = {
+        'content_phase': market_ctx.content_phase,
+        'passed': 0, 'initial_fails': 0, 'regen_attempts': 0, 'fallbacks': 0,
+        'charts_attached': 0, 'banned_phrases': 0,
+        'category_counts': {},
+    }
 
     for day_name in DAYS:
         print(f"\n📅 {day_name}")
@@ -1609,6 +2091,7 @@ def generate_weekly_content_v2(
                 account_id=account_id,
                 editorial_assignments=editorial_plan,
                 tracker=tracker,
+                generation_report=generation_report,
             )
 
             # Validate
@@ -1623,13 +2106,6 @@ def generate_weekly_content_v2(
 
             # Convert to dict, record in tracker, and append
             for t in tweets:
-                # Find chart for first ticker mentioned
-                image_path = None
-                for ticker in t.mentioned_tickers:
-                    if ticker in market_ctx.chart_manifest:
-                        image_path = market_ctx.chart_manifest[ticker]
-                        break
-
                 tweet_dict = {
                     'id': t.id,
                     'day': t.day,
@@ -1643,11 +2119,19 @@ def generate_weekly_content_v2(
                     'status': 'pending',
                     'generation_method': t.generation_method,
                     'char_count': t.char_count,
+                    'mentioned_tickers': t.mentioned_tickers,
+                    'content_phase': market_ctx.content_phase,
+                    'validation_score': len(validate_fintwit_style(t)),
                 }
 
-                # Add image_path if available and category is appropriate
-                if image_path and t.category in ['scanner_result', 'performance', 'theme_analysis']:
-                    tweet_dict['image_path'] = image_path
+                # Add image_path if available
+                if t.image_path:
+                    tweet_dict['image_path'] = t.image_path
+                    generation_report['charts_attached'] = generation_report.get('charts_attached', 0) + 1
+
+                # Track category
+                generation_report['category_counts'][t.category] = \
+                    generation_report['category_counts'].get(t.category, 0) + 1
 
                 # Record in tracker IMMEDIATELY
                 tracker.record_tweet(t.text, account_id, persona.name)
@@ -1689,10 +2173,15 @@ def generate_weekly_content_v2(
                     tweet['text'] = text
                     tweet['char_count'] = len(text)
 
-    # STAGE 6: Strip _flagged from any remaining (unfixable) tweets before saving
+    # STAGE 6: Strip _flagged and recompute validation_score after all regen passes
     for account_id, tweets in all_content.items():
         for tweet in tweets:
             tweet.pop('_flagged', None)
+            # Recompute validation_score after regen
+            style_issues = check_banned_phrases(tweet['text'])
+            if check_loser_focus(tweet['text']):
+                style_issues.append('loser_focus')
+            tweet['validation_score'] = len(style_issues)
 
     # Save
     if output_dir:
@@ -1709,6 +2198,57 @@ def generate_weekly_content_v2(
             print(f"💾 Saved {len(tweets)} tweets to {output_path}")
 
     total = sum(len(t) for t in all_content.values())
+
+    # Compute report stats
+    all_tweets = [t for tweets in all_content.values() for t in tweets]
+    all_tickers_mentioned = set()
+    total_tickers = 0
+    total_prices = 0
+    for t in all_tweets:
+        tickers = re.findall(r'\$[A-Z]{2,5}', t['text'])
+        prices = re.findall(r'\$\d+\.?\d*', t['text'])
+        total_tickers += len(tickers)
+        total_prices += len(prices)
+        all_tickers_mentioned.update(tickers)
+        # Check banned phrases
+        for phrase in BANNED_PHRASES:
+            if phrase.lower() in t['text'].lower():
+                generation_report['banned_phrases'] = generation_report.get('banned_phrases', 0) + 1
+
+    generation_report['total_tweets'] = total
+    generation_report['unique_tickers'] = len(all_tickers_mentioned)
+    generation_report['avg_tickers_per_tweet'] = round(total_tickers / max(total, 1), 1)
+    generation_report['avg_prices_per_tweet'] = round(total_prices / max(total, 1), 1)
+
+    # Print report
+    print(f"\n{'═' * 59}")
+    print("GENERATION REPORT")
+    print(f"{'═' * 59}")
+    print(f"Content Phase: {generation_report['content_phase']}")
+    print(f"\nTicker Density:")
+    print(f"  Total unique tickers: {generation_report['unique_tickers']}")
+    print(f"  Avg tickers/tweet: {generation_report['avg_tickers_per_tweet']} (target: 2+)")
+    print(f"  Avg prices/tweet: {generation_report['avg_prices_per_tweet']} (target: 1+)")
+    print(f"\nValidation:")
+    total_checked = generation_report['passed'] + generation_report.get('initial_fails', 0)
+    first_pass_pct = round(generation_report['passed'] / max(total_checked, 1) * 100)
+    print(f"  Passed first attempt: {generation_report['passed']}/{total_checked} ({first_pass_pct}%)")
+    print(f"  Regen attempts: {generation_report['regen_attempts']}")
+    print(f"  Fallbacks used: {generation_report['fallbacks']}")
+    print(f"  Banned phrases: {generation_report['banned_phrases']}")
+    print(f"\nCharts: {generation_report['charts_attached']}/{total}")
+    print(f"\nCategory Distribution:")
+    for cat, count in sorted(generation_report['category_counts'].items(), key=lambda x: -x[1]):
+        print(f"  {cat}: {count}")
+    print(f"{'═' * 59}")
+
+    # Save report
+    if output_dir:
+        report_path = Path(output_dir) / "generation_report.json"
+        with open(report_path, 'w') as f:
+            json.dump(generation_report, f, indent=2)
+        print(f"📊 Report saved: {report_path}")
+
     print(f"\n✅ Generation complete: {total} total tweets")
 
     return all_content
@@ -1735,21 +2275,31 @@ def main():
         scanner_data = {
             'scan_date': datetime.now().strftime('%Y-%m-%d'),
             'pass_signals': [
-                {'ticker': 'AMPX', 'close_price': 12.44, 'theme': 'AI Infrastructure'},
-                {'ticker': 'LUMN', 'close_price': 8.92, 'theme': 'Data Centers'},
+                {'ticker': 'AMPX', 'close_price': 12.44, 'theme': 'AI Power Infrastructure'},
+                {'ticker': 'LUMN', 'close_price': 8.82, 'theme': 'Fiber Networks'},
             ],
             'consider_signals': [
-                {'ticker': 'PUMP', 'close_price': 11.49, 'theme': 'Energy'},
+                {'ticker': 'PUMP', 'close_price': 11.49, 'theme': 'AI Power Infrastructure'},
             ],
-            'prime_themes': [{'name': 'AI Power Infrastructure'}],
-            'investable_themes': [{'name': 'Data Centers'}],
+            'prime_themes': [{'name': 'AI Power Infrastructure', 'composite_score': 8.2}],
+            'investable_themes': [{'name': 'Fiber Networks', 'composite_score': 7.1}],
+            'cold_themes': [{'name': 'Crypto Mining'}, {'name': 'EV Charging'}],
+            'scan_stats': {
+                'tickers_loaded': 1817,
+                'beta_gte_1_5': 485,
+                'weekly_bos_up': 48,
+                'technical_signals': 44,
+                'theme_confirmed': 17,
+                'final_trade': 2,
+                'final_consider': 2,
+            },
         }
         portfolio_data = {
             'positions': [
                 {'ticker': 'NVDA', 'pnl_pct': 32.5, 'days_held': 45, 'entry_price': 450},
-                {'ticker': 'AMD', 'pnl_pct': 15.2, 'days_held': 30},
+                {'ticker': 'PLTR', 'pnl_pct': 18.3, 'days_held': 30, 'entry_price': 22.50},
                 {'ticker': 'AMPX', 'pnl_pct': 8.5, 'days_held': 7, 'entry_price': 11.47},
-                {'ticker': 'INTC', 'pnl_pct': -5.2, 'days_held': 14},
+                {'ticker': 'INTC', 'pnl_pct': -5.2, 'days_held': 14, 'entry_price': 24.80},
             ],
             'closed_trades': [
                 {'ticker': 'TSLA', 'pnl_pct': 23.5, 'days_held': 28},

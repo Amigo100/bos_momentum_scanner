@@ -154,11 +154,12 @@
     "theme": null,
     "image_path": null,
     "scheduled_date": "2026-02-01",
-    "status": "pending",
+    "status": "failed",
     "posted_at": null,
     "tweet_id": null,
     "template_id": "edu_4",
-    "generation_method": "template"
+    "generation_method": "template",
+    "error": "403 Forbidden\nYou are not allowed to create a Tweet with duplicate content."
   },
   {
     "id": "monday_1_theme_hot",

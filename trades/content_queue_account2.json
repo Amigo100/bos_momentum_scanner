@@ -240,12 +240,13 @@
     "theme": null,
     "image_path": null,
     "scheduled_date": "2026-02-02",
-    "status": "pending",
+    "status": "failed",
     "posted_at": null,
     "tweet_id": null,
     "template_id": "engage_1",
     "generation_method": "claude_variation",
-    "account": "account2"
+    "account": "account2",
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "monday_2_educational",

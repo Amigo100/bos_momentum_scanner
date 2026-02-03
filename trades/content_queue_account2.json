@@ -314,12 +314,13 @@
     "theme": "AI Power Infrastructure & Grid Modernization",
     "image_path": null,
     "scheduled_date": "2026-02-03",
-    "status": "pending",
+    "status": "failed",
     "posted_at": null,
     "tweet_id": null,
     "template_id": "power_2",
     "generation_method": "claude_variation",
-    "account": "account2"
+    "account": "account2",
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "tuesday_1_educational",

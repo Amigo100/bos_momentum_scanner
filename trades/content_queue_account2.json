@@ -419,12 +419,13 @@
     "theme": null,
     "image_path": null,
     "scheduled_date": "2026-02-04",
-    "status": "pending",
+    "status": "blocked",
     "posted_at": null,
     "tweet_id": null,
     "template_id": null,
     "generation_method": "claude_variation",
-    "account": "account2"
+    "account": "account2",
+    "block_reason": "BLOCKED: Tweet too long (291 chars)"
   },
   {
     "id": "wednesday_2_educational",

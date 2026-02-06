@@ -17,6 +17,17 @@
 | `newsletter_prompts.py` | 228 | Newsletter prompts (merged into newsletter_compiler.py) |
 | `due_diligence_prompts.py` | 421 | DD prompts (merged into dd_automator.py) |
 
+### Archived 2026-02-06 (Content System v2 Migration)
+
+| File | Lines | Original Purpose |
+|------|-------|------------------|
+| `reaction_generator.py` | ~1700 | 3-persona tweet generation system (replaced by `content/tweet_generator.py` v2) |
+| `tweet_generator.py` | ~1800 | Legacy tweet generator v1 (replaced by `content/tweet_generator.py` v2) |
+| `editorial_board.py` | ~450 | Editorial planning for persona system (no longer needed) |
+| `personas/alex.yaml` | ~150 | "Alex" persona voice configuration |
+| `personas/james.yaml` | ~140 | "James" persona voice configuration |
+| `personas/rozalia.yaml` | ~170 | "Rozalia" persona voice configuration |
+
 ---
 
 ## Why Archived (Not Deleted)

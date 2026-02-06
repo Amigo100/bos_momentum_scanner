@@ -1,14 +1,23 @@
 # Sterling Signals Documentation
 
+## System Overview
+
+**BoS Momentum Scanner** — Weekly + daily momentum trading scanner for US stocks with automated content generation and multi-account X/Twitter distribution.
+
+**Key capabilities:**
+- **Weekly scanner** — 1,800 stocks → 5-gate filter → 3-5 actionable signals (Friday after close)
+- **Daily scanner** — Daily BoS signals on daily bars, max 5 signals/day (Mon-Fri after close)
+- **Unified tweet voice** — Single consistent brand voice across 3 accounts (replaces old 3-persona system)
+- **7-slot posting system** — Slots 1/6/7 daily content, slots 2-5 weekly content, EST/EDT aware
+- **Sell signal notifications** — Real-time email + WhatsApp alerts on bearish pivots and trailing stops
+- **7-step validation pipeline** — Category check, ticker/price check, banned phrases, winners-only, internal terminology, character count, chart flag
+
 ## Quick Reference
 
 | Document | Location | Description |
 |----------|----------|-------------|
 | [CLAUDE.md](../CLAUDE.md) | Root | AI assistant context (primary reference) |
-| [README.md](../README.md) | Root | Project overview |
-| [SETUP.md](../SETUP.md) | Root | Setup instructions |
-| [SYSTEM_OVERVIEW.md](../SYSTEM_OVERVIEW.md) | Root | Architecture & marketing system |
-| [MASTER_TODO_v2.md](../MASTER_TODO_v2.md) | Root | Active task list |
+| [SETUP.md](SETUP.md) | docs/ | Setup instructions |
 
 ---
 

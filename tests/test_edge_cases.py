@@ -23,8 +23,8 @@ from unittest.mock import patch, MagicMock
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from tweet_generator import validate_tweet_length
+from distribution.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
+from content.tweet_generator import validate_tweet_length
 
 
 class TestExactlyAtThreshold:
@@ -102,10 +102,11 @@ class TestEmptyPortfolio:
         result = has_enough_wins([], min_pnl=15.0, min_winners=2)
         assert result == False
 
-    def test_empty_portfolio_spy_comparison(self):
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_empty_portfolio_spy_comparison(self, mock_calc):
         """Empty portfolio should fail SPY comparison safeguard."""
-        comparison = {'valid': False}  # No positions = invalid comparison
-        result = should_post_beat_spy(comparison)
+        mock_calc.return_value = {'should_post_beat_spy': False, 'can_compare': False}
+        result = should_post_beat_spy()
         assert result == False
 
 
@@ -164,14 +165,12 @@ class TestMissingOrCorruptedData:
             {'ticker': 'NONE_PNL', 'pnl_pct': None, 'status': 'OPEN'},
             {'ticker': 'WIN', 'pnl_pct': 25.0, 'status': 'OPEN'},
         ]
-        # Should not crash
-        try:
-            filtered = filter_public_positions(positions)
-            # Valid position should still be included
-            assert any(p['ticker'] == 'WIN' for p in filtered)
-        except TypeError:
-            # If it crashes on None comparison, that's acceptable but noted
-            pytest.skip("Implementation doesn't handle None pnl_pct")
+        # Should not crash - None pnl_pct positions should be skipped
+        filtered = filter_public_positions(positions)
+        # Valid winning position should still be included
+        assert any(p['ticker'] == 'WIN' for p in filtered)
+        # None pnl_pct position should be excluded (can't determine if winner)
+        assert not any(p['ticker'] == 'NONE_PNL' for p in filtered)
 
 
 class TestZeroPASSSignals:

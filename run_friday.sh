@@ -144,8 +144,8 @@ else
 fi
 
 # Check required files
-if [ ! -f "scanner.py" ]; then
-    log_error "scanner.py not found in current directory"
+if [ ! -f "core/scanner.py" ]; then
+    log_error "core/scanner.py not found in current directory"
     exit 1
 fi
 
@@ -172,10 +172,29 @@ else
     SCANNER_ARGS="$SCANNER_ARGS --web-search"
 fi
 
-log_step "python3 scanner.py $SCANNER_ARGS"
-python3 scanner.py $SCANNER_ARGS
+log_step "python3 -m core.scanner $SCANNER_ARGS"
+python3 -m core.scanner $SCANNER_ARGS
 
 log_success "Scanner complete (DD results applied, portfolio updated)"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STEP 1.5: GENERATE FUNNEL GRAPHIC
+# ═══════════════════════════════════════════════════════════════════════════════
+
+if [ "$SKIP_CHARTS" = true ]; then
+    log_warning "Skipping funnel graphic (--skip-charts)"
+else
+    log_header "STEP 1.5: Generating Funnel Graphic"
+
+    if [ -f "content/funnel_graphic.py" ]; then
+        log_step "python3 -m content.funnel_graphic"
+        python3 -m content.funnel_graphic || {
+            log_warning "Funnel graphic generation failed - continuing anyway"
+        }
+    else
+        log_warning "content/funnel_graphic.py not found, skipping"
+    fi
+fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 2: CAPTURE TRADINGVIEW CHARTS
@@ -186,23 +205,23 @@ if [ "$SKIP_CHARTS" = true ]; then
 else
     log_header "STEP 2: Capturing TradingView Charts"
 
-    if [ -f "chart_capture.py" ]; then
+    if [ -f "content/chart_capture.py" ]; then
         # Extract tickers from latest signals
         if [ -f "trades/signals.json" ]; then
-            log_step "python3 chart_capture.py --tickers-from trades/signals.json --include-portfolio --headless"
-            python3 chart_capture.py --tickers-from trades/signals.json --include-portfolio --headless || {
+            log_step "python3 -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless"
+            python3 -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         elif [ -f "trades/latest_signals.json" ]; then
-            log_step "python3 chart_capture.py --tickers-from trades/latest_signals.json --include-portfolio --headless"
-            python3 chart_capture.py --tickers-from trades/latest_signals.json --include-portfolio --headless || {
+            log_step "python3 -m content.chart_capture --tickers-from trades/latest_signals.json --include-portfolio --headless"
+            python3 -m content.chart_capture --tickers-from trades/latest_signals.json --include-portfolio --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         else
             log_warning "No signals.json found, skipping chart capture"
         fi
     else
-        log_warning "chart_capture.py not found, skipping"
+        log_warning "content/chart_capture.py not found, skipping"
     fi
 fi
 
@@ -215,18 +234,18 @@ if [ "$SKIP_NEWSLETTER" = true ]; then
 else
     log_header "STEP 3: Generating Market Analysis (Claude + Web Search)"
 
-    if [ -f "market_analyzer.py" ]; then
+    if [ -f "content/market_analyzer.py" ]; then
         MARKET_ARGS="--save"
         if [ "$TEST_MODE" = true ]; then
             log_warning "Test mode: Skipping market analysis API call"
         else
-            log_step "python3 market_analyzer.py $MARKET_ARGS"
-            python3 market_analyzer.py $MARKET_ARGS || {
+            log_step "python3 -m content.market_analyzer $MARKET_ARGS"
+            python3 -m content.market_analyzer $MARKET_ARGS || {
                 log_warning "Market analysis failed - continuing anyway"
             }
         fi
     else
-        log_warning "market_analyzer.py not found, skipping"
+        log_warning "content/market_analyzer.py not found, skipping"
     fi
 fi
 
@@ -239,7 +258,7 @@ if [ "$SKIP_NEWSLETTER" = true ]; then
 else
     log_header "STEP 4: Newsletter Compilation (Market + Briefing + DD → HTML)"
 
-    if [ -f "newsletter_compiler.py" ]; then
+    if [ -f "content/newsletter_compiler.py" ]; then
         NEWSLETTER_ARGS=""
         if [ "$TEST_MODE" = true ]; then
             # Basic compilation only (no LLM)
@@ -249,12 +268,12 @@ else
             NEWSLETTER_ARGS="--full"
         fi
 
-        log_step "python3 newsletter_compiler.py $NEWSLETTER_ARGS"
-        python3 newsletter_compiler.py $NEWSLETTER_ARGS || {
+        log_step "python3 -m content.newsletter_compiler $NEWSLETTER_ARGS"
+        python3 -m content.newsletter_compiler $NEWSLETTER_ARGS || {
             log_warning "Newsletter compilation failed - continuing anyway"
         }
     else
-        log_warning "newsletter_compiler.py not found, skipping"
+        log_warning "content/newsletter_compiler.py not found, skipping"
     fi
 fi
 
@@ -262,25 +281,28 @@ fi
 # STEP 5: GENERATE TWEETS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-log_header "STEP 5: Generating Tweets (35 for the week)"
+log_header "STEP 5: Generating Tweets (3 accounts × 35 tweets)"
 
-if [ -f "tweet_generator.py" ]; then
-    TWEET_ARGS=""
+if [ -f "content/reaction_generator.py" ]; then
+    TWEET_ARGS="--scanner-file trades/signals.json --output trades/"
     if [ "$TEST_MODE" = true ]; then
-        TWEET_ARGS="--mock"
+        TWEET_ARGS="--mock --output trades/"
         log_warning "Test mode: Using --mock"
     fi
 
-    log_step "python3 tweet_generator.py $TWEET_ARGS"
-    python3 tweet_generator.py $TWEET_ARGS
-    log_success "Tweet generation complete"
+    log_step "python3 -m content.reaction_generator $TWEET_ARGS"
+    python3 -m content.reaction_generator $TWEET_ARGS
+    log_success "Tweet generation complete (reaction_generator v2)"
 else
-    log_warning "tweet_generator.py not found, skipping"
+    log_warning "content/reaction_generator.py not found, falling back to content/tweet_generator.py"
 
-    # Fallback to old grok prompts
-    if [ -f "grok_prompts_generator.py" ]; then
-        log_step "Falling back to grok_prompts_generator.py"
-        python3 grok_prompts_generator.py
+    if [ -f "content/tweet_generator.py" ]; then
+        TWEET_ARGS=""
+        if [ "$TEST_MODE" = true ]; then
+            TWEET_ARGS="--mock"
+        fi
+        log_step "python3 -m content.tweet_generator $TWEET_ARGS"
+        python3 -m content.tweet_generator $TWEET_ARGS
     fi
 fi
 
@@ -290,12 +312,12 @@ fi
 
 log_header "STEP 5.5: Generating Substack Notes (Tuesday + Thursday)"
 
-if [ -f "substack_notes_generator.py" ]; then
-    log_step "python3 substack_notes_generator.py"
-    python3 substack_notes_generator.py
+if [ -f "content/substack_notes_generator.py" ]; then
+    log_step "python3 -m content.substack_notes_generator"
+    python3 -m content.substack_notes_generator
     log_success "Substack notes generated"
 else
-    log_warning "substack_notes_generator.py not found, skipping"
+    log_warning "content/substack_notes_generator.py not found, skipping"
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════

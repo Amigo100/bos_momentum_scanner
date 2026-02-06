@@ -104,23 +104,116 @@ jobs:
           fi
 
           echo ""
-          echo "Running: python scanner.py $SCANNER_ARGS"
+          echo "Running: python -m core.scanner $SCANNER_ARGS"
           echo ""
 
-          python scanner.py $SCANNER_ARGS
+          python -m core.scanner $SCANNER_ARGS
 
           echo "scanner_complete=true" >> $GITHUB_OUTPUT
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 2: CHARTS - Captured locally after workflow (TradingView with indicators)
+      # STEP 1.5: SEND SELL SIGNAL NOTIFICATIONS (email + WhatsApp)
       # ═══════════════════════════════════════════════════════════════════════════
-      #
-      # TradingView charts require your Pro account login, so they're captured
-      # locally AFTER this workflow completes. Run: ./run_local_friday.sh
-      #
-      # The tweet generator creates content_queue.json with image_path fields
-      # pointing to where charts will be saved. Charts are auto-attached when
-      # twitter_poster.py runs.
+
+      - name: Send sell signal notifications
+        if: always() && steps.scanner.outputs.scanner_complete == 'true'
+        env:
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+        run: |
+          python << 'NOTIFY_SELLS'
+          import json, sys
+          from pathlib import Path
+
+          signals_path = Path("trades/signals.json")
+          if not signals_path.exists():
+              print("No signals.json found — skipping notifications")
+              sys.exit(0)
+
+          data = json.loads(signals_path.read_text())
+          sell_signals = data.get("sell_signals", [])
+          caution_signals = data.get("caution_signals", [])
+
+          if not sell_signals and not caution_signals:
+              print("No sell/caution signals — no notifications needed")
+              sys.exit(0)
+
+          try:
+              from distribution.notifications import send_sell_notification
+          except ImportError as e:
+              print(f"Notification module not available: {e}")
+              sys.exit(0)
+
+          for sig in sell_signals:
+              print(f"Sending SELL notification for {sig.get('symbol', 'UNKNOWN')}...")
+              send_sell_notification(
+                  ticker=sig.get("symbol", ""),
+                  signal_type=sig.get("reason", "TRAILING STOP"),
+                  entry_price=float(sig.get("entry_price", 0)),
+                  current_price=float(sig.get("price", 0)),
+                  highest_close=float(sig.get("highest_close", 0)),
+                  stop_level=float(sig.get("stop_level", 0)),
+                  pnl_pct=float(sig.get("pnl_pct", 0)),
+                  theme=sig.get("theme", ""),
+                  timeframe="weekly",
+                  entry_date=sig.get("entry_date", ""),
+              )
+
+          for sig in caution_signals:
+              print(f"Sending CAUTION notification for {sig.get('symbol', 'UNKNOWN')}...")
+              send_sell_notification(
+                  ticker=sig.get("symbol", ""),
+                  signal_type="TIGHTENED STOP",
+                  entry_price=float(sig.get("entry_price", 0)),
+                  current_price=float(sig.get("price", 0)),
+                  highest_close=float(sig.get("highest_close", 0)),
+                  stop_level=float(sig.get("stop_level", 0)),
+                  pnl_pct=float(sig.get("pnl_pct", 0)),
+                  theme=sig.get("theme", ""),
+                  timeframe="weekly",
+                  entry_date=sig.get("entry_date", ""),
+              )
+          NOTIFY_SELLS
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 2: CHARTS & GRAPHICS
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Funnel Graphic
+        if: ${{ github.event.inputs.skip_charts != 'true' }}
+        run: |
+          if [ -f "content/funnel_graphic.py" ]; then
+            echo "Generating funnel graphic from scan stats..."
+            python -m content.funnel_graphic || echo "Funnel graphic generation failed (non-critical)"
+          fi
+        continue-on-error: true
+
+      - name: Capture TradingView Charts
+        if: ${{ github.event.inputs.skip_charts != 'true' }}
+        run: |
+          if [ -f "content/chart_capture.py" ]; then
+            pip install playwright && playwright install chromium
+            # Load saved TradingView cookies from secret if available
+            if [ -n "$TRADINGVIEW_COOKIES" ]; then
+              echo "$TRADINGVIEW_COOKIES" > .tradingview_cookies.json
+            fi
+            python -m content.chart_capture \
+              --tickers-from trades/signals.json \
+              --include-portfolio \
+              --headless \
+              --use-cookies \
+              || echo "Chart capture failed (non-critical, tweets will post without charts)"
+          fi
+        continue-on-error: true
+        env:
+          TRADINGVIEW_COOKIES: ${{ secrets.TRADINGVIEW_COOKIES }}
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 3: GENERATE MARKET ANALYSIS (Claude + Web Search)
@@ -129,13 +222,13 @@ jobs:
       - name: Generate Market Analysis
         if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
         run: |
-          if [ -f "market_analyzer.py" ]; then
+          if [ -f "content/market_analyzer.py" ]; then
             echo "Generating market analysis via Claude + web search..."
-            python market_analyzer.py --save || {
+            python -m content.market_analyzer --save || {
               echo "Market analysis failed - continuing anyway"
             }
           else
-            echo "market_analyzer.py not found, skipping"
+            echo "content/market_analyzer.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -146,13 +239,13 @@ jobs:
       - name: Compile Newsletter
         if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
         run: |
-          if [ -f "newsletter_compiler.py" ]; then
+          if [ -f "content/newsletter_compiler.py" ]; then
             echo "Compiling newsletter via LLM..."
-            python newsletter_compiler.py --full || {
+            python -m content.newsletter_compiler --full || {
               echo "Newsletter compilation failed - continuing anyway"
             }
           else
-            echo "newsletter_compiler.py not found, skipping"
+            echo "content/newsletter_compiler.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -163,11 +256,11 @@ jobs:
       - name: Generate Substack Content
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
-          if [ -f "substack_content_generator.py" ]; then
+          if [ -f "content/substack_content_generator.py" ]; then
             echo "Generating Substack posts (Monday/Thursday/Saturday/Sunday)..."
-            python substack_content_generator.py --all || echo "Substack content generation failed (non-critical)"
+            python -m content.substack_content_generator --all || echo "Substack content generation failed (non-critical)"
           else
-            echo "substack_content_generator.py not found, skipping"
+            echo "content/substack_content_generator.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -178,13 +271,11 @@ jobs:
       - name: Generate Tweets (3 accounts × 35 tweets)
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          if [ -f "reaction_generator.py" ]; then
-            echo "Generating 105 tweets (3 accounts) via reaction_generator..."
-            python reaction_generator.py --output trades/
-          else
-            echo "reaction_generator.py not found, falling back to tweet_generator.py"
-            python tweet_generator.py || true
-          fi
+          echo "Generating weekly tweets via tweet_generator v2 (unified voice)..."
+          python -m content.tweet_generator \
+            --signals trades/signals.json \
+            --portfolio trades/portfolio.csv \
+            --output trades/
 
       - name: Validate content queue JSON
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
@@ -205,11 +296,11 @@ jobs:
       - name: Generate Substack Notes
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
-          if [ -f "substack_notes_generator.py" ]; then
+          if [ -f "content/substack_notes_generator.py" ]; then
             echo "Generating Substack notes for Tuesday + Thursday..."
-            python substack_notes_generator.py
+            python -m content.substack_notes_generator
           else
-            echo "substack_notes_generator.py not found, skipping"
+            echo "content/substack_notes_generator.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -351,8 +442,8 @@ jobs:
           echo "⚠️ Friday Scan FAILED - sending notification..."
 
           # Check if email_notifier.py exists and email vars are set
-          if [ -f "email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
-            python email_notifier.py \
+          if [ -f "distribution/email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
+            python -m distribution.email_notifier \
               --subject "⚠️ Friday Scan FAILED - $(date '+%Y-%m-%d')" \
               --body "The Friday weekly scan workflow failed. Check GitHub Actions for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               || echo "Email notification failed"

@@ -16,12 +16,13 @@ import pytest
 import sys
 from pathlib import Path
 from datetime import datetime, timedelta
+from unittest.mock import patch
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from tweet_generator import validate_tweet_length, get_tweet_char_count
+from distribution.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
+from content.tweet_generator import validate_tweet_length, get_tweet_char_count
 from config import get_highlight_threshold
 
 
@@ -121,36 +122,53 @@ class TestHasEnoughWins:
 
 
 class TestSPYComparisonSafeguard:
-    """Tests for should_post_beat_spy() safeguard."""
+    """Tests for should_post_beat_spy() safeguard.
 
-    def test_spy_comparison_below_threshold(self):
+    should_post_beat_spy() takes no arguments — it calls calculate_portfolio_vs_spy()
+    internally and checks the 'should_post_beat_spy' key in the result dict.
+    We mock calculate_portfolio_vs_spy to control the return value.
+    """
+
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_below_threshold(self, mock_calc):
         """Should not post if alpha is below 5%."""
-        comparison = {'valid': True, 'avg_alpha': 3.0}
-        result = should_post_beat_spy(comparison)
+        mock_calc.return_value = {'should_post_beat_spy': False}
+        result = should_post_beat_spy()
         assert result == False
 
-    def test_spy_comparison_above_threshold(self):
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_above_threshold(self, mock_calc):
         """Should post if alpha is above 5%."""
-        comparison = {'valid': True, 'avg_alpha': 7.0}
-        result = should_post_beat_spy(comparison)
+        mock_calc.return_value = {'should_post_beat_spy': True}
+        result = should_post_beat_spy()
         assert result == True
 
-    def test_spy_comparison_exactly_at_threshold(self):
-        """Should post if alpha is exactly 5%."""
-        comparison = {'valid': True, 'avg_alpha': 5.0}
-        result = should_post_beat_spy(comparison)
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_exactly_at_threshold(self, mock_calc):
+        """Should post if alpha is exactly at threshold."""
+        mock_calc.return_value = {'should_post_beat_spy': True}
+        result = should_post_beat_spy()
         assert result == True
 
-    def test_spy_comparison_invalid(self):
-        """Invalid comparison should return False."""
-        comparison = {'valid': False}
-        result = should_post_beat_spy(comparison)
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_invalid(self, mock_calc):
+        """No comparable positions should return False."""
+        mock_calc.return_value = {'should_post_beat_spy': False, 'can_compare': False}
+        result = should_post_beat_spy()
         assert result == False
 
-    def test_spy_comparison_missing_alpha(self):
-        """Missing alpha field should return False."""
-        comparison = {'valid': True}  # No avg_alpha field
-        result = should_post_beat_spy(comparison)
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_missing_alpha(self, mock_calc):
+        """When calculate returns False for posting, should return False."""
+        mock_calc.return_value = {'should_post_beat_spy': False}
+        result = should_post_beat_spy()
+        assert result == False
+
+    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    def test_spy_comparison_missing_key_returns_false(self, mock_calc):
+        """If calculate_portfolio_vs_spy returns dict without 'should_post_beat_spy' key, should default False."""
+        mock_calc.return_value = {'error': 'price_fetch_failed'}
+        result = should_post_beat_spy()
         assert result == False
 
 

@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       slot:
-        description: 'Which slot to post (1-5, or all)'
+        description: 'Which slot to post (1-7, or all). Slots 1/6/7=daily, 2-5=weekly'
         required: false
         default: 'all'
       dry_run:
@@ -14,19 +14,31 @@ on:
         default: 'false'
         type: boolean
 
-  # Scheduled runs - 5 posts per day (Eastern Time via UTC)
-  # Note: Using EST (UTC-5) times. During EDT (Mar-Nov), posts will be 1hr earlier.
+  # 7-slot schedule (Eastern Time via UTC)
+  # Two cron entries per slot: EST (UTC-5) and EDT (UTC-4)
+  # Both fire; the poster uses get_current_slot() to auto-detect
   schedule:
-    # Slot 1: Pre-market 08:00 ET = 13:00 UTC
-    - cron: '0 13 * * *'
-    # Slot 2: Morning 10:00 ET = 15:00 UTC
-    - cron: '0 15 * * *'
-    # Slot 3: Midday 12:30 ET = 17:30 UTC
-    - cron: '30 17 * * *'
-    # Slot 4: Power Hour 15:30 ET = 20:30 UTC (CRITICAL)
-    - cron: '30 20 * * *'
-    # Slot 5: After-hours 18:00 ET = 23:00 UTC
-    - cron: '0 23 * * *'
+    # Slot 1: 07:30 ET - Daily signal pre-market recap (weekdays only)
+    - cron: '30 12 * * 1-5'   # EST
+    - cron: '30 11 * * 1-5'   # EDT
+    # Slot 2: 10:00 ET - Weekly content (daily)
+    - cron: '0 15 * * *'      # EST
+    - cron: '0 14 * * *'      # EDT
+    # Slot 3: 12:30 ET - Weekly content (daily)
+    - cron: '30 17 * * *'     # EST
+    - cron: '30 16 * * *'     # EDT
+    # Slot 4: 15:30 ET - Weekly content / power hour (daily, CRITICAL)
+    - cron: '30 20 * * *'     # EST
+    - cron: '30 19 * * *'     # EDT
+    # Slot 5: 18:00 ET - Weekly content (daily)
+    - cron: '0 23 * * *'      # EST
+    - cron: '0 22 * * *'      # EDT
+    # Slot 6: 17:00 ET - Daily signals post-close (weekdays only)
+    - cron: '0 22 * * 1-5'    # EST
+    - cron: '0 21 * * 1-5'    # EDT
+    # Slot 7: 18:30 ET - Daily overflow / weekly (weekdays only)
+    - cron: '30 23 * * 1-5'   # EST
+    - cron: '30 22 * * 1-5'   # EDT
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -46,9 +58,19 @@ env:
   X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
   X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
 
+# Required for git push
+permissions:
+  contents: write
+
+# Prevent overlapping posts from concurrent cron fires
+concurrency:
+  group: daily-post-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   post-tweet:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -72,31 +94,29 @@ jobs:
             echo "slot=${{ github.event.inputs.slot }}" >> $GITHUB_OUTPUT
             echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
           else
-            # Determine slot from cron schedule (Eastern Time via UTC)
+            # Determine slot from cron schedule (UTC time → 7-slot system)
             # Use time ranges to handle GitHub Actions scheduler delays (up to 60min)
             HOUR=$(date -u +%H)
-            HOUR_NUM=$((10#$HOUR))  # Convert to number (handles leading zeros)
+            MIN=$(date -u +%M)
+            HOUR_NUM=$((10#$HOUR))
+            MIN_NUM=$((10#$MIN))
+            UTC_MINS=$(( HOUR_NUM * 60 + MIN_NUM ))
 
-            # Slot windows (UTC) - each slot has ~2hr window to handle delays
-            # Slot 1: 13:00-14:59 UTC (08:00-09:59 ET)
-            # Slot 2: 15:00-16:59 UTC (10:00-11:59 ET)
-            # Slot 3: 17:00-19:59 UTC (12:00-14:59 ET)
-            # Slot 4: 20:00-22:59 UTC (15:00-17:59 ET)
-            # Slot 5: 23:00-00:59 UTC (18:00-19:59 ET)
+            # Slot windows (UTC) — wide ranges to handle GHA scheduler drift
+            # Slot 1: 11:00-12:59 UTC (07:00-08:59 ET)  — daily pre-market
+            # Slot 2: 13:00-15:59 UTC (08:00-10:59 ET)  — weekly morning
+            #         Note: slot 2 overlaps with EST cron for slot 1. The
+            #         python poster resolves via get_current_slot() on ET.
+            # Slot 3: 16:00-18:59 UTC (11:00-13:59 ET)  — weekly midday
+            # Slot 4: 19:00-20:59 UTC (14:00-15:59 ET)  — weekly power hour
+            # Slot 5: 21:00-21:59 UTC (16:00-16:59 ET)  — weekly after-hours
+            # Slot 6: 21:00-22:29 UTC (16:00-17:29 ET)  — daily post-close
+            #         Note: overlap with slot 5; poster resolves via ET.
+            # Slot 7: 22:30-23:59 UTC (17:30-18:59 ET)  — daily evening
 
-            if [ $HOUR_NUM -ge 13 ] && [ $HOUR_NUM -lt 15 ]; then
-              echo "slot=1" >> $GITHUB_OUTPUT    # 08:00 ET - Pre-market
-            elif [ $HOUR_NUM -ge 15 ] && [ $HOUR_NUM -lt 17 ]; then
-              echo "slot=2" >> $GITHUB_OUTPUT    # 10:00 ET - Morning
-            elif [ $HOUR_NUM -ge 17 ] && [ $HOUR_NUM -lt 20 ]; then
-              echo "slot=3" >> $GITHUB_OUTPUT    # 12:30 ET - Midday
-            elif [ $HOUR_NUM -ge 20 ] && [ $HOUR_NUM -lt 23 ]; then
-              echo "slot=4" >> $GITHUB_OUTPUT    # 15:30 ET - Power Hour (CRITICAL)
-            elif [ $HOUR_NUM -ge 23 ] || [ $HOUR_NUM -lt 1 ]; then
-              echo "slot=5" >> $GITHUB_OUTPUT    # 18:00 ET - After-hours
-            else
-              echo "slot=all" >> $GITHUB_OUTPUT
-            fi
+            # Let the python poster auto-detect the slot via get_current_slot()
+            # which uses Eastern Time directly (handles EST/EDT correctly)
+            echo "slot=all" >> $GITHUB_OUTPUT
             echo "dry_run=false" >> $GITHUB_OUTPUT
           fi
 
@@ -107,30 +127,48 @@ jobs:
           path: trades/
         continue-on-error: true
 
-      - name: Check for content queue
+      - name: Check for content queues
         id: check-queue
         run: |
+          WEEKLY_EXISTS=false
+          DAILY_EXISTS=false
+
           if [ -f "trades/content_queue.json" ]; then
-            echo "queue_exists=true" >> $GITHUB_OUTPUT
-            TWEET_COUNT=$(cat trades/content_queue.json | grep -c '"id"' || echo 0)
-            echo "Content queue found with $TWEET_COUNT tweets"
+            WEEKLY_EXISTS=true
+            TWEET_COUNT=$(python -c "import json; print(len(json.load(open('trades/content_queue.json'))))" 2>/dev/null || echo 0)
+            echo "Weekly queue: $TWEET_COUNT tweets"
           else
-            echo "queue_exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ No content queue found"
+            echo "No weekly content queue found"
           fi
 
-      - name: Fail if no content queue (GAP 29 fix)
+          if [ -f "trades/daily_content_queue.json" ]; then
+            DAILY_EXISTS=true
+            DAILY_COUNT=$(python -c "import json; print(len(json.load(open('trades/daily_content_queue.json'))))" 2>/dev/null || echo 0)
+            echo "Daily queue: $DAILY_COUNT tweets"
+          else
+            echo "No daily content queue (normal on weekends)"
+          fi
+
+          echo "weekly_queue=$WEEKLY_EXISTS" >> $GITHUB_OUTPUT
+          echo "daily_queue=$DAILY_EXISTS" >> $GITHUB_OUTPUT
+
+          # At least one queue must exist
+          if [ "$WEEKLY_EXISTS" = "false" ] && [ "$DAILY_EXISTS" = "false" ]; then
+            echo "queue_exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "queue_exists=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fail if no content queues
         if: steps.check-queue.outputs.queue_exists == 'false'
         run: |
-          echo "❌ ERROR: No content_queue.json found"
+          echo "ERROR: No content queues found (weekly or daily)"
           echo ""
-          echo "This workflow requires tweets to be pre-generated by friday_scan.yml"
-          echo "Possible causes:"
-          echo "  - friday_scan.yml hasn't run yet this week"
-          echo "  - Artifact expired (default 90 days)"
-          echo "  - Artifact download failed"
+          echo "This workflow requires tweets to be pre-generated by:"
+          echo "  - friday_scan.yml (weekly content)"
+          echo "  - daily_scan.yml (daily signals)"
           echo ""
-          echo "To fix: Run friday_scan.yml manually or check artifact status"
+          echo "To fix: Run friday_scan.yml or daily_scan.yml manually"
           exit 1
 
       - name: Post to all accounts (staggered)
@@ -141,24 +179,27 @@ jobs:
           DRY_FLAG=""
           if [ "$DRY_RUN" = "true" ]; then DRY_FLAG="--dry-run"; fi
 
+          # The twitter_poster.py auto-selects the correct queue (weekly vs daily)
+          # based on get_current_slot() and the DAILY_SLOTS/WEEKLY_SLOTS mapping
+
           echo "=== Posting to main account ==="
-          python twitter_poster.py --slot $SLOT --account main $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account main $DRY_FLAG || true
 
           echo "=== Waiting 10 min for account 2 ==="
           sleep 600
-          python twitter_poster.py --slot $SLOT --account account2 $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account account2 $DRY_FLAG || true
 
           echo "=== Waiting 10 min for account 3 ==="
           sleep 600
-          python twitter_poster.py --slot $SLOT --account account3 $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account account3 $DRY_FLAG || true
 
       - name: Check Milestone Quote Opportunities
         if: success()
         run: |
           python << 'MILESTONE_CHECK'
           try:
-              from self_quote_tracker import get_unquoted_milestones
-              from signal_tracker import get_uncelebrated_wins
+              from distribution.self_quote_tracker import get_unquoted_milestones
+              from distribution.signal_tracker import get_uncelebrated_wins
 
               milestones = get_unquoted_milestones() or []
               uncelebrated = get_uncelebrated_wins() or []
@@ -179,21 +220,23 @@ jobs:
           MILESTONE_CHECK
         continue-on-error: true
 
-      - name: Commit updated content queue
+      - name: Commit updated content queues
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
+          # Stage both weekly and daily queue files
           git add trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json 2>/dev/null || true
+          git add trades/daily_content_queue.json trades/daily_content_queue_account2.json trades/daily_content_queue_account3.json 2>/dev/null || true
           git add trades/tweet_tracking.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update content queue after posting"
-            # GAP 33 fix: Pull with rebase before push to avoid race conditions
+            git commit -m "Update content queues after posting"
+            # Pull with rebase before push to avoid race conditions
             git pull --rebase origin ${{ github.ref_name }} || {
-              echo "⚠️ Rebase failed - attempting merge"
+              echo "Rebase failed - attempting merge"
               git rebase --abort 2>/dev/null || true
               git pull origin ${{ github.ref_name }}
             }
@@ -209,6 +252,9 @@ jobs:
             trades/content_queue.json
             trades/content_queue_account2.json
             trades/content_queue_account3.json
+            trades/daily_content_queue.json
+            trades/daily_content_queue_account2.json
+            trades/daily_content_queue_account3.json
           retention-days: 14
         if: always()
 
@@ -222,13 +268,13 @@ jobs:
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Schedule (Eastern Time)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 1: 08:00 ET (pre-market)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 2: 10:00 ET (morning)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 3: 12:30 ET (midday)" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 4: 15:30 ET (power hour) - CRITICAL" >> $GITHUB_STEP_SUMMARY
-          echo "- Slot 5: 18:00 ET (after-hours)" >> $GITHUB_STEP_SUMMARY
-
-# Required for git push
-permissions:
-  contents: write
+          echo "### 7-Slot Schedule (Eastern Time)" >> $GITHUB_STEP_SUMMARY
+          echo "| Slot | Time | Source | Days |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|--------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 1 | 07:30 ET | Daily queue | Mon-Fri |" >> $GITHUB_STEP_SUMMARY
+          echo "| 2 | 10:00 ET | Weekly queue | Daily |" >> $GITHUB_STEP_SUMMARY
+          echo "| 3 | 12:30 ET | Weekly queue | Daily |" >> $GITHUB_STEP_SUMMARY
+          echo "| 4 | 15:30 ET | Weekly queue (CRITICAL) | Daily |" >> $GITHUB_STEP_SUMMARY
+          echo "| 5 | 18:00 ET | Weekly queue | Daily |" >> $GITHUB_STEP_SUMMARY
+          echo "| 6 | 17:00 ET | Daily queue | Mon-Fri |" >> $GITHUB_STEP_SUMMARY
+          echo "| 7 | 18:30 ET | Daily queue | Mon-Fri |" >> $GITHUB_STEP_SUMMARY

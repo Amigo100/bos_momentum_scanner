@@ -585,7 +585,7 @@ def load_tickers_from_json(filepath: Path) -> List[str]:
         # Dict with signals lists - check all relevant keys
         signal_keys = [
             'pass_signals', 'buy_signals', 'signals', 'tickers',
-            'sell_signals', 'caution_signals'
+            'sell_signals', 'caution_signals', 'consider_signals'
         ]
         for key in signal_keys:
             if key in data:
@@ -621,16 +621,26 @@ def load_tickers_from_portfolio(filepath: Path) -> List[str]:
 
 
 def save_chart_manifest(results: dict, output_dir: Path) -> None:
-    """Save a manifest of captured charts for other scripts to use."""
-    manifest = {
-        "captured_at": datetime.now().isoformat(),
-        "charts": results
-    }
-    
+    """Save/merge captured charts into the manifest (preserves existing entries)."""
     manifest_file = output_dir / "chart_manifest.json"
+
+    # Load existing manifest (preserve funnel graphic and prior captures)
+    if manifest_file.exists():
+        try:
+            with open(manifest_file) as f:
+                manifest = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            manifest = {"charts": {}}
+    else:
+        manifest = {"charts": {}}
+
+    # Merge new results into existing charts
+    manifest["captured_at"] = datetime.now().isoformat()
+    manifest.setdefault("charts", {}).update(results)
+
     with open(manifest_file, 'w') as f:
         json.dump(manifest, f, indent=2)
-    
+
     print(f"  📋 Manifest saved: {manifest_file}")
 
 

@@ -103,7 +103,7 @@ DAILY_ACCOUNT_QUEUES = {
 }
 
 # Weekly slots (1-5) per day
-WEEKLY_SLOTS = [1, 2, 3, 4, 5]
+WEEKLY_SLOTS = [2, 3, 4, 5]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -377,19 +377,19 @@ def _pick_category(
 ) -> Tuple[str, str]:
     """Pick the best category for a given day/slot based on rules and available data."""
 
-    # Saturday slot 1: SCANNER_RESULT (day after weekly scan)
-    if day == "saturday" and slot == 1 and data.has_pass_signals:
+    # Saturday slot 2 (was slot 1): SCANNER_RESULT (day after weekly scan)
+    if day == "saturday" and slot == 2 and data.has_pass_signals:
         return "SCANNER_RESULT", "pass_signals"
 
-    # Saturday slot 2: second SCANNER_RESULT or THEME_ANALYSIS
-    if day == "saturday" and slot == 2:
+    # Saturday slot 3 (was slot 2): second SCANNER_RESULT or THEME_ANALYSIS
+    if day == "saturday" and slot == 3:
         if len(data.pass_signals) > 1:
             return "SCANNER_RESULT", "pass_signals"
         if data.has_themes:
             return "THEME_ANALYSIS", "themes"
 
-    # Slot 1 (08:00): morning content — PERFORMANCE receipt if winners exist
-    if slot == 1 and data.has_winners and not day_performance_placed:
+    # Slot 2 (was slot 1): morning content — PERFORMANCE receipt if winners exist
+    if slot == 2 and data.has_winners and not day_performance_placed:
         return "PERFORMANCE", "winners"
 
     # Ensure at least 1 PERFORMANCE per day when winners exist
@@ -918,8 +918,8 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
                 logger.debug("Attached chart for $%s: %s", clean_ticker, chart_path)
                 break
 
-        # For SCANNER_RESULT tweets without a ticker match, use funnel graphic
-        if not matched and not funnel_used and tweet.category == "SCANNER_RESULT":
+        # For SCANNER_RESULT tweets about overall stats (no specific tickers), use funnel graphic
+        if not matched and not funnel_used and tweet.category == "SCANNER_RESULT" and not tweet.tickers_mentioned:
             funnel = charts.get("funnel_graphic")
             if funnel:
                 funnel_path = funnel.get("path") if isinstance(funnel, dict) else funnel

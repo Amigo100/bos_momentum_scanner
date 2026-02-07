@@ -535,22 +535,43 @@ def _send_daily_sell_notifications(sell_signals: List[DailyTrade]) -> None:
 # OUTPUT
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def save_daily_signals(signals: List[DailySignal], path: Optional[Path] = None) -> Path:
-    """Write daily_signals.json."""
+def save_daily_signals(
+    signals: List[DailySignal],
+    path: Optional[Path] = None,
+    sell_signals: Optional[List] = None,
+) -> Path:
+    """Write daily_signals.json.
+
+    Uses ``buy_signals`` / ``sell_signals`` keys so that
+    ``tweet_generator.generate_daily_content()`` can read them directly.
+    """
     path = path or DAILY_SIGNALS_FILE
     output = {
         "scan_date": datetime.now().strftime("%Y-%m-%d"),
         "timeframe": "daily",
-        "signals": [
+        "buy_signals": [
             {
                 "ticker": s.ticker,
+                "symbol": s.ticker,
                 "price": s.price,
                 "beta": s.beta,
                 "banker_score": s.banker_score,
                 "sector": s.sector,
                 "industry": s.industry,
+                "theme": s.sector or s.industry or "",
             }
             for s in signals
+        ],
+        "sell_signals": [
+            {
+                "symbol": t.ticker,
+                "ticker": t.ticker,
+                "price": t.exit_price,
+                "reason": t.exit_reason or "Trailing stop",
+                "entry_price": t.entry_price,
+                "highest_close": t.highest_close,
+            }
+            for t in (sell_signals or [])
         ],
     }
     with open(path, "w", encoding="utf-8") as f:
@@ -698,11 +719,7 @@ def run_daily_scan(
         print("\n  [DRY RUN] No files written.")
         return signals
 
-    # ── 7. Output signals JSON ───────────────────────────────────────────────
-    out = save_daily_signals(signals, signals_output_path)
-    print(f"\n  Signals: {out}")
-
-    # ── 8. Add new signals to daily portfolio ────────────────────────────────
+    # ── 7. Add new signals to daily portfolio ────────────────────────────────
     today_str = datetime.now().strftime("%Y-%m-%d")
     for sig in signals:
         daily_trades.append(DailyTrade(
@@ -716,9 +733,13 @@ def run_daily_scan(
             status="OPEN",
         ))
 
-    # ── 9. Check existing positions for sell signals ─────────────────────────
+    # ── 8. Check existing positions for sell signals ─────────────────────────
     open_trades = [t for t in daily_trades if t.status == "OPEN" and t.entry_date != today_str]
     sell_signals = check_daily_sell_signals(open_trades, frames)
+
+    # ── 9. Output signals JSON (after sell check so both are included) ───────
+    out = save_daily_signals(signals, signals_output_path, sell_signals=sell_signals)
+    print(f"\n  Signals: {out}")
 
     # ── 10. Save portfolio + send notifications ──────────────────────────────
     save_daily_portfolio(daily_trades, dp_path)

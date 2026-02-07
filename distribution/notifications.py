@@ -23,7 +23,7 @@ Environment Variables:
     TWILIO_ACCOUNT_SID
     TWILIO_AUTH_TOKEN
     TWILIO_WHATSAPP_FROM        — e.g. "whatsapp:+14155238886"
-    WHATSAPP_TO                 — e.g. "whatsapp:+1XXXXXXXXXX"
+    WHATSAPP_TO                 — comma-separated, e.g. "whatsapp:+11111,whatsapp:+12222"
 
 Usage:
     from distribution.notifications import send_sell_notification
@@ -126,8 +126,11 @@ def _load_email_config() -> Optional[Dict]:
 def _load_whatsapp_config() -> Optional[Dict]:
     """Load Twilio WhatsApp credentials from environment variables.
 
+    WHATSAPP_TO supports comma-separated numbers for multiple recipients:
+        WHATSAPP_TO=whatsapp:+11111111111,whatsapp:+12222222222,whatsapp:+13333333333
+
     Returns:
-        Dict with account_sid, auth_token, from_number, to_number
+        Dict with account_sid, auth_token, from_number, to_numbers (list)
         or None if not configured.
     """
     account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
@@ -136,11 +139,12 @@ def _load_whatsapp_config() -> Optional[Dict]:
     whatsapp_to = os.environ.get("WHATSAPP_TO")
 
     if all([account_sid, auth_token, whatsapp_from, whatsapp_to]):
+        to_numbers = [n.strip() for n in whatsapp_to.split(",") if n.strip()]
         return {
             "account_sid": account_sid,
             "auth_token": auth_token,
             "from_number": whatsapp_from,
-            "to_number": whatsapp_to,
+            "to_numbers": to_numbers,
         }
 
     return None
@@ -360,10 +364,13 @@ def _send_email(subject: str, body_text: str, body_html: str) -> str:
 
 
 def _send_whatsapp(message: str) -> str:
-    """Send a sell-signal WhatsApp message via Twilio.
+    """Send a sell-signal WhatsApp message via Twilio to all recipients.
+
+    Sends independently to each number in WHATSAPP_TO (comma-separated).
+    Returns "sent" if ALL succeeded, "partial" if some failed, "failed" if all failed.
 
     Returns:
-        "sent", "skipped" (not configured), or "failed"
+        "sent", "partial", "skipped" (not configured), or "failed"
     """
     config = _load_whatsapp_config()
     if not config:
@@ -376,19 +383,29 @@ def _send_whatsapp(message: str) -> str:
         logger.warning("twilio package not installed — run: pip install twilio>=8.0.0")
         return "failed"
 
-    try:
-        client = Client(config["account_sid"], config["auth_token"])
-        sent_message = client.messages.create(
-            body=message,
-            from_=config["from_number"],
-            to=config["to_number"],
-        )
-        logger.info("WhatsApp sent — SID: %s", sent_message.sid)
-        return "sent"
+    client = Client(config["account_sid"], config["auth_token"])
+    sent_count = 0
+    fail_count = 0
 
-    except Exception as exc:
-        logger.error("WhatsApp send failed: %s", exc)
+    for to_number in config["to_numbers"]:
+        try:
+            sent_message = client.messages.create(
+                body=message,
+                from_=config["from_number"],
+                to=to_number,
+            )
+            logger.info("WhatsApp sent to %s — SID: %s", to_number, sent_message.sid)
+            sent_count += 1
+        except Exception as exc:
+            logger.error("WhatsApp send to %s failed: %s", to_number, exc)
+            fail_count += 1
+
+    if fail_count == 0:
+        return "sent"
+    elif sent_count == 0:
         return "failed"
+    else:
+        return "partial"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -511,7 +528,7 @@ if __name__ == "__main__":
         print(f"  WhatsApp: {'✅ Configured' if wa_cfg else '❌ Not configured'}")
         if wa_cfg:
             print(f"            From: {wa_cfg['from_number']}")
-            print(f"            To:   {wa_cfg['to_number']}")
+            print(f"            To:   {', '.join(wa_cfg['to_numbers'])} ({len(wa_cfg['to_numbers'])} recipient(s))")
         print()
 
     elif args.dry_run:

@@ -8,9 +8,9 @@ Theme: Community building, light touch
 
 ---
 
-You are drafting a light, engagement-focused X post for @SterlingSignals.
+You are drafting a light, engagement-focused X post for @AlexSterlingGBR.
 
-Topic/Question: How long do you typically hold positions?
+Topic/Question: What's your biggest trading lesson from 2024?
 
 Draft a visually engaging X post (under 280 characters) that:
 - Is EASY to respond to
@@ -26,15 +26,15 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Theme alignment multiplies momentum...
+## Slot 2: Lesson: Weekly timeframes filter out noise...
 
 ```
 TRADING LESSON:
-Topic: Theme alignment multiplies momentum
+Topic: Weekly timeframes filter out noise
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
 1. Pick a practical way to illustrate this lesson
 2. Draft a visually engaging X post (under 280 characters) that:
@@ -55,7 +55,7 @@ Educational and actionable. Make them think "I should follow this person."
 ## Slot 3: Looking Ahead (Soft)
 
 ```
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
 1. Search for THIS WEEK's key catalysts:
    - Major earnings (big tech, bellwethers)

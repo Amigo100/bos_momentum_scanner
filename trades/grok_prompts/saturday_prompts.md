@@ -4,11 +4,11 @@
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: AMPX, LUMN | CAUTION: PUMP, MOD | Top Theme: AI Power Infrastructure & Grid Modernization
+PASS: None | CONSIDER: None | Top Theme: Multiple themes
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
 This is the MAIN distribution moment for the weekly newsletter.
 
@@ -27,59 +27,56 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Deep Dive: AMPX
+## Slot 2: Lesson: Fresh trends outperform extended trends...
 
 ```
-SCANNER OUTPUT:
-PASS: AMPX | Theme: Critical Materials & Rare Earth Processing (GOOD FIT) | Price: $12.44
-Catalyst: Q4 2025 earnings expected March 20, 2025 with 120%+ revenue growth, Nokia partnership expansion, defense contracts via NDAA compliance
+TRADING LESSON:
+Topic: Fresh trends outperform extended trends
 
 ---
 
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+You are drafting an X post for @AlexSterlingGBR.
 
-Using the scanner output above:
-1. Search for the LATEST news on $AMPX (last 7 days)
-2. Find upcoming catalysts (earnings, product launches, contracts, etc.)
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with an attention-grabbing hook that stops the scroll
-   - Highlights this PASSED a proprietary 3-gate screening system (technical, thematic, fundamental)
-   - Teases the opportunity WITHOUT revealing my entry level
-   - Creates urgency ("This just triggered..." or "Fresh signal...")
+1. Pick a practical way to illustrate this lesson
+2. Draft a visually engaging X post (under 280 characters) that:
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it punchy and impossible to scroll past. This is a RARE signal - we scan 1800+ stocks weekly.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Weekly chart with breakout + '🎯 SCANNER SIGNAL' overlay for AMPX
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
-## Slot 3: Why I Passed: PUMP
+## Slot 3: Caution: INOD
 
 ```
-SCANNER OUTPUT:
-EXCLUDED: PUMP | Theme: AI Power Infrastructure & Grid Modernization (GOOD FIT)
-Reason: Earnings in 19 days creates binary risk
+CAUTION SIGNAL:
+INOD: Sell signal triggered | Current: $47.59 | P&L: -22.7%
+Reason: Trailing stop hit (22.7% from high of $61.54)
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
-Using the scanner output above:
-1. Search for why $PUMP might be getting attention/hype right now
+Using the signal above:
+1. Search for any recent news that might explain $INOD's weakness
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
-   - States specifically which gate it failed (technical, thematic, or quality)
-   - Shows disciplined process over FOMO
-   - References the proprietary 3-gate system
-   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
+   - Acknowledges the caution signal transparently
+   - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
+   - Shows active risk management in action
+   - Frames this as discipline, not defeat ("This is why we use systematic exits...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Show process, not arrogance. This builds trust.
+Risk management in action builds more credibility than only showing winners.
 
 ```
 
-**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+**Visual:** Chart showing the sell signal trigger point for INOD
 
 ---

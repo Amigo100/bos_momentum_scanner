@@ -1,0 +1,74 @@
+[
+  {
+    "text": "Weekly momentum signals delivered straight to your inbox. Free to subscribe, data-driven setups, clear entry/exit levels. Join thousands of traders getting our Sunday scanner results.\n\nhttps://sterlingsignals.substack.com",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "sunday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T03:20:55.304032"
+  },
+  {
+    "text": "I cannot write a SCANNER_RESULT tweet without specific ticker and price data. Please provide the ticker symbol, entry price, and thesis details you want included in the tweet.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required $TICKER",
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "monday",
+      "slot": 1,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T03:21:01.104806"
+  },
+  {
+    "text": "I cannot create a SCANNER_RESULT tweet without specific ticker and price data. Please provide the ticker symbol, entry price, and setup context you want me to include in this scanner result tweet.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required $TICKER",
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "monday",
+      "slot": 2,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T03:21:07.493736"
+  },
+  {
+    "text": "I cannot rewrite this tweet because no ticker symbols, prices, or market data were provided. A SCANNER_RESULT tweet requires specific $TICKER and entry price information to be valid. Please provide the necessary market data to create a compliant tweet.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "wednesday",
+      "slot": 1,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T03:21:47.948111"
+  },
+  {
+    "text": "Weekly momentum signals delivered free to your inbox every Sunday. Real setups, real data, real opportunities. Subscribe at https://sterlingsignals.substack.com",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "thursday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T03:22:32.462946"
+  }
+]

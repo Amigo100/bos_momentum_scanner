@@ -3,7 +3,7 @@
 ## Slot 1: Market Pulse
 
 ```
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
 1. Search for TODAY's market performance:
    - S&P 500, NASDAQ, Russell 2000 moves
@@ -25,67 +25,56 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## Slot 2: Hot Theme: Defense Supply Chain Solutions & Manufacturing
+## Slot 2: Lesson: Theme alignment multiplies momentum...
 
 ```
-SCANNER OUTPUT:
-PRIME: Defense Supply Chain Solutions & Manufacturing
+TRADING LESSON:
+Topic: Theme alignment multiplies momentum
 
 ---
 
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
+You are drafting an X post for @AlexSterlingGBR.
 
-Using the theme above:
-1. Search for the LATEST news/developments in Defense Supply Chain Solutions & Manufacturing (last 7 days)
-2. Find a specific catalyst, data point, or news event that's driving momentum
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with a compelling hook about why this theme matters NOW
-   - Uses the specific recent data point or catalyst you found
-   - Shows this is a PRIME theme in my systematic scanner
-   - Teases that I have specific stock picks in this theme
+1. Pick a practical way to illustrate this lesson
+2. Draft a visually engaging X post (under 280 characters) that:
+   - States the lesson clearly
+   - Gives ONE practical application
+   - Shows experienced, systematic perspective
+   - Doesn't preach - share as hard-won wisdom
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it accessible to readers who don't follow this sector closely.
-
-IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+Educational and actionable. Make them think "I should follow this person."
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for Defense Supply Chain Solutions & Manufacturing
+**Visual:** Rule graphic or annotated chart example
 
 ---
 
-## Slot 3: Position Update: CGON
+## Slot 3: Caution: INOD
 
 ```
-POSITION CONTEXT (may be outdated - look up current price):
-Ticker: $CGON
-Theme: Healthcare / Biotech | Tier: TIER1
-Held: ~22 days (entry price private)
-Snapshot P&L: -3.5% (verify with current price)
+CAUTION SIGNAL:
+INOD: Sell signal triggered | Current: $47.59 | P&L: -22.7%
+Reason: Trailing stop hit (22.7% from high of $61.54)
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
-IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price and recent performance of $CGON
-2. Use the snapshot P&L as a reference, but verify current performance
+Using the signal above:
+1. Search for any recent news that might explain $INOD's weakness
+2. Draft a visually engaging X post (under 280 characters) that:
+   - Acknowledges the caution signal transparently
+   - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
+   - Shows active risk management in action
+   - Frames this as discipline, not defeat ("This is why we use systematic exits...")
+   - Ends with CTA: https://sterlingsignals.substack.com
 
-Then draft a visually engaging X post (under 280 characters) that:
-   - States the position with CURRENT P&L (not the snapshot above)
-   - Notes current status based on price action (uptrend, consolidating, pullback)
-   - Search for any recent news on $CGON (last 7 days)
-   - Shows active, systematic portfolio management
-   - Builds credibility through real-time transparency
-   - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
-
-Example format: "$CGON update: +XX.X% since entry (22 days held). [Recent development]. Full portfolio → [link]"
-
-Transparent and timely. Real P&L builds trust.
+Risk management in action builds more credibility than only showing winners.
 
 ```
 
-**Visual:** Position card showing CGON, live P&L%, 22 days held, chart thumbnail
+**Visual:** Chart showing the sell signal trigger point for INOD
 
 ---

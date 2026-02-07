@@ -3,7 +3,7 @@
 ## Slot 1: Week Ahead Preview
 
 ```
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
 1. Search for THIS WEEK's key catalysts:
    - Major earnings (big tech, bellwethers)
@@ -26,33 +26,28 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## Slot 2: Hot Theme: AI Power Infrastructure & Grid Modernization
+## Slot 2: Market Pulse
 
 ```
-SCANNER OUTPUT:
-PRIME: AI Power Infrastructure & Grid Modernization
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
----
+1. Search for TODAY's market performance:
+   - S&P 500, NASDAQ, Russell 2000 moves
+   - What sectors are leading/lagging
+   - Any notable movers or news
 
-You are drafting an X post for @SterlingSignals, a momentum stock newsletter.
-
-Using the theme above:
-1. Search for the LATEST news/developments in AI Power Infrastructure & Grid Modernization (last 7 days)
-2. Find a specific catalyst, data point, or news event that's driving momentum
-3. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with a compelling hook about why this theme matters NOW
-   - Uses the specific recent data point or catalyst you found
-   - Shows this is a PRIME theme in my systematic scanner
-   - Teases that I have specific stock picks in this theme
+2. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with the headline move and specific numbers
+   - Notes sector leadership or rotation
+   - Connects to implications for momentum/high-beta stocks
+   - Shows you're actively watching markets
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Make it accessible to readers who don't follow this sector closely.
-
-IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
+Quick, informed, timely. Show you're in the trenches.
 
 ```
 
-**Visual:** Theme infographic or sector ETF momentum chart for AI Power Infrastructure & Grid Modernization
+**Visual:** Index performance bars or sector heat map
 
 ---
 
@@ -62,12 +57,12 @@ IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post shoul
 POSITION CONTEXT (may be outdated - look up current price):
 Ticker: $VNET
 Theme: Data Center Cooling / Liquid Cooling | Tier: TIER1
-Held: ~22 days (entry price private)
-Snapshot P&L: +1.2% (verify with current price)
+Held: ~29 days (entry price private)
+Snapshot P&L: +7.7% (verify with current price)
 
 ---
 
-You are drafting an X post for @SterlingSignals.
+You are drafting an X post for @AlexSterlingGBR.
 
 IMPORTANT: The P&L above may be stale. Before drafting:
 1. Look up the CURRENT price and recent performance of $VNET
@@ -81,12 +76,12 @@ Then draft a visually engaging X post (under 280 characters) that:
    - Builds credibility through real-time transparency
    - Ends with CTA for full portfolio: https://sterlingsignals.substack.com
 
-Example format: "$VNET update: +XX.X% since entry (22 days held). [Recent development]. Full portfolio → [link]"
+Example format: "$VNET update: +XX.X% since entry (29 days held). [Recent development]. Full portfolio → [link]"
 
 Transparent and timely. Real P&L builds trust.
 
 ```
 
-**Visual:** Position card showing VNET, live P&L%, 22 days held, chart thumbnail
+**Visual:** Position card showing VNET, live P&L%, 29 days held, chart thumbnail
 
 ---

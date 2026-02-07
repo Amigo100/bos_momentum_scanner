@@ -1,15 +1,15 @@
 ticker,status,entry_date,entry_price,exit_date,exit_price,current_price,highest_close,stop_level,pnl_pct,pnl_usd,days_held,distance_to_stop,stop_alert,theme,tier,signal_type,conviction,notes
-VNET,OPEN,2026-01-09,10.40,,,10.53,11.23,8.98,1.2%,13.00,22,14.7%,,Data Center Cooling / Liquid Cooling,TIER1,PASS,4,
-CGON,OPEN,2026-01-09,53.92,,,52.05,57.13,45.70,-3.5%,-187.00,22,12.2%,,Healthcare / Biotech,TIER1,PASS,4,
-INOD,OPEN,2026-01-18,61.54,,,55.44,61.54,49.23,-9.9%,-610.00,13,11.2%,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,4,
+VNET,OPEN,2026-01-09,10.40,,,11.20,11.23,8.98,7.7%,80.00,29,19.8%,,Data Center Cooling / Liquid Cooling,TIER1,PASS,4,
+CGON,OPEN,2026-01-09,53.92,,,50.36,57.13,45.70,-6.6%,-356.00,29,9.2%,,Healthcare / Biotech,TIER1,PASS,4,
+INOD,STOPPED,2026-01-18,61.54,2026-02-07,47.59,,61.54,49.23,-22.7%,-1395.00,20,,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,4,Exit: Trailing stop hit (22.7% from high of $61.54)
 OUST,STOPPED,2026-01-18,26.36,2026-01-30,20.83,,27.24,21.79,-21.0%,-553.00,12,,,Defense & Aerospace,TIER1,PASS,4,Exit: Trailing stop hit (23.5% from high of $27.24)
-APLD,OPEN,2026-01-18,37.40,,,33.88,37.69,30.15,-9.4%,-352.00,13,11.0%,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,5,
-WCC,OPEN,2026-01-18,281.63,,,289.43,290.14,232.11,2.8%,780.00,13,19.8%,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,4,
-IESC,OPEN,2026-01-22,474.43,,,380.29,474.43,379.54,-19.8%,-9414.00,9,0.2%,⚠️,Industrials Manufacturing Renaissance,TIER1,PASS,4,
-STRL,OPEN,2026-01-22,362.53,,,357.91,364.25,291.40,-1.3%,-462.00,9,18.6%,,AI Cooling & Data Center Infrastructure,TIER1,PASS,4,
-AAON,OPEN,2026-01-22,95.64,,,91.06,96.58,77.26,-4.8%,-458.00,9,15.2%,,AI Cooling & Data Center Infrastructure,TIER1,PASS,4,
-GLXY,OPEN,2026-01-24,31.90,,,28.26,31.90,25.52,-11.4%,-364.00,7,9.7%,,Grid Modernization & Power Infrastructure,TIER1,PASS,4,
-AMSC,OPEN,2026-01-24,33.28,,,29.92,33.28,26.62,-10.1%,-336.00,7,11.0%,,Grid Modernization & Power Infrastructure,TIER1,PASS,4,
-MOD,OPEN,2026-01-30,184.66,,,184.66,184.66,147.73,0.0%,0.00,1,20.0%,,,TIER1,PASS,4,
-LUMN,OPEN,2026-01-30,8.82,,,8.82,8.82,7.06,-0.0%,-0.00,1,20.0%,,,TIER1,PASS,4,
-AMPX,OPEN,2026-01-31,12.44,,,12.44,12.44,9.95,-0.0%,-0.00,,20.0%,,Critical Materials & Rare Earth Processing,TIER1,PASS,4,
+APLD,OPEN,2026-01-18,37.40,,,34.95,37.69,30.15,-6.6%,-245.00,20,13.7%,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,5,
+WCC,OPEN,2026-01-18,281.63,,,315.27,315.27,252.22,11.9%,3364.00,20,20.0%,,Power Grid Infrastructure & Electrical Equipment,TIER1,PASS,4,
+IESC,OPEN,2026-01-22,474.43,,,455.88,474.43,379.54,-3.9%,-1855.00,16,16.7%,,Industrials Manufacturing Renaissance,TIER1,PASS,4,
+STRL,OPEN,2026-01-22,362.53,,,401.29,401.29,321.03,10.7%,3876.00,16,20.0%,,AI Cooling & Data Center Infrastructure,TIER1,PASS,4,
+AAON,OPEN,2026-01-22,95.64,,,96.43,96.58,77.26,0.8%,79.00,16,19.9%,,AI Cooling & Data Center Infrastructure,TIER1,PASS,4,
+GLXY,STOPPED,2026-01-24,31.90,2026-02-07,19.76,,31.90,25.52,-38.1%,-1214.00,14,,,Grid Modernization & Power Infrastructure,TIER1,PASS,4,Exit: Trailing stop hit (38.1% from high of $31.90)
+AMSC,OPEN,2026-01-24,33.28,,,28.17,33.28,26.62,-15.4%,-511.00,14,5.5%,,Grid Modernization & Power Infrastructure,TIER1,PASS,4,
+MOD,OPEN,2026-01-30,184.66,,,215.72,215.72,172.58,16.8%,3106.00,8,20.0%,,,TIER1,PASS,4,
+LUMN,OPEN,2026-01-30,8.82,,,8.06,8.82,7.50,-8.6%,-76.00,8,7.0%,,,TIER1,PASS,4,Stop tightened to 15.0%
+AMPX,OPEN,2026-01-31,12.44,,,12.24,12.44,9.95,-1.6%,-20.00,7,18.7%,,Critical Materials & Rare Earth Processing,TIER1,PASS,4,

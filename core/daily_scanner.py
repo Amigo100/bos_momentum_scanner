@@ -471,14 +471,19 @@ def check_daily_sell_signals(
         if current_close > trade.highest_close:
             trade.highest_close = current_close
 
-        # Check BoS on daily bars
+        # Check BoS on daily bars — IMMEDIATE EXIT on bearish pivot
         _, bos_down, _ = calculate_bos_daily(df)
-        if bos_down and trade.stop_pct > TIGHTEN_STOP_PCT:
-            trade.stop_pct = TIGHTEN_STOP_PCT
+        if bos_down:
+            trade.status = "STOPPED"
+            trade.exit_date = today_str
+            trade.exit_price = current_close
+            trade.exit_reason = f"Daily BoS Down — structural stop at ${current_close:.2f}"
+            sell_signals.append(trade)
             logger.info(
-                "%s: daily BoS bearish — stop tightened to %.0f%%",
-                trade.ticker, trade.stop_pct,
+                "%s: CLOSED — daily BoS bearish at $%.2f",
+                trade.ticker, current_close,
             )
+            continue  # Skip trailing stop check — already exited
 
         # Check trailing stop
         stop_level = trade.highest_close * (1 - trade.stop_pct / 100)
@@ -510,8 +515,9 @@ def _send_daily_sell_notifications(sell_signals: List[DailyTrade]) -> None:
             pnl_pct = ((trade.exit_price / trade.entry_price) - 1) * 100
 
         signal_type = "TRAILING STOP"
-        # If stop was tightened to 15%, report as TIGHTENED STOP
-        if trade.stop_pct <= TIGHTEN_STOP_PCT:
+        if trade.exit_reason and "bos down" in trade.exit_reason.lower():
+            signal_type = "BEARISH PIVOT"
+        elif trade.stop_pct <= TIGHTEN_STOP_PCT:
             signal_type = "TIGHTENED STOP"
 
         try:
@@ -570,6 +576,9 @@ def save_daily_signals(
                 "reason": t.exit_reason or "Trailing stop",
                 "entry_price": t.entry_price,
                 "highest_close": t.highest_close,
+                "pnl_pct": round(((t.exit_price / t.entry_price) - 1) * 100, 2) if t.entry_price > 0 else 0.0,
+                "theme": t.theme,
+                "entry_date": t.entry_date,
             }
             for t in (sell_signals or [])
         ],

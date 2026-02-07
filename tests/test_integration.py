@@ -47,6 +47,7 @@ from content.tweet_generator import (
     DAILY_ACCOUNT_QUEUES,
     MAX_TWEET_CHARS,
     WEEKLY_DAYS,
+    WEEKLY_SLOTS,
 )
 from config.banned_terms import (
     ALL_BANNED,
@@ -314,8 +315,8 @@ class TestFridayPipelineIntegration:
 
         # Plan schedule
         schedule = _plan_weekly_schedule(data)
-        # 7 days x 5 slots = 35 slots (though some may be reassigned)
-        assert len(schedule) == len(WEEKLY_DAYS) * len([1, 2, 3, 4, 5])
+        # 7 days x 4 slots (2-5) = 28 slots (slot 1 reserved for daily queue)
+        assert len(schedule) == len(WEEKLY_DAYS) * len(WEEKLY_SLOTS)
         assert all(isinstance(s, SlotAssignment) for s in schedule)
         assert all(s.category in VALID_CATEGORIES for s in schedule)
 

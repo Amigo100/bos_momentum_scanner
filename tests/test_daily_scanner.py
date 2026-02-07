@@ -240,7 +240,7 @@ class TestDailyScannerDedupAfterSell:
 
 
 class TestDailySellSignalBearishPivot:
-    """Test 5: BoS bearish flip tightens stop from 20% to 15%."""
+    """Test 5: BoS bearish pivot should CLOSE the position immediately."""
 
     def test_daily_sell_signal_bearish_pivot(self):
         trade = DailyTrade(
@@ -252,17 +252,42 @@ class TestDailySellSignalBearishPivot:
             status="OPEN",
         )
 
-        df = _make_df(120, base_price=115.0)  # close above stop level
+        df = _make_df(120, base_price=115.0)  # close above trailing stop level
 
         # Mock BoS returning bearish signal
         with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
             sells = check_daily_sell_signals([trade], {"TEST": df})
 
-        # Stop should be tightened, but position NOT stopped (price above tighter stop)
-        assert trade.stop_pct == 15.0, f"Stop should be tightened to 15%, got {trade.stop_pct}"
-        # Price ~115 > 120 * 0.85 = 102 → not stopped
-        assert trade.status == "OPEN", "Position should still be OPEN"
-        assert len(sells) == 0, "No sell signals should fire (price above tighter stop)"
+        # BoS Down should CLOSE the trade immediately
+        assert trade.status == "STOPPED", f"Expected STOPPED, got {trade.status}"
+        assert len(sells) == 1, "BoS Down should produce exactly one sell signal"
+        assert sells[0].ticker == "TEST"
+        assert "BoS Down" in sells[0].exit_reason
+        assert sells[0].exit_price > 0
+
+
+class TestDailyBoSDownPriority:
+    """BoS Down takes priority over trailing stop (no double-exit)."""
+
+    def test_bos_down_takes_priority_over_trailing_stop(self):
+        """If price is below trailing stop AND BoS fires, only one exit."""
+        trade = DailyTrade(
+            ticker="TEST",
+            entry_date="2026-01-01",
+            entry_price=50.0,
+            highest_close=100.0,
+            stop_pct=20.0,
+            status="OPEN",
+        )
+
+        df = _make_df(120, base_price=79.0)
+
+        with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
+            sells = check_daily_sell_signals([trade], {"TEST": df})
+
+        assert len(sells) == 1, f"Expected 1 sell signal, got {len(sells)}"
+        assert "BoS Down" in sells[0].exit_reason
+        assert trade.status == "STOPPED"
 
 
 class TestDailySellSignalTrailingStop:
@@ -346,10 +371,10 @@ class TestDailySignalsJsonOutput:
 
             assert "scan_date" in data
             assert data["timeframe"] == "daily"
-            assert "signals" in data
-            assert len(data["signals"]) == 2
+            assert "buy_signals" in data
+            assert len(data["buy_signals"]) == 2
 
-            sig = data["signals"][0]
+            sig = data["buy_signals"][0]
             assert sig["ticker"] == "AAPL"
             assert sig["price"] == 185.50
             assert sig["beta"] == 1.72

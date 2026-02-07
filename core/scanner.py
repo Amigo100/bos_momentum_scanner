@@ -1007,20 +1007,19 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
                 ))
                 pm.flag_exit(symbol, current_price, reason=sell_reason)
 
-            # BoS bearish — caution signal only (tighten stop, don't exit)
+            # BoS bearish — IMMEDIATE EXIT (structural break invalidates the setup)
             elif stock.bos_bearish:
+                sell_reason = f"Weekly BoS Down — structural stop (drawdown {drawdown_pct:.1f}% from ${trade.highest_close:.2f})"
                 sell_signals.append(SellSignal(
                     symbol=symbol,
                     price=current_price,
-                    reason="Weekly BoS Down - Tighten stop to 15%",
+                    reason=sell_reason,
                     entry_price=trade.entry_price,
                     highest_close=trade.highest_close,
                     drawdown_pct=drawdown_pct
                 ))
-                # Tighten the per-trade stop to TIGHTEN_STOP_PCT (15%)
-                # Position stays open, but stop is now tighter
-                pm.tighten_stop(symbol)
-                print(f"    ⚠ {symbol}: Stop tightened to {TIGHTEN_STOP_PCT}% (BoS bearish)")
+                pm.flag_exit(symbol, current_price, reason=sell_reason)
+                print(f"    \u2715 {symbol}: CLOSED — Weekly BoS Down at ${current_price:.2f}")
 
         # Note: Prices will be updated in main() when export_for_google_sheets() is called
         # No need for duplicate pm.update_prices() here
@@ -2768,7 +2767,8 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "reason": s.reason,
                 "entry_price": s.entry_price,
                 "highest_close": s.highest_close,
-                "drawdown_pct": s.drawdown_pct
+                "drawdown_pct": s.drawdown_pct,
+                "pnl_pct": round(((s.price / s.entry_price) - 1) * 100, 2) if s.entry_price > 0 else 0.0,
             }
             for s in sell_signals
         ],

@@ -37,6 +37,7 @@ from content.tweet_generator import (
     CostTracker,
     MAX_TWEET_CHARS,
     WEEKLY_DAYS,
+    WEEKLY_SLOTS,
 )
 from config.banned_terms import ALL_BANNED, CRITICAL_BANNED
 
@@ -660,8 +661,8 @@ class TestWeeklyScheduleCategoryRules:
         data = _sample_content_data()
         schedule = _plan_weekly_schedule(data)
 
-        assert len(schedule) == len(WEEKLY_DAYS) * len([1, 2, 3, 4, 5]), \
-            f"Schedule should have {len(WEEKLY_DAYS) * 5} slots, got {len(schedule)}"
+        assert len(schedule) == len(WEEKLY_DAYS) * len(WEEKLY_SLOTS), \
+            f"Schedule should have {len(WEEKLY_DAYS) * len(WEEKLY_SLOTS)} slots, got {len(schedule)}"
 
         for s in schedule:
             assert s.category in VALID_CATEGORIES, \

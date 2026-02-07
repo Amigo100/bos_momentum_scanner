@@ -45,7 +45,7 @@
     "text": "$LUMN setup invalidated below key support. Win more than you lose. NFA",
     "category": "SELL_SIGNAL",
     "scheduled_date": "2026-02-07",
-    "status": "pending",
+    "status": "failed",
     "posted": false,
     "char_count": 70,
     "mentioned_tickers": [
@@ -53,7 +53,8 @@
     ],
     "chart_required": true,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876031"
+    "timestamp": "2026-02-07T04:09:14.876031",
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "saturday_4_3",

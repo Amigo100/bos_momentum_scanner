@@ -154,7 +154,7 @@ COST_WEB_SEARCH = 0.01  # Per search
 
 TWITTER_ACCOUNTS: Dict[str, Dict] = {
     'main': {
-        'env_prefix': 'X',
+        'env_prefix': 'X1',
         'queue_file': 'content_queue.json',
         'offset_minutes': 0,
         'variation_style': 'original',

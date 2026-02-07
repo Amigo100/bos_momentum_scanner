@@ -576,7 +576,7 @@ def update_chart_manifest(output_path: Path, data: Dict) -> None:
             manifest = {'charts': {}}
 
         manifest['charts']['funnel_graphic'] = {
-            'path': str(output_path),
+            'path': f"trades/charts/{output_path.name}",
             'generated': datetime.now().isoformat(),
             'data': {
                 'universe': data['universe'],

@@ -50,8 +50,8 @@ trades/portfolio_google_sheets.csv
 # Portfolio backups (keep latest only)
 trades/portfolio_backups/
 
-# Chart images (regenerated as needed)
-trades/charts/*.png
+# Chart images committed for tweet posting pipeline
+# (small files ~50-100KB, needed by daily_post workflow)
 
 # Tweet posting logs
 trades/tweets/posted_*.json

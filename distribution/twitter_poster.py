@@ -202,7 +202,7 @@ def get_clients(account_key: str = 'main') -> tuple:
         account = TWITTER_ACCOUNTS.get(account_key, TWITTER_ACCOUNTS['main'])
         prefix = account['env_prefix']
     except (ImportError, KeyError):
-        prefix = 'X'
+        prefix = 'X1'
 
     # Get credentials from environment using account-specific prefix
     api_key = os.environ.get(f"{prefix}_API_KEY")

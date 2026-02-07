@@ -13,6 +13,11 @@ on:
         required: false
         default: 'false'
         type: boolean
+      force:
+        description: 'Force post next pending tweet regardless of schedule'
+        required: false
+        default: 'false'
+        type: boolean
 
   # 7-slot schedule (Eastern Time via UTC)
   # Two cron entries per slot: EST (UTC-5) and EDT (UTC-4)
@@ -176,22 +181,25 @@ jobs:
         run: |
           SLOT="${{ steps.slot.outputs.slot }}"
           DRY_RUN="${{ steps.slot.outputs.dry_run }}"
+          FORCE="${{ github.event.inputs.force }}"
           DRY_FLAG=""
+          FORCE_FLAG=""
           if [ "$DRY_RUN" = "true" ]; then DRY_FLAG="--dry-run"; fi
+          if [ "$FORCE" = "true" ]; then FORCE_FLAG="--force"; fi
 
           # The twitter_poster.py auto-selects the correct queue (weekly vs daily)
           # based on get_current_slot() and the DAILY_SLOTS/WEEKLY_SLOTS mapping
 
           echo "=== Posting to main account ==="
-          python -m distribution.twitter_poster --slot $SLOT --account main $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account main $DRY_FLAG $FORCE_FLAG || true
 
           echo "=== Waiting 10 min for account 2 ==="
           sleep 600
-          python -m distribution.twitter_poster --slot $SLOT --account account2 $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account account2 $DRY_FLAG $FORCE_FLAG || true
 
           echo "=== Waiting 10 min for account 3 ==="
           sleep 600
-          python -m distribution.twitter_poster --slot $SLOT --account account3 $DRY_FLAG || true
+          python -m distribution.twitter_poster --slot $SLOT --account account3 $DRY_FLAG $FORCE_FLAG || true
 
       - name: Check Milestone Quote Opportunities
         if: success()

@@ -26,11 +26,11 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## Slot 2: Lesson: Weekly timeframes filter out noise...
+## Slot 2: Lesson: Fresh trends outperform extended trends...
 
 ```
 TRADING LESSON:
-Topic: Weekly timeframes filter out noise
+Topic: Fresh trends outperform extended trends
 
 ---
 

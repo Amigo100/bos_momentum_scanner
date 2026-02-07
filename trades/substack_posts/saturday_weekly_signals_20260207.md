@@ -4,23 +4,21 @@
 
 ### 🟢 GREEN Signals (Full Entry)
 
-**$TECX** at $24.37
-- Theme: 
-- Conviction: Watching
-
-**$CRGY** at $10.12
-- Theme: 
-- Conviction: Watching
-
 **$MATV** at $14.55
-- Theme: 
-- Conviction: Watching
+- Theme: Defense Manufacturing & Supply Chain Security
+- Conviction: Cautious
+
+### 🟡 CONSIDER Watchlist
+
+These stocks cleared 4/5 gates - watching for GREEN:
+
+- **$MATV** - Under review
 
 ## Scan Statistics
 
 - Tickers Scanned: 885
 - Weekly Momentum Up: 4
-- Theme Confirmed: 0
+- Theme Confirmed: 1
 - Final GREEN Signals: 0
 
 ---

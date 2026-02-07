@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-07 03:19:59",
+  "timestamp": "2026-02-07 04:05:06",
   "timeframe": "WEEKLY",
   "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates GREEN signal)",
   "exit_criteria": "Weekly BoS Down OR 20.0% trailing stop",
@@ -9,64 +9,126 @@
     "beta_gte_1_5": 324,
     "weekly_bos_up": 4,
     "technical_signals": 3,
-    "theme_confirmed": 0,
+    "theme_confirmed": 1,
     "final_trade": 0,
-    "final_consider": 0
+    "final_consider": 1
   },
-  "themes": [],
+  "themes": [
+    {
+      "name": "Grid Infrastructure & Power Generation",
+      "rank": 1,
+      "classification": "PRIME",
+      "theme_type": "BOTTLENECK",
+      "composite_score": 9.0,
+      "thesis_summary": "AI's exponential power demand is creating an unprecedented infrastructure bottleneck where technological advancement is being constrained by physical power delivery. With data centers needing 5x-7x more power while grid infrastructure takes 5-15 years to build, this represents a massive multi-year investment cycle that's barely begun.",
+      "key_catalysts": [
+        "AI data center power demand surge",
+        "Transformer lead times at 143 weeks",
+        "Grid investment needs to double to $600B by 2030",
+        "1,500 GW renewable projects waiting for grid connection"
+      ],
+      "momentum_score": 8,
+      "catalyst_score": 10
+    },
+    {
+      "name": "Defense Manufacturing & Supply Chain Security",
+      "rank": 2,
+      "classification": "PRIME",
+      "theme_type": "BOTTLENECK",
+      "composite_score": 8.2,
+      "thesis_summary": "Defense spending surge is creating bottlenecks in manufacturing capacity and supply chain resilience that require multi-year rebuilding efforts. Focus on companies solving critical supply constraints rather than just benefiting from budget increases.",
+      "key_catalysts": [
+        "Europe defense spending to double to \u20ac650-750B by 2030",
+        "Russell 2000 Aerospace & Defense +358% earnings growth forecast",
+        "Ukraine conflict exposing supply bottlenecks",
+        "Supply chain reshoring mandates"
+      ],
+      "momentum_score": 8,
+      "catalyst_score": 9
+    },
+    {
+      "name": "Precious Metals & Alternative Stores of Value",
+      "rank": 3,
+      "classification": "PRIME",
+      "theme_type": "TREND",
+      "composite_score": 7.5,
+      "thesis_summary": "Precious metals benefiting from unique combination of industrial demand (AI/renewables driving silver) and financial demand (fiscal concerns driving gold). Silver's industrial usage provides more durable demand than purely financial plays.",
+      "key_catalysts": [
+        "Industrial silver demand from AI/renewable tech",
+        "Fiscal concerns driving debasement trade",
+        "Central bank gold purchases",
+        "Supply constraints in mining"
+      ],
+      "momentum_score": 9,
+      "catalyst_score": 8
+    },
+    {
+      "name": "Energy Storage & Battery Infrastructure",
+      "rank": 4,
+      "classification": "PRIME",
+      "theme_type": "BOTTLENECK",
+      "composite_score": 7.5,
+      "thesis_summary": "Energy storage is the critical enabler for both renewable grid integration and AI data center backup power. Theme benefits from solving multiple infrastructure bottlenecks simultaneously while supply chain constraints create additional pricing power.",
+      "key_catalysts": [
+        "Grid modernization requiring storage for renewables",
+        "AI data centers needing backup power systems",
+        "EV charging infrastructure expansion",
+        "China rare earth export restrictions"
+      ],
+      "momentum_score": 7,
+      "catalyst_score": 8
+    },
+    {
+      "name": "Communication Services - AI Monetization",
+      "rank": 5,
+      "classification": "INVESTABLE",
+      "theme_type": "TREND",
+      "composite_score": 6.5,
+      "thesis_summary": "Communication services shifting from AI spending phase to AI profit phase, with companies using AI to improve advertising efficiency and develop new revenue streams. Crowding risk offset by strong fundamental catalyst of earnings acceleration.",
+      "key_catalysts": [
+        "AI monetization phase beginning",
+        "Communication Services earnings acceleration to 11.3% in 2026",
+        "Digital advertising efficiency improvements from AI",
+        "Enterprise AI adoption scaling"
+      ],
+      "momentum_score": 7,
+      "catalyst_score": 7
+    },
+    {
+      "name": "European Equities - Relative Value Recovery",
+      "rank": 6,
+      "classification": "INVESTABLE",
+      "theme_type": "CONTRARIAN",
+      "composite_score": 6.5,
+      "thesis_summary": "European equities offering relative value as smart money diversifies away from US concentration. Defense spending boom and energy security themes provide structural support while valuations remain attractive vs US.",
+      "key_catalysts": [
+        "Smart money flowing to international diversification",
+        "Declining correlation with US markets",
+        "Defense spending boom in Europe",
+        "Valuation gap vs US markets"
+      ],
+      "momentum_score": 6,
+      "catalyst_score": 6
+    },
+    {
+      "name": "Small-Cap Value - Earnings Revision Divergence",
+      "rank": 7,
+      "classification": "INVESTABLE",
+      "theme_type": "CONTRARIAN",
+      "composite_score": 6.5,
+      "thesis_summary": "Small-cap value positioned for relative outperformance as earnings growth expectations diverge favorably vs large caps, while Fed cuts improve lending environment for smaller companies. Extreme underweight creates asymmetric opportunity.",
+      "key_catalysts": [
+        "Non-Mag 7 earnings growth accelerating vs Mag 7 flattening",
+        "Fed rate cuts benefiting small-cap lending",
+        "Reshoring benefiting domestic-focused companies",
+        "Extreme valuation discount to large caps"
+      ],
+      "momentum_score": 4,
+      "catalyst_score": 6
+    }
+  ],
   "pass_signals": [],
-  "consider_signals": [],
-  "buy_signals": [
-    {
-      "symbol": "TECX",
-      "tier": "TIER1",
-      "price": 24.37,
-      "beta": 1.77,
-      "banker": 100,
-      "return_20d": 18.5,
-      "theme": "",
-      "theme_score": 0.0,
-      "pure_play_score": 0,
-      "theme_verdict": "SKIPPED",
-      "final_decision": "TECHNICAL_ONLY",
-      "conviction": 0,
-      "sector_status": "",
-      "upside_potential": "",
-      "bullish_factors": [],
-      "risk_factors": [],
-      "reasoning": "",
-      "action": "Pending LLM analysis",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
-      "dd_fatal_flaw": ""
-    },
-    {
-      "symbol": "CRGY",
-      "tier": "TIER1",
-      "price": 10.12,
-      "beta": 1.74,
-      "banker": 100,
-      "return_20d": 24.6,
-      "theme": "",
-      "theme_score": 0.0,
-      "pure_play_score": 0,
-      "theme_verdict": "SKIPPED",
-      "final_decision": "TECHNICAL_ONLY",
-      "conviction": 0,
-      "sector_status": "",
-      "upside_potential": "",
-      "bullish_factors": [],
-      "risk_factors": [],
-      "reasoning": "",
-      "action": "Pending LLM analysis",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
-      "dd_fatal_flaw": ""
-    },
+  "consider_signals": [
     {
       "symbol": "MATV",
       "tier": "TIER1",
@@ -74,18 +136,61 @@
       "beta": 1.67,
       "banker": 100,
       "return_20d": 11.2,
-      "theme": "",
+      "theme": "Defense Manufacturing & Supply Chain Security",
       "theme_score": 0.0,
-      "pure_play_score": 0,
-      "theme_verdict": "SKIPPED",
-      "final_decision": "TECHNICAL_ONLY",
-      "conviction": 0,
-      "sector_status": "",
-      "upside_potential": "",
-      "bullish_factors": [],
-      "risk_factors": [],
-      "reasoning": "",
-      "action": "Pending LLM analysis",
+      "pure_play_score": 40,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "CONSIDER",
+      "conviction": 2,
+      "sector_status": "NEUTRAL",
+      "upside_potential": "High (50%+)",
+      "bullish_factors": [
+        "Director insider buying pattern (6 buys vs 1 sell)",
+        "Q3 2025 beat by 25.81% ($0.39 vs $0.27)",
+        "SAS segment showing 4 consecutive quarters growth"
+      ],
+      "risk_factors": [
+        "Massive negative earnings and margins",
+        "High debt burden",
+        "FAM segment facing demand headwinds"
+      ],
+      "reasoning": "While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and -$436M TTM earnings create major concerns. The theme fit is good but execution risk is high.",
+      "action": "Consider smaller position - watching for gate 5",
+      "dd_verdict": "",
+      "dd_conviction": 0,
+      "dd_position_size": "",
+      "dd_key_catalyst": "",
+      "dd_fatal_flaw": ""
+    }
+  ],
+  "buy_signals": [
+    {
+      "symbol": "MATV",
+      "tier": "TIER1",
+      "price": 14.55,
+      "beta": 1.67,
+      "banker": 100,
+      "return_20d": 11.2,
+      "theme": "Defense Manufacturing & Supply Chain Security",
+      "theme_score": 0.0,
+      "pure_play_score": 40,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "CONSIDER",
+      "conviction": 2,
+      "sector_status": "NEUTRAL",
+      "upside_potential": "High (50%+)",
+      "bullish_factors": [
+        "Director insider buying pattern (6 buys vs 1 sell)",
+        "Q3 2025 beat by 25.81% ($0.39 vs $0.27)",
+        "SAS segment showing 4 consecutive quarters growth"
+      ],
+      "risk_factors": [
+        "Massive negative earnings and margins",
+        "High debt burden",
+        "FAM segment facing demand headwinds"
+      ],
+      "reasoning": "While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and -$436M TTM earnings create major concerns. The theme fit is good but execution risk is high.",
+      "action": "Consider smaller position",
       "dd_verdict": "",
       "dd_conviction": 0,
       "dd_position_size": "",
@@ -94,22 +199,6 @@
     }
   ],
   "sell_signals": [
-    {
-      "symbol": "INOD",
-      "price": 47.59,
-      "reason": "Trailing stop hit (22.7% from high of $61.54)",
-      "entry_price": 61.54,
-      "highest_close": 61.54,
-      "drawdown_pct": 22.668183295417606
-    },
-    {
-      "symbol": "GLXY",
-      "price": 19.76,
-      "reason": "Trailing stop hit (38.1% from high of $31.90)",
-      "entry_price": 31.9,
-      "highest_close": 31.9,
-      "drawdown_pct": 38.056426332288396
-    },
     {
       "symbol": "LUMN",
       "price": 8.06,

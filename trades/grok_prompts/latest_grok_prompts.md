@@ -10,23 +10,26 @@
 
 | Day | Slot 1 (Pre-market) | Slot 2 (Morning) | Slot 3 (Midday) | Slot 4 (Power Hour) | Slot 5 (After-hours) |
 |-----|------------------|-----------------|------------------|
-| Monday | Week Ahead Preview | Market Pulse | Position Update: VNE |
-| Tuesday | Weekly Scanner Stats | Lesson: Position siz | Market Pulse |
-| Wednesday | Market Pulse | Lesson: Theme alignm | Caution: INOD |
-| Thursday | Weekly Scanner Stats | Lesson: Trailing sto | Market Pulse |
+| Monday | Week Ahead Preview | Hot Theme: Grid Infr | Position Update: VNE |
+| Tuesday | Weekly Scanner Stats | Lesson: Fresh trends | Watching: MATV |
+| Wednesday | Market Pulse | Hot Theme: Defense M | Caution: LUMN |
+| Thursday | Why I Passed: MATV | Hot Theme: Defense M | Market Pulse |
 | Friday | Weekly Scanner Stats | Lesson: Position siz | Position Update: APL |
-| Saturday | Newsletter Drop | Lesson: Fresh trends | Caution: INOD |
-| Sunday | Sunday Engagement | Lesson: Weekly timef | Looking Ahead (Soft) |
+| Saturday | Newsletter Drop | Hot Theme: Grid Infr | Caution: LUMN |
+| Sunday | Sunday Engagement | Lesson: Fresh trends | Looking Ahead (Soft) |
 
 ---
 
 ## 📊 Portfolio Context
 
 **Current State:**
+- **CONSIDER Signals:** MATV
 - **Open Positions:** VNET, CGON, APLD, WCC, IESC, STRL, AAON, AMSC, MOD, LUMN, AMPX
-- **Sell Signals:** INOD, GLXY, LUMN
+- **Sell Signals:** LUMN
 
 **Themes:**
+- **PRIME:** Grid Infrastructure & Power Generation, Defense Manufacturing & Supply Chain Security, Precious Metals & Alternative Stores of Value, Energy Storage & Battery Infrastructure
+- **INVESTABLE:** Communication Services - AI Monetization, European Equities - Relative Value Recovery, Small-Cap Value - Earnings Revision Divergence
 
 ---
 
@@ -61,29 +64,35 @@ Energetic but professional. Monday motivation.
 
 ---
 
-## ☀️ Morning (10:00 ET): Market Pulse
+## ☀️ Morning (10:00 ET): Hot Theme: Grid Infrastructure & Power Generation
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** theme_hot
+**Theme:** Grid Infrastructure & Power Generation
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Infrastructure & Power Generation
 
 ### Prompt (Copy to Grok)
 
 ```
+SCANNER OUTPUT:
+PRIME: Grid Infrastructure & Power Generation
+
+---
+
 You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
-
-2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
+Using the theme above:
+1. Search for the LATEST news/developments in Grid Infrastructure & Power Generation (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
@@ -140,7 +149,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 1 | Final PASS: 0
 
 ---
 
@@ -160,7 +169,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Position sizing determines survival, not...
+## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -169,7 +178,7 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Fresh trends outperform extended trends
 
 ---
 
@@ -189,29 +198,34 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## 🌞 Midday (12:30 ET): Market Pulse
+## 🌞 Midday (12:30 ET): Watching: MATV
 
-**Category:** market_pulse
-**Visual:** Index performance bars or sector heat map
+**Category:** watchlist
+**Ticker:** $MATV
+**Theme:** Defense Manufacturing & Supply Chain Security (GOOD FIT)
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for MATV
 
 ### Prompt (Copy to Grok)
 
 ```
-You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
+SCANNER OUTPUT:
+CONSIDER: MATV | Theme: Defense Manufacturing & Supply Chain Security (GOOD FIT) | Price: $14.55
+Reason: Massive negative earnings and margins
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @AlexSterlingGBR.
+
+Using the scanner output above:
+1. Search for recent news on $MATV
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
@@ -247,54 +261,59 @@ Quick, informed, timely. Show you're in the trenches.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Theme alignment multiplies momentum...
+## ☀️ Morning (10:00 ET): Hot Theme: Defense Manufacturing & Supply Chain Security
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** theme_hot
+**Theme:** Defense Manufacturing & Supply Chain Security
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Manufacturing & Supply Chain Security
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Theme alignment multiplies momentum
+SCANNER OUTPUT:
+PRIME: Defense Manufacturing & Supply Chain Security
 
 ---
 
-You are drafting an X post for @AlexSterlingGBR.
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Manufacturing & Supply Chain Security (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
 ---
 
-## 🌞 Midday (12:30 ET): Caution: INOD
+## 🌞 Midday (12:30 ET): Caution: LUMN
 
 **Category:** sell_signal
-**Ticker:** $INOD
-**Visual:** Chart showing the sell signal trigger point for INOD
+**Ticker:** $LUMN
+**Visual:** Chart showing the sell signal trigger point for LUMN
 
 ### Prompt (Copy to Grok)
 
 ```
 CAUTION SIGNAL:
-INOD: Sell signal triggered | Current: $47.59 | P&L: -22.7%
-Reason: Trailing stop hit (22.7% from high of $61.54)
+LUMN: Sell signal triggered | Current: $8.06 | P&L: -8.6%
+Reason: Weekly BoS Down - Tighten stop to 15%
 
 ---
 
 You are drafting an X post for @AlexSterlingGBR.
 
 Using the signal above:
-1. Search for any recent news that might explain $INOD's weakness
+1. Search for any recent news that might explain $LUMN's weakness
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the caution signal transparently
    - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
@@ -310,59 +329,68 @@ Risk management in action builds more credibility than only showing winners.
 
 # 📅 THURSDAY
 
-## 🌅 Pre-market (08:00 ET): Weekly Scanner Stats
+## 🌅 Pre-market (08:00 ET): Why I Passed: MATV
 
-**Category:** scanner_stats
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
+**Category:** why_passed
+**Ticker:** $MATV
+**Theme:** Defense Manufacturing & Supply Chain Security (GOOD FIT)
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
 
 ### Prompt (Copy to Grok)
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+EXCLUDED: MATV | Theme: Defense Manufacturing & Supply Chain Security (GOOD FIT)
+Reason: Massive negative earnings and margins
 
 ---
 
 You are drafting an X post for @AlexSterlingGBR.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
-
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
-
-```
-
----
-
-## ☀️ Morning (10:00 ET): Lesson: Trailing stops protect gains better than...
-
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
-
-### Prompt (Copy to Grok)
-
-```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
-
----
-
-You are drafting an X post for @AlexSterlingGBR.
-
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $MATV might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
+
+Show process, not arrogance. This builds trust.
+
+```
+
+---
+
+## ☀️ Morning (10:00 ET): Hot Theme: Defense Manufacturing & Supply Chain Security
+
+**Category:** theme_hot
+**Theme:** Defense Manufacturing & Supply Chain Security
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Manufacturing & Supply Chain Security
+
+### Prompt (Copy to Grok)
+
+```
+SCANNER OUTPUT:
+PRIME: Defense Manufacturing & Supply Chain Security
+
+---
+
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
+
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Manufacturing & Supply Chain Security (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
@@ -407,7 +435,7 @@ Quick, informed, timely. Show you're in the trenches.
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 1 | Final PASS: 0
 
 ---
 
@@ -507,7 +535,7 @@ Transparent and timely. Real P&L builds trust.
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: None | CONSIDER: None | Top Theme: Multiple themes
+PASS: None | CONSIDER: MATV | Top Theme: Grid Infrastructure & Power Generation
 
 ---
 
@@ -528,54 +556,59 @@ This is the moment. Make it count.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
+## ☀️ Morning (10:00 ET): Hot Theme: Grid Infrastructure & Power Generation
 
-**Category:** trading_lesson
-**Visual:** Rule graphic or annotated chart example
+**Category:** theme_hot
+**Theme:** Grid Infrastructure & Power Generation
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Infrastructure & Power Generation
 
 ### Prompt (Copy to Grok)
 
 ```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+SCANNER OUTPUT:
+PRIME: Grid Infrastructure & Power Generation
 
 ---
 
-You are drafting an X post for @AlexSterlingGBR.
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+Using the theme above:
+1. Search for the LATEST news/developments in Grid Infrastructure & Power Generation (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
 ---
 
-## 🌞 Midday (12:30 ET): Caution: INOD
+## 🌞 Midday (12:30 ET): Caution: LUMN
 
 **Category:** sell_signal
-**Ticker:** $INOD
-**Visual:** Chart showing the sell signal trigger point for INOD
+**Ticker:** $LUMN
+**Visual:** Chart showing the sell signal trigger point for LUMN
 
 ### Prompt (Copy to Grok)
 
 ```
 CAUTION SIGNAL:
-INOD: Sell signal triggered | Current: $47.59 | P&L: -22.7%
-Reason: Trailing stop hit (22.7% from high of $61.54)
+LUMN: Sell signal triggered | Current: $8.06 | P&L: -8.6%
+Reason: Weekly BoS Down - Tighten stop to 15%
 
 ---
 
 You are drafting an X post for @AlexSterlingGBR.
 
 Using the signal above:
-1. Search for any recent news that might explain $INOD's weakness
+1. Search for any recent news that might explain $LUMN's weakness
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the caution signal transparently
    - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
@@ -620,7 +653,7 @@ Light touch, not a hard sell. Build relationships.
 
 ---
 
-## ☀️ Morning (10:00 ET): Lesson: Weekly timeframes filter out noise...
+## ☀️ Morning (10:00 ET): Lesson: Fresh trends outperform extended trends...
 
 **Category:** trading_lesson
 **Visual:** Rule graphic or annotated chart example
@@ -629,7 +662,7 @@ Light touch, not a hard sell. Build relationships.
 
 ```
 TRADING LESSON:
-Topic: Weekly timeframes filter out noise
+Topic: Fresh trends outperform extended trends
 
 ---
 

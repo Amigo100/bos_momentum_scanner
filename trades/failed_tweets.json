@@ -70,5 +70,89 @@
       "repaired": true
     },
     "timestamp": "2026-02-07T03:22:32.462946"
+  },
+  {
+    "text": "I need specific ticker data and entry prices to generate a SCANNER_RESULT tweet. Please provide $TICKER symbols with prices so I can create a compliant data-rich tweet showing momentum confirmation and setup details.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "sunday",
+      "slot": 1,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:07:08.197379"
+  },
+  {
+    "text": "Weekly momentum signals delivered straight to your inbox every Sunday. Track the setups that matter, catch the moves that count. Free to subscribe.\n\nhttps://sterlingsignals.substack.com",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "sunday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:07:24.057048"
+  },
+  {
+    "text": "Weekly momentum signals delivered straight to your inbox. Market structure analysis, thematic opportunities, and precise entry points. Free to subscribe.\n\nhttps://sterlingsignals.substack.com",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "thursday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:08:48.118656"
+  },
+  {
+    "text": "I need specific ticker data to generate a SCANNER_RESULT tweet. Please provide a ticker symbol, entry price, and thesis so I can create a compliant tweet with the required $TICKER and price elements.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "friday",
+      "slot": 1,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:08:53.421230"
+  },
+  {
+    "text": "I need specific data (ticker, entry price, and thesis) to generate a SCANNER_RESULT tweet. Please provide the required information including $TICKER, entry price, and trading thesis.",
+    "category": "SCANNER_RESULT",
+    "failures": [
+      "step1_category: missing required price or percentage"
+    ],
+    "metadata": {
+      "day": "friday",
+      "slot": 2,
+      "data_key": "pass_signals",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:09:00.437246"
+  },
+  {
+    "text": "Most traders chase the big winner that got away. Better to take consistent 15-25% gains and move on. $MATV at $14.55 - if it hits $16.75, that's a solid win worth banking. Discipline beats perfection every time. NFA",
+    "category": "EDUCATIONAL",
+    "failures": [
+      "step4_winners_only: negative percentage(s) found: ['-25%']"
+    ],
+    "metadata": {
+      "day": "friday",
+      "slot": 4,
+      "data_key": "educational",
+      "repaired": true
+    },
+    "timestamp": "2026-02-07T04:09:11.850581"
   }
 ]

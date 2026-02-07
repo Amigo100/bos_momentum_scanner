@@ -1,15 +1,15 @@
 ========================================================================
   BoS MOMENTUM SCANNER - WEEKLY REPORT
   Saturday, February 07, 2026
-  Generated: 2026-02-07 03:20:00
+  Generated: 2026-02-07 04:05:07
 ========================================================================
 
 ────────────────────────────────────────────────────────────────────────
   EXECUTIVE SUMMARY
 ────────────────────────────────────────────────────────────────────────
-  ✅ 3 entry signal(s) identified
-     • 3 TECHNICAL ONLY - Pending LLM analysis
-  ⚠️  3 caution signal(s) - Consider tightening stops
+  ✅ 1 entry signal(s) identified
+     • 1 CONSIDER - Smaller position recommended
+  ⚠️  1 caution signal(s) - Consider tightening stops
 
 ────────────────────────────────────────────────────────────────────────
   SCAN STATISTICS
@@ -20,7 +20,7 @@
 
   BoS BUY signals:                4
   Met technical gate:             3
-  Theme confirmed:                0
+  Theme confirmed:                1
 
 ────────────────────────────────────────────────────────────────────────
   ENTRY SIGNALS
@@ -28,40 +28,25 @@
 
   TIER   SYMBOL      PRICE   BETA  BANKER   4W MOM THEME               
   --------------------------------------------------------------------
-  TIER1  TECX    $  24.37   1.77   100.0   +18.5% N/A                 
-  TIER1  CRGY    $  10.12   1.74   100.0   +24.6% N/A                 
-  TIER1  MATV    $  14.55   1.67   100.0   +11.2% N/A                 
+  TIER1  MATV    $  14.55   1.67   100.0   +11.2% Defense Manufactur..
 
   SIGNAL DETAILS:
   --------------------------------------------------------------------
 
-  ■ TECX (TIER1) - TECHNICAL_ONLY
-    Price: $24.37 | Beta: 1.77 | Banker: 100.0
-    4-Week Momentum: +18.5% | 20-Day Return: +18.5%
-
-  ■ CRGY (TIER1) - TECHNICAL_ONLY
-    Price: $10.12 | Beta: 1.74 | Banker: 100.0
-    4-Week Momentum: +24.6% | 20-Day Return: +24.6%
-
-  ■ MATV (TIER1) - TECHNICAL_ONLY
+  ■ MATV (TIER1) - CONSIDER
     Price: $14.55 | Beta: 1.67 | Banker: 100.0
     4-Week Momentum: +11.2% | 20-Day Return: +11.2%
+    Theme: Defense Manufacturing & Supply Chain Security
+    Theme Verdict: GOOD FIT | Pure Play: 40%
+    Analysis: While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and -$436M TTM earnings create major concerns. The the...
+    Bullish: Director insider buying pattern (6 buys vs 1 sell); Q3 2025 beat by 25.81% ($0.39 vs $0.27); SAS segment showing 4 consecutive quarters growth
+    Risks: Massive negative earnings and margins; High debt burden; FAM segment facing demand headwinds
 
 ────────────────────────────────────────────────────────────────────────
   ⚠️  CAUTION SIGNALS - Consider Tightening Stops
 ────────────────────────────────────────────────────────────────────────
   These are NOT automatic exit signals. Based on backtesting,
   trailing stops outperform signal-based exits (+539% vs +294%).
-
-  ■ INOD @ $47.59
-    Reason: Trailing stop hit (22.7% from high of $61.54)
-    Entry: $61.54 | High: $61.54 | P&L: -22.7%
-    Action: Tighten stop to 15% from high, do NOT exit automatically
-
-  ■ GLXY @ $19.76
-    Reason: Trailing stop hit (38.1% from high of $31.90)
-    Entry: $31.90 | High: $31.90 | P&L: -38.1%
-    Action: Tighten stop to 15% from high, do NOT exit automatically
 
   ■ LUMN @ $8.06
     Reason: Weekly BoS Down - Tighten stop to 15%

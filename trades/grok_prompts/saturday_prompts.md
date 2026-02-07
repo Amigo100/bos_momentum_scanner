@@ -4,7 +4,7 @@
 
 ```
 NEWSLETTER HIGHLIGHTS:
-PASS: None | CONSIDER: None | Top Theme: Multiple themes
+PASS: None | CONSIDER: MATV | Top Theme: Grid Infrastructure & Power Generation
 
 ---
 
@@ -27,45 +27,49 @@ This is the moment. Make it count.
 
 ---
 
-## Slot 2: Lesson: Fresh trends outperform extended trends...
+## Slot 2: Hot Theme: Grid Infrastructure & Power Generation
 
 ```
-TRADING LESSON:
-Topic: Fresh trends outperform extended trends
+SCANNER OUTPUT:
+PRIME: Grid Infrastructure & Power Generation
 
 ---
 
-You are drafting an X post for @AlexSterlingGBR.
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
 
-1. Pick a practical way to illustrate this lesson
-2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+Using the theme above:
+1. Search for the LATEST news/developments in Grid Infrastructure & Power Generation (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
-**Visual:** Rule graphic or annotated chart example
+**Visual:** Theme infographic or sector ETF momentum chart for Grid Infrastructure & Power Generation
 
 ---
 
-## Slot 3: Caution: INOD
+## Slot 3: Caution: LUMN
 
 ```
 CAUTION SIGNAL:
-INOD: Sell signal triggered | Current: $47.59 | P&L: -22.7%
-Reason: Trailing stop hit (22.7% from high of $61.54)
+LUMN: Sell signal triggered | Current: $8.06 | P&L: -8.6%
+Reason: Weekly BoS Down - Tighten stop to 15%
 
 ---
 
 You are drafting an X post for @AlexSterlingGBR.
 
 Using the signal above:
-1. Search for any recent news that might explain $INOD's weakness
+1. Search for any recent news that might explain $LUMN's weakness
 2. Draft a visually engaging X post (under 280 characters) that:
    - Acknowledges the caution signal transparently
    - Explains what triggered it (Capital Preservation Protocol, structural break, etc.)
@@ -77,6 +81,6 @@ Risk management in action builds more credibility than only showing winners.
 
 ```
 
-**Visual:** Chart showing the sell signal trigger point for INOD
+**Visual:** Chart showing the sell signal trigger point for LUMN
 
 ---

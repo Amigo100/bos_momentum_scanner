@@ -1,54 +1,60 @@
 # Thursday Prompts
 
-## Slot 1: Weekly Scanner Stats
+## Slot 1: Why I Passed: MATV
 
 ```
-SCANNER STATS:
-Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+SCANNER OUTPUT:
+EXCLUDED: MATV | Theme: Defense Manufacturing & Supply Chain Security (GOOD FIT)
+Reason: Massive negative earnings and margins
 
 ---
 
 You are drafting an X post for @AlexSterlingGBR.
 
-Using the stats above:
-1. Draft a visually engaging X post (under 280 characters) that:
-   - Leads with the filtering ratio (e.g., "885 stocks → 0 signals")
-   - Emphasizes the rigorous 3-gate screening process
-   - Creates CURIOSITY about what made the cut
-   - Builds FOMO for non-subscribers
-   - Strong CTA: https://sterlingsignals.substack.com
-
-This is the "proof of work" post. Make readers feel they're missing out if not subscribed.
-
-```
-
-**Visual:** Funnel graphic: 1800+ → X → Y → Z → PASS
-
----
-
-## Slot 2: Lesson: Trailing stops protect gains better than...
-
-```
-TRADING LESSON:
-Topic: Trailing stops protect gains better than fixed targets
-
----
-
-You are drafting an X post for @AlexSterlingGBR.
-
-1. Pick a practical way to illustrate this lesson
+Using the scanner output above:
+1. Search for why $MATV might be getting attention/hype right now
 2. Draft a visually engaging X post (under 280 characters) that:
-   - States the lesson clearly
-   - Gives ONE practical application
-   - Shows experienced, systematic perspective
-   - Doesn't preach - share as hard-won wisdom
+   - Acknowledges the buzz WITHOUT being dismissive ("I see the hype...")
+   - States specifically which gate it failed (technical, thematic, or quality)
+   - Shows disciplined process over FOMO
+   - References the proprietary 3-gate system
+   - Ends with: "What DID pass → https://sterlingsignals.substack.com"
+
+Show process, not arrogance. This builds trust.
+
+```
+
+**Visual:** Gate Check graphic (Technical ✓/✗ | Theme ✓/✗ | Quality ✓/✗)
+
+---
+
+## Slot 2: Hot Theme: Defense Manufacturing & Supply Chain Security
+
+```
+SCANNER OUTPUT:
+PRIME: Defense Manufacturing & Supply Chain Security
+
+---
+
+You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
+
+Using the theme above:
+1. Search for the LATEST news/developments in Defense Manufacturing & Supply Chain Security (last 7 days)
+2. Find a specific catalyst, data point, or news event that's driving momentum
+3. Draft a visually engaging X post (under 280 characters) that:
+   - Opens with a compelling hook about why this theme matters NOW
+   - Uses the specific recent data point or catalyst you found
+   - Shows this is a PRIME theme in my systematic scanner
+   - Teases that I have specific stock picks in this theme
    - Ends with CTA: https://sterlingsignals.substack.com
 
-Educational and actionable. Make them think "I should follow this person."
+Make it accessible to readers who don't follow this sector closely.
+
+IMPORTANT: Search for CURRENT news - don't rely on old knowledge. The post should feel timely and informed.
 
 ```
 
-**Visual:** Rule graphic or annotated chart example
+**Visual:** Theme infographic or sector ETF momentum chart for Defense Manufacturing & Supply Chain Security
 
 ---
 

@@ -1,5 +1,10 @@
 Theme Momentum - Week 6
 
+🔥 Hot Themes This Week:
+• Grid Infrastructure & Power Generation
+• Defense Manufacturing & Supply Chain Security
+• Precious Metals & Alternative Stores of Value
+
 ⭐ Win Highlights:
 • $MOD: +16.8% ()
 

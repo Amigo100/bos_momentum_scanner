@@ -4,7 +4,7 @@
 
 ```
 SCANNER STATS:
-Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 0 | Final PASS: 0
+Scanned: 885 | BoS Up: 4 | Technical Pass: 3 | Theme Fit: 1 | Final PASS: 0
 
 ---
 
@@ -26,11 +26,11 @@ This is the "proof of work" post. Make readers feel they're missing out if not s
 
 ---
 
-## Slot 2: Lesson: Position sizing determines survival, not...
+## Slot 2: Lesson: Fresh trends outperform extended trends...
 
 ```
 TRADING LESSON:
-Topic: Position sizing determines survival, not returns
+Topic: Fresh trends outperform extended trends
 
 ---
 
@@ -52,27 +52,30 @@ Educational and actionable. Make them think "I should follow this person."
 
 ---
 
-## Slot 3: Market Pulse
+## Slot 3: Watching: MATV
 
 ```
-You are drafting an X post for @AlexSterlingGBR, a momentum stock newsletter.
+SCANNER OUTPUT:
+CONSIDER: MATV | Theme: Defense Manufacturing & Supply Chain Security (GOOD FIT) | Price: $14.55
+Reason: Massive negative earnings and margins
 
-1. Search for TODAY's market performance:
-   - S&P 500, NASDAQ, Russell 2000 moves
-   - What sectors are leading/lagging
-   - Any notable movers or news
+---
 
+You are drafting an X post for @AlexSterlingGBR.
+
+Using the scanner output above:
+1. Search for recent news on $MATV
 2. Draft a visually engaging X post (under 280 characters) that:
-   - Opens with the headline move and specific numbers
-   - Notes sector leadership or rotation
-   - Connects to implications for momentum/high-beta stocks
-   - Shows you're actively watching markets
-   - Ends with CTA: https://sterlingsignals.substack.com
+   - Shows this stock caught my attention (it's on radar)
+   - Explains specifically WHY it's not actionable YET (use the reason above)
+   - Shows disciplined patience, NOT indecision ("I could FOMO, but...")
+   - References my proprietary 3-gate screening system
+   - Ends with CTA to see what DID pass: https://sterlingsignals.substack.com
 
-Quick, informed, timely. Show you're in the trenches.
+Educational and compelling. Show that waiting IS a strategy.
 
 ```
 
-**Visual:** Index performance bars or sector heat map
+**Visual:** Chart with key level marked + 'WATCHING 👀' overlay for MATV
 
 ---

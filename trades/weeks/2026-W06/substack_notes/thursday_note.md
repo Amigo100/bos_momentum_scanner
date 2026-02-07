@@ -1,15 +1,16 @@
 Trade Spotlight - Week 6
 
-📊 No new signals this week
+👀 On the Watchlist: $MATV
+Theme: Defense Manufacturing & Supply Chain Security
+Status: CONSIDER (not yet actionable)
 
-Scanner found limited setups meeting our criteria.
-Sometimes the best trade is no trade.
+Reasoning: While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and ...
 
 📈 This Week's Scan:
 • 885 stocks analyzed
 • 3 passed technical gates
 • 0 GREEN signals (full clearance)
-• 0 on watchlist
+• 1 on watchlist
 
 🏆 Top Winner: $MOD (+16.8%)
 

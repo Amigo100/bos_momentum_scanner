@@ -728,7 +728,7 @@ BRANDING: Dict[str, str] = {
     'buy_color': 'GREEN',
     'sell_color': 'RED',
     'substack_url': 'https://sterlingsignals.substack.com',
-    'twitter_handle': '@SterlingSignals',
+    'twitter_handle': '@AlexSterlingGBR',
 }
 
 

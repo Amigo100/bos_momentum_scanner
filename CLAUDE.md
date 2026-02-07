@@ -15,7 +15,7 @@
 | **Project** | BoS Momentum Scanner |
 | **Purpose** | Weekly + daily momentum trading scanner for US stocks |
 | **Newsletter** | [Sterling Signals](https://sterlingsignals.substack.com) |
-| **X/Twitter** | [@SterlingSignals](https://twitter.com/SterlingSignals), [@AlexanderSterling](https://twitter.com/AlexanderSterling) |
+| **X/Twitter** | [@AlexSterlingGBR](https://twitter.com/AlexSterlingGBR) (main), [@Rdobrogowska](https://twitter.com/Rdobrogowska) (account 2) |
 | **Target Audience** | US Active Investors, Swing Traders, Roth IRA Builders |
 
 ### Trading Strategy (Internal Reference Only)

@@ -2601,7 +2601,7 @@ For each stock that passed all gates (🟢 PASS):
 - **Action:** Entry price, position sizing
 - **[CHART: TICKER]** placeholder for screenshot
 
-**5. WATCHLIST** (if any 🟡 CAUTION signals)
+**5. WATCHLIST** (if any 🟡 CONSIDER signals)
 - Stocks worth watching and why waiting
 
 **6. PORTFOLIO UPDATE**

@@ -283,28 +283,11 @@ fi
 
 log_header "STEP 5: Generating Tweets (3 accounts × 35 tweets)"
 
-if [ -f "content/reaction_generator.py" ]; then
-    TWEET_ARGS="--scanner-file trades/signals.json --output trades/"
-    if [ "$TEST_MODE" = true ]; then
-        TWEET_ARGS="--mock --output trades/"
-        log_warning "Test mode: Using --mock"
-    fi
+TWEET_ARGS="--signals trades/signals.json --portfolio trades/portfolio.csv --output trades/"
 
-    log_step "python3 -m content.reaction_generator $TWEET_ARGS"
-    python3 -m content.reaction_generator $TWEET_ARGS
-    log_success "Tweet generation complete (reaction_generator v2)"
-else
-    log_warning "content/reaction_generator.py not found, falling back to content/tweet_generator.py"
-
-    if [ -f "content/tweet_generator.py" ]; then
-        TWEET_ARGS=""
-        if [ "$TEST_MODE" = true ]; then
-            TWEET_ARGS="--mock"
-        fi
-        log_step "python3 -m content.tweet_generator $TWEET_ARGS"
-        python3 -m content.tweet_generator $TWEET_ARGS
-    fi
-fi
+log_step "python3 -m content.tweet_generator $TWEET_ARGS"
+python3 -m content.tweet_generator $TWEET_ARGS
+log_success "Tweet generation complete (tweet_generator v2)"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)

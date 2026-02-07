@@ -47,7 +47,7 @@ GROK_OUTPUT_DIR = OUTPUT_DIR  # Alias for import compatibility
 
 # Sterling Signals branding
 SUBSTACK_URL = "https://sterlingsignals.substack.com"
-ACCOUNT_HANDLE = "@SterlingSignals"
+ACCOUNT_HANDLE = "@AlexSterlingGBR"
 
 # Days of the week for scheduling
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]

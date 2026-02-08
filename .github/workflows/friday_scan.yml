@@ -269,14 +269,15 @@ jobs:
       # STEP 5: GENERATE TWEETS (35 for the week - 5 per day)
       # ═══════════════════════════════════════════════════════════════════════════
 
-      - name: Generate Tweets (3 accounts × 35 tweets)
+      - name: Generate Tweets (3 accounts × 28 tweets each, unique per account)
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          echo "Generating weekly tweets via tweet_generator v2 (unified voice)..."
+          echo "Generating weekly tweets via tweet_generator v2 (3× LLM runs for unique content)..."
           python -m content.tweet_generator \
             --signals trades/signals.json \
             --portfolio trades/portfolio.csv \
-            --output trades/
+            --output trades/ \
+            --account all
 
       - name: Validate content queue JSON
         if: ${{ github.event.inputs.skip_tweets != 'true' }}

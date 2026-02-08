@@ -179,14 +179,15 @@ jobs:
       # STEP 4: GENERATE DAILY TWEETS
       # ═══════════════════════════════════════════════════════════════════════
 
-      - name: Generate daily signal tweets
+      - name: Generate daily signal tweets (3 accounts, unique per account)
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          echo "Generating daily tweets via tweet_generator v2..."
+          echo "Generating daily tweets via tweet_generator v2 (3× LLM runs)..."
           python -m content.tweet_generator \
             --daily \
             --signals trades/daily_signals.json \
             --portfolio trades/portfolio.csv \
+            --account all \
             || echo "Daily tweet generation failed"
 
       - name: Validate daily content queues

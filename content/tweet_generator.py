@@ -24,6 +24,7 @@ import argparse
 import json
 import logging
 import os
+import random
 import re
 import sys
 from datetime import datetime, timedelta
@@ -466,7 +467,7 @@ def _build_content_data(
 # WEEKLY SCHEDULE PLANNING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
+def _plan_weekly_schedule(data: ContentData, account_id: str = "main") -> List[SlotAssignment]:
     """
     Plan category allocation across 7 days x 4 slots.
 
@@ -481,6 +482,11 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
 
     Tracks planned data consumption and category repetition to prevent
     over-scheduling categories beyond available data.
+
+    Args:
+        data: ContentData with available signals, themes, etc.
+        account_id: Account identifier — used to seed slot order shuffle
+                    so each account gets a consistently different schedule.
     """
     schedule: List[SlotAssignment] = []
     newsletter_cta_count = 0
@@ -494,13 +500,22 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
         "THEME_ANALYSIS": "themes",
     }
 
+    # Seed slot ordering per account for schedule variation.
+    # Each account gets a reproducibly different processing order,
+    # which causes _pick_category() to make different choices.
+    rng = random.Random(hash(account_id))
+
     for day in WEEKLY_DAYS:
         day_engagement_used = False
         day_performance_placed = False
         day_category_counts: Dict[str, int] = {}  # Reset per day
         day_portfolio_pool_count = 0  # Track portfolio-pool categories per day
 
-        for slot in WEEKLY_SLOTS:
+        # Shuffle slot processing order per account for category variation
+        day_slots = list(WEEKLY_SLOTS)
+        rng.shuffle(day_slots)
+
+        for slot in day_slots:
             assert slot != 1, "Slot 1 must not appear in weekly schedule (reserved for daily queue)"
             category, data_key = _pick_category(
                 day=day,
@@ -1625,9 +1640,10 @@ def _write_queues(
     scan_date: str = "",
 ) -> None:
     """
-    Write identical tweet lists to all 3 account queues.
+    Write tweet list to account queue(s).
 
     Each entry matches the format used by distribution/twitter_poster.py.
+    When called with a single-account queue_map, writes to just that account.
     """
     out_dir = output_dir or TRADES_DIR
     out_dir = Path(out_dir)
@@ -1679,7 +1695,7 @@ def _write_queues(
     if dropped_no_chart:
         logger.info("Dropped %d tweets missing required charts", dropped_no_chart)
 
-    # Write identical content to all account queues
+    # Write content to account queue(s)
     for account_id, queue_file in queue_map.items():
         path = out_dir / queue_file
         with open(path, "w") as f:
@@ -1735,19 +1751,24 @@ def generate_weekly_content(
     portfolio_path: str,
     market_data: Optional[Dict] = None,
     output_dir: Optional[str] = None,
+    account_id: str = "main",
 ) -> Dict:
     """
-    Generate a full week of tweets (7 days x 5 slots = 35 tweets).
+    Generate a full week of tweets (7 days x 4 slots = 28 tweets).
 
     Reads weekly signals.json and portfolio.csv, plans category allocation,
     generates tweets via LLM, validates, repairs if needed, and writes
-    identical content to all 3 account queues.
+    content to the specified account's queue file.
+
+    When called 3× with different account_id values, the LLM naturally varies
+    output and the schedule shuffles per account for differentiation.
 
     Args:
         signals_path: Path to signals.json
         portfolio_path: Path to portfolio.csv
         market_data: Optional market context dict
         output_dir: Output directory (default: trades/)
+        account_id: Which account to generate for ("main", "account2", "account3")
 
     Returns:
         Summary dict: {total_tweets, by_category, failed_count, chart_required_count}
@@ -1763,6 +1784,8 @@ def generate_weekly_content(
 
     client = anthropic.Anthropic(api_key=api_key)
     cost_tracker = CostTracker()
+
+    logger.info("=== Generating weekly content for account: %s ===", account_id)
 
     # 1. Load style guide
     style_guide = _load_style_guide()
@@ -1798,9 +1821,9 @@ def generate_weekly_content(
             all_tickers.add(sym.upper())
     logger.info("Allowed tickers for validation: %s", all_tickers)
 
-    # 3. Plan schedule
-    schedule = _plan_weekly_schedule(data)
-    logger.info("Schedule planned: %d slots across %d days", len(schedule), len(WEEKLY_DAYS))
+    # 3. Plan schedule (seeded by account_id for category variation)
+    schedule = _plan_weekly_schedule(data, account_id=account_id)
+    logger.info("Schedule planned: %d slots across %d days (account=%s)", len(schedule), len(WEEKLY_DAYS), account_id)
 
     # 4. Generate + validate + repair
     valid_tweets: List[Tweet] = []
@@ -1883,9 +1906,10 @@ def generate_weekly_content(
     charts_attached = _attach_chart_paths(valid_tweets)
     logger.info("Chart paths attached: %d", charts_attached)
 
-    # 6. Write queues
+    # 6. Write queue for this account only
     out = Path(output_dir) if output_dir else TRADES_DIR
-    _write_queues(valid_tweets, ACCOUNT_QUEUES, out, data.scan_date)
+    account_queue = {account_id: ACCOUNT_QUEUES[account_id]}
+    _write_queues(valid_tweets, account_queue, out, data.scan_date)
 
     chart_required_count = sum(1 for t in valid_tweets if t.chart_required)
     chart_attached_count = sum(1 for t in valid_tweets if t.chart_path or t.chart_paths)
@@ -1914,6 +1938,7 @@ def generate_daily_content(
     daily_signals_path: str,
     daily_portfolio_path: str,
     output_dir: Optional[str] = None,
+    account_id: str = "main",
 ) -> Dict:
     """
     Generate daily tweets for new daily scan signals, sell signals, and winners.
@@ -1922,10 +1947,14 @@ def generate_daily_content(
     - SELL_SIGNAL tweets for any daily exits
     - PERFORMANCE tweets for daily winners >= 25%
 
+    When called 3× with different account_id values, the LLM naturally varies
+    output for differentiation between accounts.
+
     Args:
         daily_signals_path: Path to daily_signals.json
         daily_portfolio_path: Path to daily_portfolio.csv
         output_dir: Output directory (default: trades/)
+        account_id: Which account to generate for ("main", "account2", "account3")
 
     Returns:
         Summary dict: {total_tweets, by_category, failed_count, chart_required_count}
@@ -1942,6 +1971,8 @@ def generate_daily_content(
     client = anthropic.Anthropic(api_key=api_key)
     cost_tracker = CostTracker()
     style_guide = _load_style_guide()
+
+    logger.info("=== Generating daily content for account: %s ===", account_id)
 
     # Load daily signals
     daily_signals_raw = _load_signals(daily_signals_path)
@@ -2058,9 +2089,10 @@ def generate_daily_content(
     # Attach chart paths from manifest
     charts_attached = _attach_chart_paths(valid_tweets)
 
-    # Write daily queues
+    # Write daily queue for this account only
     out = Path(output_dir) if output_dir else TRADES_DIR
-    _write_queues(valid_tweets, DAILY_ACCOUNT_QUEUES, out, data.scan_date)
+    daily_account_queue = {account_id: DAILY_ACCOUNT_QUEUES[account_id]}
+    _write_queues(valid_tweets, daily_account_queue, out, data.scan_date)
 
     chart_required_count = sum(1 for t in valid_tweets if t.chart_required)
     chart_attached_count = sum(1 for t in valid_tweets if t.chart_path or t.chart_paths)
@@ -2130,6 +2162,11 @@ def main() -> None:
         "--daily", action="store_true",
         help="Generate daily content instead of weekly",
     )
+    parser.add_argument(
+        "--account", default="all",
+        choices=["all", "main", "account2", "account3"],
+        help="Which account to generate for (default: all = run 3×)",
+    )
 
     args = parser.parse_args()
 
@@ -2138,29 +2175,49 @@ def main() -> None:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
 
-    if args.daily:
-        result = generate_daily_content(
-            daily_signals_path=args.signals,
-            daily_portfolio_path=args.portfolio,
-            output_dir=args.output,
-        )
+    # Determine which accounts to generate for
+    if args.account == "all":
+        accounts = ["main", "account2", "account3"]
     else:
-        result = generate_weekly_content(
-            signals_path=args.signals,
-            portfolio_path=args.portfolio,
-            output_dir=args.output,
-        )
+        accounts = [args.account]
 
+    all_results: List[Dict] = []
+
+    for acct in accounts:
+        print(f"\n{'─' * 60}")
+        print(f"  Generating for account: {acct}")
+        print(f"{'─' * 60}")
+
+        if args.daily:
+            result = generate_daily_content(
+                daily_signals_path=args.signals,
+                daily_portfolio_path=args.portfolio,
+                output_dir=args.output,
+                account_id=acct,
+            )
+        else:
+            result = generate_weekly_content(
+                signals_path=args.signals,
+                portfolio_path=args.portfolio,
+                output_dir=args.output,
+                account_id=acct,
+            )
+        all_results.append({"account": acct, **result})
+
+    # Print summary
     print(f"\n{'=' * 60}")
     print("TWEET GENERATOR v2.0 — RESULTS")
     print(f"{'=' * 60}")
-    print(f"  Total tweets:        {result.get('total_tweets', 0)}")
-    print(f"  Failed (dropped):    {result.get('failed_count', 0)}")
-    print(f"  Charts required:     {result.get('chart_required_count', 0)}")
-    print(f"  Cost:                {result.get('cost', 'N/A')}")
-    print(f"\n  By category:")
-    for cat, count in sorted(result.get("by_category", {}).items(), key=lambda x: -x[1]):
-        print(f"    {cat}: {count}")
+    for r in all_results:
+        acct_label = r.get("account", "?")
+        print(f"\n  Account: {acct_label}")
+        print(f"  Total tweets:        {r.get('total_tweets', 0)}")
+        print(f"  Failed (dropped):    {r.get('failed_count', 0)}")
+        print(f"  Charts required:     {r.get('chart_required_count', 0)}")
+        print(f"  Cost:                {r.get('cost', 'N/A')}")
+        print(f"  By category:")
+        for cat, count in sorted(r.get("by_category", {}).items(), key=lambda x: -x[1]):
+            print(f"    {cat}: {count}")
     print(f"{'=' * 60}")
 
 

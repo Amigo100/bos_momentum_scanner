@@ -33,7 +33,7 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
     },
     "PERFORMANCE": {
         "source": "Portfolio winners >= 25% and notable gains >= 10%",
-        "chart_required": True,
+        "chart_required": False,   # Receipt tweets don't require charts
         "min_elements": ["$TICKER", "entry price", "current price", "% gain"],
     },
     "WATCHLIST": {
@@ -43,7 +43,7 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
     },
     "TECHNICAL_ANALYSIS": {
         "source": "Existing positions, key levels",
-        "chart_required": True,
+        "chart_required": False,   # Text-only TA tweets acceptable when no chart available
         "min_elements": ["$TICKER", "level"],
     },
     "EDUCATIONAL": {
@@ -160,6 +160,10 @@ class ContentData:
     @property
     def has_holdings(self) -> bool:
         return len(self.holdings) > 0
+
+    @property
+    def has_consider_signals(self) -> bool:
+        return len(self.consider_signals) > 0
 
     @property
     def has_pass_signals(self) -> bool:

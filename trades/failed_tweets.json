@@ -154,5 +154,65 @@
       "repaired": true
     },
     "timestamp": "2026-02-07T04:09:11.850581"
+  },
+  {
+    "text": "Momentum trading isn't about gut feelings \u2014 it's about following institutional money flows with precision. Our scanner cuts through 4,000+ stocks to find the setups that actually work. Weekly insights + live signals: https://sterlingsignals.substack.com NFA",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "sunday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-08T02:44:26.806097"
+  },
+  {
+    "text": "Every Sunday: momentum breakdowns, screening methodology that filters thousands to actionable setups, and why themes attract institutional flows. Real trades, real process, zero fluff. https://sterlingsignals.substack.com NFA",
+    "category": "NEWSLETTER_CTA",
+    "failures": [
+      "step3_banned: 'BST'"
+    ],
+    "metadata": {
+      "day": "thursday",
+      "slot": 5,
+      "data_key": "newsletter_url",
+      "repaired": true
+    },
+    "timestamp": "2026-02-08T02:45:19.310153"
+  },
+  {
+    "text": "Grid infrastructure momentum accelerating. $NEE at $89.32 and $SO at $74.18 showing strong institutional accumulation \u2014 sector flow alignment confirming the structural trend. Following institutional flows into infrastructure spending catalysts. NFA.",
+    "category": "THEME_ANALYSIS",
+    "failures": [
+      "step2_ticker: $NEE not in source data",
+      "step2_ticker: $SO not in source data"
+    ],
+    "metadata": {
+      "day": "saturday",
+      "slot": 3,
+      "data_key": "themes",
+      "repaired": true
+    },
+    "timestamp": "2026-02-08T04:01:46.460921"
+  },
+  {
+    "text": "Defense manufacturing momentum accelerating: $LMT at $487 cleared resistance, $RTX testing $125 breakout, $GD holding $295 support. Institutional flows shifting toward military contractors as geopolitical tensions drive structural sector demand. Cross-sector alignment visible. NFA.",
+    "category": "THEME_ANALYSIS",
+    "failures": [
+      "step2_ticker: $LMT not in source data",
+      "step2_ticker: $RTX not in source data",
+      "step2_ticker: $GD not in source data",
+      "step6_chars: 282 > 280"
+    ],
+    "metadata": {
+      "day": "friday",
+      "slot": 4,
+      "data_key": "themes",
+      "repaired": true
+    },
+    "timestamp": "2026-02-08T04:03:03.966556"
   }
 ]

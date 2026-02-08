@@ -851,7 +851,7 @@ class TestContentValidationIntegration:
             Tweet(
                 text="$RCAT from $8.50 to $13.25 (+55.9%) — momentum confirmed on the weekly. Win more than you lose. NFA",
                 category="PERFORMANCE",
-                chart_required=True,
+                chart_required=False,
                 tickers_mentioned=["RCAT"],
             ),
             Tweet(

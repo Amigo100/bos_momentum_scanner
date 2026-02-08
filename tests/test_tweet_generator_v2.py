@@ -79,7 +79,7 @@ def _sample_signals() -> dict:
             {"symbol": "VNET", "price": 10.80, "reason": "Weekly BoS Down",
              "entry_price": 12.00, "highest_close": 14.00},
         ],
-        "caution_signals": [
+        "consider_signals": [
             {"symbol": "IONQ", "price": 42.15, "action": "Wait for pullback"},
             {"symbol": "QUBT", "price": 8.90, "action": "Extended move"},
         ],
@@ -102,7 +102,7 @@ def _sample_content_data() -> ContentData:
     """Return a ContentData with realistic test values."""
     return ContentData(
         pass_signals=_sample_signals()["buy_signals"],
-        consider_signals=_sample_signals()["caution_signals"],
+        consider_signals=_sample_signals()["consider_signals"],
         themes=_sample_signals()["themes"],
         scan_stats=_sample_signals()["stats"],
         winners=[
@@ -385,12 +385,12 @@ class TestChartFlagSetCorrectly:
 
     def test_chart_flag_set_correctly(self):
         # Categories that REQUIRE charts
-        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "PERFORMANCE",
-                     "TECHNICAL_ANALYSIS", "SELL_SIGNAL"}
+        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL"}
 
         # Categories that do NOT require charts
         not_required = {"THEME_ANALYSIS", "WATCHLIST", "EDUCATIONAL",
-                        "MARKET_COMMENTARY", "ENGAGEMENT", "NEWSLETTER_CTA"}
+                        "MARKET_COMMENTARY", "ENGAGEMENT", "NEWSLETTER_CTA",
+                        "PERFORMANCE", "TECHNICAL_ANALYSIS"}
 
         # Verify against CHART_REQUIRED_CATEGORIES
         assert CHART_REQUIRED_CATEGORIES == required, \

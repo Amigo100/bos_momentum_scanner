@@ -480,19 +480,19 @@ class TestCategoryRepetitionLimits:
     """_within_limits enforces weekly and daily caps."""
 
     def test_category_repetition_limits(self):
-        # Weekly limit: EDUCATIONAL max 5 → at 5, blocked
+        # Weekly limit: EDUCATIONAL max 3 → at 3, blocked
         assert _within_limits(
             "EDUCATIONAL",
-            week_counts={"EDUCATIONAL": 5},
+            week_counts={"EDUCATIONAL": 3},
             day_counts={},
-        ) is False, "EDUCATIONAL at 5/week should be blocked"
+        ) is False, "EDUCATIONAL at 3/week should be blocked"
 
-        # At 4 → still allowed
+        # At 2 → still allowed
         assert _within_limits(
             "EDUCATIONAL",
-            week_counts={"EDUCATIONAL": 4},
+            week_counts={"EDUCATIONAL": 2},
             day_counts={},
-        ) is True, "EDUCATIONAL at 4/week should be allowed"
+        ) is True, "EDUCATIONAL at 2/week should be allowed"
 
         # Daily limit: any category at MAX_SAME_CATEGORY_PER_DAY (2) → blocked
         assert _within_limits(
@@ -641,25 +641,25 @@ class TestNewCategories:
             f"NEWSLETTER_CTA at max 2/week should not be assigned, got {category}"
         )
 
-    def test_technical_analysis_requires_chart(self):
-        """TECHNICAL_ANALYSIS is in CHART_REQUIRED_CATEGORIES; wrong flag fails validation."""
-        assert "TECHNICAL_ANALYSIS" in CHART_REQUIRED_CATEGORIES, (
-            "TECHNICAL_ANALYSIS should be in CHART_REQUIRED_CATEGORIES"
+    def test_technical_analysis_no_chart_required(self):
+        """TECHNICAL_ANALYSIS is NOT in CHART_REQUIRED_CATEGORIES (text-only TA acceptable)."""
+        assert "TECHNICAL_ANALYSIS" not in CHART_REQUIRED_CATEGORIES, (
+            "TECHNICAL_ANALYSIS should NOT be in CHART_REQUIRED_CATEGORIES"
         )
 
-        # A TA tweet with chart_required=False should fail step7
+        # A TA tweet with chart_required=False should pass step7
         tweet = _make_tweet(
             text="$RCAT holding above $12.00 support. Easy invalidation below $10.50. NFA!",
             category="TECHNICAL_ANALYSIS",
-            chart_required=False,  # Wrong — should be True
+            chart_required=False,  # Correct — text-only TA is acceptable
             tickers=["RCAT"],
         )
         source_data = {"tickers": [{"symbol": "RCAT"}]}
 
         result = _validate_tweet(tweet, source_data)
         chart_failures = [f for f in result.failures if "step7_chart" in f]
-        assert len(chart_failures) > 0, (
-            f"TA tweet with chart_required=False should fail step7, got: {result.failures}"
+        assert len(chart_failures) == 0, (
+            f"TA tweet with chart_required=False should pass step7, got: {result.failures}"
         )
 
 

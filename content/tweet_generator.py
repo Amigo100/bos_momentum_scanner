@@ -113,11 +113,13 @@ DATA_DEPENDENT_CATEGORIES = {
 
 # Weekly repetition limits for flexible categories (prevents 8x EDUCATIONAL weeks)
 CATEGORY_WEEKLY_LIMITS: Dict[str, int] = {
-    "EDUCATIONAL": 5,
-    "ENGAGEMENT": 5,
+    "EDUCATIONAL": 3,
+    "ENGAGEMENT": 4,
     "WATCHLIST": 2,
     "TECHNICAL_ANALYSIS": 3,
     "NEWSLETTER_CTA": 2,
+    "THEME_ANALYSIS": 8,
+    "MARKET_COMMENTARY": 4,
 }
 
 # No category should appear more than twice per day
@@ -289,6 +291,12 @@ CATEGORY_EXAMPLES: Dict[str, str] = {
         '2) "Bad day? Happens to everyone. What matters is not letting '
         'a bad day become a bad week."'
     ),
+    "TECHNICAL_ANALYSIS": (
+        '1) "$WCC holding above $281 entry. Watching $320 resistance for breakout '
+        'continuation. Setup invalidated below $256. NFA"\n'
+        '2) "$STRL cleared $400 resistance — structural pivot confirmed. '
+        'Invalidation on close below $362 entry. NFA!"'
+    ),
 }
 
 
@@ -348,12 +356,31 @@ def _build_content_data(
     big_win_threshold = MARKETING_THRESHOLDS.get("big_win_threshold", 25.0)
 
     # Extract from signals
-    pass_signals = signals.get("buy_signals", [])
-    consider_signals = signals.get("caution_signals", [])
+    pass_signals = signals.get("pass_signals", []) or signals.get("buy_signals", [])
+    consider_signals = signals.get("consider_signals", []) or signals.get("caution_signals", [])
     themes = signals.get("themes", [])
     stats = signals.get("stats", {})
     sell_sigs = signals.get("sell_signals", [])
     scan_date = signals.get("timestamp", datetime.now().strftime("%Y-%m-%d"))[:10]
+
+    # Fetch current prices for open positions missing current_price
+    open_tickers_needing_price = [
+        pos.get("ticker", "")
+        for pos in positions
+        if pos.get("status", "").upper() == "OPEN"
+        and not float(pos.get("current_price", 0) or 0) > 0
+    ]
+    if open_tickers_needing_price:
+        logger.info("Fetching prices for %d positions via yfinance", len(open_tickers_needing_price))
+        try:
+            from core.portfolio_manager import fetch_current_prices
+            live_prices = fetch_current_prices(open_tickers_needing_price)
+            for pos in positions:
+                ticker = pos.get("ticker", "")
+                if ticker in live_prices and not float(pos.get("current_price", 0) or 0) > 0:
+                    pos["current_price"] = live_prices[ticker]
+        except Exception as e:
+            logger.warning("Could not fetch live prices: %s — continuing with available data", e)
 
     # Split positions into winners / notable / holdings / losers
     winners: List[Dict] = []
@@ -624,7 +651,7 @@ def _pick_category(
             return result
 
     # Theme analysis
-    if slot == 2 and theme_count < 4:
+    if slot == 2 and theme_count < 6:
         result = _fallback("THEME_ANALYSIS", "themes", [
             ("EDUCATIONAL", "educational"),
         ])
@@ -679,12 +706,14 @@ def _pick_category(
         if result:
             return result
 
-    # Terminal fallbacks
+    # Terminal fallbacks — prefer data-rich categories over filler
     for cat, key in [
         ("SCANNER_RESULT", "pass_signals"),
         ("PERFORMANCE", "winners"),
         ("THEME_ANALYSIS", "themes"),
+        ("MARKET_COMMENTARY", "market_data"),
         ("WATCHLIST", "consider_signals"),
+        ("NEWSLETTER_CTA", "newsletter_url"),
         ("ENGAGEMENT", "engagement"),
         ("EDUCATIONAL", "educational"),
     ]:
@@ -692,6 +721,12 @@ def _pick_category(
         if result:
             return result
 
+    # Last resort: THEME_ANALYSIS ignoring weekly limit (themes are varied content)
+    if data.has_themes and _data_available("THEME_ANALYSIS", data, pc):
+        logger.warning("All limits exhausted — assigning THEME_ANALYSIS overflow")
+        return "THEME_ANALYSIS", "themes"
+
+    logger.warning("All categories exhausted — assigning EDUCATIONAL overflow")
     return "EDUCATIONAL", "educational"
 
 
@@ -778,6 +813,10 @@ def _build_user_prompt(
                 f"  ${{ticker}}: ${sig.get('symbol', '??')} at ${sig.get('price', 0):.2f} "
                 f"| Theme: {sig.get('theme', 'N/A')} | Thesis: {sig.get('catalyst_summary', 'momentum confirmed')}"
             )
+        prompt_parts.append(
+            "  If listing 3+ tickers, end with a bookmark CTA like "
+            "'Probably want to save this post' or 'Save this list'."
+        )
 
     elif category == "PERFORMANCE" and ("winners" in slot_data or "notable" in slot_data):
         all_positions = slot_data.get("winners", []) + slot_data.get("notable", [])
@@ -789,7 +828,11 @@ def _build_user_prompt(
                 f"  ${w.get('ticker', '??')} from ${entry:.2f} to ${current:.2f} (+{pnl:.1f}%)"
                 f" | Theme: {w.get('theme', 'N/A')}"
             )
-        prompt_parts.append("  Celebrate these gains. Show entry → current with percentages.")
+        prompt_parts.append(
+            "  Show ALL these positions as receipts with entry → current → % gain. "
+            "Multi-ticker receipt format preferred when 2+ tickers available. "
+            "End with a bookmark CTA like 'Save this post' when showing 3+ tickers."
+        )
 
     elif category == "THEME_ANALYSIS" and "themes" in slot_data:
         for th in slot_data["themes"][:2]:
@@ -797,9 +840,27 @@ def _build_user_prompt(
                 f"  Theme: {th.get('name', '??')} ({th.get('classification', 'INVESTABLE')})"
                 f" | Score: {th.get('composite_score', 0)}/10"
             )
+        if "portfolio_holdings" in slot_data:
+            prompt_parts.append("  Portfolio positions in related themes:")
+            for t in slot_data["portfolio_holdings"][:4]:
+                prompt_parts.append(
+                    f"    ${t['symbol']} at ${t['price']:.2f} "
+                    f"(+{t['pnl_pct']}% from ${t['entry_price']:.2f}) "
+                    f"| Theme: {t['theme']}"
+                )
+            prompt_parts.append(
+                "  CRITICAL: Use ONLY the portfolio tickers listed above. "
+                "Do NOT invent or add any tickers not shown here. "
+                "Structure: Theme observation → each ticker with entry→current→% on its own line → closing hook. "
+                "If 3+ tickers, end with a bookmark CTA like 'Save this post'."
+            )
         if "tickers" in slot_data:
+            prompt_parts.append("  Scanner signals in this theme:")
             for t in slot_data["tickers"][:4]:
-                prompt_parts.append(f"  ${t.get('symbol', '??')} at ${t.get('price', 0):.2f}")
+                prompt_parts.append(f"    ${t.get('symbol', '??')} at ${t.get('price', 0):.2f}")
+            prompt_parts.append(
+                "  You may reference these scanner tickers too, but do NOT invent others."
+            )
 
     elif category == "SELL_SIGNAL" and "sell_signals" in slot_data:
         for ss in slot_data["sell_signals"][:2]:
@@ -818,7 +879,9 @@ def _build_user_prompt(
         prompt_parts.append(
             "  Write a watchlist tweet. Open with a hook like 'On my radar:' or "
             "'Watching closely:'. List each ticker with price. "
-            "Close with what needs to happen for entry. End with NFA."
+            "Close with what needs to happen for entry. "
+            "If listing 3+ tickers, end with 'Revisit this post soonish' or 'Save this list'. "
+            "End with NFA."
         )
 
     elif category == "NEWSLETTER_CTA":
@@ -865,10 +928,17 @@ def _build_user_prompt(
             prompt_parts.append(f"  Context: {slot_data['context']}")
         if slot_data.get("portfolio_stats"):
             stats = slot_data["portfolio_stats"]
+            profitable = stats.get("profitable_count", 0)
             prompt_parts.append(
                 f"  Portfolio: {stats.get('open_positions', 0)} open positions, "
-                f"{stats.get('winners', 0)} winners"
+                f"{profitable} currently profitable"
             )
+            if profitable > 0:
+                prompt_parts.append(
+                    f"  IMPORTANT: Do NOT claim the portfolio has zero gains, "
+                    f"is at breakeven, or has no winners. "
+                    f"{profitable} positions are currently profitable."
+                )
         if slot_data.get("theme_names"):
             prompt_parts.append(f"  Active themes: {', '.join(slot_data['theme_names'])}")
         prompt_parts.append(
@@ -956,6 +1026,22 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
         # Add tickers from pass_signals that match the theme
         if data.pass_signals:
             slot_data["tickers"] = data.pass_signals[:4]
+        # Enrich with portfolio holdings (winners + notable) grouped by theme
+        portfolio_tickers = []
+        for pos in data.winners + data.notable_holdings:
+            p_entry = float(pos.get("entry_price", 0) or 0)
+            p_current = float(pos.get("current_price", 0) or 0)
+            p_pnl = pos.get("pnl_pct", 0)
+            if p_entry > 0 and p_current > 0:
+                portfolio_tickers.append({
+                    "symbol": pos.get("ticker", "??"),
+                    "price": p_current,
+                    "entry_price": p_entry,
+                    "pnl_pct": round(p_pnl, 1),
+                    "theme": pos.get("theme", "N/A"),
+                })
+        if portfolio_tickers:
+            slot_data["portfolio_holdings"] = portfolio_tickers
 
     elif category == "SELL_SIGNAL":
         idx = used_indices.get("sell_signals", 0)
@@ -977,13 +1063,11 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
         used_indices["daily_signals"] = idx + 1
 
     elif category == "TECHNICAL_ANALYSIS":
-        if not data.holdings:
-            return None  # No holdings for technical analysis
-        idx = used_indices.get("ta_holdings", 0)
-        # Combine winners + notable + holdings for TA (any open position)
+        # Combine all open positions for TA (winners + notable + holdings)
         ta_positions = data.winners + data.notable_holdings + data.holdings
         if not ta_positions:
-            return None
+            return None  # No open positions for technical analysis
+        idx = used_indices.get("ta_holdings", 0)
         selected = ta_positions[idx % len(ta_positions):idx % len(ta_positions) + 2]
         if not selected:
             selected = ta_positions[:2]
@@ -1023,10 +1107,12 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
     elif category == "EDUCATIONAL":
         slot_data["context"] = "trading methodology and discipline"
         open_count = len(data.winners) + len(data.notable_holdings) + len(data.holdings)
+        profitable_count = len(data.winners) + len(data.notable_holdings)
         slot_data["portfolio_stats"] = {
             "open_positions": open_count,
             "winners": len(data.winners),
             "notable": len(data.notable_holdings),
+            "profitable_count": profitable_count,
         }
         if data.themes:
             slot_data["theme_names"] = [t.get("name", "") for t in data.themes[:3]]
@@ -1191,7 +1277,8 @@ def _validate_tweet(
 
     # Build source ticker set from slot data (backward compat)
     source_tickers: Set[str] = set()
-    for key in ("signals", "winners", "consider", "sell_signals", "tickers", "daily_signals"):
+    for key in ("signals", "winners", "consider", "sell_signals", "tickers",
+                "daily_signals", "portfolio_holdings", "notable"):
         items = source_data.get(key, [])
         if isinstance(items, list):
             for item in items:
@@ -1218,8 +1305,15 @@ def _validate_tweet(
     # ── Step 3: Banned phrase check ────────────────────────────────────────
     text_lower = tweet.text.lower()
     for phrase in ALL_BANNED:
-        if phrase.lower() in text_lower:
-            failures.append(f"step3_banned: '{phrase}'")
+        phrase_lower = phrase.lower()
+        if len(phrase) <= 4 and phrase.isascii():
+            # Short terms need word-boundary matching to avoid false positives
+            # e.g. "BST" matching inside "substack", "HMA" inside "PHARMA"
+            if re.search(r'\b' + re.escape(phrase_lower) + r'\b', text_lower):
+                failures.append(f"step3_banned: '{phrase}'")
+        else:
+            if phrase_lower in text_lower:
+                failures.append(f"step3_banned: '{phrase}'")
 
     # ── Step 4: Winners-only check ─────────────────────────────────────────
     # No negative P&L percentages
@@ -1230,6 +1324,25 @@ def _validate_tweet(
     # Check loser-focused language
     if check_loser_focus(tweet.text):
         failures.append("step4_winners_only: loser-focused language detected")
+
+    # ── Step 4b: Portfolio status fabrication check ──────────────────────
+    if tweet.category == "EDUCATIONAL" and source_data.get("portfolio_stats"):
+        stats = source_data["portfolio_stats"]
+        profitable = stats.get("profitable_count", 0)
+        if profitable > 0:
+            fabrication_phrases = [
+                "zero gains", "no winners", "0 showing profit", "breakeven",
+                "no positions showing gains", "zero positions showing gains",
+                "0 showing gains", "no gains yet", "haven't shown gains",
+            ]
+            text_lower_fab = tweet.text.lower()
+            for phrase in fabrication_phrases:
+                if phrase in text_lower_fab:
+                    failures.append(
+                        f"step_portfolio_fabrication: Claims '{phrase}' but "
+                        f"{profitable} positions are profitable"
+                    )
+                    break
 
     # ── Step 5: Internal terminology check ─────────────────────────────────
     for pattern in INTERNAL_TERM_PATTERNS:
@@ -1377,7 +1490,7 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
             chart_path = charts.get(clean_ticker)
             if chart_path and isinstance(chart_path, str):
                 # Verify chart file exists on disk
-                full_path = manifest_dir / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
+                full_path = BASE_DIR / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
                 if not full_path.exists():
                     logger.warning("Chart file missing on disk for $%s: %s", clean_ticker, chart_path)
                     continue  # Skip — don't attach a broken path

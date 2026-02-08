@@ -69,7 +69,7 @@ MOCK_SIGNALS = {
             "action": "Enter Monday at market open",
         },
     ],
-    "caution_signals": [
+    "consider_signals": [
         {"symbol": "AAPL", "price": 225.00, "theme": "Tech", "action": "CONSIDER",
          "catalyst_summary": "Awaiting confirmation"},
         {"symbol": "GOOG", "price": 180.00, "theme": "AI", "action": "CONSIDER",

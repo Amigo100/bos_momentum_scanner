@@ -1,529 +1,516 @@
 [
   {
-    "id": "saturday_1_0",
+    "id": "saturday_2_0",
     "day": "Saturday",
-    "slot": 1,
-    "time": "08:00",
-    "text": "$MATV at $14.55 \u2014 momentum confirmed in defense manufacturing & supply chain security. Institutional accumulation pattern developing as sector rotation continues. Easy invalidation below $13.80. NFA",
+    "slot": 2,
+    "time": "10:00",
+    "text": "$MATV at $14.55 \u2014 defense manufacturing momentum confirmed. Supply chain security theme gaining institutional flow. Scanner locked onto structural trend confirmation. NFA.",
     "category": "SCANNER_RESULT",
     "scheduled_date": "2026-02-07",
-    "status": "failed",
+    "status": "pending",
     "posted": false,
-    "char_count": 198,
+    "char_count": 171,
     "mentioned_tickers": [
       "$MATV"
     ],
     "chart_required": true,
-    "chart_path": "trades/charts/funnel_graphic.png",
-    "timestamp": "2026-02-07T04:09:14.875975",
-    "error": "403 Forbidden"
+    "chart_path": "trades/charts/MATV_weekly_20260207.png",
+    "timestamp": "2026-02-08T04:27:44.806332"
   },
   {
-    "id": "saturday_2_1",
+    "id": "saturday_3_1",
     "day": "Saturday",
-    "slot": 2,
-    "time": "10:00",
-    "text": "Grid Infrastructure & Power Generation theme showing institutional accumulation signals. $MATV at $14.55 leading momentum with structural trend confirmation. Defense Manufacturing also heating up at 8.2/10 score. Infrastructure buildout creating multi-year tailwinds. NFA",
+    "slot": 3,
+    "time": "12:30",
+    "text": "Power grid modernization accelerating across utilities.\n\n$WCC from $281.63 to $315.27 (+11.9%)\n$STRL from $362.53 to $401.29 (+10.7%)  \n$MOD from $184.66 to $215.72 (+16.8%)\n\nInfrastructure spending flows following the data. Save this post. NFA.",
     "category": "THEME_ANALYSIS",
     "scheduled_date": "2026-02-07",
-    "status": "failed",
+    "status": "pending",
     "posted": false,
-    "char_count": 271,
+    "char_count": 245,
     "mentioned_tickers": [
-      "$MATV"
+      "$WCC",
+      "$STRL",
+      "$MOD"
     ],
     "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876013",
-    "error": "401 Unauthorized\nUnauthorized"
+    "timestamp": "2026-02-08T04:27:44.806398"
   },
   {
-    "id": "saturday_3_2",
-    "day": "Saturday",
-    "slot": 3,
-    "time": "12:30",
-    "text": "$LUMN setup invalidated below key support. Win more than you lose. NFA",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-07",
-    "status": "failed",
-    "posted": false,
-    "char_count": 70,
-    "mentioned_tickers": [
-      "$LUMN"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876031",
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "saturday_4_3",
+    "id": "saturday_4_2",
     "day": "Saturday",
     "slot": 4,
     "time": "15:30",
-    "text": "Discipline beats discretion every time. $MATV at $14.55 shows why: clear momentum confirmation above resistance, institutional volume backing the move. When the setup aligns with your criteria, execute. When it doesn't, wait. Simple rules compound into consistent results. NFA",
-    "category": "EDUCATIONAL",
+    "text": "$WCC from $281.63 to $315.27 (+11.9%)\n$STRL from $362.53 to $401.29 (+10.7%)\n\nInfrastructure themes delivering consistent gains. Power grid + AI cooling sectors showing institutional accumulation.\n\nSave this post. NFA",
+    "category": "PERFORMANCE",
     "scheduled_date": "2026-02-07",
-    "status": "failed",
-    "posted": false,
-    "char_count": 276,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876047",
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "saturday_5_4",
-    "day": "Saturday",
-    "slot": 5,
-    "time": "18:00",
-    "text": "The hardest part of trading isn't finding the setup \u2014 it's waiting for the right one. Passed on 12 tickers this week because they didn't meet our criteria. Then $MATV hit $14.55 with perfect momentum confirmation. Patience pays. Win more than you lose.",
-    "category": "ENGAGEMENT",
-    "scheduled_date": "2026-02-07",
-    "status": "pending",
-    "posted": false,
-    "char_count": 252,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876061"
-  },
-  {
-    "id": "sunday_2_5",
-    "day": "Sunday",
-    "slot": 2,
-    "time": "10:00",
-    "text": "Defense Manufacturing & Supply Chain Security momentum building. $MATV at $14.55 showing institutional accumulation as geopolitical tensions drive sector rotation into defense contractors. Theme score 8.2/10 suggests structural trend confirmation ahead. NFA",
-    "category": "THEME_ANALYSIS",
-    "scheduled_date": "2026-02-08",
-    "status": "failed",
-    "posted": false,
-    "char_count": 257,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876077",
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "sunday_3_6",
-    "day": "Sunday",
-    "slot": 3,
-    "time": "12:30",
-    "text": "Cannot generate SELL_SIGNAL tweet without ticker and price data. Please provide specific $TICKER and invalidation level.",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-08",
-    "status": "pending",
-    "posted": false,
-    "char_count": 120,
-    "mentioned_tickers": [
-      "$TICKE"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876090"
-  },
-  {
-    "id": "sunday_4_7",
-    "day": "Sunday",
-    "slot": 4,
-    "time": "15:30",
-    "text": "Sunday trading prep: Study your best setups when markets are closed. $MATV at $14.55 shows perfect momentum confirmation above key resistance. The pattern recognition comes from screen time, not shortcuts. Build your conviction through repetition. NFA",
-    "category": "EDUCATIONAL",
-    "scheduled_date": "2026-02-08",
-    "status": "pending",
-    "posted": false,
-    "char_count": 251,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876108"
-  },
-  {
-    "id": "monday_1_8",
-    "day": "Monday",
-    "slot": 1,
-    "time": "08:00",
-    "text": "$NVDA at $142.50 showing momentum confirmation above key resistance. Strong institutional accumulation pattern with volume supporting the breakout. NFA - easy invalidation below $138.",
-    "category": "SCANNER_RESULT",
-    "scheduled_date": "2026-02-09",
-    "status": "pending",
-    "posted": false,
-    "char_count": 183,
-    "mentioned_tickers": [
-      "$NVDA"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876122"
-  },
-  {
-    "id": "monday_2_9",
-    "day": "Monday",
-    "slot": 2,
-    "time": "10:00",
-    "text": "Precious Metals & Alternative Stores of Value theme showing strength with $MATV at $14.55 leading institutional accumulation. Energy Storage & Battery Infrastructure also elevated. Both themes confirming structural momentum heading into week. NFA",
-    "category": "THEME_ANALYSIS",
-    "scheduled_date": "2026-02-09",
-    "status": "pending",
-    "posted": false,
-    "char_count": 246,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876134"
-  },
-  {
-    "id": "monday_3_10",
-    "day": "Monday",
-    "slot": 3,
-    "time": "12:30",
-    "text": "$SPY setup invalidated below $580. Time to step aside. NFA",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-09",
-    "status": "pending",
-    "posted": false,
-    "char_count": 58,
-    "mentioned_tickers": [
-      "$SPY"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876145"
-  },
-  {
-    "id": "monday_4_11",
-    "day": "Monday",
-    "slot": 4,
-    "time": "15:30",
-    "text": "Trading discipline means cutting bad trades fast and letting winners run. $MATV at $14.55 shows clean momentum above key levels \u2014 but if it breaks support, the setup is invalidated. Size appropriately and stick to your plan. Win more than you lose. NFA",
-    "category": "EDUCATIONAL",
-    "scheduled_date": "2026-02-09",
-    "status": "pending",
-    "posted": false,
-    "char_count": 252,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876157"
-  },
-  {
-    "id": "monday_5_12",
-    "day": "Monday",
-    "slot": 5,
-    "time": "18:00",
-    "text": "Trading isn't about being right all the time. It's about being right more than you're wrong and managing risk when you're not. $MATV at $14.55 \u2014 sometimes the best trade is the one you don't take. Discipline beats emotion every time.",
-    "category": "ENGAGEMENT",
-    "scheduled_date": "2026-02-09",
-    "status": "pending",
-    "posted": false,
-    "char_count": 233,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876168"
-  },
-  {
-    "id": "tuesday_1_13",
-    "day": "Tuesday",
-    "slot": 1,
-    "time": "08:00",
-    "text": "$MSFT momentum confirmed above $445 with institutional accumulation visible on volume. Clean breakout from consolidation targeting $465 resistance. Easy invalidation below $440. NFA.",
-    "category": "SCANNER_RESULT",
-    "scheduled_date": "2026-02-10",
-    "status": "pending",
-    "posted": false,
-    "char_count": 182,
-    "mentioned_tickers": [
-      "$MSFT"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876185"
-  },
-  {
-    "id": "tuesday_2_14",
-    "day": "Tuesday",
-    "slot": 2,
-    "time": "10:00",
-    "text": "Energy Storage & Battery Infrastructure showing structural momentum. $MATV at $14.55 leading the charge with institutional accumulation patterns. Grid modernization spending creating tailwinds across the sector. NFA",
-    "category": "THEME_ANALYSIS",
-    "scheduled_date": "2026-02-10",
-    "status": "pending",
-    "posted": false,
-    "char_count": 215,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876196"
-  },
-  {
-    "id": "tuesday_3_15",
-    "day": "Tuesday",
-    "slot": 3,
-    "time": "12:30",
-    "text": "I need the specific ticker and price data to generate a SELL_SIGNAL tweet. You mentioned \"DATA (use EXACTLY these values):\" but didn't provide the actual ticker and price information. Could you please provide the specific $TICKER and invalidation level so I can create the tweet?",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-10",
-    "status": "pending",
-    "posted": false,
-    "char_count": 279,
-    "mentioned_tickers": [
-      "$TICKE"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876206"
-  },
-  {
-    "id": "tuesday_4_16",
-    "day": "Tuesday",
-    "slot": 4,
-    "time": "15:30",
-    "text": "$MATV at $14.55 shows why position sizing matters more than being right. Perfect entry, clean breakout, but if you risk 10% of your account on one trade, even winners can't overcome poor risk management. Size for survival, not for glory. NFA",
-    "category": "EDUCATIONAL",
-    "scheduled_date": "2026-02-10",
-    "status": "pending",
-    "posted": false,
-    "char_count": 241,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876216"
-  },
-  {
-    "id": "tuesday_5_17",
-    "day": "Tuesday",
-    "slot": 5,
-    "time": "18:00",
-    "text": "The hardest part of momentum trading isn't finding breakouts \u2014 it's staying disciplined when $MATV rips from $12 to $14.55 and your brain screams \"chase it.\" \n\nThe best setups wait for you. The worst ones make you wait for them.",
-    "category": "ENGAGEMENT",
-    "scheduled_date": "2026-02-10",
-    "status": "pending",
-    "posted": false,
-    "char_count": 228,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876228"
-  },
-  {
-    "id": "wednesday_1_18",
-    "day": "Wednesday",
-    "slot": 1,
-    "time": "08:00",
-    "text": "$TSLA at $347.50 shows momentum confirmed above key resistance. Volume spike on breakout + institutional accumulation pattern suggests continuation higher. Easy invalidation below $340. NFA.",
-    "category": "SCANNER_RESULT",
-    "scheduled_date": "2026-02-11",
-    "status": "pending",
-    "posted": false,
-    "char_count": 190,
-    "mentioned_tickers": [
-      "$TSLA"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876240"
-  },
-  {
-    "id": "wednesday_2_19",
-    "day": "Wednesday",
-    "slot": 2,
-    "time": "10:00",
-    "text": "$MSFT at $415.23 showing institutional accumulation above key support. Volume surge confirms momentum shift as tech sector rotation accelerates. Easy invalidation below $410. NFA",
-    "category": "SCANNER_RESULT",
-    "scheduled_date": "2026-02-11",
-    "status": "pending",
-    "posted": false,
-    "char_count": 178,
-    "mentioned_tickers": [
-      "$MSFT"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876251"
-  },
-  {
-    "id": "wednesday_3_20",
-    "day": "Wednesday",
-    "slot": 3,
-    "time": "12:30",
-    "text": "$TSLA setup invalidated below $350. Easy exit signal when momentum breaks key support. NFA.",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-11",
-    "status": "pending",
-    "posted": false,
-    "char_count": 91,
-    "mentioned_tickers": [
-      "$TSLA"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876261"
-  },
-  {
-    "id": "wednesday_4_21",
-    "day": "Wednesday",
-    "slot": 4,
-    "time": "15:30",
-    "text": "When $MATV hit $14.55, the setup looked perfect \u2014 but without proper risk management, even good entries can hurt you. Define your exit before you enter. Set stops. Size positions appropriately. The methodology matters, but discipline determines long-term success. NFA",
-    "category": "EDUCATIONAL",
-    "scheduled_date": "2026-02-11",
-    "status": "pending",
-    "posted": false,
-    "char_count": 267,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876272"
-  },
-  {
-    "id": "wednesday_5_22",
-    "day": "Wednesday",
-    "slot": 5,
-    "time": "18:00",
-    "text": "The hardest part isn't finding the setup \u2014 it's holding through the noise when $MATV moves from $14.55 to your target. Most traders exit too early because they confuse volatility with invalidation. Discipline separates consistent winners from the rest.",
-    "category": "ENGAGEMENT",
-    "scheduled_date": "2026-02-11",
-    "status": "pending",
-    "posted": false,
-    "char_count": 252,
-    "mentioned_tickers": [
-      "$MATV"
-    ],
-    "chart_required": false,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876282"
-  },
-  {
-    "id": "thursday_1_23",
-    "day": "Thursday",
-    "slot": 1,
-    "time": "08:00",
-    "text": "$SPY momentum confirmed above $589.50 as institutional buying accelerates into year-end. Volume surge supporting the breakout with clean technical structure. NFA but this setup has all the characteristics we scan for.",
-    "category": "SCANNER_RESULT",
-    "scheduled_date": "2026-02-12",
     "status": "pending",
     "posted": false,
     "char_count": 217,
     "mentioned_tickers": [
-      "$SPY"
+      "$WCC",
+      "$STRL"
     ],
-    "chart_required": true,
+    "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876296"
+    "timestamp": "2026-02-08T04:27:44.806428"
   },
   {
-    "id": "thursday_2_24",
+    "id": "saturday_5_3",
+    "day": "Saturday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Five positions running. Portfolio tight. Risk managed.\n\nWhat's the hardest part of momentum trading for you \u2014 finding the setups or staying disciplined once you're in?\n\nNFA",
+    "category": "ENGAGEMENT",
+    "scheduled_date": "2026-02-07",
+    "status": "pending",
+    "posted": false,
+    "char_count": 172,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806455"
+  },
+  {
+    "id": "sunday_2_4",
+    "day": "Sunday",
+    "slot": 2,
+    "time": "10:00",
+    "text": "Three momentum plays delivering:\n\n$STRL: $362.53 \u2192 $401.29 (+10.7%)\n$MOD: $184.66 \u2192 $215.72 (+16.8%) \n$WCC: $281.63 \u2192 $315.27 (+11.9%)\n\nInfrastructure themes stay strong. Trailing stops locked across all positions.\n\nSave this post. NFA",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-08",
+    "status": "pending",
+    "posted": false,
+    "char_count": 235,
+    "mentioned_tickers": [
+      "$STRL",
+      "$MOD",
+      "$WCC"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806481"
+  },
+  {
+    "id": "sunday_3_5",
+    "day": "Sunday",
+    "slot": 3,
+    "time": "12:30",
+    "text": "$LUMN setup invalidated. Win more than you lose. Capital preservation beats chasing bad setups every time. NFA",
+    "category": "SELL_SIGNAL",
+    "scheduled_date": "2026-02-08",
+    "status": "pending",
+    "posted": false,
+    "char_count": 110,
+    "mentioned_tickers": [
+      "$LUMN"
+    ],
+    "chart_required": true,
+    "chart_path": "trades/charts/LUMN_weekly_20260207.png",
+    "timestamp": "2026-02-08T04:27:44.806506"
+  },
+  {
+    "id": "sunday_4_6",
+    "day": "Sunday",
+    "slot": 4,
+    "time": "15:30",
+    "text": "On my radar: $MATV at $14.55. Defense supply chain theme gaining traction. Watching for final momentum confirmation before entry. NFA.",
+    "category": "WATCHLIST",
+    "scheduled_date": "2026-02-08",
+    "status": "pending",
+    "posted": false,
+    "char_count": 134,
+    "mentioned_tickers": [
+      "$MATV"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806531"
+  },
+  {
+    "id": "sunday_5_7",
+    "day": "Sunday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Weekly momentum scanner tracks institutional flows and sector rotations. Currently watching 5 positions with $WCC +12% and $STRL +11% delivering. Full analysis and trade reasoning in the newsletter: https://sterlingsignals.substack.com NFA",
+    "category": "NEWSLETTER_CTA",
+    "scheduled_date": "2026-02-08",
+    "status": "pending",
+    "posted": false,
+    "char_count": 239,
+    "mentioned_tickers": [
+      "$WCC",
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806555"
+  },
+  {
+    "id": "monday_2_8",
+    "day": "Monday",
+    "slot": 2,
+    "time": "10:00",
+    "text": "Multiple receipts stacking up:\n\n$MOD from $184.66 to $215.72 (+16.8%)\n$WCC from $281.63 to $315.27 (+11.9%) \n$STRL from $362.53 to $401.29 (+10.7%)\n\nInfrastructure themes delivering. Trailing stops locked.\n\nSave this post.",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-09",
+    "status": "pending",
+    "posted": false,
+    "char_count": 222,
+    "mentioned_tickers": [
+      "$MOD",
+      "$WCC",
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806580"
+  },
+  {
+    "id": "monday_3_9",
+    "day": "Monday",
+    "slot": 3,
+    "time": "12:30",
+    "text": "$STRL testing $400 psychological resistance after clearing entry at $362.53. Strong momentum in AI cooling sector. Invalidation below $362 closes the trade. NFA!",
+    "category": "TECHNICAL_ANALYSIS",
+    "scheduled_date": "2026-02-09",
+    "status": "pending",
+    "posted": false,
+    "char_count": 161,
+    "mentioned_tickers": [
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806603"
+  },
+  {
+    "id": "monday_4_10",
+    "day": "Monday",
+    "slot": 4,
+    "time": "15:30",
+    "text": "$MATV building at $14.55. Defense manufacturing theme showing institutional accumulation. Monitoring for momentum confirmation above current levels. NFA.",
+    "category": "WATCHLIST",
+    "scheduled_date": "2026-02-09",
+    "status": "pending",
+    "posted": false,
+    "char_count": 153,
+    "mentioned_tickers": [
+      "$MATV"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806627"
+  },
+  {
+    "id": "monday_5_11",
+    "day": "Monday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Portfolio running 5 deep. Risk tight. Every position earns its spot or gets cut. No passengers. NFA",
+    "category": "ENGAGEMENT",
+    "scheduled_date": "2026-02-09",
+    "status": "pending",
+    "posted": false,
+    "char_count": 99,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806650"
+  },
+  {
+    "id": "tuesday_2_12",
+    "day": "Tuesday",
+    "slot": 2,
+    "time": "10:00",
+    "text": "Infrastructure plays printing receipts:\n\n$WCC: $281.63 \u2192 $315.27 (+11.9%)\n$STRL: $362.53 \u2192 $401.29 (+10.7%)\n\nPower grid modernization + AI cooling demand = structural tailwinds. Trailing stops active on both.\n\nSave this post.",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-10",
+    "status": "pending",
+    "posted": false,
+    "char_count": 225,
+    "mentioned_tickers": [
+      "$WCC",
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806673"
+  },
+  {
+    "id": "tuesday_3_13",
+    "day": "Tuesday",
+    "slot": 3,
+    "time": "12:30",
+    "text": "$STRL momentum confirmed above $400 psychological level. AI cooling infrastructure theme gaining institutional traction. Setup invalidated on close below $362 entry. NFA!",
+    "category": "TECHNICAL_ANALYSIS",
+    "scheduled_date": "2026-02-10",
+    "status": "pending",
+    "posted": false,
+    "char_count": 170,
+    "mentioned_tickers": [
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806697"
+  },
+  {
+    "id": "tuesday_4_14",
+    "day": "Tuesday",
+    "slot": 4,
+    "time": "15:30",
+    "text": "$MOD sitting pretty at $215.72 after +16% move from entry. Key support holding at $184 zone. Setup invalidated on close below $172.58. NFA",
+    "category": "TECHNICAL_ANALYSIS",
+    "scheduled_date": "2026-02-10",
+    "status": "pending",
+    "posted": false,
+    "char_count": 138,
+    "mentioned_tickers": [
+      "$MOD"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806719"
+  },
+  {
+    "id": "tuesday_5_15",
+    "day": "Tuesday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Five positions running. Each one earned its spot through data, not hope. What's your filter for letting trades into your portfolio?",
+    "category": "ENGAGEMENT",
+    "scheduled_date": "2026-02-10",
+    "status": "pending",
+    "posted": false,
+    "char_count": 131,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806742"
+  },
+  {
+    "id": "wednesday_2_16",
+    "day": "Wednesday",
+    "slot": 2,
+    "time": "10:00",
+    "text": "Receipts keep stacking up:\n\n$STRL $362.53 \u2192 $401.29 (+10.7%)\n$MOD $184.66 \u2192 $215.72 (+16.8%) \n$WCC $281.63 \u2192 $315.27 (+11.9%)\n\nInfrastructure and AI themes delivering. Data doesn't lie.\n\nSave this post \ud83d\udccc\n\nNFA",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-11",
+    "status": "pending",
+    "posted": false,
+    "char_count": 208,
+    "mentioned_tickers": [
+      "$STRL",
+      "$MOD",
+      "$WCC"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806777"
+  },
+  {
+    "id": "wednesday_3_17",
+    "day": "Wednesday",
+    "slot": 3,
+    "time": "12:30",
+    "text": "Discipline beats strategy every time. 3 of 5 positions profitable because each cleared every filter before entry. No ego trades, no FOMO chases, no exceptions. The hardest part isn't finding setups \u2014 it's saying no to the ones that don't qualify. NFA",
+    "category": "EDUCATIONAL",
+    "scheduled_date": "2026-02-11",
+    "status": "pending",
+    "posted": false,
+    "char_count": 250,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806801"
+  },
+  {
+    "id": "wednesday_4_18",
+    "day": "Wednesday",
+    "slot": 4,
+    "time": "15:30",
+    "text": "Discipline beats greed every time. 3 winners running doesn't mean chase the 4th. Our filter stays tight for a reason - it's what separates momentum from noise. Wait for setups that clear all criteria. NFA",
+    "category": "EDUCATIONAL",
+    "scheduled_date": "2026-02-11",
+    "status": "pending",
+    "posted": false,
+    "char_count": 204,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806831"
+  },
+  {
+    "id": "wednesday_5_19",
+    "day": "Wednesday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Running 5 positions means 5 different reasons to be in the market. Each ticker earned its spot through data, not hope. What's your filter for deciding what deserves your capital?",
+    "category": "ENGAGEMENT",
+    "scheduled_date": "2026-02-11",
+    "status": "pending",
+    "posted": false,
+    "char_count": 178,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806854"
+  },
+  {
+    "id": "thursday_2_20",
     "day": "Thursday",
     "slot": 2,
     "time": "10:00",
-    "text": "$NVDA momentum confirmed above $140. Institutional accumulation pattern with volume surge supporting the breakout. Watching for continuation through $145 resistance. Easy invalidation below $138. NFA.",
-    "category": "SCANNER_RESULT",
+    "text": "Clean sweep across three themes:\n\n$MOD from $184.66 to $215.72 (+16.8%)\n$WCC from $281.63 to $315.27 (+11.9%) \n$STRL from $362.53 to $401.29 (+10.7%)\n\nData-driven entries. Momentum confirmed. Trailing stops locked.\n\nSave this post.\n\nNFA",
+    "category": "PERFORMANCE",
     "scheduled_date": "2026-02-12",
     "status": "pending",
     "posted": false,
-    "char_count": 200,
+    "char_count": 236,
     "mentioned_tickers": [
-      "$NVDA"
+      "$MOD",
+      "$WCC",
+      "$STRL"
     ],
-    "chart_required": true,
+    "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876307"
+    "timestamp": "2026-02-08T04:27:44.806877"
   },
   {
-    "id": "thursday_3_25",
+    "id": "thursday_3_21",
     "day": "Thursday",
     "slot": 3,
     "time": "12:30",
-    "text": "$NVDA setup invalidated below $140. Risk management first. NFA.",
-    "category": "SELL_SIGNAL",
-    "scheduled_date": "2026-02-12",
-    "status": "pending",
-    "posted": false,
-    "char_count": 63,
-    "mentioned_tickers": [
-      "$NVDA"
-    ],
-    "chart_required": true,
-    "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876318"
-  },
-  {
-    "id": "thursday_4_26",
-    "day": "Thursday",
-    "slot": 4,
-    "time": "15:30",
-    "text": "Trading discipline means sticking to your plan even when emotions run high. Example: $MATV at $14.55 shows strong momentum, but if it breaks below your invalidation level, you exit. No second-guessing, no \"maybe it'll recover.\" Rules over feelings every time. NFA",
+    "text": "Risk management isn't about being right \u2014 it's about being wrong less expensively. 3 profitable positions out of 5 beats going all-in on one \"sure thing\" that gaps down 20%. Capital preservation > ego validation. NFA",
     "category": "EDUCATIONAL",
     "scheduled_date": "2026-02-12",
     "status": "pending",
     "posted": false,
-    "char_count": 263,
+    "char_count": 216,
+    "mentioned_tickers": [],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806901"
+  },
+  {
+    "id": "thursday_4_22",
+    "day": "Thursday",
+    "slot": 4,
+    "time": "15:30",
+    "text": "Two themes delivering double-digit gains:\n\n$WCC from $281.63 to $315.27 (+11.9%)\n$STRL from $362.53 to $401.29 (+10.7%)\n\nPower grid infrastructure and AI cooling both following institutional flows. Save this post.\n\nNFA",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-12",
+    "status": "pending",
+    "posted": false,
+    "char_count": 218,
     "mentioned_tickers": [
-      "$MATV"
+      "$WCC",
+      "$STRL"
     ],
     "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876329"
+    "timestamp": "2026-02-08T04:27:44.806925"
   },
   {
-    "id": "friday_3_27",
+    "id": "thursday_5_23",
+    "day": "Thursday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Weekly momentum scanning delivered straight to your inbox. Current portfolio tracking shows $WCC +12% and $STRL +11% from recent entries. 5 positions selected through data-driven screening. Get the full breakdown: https://sterlingsignals.substack.com NFA",
+    "category": "NEWSLETTER_CTA",
+    "scheduled_date": "2026-02-12",
+    "status": "pending",
+    "posted": false,
+    "char_count": 254,
+    "mentioned_tickers": [
+      "$WCC",
+      "$STRL"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806947"
+  },
+  {
+    "id": "friday_2_24",
+    "day": "Friday",
+    "slot": 2,
+    "time": "10:00",
+    "text": "Three momentum plays delivering double digits:\n\n$STRL: $362.53 \u2192 $401.29 (+10.7%)\n$MOD: $184.66 \u2192 $215.72 (+16.8%) \n$WCC: $281.63 \u2192 $315.27 (+11.9%)\n\nInfrastructure themes aligned with institutional flows. Trailing stops active across all positions.\n\nSave this post. NFA",
+    "category": "PERFORMANCE",
+    "scheduled_date": "2026-02-13",
+    "status": "pending",
+    "posted": false,
+    "char_count": 270,
+    "mentioned_tickers": [
+      "$STRL",
+      "$MOD",
+      "$WCC"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.806970"
+  },
+  {
+    "id": "friday_3_25",
     "day": "Friday",
     "slot": 3,
     "time": "12:30",
-    "text": "$AAPL setup invalidated below $220. Easy exit signal confirmed. NFA.",
-    "category": "SELL_SIGNAL",
+    "text": "Portfolio update: $MOD from $184.66 to $215.72 (+16.8%), $WCC from $281.63 to $315.27 (+11.9%), $STRL from $362.53 to $401.29 (+10.7%). Infrastructure themes showing institutional strength. Save this post. NFA",
+    "category": "PERFORMANCE",
     "scheduled_date": "2026-02-13",
     "status": "pending",
     "posted": false,
-    "char_count": 68,
+    "char_count": 209,
     "mentioned_tickers": [
-      "$AAPL"
+      "$MOD",
+      "$WCC",
+      "$STRL"
     ],
-    "chart_required": true,
+    "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876372"
+    "timestamp": "2026-02-08T04:27:44.806993"
   },
   {
-    "id": "friday_5_28",
+    "id": "friday_4_26",
     "day": "Friday",
-    "slot": 5,
-    "time": "18:00",
-    "text": "The hardest part of trading isn't finding setups like $MATV at $14.55 \u2014 it's having the discipline to wait for your edge and the conviction to act when it appears. Most traders lose money not because they can't analyze, but because they can't execute their plan consistently.",
-    "category": "ENGAGEMENT",
+    "slot": 4,
+    "time": "15:30",
+    "text": "Defense Manufacturing & Supply Chain Security scores 8.2/10 \u2014 highest theme rating this week.\n\n$WCC from $281.63 to $315.27 (+11.9%)\n$STRL from $362.53 to $401.29 (+10.7%)\n$MOD from $184.66 to $215.72 (+16.8%)\n\nScanner adding $MATV at $14.55. Save this post. NFA.",
+    "category": "THEME_ANALYSIS",
     "scheduled_date": "2026-02-13",
     "status": "pending",
     "posted": false,
-    "char_count": 275,
+    "char_count": 263,
     "mentioned_tickers": [
+      "$WCC",
+      "$STRL",
+      "$MOD",
       "$MATV"
     ],
     "chart_required": false,
     "chart_path": null,
-    "timestamp": "2026-02-07T04:09:14.876386"
+    "timestamp": "2026-02-08T04:27:44.807017"
+  },
+  {
+    "id": "friday_5_27",
+    "day": "Friday",
+    "slot": 5,
+    "time": "18:00",
+    "text": "Power grid modernization accelerating across multiple sectors.\n\n$WCC from $281.63 to $315.27 (+11.9%)\n$STRL from $362.53 to $401.29 (+10.7%) \n$MOD from $184.66 to $215.72 (+16.8%)\n\nInfrastructure spending creating sustained momentum. Save this post. NFA.",
+    "category": "THEME_ANALYSIS",
+    "scheduled_date": "2026-02-13",
+    "status": "pending",
+    "posted": false,
+    "char_count": 254,
+    "mentioned_tickers": [
+      "$WCC",
+      "$STRL",
+      "$MOD"
+    ],
+    "chart_required": false,
+    "chart_path": null,
+    "timestamp": "2026-02-08T04:27:44.807040"
   }
 ]

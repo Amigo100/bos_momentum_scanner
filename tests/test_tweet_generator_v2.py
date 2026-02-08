@@ -28,14 +28,17 @@ from content.tweet_generator import (
     _build_content_data,
     _generate_tweet,
     _log_failed_tweet,
+    _pick_closing_cta,
     _plan_weekly_schedule,
     _prepare_slot_data,
     _repair_tweet,
     _validate_tweet,
     _write_queues,
     ACCOUNT_QUEUES,
+    CLOSING_CTA_OPTIONS,
     CostTracker,
     MAX_TWEET_CHARS,
+    PORTFOLIO_POOL_CATEGORIES,
     WEEKLY_DAYS,
     WEEKLY_SLOTS,
 )
@@ -586,18 +589,18 @@ class TestValidationMaxRepairAttempts:
 class TestWeeklyScheduleCategoryRules:
     """Verify schedule planning obeys PRD section 4.1.3 rules."""
 
-    def test_performance_at_least_one_per_day_when_winners_exist(self):
-        """PERFORMANCE receipts: at least 1/day when winners exist."""
+    def test_performance_capped_at_3_per_week(self):
+        """PERFORMANCE receipts: max 3 per week, at least 1 when winners exist."""
         data = _sample_content_data()
         assert data.has_winners, "Test data should have winners"
 
         schedule = _plan_weekly_schedule(data)
 
-        for day in WEEKLY_DAYS:
-            day_assignments = [s for s in schedule if s.day == day]
-            perf_count = sum(1 for s in day_assignments if s.category == "PERFORMANCE")
-            assert perf_count >= 1, \
-                f"Day '{day}' has {perf_count} PERFORMANCE tweets (need >= 1 when winners exist)"
+        perf_count = sum(1 for s in schedule if s.category == "PERFORMANCE")
+        assert perf_count >= 1, \
+            f"PERFORMANCE should appear at least once when winners exist, got {perf_count}"
+        assert perf_count <= 3, \
+            f"PERFORMANCE count {perf_count} exceeds weekly limit of 3"
 
     def test_scanner_result_on_saturday(self):
         """SCANNER_RESULT should appear on Saturday (day after weekly scan)."""
@@ -667,3 +670,74 @@ class TestWeeklyScheduleCategoryRules:
         for s in schedule:
             assert s.category in VALID_CATEGORIES, \
                 f"Invalid category '{s.category}' in schedule"
+
+    def test_daily_portfolio_pool_limit(self):
+        """No day should have more than 2 tweets from portfolio-pool categories."""
+        data = _sample_content_data()
+        schedule = _plan_weekly_schedule(data)
+
+        for day in WEEKLY_DAYS:
+            day_assignments = [s for s in schedule if s.day == day]
+            pool_count = sum(
+                1 for s in day_assignments if s.category in PORTFOLIO_POOL_CATEGORIES
+            )
+            assert pool_count <= 2, (
+                f"Day '{day}' has {pool_count} portfolio-pool tweets (max 2): "
+                f"{[s.category for s in day_assignments if s.category in PORTFOLIO_POOL_CATEGORIES]}"
+            )
+
+    def test_performance_fallback_prefers_data_rich(self):
+        """When PERFORMANCE is capped, freed slots should go to TA or THEME, not EDUCATIONAL."""
+        data = _sample_content_data()
+        schedule = _plan_weekly_schedule(data)
+
+        perf_count = sum(1 for s in schedule if s.category == "PERFORMANCE")
+        edu_count = sum(1 for s in schedule if s.category == "EDUCATIONAL")
+        ta_count = sum(1 for s in schedule if s.category == "TECHNICAL_ANALYSIS")
+        theme_count = sum(1 for s in schedule if s.category == "THEME_ANALYSIS")
+
+        # PERFORMANCE must be within its weekly limit
+        assert perf_count <= 3, f"PERFORMANCE {perf_count} > 3"
+        # TA + THEME should have meaningful presence (pick up freed slots)
+        assert ta_count + theme_count >= 4, \
+            f"TA ({ta_count}) + THEME ({theme_count}) should pick up freed slots"
+        # EDUCATIONAL should not dominate — more TA+THEME than EDUCATIONAL
+        assert ta_count + theme_count > edu_count, \
+            f"TA+THEME ({ta_count + theme_count}) should exceed EDUCATIONAL ({edu_count})"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEST 13: Closing CTA variety
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestClosingCTAVariety:
+    """Verify closing CTA rotation prevents 'Save this post' monotony."""
+
+    def test_pick_closing_cta_rotates(self):
+        """CTAs should rotate — recently used options are skipped."""
+        # With no recent closings, pick first option
+        cta1 = _pick_closing_cta([])
+        assert cta1 == CLOSING_CTA_OPTIONS[0]  # "Save this post"
+
+        # With "Save this post" recently used, pick next
+        cta2 = _pick_closing_cta(["Save this post. NFA"])
+        assert cta2 != "Save this post"
+        assert cta2 in CLOSING_CTA_OPTIONS or cta2 is None
+
+        # With first two used, pick third
+        cta3 = _pick_closing_cta(["Save this post. NFA", "Revisit this soonish. NFA"])
+        assert cta3 not in ("Save this post", "Revisit this soonish")
+
+    def test_pick_closing_cta_all_used(self):
+        """When all options recently used, cycle back to first non-None."""
+        all_used = [
+            "Save this post. NFA",
+            "Revisit this soonish!",
+            "Bookmark this. NFA",
+            "Just a natural ending with NFA",  # matches None (no CTA keyword)
+        ]
+        cta = _pick_closing_cta(all_used)
+        # Should still return something (cycles back)
+        assert cta is not None or cta is None  # always valid
+        # If all non-None options used, should still return a non-None fallback
+        assert cta == "Save this post"  # cycles back to first

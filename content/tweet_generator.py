@@ -120,10 +120,16 @@ CATEGORY_WEEKLY_LIMITS: Dict[str, int] = {
     "NEWSLETTER_CTA": 2,
     "THEME_ANALYSIS": 8,
     "MARKET_COMMENTARY": 4,
+    "PERFORMANCE": 3,
 }
 
 # No category should appear more than twice per day
 MAX_SAME_CATEGORY_PER_DAY = 2
+
+# Categories that draw from the same underlying ticker pool (portfolio positions).
+# Limit per day prevents the same tickers appearing in 3+ tweets on one day.
+PORTFOLIO_POOL_CATEGORIES = {"PERFORMANCE", "THEME_ANALYSIS", "TECHNICAL_ANALYSIS"}
+MAX_PORTFOLIO_POOL_PER_DAY = 2
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -300,6 +306,43 @@ CATEGORY_EXAMPLES: Dict[str, str] = {
 }
 
 
+# Closing CTA phrases — rotated to prevent "Save this post" monotony.
+# Used when a tweet has 3+ tickers. None = no CTA (end naturally).
+CLOSING_CTA_OPTIONS: List[Optional[str]] = [
+    "Save this post",
+    "Revisit this soonish",
+    "Bookmark this",
+    None,
+]
+
+
+def _pick_closing_cta(recent_closings: Optional[List[str]] = None) -> Optional[str]:
+    """Pick a closing CTA not found in the last 5 tweet closings."""
+    used: Set[Optional[str]] = set()
+    if recent_closings:
+        named_opts = [o for o in CLOSING_CTA_OPTIONS if o is not None]
+        for closing in recent_closings:
+            closing_lower = closing.lower()
+            matched = False
+            for opt in named_opts:
+                if opt.lower() in closing_lower:
+                    used.add(opt)
+                    matched = True
+            # If no named CTA matched, this closing had no CTA (= None option used)
+            if not matched:
+                used.add(None)
+
+    for opt in CLOSING_CTA_OPTIONS:
+        if opt not in used:
+            return opt
+
+    # All recently used — cycle back to first non-None
+    for opt in CLOSING_CTA_OPTIONS:
+        if opt is not None:
+            return opt
+    return None
+
+
 def _load_style_guide() -> str:
     """Load the FinTwit style guide text. Falls back to embedded version."""
     if STYLE_GUIDE_PATH.exists():
@@ -455,6 +498,7 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
         day_engagement_used = False
         day_performance_placed = False
         day_category_counts: Dict[str, int] = {}  # Reset per day
+        day_portfolio_pool_count = 0  # Track portfolio-pool categories per day
 
         for slot in WEEKLY_SLOTS:
             assert slot != 1, "Slot 1 must not appear in weekly schedule (reserved for daily queue)"
@@ -470,6 +514,7 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
                 planned_counts=planned_counts,
                 week_category_counts=week_category_counts,
                 day_category_counts=day_category_counts,
+                day_portfolio_pool_count=day_portfolio_pool_count,
             )
 
             schedule.append(SlotAssignment(
@@ -492,6 +537,10 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
             # Update repetition counts
             week_category_counts[category] = week_category_counts.get(category, 0) + 1
             day_category_counts[category] = day_category_counts.get(category, 0) + 1
+
+            # Track portfolio pool usage per day
+            if category in PORTFOLIO_POOL_CATEGORIES:
+                day_portfolio_pool_count += 1
 
             # Track planned data consumption
             if category in _CONSUME_MAP:
@@ -573,6 +622,7 @@ def _pick_category(
     planned_counts: Optional[Dict[str, int]] = None,
     week_category_counts: Optional[Dict[str, int]] = None,
     day_category_counts: Optional[Dict[str, int]] = None,
+    day_portfolio_pool_count: int = 0,
 ) -> Tuple[str, str]:
     """Pick the best category for a given day/slot based on rules, data, and limits.
 
@@ -585,6 +635,9 @@ def _pick_category(
     dc = day_category_counts or {}
 
     def _try(cat: str, key: str) -> Optional[Tuple[str, str]]:
+        # Gate portfolio-pool categories to prevent same-ticker saturation per day
+        if cat in PORTFOLIO_POOL_CATEGORIES and day_portfolio_pool_count >= MAX_PORTFOLIO_POOL_PER_DAY:
+            return None
         return _try_assign(cat, key, data, pc, wc, dc)
 
     def _fallback(
@@ -628,15 +681,17 @@ def _pick_category(
     # Slot 2: PERFORMANCE receipt if winners/notable exist
     if slot == 2 and not day_performance_placed:
         result = _fallback("PERFORMANCE", "winners", [
-            ("ENGAGEMENT", "engagement"),
+            ("TECHNICAL_ANALYSIS", "holdings"),
+            ("THEME_ANALYSIS", "themes"),
         ])
         if result:
             return result
 
-    # Slot 4: ensure at least 1 PERFORMANCE per day
+    # Slot 4: PERFORMANCE if not yet placed today
     if slot == 4 and not day_performance_placed:
         result = _fallback("PERFORMANCE", "winners", [
-            ("ENGAGEMENT", "engagement"),
+            ("TECHNICAL_ANALYSIS", "holdings"),
+            ("THEME_ANALYSIS", "themes"),
         ])
         if result:
             return result
@@ -721,8 +776,10 @@ def _pick_category(
         if result:
             return result
 
-    # Last resort: THEME_ANALYSIS ignoring weekly limit (themes are varied content)
-    if data.has_themes and _data_available("THEME_ANALYSIS", data, pc):
+    # Last resort: THEME_ANALYSIS ignoring weekly limit (themes recycle with varied LLM output)
+    # But still respect the per-day portfolio pool limit to prevent ticker monotony
+    pool_ok = day_portfolio_pool_count < MAX_PORTFOLIO_POOL_PER_DAY
+    if data.has_themes and pool_ok:
         logger.warning("All limits exhausted — assigning THEME_ANALYSIS overflow")
         return "THEME_ANALYSIS", "themes"
 
@@ -792,6 +849,7 @@ def _build_user_prompt(
     slot_data: Dict,
     slot: SlotAssignment,
     recent_openings: Optional[List[str]] = None,
+    recent_closings: Optional[List[str]] = None,
 ) -> str:
     """Build the user prompt for a specific tweet, injecting structured data."""
 
@@ -813,10 +871,11 @@ def _build_user_prompt(
                 f"  ${{ticker}}: ${sig.get('symbol', '??')} at ${sig.get('price', 0):.2f} "
                 f"| Theme: {sig.get('theme', 'N/A')} | Thesis: {sig.get('catalyst_summary', 'momentum confirmed')}"
             )
-        prompt_parts.append(
-            "  If listing 3+ tickers, end with a bookmark CTA like "
-            "'Probably want to save this post' or 'Save this list'."
-        )
+        _cta = _pick_closing_cta(recent_closings)
+        if _cta:
+            prompt_parts.append(f"  If listing 3+ tickers, end with: '{_cta}'")
+        else:
+            prompt_parts.append("  End naturally with NFA or a concise hook.")
 
     elif category == "PERFORMANCE" and ("winners" in slot_data or "notable" in slot_data):
         all_positions = slot_data.get("winners", []) + slot_data.get("notable", [])
@@ -828,10 +887,12 @@ def _build_user_prompt(
                 f"  ${w.get('ticker', '??')} from ${entry:.2f} to ${current:.2f} (+{pnl:.1f}%)"
                 f" | Theme: {w.get('theme', 'N/A')}"
             )
+        _cta = _pick_closing_cta(recent_closings)
+        cta_instruction = f" If showing 3+ tickers, end with: '{_cta}'" if _cta else ""
         prompt_parts.append(
             "  Show ALL these positions as receipts with entry → current → % gain. "
-            "Multi-ticker receipt format preferred when 2+ tickers available. "
-            "End with a bookmark CTA like 'Save this post' when showing 3+ tickers."
+            "Multi-ticker receipt format preferred when 2+ tickers available."
+            + cta_instruction
         )
 
     elif category == "THEME_ANALYSIS" and "themes" in slot_data:
@@ -848,11 +909,13 @@ def _build_user_prompt(
                     f"(+{t['pnl_pct']}% from ${t['entry_price']:.2f}) "
                     f"| Theme: {t['theme']}"
                 )
+            _cta = _pick_closing_cta(recent_closings)
+            cta_instruction = f" If 3+ tickers, end with: '{_cta}'" if _cta else ""
             prompt_parts.append(
                 "  CRITICAL: Use ONLY the portfolio tickers listed above. "
                 "Do NOT invent or add any tickers not shown here. "
-                "Structure: Theme observation → each ticker with entry→current→% on its own line → closing hook. "
-                "If 3+ tickers, end with a bookmark CTA like 'Save this post'."
+                "Structure: Theme observation → each ticker with entry→current→% on its own line → closing hook."
+                + cta_instruction
             )
         if "tickers" in slot_data:
             prompt_parts.append("  Scanner signals in this theme:")
@@ -876,12 +939,14 @@ def _build_user_prompt(
                 f" | Theme: {cs.get('theme', 'N/A')}"
                 f" | Watching for: {cs.get('action', 'momentum confirmation')}"
             )
+        _cta = _pick_closing_cta(recent_closings)
+        cta_instruction = f" If listing 3+ tickers, end with: '{_cta}'" if _cta else ""
         prompt_parts.append(
             "  Write a watchlist tweet. Open with a hook like 'On my radar:' or "
             "'Watching closely:'. List each ticker with price. "
-            "Close with what needs to happen for entry. "
-            "If listing 3+ tickers, end with 'Revisit this post soonish' or 'Save this list'. "
-            "End with NFA."
+            "Close with what needs to happen for entry."
+            + cta_instruction
+            + " End with NFA."
         )
 
     elif category == "NEWSLETTER_CTA":
@@ -1144,6 +1209,7 @@ def _generate_tweet(
     client,
     cost_tracker: CostTracker,
     recent_openings: Optional[List[str]] = None,
+    recent_closings: Optional[List[str]] = None,
 ) -> Tweet:
     """
     Make a single LLM call to generate one tweet.
@@ -1156,12 +1222,13 @@ def _generate_tweet(
         client: Anthropic client instance
         cost_tracker: Running cost tracker
         recent_openings: First 60 chars of recent tweet openings to avoid repetition
+        recent_closings: Last lines of recent tweets to avoid CTA repetition
 
     Returns:
         Tweet object with text, category, chart_required, tickers_mentioned
     """
     system_prompt = _build_system_prompt(style_guide)
-    user_prompt = _build_user_prompt(category, slot_data, slot, recent_openings=recent_openings)
+    user_prompt = _build_user_prompt(category, slot_data, slot, recent_openings=recent_openings, recent_closings=recent_closings)
 
     response = client.messages.create(
         model=MODEL,
@@ -1719,6 +1786,7 @@ def generate_weekly_content(
     # 4. Generate + validate + repair
     valid_tweets: List[Tweet] = []
     recent_openings: List[str] = []  # Track tweet openings for diversity
+    recent_closings: List[str] = []  # Track closing CTAs for variety
     failed_count = 0
     by_category: Dict[str, int] = {}
     used_indices: Dict[str, int] = {}
@@ -1743,6 +1811,7 @@ def generate_weekly_content(
             client=client,
             cost_tracker=cost_tracker,
             recent_openings=recent_openings,
+            recent_closings=recent_closings,
         )
 
         # Validate
@@ -1770,6 +1839,11 @@ def generate_weekly_content(
             recent_openings.append(opening)
             if len(recent_openings) > 10:
                 recent_openings = recent_openings[-10:]
+            # Track closing phrase for CTA variety (last line, first 60 chars)
+            closing = tweet.text.strip().split("\n")[-1][:60]
+            recent_closings.append(closing)
+            if len(recent_closings) > 5:
+                recent_closings = recent_closings[-5:]
         else:
             logger.warning(
                 "DROPPED tweet after %d repairs: %s/%s %s — %s",

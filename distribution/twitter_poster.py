@@ -477,8 +477,12 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
     """Post a single tweet with optional media."""
 
     text = tweet.get("text", "")
-    # Support both legacy 'image_path' and new 'chart_path' fields
-    image_path = tweet.get("chart_path") or tweet.get("image_path")
+    # Support multi-chart (chart_paths list), single chart, and legacy image_path
+    chart_paths = tweet.get("chart_paths") or []
+    if not chart_paths:
+        single = tweet.get("chart_path") or tweet.get("image_path")
+        if single:
+            chart_paths = [single]
     tweet_id = tweet.get("id", "unknown")
 
     # MASTER_TODO_v2: Pre-post validation - LAST LINE OF DEFENSE
@@ -503,20 +507,24 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
 
     if dry_run:
         print(f"\n  DRY RUN - would post this tweet")
-        if image_path:
-            print(f"  Would attach: {image_path}")
+        if chart_paths:
+            print(f"  Would attach {len(chart_paths)} image(s): {', '.join(chart_paths)}")
         if tweet.get('template_id'):
             print(f"  Template: {tweet.get('template_id')}")
         print(f"  Method: {tweet.get('generation_method', 'unknown')}")
         return True
-    
+
     try:
-        # Upload media if present
+        # Upload media if present (up to 4 images per Twitter API)
         media_ids = None
-        if image_path:
-            media_id = upload_media(api_v1, image_path)
-            if media_id:
-                media_ids = [media_id]
+        if chart_paths:
+            media_ids = []
+            for path in chart_paths[:4]:
+                media_id = upload_media(api_v1, path)
+                if media_id:
+                    media_ids.append(media_id)
+            if not media_ids:
+                media_ids = None  # No successful uploads
 
         # Post tweet with retry logic for transient failures
         max_retries = 3

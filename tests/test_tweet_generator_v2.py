@@ -388,12 +388,12 @@ class TestChartFlagSetCorrectly:
 
     def test_chart_flag_set_correctly(self):
         # Categories that REQUIRE charts
-        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL"}
+        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL", "PERFORMANCE"}
 
         # Categories that do NOT require charts
         not_required = {"THEME_ANALYSIS", "WATCHLIST", "EDUCATIONAL",
                         "MARKET_COMMENTARY", "ENGAGEMENT", "NEWSLETTER_CTA",
-                        "PERFORMANCE", "TECHNICAL_ANALYSIS"}
+                        "TECHNICAL_ANALYSIS"}
 
         # Verify against CHART_REQUIRED_CATEGORIES
         assert CHART_REQUIRED_CATEGORIES == required, \

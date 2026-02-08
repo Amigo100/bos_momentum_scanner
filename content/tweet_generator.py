@@ -1547,25 +1547,40 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
     funnel_used = False
 
     for tweet in tweets:
-        if not tweet.chart_required or tweet.chart_path:
+        if not tweet.chart_required or tweet.chart_path or tweet.chart_paths:
             continue  # Already has a chart or doesn't need one
 
-        # Try to match by ticker
-        matched = False
-        for ticker in tweet.tickers_mentioned:
-            clean_ticker = ticker.lstrip("$").upper()
-            chart_path = charts.get(clean_ticker)
-            if chart_path and isinstance(chart_path, str):
-                # Verify chart file exists on disk
-                full_path = BASE_DIR / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
-                if not full_path.exists():
-                    logger.warning("Chart file missing on disk for $%s: %s", clean_ticker, chart_path)
-                    continue  # Skip — don't attach a broken path
-                tweet.chart_path = chart_path
-                attached += 1
-                matched = True
-                logger.debug("Attached chart for $%s: %s", clean_ticker, chart_path)
-                break
+        # PERFORMANCE: multi-chart — attach up to 4 winner charts
+        if tweet.category == "PERFORMANCE":
+            for ticker in tweet.tickers_mentioned[:4]:
+                clean_ticker = ticker.lstrip("$").upper()
+                chart_path = charts.get(clean_ticker)
+                if chart_path and isinstance(chart_path, str):
+                    full_path = BASE_DIR / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
+                    if not full_path.exists():
+                        logger.warning("Chart file missing on disk for $%s: %s", clean_ticker, chart_path)
+                        continue
+                    tweet.chart_paths.append(chart_path)
+                    attached += 1
+                    logger.debug("Attached chart for $%s: %s (multi)", clean_ticker, chart_path)
+            matched = bool(tweet.chart_paths)
+        else:
+            # Single-chart: existing behavior (break after first match)
+            matched = False
+            for ticker in tweet.tickers_mentioned:
+                clean_ticker = ticker.lstrip("$").upper()
+                chart_path = charts.get(clean_ticker)
+                if chart_path and isinstance(chart_path, str):
+                    # Verify chart file exists on disk
+                    full_path = BASE_DIR / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
+                    if not full_path.exists():
+                        logger.warning("Chart file missing on disk for $%s: %s", clean_ticker, chart_path)
+                        continue  # Skip — don't attach a broken path
+                    tweet.chart_path = chart_path
+                    attached += 1
+                    matched = True
+                    logger.debug("Attached chart for $%s: %s", clean_ticker, chart_path)
+                    break
 
         # For SCANNER_RESULT tweets about overall stats (no specific tickers), use funnel graphic
         if not matched and not funnel_used and tweet.category == "SCANNER_RESULT" and not tweet.tickers_mentioned:
@@ -1591,7 +1606,8 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
                     tweet.chart_path = str(funnel_path)
                     attached += 1
                     logger.debug("Funnel fallback for %s tweet", tweet.category)
-                # PERFORMANCE, TECHNICAL_ANALYSIS, SELL_SIGNAL: no fallback — dropped later
+                # PERFORMANCE: exempt from drop (multi-chart, soft requirement)
+                # TECHNICAL_ANALYSIS, SELL_SIGNAL: no fallback — dropped later
 
     logger.info("Attached charts to %d / %d chart-required tweets", attached,
                 sum(1 for t in tweets if t.chart_required))
@@ -1622,7 +1638,9 @@ def _write_queues(
     dropped_no_chart = 0
     for i, tweet in enumerate(tweets):
         # Drop chart-required tweets that have no chart
-        if tweet.chart_required and not tweet.chart_path:
+        # PERFORMANCE exempt: receipt tweets are still valuable without charts
+        has_any_chart = tweet.chart_path or tweet.chart_paths
+        if tweet.chart_required and not has_any_chart and tweet.category != "PERFORMANCE":
             logger.warning(
                 "DROP %s tweet (chart required but missing): %.60s...",
                 tweet.category, tweet.text,
@@ -1654,6 +1672,7 @@ def _write_queues(
             "mentioned_tickers": tweet.tickers_mentioned,
             "chart_required": tweet.chart_required,
             "chart_path": tweet.chart_path,
+            "chart_paths": tweet.chart_paths,
             "timestamp": datetime.now().isoformat(),
         })
 
@@ -1869,7 +1888,7 @@ def generate_weekly_content(
     _write_queues(valid_tweets, ACCOUNT_QUEUES, out, data.scan_date)
 
     chart_required_count = sum(1 for t in valid_tweets if t.chart_required)
-    chart_attached_count = sum(1 for t in valid_tweets if t.chart_path)
+    chart_attached_count = sum(1 for t in valid_tweets if t.chart_path or t.chart_paths)
 
     logger.info(
         "Weekly generation complete: %d tweets, %d failed, %d charts required, %d charts attached",
@@ -2044,7 +2063,7 @@ def generate_daily_content(
     _write_queues(valid_tweets, DAILY_ACCOUNT_QUEUES, out, data.scan_date)
 
     chart_required_count = sum(1 for t in valid_tweets if t.chart_required)
-    chart_attached_count = sum(1 for t in valid_tweets if t.chart_path)
+    chart_attached_count = sum(1 for t in valid_tweets if t.chart_path or t.chart_paths)
 
     logger.info(
         "Daily generation complete: %d tweets, %d failed, %d charts attached",

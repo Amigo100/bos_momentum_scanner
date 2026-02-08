@@ -680,6 +680,41 @@ class TestDailyPostingIntegration:
         # Verify the chart file would be accessible (exists on disk)
         assert Path(entry["chart_path"]).exists()
 
+        # Verify chart_paths list is also written
+        assert "chart_paths" in entry
+        # For single-chart tweets, chart_paths may be empty (chart_path is the legacy field)
+
+    def test_multi_chart_performance_queue(self, tmpdir):
+        """PERFORMANCE tweets with chart_paths write multi-chart list to queue."""
+        tweet = Tweet(
+            text="$WCC +11.9%. $STRL +10.7%. $MOD +16.8%. NFA",
+            category="PERFORMANCE",
+            chart_required=True,
+            tickers_mentioned=["$WCC", "$STRL", "$MOD"],
+            chart_paths=[
+                "trades/charts/WCC_weekly_20260208.png",
+                "trades/charts/STRL_weekly_20260208.png",
+                "trades/charts/MOD_weekly_20260208.png",
+            ],
+            metadata={"day": "saturday", "slot": 4},
+        )
+
+        _write_queues([tweet], ACCOUNT_QUEUES, tmpdir, "2026-02-08")
+
+        queue_data = json.loads((tmpdir / "content_queue.json").read_text())
+        assert len(queue_data) == 1
+        entry = queue_data[0]
+
+        assert entry["chart_paths"] == [
+            "trades/charts/WCC_weekly_20260208.png",
+            "trades/charts/STRL_weekly_20260208.png",
+            "trades/charts/MOD_weekly_20260208.png",
+        ]
+        # Backwards compat: chart_path is first from chart_paths (via get_all_chart_paths)
+        # But since chart_path field is None and chart_paths is populated:
+        assert entry["chart_path"] is None  # Old field not set for multi-chart
+        assert len(entry["chart_paths"]) == 3
+
     def test_account_queue_paths_distinct(self):
         """All 3 accounts have distinct queue paths for both weekly and daily."""
         # Weekly queues
@@ -851,7 +886,7 @@ class TestContentValidationIntegration:
             Tweet(
                 text="$RCAT from $8.50 to $13.25 (+55.9%) — momentum confirmed on the weekly. Win more than you lose. NFA",
                 category="PERFORMANCE",
-                chart_required=False,
+                chart_required=True,
                 tickers_mentioned=["RCAT"],
             ),
             Tweet(

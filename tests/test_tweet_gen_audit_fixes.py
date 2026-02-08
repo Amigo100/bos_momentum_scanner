@@ -724,6 +724,64 @@ class TestChartFallback:
             "SELL_SIGNAL should NOT get funnel fallback"
         )
 
+    def test_performance_multi_chart_attachment(self, tmp_path):
+        """PERFORMANCE tweets get multiple charts attached (one per ticker)."""
+        charts_dir = tmp_path / "charts"
+        charts_dir.mkdir()
+
+        # Create 3 chart files for winner tickers
+        for ticker in ["WCC", "STRL", "MOD"]:
+            chart_file = charts_dir / f"{ticker}_weekly_20260208.png"
+            chart_file.write_bytes(b"\x89PNG" + b"\x00" * 50)
+
+        manifest = {
+            "charts": {
+                "WCC": str(charts_dir / "WCC_weekly_20260208.png"),
+                "STRL": str(charts_dir / "STRL_weekly_20260208.png"),
+                "MOD": str(charts_dir / "MOD_weekly_20260208.png"),
+            }
+        }
+        (charts_dir / "chart_manifest.json").write_text(json.dumps(manifest))
+
+        tweet = _make_tweet(
+            text="$WCC +11.9%. $STRL +10.7%. $MOD +16.8%. Scanner receipts. NFA!",
+            category="PERFORMANCE",
+            chart_required=True,
+            tickers=["$WCC", "$STRL", "$MOD"],
+        )
+
+        attached = _attach_chart_paths([tweet], charts_dir=charts_dir)
+
+        assert len(tweet.chart_paths) == 3, (
+            f"PERFORMANCE should attach all 3 charts, got {len(tweet.chart_paths)}"
+        )
+        assert attached == 3
+        # Backwards compat: chart_path is None (old field), chart_paths has all
+        assert tweet.chart_path is None  # Old field not set for multi-chart
+        assert all("weekly_20260208.png" in p for p in tweet.chart_paths)
+
+    def test_performance_not_dropped_without_charts(self, tmp_path):
+        """PERFORMANCE tweets are NOT dropped even without charts (soft requirement)."""
+        from content.tweet_generator import _write_queues, ACCOUNT_QUEUES
+
+        tweet = _make_tweet(
+            text="$WCC +11.9%. Scanner receipts. NFA!",
+            category="PERFORMANCE",
+            chart_required=True,
+            tickers=["$WCC"],
+            metadata={"day": "saturday", "slot": 2},
+        )
+        # No chart_path or chart_paths set
+
+        out_dir = tmp_path / "output"
+        out_dir.mkdir()
+        _write_queues([tweet], ACCOUNT_QUEUES, out_dir, "2026-02-08")
+
+        import json
+        queue = json.loads((out_dir / "content_queue.json").read_text())
+        assert len(queue) == 1, "PERFORMANCE tweet should NOT be dropped without charts"
+        assert queue[0]["category"] == "PERFORMANCE"
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TESTS 22-23 — Temporal Validation [4A.7.3]

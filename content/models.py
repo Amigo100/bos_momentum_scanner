@@ -33,7 +33,7 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
     },
     "PERFORMANCE": {
         "source": "Portfolio winners >= 25% and notable gains >= 10%",
-        "chart_required": False,   # Receipt tweets don't require charts
+        "chart_required": True,    # Attach winner charts (multi-image)
         "min_elements": ["$TICKER", "entry price", "current price", "% gain"],
     },
     "WATCHLIST": {
@@ -95,11 +95,20 @@ class Tweet:
     chart_required: bool
     tickers_mentioned: List[str] = field(default_factory=list)
     chart_path: Optional[str] = None
+    chart_paths: List[str] = field(default_factory=list)
     metadata: Dict = field(default_factory=dict)
 
     @property
     def char_count(self) -> int:
         return len(self.text)
+
+    def get_all_chart_paths(self) -> List[str]:
+        """Return all chart paths (multi-chart first, then legacy single fallback)."""
+        if self.chart_paths:
+            return self.chart_paths
+        if self.chart_path:
+            return [self.chart_path]
+        return []
 
 
 @dataclass

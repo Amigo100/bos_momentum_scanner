@@ -32,7 +32,7 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
         "min_elements": ["theme name", "$TICKER"],
     },
     "PERFORMANCE": {
-        "source": "Portfolio winners >= 25%",
+        "source": "Portfolio winners >= 25% and notable gains >= 10%",
         "chart_required": True,
         "min_elements": ["$TICKER", "entry price", "current price", "% gain"],
     },
@@ -133,7 +133,8 @@ class ContentData:
 
     # Portfolio data
     winners: List[Dict] = field(default_factory=list)       # >= 25% gain
-    holdings: List[Dict] = field(default_factory=list)       # >= 0% gain, < 25%
+    notable_holdings: List[Dict] = field(default_factory=list)  # >= 10% gain, < 25%
+    holdings: List[Dict] = field(default_factory=list)       # >= 0% gain, < 10%
     sell_signals: List[Dict] = field(default_factory=list)
 
     # Daily scan data (optional)
@@ -151,6 +152,14 @@ class ContentData:
     @property
     def has_winners(self) -> bool:
         return len(self.winners) > 0
+
+    @property
+    def has_notable_holdings(self) -> bool:
+        return len(self.notable_holdings) > 0
+
+    @property
+    def has_holdings(self) -> bool:
+        return len(self.holdings) > 0
 
     @property
     def has_pass_signals(self) -> bool:

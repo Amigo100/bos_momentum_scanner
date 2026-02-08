@@ -28,7 +28,7 @@ import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 try:
     import anthropic
@@ -50,6 +50,7 @@ from config.settings import (
     COST_INPUT_PER_M,
     COST_OUTPUT_PER_M,
     MARKETING_THRESHOLDS,
+    NEWSLETTER_URL,
 )
 from config.banned_terms import (
     ALL_BANNED,
@@ -81,8 +82,7 @@ MODEL = MODEL_TWEET
 TWEET_MAX_TOKENS = MAX_TOKENS.get(MODEL, 4096)
 MAX_TWEET_CHARS = 280
 MAX_REPAIR_ATTEMPTS = 2
-
-NEWSLETTER_URL = "https://sterlingsignals.substack.com"
+NOTABLE_WIN_THRESHOLD = 10.0  # Positions >= 10% get PERFORMANCE tweets
 
 STYLE_GUIDE_PATH = BASE_DIR / "FINTWIT_STYLE_GUIDE.md"
 
@@ -104,6 +104,24 @@ DAILY_ACCOUNT_QUEUES = {
 
 # Weekly slots (1-5) per day
 WEEKLY_SLOTS = [2, 3, 4, 5]
+
+# Categories where every $TICKER must come from source data (not flexible)
+DATA_DEPENDENT_CATEGORIES = {
+    "SCANNER_RESULT", "SELL_SIGNAL", "DAILY_SIGNAL",
+    "PERFORMANCE", "TECHNICAL_ANALYSIS", "WATCHLIST",
+}
+
+# Weekly repetition limits for flexible categories (prevents 8x EDUCATIONAL weeks)
+CATEGORY_WEEKLY_LIMITS: Dict[str, int] = {
+    "EDUCATIONAL": 5,
+    "ENGAGEMENT": 5,
+    "WATCHLIST": 2,
+    "TECHNICAL_ANALYSIS": 3,
+    "NEWSLETTER_CTA": 2,
+}
+
+# No category should appear more than twice per day
+MAX_SAME_CATEGORY_PER_DAY = 2
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -149,38 +167,35 @@ class CostTracker:
 # Derived from STERLING_SIGNALS_PRD_v2.md sections 3.1–3.6.
 
 EMBEDDED_STYLE_GUIDE = """
-# Sterling Signals — Tweet Style Guide
+# Sterling Signals — Tweet Style Cheat Sheet
 
-## Voice & Tone
-- Confident but humble, data-driven, community-focused
-- ONE uniform voice across all accounts (no persona switching)
-- Lead with specific data: $TICKER + price + context
-- Show conviction through numbers, not adjectives
-- Acknowledge risk: "NFA" or "easy invalidation below $X"
-- Frame wins objectively: "from $entry to $current (+X%)"
-- Frame losses minimally: "Lost on $TICKER. Win more than you lose." — NO loss amounts
+## Core Philosophy
+- Value in EVERY tweet. No filler. If it doesn't teach, show receipts, or give a trade idea — don't post it.
+- Winners only. Show gains ≥25% with entry → current. Never show losses. Sell signals = "setup invalidated."
+- Specificity wins. $TICKER + price + context beats vague commentary every time.
+- Receipts culture. Show entries, show exits, show the process. Let the numbers do the talking.
 
 ## Tweet Categories
 
-| Category | Chart Required | Min Elements |
-|----------|---------------|--------------|
+| Category | Chart? | Must Include |
+|----------|--------|-------------|
 | SCANNER_RESULT | YES | $TICKER + entry price + thesis |
 | DAILY_SIGNAL | YES | $TICKER + price + context |
-| THEME_ANALYSIS | Recommended | Theme name + $TICKER(s) with prices |
-| PERFORMANCE | YES | $TICKER + entry → current + % gain |
-| WATCHLIST | Optional | $TICKER(s) with prices + what to watch |
+| THEME_ANALYSIS | Rec. | Theme name + $TICKER(s) + prices |
+| PERFORMANCE | YES | $TICKER + entry → current + %gain |
+| WATCHLIST | Opt. | $TICKER(s) + prices + trigger |
 | TECHNICAL_ANALYSIS | YES | $TICKER + level + invalidation |
-| EDUCATIONAL | If specific setup | Concrete example + lesson |
-| MARKET_COMMENTARY | Recommended | Context + opportunity + action |
-| SELL_SIGNAL | YES | $TICKER + "setup invalidated" framing |
-| ENGAGEMENT | No | Trading-adjacent, hooks |
-| NEWSLETTER_CTA | Optional | Value proposition + link |
+| EDUCATIONAL | Opt. | Concrete example + lesson |
+| MARKET_COMMENTARY | Rec. | Context + opportunity |
+| SELL_SIGNAL | YES | $TICKER + "setup invalidated" |
+| ENGAGEMENT | No | Trading-adjacent hook |
+| NEWSLETTER_CTA | Opt. | Value prop + URL |
 
 ## Winners-Only Rules
-- Positions >= 25% gain: Show as receipt ($TICKER from $entry to $current (+X%))
-- Positions >= 0% but < 25%: Mention in watchlist/theme context (no P&L)
-- Positions < 0%: NEVER mention
-- Sell signals: Use "setup invalidated below $level" — NO loss amount
+- ≥25% gain: Show as receipt ($TICKER from $entry to $current (+X%))
+- ≥0% but <25%: Mention in watchlist/theme context (no P&L)
+- <0%: NEVER mention
+- Sell signals: "setup invalidated below $level" — NO loss amount
 - Stopped out: "Lost on $TICKER. Win more than you lose." — NO amount
 
 ## Power Phrases (PREFER these)
@@ -188,26 +203,93 @@ EMBEDDED_STYLE_GUIDE = """
 - "institutional accumulation"
 - "structural trend confirmation"
 - "cleared all gates"
-- "setup invalidated" (for sells)
-- "NFA" (not financial advice)
+- "setup invalidated" (for exits)
 - "win more than you lose"
+- "NFA"
+- "volatility expansion"
+- "sector flow alignment"
+- "theme alignment"
+- "trailing stop locked"
+- "strong accumulation"
+- "receipts"
+- "following institutional flows"
+- "capital preservation"
+- "risk-defined entries"
+- "data doesn't lie"
+- "no ego, just execution"
+- "proprietary 5-gate screening"
+- "the filter is tight for a reason"
+
+## Sentence Style
+- Short lines. One idea per sentence. Let data speak.
+- Open with a hook: question, stat, $TICKER, or bold statement. Never "just wanted to share."
+- Close with NFA or a question. Never "stay tuned" or "more to come."
+- Mix formats: single-stat, lists, receipt tweets, thread starters.
 
 ## BANNED (NEVER output these)
 - Internal indicators: HMA, BoS, BOS, Banker, VWAP, RSI, MACD, KDJ
 - System terms: Gatekeeper, gate 1-5, 5-gate, tier 1/2/3, conviction score
 - Old branding: TEAL, VIOLET, AMBER, PURPLE signals
-- UK references: UK ISA, GMT, BST, UK Time, GBP
-- US-specific: Roth IRA, PDT, 401k
-- Vague phrases: "system keeps working", "theme keeps delivering", "trust the process",
-  "some interesting setups", "stay tuned", "big news coming"
+- UK refs: UK ISA, GMT, BST, UK Time, GBP
+- US retirement: Roth IRA, PDT, 401k
+- Vague filler: "system keeps working", "theme keeps delivering", "trust the process",
+  "some interesting setups", "stay tuned", "big news coming", "more to come",
+  "keep an eye on", "you won't believe", "interesting developments"
 - Loser focus: "still bleeding", "dragging down", "biggest loser"
+- Leaked internals: "Capital Preservation Protocol", "Forensic Audit",
+  "Volatility Expansion Criteria", "PASS signal"
 
 ## Data Injection Rule
 Use EXACTLY the tickers and prices provided. Do NOT invent data.
 Every tweet must contain at least one $TICKER with a price or percentage.
-Exception: ENGAGEMENT and EDUCATIONAL tweets may omit tickers if the content is
-methodology-focused.
+Exception: ENGAGEMENT and EDUCATIONAL may omit tickers if methodology-focused.
 """.strip()
+
+# ── Category-specific reference examples for few-shot prompting ──────────────
+# Source: examples/tweet_examples.json + FINTWIT style guide
+# Injected into _build_user_prompt() to guide LLM voice and data density.
+
+CATEGORY_EXAMPLES: Dict[str, str] = {
+    "SCANNER_RESULT": (
+        '1) "Friday scan done. $INOD at $61.54 and $RCAT at $13.25 cleared all gates. '
+        'Full breakdown in the newsletter."\n'
+        '2) "1,800 stocks. 5 gates. 2 survivors this week. '
+        "Quality over quantity — that's the whole point.\""
+    ),
+    "THEME_ANALYSIS": (
+        '1) "AI Infrastructure keeps leading. $NVDA, $SMCI, $AVGO — institutional '
+        'accumulation across the board. Structural trend confirmed."\n'
+        "2) \"Nuclear renaissance isn't slowing. $OKLO $SMR — "
+        'momentum confirmed, sector flow alignment. NFA."'
+    ),
+    "PERFORMANCE": (
+        '1) "$RCAT from $8.50 to $13.25 (+55.9%). Drone tech thesis playing out. '
+        'Trailing stop locked in."\n'
+        "2) \"+47% closed on $AMPX. Held 6 weeks. Patience is boring until it isn't.\""
+    ),
+    "WATCHLIST": (
+        '1) "On my radar: $IONQ at $42.15, $VNET at $10.80. '
+        'Need one more confirmation for entry. NFA."\n'
+        '2) "Watching closely: $QBTS at $6.20. Theme alignment is there. '
+        'Waiting for momentum confirmation."'
+    ),
+    "SELL_SIGNAL": (
+        '1) "$SMCI setup invalidated below $36. Win more than you lose. Moving on."\n'
+        '2) "Lost on $VNET. Setup broke. System said exit, I exited. Next."'
+    ),
+    "EDUCATIONAL": (
+        '1) "Position sizing 101: If a loss makes you emotional, you sized too big. '
+        'Risk-defined entries, always."\n'
+        "2) \"Why 5 gates? Because 'good stock' is subjective. "
+        "Gates are binary. Removes emotion. That's the point.\""
+    ),
+    "ENGAGEMENT": (
+        "1) \"What's your biggest trading lesson this year? "
+        'Mine: stop arguing with the data."\n'
+        '2) "Bad day? Happens to everyone. What matters is not letting '
+        'a bad day become a bad week."'
+    ),
+}
 
 
 def _load_style_guide() -> str:
@@ -273,8 +355,9 @@ def _build_content_data(
     sell_sigs = signals.get("sell_signals", [])
     scan_date = signals.get("timestamp", datetime.now().strftime("%Y-%m-%d"))[:10]
 
-    # Split positions into winners / holdings / losers
+    # Split positions into winners / notable / holdings / losers
     winners: List[Dict] = []
+    notable_holdings: List[Dict] = []
     holdings: List[Dict] = []
 
     for pos in positions:
@@ -288,6 +371,8 @@ def _build_content_data(
         pos["pnl_pct"] = pnl_pct
         if pnl_pct >= big_win_threshold:
             winners.append(pos)
+        elif pnl_pct >= NOTABLE_WIN_THRESHOLD:
+            notable_holdings.append(pos)
         elif pnl_pct >= 0:
             holdings.append(pos)
         # pnl_pct < 0: SKIP — never mention losers
@@ -298,6 +383,7 @@ def _build_content_data(
         themes=themes,
         scan_stats=stats,
         winners=winners,
+        notable_holdings=notable_holdings,
         holdings=holdings,
         sell_signals=sell_sigs,
         market_data=market_data,
@@ -312,24 +398,39 @@ def _build_content_data(
 
 def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
     """
-    Plan category allocation across 7 days x 5 slots.
+    Plan category allocation across 7 days x 4 slots.
 
     Rules (from PRD section 4.1.3):
       - PERFORMANCE receipts: at least 1/day when winners exist
       - SCANNER_RESULT: Saturday (day after weekly scan)
       - THEME_ANALYSIS: at least 2/week
-      - ENGAGEMENT: max 1/day
+      - ENGAGEMENT: max 1/day, max 5/week
+      - EDUCATIONAL: max 5/week
+      - Any category: max 2/day
       - NEWSLETTER_CTA: max 2/week
+
+    Tracks planned data consumption and category repetition to prevent
+    over-scheduling categories beyond available data.
     """
     schedule: List[SlotAssignment] = []
     newsletter_cta_count = 0
     theme_count = 0
+    planned_counts: Dict[str, int] = {}       # Tracks data consumption
+    week_category_counts: Dict[str, int] = {}  # Tracks category repetition
+
+    _CONSUME_MAP = {
+        "SCANNER_RESULT": "pass_signals",
+        "SELL_SIGNAL": "sell_signals",
+        "THEME_ANALYSIS": "themes",
+    }
 
     for day in WEEKLY_DAYS:
         day_engagement_used = False
         day_performance_placed = False
+        day_category_counts: Dict[str, int] = {}  # Reset per day
 
         for slot in WEEKLY_SLOTS:
+            assert slot != 1, "Slot 1 must not appear in weekly schedule (reserved for daily queue)"
             category, data_key = _pick_category(
                 day=day,
                 slot=slot,
@@ -339,6 +440,9 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
                 newsletter_cta_count=newsletter_cta_count,
                 theme_count=theme_count,
                 schedule=schedule,
+                planned_counts=planned_counts,
+                week_category_counts=week_category_counts,
+                day_category_counts=day_category_counts,
             )
 
             schedule.append(SlotAssignment(
@@ -348,6 +452,7 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
                 data_key=data_key,
             ))
 
+            # Existing tracking
             if category == "ENGAGEMENT":
                 day_engagement_used = True
             if category == "PERFORMANCE":
@@ -357,11 +462,75 @@ def _plan_weekly_schedule(data: ContentData) -> List[SlotAssignment]:
             if category == "THEME_ANALYSIS":
                 theme_count += 1
 
+            # Update repetition counts
+            week_category_counts[category] = week_category_counts.get(category, 0) + 1
+            day_category_counts[category] = day_category_counts.get(category, 0) + 1
+
+            # Track planned data consumption
+            if category in _CONSUME_MAP:
+                key = _CONSUME_MAP[category]
+                planned_counts[key] = planned_counts.get(key, 0) + 1
+
     # Enforcement pass: ensure at least 2 THEME_ANALYSIS per week
     if theme_count < 2 and data.has_themes:
         _inject_category(schedule, "THEME_ANALYSIS", "themes", 2 - theme_count)
 
     return schedule
+
+
+def _data_available(
+    category: str,
+    data: ContentData,
+    planned_counts: Dict[str, int],
+) -> bool:
+    """Check if a data-dependent category has unplanned data remaining."""
+    if category == "SELL_SIGNAL":
+        return planned_counts.get("sell_signals", 0) < len(data.sell_signals)
+    if category == "SCANNER_RESULT":
+        return planned_counts.get("pass_signals", 0) < len(data.pass_signals)
+    if category == "PERFORMANCE":
+        return data.has_winners or data.has_notable_holdings
+    if category == "THEME_ANALYSIS":
+        return planned_counts.get("themes", 0) < len(data.themes)
+    if category == "WATCHLIST":
+        return bool(data.consider_signals)
+    if category == "TECHNICAL_ANALYSIS":
+        return bool(data.holdings)
+    if category == "MARKET_COMMENTARY":
+        return data.market_data is not None
+    if category == "NEWSLETTER_CTA":
+        return bool(data.newsletter_url)
+    return True  # Flexible categories always available
+
+
+def _within_limits(
+    category: str,
+    week_counts: Dict[str, int],
+    day_counts: Dict[str, int],
+) -> bool:
+    """Check if a category is within its weekly and daily repetition limits."""
+    weekly_limit = CATEGORY_WEEKLY_LIMITS.get(category, 999)
+    if week_counts.get(category, 0) >= weekly_limit:
+        return False
+    if day_counts.get(category, 0) >= MAX_SAME_CATEGORY_PER_DAY:
+        return False
+    return True
+
+
+def _try_assign(
+    category: str,
+    data_key: str,
+    data: ContentData,
+    planned_counts: Dict[str, int],
+    week_counts: Dict[str, int],
+    day_counts: Dict[str, int],
+) -> Optional[Tuple[str, str]]:
+    """Try to assign a category. Returns (category, data_key) or None."""
+    if not _data_available(category, data, planned_counts):
+        return None
+    if not _within_limits(category, week_counts, day_counts):
+        return None
+    return (category, data_key)
 
 
 def _pick_category(
@@ -374,69 +543,154 @@ def _pick_category(
     newsletter_cta_count: int,
     theme_count: int,
     schedule: List[SlotAssignment],
+    planned_counts: Optional[Dict[str, int]] = None,
+    week_category_counts: Optional[Dict[str, int]] = None,
+    day_category_counts: Optional[Dict[str, int]] = None,
 ) -> Tuple[str, str]:
-    """Pick the best category for a given day/slot based on rules and available data."""
+    """Pick the best category for a given day/slot based on rules, data, and limits.
 
-    # Saturday slot 2 (was slot 1): SCANNER_RESULT (day after weekly scan)
-    if day == "saturday" and slot == 2 and data.has_pass_signals:
-        return "SCANNER_RESULT", "pass_signals"
+    Uses _try_assign() to check data availability and repetition limits
+    before assigning a category. Falls back through defined chains when
+    the preferred category is exhausted or over-limit.
+    """
+    pc = planned_counts or {}
+    wc = week_category_counts or {}
+    dc = day_category_counts or {}
 
-    # Saturday slot 3 (was slot 2): second SCANNER_RESULT or THEME_ANALYSIS
+    def _try(cat: str, key: str) -> Optional[Tuple[str, str]]:
+        return _try_assign(cat, key, data, pc, wc, dc)
+
+    def _fallback(
+        preferred: str,
+        preferred_key: str,
+        chain: List[Tuple[str, str]],
+    ) -> Optional[Tuple[str, str]]:
+        """Try preferred, then each fallback. Log when falling back."""
+        result = _try(preferred, preferred_key)
+        if result:
+            return result
+        for fb_cat, fb_key in chain:
+            result = _try(fb_cat, fb_key)
+            if result:
+                logger.debug(
+                    "Category %s unavailable for %s/%s, falling back to %s",
+                    preferred, day, slot, fb_cat,
+                )
+                return result
+        return None
+
+    # Saturday slot 2: SCANNER_RESULT (day after weekly scan)
+    if day == "saturday" and slot == 2:
+        result = _fallback("SCANNER_RESULT", "pass_signals", [
+            ("WATCHLIST", "consider_signals"),
+            ("THEME_ANALYSIS", "themes"),
+            ("EDUCATIONAL", "educational"),
+        ])
+        if result:
+            return result
+
+    # Saturday slot 3: second SCANNER_RESULT or THEME_ANALYSIS
     if day == "saturday" and slot == 3:
-        if len(data.pass_signals) > 1:
-            return "SCANNER_RESULT", "pass_signals"
-        if data.has_themes:
-            return "THEME_ANALYSIS", "themes"
+        result = _fallback("SCANNER_RESULT", "pass_signals", [
+            ("THEME_ANALYSIS", "themes"),
+            ("EDUCATIONAL", "educational"),
+        ])
+        if result:
+            return result
 
-    # Slot 2 (was slot 1): morning content — PERFORMANCE receipt if winners exist
-    if slot == 2 and data.has_winners and not day_performance_placed:
-        return "PERFORMANCE", "winners"
+    # Slot 2: PERFORMANCE receipt if winners/notable exist
+    if slot == 2 and not day_performance_placed:
+        result = _fallback("PERFORMANCE", "winners", [
+            ("ENGAGEMENT", "engagement"),
+        ])
+        if result:
+            return result
 
-    # Ensure at least 1 PERFORMANCE per day when winners exist
-    if slot == 4 and data.has_winners and not day_performance_placed:
-        return "PERFORMANCE", "winners"
+    # Slot 4: ensure at least 1 PERFORMANCE per day
+    if slot == 4 and not day_performance_placed:
+        result = _fallback("PERFORMANCE", "winners", [
+            ("ENGAGEMENT", "engagement"),
+        ])
+        if result:
+            return result
 
-    # Sell signals take priority when they exist
-    if slot == 3 and data.sell_signals:
-        return "SELL_SIGNAL", "sell_signals"
+    # Sell signals
+    if slot == 3:
+        result = _fallback("SELL_SIGNAL", "sell_signals", [
+            ("TECHNICAL_ANALYSIS", "holdings"),
+            ("EDUCATIONAL", "educational"),
+        ])
+        if result:
+            return result
 
-    # Theme analysis — spread across the week
-    if slot == 2 and data.has_themes and theme_count < 4:
-        return "THEME_ANALYSIS", "themes"
+    # Theme analysis
+    if slot == 2 and theme_count < 4:
+        result = _fallback("THEME_ANALYSIS", "themes", [
+            ("EDUCATIONAL", "educational"),
+        ])
+        if result:
+            return result
 
     # Watchlist
-    if slot == 3 and data.consider_signals:
-        return "WATCHLIST", "consider_signals"
+    if slot == 3:
+        result = _try("WATCHLIST", "consider_signals")
+        if result:
+            return result
 
-    # Technical analysis for holdings
-    if slot == 3 and data.holdings:
-        return "TECHNICAL_ANALYSIS", "holdings"
+    # Technical analysis
+    if slot == 3:
+        result = _try("TECHNICAL_ANALYSIS", "holdings")
+        if result:
+            return result
+
+    # Watchlist also eligible for slot 4 (secondary content)
+    if slot == 4:
+        result = _try("WATCHLIST", "consider_signals")
+        if result:
+            return result
+
+    # Technical analysis also for slot 4 on weekdays
+    if slot == 4 and day not in ("saturday", "sunday"):
+        result = _try("TECHNICAL_ANALYSIS", "holdings")
+        if result:
+            return result
 
     # Market commentary
-    if slot == 2 and data.market_data:
-        return "MARKET_COMMENTARY", "market_data"
+    if slot == 2:
+        result = _try("MARKET_COMMENTARY", "market_data")
+        if result:
+            return result
 
     # Newsletter CTA (max 2/week, prefer Sunday and Thursday)
     if newsletter_cta_count < 2 and day in ("sunday", "thursday") and slot == 5:
-        return "NEWSLETTER_CTA", "newsletter_url"
+        result = _try("NEWSLETTER_CTA", "newsletter_url")
+        if result:
+            return result
 
     # Educational
-    if slot == 4 and not data.has_winners:
-        return "EDUCATIONAL", "educational"
+    if slot == 4:
+        result = _try("EDUCATIONAL", "educational")
+        if result:
+            return result
 
-    # Engagement (max 1/day)
+    # Engagement (max 1/day — day_engagement_used is separate from day_counts)
     if slot == 5 and not day_engagement_used:
-        return "ENGAGEMENT", "engagement"
+        result = _try("ENGAGEMENT", "engagement")
+        if result:
+            return result
 
-    # Fallbacks based on available data
-    if data.has_pass_signals:
-        return "SCANNER_RESULT", "pass_signals"
-    if data.has_winners:
-        return "PERFORMANCE", "winners"
-    if data.has_themes:
-        return "THEME_ANALYSIS", "themes"
-    if data.consider_signals:
-        return "WATCHLIST", "consider_signals"
+    # Terminal fallbacks
+    for cat, key in [
+        ("SCANNER_RESULT", "pass_signals"),
+        ("PERFORMANCE", "winners"),
+        ("THEME_ANALYSIS", "themes"),
+        ("WATCHLIST", "consider_signals"),
+        ("ENGAGEMENT", "engagement"),
+        ("EDUCATIONAL", "educational"),
+    ]:
+        result = _try(cat, key)
+        if result:
+            return result
 
     return "EDUCATIONAL", "educational"
 
@@ -469,10 +723,16 @@ def _build_system_prompt(style_guide: str) -> str:
     # Build banned terms block (first 60 most critical)
     banned_block = "\n".join(f"  - {term}" for term in CRITICAL_BANNED[:60])
 
+    today = datetime.now()
+    quarter = (today.month - 1) // 3 + 1
+    date_line = f"Today is {today.strftime('%A, %B %d, %Y')}. Current quarter: Q{quarter} {today.year}."
+
     return f"""\
 You are the social media voice of Sterling Signals, a weekly momentum trading scanner \
 for US stocks. Generate tweets that are data-rich, specific, and compliant with the \
 style guide below.
+
+{date_line}
 
 STYLE GUIDE:
 {style_guide}
@@ -488,10 +748,16 @@ RULES:
 4. Never use internal terms: HMA, BoS, Banker, tier, conviction, VWAP, gate references.
 5. Keep tweets under 280 characters.
 6. Output ONLY the tweet text — no labels, no quotes, no explanation.
+7. VARIETY: Never reuse openings. Alternate questions/statements/imperatives. Mix short and long.
 """
 
 
-def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> str:
+def _build_user_prompt(
+    category: str,
+    slot_data: Dict,
+    slot: SlotAssignment,
+    recent_openings: Optional[List[str]] = None,
+) -> str:
     """Build the user prompt for a specific tweet, injecting structured data."""
 
     cat_info = TWEET_CATEGORIES.get(category, {})
@@ -513,8 +779,9 @@ def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> 
                 f"| Theme: {sig.get('theme', 'N/A')} | Thesis: {sig.get('catalyst_summary', 'momentum confirmed')}"
             )
 
-    elif category == "PERFORMANCE" and "winners" in slot_data:
-        for w in slot_data["winners"][:3]:
+    elif category == "PERFORMANCE" and ("winners" in slot_data or "notable" in slot_data):
+        all_positions = slot_data.get("winners", []) + slot_data.get("notable", [])
+        for w in all_positions[:3]:
             entry = float(w.get("entry_price", 0) or 0)
             current = float(w.get("current_price", 0) or 0)
             pnl = w.get("pnl_pct", 0)
@@ -522,6 +789,7 @@ def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> 
                 f"  ${w.get('ticker', '??')} from ${entry:.2f} to ${current:.2f} (+{pnl:.1f}%)"
                 f" | Theme: {w.get('theme', 'N/A')}"
             )
+        prompt_parts.append("  Celebrate these gains. Show entry → current with percentages.")
 
     elif category == "THEME_ANALYSIS" and "themes" in slot_data:
         for th in slot_data["themes"][:2]:
@@ -544,12 +812,31 @@ def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> 
         for cs in slot_data["consider"][:3]:
             prompt_parts.append(
                 f"  ${cs.get('symbol', '??')} at ${cs.get('price', 0):.2f}"
+                f" | Theme: {cs.get('theme', 'N/A')}"
                 f" | Watching for: {cs.get('action', 'momentum confirmation')}"
             )
+        prompt_parts.append(
+            "  Write a watchlist tweet. Open with a hook like 'On my radar:' or "
+            "'Watching closely:'. List each ticker with price. "
+            "Close with what needs to happen for entry. End with NFA."
+        )
 
     elif category == "NEWSLETTER_CTA":
-        prompt_parts.append(f"  Newsletter URL: {NEWSLETTER_URL}")
-        prompt_parts.append("  Value proposition: weekly momentum signals, free to subscribe")
+        prompt_parts.append(f"  Newsletter URL: {slot_data.get('newsletter_url', NEWSLETTER_URL)}")
+        if slot_data.get("recent_wins"):
+            for w in slot_data["recent_wins"][:2]:
+                prompt_parts.append(
+                    f"  Recent win: ${w.get('ticker', '??')} +{w.get('pnl_pct', 0):.0f}%"
+                )
+        if slot_data.get("portfolio_stats"):
+            prompt_parts.append(
+                f"  Tracking {slot_data['portfolio_stats'].get('open_positions', 0)} positions"
+            )
+        prompt_parts.append(
+            "  Write a newsletter promotion. Lead with value (what the reader gets). "
+            "Reference recent wins if available. Include the URL. "
+            "Genuine and conversational, not salesy. End with NFA."
+        )
 
     elif category == "DAILY_SIGNAL" and "daily_signals" in slot_data:
         for ds in slot_data["daily_signals"][:3]:
@@ -558,13 +845,74 @@ def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> 
                 f" | Daily buy signal | Theme: {ds.get('theme', 'N/A')}"
             )
 
-    elif category in ("EDUCATIONAL", "ENGAGEMENT", "MARKET_COMMENTARY"):
+    elif category == "TECHNICAL_ANALYSIS" and "tickers" in slot_data:
+        for t in slot_data["tickers"][:2]:
+            prompt_parts.append(
+                f"  ${t.get('symbol', '??')} at ${t.get('price', 0):.2f}"
+                f" | Entry: ${t.get('entry_price', 0):.2f}"
+                f" | Stop: ${t.get('stop_level', 0):.2f}"
+                f" | Theme: {t.get('theme', 'N/A')}"
+            )
+        prompt_parts.append(
+            "  Write a technical analysis tweet. Reference a specific price level "
+            "and invalidation criteria. Short and punchy. "
+            "Example style: '$TICKER holding above $X.XX support. "
+            "Easy invalidation on close below $Y.YY. NFA!'"
+        )
+
+    elif category == "EDUCATIONAL":
         if slot_data.get("context"):
             prompt_parts.append(f"  Context: {slot_data['context']}")
-        # These categories are more flexible — provide any available tickers
+        if slot_data.get("portfolio_stats"):
+            stats = slot_data["portfolio_stats"]
+            prompt_parts.append(
+                f"  Portfolio: {stats.get('open_positions', 0)} open positions, "
+                f"{stats.get('winners', 0)} winners"
+            )
+        if slot_data.get("theme_names"):
+            prompt_parts.append(f"  Active themes: {', '.join(slot_data['theme_names'])}")
+        prompt_parts.append(
+            "  Write about trading concepts. Do NOT reference specific tickers "
+            "unless from portfolio data."
+        )
+
+    elif category == "ENGAGEMENT":
+        if slot_data.get("context"):
+            prompt_parts.append(f"  Context: {slot_data['context']}")
+        if slot_data.get("portfolio_stats"):
+            stats = slot_data["portfolio_stats"]
+            prompt_parts.append(
+                f"  Portfolio: {stats.get('open_positions', 0)} open positions"
+            )
+        prompt_parts.append(
+            "  Write an engaging community tweet. No specific tickers required."
+        )
+
+    elif category == "MARKET_COMMENTARY":
+        if slot_data.get("context"):
+            prompt_parts.append(f"  Context: {slot_data['context']}")
         if slot_data.get("tickers"):
             for t in slot_data["tickers"][:2]:
-                prompt_parts.append(f"  Reference: ${t.get('symbol', '??')} at ${t.get('price', 0):.2f}")
+                prompt_parts.append(
+                    f"  Reference: ${t.get('symbol', '??')} at ${t.get('price', 0):.2f}"
+                )
+
+    if category in CATEGORY_EXAMPLES:
+        prompt_parts.append("")
+        prompt_parts.append(
+            "REFERENCE EXAMPLES (match style and data density, not exact words):"
+        )
+        prompt_parts.append(CATEGORY_EXAMPLES[category])
+
+    if recent_openings:
+        prompt_parts.append("")
+        prompt_parts.append(
+            "CRITICAL — DO NOT start your tweet with any of these "
+            "(already used this week):"
+        )
+        for opening in recent_openings:
+            prompt_parts.append(f'  - "{opening}"')
+        prompt_parts.append("Use a completely different opening structure.")
 
     prompt_parts.append("")
     prompt_parts.append("Output ONLY the tweet text (under 280 characters). No labels or quotes.")
@@ -572,22 +920,37 @@ def _build_user_prompt(category: str, slot_data: Dict, slot: SlotAssignment) -> 
     return "\n".join(prompt_parts)
 
 
-def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> Dict:
-    """Prepare the data payload for a specific tweet generation call."""
+def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> Optional[Dict]:
+    """Prepare the data payload for a specific tweet generation call.
+
+    Returns None when the requested category has exhausted its data,
+    signalling the generation loop to skip this slot.  Flexible categories
+    (EDUCATIONAL, ENGAGEMENT, MARKET_COMMENTARY, NEWSLETTER_CTA) always
+    return a dict.
+    """
     slot_data: Dict = {}
 
     if category == "SCANNER_RESULT":
         idx = used_indices.get("pass_signals", 0)
+        if idx >= len(data.pass_signals):
+            return None  # No more signals to show
         slot_data["signals"] = data.pass_signals[idx:idx + 2]
         used_indices["pass_signals"] = idx + 1
 
     elif category == "PERFORMANCE":
         idx = used_indices.get("winners", 0)
-        slot_data["winners"] = data.winners[idx:idx + 2] if data.winners else []
-        used_indices["winners"] = (idx + 1) % max(len(data.winners), 1)
+        combined = data.winners + data.notable_holdings
+        if not combined:
+            return None  # No winners or notable holdings to showcase
+        slot_data["winners"] = combined[idx:idx + 2]
+        if data.notable_holdings:
+            slot_data["notable"] = data.notable_holdings
+        used_indices["winners"] = (idx + 1) % max(len(combined), 1)
 
     elif category == "THEME_ANALYSIS":
         idx = used_indices.get("themes", 0)
+        if idx >= len(data.themes):
+            return None  # No more themes
         slot_data["themes"] = data.themes[idx:idx + 2]
         used_indices["themes"] = idx + 1
         # Add tickers from pass_signals that match the theme
@@ -596,33 +959,85 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
 
     elif category == "SELL_SIGNAL":
         idx = used_indices.get("sell_signals", 0)
+        if idx >= len(data.sell_signals):
+            return None  # No more sell signals
         slot_data["sell_signals"] = data.sell_signals[idx:idx + 1]
         used_indices["sell_signals"] = idx + 1
 
     elif category == "WATCHLIST":
+        if not data.consider_signals:
+            return None  # No consider signals for watchlist
         slot_data["consider"] = data.consider_signals[:3]
-
-    elif category == "NEWSLETTER_CTA":
-        slot_data["newsletter_url"] = data.newsletter_url
 
     elif category == "DAILY_SIGNAL":
         idx = used_indices.get("daily_signals", 0)
+        if idx >= len(data.daily_signals):
+            return None  # No more daily signals
         slot_data["daily_signals"] = data.daily_signals[idx:idx + 2]
         used_indices["daily_signals"] = idx + 1
 
     elif category == "TECHNICAL_ANALYSIS":
-        slot_data["tickers"] = [
-            {"symbol": h.get("ticker", "??"), "price": float(h.get("current_price", 0) or 0)}
-            for h in data.holdings[:2]
-        ]
+        if not data.holdings:
+            return None  # No holdings for technical analysis
+        idx = used_indices.get("ta_holdings", 0)
+        # Combine winners + notable + holdings for TA (any open position)
+        ta_positions = data.winners + data.notable_holdings + data.holdings
+        if not ta_positions:
+            return None
+        selected = ta_positions[idx % len(ta_positions):idx % len(ta_positions) + 2]
+        if not selected:
+            selected = ta_positions[:2]
+        used_indices["ta_holdings"] = idx + 1
+        slot_data["tickers"] = []
+        for h in selected:
+            entry = float(h.get("entry_price", 0) or 0)
+            current = float(h.get("current_price", 0) or 0)
+            highest = float(h.get("highest_close", 0) or 0)
+            stop_level = highest * 0.80 if highest > 0 else 0  # 20% trailing stop
+            slot_data["tickers"].append({
+                "symbol": h.get("ticker", "??"),
+                "price": current,
+                "entry_price": entry,
+                "highest_close": highest,
+                "stop_level": round(stop_level, 2),
+                "theme": h.get("theme", "N/A"),
+            })
 
-    elif category in ("EDUCATIONAL", "ENGAGEMENT"):
-        slot_data["context"] = "trading methodology and discipline"
-        if data.pass_signals:
-            slot_data["tickers"] = [
-                {"symbol": s.get("symbol", "??"), "price": s.get("price", 0)}
-                for s in data.pass_signals[:2]
+    # Flexible categories — always return a dict (never None)
+    elif category == "NEWSLETTER_CTA":
+        slot_data["newsletter_url"] = data.newsletter_url
+        # Add recent wins for social proof
+        if data.winners:
+            slot_data["recent_wins"] = [
+                {"ticker": w.get("ticker", "??"), "pnl_pct": w.get("pnl_pct", 0)}
+                for w in data.winners[:2]
             ]
+        elif data.notable_holdings:
+            slot_data["recent_wins"] = [
+                {"ticker": n.get("ticker", "??"), "pnl_pct": n.get("pnl_pct", 0)}
+                for n in data.notable_holdings[:2]
+            ]
+        open_count = len(data.winners) + len(data.notable_holdings) + len(data.holdings)
+        slot_data["portfolio_stats"] = {"open_positions": open_count}
+
+    elif category == "EDUCATIONAL":
+        slot_data["context"] = "trading methodology and discipline"
+        open_count = len(data.winners) + len(data.notable_holdings) + len(data.holdings)
+        slot_data["portfolio_stats"] = {
+            "open_positions": open_count,
+            "winners": len(data.winners),
+            "notable": len(data.notable_holdings),
+        }
+        if data.themes:
+            slot_data["theme_names"] = [t.get("name", "") for t in data.themes[:3]]
+
+    elif category == "ENGAGEMENT":
+        slot_data["context"] = "community building and milestones"
+        open_count = len(data.winners) + len(data.notable_holdings) + len(data.holdings)
+        slot_data["portfolio_stats"] = {
+            "open_positions": open_count,
+            "winners": len(data.winners),
+        }
 
     elif category == "MARKET_COMMENTARY":
         slot_data["context"] = json.dumps(data.market_data) if data.market_data else "general market conditions"
@@ -642,6 +1057,7 @@ def _generate_tweet(
     style_guide: str,
     client,
     cost_tracker: CostTracker,
+    recent_openings: Optional[List[str]] = None,
 ) -> Tweet:
     """
     Make a single LLM call to generate one tweet.
@@ -653,12 +1069,13 @@ def _generate_tweet(
         style_guide: Full style guide text
         client: Anthropic client instance
         cost_tracker: Running cost tracker
+        recent_openings: First 60 chars of recent tweet openings to avoid repetition
 
     Returns:
         Tweet object with text, category, chart_required, tickers_mentioned
     """
     system_prompt = _build_system_prompt(style_guide)
-    user_prompt = _build_user_prompt(category, slot_data, slot)
+    user_prompt = _build_user_prompt(category, slot_data, slot, recent_openings=recent_openings)
 
     response = client.messages.create(
         model=MODEL,
@@ -693,7 +1110,11 @@ def _generate_tweet(
 # VALIDATION PIPELINE (PRD section 3.6)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _validate_tweet(tweet: Tweet, source_data: Dict) -> ValidationResult:
+def _validate_tweet(
+    tweet: Tweet,
+    source_data: Dict,
+    allowed_tickers: Optional[Set[str]] = None,
+) -> ValidationResult:
     """
     Run the 7-step validation pipeline on a single tweet.
 
@@ -741,11 +1162,35 @@ def _validate_tweet(tweet: Tweet, source_data: Dict) -> ValidationResult:
             if not any(t in text_lower for t in invalidation_terms):
                 failures.append("step1_category: SELL_SIGNAL missing invalidation framing")
 
-    # ── Step 2: Ticker + price accuracy check ──────────────────────────────
-    tickers_in_tweet = re.findall(r'\$([A-Z]{2,5})', tweet.text)
-    source_tickers = set()
+        # Check for newsletter reference in NEWSLETTER_CTA
+        if tweet.category == "NEWSLETTER_CTA":
+            has_url = "sterlingsignals" in text_lower or "substack" in text_lower
+            has_cta_word = any(w in text_lower for w in ("newsletter", "subscribe", "sign up", "free"))
+            if not has_url and not has_cta_word:
+                failures.append(
+                    "step1_category: NEWSLETTER_CTA missing newsletter reference or CTA"
+                )
 
-    # Collect all valid tickers from source data
+    # ── Step 2a: Meta-language detection ───────────────────────────────────
+    META_PATTERNS = [
+        r"(?i)cannot generate",
+        r"(?i)please provide",
+        r"(?i)i need the specific",
+        r"(?i)i don't have",
+        r"\$TICKER",  # Literal placeholder
+        r"(?i)to generate (?:a|this)",
+        r"(?i)could you (?:please )?provide",
+        r"(?i)no (?:ticker|price|data) (?:was |were )?provided",
+    ]
+    for pattern in META_PATTERNS:
+        if re.search(pattern, tweet.text):
+            failures.append(f"step2_meta: LLM meta-language detected matching '{pattern}'")
+
+    # ── Step 2b: Ticker + price accuracy check ───────────────────────────
+    tickers_in_tweet = re.findall(r'\$([A-Z]{2,5})', tweet.text)
+
+    # Build source ticker set from slot data (backward compat)
+    source_tickers: Set[str] = set()
     for key in ("signals", "winners", "consider", "sell_signals", "tickers", "daily_signals"):
         items = source_data.get(key, [])
         if isinstance(items, list):
@@ -754,7 +1199,17 @@ def _validate_tweet(tweet: Tweet, source_data: Dict) -> ValidationResult:
                 if sym:
                     source_tickers.add(sym.upper())
 
-    if tickers_in_tweet:
+    # Merge with explicit allowed set if provided
+    effective_allowed = (allowed_tickers or set()) | source_tickers
+
+    if tickers_in_tweet and tweet.category in DATA_DEPENDENT_CATEGORIES:
+        # Strict check: every ticker MUST exist in source data
+        for ticker in tickers_in_tweet:
+            if not effective_allowed or ticker not in effective_allowed:
+                failures.append(f"step2_fabrication: ${ticker} not in source data")
+                details["fabricated_tickers"] = details.get("fabricated_tickers", []) + [ticker]
+    elif tickers_in_tweet:
+        # Flexible categories: only check against source if we have source data
         for ticker in tickers_in_tweet:
             if source_tickers and ticker not in source_tickers:
                 failures.append(f"step2_ticker: ${ticker} not in source data")
@@ -785,6 +1240,15 @@ def _validate_tweet(tweet: Tweet, source_data: Dict) -> ValidationResult:
     # ── Step 6: Character count ────────────────────────────────────────────
     if len(tweet.text) > MAX_TWEET_CHARS:
         failures.append(f"step6_chars: {len(tweet.text)} > {MAX_TWEET_CHARS}")
+
+    # ── Step 6b: Temporal check ────────────────────────────────────────────
+    now = datetime.now()
+    current_quarter = (now.month - 1) // 3 + 1
+    if current_quarter == 1 and re.search(r'year[\s-]?end', tweet.text, re.IGNORECASE):
+        failures.append("step_temporal: References 'year-end' in Q1")
+    for future_q in range(current_quarter + 1, 5):
+        if re.search(rf'Q{future_q}\s*{now.year}', tweet.text, re.IGNORECASE):
+            failures.append(f"step_temporal: References future Q{future_q} {now.year}")
 
     # ── Step 7: Chart flag check ───────────────────────────────────────────
     expected_chart = tweet.category in CHART_REQUIRED_CATEGORIES
@@ -912,6 +1376,11 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
             clean_ticker = ticker.lstrip("$").upper()
             chart_path = charts.get(clean_ticker)
             if chart_path and isinstance(chart_path, str):
+                # Verify chart file exists on disk
+                full_path = manifest_dir / chart_path if not os.path.isabs(chart_path) else Path(chart_path)
+                if not full_path.exists():
+                    logger.warning("Chart file missing on disk for $%s: %s", clean_ticker, chart_path)
+                    continue  # Skip — don't attach a broken path
                 tweet.chart_path = chart_path
                 attached += 1
                 matched = True
@@ -928,6 +1397,21 @@ def _attach_chart_paths(tweets: List[Tweet], charts_dir: Optional[Path] = None) 
                     attached += 1
                     funnel_used = True
                     logger.debug("Attached funnel graphic to SCANNER_RESULT tweet")
+
+    # ── Fallback pass: funnel graphic for SCANNER_RESULT / THEME_ANALYSIS ──
+    funnel_path = None
+    funnel_entry = charts.get("funnel_graphic") or charts.get("funnel")
+    if funnel_entry:
+        funnel_path = funnel_entry.get("path") if isinstance(funnel_entry, dict) else funnel_entry
+
+    if funnel_path:
+        for tweet in tweets:
+            if tweet.chart_required and not tweet.chart_path:
+                if tweet.category in ("SCANNER_RESULT", "THEME_ANALYSIS"):
+                    tweet.chart_path = str(funnel_path)
+                    attached += 1
+                    logger.debug("Funnel fallback for %s tweet", tweet.category)
+                # PERFORMANCE, TECHNICAL_ANALYSIS, SELL_SIGNAL: no fallback — dropped later
 
     logger.info("Attached charts to %d / %d chart-required tweets", attached,
                 sum(1 for t in tweets if t.chart_required))
@@ -953,11 +1437,27 @@ def _write_queues(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Build queue entries
+    # Build queue entries (drop chart-required tweets without charts)
     entries: List[Dict] = []
+    dropped_no_chart = 0
     for i, tweet in enumerate(tweets):
+        # Drop chart-required tweets that have no chart
+        if tweet.chart_required and not tweet.chart_path:
+            logger.warning(
+                "DROP %s tweet (chart required but missing): %.60s...",
+                tweet.category, tweet.text,
+            )
+            dropped_no_chart += 1
+            continue
+
         day = tweet.metadata.get("day", "saturday")
         slot = tweet.metadata.get("slot", 1)
+        if slot == 1:
+            logger.warning(
+                "SKIP slot 1 tweet in weekly queue (reserved for daily): %.60s...",
+                tweet.text,
+            )
+            continue
         slot_time = SLOT_TIMES_ET.get(slot, "08:00")
 
         entries.append({
@@ -976,6 +1476,9 @@ def _write_queues(
             "chart_path": tweet.chart_path,
             "timestamp": datetime.now().isoformat(),
         })
+
+    if dropped_no_chart:
+        logger.info("Dropped %d tweets missing required charts", dropped_no_chart)
 
     # Write identical content to all account queues
     for account_id, queue_file in queue_map.items():
@@ -1071,9 +1574,30 @@ def generate_weekly_content(
     positions = _load_portfolio(portfolio_path)
     data = _build_content_data(signals, positions, market_data)
     logger.info(
-        "Data loaded: %d pass signals, %d winners, %d themes, %d sell signals",
-        len(data.pass_signals), len(data.winners), len(data.themes), len(data.sell_signals),
+        "Data loaded: %d pass signals, %d winners, %d notable, %d themes, %d sell signals",
+        len(data.pass_signals), len(data.winners), len(data.notable_holdings),
+        len(data.themes), len(data.sell_signals),
     )
+
+    # Build global allowed-ticker set from all source data
+    all_tickers: Set[str] = set()
+    for sig in data.pass_signals:
+        sym = sig.get("symbol") or sig.get("ticker") or ""
+        if sym:
+            all_tickers.add(sym.upper())
+    for sig in data.consider_signals:
+        sym = sig.get("symbol") or sig.get("ticker") or ""
+        if sym:
+            all_tickers.add(sym.upper())
+    for sig in data.sell_signals:
+        sym = sig.get("symbol") or sig.get("ticker") or ""
+        if sym:
+            all_tickers.add(sym.upper())
+    for pos in data.winners + data.notable_holdings + data.holdings:
+        sym = pos.get("ticker") or pos.get("symbol") or ""
+        if sym:
+            all_tickers.add(sym.upper())
+    logger.info("Allowed tickers for validation: %s", all_tickers)
 
     # 3. Plan schedule
     schedule = _plan_weekly_schedule(data)
@@ -1081,12 +1605,21 @@ def generate_weekly_content(
 
     # 4. Generate + validate + repair
     valid_tweets: List[Tweet] = []
+    recent_openings: List[str] = []  # Track tweet openings for diversity
     failed_count = 0
     by_category: Dict[str, int] = {}
     used_indices: Dict[str, int] = {}
 
     for assignment in schedule:
         slot_data = _prepare_slot_data(assignment.category, data, used_indices)
+
+        # Skip slots where data is exhausted (prevents fabrication)
+        if slot_data is None:
+            logger.warning(
+                "SKIP %s/%s %s — no data available (exhausted)",
+                assignment.day, assignment.slot, assignment.category,
+            )
+            continue
 
         # Generate
         tweet = _generate_tweet(
@@ -1096,10 +1629,11 @@ def generate_weekly_content(
             style_guide=style_guide,
             client=client,
             cost_tracker=cost_tracker,
+            recent_openings=recent_openings,
         )
 
         # Validate
-        result = _validate_tweet(tweet, slot_data)
+        result = _validate_tweet(tweet, slot_data, allowed_tickers=all_tickers)
 
         # Repair loop (max 2 attempts)
         repair_attempts = 0
@@ -1112,12 +1646,17 @@ def generate_weekly_content(
             tweet = _repair_tweet(
                 tweet, result.failures, slot_data, style_guide, client, cost_tracker,
             )
-            result = _validate_tweet(tweet, slot_data)
+            result = _validate_tweet(tweet, slot_data, allowed_tickers=all_tickers)
             repair_attempts += 1
 
         if result.passed:
             valid_tweets.append(tweet)
             by_category[tweet.category] = by_category.get(tweet.category, 0) + 1
+            # Track opening for diversity (first 60 chars of first line)
+            opening = tweet.text.split("\n")[0][:60]
+            recent_openings.append(opening)
+            if len(recent_openings) > 10:
+                recent_openings = recent_openings[-10:]
         else:
             logger.warning(
                 "DROPPED tweet after %d repairs: %s/%s %s — %s",
@@ -1126,6 +1665,13 @@ def generate_weekly_content(
             )
             _log_failed_tweet(tweet, result.failures, Path(output_dir) if output_dir else None)
             failed_count += 1
+
+    # Summary of generation phase
+    skipped = len(schedule) - len(valid_tweets) - failed_count
+    logger.info(
+        "Generated %d tweets, failed %d, skipped %d (insufficient data)",
+        len(valid_tweets), failed_count, skipped,
+    )
 
     # 5. Attach chart paths from manifest (generated by chart_capture.py)
     charts_attached = _attach_chart_paths(valid_tweets)

@@ -485,7 +485,7 @@ class TestDataInjectionAccuracy:
             tickers_mentioned=["$NVDA", "$FAKE"],
         )
         result_bad = _validate_tweet(tweet_fabricated, source_data)
-        step2_failures_bad = [f for f in result_bad.failures if f.startswith("step2_ticker")]
+        step2_failures_bad = [f for f in result_bad.failures if "step2_fabrication" in f or "step2_ticker" in f]
         assert len(step2_failures_bad) > 0, \
             "Fabricated ticker $FAKE should be caught by step 2"
         assert "FAKE" in str(step2_failures_bad), "Failure should identify $FAKE"

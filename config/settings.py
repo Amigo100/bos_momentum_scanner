@@ -11,6 +11,7 @@ Usage:
     )
 """
 
+import os
 import re
 from pathlib import Path
 from typing import Dict, List
@@ -426,6 +427,11 @@ MARKETING_THRESHOLDS: Dict[str, float] = {
     # Ticker Mention Limits (prevent engagement fatigue)
     'max_ticker_mentions_per_week': 4,   # Max times same ticker can appear in weekly content
 }
+
+# Newsletter configuration
+NEWSLETTER_URL = os.environ.get(
+    "NEWSLETTER_URL", "https://sterlingsignals.substack.com"
+)
 
 # Signal classifications for content
 SIGNAL_CLASSIFICATIONS: Dict[str, str] = {

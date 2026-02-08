@@ -323,10 +323,12 @@ class TestFridayPipelineIntegration:
         # Create some fake validated tweets and write queues
         fake_tweets = []
         for i, assignment in enumerate(schedule[:5]):  # Use first 5 only for speed
+            chart_req = assignment.category in CHART_REQUIRED_CATEGORIES
             fake_tweets.append(Tweet(
                 text=f"$NVDA at $145.50 — momentum confirmed. NFA #{i}",
                 category=assignment.category,
-                chart_required=assignment.category in CHART_REQUIRED_CATEGORIES,
+                chart_required=chart_req,
+                chart_path="charts/NVDA_weekly_20260207.png" if chart_req else None,
                 tickers_mentioned=["NVDA"],
                 metadata={"day": assignment.day, "slot": assignment.slot},
             ))
@@ -479,6 +481,7 @@ class TestDailyPipelineIntegration:
                 text=f"${ticker} at ${price:.2f} — momentum confirmed on the daily. NFA",
                 category="DAILY_SIGNAL",
                 chart_required=True,
+                chart_path=f"charts/{ticker}_daily_20260206.png",
                 tickers_mentioned=[ticker],
                 metadata={"day": "thursday", "slot": 6},
             )
@@ -658,7 +661,7 @@ class TestDailyPostingIntegration:
             chart_required=True,
             tickers_mentioned=["NVDA"],
             chart_path=str(chart_file),
-            metadata={"day": "saturday", "slot": 1},
+            metadata={"day": "saturday", "slot": 2},
         )
 
         # Write to queue

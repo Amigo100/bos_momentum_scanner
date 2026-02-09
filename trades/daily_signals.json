@@ -3,54 +3,54 @@
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "BILL",
-      "symbol": "BILL",
-      "price": 50.75,
-      "beta": 2.7,
+      "ticker": "STNE",
+      "symbol": "STNE",
+      "price": 17.99,
+      "beta": 1.89,
       "banker_score": 100,
       "sector": "Technology",
-      "industry": "Software - Application",
+      "industry": "Software - Infrastructure",
       "theme": "Technology"
     },
     {
-      "ticker": "ECG",
-      "symbol": "ECG",
-      "price": 101.61,
-      "beta": 2.68,
-      "banker_score": 100,
-      "sector": "Industrials",
-      "industry": "Engineering & Construction",
-      "theme": "Industrials"
-    },
-    {
-      "ticker": "MKSI",
-      "symbol": "MKSI",
-      "price": 250.6,
-      "beta": 2.6,
+      "ticker": "TSEM",
+      "symbol": "TSEM",
+      "price": 147.53,
+      "beta": 2.49,
       "banker_score": 100,
       "sector": "Technology",
-      "industry": "Scientific & Technical Instruments",
+      "industry": "Semiconductors",
       "theme": "Technology"
     },
     {
-      "ticker": "PSIX",
-      "symbol": "PSIX",
-      "price": 86.43,
-      "beta": 3.17,
-      "banker_score": 100,
-      "sector": "Industrials",
-      "industry": "Specialty Industrial Machinery",
-      "theme": "Industrials"
-    },
-    {
-      "ticker": "PWP",
-      "symbol": "PWP",
-      "price": 24.34,
-      "beta": 1.82,
+      "ticker": "WULF",
+      "symbol": "WULF",
+      "price": 16.65,
+      "beta": 2.85,
       "banker_score": 100,
       "sector": "Financial Services",
       "industry": "Capital Markets",
       "theme": "Financial Services"
+    },
+    {
+      "ticker": "ADTN",
+      "symbol": "ADTN",
+      "price": 10.4,
+      "beta": 2.27,
+      "banker_score": 98.3,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "theme": "Technology"
+    },
+    {
+      "ticker": "PRIM",
+      "symbol": "PRIM",
+      "price": 162.61,
+      "beta": 2.27,
+      "banker_score": 97.9,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "theme": "Industrials"
     }
   ],
   "sell_signals": []

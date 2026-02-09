@@ -91,7 +91,7 @@
     "text": "$LUMN setup invalidated. Win more than you lose. No ego, just execution.",
     "category": "SELL_SIGNAL",
     "scheduled_date": "2026-02-08",
-    "status": "pending",
+    "status": "failed",
     "posted": false,
     "char_count": 72,
     "mentioned_tickers": [
@@ -100,7 +100,8 @@
     "chart_required": true,
     "chart_path": "trades/charts/LUMN_weekly_20260207.png",
     "chart_paths": [],
-    "timestamp": "2026-02-08T16:16:32.273613"
+    "timestamp": "2026-02-08T16:16:32.273613",
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "sunday_2_5",

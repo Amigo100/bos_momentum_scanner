@@ -1,6 +1,57 @@
 {
-  "scan_date": "2026-02-07",
+  "scan_date": "2026-02-09",
   "timeframe": "daily",
-  "buy_signals": [],
+  "buy_signals": [
+    {
+      "ticker": "BILL",
+      "symbol": "BILL",
+      "price": 50.75,
+      "beta": 2.7,
+      "banker_score": 100,
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "theme": "Technology"
+    },
+    {
+      "ticker": "ECG",
+      "symbol": "ECG",
+      "price": 101.61,
+      "beta": 2.68,
+      "banker_score": 100,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "theme": "Industrials"
+    },
+    {
+      "ticker": "MKSI",
+      "symbol": "MKSI",
+      "price": 250.6,
+      "beta": 2.6,
+      "banker_score": 100,
+      "sector": "Technology",
+      "industry": "Scientific & Technical Instruments",
+      "theme": "Technology"
+    },
+    {
+      "ticker": "PSIX",
+      "symbol": "PSIX",
+      "price": 86.43,
+      "beta": 3.17,
+      "banker_score": 100,
+      "sector": "Industrials",
+      "industry": "Specialty Industrial Machinery",
+      "theme": "Industrials"
+    },
+    {
+      "ticker": "PWP",
+      "symbol": "PWP",
+      "price": 24.34,
+      "beta": 1.82,
+      "banker_score": 100,
+      "sector": "Financial Services",
+      "industry": "Capital Markets",
+      "theme": "Financial Services"
+    }
+  ],
   "sell_signals": []
 }

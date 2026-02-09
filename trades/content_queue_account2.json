@@ -158,7 +158,7 @@
     "text": "Radar alert: $MATV at $14.55. Defense manufacturing theme gaining institutional attention. Watching for final momentum confirmation before entry. NFA.",
     "category": "WATCHLIST",
     "scheduled_date": "2026-02-08",
-    "status": "pending",
+    "status": "failed",
     "posted": false,
     "char_count": 150,
     "mentioned_tickers": [
@@ -167,7 +167,8 @@
     "chart_required": false,
     "chart_path": null,
     "chart_paths": [],
-    "timestamp": "2026-02-08T16:16:32.273687"
+    "timestamp": "2026-02-08T16:16:32.273687",
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "monday_2_8",

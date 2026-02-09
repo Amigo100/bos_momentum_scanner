@@ -47,11 +47,12 @@ reports/
 trades/portfolio.csv
 trades/portfolio_google_sheets.csv
 
-# Portfolio backups (keep latest only)
+# Portfolio backups (managed by utils/backup_cleanup.py)
 trades/portfolio_backups/
+trades/daily_portfolio_backups/
+
+# Daily portfolio (separate from weekly - user-specific)
+trades/daily_portfolio.csv
 
 # Chart images committed for tweet posting pipeline
 # (small files ~50-100KB, needed by daily_post workflow)
-
-# Tweet posting logs
-trades/tweets/posted_*.json

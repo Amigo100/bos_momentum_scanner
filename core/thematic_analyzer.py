@@ -300,27 +300,76 @@ class Theme:
     # Backwards compatibility fields (may be populated or not)
     cycle_stage: str = ""
     fundamental_cycle_score: float = 0.0
-    
+
+    # v3.0 additions
+    lifecycle_stage: str = ""           # EMERGENCE / EARLY_ADOPTION / MAINSTREAM / MATURITY
+    lifecycle_evidence: str = ""
+
+    capital_health_score: float = 0.0   # 1-10
+    valuation_regime: str = ""          # OPTIONALITY / FUNDAMENTAL / TRANSITION
+    regime_rationale: str = ""
+    revision_trajectory: str = ""       # ACCELERATING / STABLE / DECELERATING / NEGATIVE / NOT_APPLICABLE
+    supply_response: str = ""
+    capital_cycle_evidence: str = ""
+    veto_applied: bool = False
+
+    theme_velocity: str = ""            # ACCELERATING / STEADY / DECELERATING
+
     def calculate_classification(self):
-        """Calculate classification based on composite_score"""
+        """Calculate classification based on composite_score, with capital health veto."""
         score = self.composite_score
-        
-        if score >= 7.5:
-            self.classification = "PRIME"
-            self.position_sizing_recommendation = "FULL"
-            self.classification_rationale = f"High conviction theme ({score:.1f}/10). Strong catalysts + momentum + runway."
-        elif score >= 6.0:
-            self.classification = "INVESTABLE"
-            self.position_sizing_recommendation = "FULL"
-            self.classification_rationale = f"Good opportunity ({score:.1f}/10). Solid fundamentals, standard position sizing."
-        elif score >= 4.5:
-            self.classification = "SELECTIVE"
-            self.position_sizing_recommendation = "REDUCED"
-            self.classification_rationale = f"Mixed signals ({score:.1f}/10). Only best stocks in this theme."
+
+        # v3.0: Capital health veto — if score <= 3, cap at SELECTIVE
+        veto = False
+        if self.capital_health_score > 0 and self.capital_health_score <= 3:
+            veto = True
+            self.veto_applied = True
+
+        if veto:
+            # Cap at SELECTIVE regardless of composite
+            if score >= 7.5:
+                self.classification = "SELECTIVE"
+                self.position_sizing_recommendation = "REDUCED"
+                self.classification_rationale = (
+                    f"VETOED: Composite {score:.1f}/10 would be PRIME, but Capital Cycle Health "
+                    f"scored {self.capital_health_score:.0f}/10 ({self.valuation_regime} regime). "
+                    f"Capped at SELECTIVE."
+                )
+            elif score >= 6.0:
+                self.classification = "SELECTIVE"
+                self.position_sizing_recommendation = "REDUCED"
+                self.classification_rationale = (
+                    f"VETOED: Composite {score:.1f}/10 would be INVESTABLE, but Capital Cycle Health "
+                    f"scored {self.capital_health_score:.0f}/10. Capped at SELECTIVE."
+                )
+            else:
+                # Already SELECTIVE or AVOID — no change needed from veto
+                if score >= 4.5:
+                    self.classification = "SELECTIVE"
+                    self.position_sizing_recommendation = "REDUCED"
+                    self.classification_rationale = f"Selective ({score:.1f}/10) + capital health concern."
+                else:
+                    self.classification = "AVOID"
+                    self.position_sizing_recommendation = "NONE"
+                    self.classification_rationale = f"Weak setup ({score:.1f}/10) with unhealthy capital cycle."
         else:
-            self.classification = "AVOID"
-            self.position_sizing_recommendation = "NONE"
-            self.classification_rationale = f"Weak setup ({score:.1f}/10). Fading momentum or overcrowded."
+            # Normal classification (no veto)
+            if score >= 7.5:
+                self.classification = "PRIME"
+                self.position_sizing_recommendation = "FULL"
+                self.classification_rationale = f"Strong setup across all factors ({score:.1f}/10)."
+            elif score >= 6.0:
+                self.classification = "INVESTABLE"
+                self.position_sizing_recommendation = "FULL"
+                self.classification_rationale = f"Good opportunity ({score:.1f}/10). Standard conviction."
+            elif score >= 4.5:
+                self.classification = "SELECTIVE"
+                self.position_sizing_recommendation = "REDUCED"
+                self.classification_rationale = f"Mixed signals ({score:.1f}/10). Only best stocks in theme."
+            else:
+                self.classification = "AVOID"
+                self.position_sizing_recommendation = "NONE"
+                self.classification_rationale = f"Weak setup ({score:.1f}/10). Fading momentum or overcrowded."
     
     def is_investable(self) -> bool:
         """Returns True if theme is PRIME or INVESTABLE"""
@@ -534,16 +583,19 @@ STEP_1_PROMPT = """
 
 You are identifying themes with the **highest probability of strong returns over the next 6-12 months**.
 
+Today's date: {TODAY}
+
 ### ═══════════════════════════════════════════════════════════════════════════
-### WHAT MAKES A THEME INVESTABLE (NOT just "early cycle")
+### WHAT MAKES A THEME INVESTABLE
 ### ═══════════════════════════════════════════════════════════════════════════
 
 A theme is INVESTABLE if it has:
 
-1. **ACTIVE CATALYSTS** - Specific events/trends driving the theme forward NOW
-2. **POSITIVE MOMENTUM** - Theme is gaining strength, not fading
-3. **NOT OVERCROWDED** - Room for new money to enter
-4. **RUNWAY REMAINING** - Growth story not exhausted
+1. **ACTIVE CATALYSTS** — Specific events/trends driving the theme forward NOW
+2. **POSITIVE MOMENTUM** — Theme is gaining strength, not fading
+3. **NOT OVERCROWDED** — Room for new money to enter
+4. **RUNWAY REMAINING** — Growth story not exhausted
+5. **HEALTHY CAPITAL CYCLE** — Spending is justified by demand, not speculation
 
 **IMPORTANT:** A mid-cycle theme with strong catalysts can outperform an early-cycle theme without catalysts. Focus on WHAT'S WORKING NOW, not theoretical cycle positioning.
 
@@ -553,31 +605,32 @@ A theme is INVESTABLE if it has:
 
 **STEP A: Discover What's Working Now**
 Search these EXACT queries:
-1. "best performing sector ETFs 2025"
-2. "investment themes working 2025"
-3. "where is smart money flowing 2025"
-4. "sectors with positive earnings revisions 2025"
+1. "best performing sector ETFs {YEAR}"
+2. "investment themes working {YEAR}"
+3. "where is smart money flowing {YEAR}"
+4. "sectors with positive earnings revisions {YEAR}"
+5. "13F filings top hedge fund new positions {YEAR}"
 
 From Step A, identify the TOP 3-5 TRENDS currently driving markets.
 
-**STEP B: Second-Order Derivative Search (CRITICAL - Find the Bottlenecks)**
+**STEP B: Second-Order Derivative Search (CRITICAL — Find the Bottlenecks)**
 The best 6-12 month returns come from SOLVING bottlenecks, not chasing trends.
 
 For EACH major trend identified in Step A, dynamically search:
-1. "[trend] bottlenecks 2025" 
+1. "[trend] bottlenecks {YEAR}"
 2. "[trend] supply constraints"
 3. "[trend] infrastructure limitations"
 4. "what limits [trend] growth"
 
 Example searches based on Step A findings:
-- If AI is hot → search "AI infrastructure bottlenecks 2025", "AI power constraints", "AI cooling limitations"
+- If AI is hot → search "AI infrastructure bottlenecks {YEAR}", "AI power constraints", "AI cooling limitations"
 - If Defense is hot → search "defense supply chain bottlenecks", "defense manufacturing constraints"
 - If EVs are hot → search "EV battery supply constraints", "EV charging infrastructure limitations"
 
 Also search these general bottleneck queries:
-1. "supply chain constraints 2025" (what's in shortage?)
-2. "infrastructure bottlenecks 2025"
-3. "pick and shovel plays 2025"
+1. "supply chain constraints {YEAR}" (what's in shortage?)
+2. "infrastructure bottlenecks {YEAR}"
+3. "pick and shovel plays {YEAR}"
 
 **KEY INSIGHT:** For every first-order trend, ask "What INPUT is constrained?"
 - AI trend → Power? Cooling? Cabling? Chips?
@@ -587,63 +640,79 @@ Also search these general bottleneck queries:
 
 The bottleneck is often MORE investable than the trend itself because it's less crowded.
 
+**BOTTLENECK DURABILITY CHECK:** For each bottleneck identified, also search:
+- "[bottleneck] new capacity coming online {YEAR}"
+- "[bottleneck] competitors entering market"
+
+If new supply resolves the bottleneck within 12 months → NOT INVESTABLE (fading bottleneck)
+If bottleneck takes 3-5+ years to resolve → PRIME BOTTLENECK (durable)
+
 **STEP C: Contrarian Hunt (Improving Fundamentals, Lagging Sentiment)**
 Search these EXACT queries:
-1. "underperforming sectors positive earnings revisions 2025"
-2. "hated sectors improving fundamentals 2025"
-3. "sectors with relative strength divergence 2025"
+1. "underperforming sectors positive earnings revisions {YEAR}"
+2. "hated sectors improving fundamentals {YEAR}"
+3. "sectors with relative strength divergence {YEAR}"
 
 Look for: Underperformed S&P for 12-24 months BUT showing recent accumulation or earnings beats.
 
 **STEP D: Identify Emerging/Accelerating Themes**
 Search these EXACT queries:
-1. "emerging investment themes 2025"
-2. "accelerating trends 2025 investing"
-3. "sectors gaining momentum 2025"
+1. "emerging investment themes {YEAR}"
+2. "accelerating trends {YEAR} investing"
+3. "sectors gaining momentum {YEAR}"
+4. "sectors poised for breakout {YEAR}"
 
 **STEP E: Check for Themes to AVOID**
 Search these EXACT queries:
-1. "overcrowded trades 2025"
-2. "sectors losing momentum 2025"
-3. "investment themes to avoid 2025"
+1. "overcrowded trades {YEAR}"
+2. "sectors losing momentum {YEAR}"
+3. "investment themes to avoid {YEAR}"
+4. "sectors earnings revisions declining {YEAR}"
 
 ### ═══════════════════════════════════════════════════════════════════════════
-### THEME EVALUATION FRAMEWORK (Simplified for Consistency)
+### THEME EVALUATION FRAMEWORK (5 Factors)
 ### ═══════════════════════════════════════════════════════════════════════════
 
-For each potential theme, evaluate these 4 criteria:
+For each potential theme, evaluate ALL 5 criteria:
 
-## 1. CATALYST STRENGTH (40% weight) - Most Important
+## 1. CATALYST STRENGTH (30% weight)
 
-**What to search:** "[theme] catalysts 2025" and "[theme] upcoming events"
+**What to search:** "[theme] catalysts {YEAR}" and "[theme] upcoming events"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| STRONG | Multiple specific catalysts in next 6-12 months (earnings, product launches, policy, capex announcements) | 8-10 |
+| STRONG | Multiple specific catalysts in next 6-12 months (earnings, product launches, policy, contracts) | 8-10 |
 | MODERATE | 1-2 catalysts or general tailwinds | 5-7 |
 | WEAK | No specific catalysts, relying on continuation | 2-4 |
 
 **Examples of STRONG catalysts:**
-- AI: Hyperscaler capex announcements, new chip launches, enterprise adoption metrics
-- Nuclear: New reactor approvals, utility contracts, policy support bills
-- Defense: Budget increases, contract awards, geopolitical events
+- Hyperscaler capex announcements, new chip launches, enterprise adoption metrics
+- New reactor approvals, utility power contracts, policy support bills
+- Defense budget increases, contract awards, geopolitical events
+- FDA approvals, clinical trial readouts, drug launches
 
-## 2. MOMENTUM DIRECTION (25% weight)
+## 2. MOMENTUM DIRECTION (20% weight)
 
 **What to search:** "[theme] ETF performance" and check 1-month, 3-month returns
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| ACCELERATING | 3-month return > 1-month annualized (momentum building) | 8-10 |
+| ACCELERATING | 1-month return > 3-month annualized (momentum building) | 8-10 |
 | STEADY | Consistent positive returns, healthy trend | 6-7 |
-| DECELERATING | Recent underperformance vs prior trend | 3-5 |
+| DECELERATING | 1-month return < 3-month annualized (momentum fading) | 3-5 |
 | NEGATIVE | Downtrend or sharp reversal | 1-2 |
 
-**Key insight:** We want themes that are WORKING, not themes we hope will work.
+**THEME VELOCITY CHECK (important):**
+Compare 1-month ETF return vs 3-month annualized return:
+- 1M return > 3M annualized → ACCELERATING (institutional money entering)
+- 1M return ≈ 3M annualized → STEADY
+- 1M return < 3M annualized → DECELERATING (money rotating out)
 
-## 3. CROWDING LEVEL (20% weight)
+A theme that returned +30% in 3 months but only +2% in the last month is DECELERATING — do NOT score this as "strong momentum."
 
-**What to search:** "[theme] crowded trade" and "[theme] fund flows"
+## 3. CROWDING LEVEL (15% weight)
+
+**What to search:** "[theme] crowded trade {YEAR}" and "[theme] fund flows"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
@@ -658,7 +727,7 @@ For each potential theme, evaluate these 4 criteria:
 - Universal analyst buy ratings
 - "Everyone knows" the theme
 
-## 4. RUNWAY REMAINING (15% weight)
+## 4. RUNWAY REMAINING (10% weight)
 
 **What to search:** "[theme] market penetration" and "[theme] growth projections"
 
@@ -668,19 +737,85 @@ For each potential theme, evaluate these 4 criteria:
 | MEDIUM | 40-70% penetration with continued growth | 5-7 |
 | SHORT | >70% penetration, mature market | 2-4 |
 
+## 5. CAPITAL CYCLE HEALTH (25% weight — HAS VETO POWER)
+
+This is the most important risk check. A theme can score well on all other factors and still destroy capital if the capital cycle is unhealthy.
+
+**CRITICAL FIRST STEP: Determine the theme's VALUATION REGIME.**
+
+Themes are priced by the market in one of three ways. You MUST identify which regime applies before scoring:
+
+### REGIME A: OPTIONALITY / MILESTONE-BASED
+The market is pricing the theme on future potential, not current revenue. Companies may have little or no revenue. Stock moves are driven by technical milestones, government funding, partnerships, and narrative expansion.
+
+**Examples:** Quantum computing (IONQ, RGTI), fusion energy, early-stage space economy, pre-revenue biotech
+
+**Health check for Regime A — search:** "[theme] technical milestones {YEAR}" and "[theme] government funding {YEAR}" and "[theme] competitive landscape"
+
+| Signal | Score |
+|--------|-------|
+| Milestones being hit on schedule + funding increasing + narrow field (2-5 real players) | 8-10 |
+| Milestones on track + stable funding + moderate competition | 5-7 |
+| Milestones delayed OR funding flat + competitors flooding in | 3-4 |
+| Milestones missed + funding declining + hype fading | 1-2 |
+
+**Key question:** Is the narrative EXPANDING (new use cases, new believers, new funding) or CONTRACTING (disappointment, delays, skepticism growing)?
+
+### REGIME B: FUNDAMENTAL / REVENUE-BASED
+The market is pricing the theme on actual revenue, earnings, and growth rates. Valuations are based on P/E, P/S, EV/EBITDA. Stock moves follow earnings beats/misses and revision trends.
+
+**Examples:** AI infrastructure (SMCI, VRT, ANET), cybersecurity (CRWD, NET), fintech (COIN, AFRM), defense contractors
+
+**Health check for Regime B — search:** "[theme] capex vs revenue growth {YEAR}" and "[theme] earnings revisions trend {YEAR}" and "[theme] return on investment"
+
+| Signal | Score |
+|--------|-------|
+| Revenue growth >= capex growth + revisions accelerating (each quarter's beat bigger) | 9-10 |
+| Revenue growth ≈ capex growth + revisions stable positive | 7-8 |
+| Capex growing faster than revenue + revisions still positive but decelerating | 4-5 |
+| Capex growing >> revenue + revisions flattening or turning negative | 2-3 |
+| Capex growing, revenue flat/declining + competitors flooding in | 1 |
+
+**Earnings Revision Trajectory (critical distinction):**
+- ACCELERATING revisions: Each quarter's beat is bigger than the last → Early/mid cycle
+- STABLE revisions: Consistent beats but not growing → Mid cycle
+- DECELERATING revisions: Still positive but beats are shrinking → Late cycle
+- NEGATIVE revisions: Misses or estimate cuts → Cycle turning
+
+### REGIME C: TRANSITION (Highest Risk)
+The market is SHIFTING from pricing on milestones to pricing on revenue. This is the most dangerous moment for a theme. Companies that were valued as "options" suddenly face P/E scrutiny.
+
+**Examples:** Drones/UAV transitioning from demo phase to commercial delivery. Space economy companies starting to book revenue. GLP-1 drugs moving from trial success to manufacturing/insurance coverage questions.
+
+**Health check for Regime C — search:** "[theme] revenue expectations vs reality {YEAR}" and "[theme] valuation concerns"
+
+| Signal | Score |
+|--------|-------|
+| Revenue starting to materialize AND exceeding early expectations | 8-9 |
+| Revenue materializing roughly in line with expectations | 5-7 |
+| Market starting to demand revenue but companies not yet delivering | 3-4 |
+| Valuation reset underway as milestone-based pricing collapses | 1-2 |
+
+**Key question:** Has the market already repriced, or is the repricing ahead?
+
+### CAPITAL CYCLE HEALTH — VETO RULE
+**If Capital Cycle Health scores <= 3, the theme is AUTOMATICALLY capped at SELECTIVE regardless of other scores.** This prevents the system from recommending entry into a theme where the fundamental underpinning is broken, even if catalysts and momentum look strong on the surface (as AI infra did in mid-2024 before the correction).
+
 ### ═══════════════════════════════════════════════════════════════════════════
 ### INVESTABILITY CLASSIFICATION
 ### ═══════════════════════════════════════════════════════════════════════════
 
 Calculate weighted score:
-**COMPOSITE = (Catalyst × 0.40) + (Momentum × 0.25) + (Crowding × 0.20) + (Runway × 0.15)**
+**COMPOSITE = (Catalyst × 0.30) + (Momentum × 0.20) + (Crowding × 0.15) + (Runway × 0.10) + (Capital Health × 0.25)**
+
+Then apply the veto: if Capital Health <= 3, cap classification at SELECTIVE.
 
 | Composite Score | Classification | Action |
 |-----------------|----------------|--------|
-| 7.5+ | PRIME | High conviction - prioritize stocks in this theme |
-| 6.0 - 7.4 | INVESTABLE | Good opportunity - standard position sizing |
-| 4.5 - 5.9 | SELECTIVE | Caution - only best stocks in theme |
-| < 4.5 | AVOID | Do not invest - theme is fading or overcrowded |
+| 7.5+ | PRIME | High conviction — prioritize stocks in this theme |
+| 6.0 - 7.4 | INVESTABLE | Good opportunity — standard position sizing |
+| 4.5 - 5.9 | SELECTIVE | Caution — only best stocks in theme |
+| < 4.5 | AVOID | Do not invest — theme is fading, overcrowded, or capital-cycle-impaired |
 
 ### ═══════════════════════════════════════════════════════════════════════════
 ### EXPLICIT REJECTION CRITERIA
@@ -692,6 +827,7 @@ Calculate weighted score:
 2. **EXTREME CROWDING**: On magazine covers + record fund inflows + universal bullishness
 3. **CATALYST EXHAUSTION**: Major catalyst already passed (e.g., election play post-election)
 4. **STRUCTURAL HEADWINDS**: Regulatory threats, technological disruption, demand destruction
+5. **BROKEN CAPITAL CYCLE**: Capex >> revenue with no path to convergence (Regime B) OR milestones missed + funding drying up (Regime A) OR valuation reset underway without revenue bridge (Regime C)
 
 ### ═══════════════════════════════════════════════════════════════════════════
 ### THEME TYPE CLASSIFICATION
@@ -707,7 +843,7 @@ Classify each theme by HOW you found it:
 
 **Preference order for 6-12 month returns:**
 1. BOTTLENECK themes (underappreciated, less crowded)
-2. CONTRARIAN themes (improving fundamentals, lagging sentiment) 
+2. CONTRARIAN themes (improving fundamentals, lagging sentiment)
 3. TREND themes (only if crowding is still low)
 
 **BOTTLENECK example:**
@@ -721,6 +857,21 @@ Classify each theme by HOW you found it:
 - Investment thesis: "Fundamentals improving, sentiment hasn't caught up"
 
 ### ═══════════════════════════════════════════════════════════════════════════
+### THEME LIFECYCLE STAGE
+### ═══════════════════════════════════════════════════════════════════════════
+
+For each theme, identify its lifecycle stage. This is different from theme type — it describes WHERE in its evolution the theme currently sits:
+
+| Stage | Description | Characteristics | Our Preference |
+|-------|-------------|-----------------|----------------|
+| EMERGENCE | First movers, high skepticism, no ETFs yet | Novel tech demos, first govt contracts, niche coverage only | Highest upside but hardest to identify |
+| EARLY ADOPTION | Institutional recognition begins | First ETF launches, analyst initiations, 13F appearances | SWEET SPOT — this is where we want to be |
+| MAINSTREAM | Wide recognition, retail participation | Record ETF inflows, universal buy ratings, CNBC daily | Tradeable but requires strong technical signal |
+| MATURITY | Growth decelerating, competition intense | Revenue beats shrinking, competitor flood, margin pressure | AVOID for new positions |
+
+**WE STRONGLY PREFER EMERGENCE and EARLY ADOPTION stages.** Mainstream themes are only acceptable if our "Room to Run" filter triggers (stock >25% below 52-week high in a still-healthy theme). Maturity stage themes should be classified AVOID regardless of other scores.
+
+### ═══════════════════════════════════════════════════════════════════════════
 ### OUTPUT FORMAT
 ### ═══════════════════════════════════════════════════════════════════════════
 
@@ -731,64 +882,80 @@ Respond with ONLY valid JSON (no markdown, no explanation):
   "market_context": "Brief description of current market environment",
   "trends_identified_step_a": ["List the 3-5 hot trends found in Step A"],
   "searches_performed": ["List ALL searches performed, including dynamic Step B bottleneck searches"],
-  
+
   "top_themes": [
     {
       "rank": 1,
       "theme": "Specific Theme Name",
       "primary_etfs": ["ETF1", "ETF2"],
-      
+
       "theme_type": "BOTTLENECK/TREND/CONTRARIAN",
-      "theme_type_rationale": "Why this classification - e.g., 'Second-order play on AI power demand' or 'Improving fundamentals despite 18-month underperformance'",
-      
+      "theme_type_rationale": "Why this classification",
+
+      "lifecycle_stage": "EMERGENCE/EARLY_ADOPTION/MAINSTREAM/MATURITY",
+      "lifecycle_evidence": "Why this stage — e.g., 'First dedicated ETF launched 3 months ago, only 4 analyst initiations so far'",
+
       "catalyst_analysis": {
         "score": 8,
         "key_catalysts": [
-          {"catalyst": "Specific event/trend", "timing": "Q1 2025", "impact": "High/Medium"}
+          {"catalyst": "Specific event/trend", "timing": "Q1 2026", "impact": "High/Medium"}
         ],
         "catalyst_evidence": "What search revealed"
       },
-      
+
       "momentum_analysis": {
         "score": 7,
         "etf_1m_return": "+X%",
         "etf_3m_return": "+Y%",
+        "etf_3m_annualized": "+Z%",
+        "theme_velocity": "ACCELERATING/STEADY/DECELERATING",
         "trend_direction": "Accelerating/Steady/Decelerating",
         "relative_strength_vs_spy": "Outperforming/In-line/Underperforming",
         "momentum_evidence": "What search revealed"
       },
-      
+
       "crowding_analysis": {
         "score": 7,
         "crowding_level": "Low/Moderate/High",
         "warning_signs": ["Any warning signs found"],
         "crowding_evidence": "What search revealed"
       },
-      
+
       "runway_analysis": {
         "score": 8,
         "penetration_estimate": "X% of addressable market",
         "growth_runway_years": 5,
         "runway_evidence": "What search revealed"
       },
-      
+
+      "capital_cycle_analysis": {
+        "score": 7,
+        "valuation_regime": "OPTIONALITY/FUNDAMENTAL/TRANSITION",
+        "regime_rationale": "Why this regime — what is the market actually pricing?",
+        "health_assessment": "Description of findings",
+        "revision_trajectory": "ACCELERATING/STABLE/DECELERATING/NEGATIVE/NOT_APPLICABLE",
+        "supply_response": "Are competitors flooding in? Is new capacity coming?",
+        "capital_cycle_evidence": "What search revealed"
+      },
+
       "composite_score": 7.6,
       "classification": "PRIME/INVESTABLE/SELECTIVE/AVOID",
-      
+      "veto_applied": false,
+
       "investment_thesis": "2-3 sentence thesis for why this theme will outperform over next 6-12 months",
       "primary_risks": ["Risk 1", "Risk 2"],
       "what_would_change_view": "What would make you downgrade this theme"
     }
   ],
-  
+
   "themes_rejected": [
     {
       "theme": "Theme Name",
-      "rejection_reason": "Specific reason (fading momentum/overcrowded/catalyst exhaustion/headwinds)",
+      "rejection_reason": "Specific reason (fading momentum/overcrowded/catalyst exhaustion/headwinds/broken capital cycle)",
       "evidence": "What search showed"
     }
   ],
-  
+
   "contrarian_watchlist": [
     {
       "theme": "Theme Name",
@@ -797,10 +964,10 @@ Respond with ONLY valid JSON (no markdown, no explanation):
       "trigger_to_upgrade": "What would make this investable"
     }
   ],
-  
+
   "theme_watchlist": [
     {
-      "theme": "Theme Name", 
+      "theme": "Theme Name",
       "current_issue": "Why not investable now",
       "trigger_to_upgrade": "What would make this investable"
     }
@@ -813,21 +980,25 @@ Respond with ONLY valid JSON (no markdown, no explanation):
 
 To ensure consistent results across runs:
 
-1. **Step A searches are EXACT** - Use the specified queries verbatim
-2. **Step B searches are DYNAMIC** - Construct bottleneck searches based on trends found in Step A
-3. **Score based on EVIDENCE from searches** - Not general knowledge
-4. **Apply thresholds strictly** - If ETF is down 10%, momentum score is LOW
-5. **Cite specific data points** - "SMH up 12% in past month" not "semiconductors doing well"
-6. **Date-stamp your evidence** - Note when data is from
+1. **Step A searches are EXACT** — Use the specified queries verbatim (with {YEAR} replaced)
+2. **Step B searches are DYNAMIC** — Construct bottleneck + durability searches based on trends found in Step A
+3. **Score based on EVIDENCE from searches** — Not general knowledge
+4. **Apply thresholds strictly** — If ETF is down 10%, momentum score is LOW
+5. **Cite specific data points** — "SMH up 12% in past month" not "semiconductors doing well"
+6. **Date-stamp your evidence** — Note when data is from
+7. **Always determine valuation regime BEFORE scoring Capital Health** — The wrong regime check produces the wrong score
+8. **Apply the veto honestly** — If Capital Health <= 3, the theme is capped at SELECTIVE even if composite is 8+
 
 **Dynamic Search Example:**
 - Step A finds: AI, Defense, Clean Energy are hot trends
-- Step B then searches: "AI bottlenecks 2025", "AI power constraints", "defense supply chain constraints", "clean energy grid limitations", etc.
+- Step B then searches: "AI bottlenecks {YEAR}", "AI power constraints", "defense supply chain constraints", "clean energy grid limitations", etc.
+- Step B also checks durability: "AI power constraints new capacity {YEAR}", "defense manufacturing new entrants"
 
 **Themes should NOT change dramatically week-to-week** unless:
 - Major catalyst event occurs
 - Significant price breakdown/breakout
 - Fundamental shift in outlook (earnings, policy, etc.)
+- Capital cycle health deteriorates (e.g., major earnings miss across theme)
 
 If a theme was INVESTABLE last week, it should remain INVESTABLE unless something specific changed.
 
@@ -838,11 +1009,11 @@ If a theme was INVESTABLE last week, it should remain INVESTABLE unless somethin
 """
 
 STEP_2_PROMPT_TEMPLATE = """
-## MAP TICKERS TO THEMES (Simplified Assessment)
+## MAP TICKERS TO THEMES (With Revenue Verification)
 
 Given the top themes from Step 1, determine how well each ticker fits its best theme.
 
-**NOTE:** This is theme mapping ONLY. Detailed risk assessment and catalyst checking 
+**NOTE:** This is theme mapping ONLY. Detailed risk assessment and catalyst checking
 happens in the Gatekeeper step. Focus on theme fit and company position.
 
 ### TOP THEMES FROM STEP 1:
@@ -857,14 +1028,48 @@ happens in the Gatekeeper step. Focus on theme fit and company position.
 
 ## 1. THEME FIT (How much does this company benefit from the theme?)
 
-**One search:** "[company] business segments revenue breakdown"
+**Required search:** "[company] revenue breakdown business segments"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| PURE PLAY | >70% of business tied to theme | 9-10 |
+| PURE PLAY | >70% of revenue/business directly tied to theme | 9-10 |
 | STRONG | 50-70% exposure | 7-8 |
 | MODERATE | 30-50% exposure | 5-6 |
 | WEAK | <30% exposure | 1-4 |
+
+### ═══════════════════════════════════════════════════════════════════════════
+### CRITICAL: VERIFY REVENUE, NOT NARRATIVE
+### ═══════════════════════════════════════════════════════════════════════════
+
+Do NOT loosely associate companies with themes based on narrative or media coverage.
+For each ticker, you MUST verify:
+
+1. **What % of REVENUE actually comes from this theme?**
+   If <30%, this is WEAK FIT regardless of how the company is perceived.
+
+2. **Is the company's PRIMARY business model aligned with the theme?**
+   The company's largest revenue segment must be related to the theme.
+
+3. **Would this stock move with the theme ETF?**
+   If the relevant theme ETF drops 20%, would this stock drop similarly?
+   If not, the mapping is probably wrong.
+
+**COMMON MISCLASSIFICATIONS TO AVOID:**
+
+| Ticker | Wrong Theme | Right Theme | Why |
+|--------|------------|-------------|-----|
+| MSTR | Fintech / Software | Crypto / Digital Assets | Primary value driver is Bitcoin holdings, not legacy BI software |
+| PLTR | AI Infrastructure | AI Software & Analytics / Defense Tech | Revenue is ~55% government analytics, ~45% commercial. NOT hardware/infra |
+| NET | Cybersecurity | Edge Computing / CDN | Security is <30% of revenue. Primary business is CDN, edge compute, workers platform |
+| COIN | Fintech | Crypto / Digital Assets | Exchange for crypto, not traditional financial services |
+| AXON | Defense | Law Enforcement Technology | Revenue is 80%+ from police/first responders, not military |
+| APP | Social Media / Advertising | AI-Powered Ad Tech | Revenue is ad-tech platform with AI optimization, not a social media company |
+
+**When in doubt, check:** Search "[ticker] 10-K revenue breakdown by segment" to find actual numbers.
+
+**If a ticker doesn't fit ANY identified theme well (score <5 on all), assign it to the
+closest theme but flag it as WEAK FIT. Do not force-fit a company into a theme it
+doesn't belong to just because it's in a similar sector.**
 
 ## 2. COMPANY POSITION (Is this a good stock for the theme?)
 
@@ -904,36 +1109,37 @@ Respond with ONLY valid JSON (no markdown, no explanation):
 
 {{
   "analysis_date": "YYYY-MM-DD",
-  
+
   "ticker_analysis": [
     {{
       "ticker": "SYMBOL",
       "company_name": "Full Company Name",
       "sector": "Technology",
-      
+
       "primary_theme": "Theme Name",
       "theme_classification": "PRIME/INVESTABLE/SELECTIVE/AVOID",
-      
+
       "theme_fit": {{
         "score": 8,
         "exposure_pct": 75,
-        "rationale": "Brief explanation of theme exposure"
+        "primary_revenue_segment": "What the company actually makes most of its money from",
+        "rationale": "Brief explanation of theme exposure with revenue evidence"
       }},
-      
+
       "company_position": {{
         "score": 8,
         "position": "Leader/Challenger/Niche/Laggard",
         "rationale": "Brief market position assessment"
       }},
-      
+
       "verdict": "STRONG FIT/GOOD FIT/MODERATE FIT/WEAK FIT",
       "verdict_rationale": "One sentence summary",
-      
+
       "upside_score": 8.5,
       "conviction": "High/Medium/Low"
     }}
   ],
-  
+
   "summary": {{
     "strong_fits": ["TICKER1", "TICKER2"],
     "good_fits": ["TICKER3"],
@@ -1319,18 +1525,75 @@ class ThematicAnalyzer:
         (e.g., AI chips up 80% but only 15% penetration)
         """
         etfs = {
-            # Major Sectors
-            'XLK': 'Technology', 'XLF': 'Financials', 'XLE': 'Energy', 
-            'XLV': 'Healthcare', 'XLI': 'Industrials', 'XLY': 'Consumer Disc',
-            'XLP': 'Consumer Staples', 'XLU': 'Utilities', 'XLB': 'Materials',
-            'XLRE': 'Real Estate', 'XLC': 'Communications',
-            # Thematic
-            'SMH': 'Semiconductors', 'SOXX': 'Semiconductors', 'XBI': 'Biotech',
-            'IBB': 'Biotech', 'ITA': 'Defense/Aero', 'GDX': 'Gold Miners',
-            'URA': 'Uranium/Nuclear', 'ICLN': 'Clean Energy', 'TAN': 'Solar',
-            'ARKK': 'Innovation', 'KRE': 'Regional Banks', 'OIH': 'Oil Services',
-            'BITO': 'Bitcoin/Crypto', 'PAVE': 'Infrastructure', 'JETS': 'Airlines',
-            'HACK': 'Cybersecurity', 'BOTZ': 'Robotics/AI', 'LIT': 'Lithium/Battery'
+            # ── Major Sectors ──
+            'XLK':  'Technology',
+            'XLF':  'Financials',
+            'XLE':  'Energy',
+            'XLV':  'Healthcare',
+            'XLI':  'Industrials',
+            'XLY':  'Consumer Disc',
+            'XLP':  'Consumer Staples',
+            'XLU':  'Utilities',
+            'XLB':  'Materials',
+            'XLRE': 'Real Estate',
+            'XLC':  'Communications',
+
+            # ── Semiconductors ──
+            'SMH':  'Semiconductors',
+            'SOXX': 'Semiconductors',
+
+            # ── AI & Software ──
+            'IGV':  'Software/SaaS',
+            'WCLD': 'Cloud Computing',
+            'BOTZ': 'Robotics/AI',
+
+            # ── Biotech & Pharma ──
+            'XBI':  'Biotech',
+            'IBB':  'Biotech (Large Cap)',
+            'PPH':  'Pharmaceuticals',
+
+            # ── Defense & Aerospace ──
+            'ITA':  'Defense/Aerospace',
+
+            # ── Energy Transition & Nuclear ──
+            'URA':  'Uranium/Nuclear',
+            'NLR':  'Nuclear (Broad)',
+            'ICLN': 'Clean Energy',
+            'TAN':  'Solar',
+
+            # ── Crypto ──
+            'BITO': 'Bitcoin/Crypto',
+
+            # ── Infrastructure ──
+            'PAVE': 'Infrastructure',
+
+            # ── Cybersecurity ──
+            'HACK': 'Cybersecurity',
+            'CIBR': 'Cybersecurity',
+
+            # ── Commodities & Mining ──
+            'GDX':  'Gold Miners',
+            'LIT':  'Lithium/Battery',
+            'OIH':  'Oil Services',
+
+            # ── Banks ──
+            'KRE':  'Regional Banks',
+
+            # ── Travel ──
+            'JETS': 'Airlines',
+
+            # ── Innovation / Thematic ──
+            'ARKK': 'Disruptive Innovation',
+            'ARKQ': 'Autonomous/Robotics',
+
+            # ── NEW: Previously Missing Themes ──
+            'UFO':  'Space Economy',
+            'ROKT': 'Space/Rockets',
+            'QTUM': 'Quantum Computing',
+            'IFLY': 'Drones/UAV',
+            'DRIV': 'Autonomous Vehicles',
+            'DTCR': 'Data Center REITs',
+            'XSW':  'Software (S&P)',
         }
         
         self.logger.info("Fetching ETF momentum data for context...")
@@ -1450,8 +1713,14 @@ class ThematicAnalyzer:
         # Fetch real ETF momentum data to prevent training data bias
         etf_data = self._fetch_etf_momentum_data()
         
-        # Combine prompt with real data
+        # Dynamic year injection — never hardcode the year
+        current_year = datetime.now().year
+        today_str = datetime.now().strftime('%Y-%m-%d')
+
         full_prompt = STEP_1_PROMPT
+        full_prompt = full_prompt.replace("{YEAR}", str(current_year))
+        full_prompt = full_prompt.replace("{TODAY}", today_str)
+
         if etf_data:
             full_prompt += "\n\n" + etf_data
         
@@ -1489,6 +1758,7 @@ class ThematicAnalyzer:
             momentum_analysis = theme_data.get("momentum_analysis", {})
             crowding_analysis = theme_data.get("crowding_analysis", {})
             runway_analysis = theme_data.get("runway_analysis", {})
+            capital_cycle = theme_data.get("capital_cycle_analysis", {})
             
             # Fall back to old structure (fundamental_cycle_analysis) if new not present
             fca = theme_data.get("fundamental_cycle_analysis", {})
@@ -1525,7 +1795,19 @@ class ThematicAnalyzer:
                     crowding_detail=crowding_analysis.get("crowding_evidence", ""),
                     runway_score=runway_analysis.get("score", 0.0),
                     runway_detail=f"{runway_analysis.get('penetration_estimate', '')} - {runway_analysis.get('runway_evidence', '')}",
-                    
+
+                    # v3.0: Capital cycle analysis
+                    lifecycle_stage=theme_data.get("lifecycle_stage", ""),
+                    lifecycle_evidence=theme_data.get("lifecycle_evidence", ""),
+                    capital_health_score=capital_cycle.get("score", 0.0),
+                    valuation_regime=capital_cycle.get("valuation_regime", ""),
+                    regime_rationale=capital_cycle.get("regime_rationale", ""),
+                    revision_trajectory=capital_cycle.get("revision_trajectory", ""),
+                    supply_response=capital_cycle.get("supply_response", ""),
+                    capital_cycle_evidence=capital_cycle.get("capital_cycle_evidence", ""),
+                    veto_applied=theme_data.get("veto_applied", False),
+                    theme_velocity=momentum_analysis.get("theme_velocity", ""),
+
                     # Get classification from response or calculate
                     classification=theme_data.get("classification", "INVESTABLE")
                 )
@@ -1601,10 +1883,20 @@ class ThematicAnalyzer:
             if theme.catalyst_score > 0 or theme.momentum_score > 0:
                 print(f"  │")
                 print(f"  │  FACTOR SCORES (Weighted Components):")
-                print(f"  │    • Catalyst Strength (40%):  {theme.catalyst_score:.1f}/10")
-                print(f"  │    • Momentum Direction (25%): {theme.momentum_score:.1f}/10")
-                print(f"  │    • Crowding Level (20%):     {theme.crowding_score:.1f}/10")
-                print(f"  │    • Runway Remaining (15%):   {theme.runway_score:.1f}/10")
+                print(f"  │    • Catalyst Strength (30%):  {theme.catalyst_score:.1f}/10")
+                print(f"  │    • Momentum Direction (20%): {theme.momentum_score:.1f}/10")
+                print(f"  │    • Crowding Level (15%):     {theme.crowding_score:.1f}/10")
+                print(f"  │    • Runway Remaining (10%):   {theme.runway_score:.1f}/10")
+                print(f"  │    • Capital Health (25%):     {theme.capital_health_score:.1f}/10")
+
+                if theme.capital_health_score > 0:
+                    regime_label = theme.valuation_regime or "Unknown"
+                    print(f"  │    • Regime: {regime_label}  │  Revisions: {theme.revision_trajectory or 'N/A'}")
+                    if theme.veto_applied:
+                        print(f"  │    ⚠️  VETO APPLIED: Capital Health <= 3 → Capped at SELECTIVE")
+
+                if theme.lifecycle_stage:
+                    print(f"  │    • Lifecycle: {theme.lifecycle_stage}  │  Velocity: {theme.theme_velocity or 'N/A'}")
             
             # Factor Details (FULL - no truncation)
             if theme.catalyst_detail or theme.momentum_detail:

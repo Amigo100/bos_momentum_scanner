@@ -255,8 +255,8 @@ def load_market_analysis() -> str:
                     return content[content.index("## 📊 Market Context"):]
                 return content
 
-    # Fallback to legacy location
-    market_file = TRADES_DIR / "market_analysis.md"
+    # Fallback to trades/current/
+    market_file = TRADES_DIR / "current" / "market_analysis.md"
     if market_file.exists():
         with open(market_file, 'r') as f:
             content = f.read()
@@ -276,8 +276,8 @@ def load_scanner_briefing() -> str:
             with open(briefing_file, 'r') as f:
                 return f.read()
 
-    # Fallback to legacy location
-    briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
+    # Fallback to legacy location (trades/current/)
+    briefing_file = TRADES_DIR / "current" / "newsletter_briefing.md"
     if briefing_file.exists():
         with open(briefing_file, 'r') as f:
             return f.read()
@@ -445,7 +445,49 @@ def calculate_portfolio_ytd_return() -> float:
 
 
 def generate_benchmark_comparison() -> str:
-    """Generate Performance vs Benchmark markdown section."""
+    """Generate Performance vs Benchmark using compounding returns since inception.
+
+    Uses the EquityTracker compounding model (£5k per position, profits reinvested)
+    for an accurate since-inception comparison vs SPY. Falls back to YTD average
+    if the compounding summary is unavailable.
+    """
+    # Try compounding returns first (accurate since-inception)
+    compounding = None
+    try:
+        from core.portfolio_manager import PortfolioManager
+        pm = PortfolioManager()
+        pm.update_prices()
+        compounding = pm.get_compounding_summary()
+    except Exception:
+        pass
+
+    if compounding and compounding.get('inception_date'):
+        portfolio_return = compounding['total_return_pct']
+        spy_return = compounding['spy_return_pct']
+        alpha = compounding['alpha_pct']
+
+        lines = [
+            "### Performance vs Benchmark (Since Inception)",
+            "",
+            "| Metric | Return |",
+            "|--------|--------|",
+            f"| **Portfolio (Compounding)** | {portfolio_return:+.1f}% |",
+            f"| **S&P 500** | {spy_return:+.1f}% |",
+            f"| **Alpha** | {alpha:+.1f}% |",
+            f"| **Since** | {compounding['inception_date']} |",
+            "",
+        ]
+
+        if alpha > 0:
+            lines.append(f"*Outperforming the S&P 500 by {alpha:.1f} percentage points since inception.*")
+        elif alpha < 0:
+            lines.append(f"*Underperforming SPY by {abs(alpha):.1f}pp since inception. Staying disciplined.*")
+        else:
+            lines.append("*Tracking the market benchmark.*")
+        lines.append("")
+        return "\n".join(lines)
+
+    # Fallback to YTD comparison
     portfolio_return = calculate_portfolio_ytd_return()
     spy_return = get_spy_ytd_return()
     alpha = portfolio_return - spy_return
@@ -852,11 +894,14 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
 
     else:
         # Simple mode - just convert briefing to HTML
-        briefing_path = TRADES_DIR / "latest_newsletter_briefing.md"
+        if OUTPUT_PATHS_AVAILABLE:
+            briefing_path = get_current_dir() / "newsletter_briefing.md"
+        else:
+            briefing_path = TRADES_DIR / "current" / "newsletter_briefing.md"
 
         if not briefing_path.exists():
             print(f"  ❌ Briefing not found: {briefing_path}")
-            print("     Run the scanner first: python scanner.py --web-search")
+            print("     Run the scanner first: python -m core.scanner --web-search")
             return None
 
         print(f"  📄 Reading briefing: {briefing_path}")
@@ -914,12 +959,11 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
         print(f"     • {get_relative_path(current_html)} (current)")
         print(f"     • {get_relative_path(archive_html)} (archived)")
 
-    # Also save to legacy location for backwards compatibility
-    output_path = TRADES_DIR / "latest_newsletter.html"
-    with open(output_path, 'w') as f:
-        f.write(full_html)
-
     if not OUTPUT_PATHS_AVAILABLE:
+        # Fallback: write to trades root if output_paths not available
+        output_path = TRADES_DIR / "newsletter.html"
+        with open(output_path, 'w') as f:
+            f.write(full_html)
         print(f"\n  ✅ Newsletter compiled: {output_path}")
 
     # List embedded vs missing charts

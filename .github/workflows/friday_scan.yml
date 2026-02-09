@@ -115,6 +115,21 @@ jobs:
       # STEP 1.5: SEND SELL SIGNAL NOTIFICATIONS (email + WhatsApp)
       # ═══════════════════════════════════════════════════════════════════════════
 
+      - name: Check notification channel config
+        if: always() && steps.scanner.outputs.scanner_complete == 'true'
+        env:
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+        run: |
+          python -m distribution.notifications --check-config
+
       - name: Send sell signal notifications
         if: always() && steps.scanner.outputs.scanner_complete == 'true'
         env:
@@ -129,8 +144,10 @@ jobs:
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
           python << 'NOTIFY_SELLS'
-          import json, sys
+          import json, sys, logging
           from pathlib import Path
+
+          logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
           signals_path = Path("trades/signals.json")
           if not signals_path.exists():
@@ -139,10 +156,9 @@ jobs:
 
           data = json.loads(signals_path.read_text())
           sell_signals = data.get("sell_signals", [])
-          caution_signals = data.get("caution_signals", [])
 
-          if not sell_signals and not caution_signals:
-              print("No sell/caution signals — no notifications needed")
+          if not sell_signals:
+              print("No sell signals — no notifications needed")
               sys.exit(0)
 
           try:
@@ -156,21 +172,6 @@ jobs:
               send_sell_notification(
                   ticker=sig.get("symbol", ""),
                   signal_type=sig.get("reason", "TRAILING STOP"),
-                  entry_price=float(sig.get("entry_price", 0)),
-                  current_price=float(sig.get("price", 0)),
-                  highest_close=float(sig.get("highest_close", 0)),
-                  stop_level=float(sig.get("stop_level", 0)),
-                  pnl_pct=float(sig.get("pnl_pct", 0)),
-                  theme=sig.get("theme", ""),
-                  timeframe="weekly",
-                  entry_date=sig.get("entry_date", ""),
-              )
-
-          for sig in caution_signals:
-              print(f"Sending CAUTION notification for {sig.get('symbol', 'UNKNOWN')}...")
-              send_sell_notification(
-                  ticker=sig.get("symbol", ""),
-                  signal_type="TIGHTENED STOP",
                   entry_price=float(sig.get("entry_price", 0)),
                   current_price=float(sig.get("price", 0)),
                   highest_close=float(sig.get("highest_close", 0)),
@@ -316,10 +317,6 @@ jobs:
           name: scan-results-${{ github.run_id }}
           path: |
             trades/current/
-            trades/latest_newsletter_briefing.md
-            trades/latest_newsletter.html
-            trades/market_analysis.md
-            trades/latest_report.txt
             trades/signals.json
             trades/portfolio.csv
             trades/portfolio_google_sheets.csv
@@ -338,7 +335,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: substack-posts-${{ github.run_id }}
-          path: trades/substack_posts/
+          path: trades/current/substack_posts/
           retention-days: 30
         continue-on-error: true
 
@@ -392,9 +389,9 @@ jobs:
           echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f "trades/latest_report.txt" ]; then
+          if [ -f "trades/current/report.txt" ]; then
             echo '```' >> $GITHUB_STEP_SUMMARY
-            head -100 trades/latest_report.txt >> $GITHUB_STEP_SUMMARY
+            head -100 trades/current/report.txt >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
@@ -402,19 +399,17 @@ jobs:
           echo "## Files Generated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "### New Weekly Structure" >> $GITHUB_STEP_SUMMARY
+          echo "### Weekly Outputs" >> $GITHUB_STEP_SUMMARY
           [ -d "trades/current" ] && echo "- ✅ trades/current/ (this week's outputs)" >> $GITHUB_STEP_SUMMARY
           [ -f "trades/current/newsletter.html" ] && echo "  - newsletter.html (copy to Substack Saturday)" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/current/report.txt" ] && echo "  - report.txt (scan summary)" >> $GITHUB_STEP_SUMMARY
           [ -d "trades/current/substack_notes" ] && echo "  - substack_notes/ (Tuesday + Thursday notes)" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/current/tweets" ] && echo "  - tweets/content_queue.json" >> $GITHUB_STEP_SUMMARY
+          [ -d "trades/current/substack_posts" ] && echo "  - substack_posts/ (Mon/Thu/Sat/Sun posts)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "### Legacy Files (backwards compatibility)" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/latest_newsletter_briefing.md" ] && echo "- ✅ latest_newsletter_briefing.md" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/market_analysis.md" ] && echo "- ✅ market_analysis.md" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/latest_newsletter.html" ] && echo "- ✅ latest_newsletter.html" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
+          echo "### Core Data" >> $GITHUB_STEP_SUMMARY
           [ -f "trades/signals.json" ] && echo "- ✅ signals.json" >> $GITHUB_STEP_SUMMARY
+          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
           [ -d "trades/charts" ] && echo "- ✅ charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY

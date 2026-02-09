@@ -21,8 +21,8 @@
 ### Trading Strategy (Internal Reference Only)
 
 ```
-ENTRY:  Weekly HMA Pivot BUY + Beta ≥1.5 + Banker ≥55 + Theme Confirmed + Gatekeeper PASS
-EXIT:   20% trailing stop from highest weekly close OR Weekly BoS Down (tighten stop)
+ENTRY:  Weekly HMA Pivot BUY + Beta ≥1.5 + Banker Rising + Theme Confirmed + Gatekeeper PASS
+EXIT:   First exit — 20% trailing stop from highest weekly close OR Weekly BoS Down (whichever first)
 ```
 
 > **IMPORTANT:** These specific strategy details are for internal documentation only.
@@ -40,7 +40,7 @@ All public-facing content (tweets, newsletter, notes) must follow these rules.
 |---------------|-------------------|
 | "20% trailing stop" | "Capital Preservation Protocol" |
 | "HMA pivots" | "Structural Pivot Confirmation" |
-| "Banker indicator" / "Banker >= 55" | "Institutional Accumulation Divergence" |
+| "Banker indicator" / "Banker rising" / "UC rising" | "Institutional Accumulation Divergence" |
 | "Beta >= 1.5" | "Volatility Expansion Criteria" |
 | "Weekly BoS (Break of Structure)" | "Structural Trend Confirmation" |
 | "Tier 1/2/3 classification" | "Conviction Rating" |
@@ -200,12 +200,21 @@ python -m core.daily_scanner --top 100             # Limit universe to top 100 b
 
 ### Content Generation
 ```bash
-python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv   # Weekly tweets (35)
-python -m content.tweet_generator --daily --signals trades/daily_signals.json                      # Daily tweets
+python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv --account all  # Weekly tweets (3 accounts)
+python -m content.tweet_generator --daily --signals trades/daily_signals.json --account all                     # Daily tweets
 python -m content.newsletter_compiler --full        # Compile full newsletter with DD
 python -m content.substack_notes_generator          # Generate Tuesday/Thursday notes
-python -m content.market_analyzer                   # Generate market context analysis
+python -m content.substack_content_generator --all  # Generate Mon/Thu/Sat/Sun Substack posts (HTML)
+python -m content.market_analyzer --save            # Generate market context analysis
 python -m core.dd_automator                         # Run automated due diligence
+```
+
+### Backup Management
+```bash
+python -m utils.backup_cleanup                      # Preview duplicate removal
+python -m utils.backup_cleanup --execute            # Remove duplicates (keep newest per week)
+python -m utils.backup_cleanup --list               # List backups grouped by week
+python -m utils.backup_cleanup --stats              # Show backup statistics
 ```
 
 ### Full Pipeline (Automated via GitHub Actions)
@@ -235,47 +244,58 @@ python -m py_compile core/daily_scanner.py       # Syntax check
 
 ```
 trades/
-├── current/                        # Latest outputs (always current week)
-│   ├── newsletter_briefing.md      # Scanner briefing for newsletter
-│   ├── newsletter.html             # Compiled newsletter ready for Substack
-│   ├── tweets.json                 # Generated tweets for the week
-│   └── substack_notes/
-│       ├── tuesday_note.md         # "Portfolio Pulse" mid-week update
-│       └── thursday_note.md        # "Trade Spotlight" mid-week update
-│
-├── weeks/                          # Weekly archives (ISO week format)
-│   ├── 2026-W03/                   # Archived week data
-│   ├── 2026-W04/
-│   └── ...
-│
-├── charts/                         # TradingView chart screenshots
-│   └── chart_manifest.json
-│
-├── grok_prompts/                   # Daily tweet prompt files
-│   ├── latest_grok_prompts.md
-│   ├── monday_prompts.md
-│   └── ...
-│
-├── portfolio.csv                   # **Source of truth** — weekly trades
-├── daily_portfolio.csv             # Daily timeframe trades (separate)
-├── portfolio_google_sheets.csv     # Export with calculated P&L
-├── portfolio_backups/              # Auto-timestamped backups
-├── daily_portfolio_backups/        # Daily portfolio backups
-├── signals.json                    # Latest weekly scan results
-├── daily_signals.json              # Latest daily scan results
-├── analysis_log.csv                # Historical scan data
-├── content_queue.json              # Weekly tweet posting queue (slots 2-5)
-├── content_queue_account2.json     # Account 2 weekly queue
-├── content_queue_account3.json     # Account 3 weekly queue
-├── daily_content_queue.json        # Daily tweet posting queue (slots 1/6/7)
-├── daily_content_queue_account2.json  # Account 2 daily queue
-├── daily_content_queue_account3.json  # Account 3 daily queue
-├── tweet_tracking.json             # Tweet posting history
-├── latest_report.txt               # Human-readable scan summary (legacy)
-└── latest_newsletter_briefing.md   # Newsletter briefing (legacy symlink)
-```
+    # ─── CORE DATA (root — used by 10+ modules) ───
+    portfolio.csv                         # Source of truth (weekly trades)
+    daily_portfolio.csv                   # Daily timeframe trades (separate)
+    portfolio_google_sheets.csv           # Export with calculated P&L
+    signals.json                          # Latest weekly scan results
+    daily_signals.json                    # Latest daily scan results
+    analysis_log.csv                      # Append-only historical data
 
-**Note:** `latest_*` files maintained for backwards compatibility, but primary outputs are in `current/`
+    # ─── CONTENT QUEUES (root — used by twitter_poster + GH Actions) ───
+    content_queue.json                    # Account 1 weekly (slots 2-5)
+    content_queue_account2.json           # Account 2 weekly
+    content_queue_account3.json           # Account 3 weekly
+    daily_content_queue.json              # Account 1 daily (slots 1/6/7)
+    daily_content_queue_account2.json     # Account 2 daily
+    daily_content_queue_account3.json     # Account 3 daily
+
+    # ─── TRACKING (root — pipeline-written) ───
+    tweet_tracking.json                   # Self-quote milestone tracker
+    celebrations.json                     # Win milestone tracker
+    failed_tweets.json                    # Validation failure log
+
+    # ─── CURRENT WEEK OUTPUTS ───
+    current/
+        newsletter_briefing.md            # Scanner briefing for newsletter
+        newsletter.html                   # Compiled newsletter → Substack Saturday
+        report.txt                        # Scan summary
+        signals.json                      # Copy of weekly signals
+        market_analysis.md                # Market context via Claude
+        substack_notes/
+            tuesday_note.md               # "Portfolio Pulse" → Substack Tuesday
+            thursday_note.md              # "Trade Spotlight" → Substack Thursday
+        substack_posts/                   # Rich HTML posts
+            monday_market_analysis.html   # → Post Monday
+            thursday_theme_spotlight.html  # → Post Thursday
+            saturday_weekly_signals.html   # → Post Saturday
+            sunday_deep_dive.html          # → Post Sunday
+
+    # ─── CHARTS ───
+    charts/
+        *.png, chart_manifest.json, funnel_graphic.png
+
+    # ─── ARCHIVES ───
+    weeks/
+        2026-WXX/                         # Archived by ISO week
+            newsletter_briefing.md, newsletter.html, report.txt,
+            signals.json, market_analysis.md,
+            substack_notes/, substack_posts/
+
+    # ─── BACKUPS (deduped: 1 per calendar week, newest kept) ───
+    portfolio_backups/
+    daily_portfolio_backups/
+```
 
 ### Source Files
 
@@ -303,7 +323,6 @@ trades/
 | `content/market_analyzer.py` | Market context analysis via LLM |
 | `content/chart_capture.py` | TradingView chart screenshots (weekly + daily timeframes) |
 | `content/winner_showcase_generator.py` | Winner showcase with entry prices |
-| `content/grok_prompts_generator.py` | Grok prompt generation |
 | `content/funnel_graphic.py` | Funnel visualization |
 
 #### `distribution/` — Posting & Notifications
@@ -332,7 +351,7 @@ trades/
 | `utils/run_full_pipeline.py` | Full pipeline runner |
 | `utils/tradingview_login.py` | TradingView browser login |
 | `utils/setup_scheduler.py` | macOS scheduler setup |
-| `utils/backup_cleanup.py` | Portfolio backup cleanup |
+| `utils/backup_cleanup.py` | Portfolio backup dedup (newest per calendar week) |
 
 #### `tests/` — Test Suite
 | File | Purpose |
@@ -416,8 +435,8 @@ export TRADINGVIEW_COOKIES='[{"name":"...","value":"..."}]'
 │  └─ Output: Dict[str, Stock] with all fields populated                      │
 │                                                                              │
 │  STEP 4: TECHNICAL GATE                                            Cost: $0 │
-│  ├─ Criteria: Beta ≥ 1.5 AND Weekly BoS UP AND Banker ≥ 55                  │
-│  ├─ Tier assignment: TIER1 (>70) / TIER2 (>60) / TIER3 (>55)                │
+│  ├─ Criteria: Beta ≥ 1.5 AND Weekly BoS UP AND Banker Rising                │
+│  ├─ All passing stocks assigned TIER1 (no level-based differentiation)       │
 │  └─ Output: List[Stock] passing technical gate                              │
 │                                                                              │
 │  STEP 5: THEMATIC ANALYZER (LLM)                          Cost: ~$0.15-0.25 │
@@ -439,10 +458,10 @@ export TRADINGVIEW_COOKIES='[{"name":"...","value":"..."}]'
 │                                                                              │
 │  STEP 7: CHECK SELL SIGNALS                                        Cost: $0 │
 │  ├─ Checks open positions from portfolio.csv                                │
-│  ├─ Criteria:                                                               │
-│  │   • Weekly BoS DOWN → Caution signal (tighten stop to 15%)               │
-│  │   • Price < 80% of highest_close → STOPPED (20% trailing stop)           │
-│  └─ Output: List[SellSignal] for positions at risk                          │
+│  ├─ First exit — whichever fires first:                                     │
+│  │   • Weekly BoS DOWN → EXIT immediately (HMA fracture)                    │
+│  │   • Price < 80% of highest_close → EXIT (20% trailing stop)              │
+│  └─ Output: List[SellSignal] for exited positions                           │
 │                                                                              │
 │  STEP 8: UPDATE PORTFOLIO                                          Cost: $0 │
 │  ├─ Add PASS signals to portfolio.csv with entry details                    │
@@ -454,9 +473,8 @@ export TRADINGVIEW_COOKIES='[{"name":"...","value":"..."}]'
 │  STEP 9: GENERATE OUTPUTS                                          Cost: $0 │
 │  ├─ signals.json - Full scan results in JSON format                         │
 │  ├─ analysis_log.csv - Append to historical data                            │
-│  ├─ latest_report.txt - Human-readable summary                              │
-│  ├─ latest_newsletter_briefing.md - Newsletter data with P&L                │
-│  └─ grok_prompts/*.md - 21 weekly X/Twitter prompts                         │
+│  ├─ current/report.txt - Human-readable summary                             │
+│  └─ current/newsletter_briefing.md - Newsletter data with P&L              │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 
@@ -479,7 +497,7 @@ TOTAL COST: ~$1-3 per full run with web search enabled
 │  STEP 2: CALCULATE INDICATORS ON DAILY BARS                        Cost: $0 │
 │  ├─ HMA Pivot BoS on daily bars (not weekly)                                │
 │  ├─ Beta, Banker calculated on daily data                                   │
-│  └─ Filter: Beta ≥ 1.5 AND Daily BoS UP AND Banker ≥ 55                    │
+│  └─ Filter: Beta ≥ 1.5 AND Daily BoS UP AND Banker Rising                  │
 │                                                                              │
 │  STEP 3: DEDUPLICATE + RANK                                        Cost: $0 │
 │  ├─ Remove tickers already in weekly portfolio                              │
@@ -488,8 +506,9 @@ TOTAL COST: ~$1-3 per full run with web search enabled
 │  └─ Cap at MAX 5 new signals per day                                        │
 │                                                                              │
 │  STEP 4: CHECK SELL SIGNALS                                        Cost: $0 │
-│  ├─ Check daily portfolio for BoS bearish pivots                            │
-│  ├─ Check trailing stops (20% from highest daily close)                     │
+│  ├─ First exit — whichever fires first:                                     │
+│  │   • Daily BoS bearish pivot → EXIT immediately                           │
+│  │   • 20% trailing stop from highest daily close → EXIT                    │
 │  └─ Fire notifications (email + WhatsApp) immediately                       │
 │                                                                              │
 │  STEP 5: UPDATE PORTFOLIO + SAVE                                   Cost: $0 │
@@ -581,14 +600,15 @@ def calculate_banker(df, period=20):
 
     Interpretation:
       50 = At VWAP (neutral)
-      55 = 1% above VWAP (entry threshold)
-      60 = 2% above VWAP (TIER2)
-      70 = 4% above VWAP (TIER1 - strong accumulation)
+      60 = 2% above VWAP (moderate accumulation)
+      70 = 4% above VWAP (strong accumulation)
 
-    Tier assignment:
-      TIER1: banker > 70 (4%+ above VWAP)
-      TIER2: banker > 60 (2%+ above VWAP)
-      TIER3: banker > 55 (1%+ above VWAP)
+    Entry gate: Banker Rising (current bar > previous bar)
+    Backtesting proved static threshold (>= 55) catches stocks where
+    institutions FINISHED accumulating. Rising check catches the START.
+
+    Only DIRECTION matters, not LEVEL. A banker at 1.0 rising is valid;
+    a banker at 80.0 falling is not. No level-based tier differentiation.
     """
     typical_price = (df['High'] + df['Low'] + df['Close']) / 3
     vwap = (typical_price * df['Volume']).rolling(period).sum() / df['Volume'].rolling(period).sum()
@@ -631,6 +651,8 @@ class Stock:
     price: float = 0.0
     beta: float = 0.0
     banker: float = 0.0
+    banker_prev: float = 0.0       # Previous bar banker value
+    banker_rising: bool = False    # True when current > previous (entry gate)
     bos_bullish: bool = False
     bos_bearish: bool = False
     bos_debug: dict = field(default_factory=dict)
@@ -744,7 +766,7 @@ class GatekeeperResult:
 class SellSignal:
     symbol: str
     price: float
-    reason: str           # "Weekly BoS Down" or "20% Trailing Stop"
+    reason: str           # First exit reason(s), may be combined if both fire
     entry_price: float
     highest_close: float
     pnl_pct: float
@@ -781,7 +803,7 @@ Replace `current_price` column with formula: `=IF(B2="OPEN", GOOGLEFINANCE(A2, "
   "timestamp": "2026-01-18 22:06:24",
   "timeframe": "WEEKLY",
   "entry_criteria": "Weekly BoS Up + Hot Theme + TRADE/CONSIDER decision",
-  "exit_criteria": "Weekly BoS Down OR 20.0% trailing stop",
+  "exit_criteria": "First exit — Weekly BoS Down OR 20.0% trailing stop (whichever first)",
   "stats": {
     "tickers_loaded": 1817,
     "data_downloaded": 1814,
@@ -824,11 +846,11 @@ Replace `current_price` column with formula: `=IF(B2="OPEN", GOOGLEFINANCE(A2, "
     }
   ],
   "sell_signals": [],
-  "caution_signals": [
+  "exit_signals": [
     {
       "symbol": "VNET",
       "reason": "Weekly BoS Down",
-      "action": "Tighten stop to 15% from high"
+      "action": "Position closed — first exit triggered"
     }
   ]
 }
@@ -920,12 +942,12 @@ Replace `current_price` column with formula: `=IF(B2="OPEN", GOOGLEFINANCE(A2, "
 
 **Stop Distance Indicators:** >15% safe | 10-15% watch | <10% alert
 
-## Caution Signals
+## Exit Signals
 
 ### VNET
 - **Reason:** Weekly BoS Down
 - **Current P&L:** -10.0%
-- **Action:** Tighten stop to 15% from high ($11.50 -> stop at $9.78)
+- **Action:** Position closed — first exit triggered
 
 ## Scan Statistics
 - Tickers scanned: 1,817
@@ -990,69 +1012,6 @@ These trigger automatic FAIL:
 - Severe short report with unaddressed allegations
 - Upcoming dilution event (shelf registration, ATM active)
 - Insider selling > 10% in last 30 days
-
----
-
-## Grok Prompts System
-
-### Overview
-
-Generates 21 contextual X/Twitter prompts per week (3 per day) based on scanner outputs. Prompts are designed for real-time posting via Grok (X's AI).
-
-### Weekly Schedule
-
-| Day | Slot 1 (08:00) | Slot 2 (12:00) | Slot 3 (18:00) |
-|-----|----------------|----------------|----------------|
-| **Mon** | Week Ahead Preview | Hot Theme Deep Dive | Position Update |
-| **Tue** | Buy Signal / Scanner Stats | Cold Theme / Lesson | Watchlist Stock |
-| **Wed** | Market Pulse | Theme Comparison | Sell Signal / Position |
-| **Thu** | Second Buy Signal | Hot Theme 2 / Lesson | Watchlist 2 |
-| **Fri** | Scanner Stats Teaser | Cold Theme 2 | Position Update 3 |
-| **Sat** | Newsletter Drop | Buy Signal Deep Dive | Sell Signal / Why Passed |
-| **Sun** | Engagement (no sell) | Trading Lesson | Week Ahead Preview |
-
-### Prompt Categories
-
-| Category | Purpose | Data Source |
-|----------|---------|-------------|
-| `scanner_results` | Funnel stats (1800->48->6) | scan_stats |
-| `theme_hot` | PRIME/INVESTABLE theme analysis | themes_data |
-| `theme_cold` | SELECTIVE/AVOID themes | themes_data |
-| `buy_signal` | New PASS signal spotlight | pass_signals |
-| `position_update` | Open position P&L | open_positions |
-| `sell_signal` | Exit/stop alerts | sell_signals |
-| `watchlist` | CAUTION signal analysis | caution_signals |
-| `market_pulse` | Daily market performance | Live search |
-| `educational` | Trading methodology | Static templates |
-| `engagement` | Community building | Static templates |
-
-### Live Price Feature
-
-Position update prompts instruct Grok to look up current prices:
-
-```
-POSITION CONTEXT (may be outdated - look up current price):
-Ticker: $RCAT
-Entry: $8.50 on 2025-12-29
-Theme: Drone Technology | Tier: TIER1
-Days Held: ~23
-Snapshot P&L: +55.9% (verify with current price)
-
----
-
-IMPORTANT: The P&L above may be stale. Before drafting:
-1. Look up the CURRENT price of $RCAT
-2. Calculate the LIVE P&L: ((current_price / 8.50) - 1) * 100
-```
-
-### Output Files
-
-| File | Purpose |
-|------|---------|
-| `latest_grok_prompts.md` | Full prompts in markdown |
-| `grok_prompts_summary.txt` | Plain text for terminal |
-| `{day}_prompts.md` | Day-by-day convenience files |
-| `grok_prompts_YYYYMMDD.md` | Dated archives |
 
 ---
 
@@ -1683,13 +1642,13 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
   Universe Statistics:
     High Beta (>=1.5):  485 stocks
     Weekly BoS Up:      48 stocks
-    Banker >=55:        312 stocks
+    Banker Rising:      312 stocks
 
-  44 stocks passed technical gate (Beta >=1.5 AND BoS Up AND Banker >=55)
+  44 stocks passed technical gate (Beta >=1.5 AND BoS Up AND Banker Rising)
 
   Top 10 by Banker:
-    TIER1  INOD    $61.54  Beta: 2.48  Banker: 78.3
-    TIER1  RCAT    $13.25  Beta: 3.12  Banker: 75.1
+    TIER1  INOD    $61.54  Beta: 2.48  Banker: 78.3↑
+    TIER1  RCAT    $13.25  Beta: 3.12  Banker: 75.1↑
     ...
 
 ------------------------------------------------------------------------------
@@ -1738,7 +1697,7 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
 ------------------------------------------------------------------------------
   Checking 6 open positions...
 
-  VNET: Weekly BoS Down - Tighten stop to 15%
+  VNET: EXIT — Weekly BoS Down at $10.80
   RCAT: Bullish, +55.9% from entry
   IBKR: Bullish, +12.2% from entry
   ...
@@ -1964,6 +1923,28 @@ Solution:
 ---
 
 ## D. Changelog
+
+### 2026-02-09 (First Exit Strategy)
+
+- **First exit strategy** — Exit immediately on whichever fires first: HMA fracture (BoS bearish) OR 20% trailing stop. No more "tighten to 15%" step.
+- **Removed `TIGHTEN_STOP_PCT`** from `config/settings.py` — dead code, was defined but never used in practice
+- **Removed `tighten_stop()` method** from `core/portfolio_manager.py` — was defined but never called
+- **Fixed dual-exit detection** — Changed `if/elif` to check both conditions independently in `core/scanner.py` and `core/daily_scanner.py`. If both fire on same bar, exit once with combined reason.
+- **Removed per-trade `stop_pct` override** — `calculate_metrics()` and `check_stop_signals()` now always use global 20% (`TRAILING_STOP_PCT`)
+- **Updated all display strings** — "CAUTION SIGNALS" → "EXIT SIGNALS", "Consider Tightening Stops" → "Positions Closed", throughout scanner output and reports
+- **Removed "TIGHTENED STOP"** notification label from `distribution/notifications.py`
+- **Updated daily scanner notifications** — Signal type detection no longer checks for tightened stop
+
+### 2026-02-08 (Banker Rising Entry Gate)
+
+- **Banker entry gate** — Replaced static `banker >= 55` threshold with `banker_rising` check (current bar > previous bar). Backtesting across 11 stocks (2019-2026) showed static threshold catches stocks where institutions FINISHED accumulating; rising check catches them STARTING.
+- **`calculate_banker()`** now returns `Tuple[float, float]` — `(current, previous)` values
+- **Stock dataclass** — Added `banker_prev: float` and `banker_rising: bool` fields
+- **`meets_technical_criteria()`** — Gate changed from `banker >= 55` to `banker_rising`
+- **`get_tier()`** — All passing stocks get TIER1; no level-based tier differentiation (only direction matters)
+- **Daily scanner** — Same rising check applied to daily bars
+- **Config cleanup** — Removed `BANKER_TIER1/2/3` constants from `config/settings.py`
+- **Banned terms** — Added "Banker rising", "UC rising" to banned terms lists
 
 ### 2026-02-06 (Content System v2 + Daily Scanner)
 

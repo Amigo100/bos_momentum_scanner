@@ -71,12 +71,12 @@ KILLED_CATEGORIES: List[str] = [
 
 TRAILING_STOP_PCT = 20.0      # 20% trailing stop from highest close
 STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop
-TIGHTEN_STOP_PCT = 15.0       # Tighten to 15% on BoS down
 
 BETA_THRESHOLD = 1.5          # Minimum beta for entry
-BANKER_TIER1 = 70             # Tier 1 banker threshold
-BANKER_TIER2 = 60             # Tier 2 banker threshold
-BANKER_TIER3 = 55             # Tier 3 banker threshold (entry minimum)
+
+# Banker entry gate: "rising" check (current bar > previous bar)
+# Static thresholds removed — backtesting proved rising check is optimal.
+# Tier ranking thresholds (70/60) are applied inline in scanner.py for ranking only.
 
 # Banker formula parameters: banker = BANKER_CENTER + (deviation_pct * BANKER_SCALE_FACTOR)
 BANKER_CENTER = 50            # Neutral point (at VWAP)
@@ -95,6 +95,14 @@ DAILY_MIN_BARS = 60                # Minimum daily bars for valid indicator calc
 # Portfolio tracking
 DEFAULT_POSITION_SHARES = 100  # Assumed shares per position for notional P&L
 MAX_PORTFOLIO_BACKUPS = 30     # Keep last N portfolio backups
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMPOUNDING PORTFOLIO SETTINGS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+STARTING_CAPITAL_PER_POSITION = 5000.0  # £5,000 per position
+CURRENCY_SYMBOL = "£"
+EQUITY_CURVE_FILE = "equity_curve.csv"
 
 # Content staleness
 TWEET_STALENESS_DAYS = 3       # Skip tweets more than N days past scheduled date
@@ -519,7 +527,7 @@ SIGNAL_TYPES: Dict[str, Dict] = {
 BANNED_TERMS: List[str] = [
     # Strategy internals (keep secret)
     'HMA', 'Hull Moving Average', 'HMA Pivot',
-    'Banker indicator', 'Banker >= 55', 'Banker score',
+    'Banker indicator', 'Banker >= 55', 'Banker score', 'Banker rising', 'UC rising',
     '20% trailing stop', '20% stop',
     'Beta >= 1.5',
     'Break of Structure', 'BoS', 'BOS',

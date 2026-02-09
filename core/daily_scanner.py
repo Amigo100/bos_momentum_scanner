@@ -50,9 +50,7 @@ from core.scanner import (
 )
 from config import (
     BETA_THRESHOLD,
-    BANKER_TIER3,
     TRAILING_STOP_PCT,
-    TIGHTEN_STOP_PCT,
     HMA_PERIOD,
     DAILY_SIGNAL_MAX,
     DAILY_DEDUP_LOOKBACK_DAYS,
@@ -448,10 +446,11 @@ def check_daily_sell_signals(
 ) -> List[DailyTrade]:
     """Check open daily positions for sell signals.
 
-    For each OPEN daily trade:
+    First exit strategy — whichever fires first closes the position:
       1. Update highest_close if today's close is higher.
-      2. Check BoS on daily bars — if bearish pivot → tighten stop to 15%.
-      3. Check trailing stop — if close < highest_close * (1 - stop_pct/100) → STOPPED.
+      2. Check BoS on daily bars — if bearish pivot → EXIT immediately.
+      3. Check trailing stop — if close < highest_close * (1 - stop_pct/100) → EXIT immediately.
+      4. If both fire on same bar, exit once with combined reason.
 
     Returns list of trades that triggered a sell signal.
     """
@@ -471,31 +470,28 @@ def check_daily_sell_signals(
         if current_close > trade.highest_close:
             trade.highest_close = current_close
 
-        # Check BoS on daily bars — IMMEDIATE EXIT on bearish pivot
+        # Check both exit conditions (first exit — whichever fires first)
+        exit_reasons = []
+
+        # Check BoS on daily bars
         _, bos_down, _ = calculate_bos_daily(df)
         if bos_down:
-            trade.status = "STOPPED"
-            trade.exit_date = today_str
-            trade.exit_price = current_close
-            trade.exit_reason = f"Daily BoS Down — structural stop at ${current_close:.2f}"
-            sell_signals.append(trade)
-            logger.info(
-                "%s: CLOSED — daily BoS bearish at $%.2f",
-                trade.ticker, current_close,
-            )
-            continue  # Skip trailing stop check — already exited
+            exit_reasons.append(f"Daily BoS Down at ${current_close:.2f}")
 
         # Check trailing stop
         stop_level = trade.highest_close * (1 - trade.stop_pct / 100)
         if current_close <= stop_level:
+            exit_reasons.append(f"Trailing stop ({trade.stop_pct:.0f}%) at ${current_close:.2f}")
+
+        if exit_reasons:
             trade.status = "STOPPED"
             trade.exit_date = today_str
             trade.exit_price = current_close
-            trade.exit_reason = f"Trailing stop ({trade.stop_pct:.0f}%) at ${current_close:.2f}"
+            trade.exit_reason = " + ".join(exit_reasons)
             sell_signals.append(trade)
             logger.info(
-                "%s: STOPPED at $%.2f (stop was $%.2f)",
-                trade.ticker, current_close, stop_level,
+                "%s: EXIT at $%.2f — %s",
+                trade.ticker, current_close, trade.exit_reason,
             )
 
     return sell_signals
@@ -514,11 +510,12 @@ def _send_daily_sell_notifications(sell_signals: List[DailyTrade]) -> None:
         if trade.entry_price > 0:
             pnl_pct = ((trade.exit_price / trade.entry_price) - 1) * 100
 
-        signal_type = "TRAILING STOP"
         if trade.exit_reason and "bos down" in trade.exit_reason.lower():
             signal_type = "BEARISH PIVOT"
-        elif trade.stop_pct <= TIGHTEN_STOP_PCT:
-            signal_type = "TIGHTENED STOP"
+        elif "trailing stop" in (trade.exit_reason or "").lower():
+            signal_type = "TRAILING STOP"
+        else:
+            signal_type = "EXIT"
 
         try:
             send_sell_notification(
@@ -665,8 +662,8 @@ def run_daily_scan(
             if beta < BETA_THRESHOLD:
                 continue
 
-            banker = calculate_banker(df)
-            if banker < BANKER_TIER3:
+            banker, banker_prev = calculate_banker(df)
+            if banker <= banker_prev:  # Not rising — skip
                 continue
 
             bos_up, _, _ = calculate_bos_daily(df)

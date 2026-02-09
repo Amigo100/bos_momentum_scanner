@@ -106,7 +106,7 @@ def ensure_output_structure() -> Tuple[Path, Path]:
     week_dir = get_week_dir()
 
     # Create directory structures
-    subdirs = ['substack_notes', 'charts', 'tweets']
+    subdirs = ['substack_notes', 'substack_posts', 'charts']
 
     for subdir in subdirs:
         (current_dir / subdir).mkdir(parents=True, exist_ok=True)
@@ -191,42 +191,6 @@ def copy_to_current_and_archive(source: Path, filename: Optional[str] = None) ->
     return current_path, archive_path
 
 
-def create_legacy_symlinks():
-    """
-    Create symlinks from old file locations to new structure.
-
-    This maintains backwards compatibility with scripts that
-    reference old paths like trades/latest_report.txt
-
-    Note: Only works on Unix-like systems (macOS, Linux)
-    """
-    current_dir = get_current_dir()
-
-    # Mapping of old paths to new locations
-    legacy_mappings = {
-        'latest_report.txt': 'report.txt',
-        'latest_newsletter_briefing.md': 'newsletter_briefing.md',
-        'latest_newsletter.html': 'newsletter.html',
-        'signals.json': 'signals.json',
-    }
-
-    for old_name, new_name in legacy_mappings.items():
-        old_path = TRADES_DIR / old_name
-        new_path = current_dir / new_name
-
-        # Remove existing file/symlink
-        if old_path.exists() or old_path.is_symlink():
-            old_path.unlink()
-
-        # Create symlink only if new file exists
-        if new_path.exists():
-            try:
-                old_path.symlink_to(new_path)
-            except OSError:
-                # Symlinks may fail on Windows, copy instead
-                shutil.copy(new_path, old_path)
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # UTILITY
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -271,7 +235,7 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Output path management")
     parser.add_argument("--init", action="store_true", help="Initialize directory structure")
-    parser.add_argument("--symlinks", action="store_true", help="Create legacy symlinks")
+    parser.add_argument("--symlinks", action="store_true", help=argparse.SUPPRESS)
 
     args = parser.parse_args()
 
@@ -283,9 +247,7 @@ def main() -> int:
         return 0
 
     if args.symlinks:
-        print("Creating legacy symlinks...")
-        create_legacy_symlinks()
-        print("  Done")
+        print("Legacy symlinks are no longer needed — outputs live in trades/current/")
         return 0
 
     # Default: print paths

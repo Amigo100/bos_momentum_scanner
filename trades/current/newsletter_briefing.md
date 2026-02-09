@@ -77,17 +77,48 @@
 
 ## 📈 Portfolio Update
 
-### ⚠️ Caution Signals (Consider Tightening Stops)
+### ⚠️ Exit Signals
 
 | Ticker | Current | Reason | P&L |
 |--------|---------|--------|-----|
-| LUMN | $8.06 | Weekly BoS Down - Tighten stop to 15% | -8.6% |
+| LUMN | $7.97 | Structural trend weakening — Capital Preservation Protocol active | -9.6% |
 
-*Note: These are CAUTION signals, not automatic exits. Based on backtesting, trailing stops outperform signal-based exits.*
+*Exit signals: position closed on whichever fires first (structural fracture or trailing stop).*
 
-### 📈 Open Positions
+### 💰 Portfolio Equity (Compounding)
 
-*No open positions*
+| Metric | Value |
+|--------|-------|
+| **Inception** | 2026-01-09 |
+| **Capital Per Position** | £5,000 |
+| **Total Deployed** | £90,000 |
+| **Current NAV** | £93,283 |
+| **Total Return** | +3.6% |
+| **SPY Equivalent** | £90,104 (+0.1%) |
+| **Alpha** | +3.5% |
+
+### 📈 Open Positions (18)
+
+| Ticker | Entry | Current | P&L | Days | Theme |
+|--------|-------|---------|-----|------|-------|
+| MOD | $184.73 | $219.27 | +18.7% | 10 | Grid Infrastructure |
+| STRL | $362.48 | $423.37 | +16.8% | 18 | Grid Infrastructure |
+| VNET | $10.41 | $11.84 | +13.8% | 31 | AI Infrastructure |
+| WCC | $281.69 | $307.07 | +9.0% | 22 | Grid Infrastructure |
+| BITF | $2.14 | $2.27 | +6.1% | 3 | Crypto Mining |
+| EVTL | $4.53 | $4.79 | +5.7% | 3 | Defense |
+| AMD | $208.51 | $216.78 | +4.0% | 3 | AI Infrastructure |
+| IESC | $475.01 | $493.18 | +4.0% | 18 | Grid Infrastructure |
+| HIVE | $2.33 | $2.41 | +3.6% | 3 | Crypto Mining |
+| AAON | $95.61 | $98.77 | +3.3% | 18 | Grid Infrastructure |
+| NVDA | $185.43 | $191.03 | +3.0% | 3 | AI Infrastructure |
+| SOFI | $20.86 | $21.44 | +2.8% | 3 | Fintech |
+| AMPX | $12.44 | $12.70 | +2.1% | 9 | Energy Storage |
+| APLD | $37.38 | $37.80 | +1.1% | 22 | AI Infrastructure |
+| ASPI | $5.82 | $5.74 | -1.4% | 3 | Defense |
+| CGON | $53.90 | $50.51 | -6.3% | 31 | Grid Infrastructure |
+| LUMN | $8.82 | $7.97 | -9.6% | 10 | Infrastructure |
+| AMSC | $33.30 | $29.60 | -11.1% | 16 | Grid Infrastructure |
 
 ---
 

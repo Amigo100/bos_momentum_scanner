@@ -36,7 +36,7 @@ from typing import Callable, Dict, List, Tuple
 BANNED_TERMS: List[str] = [
     # Technical indicators (internal system names)
     "HMA", "Hull Moving Average", "HMA Pivot", "HMA pivot",
-    "Banker indicator", "Banker >= 55", "Banker ≥ 55", "Banker >=", "banker indicator",
+    "Banker indicator", "Banker >= 55", "Banker ≥ 55", "Banker >=", "Banker rising", "UC rising", "banker indicator",
     "20% trailing stop", "20% stop",
     "Beta >= 1.5", "Beta ≥ 1.5", "beta threshold", "Beta >=",
     "Break of Structure", "BoS", "BOS", "Weekly BoS", "weekly bos",

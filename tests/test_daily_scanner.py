@@ -110,7 +110,7 @@ class TestDailyScannerMax5Signals:
         # Patch indicator functions so all 10 pass
         with (
             patch("core.daily_scanner.calculate_beta", return_value=2.0),
-            patch("core.daily_scanner.calculate_banker", side_effect=lambda df: 60 + hash(str(df.index[0])) % 20),
+            patch("core.daily_scanner.calculate_banker", side_effect=lambda df: (60 + hash(str(df.index[0])) % 20, 50)),
             patch("core.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
         ):
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -146,7 +146,7 @@ class TestDailyScannerDedupWeekly:
 
         with (
             patch("core.daily_scanner.calculate_beta", return_value=2.0),
-            patch("core.daily_scanner.calculate_banker", return_value=70.0),
+            patch("core.daily_scanner.calculate_banker", return_value=(70.0, 60.0)),
             patch("core.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
         ):
             with tempfile.TemporaryDirectory() as tmpdir:

@@ -3,22 +3,25 @@
 BACKUP CLEANUP UTILITY
 ======================
 
-Manages 30-day retention for portfolio backups in trades/portfolio_backups/.
+Deduplicates portfolio backups: keeps only the newest file per ISO calendar week.
+Applies to both trades/portfolio_backups/ and trades/daily_portfolio_backups/.
 
-This utility removes old backup files to prevent disk space accumulation
-while maintaining a reasonable backup history for recovery purposes.
+This prevents duplicate backups from re-runs while preserving one snapshot per week
+for historical reference.
 
 Usage:
-    python backup_cleanup.py                  # Preview what would be deleted
-    python backup_cleanup.py --execute        # Actually delete old backups
-    python backup_cleanup.py --days 14        # Use 14-day retention instead
-    python backup_cleanup.py --list           # List all backups with ages
+    python -m utils.backup_cleanup                  # Preview what would be removed
+    python -m utils.backup_cleanup --execute        # Actually remove duplicates
+    python -m utils.backup_cleanup --list           # List all backups grouped by week
+    python -m utils.backup_cleanup --stats          # Show backup statistics
 """
 
 import argparse
+import re
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 # Import config for paths
 try:
@@ -26,218 +29,265 @@ try:
 except ImportError:
     TRADES_DIR = Path(__file__).resolve().parent.parent / "trades"
 
-BACKUP_DIR = TRADES_DIR / "portfolio_backups"
-DEFAULT_RETENTION_DAYS = 30
+BACKUP_DIRS = {
+    'weekly': TRADES_DIR / "portfolio_backups",
+    'daily': TRADES_DIR / "daily_portfolio_backups",
+}
+
+# Pattern: portfolio_YYYYMMDD_HHMMSS.csv or daily_portfolio_YYYYMMDD_HHMMSS.csv
+DATE_PATTERN = re.compile(r'(\d{8})_(\d{6})')
 
 
-def get_backup_files() -> List[Path]:
-    """Get all backup files in the backup directory.
+def _parse_backup_datetime(filename: str) -> datetime:
+    """Extract datetime from backup filename.
+
+    Args:
+        filename: e.g. 'portfolio_20260124_235455.csv'
 
     Returns:
-        List of Path objects for backup files, sorted by modification time (oldest first)
+        datetime object, or datetime.min if unparseable
     """
-    if not BACKUP_DIR.exists():
+    match = DATE_PATTERN.search(filename)
+    if not match:
+        return datetime.min
+    date_str, time_str = match.groups()
+    try:
+        return datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
+    except ValueError:
+        return datetime.min
+
+
+def _iso_week_key(dt: datetime) -> str:
+    """Get ISO week key from datetime.
+
+    Returns:
+        String like '2026-W04'
+    """
+    iso = dt.isocalendar()
+    return f"{iso.year}-W{iso.week:02d}"
+
+
+def get_backup_files(backup_dir: Path) -> List[Path]:
+    """Get all CSV backup files in a directory, sorted oldest first."""
+    if not backup_dir.exists():
         return []
-
-    # Match portfolio backup pattern: portfolio_YYYYMMDD_HHMMSS.csv
-    backup_files = list(BACKUP_DIR.glob("portfolio_*.csv"))
-
-    # Sort by modification time (oldest first)
-    backup_files.sort(key=lambda f: f.stat().st_mtime)
-
-    return backup_files
+    files = list(backup_dir.glob("*.csv"))
+    files.sort(key=lambda f: _parse_backup_datetime(f.name))
+    return files
 
 
-def get_file_age_days(file_path: Path) -> float:
-    """Get the age of a file in days.
+def group_by_week(files: List[Path]) -> Dict[str, List[Path]]:
+    """Group backup files by ISO calendar week.
 
     Args:
-        file_path: Path to the file
+        files: List of backup file paths
 
     Returns:
-        Age in days (float)
+        Dict mapping week key to list of files in that week
     """
-    mtime = datetime.fromtimestamp(file_path.stat().st_mtime)
-    age = datetime.now() - mtime
-    return age.total_seconds() / (24 * 3600)
+    groups = defaultdict(list)
+    for f in files:
+        dt = _parse_backup_datetime(f.name)
+        if dt == datetime.min:
+            groups['unknown'].append(f)
+        else:
+            groups[_iso_week_key(dt)].append(f)
+
+    # Sort files within each group by datetime (newest last)
+    for week_key in groups:
+        groups[week_key].sort(key=lambda f: _parse_backup_datetime(f.name))
+
+    return dict(groups)
 
 
-def get_old_backups(retention_days: int = DEFAULT_RETENTION_DAYS) -> List[Tuple[Path, float]]:
-    """Get backup files older than retention period.
+def find_duplicates(backup_dir: Path) -> Tuple[List[Path], List[Path]]:
+    """Find duplicate backups (all but newest per week).
 
     Args:
-        retention_days: Number of days to retain backups
+        backup_dir: Path to backup directory
 
     Returns:
-        List of (Path, age_days) tuples for files to delete
+        Tuple of (files_to_remove, files_to_keep)
     """
-    old_files = []
+    files = get_backup_files(backup_dir)
+    if not files:
+        return [], []
 
-    for backup_file in get_backup_files():
-        age_days = get_file_age_days(backup_file)
-        if age_days > retention_days:
-            old_files.append((backup_file, age_days))
+    groups = group_by_week(files)
+    to_remove = []
+    to_keep = []
 
-    return old_files
+    for week_key, week_files in sorted(groups.items()):
+        # Keep the newest (last) file, remove the rest
+        to_keep.append(week_files[-1])
+        to_remove.extend(week_files[:-1])
 
-
-def list_all_backups() -> None:
-    """List all backup files with their ages."""
-    backup_files = get_backup_files()
-
-    if not backup_files:
-        print("No backup files found.")
-        return
-
-    print(f"\nBackup Files ({len(backup_files)} total):\n")
-    print(f"{'File':<45} {'Age':<12} {'Size':<10}")
-    print("-" * 67)
-
-    total_size = 0
-    for backup_file in backup_files:
-        age_days = get_file_age_days(backup_file)
-        size_kb = backup_file.stat().st_size / 1024
-        total_size += size_kb
-
-        age_str = f"{age_days:.1f} days"
-        size_str = f"{size_kb:.1f} KB"
-
-        print(f"{backup_file.name:<45} {age_str:<12} {size_str:<10}")
-
-    print("-" * 67)
-    print(f"Total: {total_size:.1f} KB ({total_size/1024:.2f} MB)")
+    return to_remove, to_keep
 
 
-def cleanup_backups(
-    retention_days: int = DEFAULT_RETENTION_DAYS,
+def dedup_backups(
+    backup_dir: Path,
+    label: str,
     dry_run: bool = True
 ) -> int:
-    """Remove backup files older than retention period.
+    """Remove duplicate backups, keeping newest per calendar week.
 
     Args:
-        retention_days: Number of days to retain backups
-        dry_run: If True, only preview what would be deleted
+        backup_dir: Path to backup directory
+        label: Human-readable label (e.g., 'Weekly Portfolio')
+        dry_run: If True, only preview
 
     Returns:
-        Number of files deleted (or would be deleted in dry run)
+        Number of files removed (or would be removed)
     """
-    old_backups = get_old_backups(retention_days)
+    to_remove, to_keep = find_duplicates(backup_dir)
 
-    if not old_backups:
-        print(f"No backups older than {retention_days} days found.")
+    if not to_remove:
+        print(f"\n  {label}: No duplicates found ({len(to_keep)} files, 1 per week)")
         return 0
 
     mode = "DRY RUN" if dry_run else "EXECUTING"
-    print(f"\n[{mode}] Cleanup with {retention_days}-day retention:\n")
+    print(f"\n  [{mode}] {label}:")
+    print(f"  Keeping {len(to_keep)} files (newest per week)")
+    print(f"  Removing {len(to_remove)} duplicates:\n")
 
     total_size = 0
-    for backup_file, age_days in old_backups:
-        size_kb = backup_file.stat().st_size / 1024
+    for f in to_remove:
+        dt = _parse_backup_datetime(f.name)
+        week = _iso_week_key(dt) if dt != datetime.min else 'unknown'
+        size_kb = f.stat().st_size / 1024
         total_size += size_kb
 
-        action = "Would delete" if dry_run else "Deleting"
-        print(f"  {action}: {backup_file.name} ({age_days:.1f} days old, {size_kb:.1f} KB)")
+        action = "Would remove" if dry_run else "Removing"
+        print(f"    {action}: {f.name} ({week}, {size_kb:.1f} KB)")
 
         if not dry_run:
             try:
-                backup_file.unlink()
+                f.unlink()
             except Exception as e:
-                print(f"    ERROR: Failed to delete: {e}")
+                print(f"      ERROR: {e}")
 
-    print(f"\n{'Would free' if dry_run else 'Freed'}: {total_size:.1f} KB ({total_size/1024:.2f} MB)")
-    print(f"Files {'to delete' if dry_run else 'deleted'}: {len(old_backups)}")
+    freed = "Would free" if dry_run else "Freed"
+    print(f"\n  {freed}: {total_size:.1f} KB ({total_size / 1024:.2f} MB)")
 
-    if dry_run:
-        print("\nTo execute deletion, run: python backup_cleanup.py --execute")
-
-    return len(old_backups)
+    return len(to_remove)
 
 
-def get_backup_stats() -> dict:
-    """Get statistics about backup files.
+def list_backups(backup_dir: Path, label: str) -> None:
+    """List all backups grouped by ISO week."""
+    files = get_backup_files(backup_dir)
+    if not files:
+        print(f"\n  {label}: No backups found")
+        return
+
+    groups = group_by_week(files)
+    total = len(files)
+    total_size = sum(f.stat().st_size for f in files) / 1024
+
+    print(f"\n  {label}: {total} files ({total_size:.1f} KB)")
+    print(f"  {'Week':<12} {'Files':<8} {'Newest':<30} {'Keep'}")
+    print(f"  {'─' * 62}")
+
+    for week_key in sorted(groups.keys()):
+        week_files = groups[week_key]
+        newest = week_files[-1]
+        keep_marker = "✅" if len(week_files) == 1 else f"✅ (+{len(week_files) - 1} dupes)"
+        print(f"  {week_key:<12} {len(week_files):<8} {newest.name:<30} {keep_marker}")
+
+
+def get_backup_stats() -> Dict:
+    """Get aggregate statistics across all backup directories."""
+    stats = {}
+    for label, backup_dir in BACKUP_DIRS.items():
+        files = get_backup_files(backup_dir)
+        to_remove, to_keep = find_duplicates(backup_dir)
+        sizes = [f.stat().st_size / 1024 for f in files] if files else [0]
+
+        stats[label] = {
+            'total_files': len(files),
+            'unique_weeks': len(to_keep),
+            'duplicates': len(to_remove),
+            'total_size_kb': sum(sizes),
+            'reclaimable_kb': sum(f.stat().st_size / 1024 for f in to_remove),
+        }
+    return stats
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PUBLIC API (for pipeline integration)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def run_dedup(dry_run: bool = False) -> int:
+    """Run dedup across all backup directories.
+
+    Args:
+        dry_run: If True, preview only
 
     Returns:
-        Dict with backup statistics
+        Total number of files removed
     """
-    backup_files = get_backup_files()
+    total = 0
+    for label, backup_dir in BACKUP_DIRS.items():
+        display_label = label.replace('_', ' ').title() + " Backups"
+        total += dedup_backups(backup_dir, display_label, dry_run=dry_run)
+    return total
 
-    if not backup_files:
-        return {
-            'count': 0,
-            'total_size_kb': 0,
-            'oldest_days': 0,
-            'newest_days': 0,
-        }
 
-    ages = [get_file_age_days(f) for f in backup_files]
-    sizes = [f.stat().st_size / 1024 for f in backup_files]
-
-    return {
-        'count': len(backup_files),
-        'total_size_kb': sum(sizes),
-        'oldest_days': max(ages),
-        'newest_days': min(ages),
-    }
-
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLI
+# ═══════════════════════════════════════════════════════════════════════════════
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Manage 30-day retention for portfolio backups"
+        description="Deduplicate portfolio backups (keep newest per calendar week)"
     )
     parser.add_argument(
-        "--execute",
-        action="store_true",
-        help="Actually delete old backups (default is dry run)"
+        "--execute", action="store_true",
+        help="Actually remove duplicates (default is dry run)"
     )
     parser.add_argument(
-        "--days",
-        type=int,
-        default=DEFAULT_RETENTION_DAYS,
-        help=f"Retention period in days (default: {DEFAULT_RETENTION_DAYS})"
+        "--list", action="store_true",
+        help="List all backups grouped by week"
     )
     parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List all backups with ages"
-    )
-    parser.add_argument(
-        "--stats",
-        action="store_true",
+        "--stats", action="store_true",
         help="Show backup statistics"
     )
 
     args = parser.parse_args()
 
     print("=" * 60)
-    print("  BACKUP CLEANUP UTILITY")
+    print("  BACKUP DEDUP UTILITY")
     print("=" * 60)
-    print(f"\nBackup directory: {BACKUP_DIR}")
-
-    if not BACKUP_DIR.exists():
-        print(f"\nBackup directory does not exist yet.")
-        print("No cleanup needed.")
-        return
 
     if args.list:
-        list_all_backups()
+        for label, backup_dir in BACKUP_DIRS.items():
+            display = label.replace('_', ' ').title() + " Backups"
+            list_backups(backup_dir, display)
         return
 
     if args.stats:
         stats = get_backup_stats()
-        print(f"\nBackup Statistics:")
-        print(f"  Total backups: {stats['count']}")
-        print(f"  Total size: {stats['total_size_kb']:.1f} KB ({stats['total_size_kb']/1024:.2f} MB)")
-        print(f"  Oldest backup: {stats['oldest_days']:.1f} days")
-        print(f"  Newest backup: {stats['newest_days']:.1f} days")
+        print("\n  Backup Statistics:")
+        for label, s in stats.items():
+            display = label.replace('_', ' ').title()
+            print(f"\n  {display}:")
+            print(f"    Total files:     {s['total_files']}")
+            print(f"    Unique weeks:    {s['unique_weeks']}")
+            print(f"    Duplicates:      {s['duplicates']}")
+            print(f"    Total size:      {s['total_size_kb']:.1f} KB")
+            print(f"    Reclaimable:     {s['reclaimable_kb']:.1f} KB")
         return
 
-    # Default: cleanup with dry run or execute
-    cleanup_backups(
-        retention_days=args.days,
-        dry_run=not args.execute
-    )
+    # Default: dedup
+    total = run_dedup(dry_run=not args.execute)
 
-    print("\nDone!")
+    if total == 0:
+        print("\n  ✅ All clean — one backup per calendar week")
+    elif not args.execute:
+        print(f"\n  Run with --execute to remove {total} duplicate(s)")
+
+    print("\n  Done!")
 
 
 if __name__ == "__main__":

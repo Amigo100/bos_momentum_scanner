@@ -97,6 +97,21 @@ jobs:
       # STEP 2: SEND SELL SIGNAL NOTIFICATIONS
       # ═══════════════════════════════════════════════════════════════════════
 
+      - name: Check notification channel config
+        if: always() && steps.scanner.outputs.scanner_complete == 'true'
+        env:
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+        run: |
+          python -m distribution.notifications --check-config
+
       - name: Send sell signal notifications
         if: always() && steps.scanner.outputs.scanner_complete == 'true'
         env:
@@ -111,8 +126,10 @@ jobs:
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
           python << 'NOTIFY_SELLS'
-          import json, sys
+          import json, sys, logging
           from pathlib import Path
+
+          logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
           signals_path = Path("trades/daily_signals.json")
           if not signals_path.exists():

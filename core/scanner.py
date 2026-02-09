@@ -66,11 +66,7 @@ import yfinance as yf
 # Import thresholds from centralized config (single source of truth)
 from config import (
     BETA_THRESHOLD,
-    BANKER_TIER1 as _CFG_BANKER_TIER1,
-    BANKER_TIER2 as _CFG_BANKER_TIER2,
-    BANKER_TIER3 as _CFG_BANKER_TIER3,
     TRAILING_STOP_PCT as _CFG_TRAILING_STOP_PCT,
-    TIGHTEN_STOP_PCT,
     BANKER_CENTER,
     BANKER_SCALE_FACTOR,
     VWAP_PERIOD,
@@ -127,9 +123,6 @@ LOGS_DIR.mkdir(exist_ok=True)
 # Thresholds — imported from config.py (single source of truth)
 BETA_MIN = BETA_THRESHOLD
 BETA_SIGNAL = BETA_THRESHOLD
-BANKER_TIER1 = float(_CFG_BANKER_TIER1)
-BANKER_TIER2 = float(_CFG_BANKER_TIER2)
-BANKER_TIER3 = float(_CFG_BANKER_TIER3)
 TRAILING_STOP_PCT = float(_CFG_TRAILING_STOP_PCT)
 
 # Note: 4-week momentum filter was removed based on backtest results
@@ -156,6 +149,8 @@ class Stock:
     price: float = 0.0
     beta: float = 0.0
     banker: float = 0.0
+    banker_prev: float = 0.0       # Previous bar banker value (for rising check)
+    banker_rising: bool = False    # True when current banker > previous (entry gate)
     bos_bullish: bool = False
     bos_bearish: bool = False
     bos_debug: dict = field(default_factory=dict)  # Debug info from BoS calculation
@@ -167,6 +162,8 @@ class Stock:
     theme_score: float = 0.0
     pure_play_score: int = 0
     theme_verdict: str = ""
+    theme_classification: str = ""    # PRIME / INVESTABLE / SELECTIVE / AVOID
+    valuation_regime: str = ""        # OPTIONALITY / FUNDAMENTAL / TRANSITION
     # Momentum assessor fields
     final_decision: str = ""  # PASS, CONSIDER, SKIP (use PASS not TRADE - MASTER_TODO_v2)
     conviction: int = 0
@@ -175,40 +172,41 @@ class Stock:
     bullish_factors: List[str] = field(default_factory=list)
     risk_factors: List[str] = field(default_factory=list)
     reasoning: str = ""
-    # Gatekeeper fields
+    # Investment Gate fields
     catalyst_summary: str = ""
     red_flag_level: str = ""
     action: str = ""
-    # Due Diligence fields (from dd_automator.py)
+    # Due Diligence fields (from deep_dd.py)
     dd_verdict: str = ""          # STRONG BUY / SPEC BUY / NO GO
     dd_conviction: int = 0        # 1-10 scale
     dd_position_size: str = ""    # FULL / REDUCED / PASS
     dd_analysis: str = ""         # Full analysis text
     dd_key_catalyst: str = ""     # Extracted key catalyst
     dd_fatal_flaw: str = ""       # Extracted fatal flaw (if NO GO)
+    # Deep DD newsletter fields (from deep_dd.py)
+    dd_elevator_pitch: str = ""       # Newsletter: 2-3 sentence pitch
+    dd_why_now: str = ""              # Newsletter: key catalyst with date
+    dd_the_math: str = ""             # Newsletter: path to 50%+
+    dd_bear_case: str = ""            # Newsletter: steelmanned bear
+    dd_risk_to_monitor: str = ""      # Newsletter: single key risk
+    dd_action: str = ""               # Newsletter: specific action
 
     def meets_technical_criteria(self) -> bool:
-        """Check if stock meets technical signal criteria (Beta + BoS + Banker)."""
-        return self.beta >= BETA_SIGNAL and self.bos_bullish and self.banker >= BANKER_TIER3
-    
+        """Check if stock meets technical signal criteria (Beta + BoS + Banker Rising)."""
+        return self.beta >= BETA_SIGNAL and self.bos_bullish and self.banker_rising
+
     def get_tier(self) -> str:
-        """Assign tier based on banker level."""
+        """Assign tier — all stocks passing technical gate are TIER1."""
         if not self.meets_technical_criteria():
             return ""
-        if self.banker > BANKER_TIER1:
-            return "TIER1"
-        elif self.banker > BANKER_TIER2:
-            return "TIER2"
-        elif self.banker > BANKER_TIER3:
-            return "TIER3"
-        return ""
+        return "TIER1"
     
     def passes_theme_gate(self) -> bool:
         """Check if passes thematic analyzer gate."""
         return self.theme_verdict in ["STRONG FIT", "GOOD FIT"]
     
     def is_confirmed(self) -> bool:
-        """Check if confirmed by gatekeeper (PASS or CONSIDER)."""
+        """Check if confirmed by Investment Gate (PASS or CONSIDER)."""
         return self.final_decision in ["PASS", "CONSIDER"]
 
 
@@ -219,15 +217,11 @@ class ScanStats:
     beta_gte_1_5: int = 0
     bos_bullish: int = 0
     bos_bearish: int = 0
-    banker_tier1: int = 0   # banker > 70 (strong accumulation)
-    banker_tier2: int = 0   # banker > 60 (moderate accumulation)
-    banker_tier3: int = 0   # banker > 55 (slight accumulation / entry minimum)
+    banker_rising: int = 0  # banker current > previous (entry gate)
     meets_technical_gate: int = 0
     momentum_filtered: int = 0  # Stocks filtered by 4w momentum
     passes_momentum: int = 0    # Stocks that pass momentum filter
-    tier1: int = 0
-    tier2: int = 0
-    tier3: int = 0
+    technical_signals: int = 0  # Stocks passing full technical gate
     theme_confirmed: int = 0
     final_trade: int = 0
     final_consider: int = 0
@@ -285,37 +279,51 @@ def calculate_beta(returns: pd.Series, benchmark_returns: pd.Series) -> float:
         return 0.0
 
 
-def calculate_banker(df: pd.DataFrame) -> float:
+def calculate_banker(df: pd.DataFrame) -> Tuple[float, float]:
     """
-    Calculate Banker indicator (institutional accumulation proxy).
-    
-    Formula: ((Current Price / 20-day VWAP) - 1) * 100 + 50
-    
+    Calculate Banker indicator (institutional accumulation proxy) for current
+    and previous bars.
+
+    Formula: ((Close / 20-day VWAP) - 1) * 100 + 50
+
     Interpretation:
     - 50 = Price at VWAP (neutral)
     - >50 = Price above VWAP (accumulation)
     - <50 = Price below VWAP (distribution)
     - >70 = Strong accumulation
     - >90 = Very strong accumulation (parabolic)
-    
-    Range: 0-100 (uncapped for visibility, but normalized)
+
+    Returns:
+        Tuple[float, float]: (current_bar_value, previous_bar_value)
+        The rising check (current > previous) replaces the old static >= 55 gate.
     """
     try:
-        if len(df) < VWAP_PERIOD:
-            return 0.0
-        recent = df.tail(VWAP_PERIOD)
-        typical = (recent['High'] + recent['Low'] + recent['Close']) / 3
-        vwap = (typical * recent['Volume']).sum() / recent['Volume'].sum()
-        current = float(recent['Close'].iloc[-1])
-        if vwap == 0:
-            return 0.0
-        # Calculate how far price is from VWAP as percentage
-        # Then normalize to 0-100 scale centered at BANKER_CENTER
-        deviation_pct = ((current / vwap) - 1) * 100
-        banker = BANKER_CENTER + (deviation_pct * BANKER_SCALE_FACTOR)
-        return round(max(0, min(100, banker)), 1)
+        # Need VWAP_PERIOD + 1 bars to compute both current and previous
+        if len(df) < VWAP_PERIOD + 1:
+            return 0.0, 0.0
+
+        def _banker_for_slice(slice_df: pd.DataFrame) -> float:
+            """Compute banker value for a VWAP_PERIOD-length slice."""
+            typical = (slice_df['High'] + slice_df['Low'] + slice_df['Close']) / 3
+            vwap = (typical * slice_df['Volume']).sum() / slice_df['Volume'].sum()
+            close = float(slice_df['Close'].iloc[-1])
+            if vwap == 0:
+                return 0.0
+            deviation_pct = ((close / vwap) - 1) * 100
+            banker = BANKER_CENTER + (deviation_pct * BANKER_SCALE_FACTOR)
+            return round(max(0, min(100, banker)), 1)
+
+        # Current bar: last VWAP_PERIOD bars
+        current_slice = df.tail(VWAP_PERIOD)
+        current_val = _banker_for_slice(current_slice)
+
+        # Previous bar: VWAP_PERIOD bars ending one bar earlier
+        prev_slice = df.iloc[-(VWAP_PERIOD + 1):-1]
+        prev_val = _banker_for_slice(prev_slice)
+
+        return current_val, prev_val
     except Exception:
-        return 0.0
+        return 0.0, 0.0
 
 
 def calculate_hma(series: pd.Series, length: int) -> pd.Series:
@@ -532,7 +540,8 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                     stock.beta = calculate_beta(returns, benchmark_returns)
                     
                     if stock.beta >= BETA_MIN:
-                        stock.banker = calculate_banker(df)
+                        stock.banker, stock.banker_prev = calculate_banker(df)
+                        stock.banker_rising = stock.banker > stock.banker_prev
                         stock.bos_bullish, stock.bos_bearish, stock.bos_debug = calculate_bos(df)
                         stock.tier = stock.get_tier()
                         
@@ -638,6 +647,7 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
                 'key_catalysts': getattr(t, 'key_catalysts', []),
                 'momentum_score': getattr(t, 'momentum_score', 0),
                 'catalyst_score': getattr(t, 'catalyst_score', 0),
+                'valuation_regime': getattr(t, 'valuation_regime', ''),
             })
         
         themes_context = "\n".join(themes_context_lines)
@@ -659,7 +669,14 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
                 stock.theme_score = a.theme_score or 0.0
                 stock.pure_play_score = a.pure_play_score
                 stock.theme_verdict = a.verdict
-                
+                stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
+
+                # Look up valuation_regime from the Theme that matches this stock's theme
+                for t in themes:
+                    if t.name == stock.theme:
+                        stock.valuation_regime = getattr(t, 'valuation_regime', '')
+                        break
+
                 # Check if passes gate
                 if hasattr(a, 'passes_maturity_gate') and callable(a.passes_maturity_gate):
                     if a.passes_maturity_gate():
@@ -793,139 +810,91 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# GATEKEEPER - FINAL QUALITY GATE
+# INVESTMENT GATE - REGIME-AWARE QUALITY GATE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def run_gatekeeper(signals: List[Stock], top_n: int = None, themes_context: str = "", use_web_search: bool = False) -> List[Stock]:
-    """Run thorough Gatekeeper analysis for final PASS/CAUTION/FAIL decision.
-    
-    This is the FINAL quality gate before entry. Each stock gets individual
-    deep analysis to find:
-    - Catalysts (earnings, events, product launches)
-    - Red flags (dilution, insider selling, governance issues)
-    - Analyst sentiment and short interest
-    
-    Focus: Identifying stocks with 50-100%+ return potential over 3-8 months.
-    
+def run_investment_gate_step(signals: List[Stock], top_n: int = None, themes_context: str = "", use_web_search: bool = False, save_reports: bool = False) -> List[Stock]:
+    """Run Investment Gate analysis for final STRONG_BUY/SPEC_BUY/NO_GO decision.
+
+    Regime-aware quality gate that adapts analysis to valuation context:
+    - OPTIONALITY: Milestone-based (pre-revenue, narrative-driven)
+    - FUNDAMENTAL: Revenue/earnings-based (established companies)
+    - TRANSITION: Shifting from milestone to revenue (highest risk)
+
     Args:
         signals: List of stocks that passed theme gate
         top_n: If set, only assess top N stocks by Banker score
         themes_context: Pre-identified themes from thematic analyzer
         use_web_search: If True, use web search for current data (recommended for production)
-    
+        save_reports: If True, save individual assessment reports
+
     Returns:
-        List of stocks that PASS the gatekeeper (ready to trade)
+        List of stocks that PASS the gate (STRONG_BUY or SPEC_BUY)
     """
-    
+
     if not signals:
         return []
-    
+
     # If top_n specified, only assess highest conviction candidates
     if top_n and len(signals) > top_n:
         signals = sorted(signals, key=lambda s: -s.banker)[:top_n]
-        print(f"\n  📊 Assessing top {top_n} candidates by Banker score")
-    
+        print(f"\n  Assessing top {top_n} candidates by Banker score")
+
     try:
-        from core.gatekeeper import run_gatekeeper_batch, create_client, GateDecision, print_gatekeeper_summary
-        
-        print(f"\n  Running GATEKEEPER - Final Quality Gate")
-        print(f"  " + "═" * 60)
-        print(f"  🎯 Target: 50-100%+ return potential over 3-8 months")
-        print(f"  🔍 Checking: Catalysts, Red Flags, Analyst Sentiment")
-        if use_web_search:
-            print(f"  🌐 Web search ENABLED - current data (6 searches per stock)")
-            print(f"  💰 Cost: ~$0.15-0.25 per stock")
-        else:
-            print(f"  💰 Web search DISABLED - using model knowledge (testing mode)")
-            print(f"  💰 Cost: ~$0.02-0.03 per stock")
-        print(f"  📊 Analyzing {len(signals)} stocks individually")
-        print(f"  " + "─" * 60)
-        
-        client = create_client()
-        
-        # Build stock list for gatekeeper
-        stock_list = []
-        for s in signals:
-            stock_list.append({
-                "ticker": s.symbol,
-                "theme": s.theme or "Unknown",
-                "theme_fit": s.theme_verdict or "GOOD",
-                "price": s.price,
-                "beta": s.beta,
-                "banker": s.banker
-            })
-        
-        # Run gatekeeper on all stocks
-        results = run_gatekeeper_batch(
-            client=client,
-            stocks=stock_list,
-            themes_context=themes_context,
-            delay_between=8.0 if use_web_search else 3.0,  # Shorter delay without web search
-            use_web_search=use_web_search
+        from core.investment_gate import (
+            run_investment_gate_batch, create_client, apply_results_to_stocks
         )
-        
-        # Map results back to Stock objects
-        result_map = {r.ticker: r for r in results}
-        confirmed = []
-        
-        for stock in signals:
-            if stock.symbol in result_map:
-                r = result_map[stock.symbol]
-                
-                # Map GateDecision to final_decision (CRIT-1: Use PASS not TRADE)
-                if r.decision == GateDecision.PASS:
-                    stock.final_decision = "PASS"
-                elif r.decision == GateDecision.CAUTION:
-                    # Gatekeeper CAUTION → scanner CONSIDER (gate verdict vs portfolio action)
-                    stock.final_decision = "CONSIDER"
-                else:
-                    stock.final_decision = "FAIL"
-                
-                stock.conviction = r.conviction
-                stock.sector_status = r.analyst_trend
-                stock.upside_potential = "High (50%+)" if r.catalyst_present else "Uncertain"
-                stock.bullish_factors = r.key_bullish
-                stock.risk_factors = r.key_risks
-                stock.reasoning = r.reasoning
-                
-                # Store additional gatekeeper data
-                stock.catalyst_summary = r.catalyst_summary
-                stock.red_flag_level = r.red_flag_level
-                stock.action = r.action
-                
-                if stock.is_confirmed():
-                    confirmed.append(stock)
-            else:
-                stock.final_decision = "ERROR"
-                stock.reasoning = "Gatekeeper analysis failed"
-        
-        # Print summary
-        print(f"\n")
-        print_gatekeeper_summary(results)
-        
+
+        client = create_client()
+
+        # run_investment_gate_batch handles printing and per-stock display
+        results = run_investment_gate_batch(
+            client=client,
+            stocks=signals,
+            themes_context=themes_context,
+            use_web_search=use_web_search,
+            delay_between=8.0 if use_web_search else 3.0,
+            save_reports=save_reports
+        )
+
+        # apply_results_to_stocks maps all fields back to Stock objects
+        # (final_decision, conviction, catalyst_summary, red_flag_level, etc.)
+        pass_stocks, fail_stocks = apply_results_to_stocks(signals, results)
+
+        # Mark stocks not in pass/fail as ERROR
+        passed_tickers = {s.symbol for s in pass_stocks}
+        failed_tickers = {s.symbol for s in fail_stocks}
+        for s in signals:
+            if s.symbol not in passed_tickers and s.symbol not in failed_tickers:
+                if not s.final_decision:
+                    s.final_decision = "ERROR"
+                    s.reasoning = "Investment Gate analysis failed"
+
+        # Return PASS + CONSIDER (is_confirmed checks for both)
+        confirmed = [s for s in signals if s.is_confirmed()]
         return confirmed
-        
+
     except ImportError as e:
-        print(f"  ⚠ gatekeeper.py not found - falling back to basic assessment")
+        print(f"  investment_gate.py not found - falling back to basic assessment")
         print(f"     Error: {e}")
         for s in signals:
             s.final_decision = "SKIPPED"
         return signals
-        
+
     except RuntimeError as e:
         if "BILLING_ERROR" in str(e):
-            print(f"\n  ❌ API BILLING ERROR DETECTED")
+            print(f"\n  API BILLING ERROR DETECTED")
             print(f"     Your Anthropic API credit balance is too low.")
             print(f"     Please add credits at: https://console.anthropic.com/settings/billing")
-            print(f"\n  ⏹️  Stopping gatekeeper analysis.")
+            print(f"\n  Stopping Investment Gate analysis.")
         else:
-            print(f"  ⚠ Gatekeeper error: {e}")
+            print(f"  Investment Gate error: {e}")
         for s in signals:
             s.final_decision = "NOT_ASSESSED"
         return []
-        
+
     except Exception as e:
-        print(f"  ⚠ Gatekeeper error: {e}")
+        print(f"  Investment Gate error: {e}")
         import traceback
         traceback.print_exc()
         for s in signals:
@@ -950,12 +919,11 @@ class SellSignal:
 def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
     """
     Check for sell signals on open positions.
-    
-    Uses portfolio_manager.py if available, otherwise falls back to legacy CSV.
-    
-    EXIT CRITERIA:
-    1. PRIMARY: Weekly BoS Down signal
-    2. BACKUP: 20% trailing stop from highest close since entry
+
+    EXIT CRITERIA (first exit — whichever fires first):
+    1. HMA fracture (Weekly BoS Down) → EXIT immediately
+    2. 20% trailing stop from highest weekly close → EXIT immediately
+    Both are equal exit triggers. If both fire on same bar, exit once with combined reason.
     """
     
     return _check_sell_signals_portfolio_manager(stocks)
@@ -991,25 +959,19 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
             else:
                 drawdown_pct = 0
             
-            # CHECK EXIT CRITERIA
-            # BoS bearish and trailing stop are checked independently
+            # CHECK EXIT CRITERIA (first exit — whichever fires first)
+            exit_reasons = []
 
-            # Trailing stop — actual exit trigger
+            # Check trailing stop
             if drawdown_pct >= TRAILING_STOP_PCT:
-                sell_reason = f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${trade.highest_close:.2f})"
-                sell_signals.append(SellSignal(
-                    symbol=symbol,
-                    price=current_price,
-                    reason=sell_reason,
-                    entry_price=trade.entry_price,
-                    highest_close=trade.highest_close,
-                    drawdown_pct=drawdown_pct
-                ))
-                pm.flag_exit(symbol, current_price, reason=sell_reason)
+                exit_reasons.append(f"Trailing stop hit ({drawdown_pct:.1f}% from high of ${trade.highest_close:.2f})")
 
-            # BoS bearish — IMMEDIATE EXIT (structural break invalidates the setup)
-            elif stock.bos_bearish:
-                sell_reason = f"Weekly BoS Down — structural stop (drawdown {drawdown_pct:.1f}% from ${trade.highest_close:.2f})"
+            # Check BoS bearish — structural break
+            if stock.bos_bearish:
+                exit_reasons.append(f"Weekly BoS Down (drawdown {drawdown_pct:.1f}% from ${trade.highest_close:.2f})")
+
+            if exit_reasons:
+                sell_reason = " + ".join(exit_reasons)
                 sell_signals.append(SellSignal(
                     symbol=symbol,
                     price=current_price,
@@ -1019,7 +981,7 @@ def _check_sell_signals_portfolio_manager(stocks: Dict[str, Stock]) -> List[Sell
                     drawdown_pct=drawdown_pct
                 ))
                 pm.flag_exit(symbol, current_price, reason=sell_reason)
-                print(f"    \u2715 {symbol}: CLOSED — Weekly BoS Down at ${current_price:.2f}")
+                print(f"    \u2715 {symbol}: EXIT at ${current_price:.2f} — {sell_reason}")
 
         # Note: Prices will be updated in main() when export_for_google_sheets() is called
         # No need for duplicate pm.update_prices() here
@@ -1153,12 +1115,8 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
                 stats.bos_bullish += 1
             if stock.bos_bearish:
                 stats.bos_bearish += 1
-            if stock.banker > BANKER_TIER1:
-                stats.banker_tier1 += 1
-            if stock.banker > BANKER_TIER2:
-                stats.banker_tier2 += 1
-            if stock.banker > BANKER_TIER3:
-                stats.banker_tier3 += 1
+            if stock.banker_rising:
+                stats.banker_rising += 1
     
     high_beta_stocks.sort(key=lambda x: -x.beta)
     
@@ -1175,21 +1133,17 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"  Beta >= 1.5:              {stats.beta_gte_1_5:>6}")
         print(f"  ────────────────────────────────────")
         print(f"  HMA Pivot BUY (entry):    {stats.bos_bullish:>6}")
-        print(f"  HMA Pivot SELL (caution): {stats.bos_bearish:>6}")
+        print(f"  HMA Pivot SELL (exit):    {stats.bos_bearish:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  Banker > 70 (Strong):     {stats.banker_tier1:>6}")
-        print(f"  Banker > 60 (Moderate):   {stats.banker_tier2:>6}")
-        print(f"  Banker > 55 (Slight):     {stats.banker_tier3:>6}")
+        print(f"  Banker Rising (Gate):     {stats.banker_rising:>6}")
     else:
         # Marketing-safe terminology
         print(f"  Volatility Expansion:     {stats.beta_gte_1_5:>6}")
         print(f"  ────────────────────────────────────")
         print(f"  Structural Breakouts:     {stats.bos_bullish:>6}")
-        print(f"  Caution Signals:          {stats.bos_bearish:>6}")
+        print(f"  Exit Signals:             {stats.bos_bearish:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  Strong Accumulation:      {stats.banker_tier1:>6}")
-        print(f"  Moderate Accumulation:    {stats.banker_tier2:>6}")
-        print(f"  Slight Accumulation:      {stats.banker_tier3:>6}")
+        print(f"  Accumulation Rising:      {stats.banker_rising:>6}")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # DIAGNOSTIC: Show sample tickers (controlled by --verbose flag)
@@ -1222,26 +1176,27 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
             held_flag = " [HELD]" if s.symbol in open_positions else ""
             print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}{held_flag}")
 
-    # Caution signals
+    # Exit signals
     bos_down_stocks = [s for s in stocks.values() if s.bos_bearish]
     if verbose:
-        print(f"  🔴 HMA PIVOT SELL: {len(bos_down_stocks)} (caution signals)")
+        print(f"  🔴 HMA PIVOT SELL: {len(bos_down_stocks)} (exit signals)")
     else:
-        print(f"  🔴 CAUTION SIGNALS: {len(bos_down_stocks)} (tighten stops)")
+        print(f"  🔴 EXIT SIGNALS: {len(bos_down_stocks)} (positions closed)")
     if bos_down_stocks and verbose:
         for s in bos_down_stocks[:sample_size]:
             print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}")
 
     # Entry candidates summary
     if verbose:
-        print(f"\n  ⭐ ENTRY CANDIDATES (BUY + β≥1.5 + Banker≥55): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
+        print(f"\n  ⭐ ENTRY CANDIDATES (BUY + β≥1.5 + Banker Rising): {len([s for s in bos_up_high_beta if s.banker_rising])}")
     else:
-        print(f"\n  ⭐ ENTRY CANDIDATES (5-Gate Qualified): {len([s for s in bos_up_high_beta if s.banker >= 55])}")
+        print(f"\n  ⭐ ENTRY CANDIDATES (5-Gate Qualified): {len([s for s in bos_up_high_beta if s.banker_rising])}")
     if bos_up_high_beta:
         for s in sorted(bos_up_high_beta, key=lambda x: -x.banker)[:sample_size]:
-            if s.banker >= 55:
+            if s.banker_rising:
                 held_flag = " [HELD]" if s.symbol in open_positions else ""
-                print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}  4wMom={s.momentum_4w:+.1f}%{held_flag}")
+                rising_flag = "↑" if s.banker_rising else "↓"
+                print(f"      {s.symbol:<6} β={s.beta:.2f}  ${s.price:<8.2f} Banker={s.banker:.0f}{rising_flag}  4wMom={s.momentum_4w:+.1f}%{held_flag}")
 
     if not verbose:
         print(f"\n  💡 Use --verbose for detailed diagnostics")
@@ -1264,22 +1219,14 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
             stock.tier = stock.get_tier()
             if stock.tier:
                 technical_signals.append(stock)
-                if stock.tier == "TIER1":
-                    stats.tier1 += 1
-                elif stock.tier == "TIER2":
-                    stats.tier2 += 1
-                elif stock.tier == "TIER3":
-                    stats.tier3 += 1
-    
+                stats.technical_signals += 1
+
     print(f"\n  TECHNICAL GATE RESULTS:")
     print(f"  ────────────────────────────────────")
     print(f"  Beta >= 1.5 AND BoS UP signal: {stats.meets_technical_gate:>4}")
     print(f"  ────────────────────────────────────")
-    print(f"  TIER 1 (Banker > 70):        {stats.tier1:>5}")
-    print(f"  TIER 2 (Banker > 60):        {stats.tier2:>5}")
-    print(f"  TIER 3 (Banker > 55):        {stats.tier3:>5}")
+    print(f"  TECHNICAL SIGNALS (Banker Rising): {stats.technical_signals:>5}")
     print(f"  ────────────────────────────────────")
-    print(f"  TOTAL TECHNICAL SIGNALS:     {len(technical_signals):>5}")
     
     # Note: momentum_rejected is kept for backwards compatibility but will always be empty
     # as momentum filter was removed based on backtest results
@@ -1288,7 +1235,8 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"\n  ✅ TECHNICAL SIGNALS:")
         for s in technical_signals:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"    {s.tier}  {s.symbol:<6} ${s.price:>8.2f}  β={s.beta:.2f}  Banker={s.banker:.1f}  4wMom={s.momentum_4w:+.1f}%{held_flag}")
+            rising_flag = "↑" if s.banker_rising else "↓"
+            print(f"    {s.tier}  {s.symbol:<6} ${s.price:>8.2f}  β={s.beta:.2f}  Banker={s.banker:.1f}{rising_flag}  4wMom={s.momentum_4w:+.1f}%{held_flag}")
     
     if not technical_signals:
         print("\n  No technical signals to process")
@@ -1354,18 +1302,18 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
             print(f"     ... and {len(sorted_confirmed) - 5} more")
     else:
         print("\n" + "─" * 70)
-        print("  STEP 7: Gatekeeper - Final Quality Gate (50-100%+ Return Potential)")
+        print("  STEP 7: Investment Gate - Regime-Aware Quality Gate")
         print("─" * 70)
         
         # Cooldown after thematic analyzer to avoid rate limits
         cooldown_seconds = 30 if use_web_search else 15
-        print(f"\n  ⏳ Rate limit cooldown: waiting {cooldown_seconds}s before Gatekeeper...")
+        print(f"\n  Rate limit cooldown: waiting {cooldown_seconds}s before Investment Gate...")
         time.sleep(cooldown_seconds)
         
-        # Run Gatekeeper - thorough analysis of each stock
-        confirmed = run_gatekeeper(
-            theme_confirmed, 
-            top_n=assess_top_n, 
+        # Run Investment Gate - regime-aware quality gate
+        confirmed = run_investment_gate_step(
+            theme_confirmed,
+            top_n=assess_top_n,
             themes_context=themes_context,
             use_web_search=use_web_search
         )
@@ -1488,7 +1436,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
         print(f"    • {stats.final_trade} PASS (GREEN), {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
     
     if sell_signals:
-        print(f"\n  ⚠️ CAUTION SIGNALS ({len(sell_signals)}) - Consider Tightening Stops:")
+        print(f"\n  🔴 EXIT SIGNALS ({len(sell_signals)}) - Positions Closed:")
         print("  " + "─" * 66)
         for s in sell_signals:
             print(f"\n  🔴 {s.symbol} @ ${s.price:.2f}")
@@ -1496,13 +1444,13 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
             if s.entry_price > 0:
                 pnl = ((s.price / s.entry_price) - 1) * 100
                 print(f"     Entry: ${s.entry_price:.2f} | High: ${s.highest_close:.2f} | P&L: {pnl:+.1f}%")
-            print(f"     ⚠️  This is NOT an automatic exit - use trailing stop")
-    
+            print(f"     Position closed — first exit triggered")
+
     print(f"\n  " + "═" * 66)
-    print(f"  EXIT STRATEGY (Backtested +539% avg vs +294% with signal exits):")
-    print(f"    • USE: {TRAILING_STOP_PCT:.0f}% trailing stop from highest weekly close")
-    print(f"    • CAUTION: HMA Pivot SELL = tighten stop to 15%, don't exit")
-    print(f"    • DO NOT automatically exit on SELL signal")
+    print(f"  EXIT STRATEGY (first exit — whichever fires first):")
+    print(f"    • {TRAILING_STOP_PCT:.0f}% trailing stop from highest weekly close")
+    print(f"    • HMA Pivot SELL (Weekly BoS Down) = immediate exit")
+    print(f"    • Whichever fires first closes the position")
     print("  " + "═" * 66)
 
 
@@ -1571,7 +1519,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
         lines.append("  ⚪ No entry signals this week")
     
     if sell_signals:
-        lines.append(f"  ⚠️  {len(sell_signals)} caution signal(s) - Consider tightening stops")
+        lines.append(f"  🔴 {len(sell_signals)} exit signal(s) - Positions closed")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # SCAN STATISTICS
@@ -1603,7 +1551,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
         lines.append("  " + "-" * 68)
 
         all_entry_signals = trades + considers + technical_only + theme_confirmed
-        all_entry_signals.sort(key=lambda x: (-{'TIER1': 3, 'TIER2': 2, 'TIER3': 1}.get(x.tier, 0), -x.banker))
+        all_entry_signals.sort(key=lambda x: -x.banker)
         
         for s in all_entry_signals:
             theme_short = (s.theme[:18] + "..") if s.theme and len(s.theme) > 20 else (s.theme or "N/A")
@@ -1636,40 +1584,36 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     # MOMENTUM FILTERED (Rejected for chasing)
     # ═══════════════════════════════════════════════════════════════════════════
     # ═══════════════════════════════════════════════════════════════════════════
-    # CAUTION SIGNALS (Sell signals from existing positions)
+    # EXIT SIGNALS (Sell signals from existing positions)
     # ═══════════════════════════════════════════════════════════════════════════
     if sell_signals:
         lines.append("")
         lines.append("─" * 72)
-        lines.append("  ⚠️  CAUTION SIGNALS - Consider Tightening Stops")
+        lines.append("  🔴 EXIT SIGNALS - Positions Closed")
         lines.append("─" * 72)
-        lines.append("  These are NOT automatic exit signals. Based on backtesting,")
-        lines.append("  trailing stops outperform signal-based exits (+539% vs +294%).")
+        lines.append("  First exit strategy: whichever fires first closes the position.")
         lines.append("")
-        
+
         for s in sell_signals:
             lines.append(f"  ■ {s.symbol} @ ${s.price:.2f}")
             lines.append(f"    Reason: {s.reason}")
             if s.entry_price > 0:
                 pnl = ((s.price / s.entry_price) - 1) * 100
                 lines.append(f"    Entry: ${s.entry_price:.2f} | High: ${s.highest_close:.2f} | P&L: {pnl:+.1f}%")
-            lines.append(f"    Action: Tighten stop to 15% from high, do NOT exit automatically")
+            lines.append(f"    Action: Position closed at current price")
             lines.append("")
-    
+
     # ═══════════════════════════════════════════════════════════════════════════
     # EXIT STRATEGY REMINDER
     # ═══════════════════════════════════════════════════════════════════════════
     lines.append("")
     lines.append("─" * 72)
-    lines.append("  EXIT STRATEGY")
+    lines.append("  EXIT STRATEGY (first exit — whichever fires first)")
     lines.append("─" * 72)
-    lines.append(f"  PRIMARY:  {TRAILING_STOP_PCT:.0f}% trailing stop from highest weekly close")
-    lines.append("  CAUTION:  HMA Pivot SELL = tighten stop to 15%, do NOT auto-exit")
+    lines.append(f"  1. {TRAILING_STOP_PCT:.0f}% trailing stop from highest weekly close")
+    lines.append("  2. HMA Pivot SELL (Weekly BoS Down) = immediate exit")
     lines.append("")
-    lines.append("  Based on backtesting across 8 trending stocks:")
-    lines.append("    • Signal-based exits: +294% average return")
-    lines.append("    • Trailing stop exits: +539% average return")
-    lines.append("  The trailing stop keeps you in strong trends longer.")
+    lines.append("  Whichever fires first closes the position. Both are equal triggers.")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # ENTRY CRITERIA REFERENCE
@@ -1680,13 +1624,10 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append("─" * 72)
     lines.append("  1. HMA Pivot BUY (lower step line changes = bullish structure)")
     lines.append("  2. Beta ≥ 1.5 (high momentum stock)")
-    lines.append("  3. Banker > 55 (institutional accumulation)")
+    lines.append("  3. Banker Rising (current bar UC > previous bar = accumulation starting)")
     lines.append("  4. Strong/Good theme fit (in hot sector)")
     lines.append("")
-    lines.append("  TIER ASSIGNMENT:")
-    lines.append("    • TIER 1: Banker > 70 (highest conviction)")
-    lines.append("    • TIER 2: Banker > 60 (strong conviction)")
-    lines.append("    • TIER 3: Banker > 55 (moderate conviction)")
+    lines.append("  All signals passing the rising check are equal — no level-based tiers.")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # FOOTER
@@ -1853,12 +1794,33 @@ def generate_newsletter_briefing(
                 if s.action:
                     lines.append(f"**Recommended Action:** {s.action}")
                     lines.append("")
-                
+
+                # Deep DD newsletter content (populated after Opus analysis)
+                if s.dd_elevator_pitch:
+                    lines.append("**The Pitch:**")
+                    lines.append(f"> {s.dd_elevator_pitch}")
+                    lines.append("")
+                if s.dd_why_now:
+                    lines.append(f"**Why Now:** {s.dd_why_now}")
+                    lines.append("")
+                if s.dd_the_math:
+                    lines.append(f"**The Math:** {s.dd_the_math}")
+                    lines.append("")
+                if s.dd_bear_case:
+                    lines.append(f"**Bear Case:** {s.dd_bear_case}")
+                    lines.append("")
+                if s.dd_risk_to_monitor:
+                    lines.append(f"**Risk to Monitor:** {s.dd_risk_to_monitor}")
+                    lines.append("")
+                if s.valuation_regime:
+                    lines.append(f"**Valuation Regime:** {s.valuation_regime}")
+                    lines.append("")
+
                 lines.append(f"📸 **[CHART: {s.symbol}]** - *Add TradingView screenshot*")
                 lines.append("")
                 lines.append("---")
                 lines.append("")
-        
+
         if considers:
             lines.append("### 🟡 CONSIDER - Wait or Size Down")
             lines.append("")
@@ -2016,6 +1978,33 @@ def generate_newsletter_briefing(
             lines.append("")
 
     # ─────────────────────────────────────────────────────────────────────────
+    # COMPOUNDING EQUITY (Portfolio vs S&P 500 since inception)
+    # ─────────────────────────────────────────────────────────────────────────
+    try:
+        from core.portfolio_manager import PortfolioManager as _PM
+        _pm = _PM()
+        _pm.update_prices()
+        compounding = _pm.get_compounding_summary()
+
+        if compounding and compounding.get('inception_date'):
+            lines.append("### 💰 Portfolio Equity (Compounding)")
+            lines.append("")
+            lines.append("| Metric | Value |")
+            lines.append("|--------|-------|")
+            lines.append(f"| **Inception** | {compounding['inception_date']} |")
+            lines.append(f"| **Capital Per Position** | {compounding['currency']}{compounding['starting_per_position']:,.0f} |")
+            lines.append(f"| **Total Deployed** | {compounding['currency']}{compounding['total_deployed']:,.0f} |")
+            lines.append(f"| **Current NAV** | {compounding['currency']}{compounding['current_nav']:,.2f} |")
+            lines.append(f"| **Total Return** | {compounding['total_return_pct']:+.1f}% |")
+            lines.append(f"| **SPY Equivalent** | {compounding['currency']}{compounding['spy_value']:,.2f} ({compounding['spy_return_pct']:+.1f}%) |")
+            lines.append(f"| **Alpha** | {compounding['alpha_pct']:+.1f}% |")
+            if compounding['max_drawdown_pct'] < 0:
+                lines.append(f"| **Max Drawdown** | {compounding['max_drawdown_pct']:.1f}% |")
+            lines.append("")
+    except Exception:
+        pass
+
+    # ─────────────────────────────────────────────────────────────────────────
     # RECENTLY CLOSED TRADES (This Week)
     # ─────────────────────────────────────────────────────────────────────────
     if closed_trades:
@@ -2035,10 +2024,10 @@ def generate_newsletter_briefing(
         lines.append("")
 
     # ─────────────────────────────────────────────────────────────────────────
-    # SELL/CAUTION SIGNALS
+    # EXIT SIGNALS
     # ─────────────────────────────────────────────────────────────────────────
     if sell_signals:
-        lines.append("### ⚠️ Caution Signals (Consider Tightening Stops)")
+        lines.append("### 🔴 Exit Signals")
         lines.append("")
         # CRIT-12.5: Entry prices for OPEN positions are PRIVATE
         # Only show: Ticker, Current Price, Reason, P&L - NOT entry price or highest close
@@ -2049,7 +2038,7 @@ def generate_newsletter_briefing(
             pnl_str = f"{pnl:+.1f}%"
             lines.append(f"| {s.symbol} | ${s.price:.2f} | {s.reason[:40]} | {pnl_str} |")
         lines.append("")
-        lines.append("*Note: These are CAUTION signals, not automatic exits. Based on backtesting, trailing stops outperform signal-based exits.*")
+        lines.append("*Exit signals: position closed on whichever fired first (HMA fracture or trailing stop).*")
         lines.append("")
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -2170,261 +2159,11 @@ def save_newsletter_briefing(
     with open(briefing_archive, 'w') as f:
         f.write(briefing)
 
-    # Also save to legacy location for backwards compatibility
-    latest_file = TRADES_DIR / "latest_newsletter_briefing.md"
-    with open(latest_file, 'w') as f:
-        f.write(briefing)
-
-    # Save dated archive only if --archive flag (legacy format)
-    if archive:
-        briefing_file = TRADES_DIR / f"newsletter_briefing_{date_str}.md"
-        with open(briefing_file, 'w') as f:
-            f.write(briefing)
-
     print(f"\n  📰 Newsletter briefing:")
     print(f"     • {rel_path(briefing_current)} (current week)")
     print(f"     • {rel_path(briefing_archive)} (archived)")
-    if archive:
-        print(f"     • {rel_path(briefing_file)} (dated)")
 
-    return latest_file
-
-
-def generate_grok_prompts(
-    briefing_file: Path,
-    confirmed: List[Stock] = None,
-    sell_signals: List[SellSignal] = None,
-    themes_data: List[dict] = None,
-    stats: ScanStats = None
-):
-    """
-    Generate 21 Grok prompts for weekly X/Twitter content.
-    
-    This function creates contextual prompts based on scanner outputs that can be
-    copied into Grok to generate ready-to-post tweets.
-    """
-    try:
-        from content.grok_prompts_generator import (
-            PortfolioData,
-            parse_briefing_markdown,
-            load_open_positions_csv,
-            load_themes_cache,
-            generate_weekly_prompts,
-            save_prompts,
-            OUTPUT_DIR
-        )
-    except ImportError:
-        print("\n  ⚠️  grok_prompts_generator.py not found - skipping Grok prompt generation")
-        print("     Place grok_prompts_generator.py in the same directory as scanner.py")
-        return
-    
-    print("\n" + "─" * 70)
-    print("  GROK PROMPTS GENERATION")
-    print("─" * 70)
-    
-    # Parse briefing to get portfolio data
-    data = parse_briefing_markdown(briefing_file)
-    
-    # Supplement with direct data if available
-    if confirmed:
-        # Add PASS signals
-        for s in confirmed:
-            if s.final_decision in ["PASS", "TRADE"] and s.symbol not in [x.get('ticker') for x in data.pass_signals]:
-                data.pass_signals.append({
-                    'ticker': s.symbol,
-                    'price': s.price,
-                    'theme': s.theme or 'Unknown',
-                    'catalyst': s.catalyst_summary or '',
-                    'reasoning': s.reasoning or ''
-                })
-            elif s.final_decision == "CONSIDER" and s.symbol not in [x.get('ticker') for x in data.caution_signals]:
-                data.caution_signals.append({
-                    'ticker': s.symbol,
-                    'price': s.price,
-                    'theme': s.theme or 'Unknown',
-                    'concerns': s.risk_factors or [],
-                    'reasoning': s.reasoning or ''
-                })
-    
-    if sell_signals:
-        for s in sell_signals:
-            if s.symbol not in [x.get('ticker') for x in data.sell_signals]:
-                data.sell_signals.append({
-                    'ticker': s.symbol,
-                    'price': s.price,
-                    'reason': s.reason,
-                    'entry_price': s.entry_price,
-                    'highest_close': s.highest_close,
-                    'pnl': f"{((s.price / s.entry_price) - 1) * 100:+.1f}%" if s.entry_price > 0 else "+0%"
-                })
-    
-    if themes_data:
-        for t in themes_data:
-            classification = t.get('classification', 'INVESTABLE')
-            theme_dict = {'name': t.get('name', 'Unknown'), 'classification': classification}
-            
-            if classification == 'PRIME' and theme_dict not in data.prime_themes:
-                data.prime_themes.append(theme_dict)
-            elif classification == 'INVESTABLE' and theme_dict not in data.investable_themes:
-                data.investable_themes.append(theme_dict)
-            elif classification == 'SELECTIVE' and theme_dict not in data.selective_themes:
-                data.selective_themes.append(theme_dict)
-            elif classification == 'AVOID' and theme_dict not in data.avoid_themes:
-                data.avoid_themes.append(theme_dict)
-    
-    if stats:
-        data.scan_stats = {
-            'tickers_scanned': stats.tickers_loaded,
-            'bos_bullish': stats.bos_bullish,
-            'technical_signals': stats.meets_technical_gate,
-            'theme_confirmed': stats.theme_confirmed
-        }
-    
-    # Also load from CSV/cache if available
-    if not data.open_positions:
-        csv_positions = load_open_positions_csv(TRADES_DIR)
-        if csv_positions:
-            data.open_positions = csv_positions
-    
-    if not data.prime_themes and not data.investable_themes:
-        themes_cache = load_themes_cache(BASE_DIR)
-        for theme in themes_cache:
-            classification = theme.get('classification', 'INVESTABLE')
-            if classification == 'PRIME':
-                data.prime_themes.append(theme)
-            elif classification == 'INVESTABLE':
-                data.investable_themes.append(theme)
-            elif classification == 'SELECTIVE':
-                data.selective_themes.append(theme)
-            elif classification == 'AVOID':
-                data.avoid_themes.append(theme)
-    
-    # Generate prompts
-    prompts = generate_weekly_prompts(data)
-    
-    # Save to output directory
-    output_dir = TRADES_DIR / "grok_prompts"
-    main_file = save_prompts(prompts, data, output_dir)
-    
-    # Helper for relative paths
-    def rel_path(p: Path) -> str:
-        return str(p.relative_to(Path.cwd())) if str(p).startswith(str(Path.cwd())) else str(p)
-
-    # Summary
-    print(f"\n  ✅ Generated {len(prompts)} Grok prompts for the week")
-    print(f"\n  📁 Grok prompts: {rel_path(output_dir)}/latest_grok_prompts.md")
-    print("")
-    print("  📅 Weekly Schedule:")
-    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    for day in days:
-        day_prompts = [p for p in prompts if p.day == day]
-        titles = [p.title[:22] for p in sorted(day_prompts, key=lambda x: x.slot)]
-        if titles:
-            print(f"     {day:10} | {' | '.join(titles)}")
-    print("")
-    print("  💡 Copy prompts to Grok (X's AI) to generate ready-to-post tweets")
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # PRINT FULL PROMPTS IN TERMINAL
-    # ─────────────────────────────────────────────────────────────────────────
-    print("\n" + "═" * 70)
-    print("  FULL GROK PROMPTS (21 FOR THE WEEK)")
-    print("═" * 70)
-
-    for day in days:
-        day_prompts = sorted([p for p in prompts if p.day == day], key=lambda x: x.slot)
-        if day_prompts:
-            print(f"\n  ╔{'═' * 66}╗")
-            print(f"  ║  {day.upper():^62}  ║")
-            print(f"  ╚{'═' * 66}╝")
-
-            for p in day_prompts:
-                slot_times = {1: "08:00 AM", 2: "12:00 PM", 3: "06:00 PM"}
-                slot_time = slot_times.get(p.slot, f"Slot {p.slot}")
-
-                print(f"\n  ┌─ {slot_time} │ {p.title} {'─' * max(1, 50 - len(p.title) - len(slot_time))}┐")
-                print(f"  │ Category: {p.category}")
-                if p.ticker:
-                    print(f"  │ Ticker: ${p.ticker}")
-                if p.theme:
-                    print(f"  │ Theme: {p.theme}")
-                print(f"  │ Visual: {p.visual_suggestion}")
-                print(f"  └{'─' * 68}┘")
-                print("")
-                print("  PROMPT:")
-                print("  " + "─" * 68)
-                # Indent and wrap prompt text
-                for line in p.prompt.strip().split('\n'):
-                    # Wrap long lines
-                    while len(line) > 64:
-                        print(f"  │ {line[:64]}")
-                        line = line[64:]
-                    print(f"  │ {line}")
-                print("  " + "─" * 68)
-
-    print("\n" + "═" * 70)
-
-    # ─────────────────────────────────────────────────────────────────────────
-    # SAVE GROK PROMPTS SUMMARY TO TEXT FILE
-    # ─────────────────────────────────────────────────────────────────────────
-    summary_lines = []
-    summary_lines.append("=" * 72)
-    summary_lines.append("  GROK PROMPTS SUMMARY - 21 WEEKLY X/TWITTER PROMPTS")
-    summary_lines.append(f"  Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    summary_lines.append("=" * 72)
-    summary_lines.append("")
-    summary_lines.append("  Copy prompts to Grok (X's AI) to generate ready-to-post tweets.")
-    summary_lines.append("")
-    summary_lines.append("  📅 WEEKLY SCHEDULE:")
-    summary_lines.append("  " + "-" * 68)
-    for day in days:
-        day_prompts = [p for p in prompts if p.day == day]
-        titles = [p.title[:22] for p in sorted(day_prompts, key=lambda x: x.slot)]
-        if titles:
-            summary_lines.append(f"     {day:10} | {' | '.join(titles)}")
-    summary_lines.append("  " + "-" * 68)
-    summary_lines.append("")
-
-    for day in days:
-        day_prompts = sorted([p for p in prompts if p.day == day], key=lambda x: x.slot)
-        if day_prompts:
-            summary_lines.append("")
-            summary_lines.append("=" * 72)
-            summary_lines.append(f"  {day.upper()}")
-            summary_lines.append("=" * 72)
-
-            for p in day_prompts:
-                slot_times = {1: "08:00 AM", 2: "12:00 PM", 3: "06:00 PM"}
-                slot_time = slot_times.get(p.slot, f"Slot {p.slot}")
-
-                summary_lines.append("")
-                summary_lines.append("-" * 72)
-                summary_lines.append(f"  {slot_time} | {p.title}")
-                summary_lines.append("-" * 72)
-                summary_lines.append(f"  Category: {p.category}")
-                if p.ticker:
-                    summary_lines.append(f"  Ticker: ${p.ticker}")
-                if p.theme:
-                    summary_lines.append(f"  Theme: {p.theme}")
-                summary_lines.append(f"  Visual: {p.visual_suggestion}")
-                summary_lines.append("")
-                summary_lines.append("  PROMPT:")
-                summary_lines.append("")
-                for line in p.prompt.strip().split('\n'):
-                    summary_lines.append(f"    {line}")
-                summary_lines.append("")
-
-    summary_lines.append("")
-    summary_lines.append("=" * 72)
-    summary_lines.append("  END OF GROK PROMPTS")
-    summary_lines.append("=" * 72)
-
-    # Save to text file
-    summary_file = output_dir / "grok_prompts_summary.txt"
-    with open(summary_file, 'w') as f:
-        f.write('\n'.join(summary_lines))
-
-    print(f"\n  📄 Summary saved: {rel_path(summary_file)}")
+    return briefing_current
 
 
 def print_newsletter_prompts(briefing_file: Path = None):
@@ -2534,7 +2273,7 @@ Generate the market context section now.'''
     print("  Run this AFTER you have:")
     print("    1. Market context (from Prompt 1)")
     print("    2. Scanner briefing (trades/latest_newsletter_briefing.md)")
-    print("    3. DD outputs for each PASS signal (from core/dd_automator.py)")
+    print("    3. DD outputs for each PASS signal (from core/deep_dd.py)")
     print("")
     if briefing_file:
         print(f"  📄 Your briefing file: {briefing_file}")
@@ -2605,7 +2344,7 @@ For each stock that passed all gates (🟢 PASS):
 
 **6. PORTFOLIO UPDATE**
 - Open positions with current P&L
-- Any caution/sell signals
+- Any exit signals
 
 **7. LOOKING AHEAD**
 - What to watch next week
@@ -2694,7 +2433,15 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "dd_conviction": s.dd_conviction,
                 "dd_position_size": s.dd_position_size,
                 "dd_key_catalyst": s.dd_key_catalyst,
-                "dd_fatal_flaw": s.dd_fatal_flaw
+                "dd_fatal_flaw": s.dd_fatal_flaw,
+                "dd_elevator_pitch": s.dd_elevator_pitch,
+                "dd_why_now": s.dd_why_now,
+                "dd_the_math": s.dd_the_math,
+                "dd_bear_case": s.dd_bear_case,
+                "dd_risk_to_monitor": s.dd_risk_to_monitor,
+                "dd_action": s.dd_action,
+                "valuation_regime": s.valuation_regime,
+                "theme_classification": s.theme_classification,
             }
             for s in confirmed if s.final_decision in ["PASS", "TRADE"]  # TRADE for backwards compat
         ],
@@ -2722,7 +2469,9 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "dd_conviction": s.dd_conviction,
                 "dd_position_size": s.dd_position_size,
                 "dd_key_catalyst": s.dd_key_catalyst,
-                "dd_fatal_flaw": s.dd_fatal_flaw
+                "dd_fatal_flaw": s.dd_fatal_flaw,
+                "valuation_regime": s.valuation_regime,
+                "theme_classification": s.theme_classification,
             }
             for s in confirmed if s.final_decision == "CONSIDER"
         ],
@@ -2756,7 +2505,9 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "dd_conviction": s.dd_conviction,
                 "dd_position_size": s.dd_position_size,
                 "dd_key_catalyst": s.dd_key_catalyst,
-                "dd_fatal_flaw": s.dd_fatal_flaw
+                "dd_fatal_flaw": s.dd_fatal_flaw,
+                "valuation_regime": s.valuation_regime,
+                "theme_classification": s.theme_classification,
             }
             for s in confirmed
         ],
@@ -2927,16 +2678,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     with open(report_archive, 'w') as f:
         f.write(report)
 
-    # Also save to legacy location for backwards compatibility
-    latest_report = TRADES_DIR / "latest_report.txt"
-    with open(latest_report, 'w') as f:
-        f.write(report)
-
-    # Save dated archive file only if --archive flag (legacy format)
-    if archive:
-        report_file = TRADES_DIR / f"report_{date_str}.txt"
-        with open(report_file, 'w') as f:
-            f.write(report)
+    # (Legacy root copies removed — use trades/current/report.txt)
 
     print(f"\n  📁 Results saved:")
     print(f"     • {rel_path(signals_current)} (current week)")
@@ -2969,15 +2711,15 @@ def send_notification(confirmed: List[Stock], sell_signals: List[SellSignal], st
         if confirmed or sell_signals:
             trades = len([s for s in confirmed if s.final_decision in ["PASS", "TRADE", "TECHNICAL_ONLY", "THEME_CONFIRMED"]]) if confirmed else 0
             considers = len([s for s in confirmed if s.final_decision == "CONSIDER"]) if confirmed else 0
-            cautions = len(sell_signals) if sell_signals else 0
-            
+            exits = len(sell_signals) if sell_signals else 0
+
             parts = []
             if trades:
                 parts.append(f"{trades} Entry")
             if considers:
                 parts.append(f"{considers} Consider")
-            if cautions:
-                parts.append(f"{cautions} Caution")
+            if exits:
+                parts.append(f"{exits} Exit")
             
             subject = f"BoS Scanner: {', '.join(parts)}" if parts else "BoS Scanner: Weekly Report"
         else:
@@ -3020,23 +2762,23 @@ SCAN STATS:
 def main() -> int:
     parser = argparse.ArgumentParser(description="BoS Momentum Scanner - Weekly Timeframe")
     parser.add_argument("--no-llm", action="store_true", help="Skip ALL LLM gates (technical signals only)")
-    parser.add_argument("--no-momentum", action="store_true", help="Skip gatekeeper (keep theme analysis) - faster but less thorough")
-    parser.add_argument("--assess-top", type=int, metavar="N", help="Only run gatekeeper on top N stocks by Banker score")
+    parser.add_argument("--no-momentum", action="store_true", help="Skip Investment Gate (keep theme analysis) - faster but less thorough")
+    parser.add_argument("--assess-top", type=int, metavar="N", help="Only run Investment Gate on top N stocks by Banker score")
     parser.add_argument("--no-email", action="store_true", help="Skip email notification")
     parser.add_argument("--no-prompts", action="store_true", help="Skip printing DD and newsletter prompts at the end")
     # Keep --no-dd-prompts as alias for backwards compatibility
     parser.add_argument("--no-dd-prompts", action="store_true", dest="no_prompts", help=argparse.SUPPRESS)
-    parser.add_argument("--no-grok-prompts", action="store_true", help="Skip generating Grok/X prompts")
+    parser.add_argument("--no-grok-prompts", action="store_true", help=argparse.SUPPRESS)  # Legacy flag, grok prompts removed
     parser.add_argument("--top", type=int, help="Only scan top N stocks by beta")
-    parser.add_argument("--web-search", action="store_true", help="Enable web search for Thematic Analyzer AND Gatekeeper. Recommended for production scans.")
+    parser.add_argument("--web-search", action="store_true", help="Enable web search for Thematic Analyzer AND Investment Gate. Recommended for production scans.")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed diagnostic output (10 items per category instead of 3)")
     parser.add_argument("--archive", action="store_true", help="Save dated archive files in addition to latest_* files")
-    # Due Diligence options (DD runs by default now)
-    parser.add_argument("--no-dd", action="store_true", help="Skip automated due diligence (NOT recommended - portfolio won't be updated)")
-    parser.add_argument("--full-dd", action="store_true", help="Run FULL due diligence using Opus (slower, deeper analysis)")
-    parser.add_argument("--dd-top", type=int, metavar="N", help="Only run DD on top N stocks by conviction")
-    parser.add_argument("--save-dd", action="store_true", help="Save DD reports to reports/ directory")
-    # Keep --dd for backwards compatibility (now a no-op since DD is default)
+    # Deep DD options (runs by default on Investment Gate passes)
+    parser.add_argument("--no-dd", action="store_true", help="Skip Deep DD (NOT recommended - portfolio won't be updated)")
+    parser.add_argument("--save-dd", action="store_true", help="Save Deep DD reports to reports/ directory")
+    # Keep legacy flags for backwards compatibility (now no-ops)
+    parser.add_argument("--full-dd", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--dd-top", type=int, metavar="N", help=argparse.SUPPRESS)
     parser.add_argument("--dd", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     
@@ -3049,30 +2791,28 @@ def main() -> int:
     
     # Show entry/exit criteria (marketing-safe by default, detailed with --verbose)
     if args.verbose:
-        print("\n  ENTRY: BoS UP + Beta ≥1.5 + Banker ≥55 + Theme Gate")
-        print(f"  EXIT:  {TRAILING_STOP_PCT:.0f}% Trailing Stop from highest close")
-        print("         (SELL signal = caution only, NOT automatic exit)")
+        print("\n  ENTRY: BoS UP + Beta ≥1.5 + Banker Rising + Theme Gate")
+        print(f"  EXIT:  First exit — {TRAILING_STOP_PCT:.0f}% trailing stop OR HMA fracture (whichever first)")
     else:
         print("\n  ENTRY: 5-Gate Screening (Volatility + Institutional + Theme + Forensic Audit)")
-        print("  EXIT:  Capital Preservation Protocol (systematic risk management)")
-        print("         (Caution signals = tighten stops, NOT automatic exit)")
+        print("  EXIT:  Capital Preservation Protocol (first exit — whichever fires first)")
     
     # Show pipeline based on options
     if args.no_llm:
         print("\n  Pipeline: Technical signals only (ALL LLM gates skipped)")
         print("  Cost: $0.00 (free)")
     elif args.no_momentum:
-        print("\n  Pipeline: Technical → Thematic Analyzer (gatekeeper skipped)")
+        print("\n  Pipeline: Technical → Thematic Analyzer (Investment Gate skipped)")
         web_cost = " + web search" if args.web_search else ""
         print(f"  Cost: ~$0.15/run{web_cost}")
     elif args.assess_top:
-        print(f"\n  Pipeline: Technical → Thematic → Gatekeeper (top {args.assess_top} only)")
+        print(f"\n  Pipeline: Technical → Thematic → Investment Gate (top {args.assess_top} only)")
         if args.web_search:
             print(f"  Cost: ~${0.15 + (args.assess_top * 0.20):.2f}/run (with web search)")
         else:
             print(f"  Cost: ~${0.15 + (args.assess_top * 0.03):.2f}/run (no web search - testing)")
     else:
-        print("\n  Pipeline: Technical → Thematic → Gatekeeper (thorough)")
+        print("\n  Pipeline: Technical → Thematic → Investment Gate (thorough)")
         if args.web_search:
             print("  Cost: ~$1-3/run (web search enabled)")
         else:
@@ -3082,7 +2822,7 @@ def main() -> int:
     if args.web_search:
         print("\n  🌐 Web search ENABLED:")
         print("     • Thematic: Current theme momentum")
-        print("     • Gatekeeper: 6 searches per stock (catalysts, red flags, etc.)")
+        print("     • Investment Gate: 5 searches per stock (red flags, catalysts, return math)")
     else:
         print("\n  💰 Web search DISABLED (testing mode):")
         print("     • Using model knowledge only - data may be outdated")
@@ -3112,7 +2852,7 @@ def main() -> int:
         verbose=args.verbose
     )
 
-    # Step 7.5: Automated Due Diligence (runs by default now)
+    # Step 7.5: Deep Due Diligence (Opus + Extended Thinking)
     # DD is required for portfolio updates - only DD-PASS signals get added
     dd_results = []
     dd_pass_stocks = []
@@ -3122,75 +2862,70 @@ def main() -> int:
         pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if pass_stocks:
             print("\n" + "─" * 70)
-            print("  STEP 7.5: AUTOMATED DUE DILIGENCE")
+            print("  STEP 7.5: DEEP DUE DILIGENCE (Opus + Extended Thinking)")
             print("─" * 70)
-            print("  📋 DD is REQUIRED before adding to portfolio")
+            print("  Deep DD is REQUIRED before adding to portfolio")
             print("     Only STRONG BUY / SPEC BUY verdicts will be added")
 
             try:
-                from core.dd_automator import run_automated_dd
+                from core.deep_dd import run_deep_dd_batch, apply_dd_to_stocks
 
-                # Limit stocks if --dd-top specified
-                dd_stocks = pass_stocks[:args.dd_top] if args.dd_top else pass_stocks
-
-                # Run DD
-                dd_results = run_automated_dd(
-                    stocks=dd_stocks,
-                    quick_mode=not args.full_dd,
+                # Run Deep DD on all gate passes (typically 1-3 stocks)
+                dd_results = run_deep_dd_batch(
+                    stocks=pass_stocks,
                     use_web_search=args.web_search,
-                    save_reports=args.save_dd,
-                    max_stocks=args.dd_top
+                    save_reports=args.save_dd
                 )
 
-                # Apply DD results back to Stock objects
+                # apply_dd_to_stocks maps dd_verdict, dd_conviction, dd_position_size,
+                # dd_analysis (elevator_pitch), dd_key_catalyst (why_now), dd_fatal_flaw
+                dd_pass_stocks, dd_fail_stocks = apply_dd_to_stocks(confirmed, dd_results)
+
+                # Map additional Deep DD newsletter fields to Stock objects
                 dd_lookup = {r.ticker: r for r in dd_results}
                 for stock in confirmed:
                     if stock.symbol in dd_lookup:
-                        result = dd_lookup[stock.symbol]
-                        stock.dd_verdict = result.dd_verdict
-                        stock.dd_conviction = result.dd_conviction
-                        stock.dd_position_size = result.dd_position_size
-                        stock.dd_analysis = result.dd_analysis
-                        stock.dd_key_catalyst = result.dd_key_catalyst
-                        stock.dd_fatal_flaw = result.dd_fatal_flaw
-
-                        # Categorize by DD result
-                        if result.dd_verdict in ["STRONG BUY", "SPEC BUY", "SPECULATIVE BUY"]:
-                            dd_pass_stocks.append(stock)
-                        elif result.dd_verdict == "NO GO":
-                            dd_fail_stocks.append(stock)
+                        r = dd_lookup[stock.symbol]
+                        stock.dd_elevator_pitch = r.elevator_pitch
+                        stock.dd_why_now = r.why_now
+                        stock.dd_the_math = r.the_math
+                        stock.dd_bear_case = r.bear_case
+                        stock.dd_risk_to_monitor = r.risk_to_monitor
+                        stock.dd_action = r.action_recommendation
 
                 # Add only DD-PASS stocks to portfolio
                 if dd_pass_stocks:
-                    print(f"\n  ✅ Adding {len(dd_pass_stocks)} DD-PASS signal(s) to portfolio...")
+                    print(f"\n  Adding {len(dd_pass_stocks)} DD-PASS signal(s) to portfolio...")
                     for stock in dd_pass_stocks:
                         add_to_open_positions(stock)
-                        print(f"     • {stock.symbol} - {stock.dd_verdict} ({stock.dd_conviction}/10)")
+                        print(f"     {stock.symbol} - {stock.dd_verdict} ({stock.dd_conviction}/10)")
 
                 if dd_fail_stocks:
-                    print(f"\n  ❌ {len(dd_fail_stocks)} signal(s) FAILED DD (not added to portfolio):")
+                    print(f"\n  {len(dd_fail_stocks)} signal(s) FAILED DD (not added to portfolio):")
                     for stock in dd_fail_stocks:
-                        print(f"     • {stock.symbol} - NO GO: {stock.dd_fatal_flaw or 'See analysis'}")
+                        print(f"     {stock.symbol} - NO GO: {stock.dd_fatal_flaw or 'See analysis'}")
 
             except ImportError:
-                print("  ⚠️  dd_automator.py not found - skipping automated DD")
+                print("  deep_dd.py not found - skipping Deep DD")
                 print("     Portfolio will NOT be updated without DD")
             except Exception as e:
-                print(f"  ⚠️  DD error: {e}")
+                print(f"  Deep DD error: {e}")
+                import traceback
+                traceback.print_exc()
                 print("     Portfolio will NOT be updated without DD")
 
     elif args.no_dd and confirmed:
         # DD skipped - warn user that portfolio won't be updated
         pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
         if pass_stocks:
-            print("\n  ⚠️  DD SKIPPED (--no-dd flag)")
-            print(f"     {len(pass_stocks)} TRADE signal(s) will NOT be added to portfolio")
-            print("     Run without --no-dd to perform DD and update portfolio")
+            print("\n  DD SKIPPED (--no-dd flag)")
+            print(f"     {len(pass_stocks)} PASS signal(s) will NOT be added to portfolio")
+            print("     Run without --no-dd to perform Deep DD and update portfolio")
 
     # Print report
     print_final_report(confirmed, sell_signals, stats)
     
-    # DD is handled earlier in pipeline via core/dd_automator.run_automated_dd()
+    # DD is handled earlier in pipeline via core/deep_dd.run_deep_dd_batch()
     # (Legacy manual DD prompt generation has been removed)
     
     # Save results and generate report (save if any stocks were assessed OR sell signals OR momentum filtered)
@@ -3199,7 +2934,7 @@ def main() -> int:
     try:
         if all_assessed or sell_signals or momentum_rejected:
             report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data, archive=args.archive)
-            briefing_file = TRADES_DIR / "latest_newsletter_briefing.md"
+            briefing_file = TRADES_DIR / "current" / "newsletter_briefing.md"
         else:
             # Still generate newsletter briefing for weeks with no signals
             briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=args.archive)
@@ -3240,6 +2975,17 @@ def main() -> int:
                 print(f"\n  ⚠️  STOP ALERTS ({len(alerts)} positions within 5% of stop):")
                 for t in alerts:
                     print(f"     • {t.ticker}: ${t.current_price:.2f} (stop: ${t.stop_level:.2f})")
+
+            # Record compounding equity curve
+            try:
+                from config import CURRENCY_SYMBOL
+                snapshot = pm.update_equity_curve()
+                print(f"\n  💰 Equity (Compounding):")
+                print(f"     NAV: {CURRENCY_SYMBOL}{snapshot.nav:,.2f} ({snapshot.total_return_pct:+.1f}%)")
+                print(f"     SPY: {CURRENCY_SYMBOL}{snapshot.spy_value:,.2f} ({snapshot.spy_return_pct:+.1f}%)")
+                print(f"     Alpha: {snapshot.alpha_pct:+.1f}%")
+            except Exception as e:
+                print(f"  ⚠ Equity tracking: {e}")
         except Exception as e:
             print(f"  ⚠ Portfolio summary error: {e}")
     
@@ -3250,14 +2996,7 @@ def main() -> int:
         except Exception as e:
             print(f"  ⚠ Error printing newsletter prompts: {e}")
 
-    # Generate Grok/X prompts for weekly social media content
-    if not args.no_grok_prompts and briefing_file:
-        try:
-            generate_grok_prompts(briefing_file, confirmed, sell_signals, themes_data, stats)
-        except Exception as e:
-            print(f"  ⚠ Error generating Grok prompts: {e}")
-            import traceback
-            traceback.print_exc()
+    # (Grok prompts generation removed — replaced by tweet_generator v2)
 
     # Send email with the formatted report
     if not args.no_email:

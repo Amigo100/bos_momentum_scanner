@@ -205,18 +205,40 @@ def run_market_analysis(client: Optional[anthropic.Anthropic] = None) -> MarketA
 
 
 def save_market_analysis(analysis: str, output_path: Optional[Path] = None) -> Path:
-    """Save market analysis to file."""
-    if output_path is None:
-        output_path = TRADES_DIR / "market_analysis.md"
+    """Save market analysis to current/ and weekly archive.
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    Args:
+        analysis: The market analysis text
+        output_path: Optional override path (skips dual-write if provided)
 
-    with open(output_path, 'w') as f:
-        f.write(f"# Market Analysis\n\n")
-        f.write(f"*Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n\n")
-        f.write(analysis)
+    Returns:
+        Path to the saved file (current/ location)
+    """
+    content = (
+        f"# Market Analysis\n\n"
+        f"*Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n\n"
+        f"{analysis}"
+    )
 
-    return output_path
+    if output_path is not None:
+        # Custom path — write only there
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w') as f:
+            f.write(content)
+        return output_path
+
+    # Dual-write to current/ + weekly archive
+    try:
+        from config.output_paths import save_to_current_and_archive
+        current_path, archive_path = save_to_current_and_archive(content, "market_analysis.md")
+        return current_path
+    except ImportError:
+        # Fallback if output_paths not available
+        output_path = TRADES_DIR / "current" / "market_analysis.md"
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w') as f:
+            f.write(content)
+        return output_path
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

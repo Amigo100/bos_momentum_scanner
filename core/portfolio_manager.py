@@ -36,6 +36,7 @@ Usage:
 """
 
 import os
+import re
 import sys
 import csv
 import json
@@ -73,16 +74,19 @@ OLD_TRADE_LOG = TRADES_DIR / "trade_log.csv"
 # Trading parameters — imported from config.py (single source of truth)
 try:
     from config import (
-        TRAILING_STOP_PCT, STOP_WARNING_PCT, TIGHTEN_STOP_PCT,
+        TRAILING_STOP_PCT, STOP_WARNING_PCT,
         DEFAULT_POSITION_SHARES, MAX_PORTFOLIO_BACKUPS,
+        STARTING_CAPITAL_PER_POSITION, CURRENCY_SYMBOL, EQUITY_CURVE_FILE,
     )
 except ImportError:
     # Fallback if config.py not available (e.g. standalone use)
     TRAILING_STOP_PCT = 20.0
     STOP_WARNING_PCT = 5.0
-    TIGHTEN_STOP_PCT = 15.0
     DEFAULT_POSITION_SHARES = 100
     MAX_PORTFOLIO_BACKUPS = 30
+    STARTING_CAPITAL_PER_POSITION = 5000.0
+    CURRENCY_SYMBOL = "£"
+    EQUITY_CURVE_FILE = "equity_curve.csv"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -137,7 +141,29 @@ class TradeStatus(Enum):
     OPEN = "OPEN"
     CLOSED = "CLOSED"      # Manual exit (profit taking, strategic)
     STOPPED = "STOPPED"    # Hit trailing stop
-    
+
+
+def _normalize_date(date_str: str) -> str:
+    """Normalize date strings to YYYY-MM-DD format.
+
+    Handles:
+      - YYYY-MM-DD (already correct)
+      - DD/MM/YYYY (UK format found in portfolio.csv)
+    """
+    if not date_str or not date_str.strip():
+        return ''
+    date_str = date_str.strip()
+    # Already in correct format
+    if re.match(r'^\d{4}-\d{2}-\d{2}$', date_str):
+        return date_str
+    # DD/MM/YYYY
+    if '/' in date_str:
+        parts = date_str.split('/')
+        if len(parts) == 3 and len(parts[2]) == 4:
+            day, month, year = int(parts[0]), int(parts[1]), int(parts[2])
+            return f"{year:04d}-{month:02d}-{day:02d}"
+    return date_str
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DATA STRUCTURES
@@ -192,8 +218,8 @@ class Trade:
             self.pnl_pct = ((price_for_calc / self.entry_price) - 1) * 100
             self.pnl_usd = (price_for_calc - self.entry_price) * DEFAULT_POSITION_SHARES
         
-        # Stop level (per-trade stop_pct, or global default)
-        effective_stop_pct = self.stop_pct if self.stop_pct > 0 else TRAILING_STOP_PCT
+        # Stop level — always 20% trailing stop (first exit strategy)
+        effective_stop_pct = TRAILING_STOP_PCT
         if self.highest_close > 0:
             self.stop_level = self.highest_close * (1 - effective_stop_pct / 100)
         
@@ -271,9 +297,9 @@ class Trade:
         return cls(
             ticker=row.get('ticker', '').upper(),
             status=row.get('status', 'OPEN'),
-            entry_date=row.get('entry_date', ''),
+            entry_date=_normalize_date(row.get('entry_date', '')),
             entry_price=float(row.get('entry_price') or 0),
-            exit_date=row.get('exit_date', ''),
+            exit_date=_normalize_date(row.get('exit_date', '')),
             exit_price=float(row.get('exit_price') or 0),
             highest_close=float(row.get('highest_close') or 0),
             theme=row.get('theme', ''),
@@ -283,6 +309,256 @@ class Trade:
             notes=row.get('notes', ''),
             stop_pct=float(row.get('stop_pct') or 0),
         )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMPOUNDING EQUITY TRACKER
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class EquitySnapshot:
+    """A point-in-time snapshot of portfolio NAV for the equity curve."""
+    date: str = ""
+    nav: float = 0.0               # Net Asset Value (cash + open position values)
+    cash: float = 0.0              # Uninvested cash from closed trade profits
+    invested: float = 0.0          # Current value of open positions
+    total_deployed: float = 0.0    # Total capital ever allocated (£5k × N trades)
+    open_count: int = 0            # Number of open positions
+    total_return_pct: float = 0.0  # NAV / total_deployed - 1
+    spy_value: float = 0.0         # What total_deployed in SPY would be worth
+    spy_return_pct: float = 0.0    # SPY return since inception
+    alpha_pct: float = 0.0         # total_return_pct - spy_return_pct
+
+    def to_csv_row(self) -> Dict:
+        return {
+            'date': self.date,
+            'nav': f"{self.nav:.2f}",
+            'cash': f"{self.cash:.2f}",
+            'invested': f"{self.invested:.2f}",
+            'total_deployed': f"{self.total_deployed:.2f}",
+            'open_count': str(self.open_count),
+            'total_return_pct': f"{self.total_return_pct:.2f}",
+            'spy_value': f"{self.spy_value:.2f}",
+            'spy_return_pct': f"{self.spy_return_pct:.2f}",
+            'alpha_pct': f"{self.alpha_pct:.2f}",
+        }
+
+    @classmethod
+    def from_csv_row(cls, row: Dict) -> 'EquitySnapshot':
+        return cls(
+            date=row.get('date', ''),
+            nav=float(row.get('nav') or 0),
+            cash=float(row.get('cash') or 0),
+            invested=float(row.get('invested') or 0),
+            total_deployed=float(row.get('total_deployed') or 0),
+            open_count=int(row.get('open_count') or 0),
+            total_return_pct=float(row.get('total_return_pct') or 0),
+            spy_value=float(row.get('spy_value') or 0),
+            spy_return_pct=float(row.get('spy_return_pct') or 0),
+            alpha_pct=float(row.get('alpha_pct') or 0),
+        )
+
+
+EQUITY_SNAPSHOT_FIELDS = [
+    'date', 'nav', 'cash', 'invested', 'total_deployed',
+    'open_count', 'total_return_pct', 'spy_value', 'spy_return_pct', 'alpha_pct',
+]
+
+
+class EquityTracker:
+    """Tracks compounding portfolio equity over time.
+
+    Model: £5,000 per position. Closed trade profits flow into a cash pool.
+    New trades draw from the pool when sufficient, otherwise new capital is deployed.
+    NAV = cash_pool + sum(open position current values).
+    Total deployed = £5,000 × number of unique trade allocations.
+    """
+
+    def __init__(self, starting_per_position: float = None, equity_file: Path = None):
+        self.starting_per_position = starting_per_position or STARTING_CAPITAL_PER_POSITION
+        self.equity_file = equity_file or (TRADES_DIR / EQUITY_CURVE_FILE)
+        self.snapshots: List[EquitySnapshot] = []
+        self._load_curve()
+
+    def _load_curve(self) -> None:
+        """Load historical equity curve from CSV."""
+        if not self.equity_file.exists():
+            return
+        try:
+            with open(self.equity_file, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                self.snapshots = [EquitySnapshot.from_csv_row(row) for row in reader]
+        except Exception as e:
+            print(f"  ⚠ Error loading equity curve: {e}")
+            self.snapshots = []
+
+    def _save_curve(self) -> None:
+        """Save equity curve to CSV."""
+        try:
+            with open(self.equity_file, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=EQUITY_SNAPSHOT_FIELDS)
+                writer.writeheader()
+                for snap in self.snapshots:
+                    writer.writerow(snap.to_csv_row())
+        except Exception as e:
+            print(f"  ⚠ Error saving equity curve: {e}")
+
+    def _get_inception_date(self, trades: List[Trade]) -> str:
+        """Get the earliest entry date across all trades."""
+        dates = []
+        for t in trades:
+            if t.entry_date:
+                try:
+                    dates.append(datetime.strptime(t.entry_date, "%Y-%m-%d"))
+                except ValueError:
+                    continue
+        return min(dates).strftime("%Y-%m-%d") if dates else ""
+
+    def calculate_nav(self, trades: List[Trade], spy_data: pd.DataFrame = None) -> EquitySnapshot:
+        """Calculate current NAV using the compounding replay model.
+
+        Replays all trade events chronologically:
+        1. Sort trades by entry_date
+        2. For each trade, allocate starting_per_position (draw from cash pool
+           if available, otherwise deploy new capital)
+        3. For closed trades, return capital × (1 + trade_return) to cash
+        4. For open trades, current value = allocation × (1 + unrealized_return)
+        5. NAV = cash + open position values
+
+        Returns:
+            EquitySnapshot with current portfolio state.
+        """
+        if not trades:
+            return EquitySnapshot(date=datetime.now().strftime("%Y-%m-%d"))
+
+        alloc_per_trade = self.starting_per_position
+        cash_pool = 0.0
+        total_deployed = 0.0  # Total new capital ever injected
+        trade_allocations = {}  # ticker -> allocated amount for open trades
+
+        # Sort trades by entry date for chronological replay
+        sorted_trades = sorted(trades, key=lambda t: t.entry_date or "9999")
+
+        for trade in sorted_trades:
+            if not trade.entry_date:
+                continue
+
+            # Determine allocation for this trade
+            if cash_pool >= alloc_per_trade:
+                # Draw from compounded profits
+                allocation = alloc_per_trade
+                cash_pool -= alloc_per_trade
+            else:
+                # Deploy new capital (partially from pool if available)
+                new_capital_needed = alloc_per_trade - cash_pool
+                allocation = alloc_per_trade
+                cash_pool = 0.0
+                total_deployed += new_capital_needed
+
+            if trade.status in ("CLOSED", "STOPPED"):
+                # Trade is closed — return capital with gains/losses to cash pool
+                if trade.entry_price > 0 and trade.exit_price > 0:
+                    trade_return = (trade.exit_price / trade.entry_price) - 1
+                    returned_capital = allocation * (1 + trade_return)
+                else:
+                    returned_capital = allocation  # No price data, return flat
+                cash_pool += returned_capital
+            else:
+                # Trade is open — track allocation
+                trade_allocations[trade.ticker] = allocation
+
+        # Calculate current value of open positions
+        invested_value = 0.0
+        open_count = 0
+        for trade in trades:
+            if trade.status == "OPEN" and trade.ticker in trade_allocations:
+                allocation = trade_allocations[trade.ticker]
+                if trade.entry_price > 0 and trade.current_price > 0:
+                    current_value = allocation * (trade.current_price / trade.entry_price)
+                elif trade.entry_price > 0 and trade.highest_close > 0:
+                    # Fallback to highest_close if no current_price
+                    current_value = allocation * (trade.highest_close / trade.entry_price)
+                else:
+                    current_value = allocation  # No price data, assume flat
+                invested_value += current_value
+                open_count += 1
+
+        nav = cash_pool + invested_value
+
+        # Ensure total_deployed is at least one position's worth
+        if total_deployed <= 0:
+            total_deployed = alloc_per_trade
+
+        total_return_pct = ((nav / total_deployed) - 1) * 100
+
+        # SPY comparison: what would total_deployed in SPY be worth since inception?
+        inception_date = self._get_inception_date(trades)
+        spy_value = total_deployed  # Default: flat
+        spy_return_pct = 0.0
+
+        if spy_data is not None and not spy_data.empty and inception_date:
+            try:
+                start_dt = pd.Timestamp(inception_date)
+                spy_after_start = spy_data[spy_data.index >= start_dt]
+                if len(spy_after_start) >= 2:
+                    spy_start_price = spy_after_start['Close'].iloc[0]
+                    spy_end_price = spy_after_start['Close'].iloc[-1]
+                    if spy_start_price > 0:
+                        spy_return_pct = ((spy_end_price / spy_start_price) - 1) * 100
+                        spy_value = total_deployed * (1 + spy_return_pct / 100)
+            except Exception:
+                pass
+
+        alpha_pct = total_return_pct - spy_return_pct
+
+        return EquitySnapshot(
+            date=datetime.now().strftime("%Y-%m-%d"),
+            nav=round(nav, 2),
+            cash=round(cash_pool, 2),
+            invested=round(invested_value, 2),
+            total_deployed=round(total_deployed, 2),
+            open_count=open_count,
+            total_return_pct=round(total_return_pct, 2),
+            spy_value=round(spy_value, 2),
+            spy_return_pct=round(spy_return_pct, 2),
+            alpha_pct=round(alpha_pct, 2),
+        )
+
+    def record_snapshot(self, snapshot: EquitySnapshot) -> None:
+        """Append snapshot to equity curve, deduplicating by date."""
+        # Remove existing snapshot for same date
+        self.snapshots = [s for s in self.snapshots if s.date != snapshot.date]
+        self.snapshots.append(snapshot)
+        # Sort by date
+        self.snapshots.sort(key=lambda s: s.date)
+        self._save_curve()
+
+    def get_latest(self) -> Optional[EquitySnapshot]:
+        """Get most recent equity snapshot."""
+        return self.snapshots[-1] if self.snapshots else None
+
+    def get_max_drawdown(self) -> float:
+        """Calculate maximum drawdown from peak NAV in equity curve history.
+
+        Returns:
+            Max drawdown as negative percentage (e.g. -15.3 for 15.3% drawdown).
+            Returns 0.0 if no drawdown or insufficient data.
+        """
+        if len(self.snapshots) < 2:
+            return 0.0
+
+        peak = self.snapshots[0].nav
+        max_dd = 0.0
+
+        for snap in self.snapshots:
+            if snap.nav > peak:
+                peak = snap.nav
+            if peak > 0:
+                dd = ((snap.nav - peak) / peak) * 100
+                if dd < max_dd:
+                    max_dd = dd
+
+        return round(max_dd, 2)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -301,6 +577,7 @@ class PortfolioManager:
         self.portfolio_file = portfolio_file or PORTFOLIO_FILE
         self.trades: List[Trade] = []
         self.spy_data: pd.DataFrame = None
+        self.equity_tracker = EquityTracker()
         self._load()
     
     def _load(self) -> None:
@@ -432,29 +709,6 @@ class PortfolioManager:
                 return trade
         return None
     
-    def tighten_stop(self, ticker: str, stop_pct: float = None) -> Optional[Trade]:
-        """Tighten the trailing stop for a position (e.g. on BoS bearish).
-
-        Args:
-            ticker: Ticker symbol to tighten.
-            stop_pct: New stop percentage. Defaults to TIGHTEN_STOP_PCT from config.
-
-        Returns:
-            The updated Trade, or None if not found.
-        """
-        if stop_pct is None:
-            stop_pct = TIGHTEN_STOP_PCT
-
-        trade = self.get_open_position(ticker)
-        if not trade:
-            return None
-
-        trade.stop_pct = stop_pct
-        trade.notes = f"{trade.notes}; Stop tightened to {stop_pct}%".strip("; ")
-        trade.calculate_metrics()
-        self._save()
-        return trade
-
     def get_open_positions(self) -> List[Trade]:
         """Get all open positions."""
         return [t for t in self.trades if t.status == "OPEN"]
@@ -560,8 +814,8 @@ class PortfolioManager:
             if current_price > trade.highest_close:
                 trade.highest_close = current_price
             
-            # Calculate stop level (per-trade stop_pct, or global default)
-            effective_stop_pct = trade.stop_pct if trade.stop_pct > 0 else TRAILING_STOP_PCT
+            # Calculate stop level — always 20% trailing stop (first exit strategy)
+            effective_stop_pct = TRAILING_STOP_PCT
             stop_level = trade.highest_close * (1 - effective_stop_pct / 100)
             
             # Check if stopped out
@@ -784,9 +1038,51 @@ class PortfolioManager:
         }
     
     # ───────────────────────────────────────────────────────────────────────────
+    # COMPOUNDING EQUITY
+    # ───────────────────────────────────────────────────────────────────────────
+
+    def update_equity_curve(self) -> EquitySnapshot:
+        """Calculate current NAV and record to equity curve.
+
+        Loads SPY data for benchmark, computes compounding NAV,
+        and appends snapshot to equity_curve.csv.
+        """
+        self._load_spy_data()
+        snapshot = self.equity_tracker.calculate_nav(self.trades, self.spy_data)
+        self.equity_tracker.record_snapshot(snapshot)
+        return snapshot
+
+    def get_compounding_summary(self) -> Dict:
+        """Get compounding portfolio summary for newsletter/display.
+
+        Updates prices, calculates NAV, and returns a dict with all
+        compounding metrics including SPY comparison and alpha.
+        """
+        self.update_prices()
+        snapshot = self.update_equity_curve()
+        inception = self.equity_tracker._get_inception_date(self.trades)
+        max_dd = self.equity_tracker.get_max_drawdown()
+
+        return {
+            'starting_per_position': self.equity_tracker.starting_per_position,
+            'total_deployed': snapshot.total_deployed,
+            'current_nav': snapshot.nav,
+            'total_return_pct': snapshot.total_return_pct,
+            'cash': snapshot.cash,
+            'invested': snapshot.invested,
+            'open_count': snapshot.open_count,
+            'spy_value': snapshot.spy_value,
+            'spy_return_pct': snapshot.spy_return_pct,
+            'alpha_pct': snapshot.alpha_pct,
+            'max_drawdown_pct': max_dd,
+            'inception_date': inception,
+            'currency': CURRENCY_SYMBOL,
+        }
+
+    # ───────────────────────────────────────────────────────────────────────────
     # GOOGLE SHEETS EXPORT
     # ───────────────────────────────────────────────────────────────────────────
-    
+
     def export_for_google_sheets(self, output_file: Optional[Path] = None) -> Path:
         """
         Export portfolio in a format optimized for Google Sheets.
@@ -1038,6 +1334,27 @@ For manual refresh: Ctrl+Shift+E (or Cmd+Shift+E on Mac)
         print(f"  Total Trades: {stats['total_trades']} │ Winners: {stats['winners']} │ Losers: {stats['losers']}")
         if stats.get('matched_alpha') is not None:
             print(f"  Matched-Period Alpha vs SPY: {stats['matched_alpha']:+.1f}%")
+
+        # Compounding Equity
+        try:
+            snapshot = self.update_equity_curve()
+            inception = self.equity_tracker._get_inception_date(self.trades)
+            max_dd = self.equity_tracker.get_max_drawdown()
+
+            print(f"\n  💰 COMPOUNDING EQUITY (Since {inception})")
+            print("  " + "─" * 66)
+            print(f"  Capital Per Position: {CURRENCY_SYMBOL}{self.equity_tracker.starting_per_position:,.0f}")
+            print(f"  Total Deployed:       {CURRENCY_SYMBOL}{snapshot.total_deployed:,.0f}")
+            print(f"  Current NAV:          {CURRENCY_SYMBOL}{snapshot.nav:,.2f}  ({snapshot.total_return_pct:+.1f}%)")
+            print(f"  Cash Pool:            {CURRENCY_SYMBOL}{snapshot.cash:,.2f}")
+            print(f"  Invested:             {CURRENCY_SYMBOL}{snapshot.invested:,.2f}  ({snapshot.open_count} positions)")
+            print(f"  SPY Equivalent:       {CURRENCY_SYMBOL}{snapshot.spy_value:,.2f}  ({snapshot.spy_return_pct:+.1f}%)")
+            print(f"  Alpha vs SPY:         {snapshot.alpha_pct:+.1f}%")
+            if max_dd < 0:
+                print(f"  Max Drawdown:         {max_dd:.1f}%")
+        except Exception as e:
+            print(f"\n  ⚠ Equity tracking: {e}")
+
         print("")
 
 
@@ -1221,6 +1538,7 @@ def main() -> int:
     parser.add_argument("--export", action="store_true", help="Export for Google Sheets")
     parser.add_argument("--migrate", action="store_true", help="Migrate from old format")
     parser.add_argument("--report", action="store_true", help="Print portfolio summary")
+    parser.add_argument("--equity", action="store_true", help="Show compounding equity summary")
     parser.add_argument("--setup", action="store_true", help="Print Google Sheets setup instructions")
     parser.add_argument("--add", type=str, metavar="TICKER", help="Add a new trade")
     parser.add_argument("--price", type=float, help="Entry price for --add")
@@ -1267,7 +1585,28 @@ def main() -> int:
     
     elif args.setup:
         print(pm.generate_google_sheets_template())
-    
+
+    elif args.equity:
+        print("\n  Calculating compounding equity...")
+        try:
+            summary = pm.get_compounding_summary()
+            print(f"\n  💰 COMPOUNDING EQUITY (Since {summary['inception_date']})")
+            print("  " + "─" * 60)
+            print(f"  Capital Per Position: {summary['currency']}{summary['starting_per_position']:,.0f}")
+            print(f"  Total Deployed:       {summary['currency']}{summary['total_deployed']:,.0f}")
+            print(f"  Current NAV:          {summary['currency']}{summary['current_nav']:,.2f}  ({summary['total_return_pct']:+.1f}%)")
+            print(f"  Cash Pool:            {summary['currency']}{summary['cash']:,.2f}")
+            print(f"  Invested:             {summary['currency']}{summary['invested']:,.2f}  ({summary['open_count']} positions)")
+            print(f"  SPY Equivalent:       {summary['currency']}{summary['spy_value']:,.2f}  ({summary['spy_return_pct']:+.1f}%)")
+            print(f"  Alpha vs SPY:         {summary['alpha_pct']:+.1f}%")
+            if summary['max_drawdown_pct'] < 0:
+                print(f"  Max Drawdown:         {summary['max_drawdown_pct']:.1f}%")
+            print("")
+        except Exception as e:
+            print(f"  ⚠ Error: {e}")
+            import traceback
+            traceback.print_exc()
+
     elif args.report:
         pm.print_summary()
     

@@ -30,6 +30,7 @@ CRITICAL_BANNED: List[str] = [
     # ── Internal indicator names ──────────────────────────────────────────────
     "HMA", "Hull Moving Average", "HMA Pivot", "HMA pivot",
     "Banker indicator", "Banker >= 55", "Banker ≥ 55", "Banker >=",
+    "Banker rising", "banker rising", "UC rising",
     "banker indicator", "banker score", "VWAP",
     "20% trailing stop", "20% stop",
     "Beta >= 1.5", "Beta ≥ 1.5", "beta threshold", "Beta >=",
@@ -165,6 +166,8 @@ INTERNAL_TERMINOLOGY_MAP = {
 
     # Indicators → marketing language
     "Banker >= 55": "institutional accumulation",
+    "Banker rising": "institutional accumulation",
+    "UC rising": "institutional accumulation",
     "Banker indicator": "strong accumulation",
     "Beta >= 1.5": "volatility characteristics",
     "20% trailing stop": "trailing stop",
@@ -241,6 +244,7 @@ if __name__ == "__main__":
         ("Clean momentum tweet", False),
         ("The HMA Pivot triggered today", True),
         ("Banker >= 55 is strong", True),
+        ("Banker rising confirms accumulation", True),
         ("The scanner found some interesting setups", True),
         ("GREEN signal on $NVDA", False),
         ("TEAL signal on $NVDA", True),

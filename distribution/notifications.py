@@ -138,16 +138,42 @@ def _load_whatsapp_config() -> Optional[Dict]:
     whatsapp_from = os.environ.get("TWILIO_WHATSAPP_FROM")
     whatsapp_to = os.environ.get("WHATSAPP_TO")
 
-    if all([account_sid, auth_token, whatsapp_from, whatsapp_to]):
-        to_numbers = [n.strip() for n in whatsapp_to.split(",") if n.strip()]
-        return {
-            "account_sid": account_sid,
-            "auth_token": auth_token,
-            "from_number": whatsapp_from,
-            "to_numbers": to_numbers,
-        }
+    # Diagnostic: show which vars are set/missing (print so it's visible in GH Actions)
+    _wa_vars = {
+        "TWILIO_ACCOUNT_SID": bool(account_sid),
+        "TWILIO_AUTH_TOKEN": bool(auth_token),
+        "TWILIO_WHATSAPP_FROM": bool(whatsapp_from),
+        "WHATSAPP_TO": bool(whatsapp_to),
+    }
+    missing = [k for k, v in _wa_vars.items() if not v]
+    if missing:
+        print(f"  [WhatsApp] Missing env vars: {', '.join(missing)}")
+        logger.info("WhatsApp missing env vars: %s", ", ".join(missing))
+        return None
 
-    return None
+    to_numbers = [n.strip() for n in whatsapp_to.split(",") if n.strip()]
+
+    # Validate format: WHATSAPP_TO must use whatsapp: prefix
+    invalid_numbers = [n for n in to_numbers if not n.startswith("whatsapp:")]
+    if invalid_numbers:
+        print(f"  [WhatsApp] WARNING: WHATSAPP_TO numbers missing 'whatsapp:' prefix: {invalid_numbers}")
+        print(f"  [WhatsApp] Expected format: whatsapp:+14155238886")
+        logger.warning("WHATSAPP_TO numbers missing 'whatsapp:' prefix: %s", invalid_numbers)
+
+    # Validate format: TWILIO_WHATSAPP_FROM must use whatsapp: prefix
+    if not whatsapp_from.startswith("whatsapp:"):
+        print(f"  [WhatsApp] WARNING: TWILIO_WHATSAPP_FROM missing 'whatsapp:' prefix: {whatsapp_from}")
+        print(f"  [WhatsApp] Expected format: whatsapp:+14155238886")
+        logger.warning("TWILIO_WHATSAPP_FROM missing 'whatsapp:' prefix: %s", whatsapp_from)
+
+    print(f"  [WhatsApp] Config loaded: from={whatsapp_from}, to={len(to_numbers)} recipient(s)")
+
+    return {
+        "account_sid": account_sid,
+        "auth_token": auth_token,
+        "from_number": whatsapp_from,
+        "to_numbers": to_numbers,
+    }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -159,7 +185,7 @@ def _format_signal_label(signal_type: str) -> str:
     labels = {
         "BEARISH PIVOT": "HMA Bearish Pivot",
         "TRAILING STOP": "20% Trailing Stop",
-        "TIGHTENED STOP": "15% Tightened Stop",
+        "EXIT": "First Exit Triggered",
     }
     return labels.get(signal_type.upper(), signal_type)
 
@@ -327,6 +353,7 @@ def _send_email(subject: str, body_text: str, body_html: str) -> str:
     """
     config = _load_email_config()
     if not config:
+        print("  [Email] Not configured — skipping email notification")
         logger.info("Email not configured — skipping email notification")
         return "skipped"
 
@@ -374,15 +401,18 @@ def _send_whatsapp(message: str) -> str:
     """
     config = _load_whatsapp_config()
     if not config:
+        print("  [WhatsApp] Not configured — skipping WhatsApp notification")
         logger.info("WhatsApp not configured — skipping WhatsApp notification")
         return "skipped"
 
     try:
         from twilio.rest import Client  # type: ignore[import-untyped]
     except ImportError:
+        print("  [WhatsApp] ERROR: twilio package not installed — run: pip install twilio>=8.0.0")
         logger.warning("twilio package not installed — run: pip install twilio>=8.0.0")
         return "failed"
 
+    print(f"  [WhatsApp] Sending to {len(config['to_numbers'])} recipient(s)...")
     client = Client(config["account_sid"], config["auth_token"])
     sent_count = 0
     fail_count = 0
@@ -394,9 +424,11 @@ def _send_whatsapp(message: str) -> str:
                 from_=config["from_number"],
                 to=to_number,
             )
+            print(f"  [WhatsApp] ✅ Sent to {to_number} — SID: {sent_message.sid}")
             logger.info("WhatsApp sent to %s — SID: %s", to_number, sent_message.sid)
             sent_count += 1
         except Exception as exc:
+            print(f"  [WhatsApp] ❌ Failed to send to {to_number}: {exc}")
             logger.error("WhatsApp send to %s failed: %s", to_number, exc)
             fail_count += 1
 
@@ -447,6 +479,7 @@ def send_sell_notification(
             {"email": "sent", "whatsapp": "failed"}
             {"email": "skipped", "whatsapp": "skipped"}
     """
+    print(f"\n  Sell signal notification: ${ticker} [{signal_type}] — P&L: {pnl_pct:+.1f}%")
     logger.info(
         "Sell signal: $%s [%s] — P&L: %+.1f%% — sending notifications",
         ticker, signal_type, pnl_pct,
@@ -478,6 +511,7 @@ def send_sell_notification(
     result["whatsapp"] = _send_whatsapp(whatsapp_msg)
 
     # ── Summary log ───────────────────────────────────────────────────────────
+    print(f"  Notification result for ${ticker}: email={result['email']}, whatsapp={result['whatsapp']}")
     logger.info(
         "Notification result for $%s: email=%s, whatsapp=%s",
         ticker, result["email"], result["whatsapp"],

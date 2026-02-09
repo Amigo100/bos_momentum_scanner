@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-SELL SIGNAL NOTIFICATIONS — Email + WhatsApp
-=============================================
+SCAN NOTIFICATIONS — Email + WhatsApp
+======================================
 
-Sends real-time sell signal notifications when the scanner detects:
-  - HMA Bearish Pivot  → tighten trailing stop, alert operator
-  - Trailing Stop Breach → exit position, alert operator
+Sends combined scan summary notifications with all buy and sell signals
+in a single message per channel.
 
 Channels:
   - Email (SMTP) — reuses existing email_notifier.py configuration
@@ -17,7 +16,7 @@ Notifications fire immediately upon detection — not queued.
 Environment Variables:
     # Email (reuses existing email_config.json OR env vars)
     SMTP_SERVER, SMTP_PORT, EMAIL_SENDER, EMAIL_PASSWORD
-    NOTIFICATION_EMAIL          — recipient for sell signals
+    NOTIFICATION_EMAIL          — recipient for scan alerts
 
     # WhatsApp (Twilio)
     TWILIO_ACCOUNT_SID
@@ -26,19 +25,12 @@ Environment Variables:
     WHATSAPP_TO                 — comma-separated, e.g. "whatsapp:+11111,whatsapp:+12222"
 
 Usage:
-    from distribution.notifications import send_sell_notification
+    from distribution.notifications import send_scan_summary
 
-    result = send_sell_notification(
-        ticker="RCAT",
-        signal_type="BEARISH PIVOT",
-        entry_price=8.50,
-        current_price=10.20,
-        highest_close=12.19,
-        stop_level=10.37,
-        pnl_pct=20.0,
-        theme="Drone Technology",
+    result = send_scan_summary(
+        buy_signals=[{"symbol": "AAPL", "price": 185.0, "theme": "AI", ...}],
+        sell_signals=[{"symbol": "RCAT", "price": 10.2, "entry_price": 8.5, ...}],
         timeframe="weekly",
-        entry_date="2025-12-29",
     )
     # result == {"email": "sent", "whatsapp": "sent"}
 """
@@ -520,6 +512,268 @@ def send_sell_notification(
     return result
 
 
+def _build_summary_whatsapp(
+    buy_signals: list,
+    sell_signals: list,
+    timeframe: str,
+) -> str:
+    """Build a single WhatsApp message summarising all buy + sell signals."""
+    lines = []
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    tf = timeframe.capitalize()
+
+    lines.append(f"📊 STERLING SIGNALS — {tf} Scan")
+    lines.append(f"📅 {date_str}")
+    lines.append("")
+
+    # ── Buy signals ──────────────────────────────────────────────────────────
+    if buy_signals:
+        lines.append(f"🟢 BUY SIGNALS ({len(buy_signals)})")
+        lines.append("─" * 28)
+        for sig in buy_signals:
+            symbol = sig.get("symbol", "???")
+            price = float(sig.get("price", 0))
+            theme = sig.get("theme", "")
+            conviction = sig.get("conviction", "")
+            decision = sig.get("final_decision", "PASS")
+            conv_str = f" ★{conviction}" if conviction else ""
+            dec_label = "PASS" if decision in ("PASS", "TRADE") else decision
+            lines.append(f"${symbol} — ${price:.2f}")
+            lines.append(f"  {theme}{conv_str} [{dec_label}]")
+        lines.append("")
+
+    # ── Sell signals ─────────────────────────────────────────────────────────
+    if sell_signals:
+        lines.append(f"🔴 EXIT SIGNALS ({len(sell_signals)})")
+        lines.append("─" * 28)
+        for sig in sell_signals:
+            symbol = sig.get("symbol", "???")
+            price = float(sig.get("price", 0))
+            entry_price = float(sig.get("entry_price", 0))
+            reason = sig.get("reason", "Exit")
+            pnl = ((price / entry_price) - 1) * 100 if entry_price > 0 else 0
+            pnl_sign = "+" if pnl >= 0 else ""
+            lines.append(f"${symbol} — ${price:.2f} ({pnl_sign}{pnl:.1f}%)")
+            lines.append(f"  {reason[:40]}")
+        lines.append("")
+
+    if not buy_signals and not sell_signals:
+        lines.append("No new signals this scan.")
+        lines.append("")
+
+    lines.append("sterlingsignals.substack.com")
+
+    return "\n".join(lines)
+
+
+def _build_summary_email_text(
+    buy_signals: list,
+    sell_signals: list,
+    timeframe: str,
+) -> str:
+    """Build plain-text email for combined scan summary."""
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    tf = timeframe.capitalize()
+
+    text = f"STERLING SIGNALS — {tf} Scan Summary\n"
+    text += f"Date: {date_str}\n"
+    text += "=" * 50 + "\n\n"
+
+    if buy_signals:
+        text += f"BUY SIGNALS ({len(buy_signals)})\n"
+        text += "-" * 30 + "\n"
+        for sig in buy_signals:
+            symbol = sig.get("symbol", "???")
+            price = float(sig.get("price", 0))
+            theme = sig.get("theme", "")
+            conviction = sig.get("conviction", "")
+            decision = sig.get("final_decision", "PASS")
+            dec_label = "PASS" if decision in ("PASS", "TRADE") else decision
+            text += f"  {symbol:8s} ${price:<10.2f} {theme} [{dec_label}]"
+            if conviction:
+                text += f" ★{conviction}"
+            text += "\n"
+        text += "\n"
+
+    if sell_signals:
+        text += f"EXIT SIGNALS ({len(sell_signals)})\n"
+        text += "-" * 30 + "\n"
+        for sig in sell_signals:
+            symbol = sig.get("symbol", "???")
+            price = float(sig.get("price", 0))
+            entry_price = float(sig.get("entry_price", 0))
+            reason = sig.get("reason", "Exit")
+            pnl = ((price / entry_price) - 1) * 100 if entry_price > 0 else 0
+            pnl_sign = "+" if pnl >= 0 else ""
+            text += f"  {symbol:8s} ${price:<10.2f} {pnl_sign}{pnl:.1f}%  {reason}\n"
+        text += "\n"
+
+    if not buy_signals and not sell_signals:
+        text += "No new signals this scan.\n\n"
+
+    text += "—" * 50 + "\n"
+    text += "Sterling Signals — Automated Scan Alert\n"
+
+    return text
+
+
+def _build_summary_email_html(
+    buy_signals: list,
+    sell_signals: list,
+    timeframe: str,
+) -> str:
+    """Build HTML email for combined scan summary."""
+    date_str = datetime.now().strftime("%Y-%m-%d %H:%M ET")
+    tf = timeframe.capitalize()
+
+    buy_count = len(buy_signals)
+    sell_count = len(sell_signals)
+
+    # Buy rows
+    buy_rows = ""
+    for sig in buy_signals:
+        symbol = sig.get("symbol", "???")
+        price = float(sig.get("price", 0))
+        theme = sig.get("theme", "")
+        conviction = int(sig.get("conviction", 0))
+        decision = sig.get("final_decision", "PASS")
+        dec_label = "PASS" if decision in ("PASS", "TRADE") else decision
+        stars = "★" * conviction + "☆" * (5 - conviction) if conviction else ""
+        buy_rows += f"""
+        <tr>
+          <td style="padding:6px 10px;font-weight:600;">${symbol}</td>
+          <td style="padding:6px 10px;">${price:.2f}</td>
+          <td style="padding:6px 10px;">{theme}</td>
+          <td style="padding:6px 10px;">{stars}</td>
+          <td style="padding:6px 10px;"><span style="background:#16a34a;color:#fff;padding:1px 6px;border-radius:3px;font-size:12px;">{dec_label}</span></td>
+        </tr>"""
+
+    # Sell rows
+    sell_rows = ""
+    for sig in sell_signals:
+        symbol = sig.get("symbol", "???")
+        price = float(sig.get("price", 0))
+        entry_price = float(sig.get("entry_price", 0))
+        reason = sig.get("reason", "Exit")
+        pnl = ((price / entry_price) - 1) * 100 if entry_price > 0 else 0
+        pnl_sign = "+" if pnl >= 0 else ""
+        pnl_color = "#16a34a" if pnl >= 0 else "#ef4444"
+        sell_rows += f"""
+        <tr>
+          <td style="padding:6px 10px;font-weight:600;">${symbol}</td>
+          <td style="padding:6px 10px;">${price:.2f}</td>
+          <td style="padding:6px 10px;color:{pnl_color};font-weight:600;">{pnl_sign}{pnl:.1f}%</td>
+          <td style="padding:6px 10px;">{reason[:50]}</td>
+        </tr>"""
+
+    buy_section = ""
+    if buy_signals:
+        buy_section = f"""
+    <div style="padding:15px 20px;">
+      <h3 style="margin:0 0 10px 0;color:#16a34a;">🟢 Buy Signals ({buy_count})</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr style="background:#f0fdf4;">
+          <th style="padding:6px 10px;text-align:left;">Ticker</th>
+          <th style="padding:6px 10px;text-align:left;">Price</th>
+          <th style="padding:6px 10px;text-align:left;">Theme</th>
+          <th style="padding:6px 10px;text-align:left;">Conviction</th>
+          <th style="padding:6px 10px;text-align:left;">Decision</th>
+        </tr>
+        {buy_rows}
+      </table>
+    </div>"""
+
+    sell_section = ""
+    if sell_signals:
+        sell_section = f"""
+    <div style="padding:15px 20px;">
+      <h3 style="margin:0 0 10px 0;color:#ef4444;">🔴 Exit Signals ({sell_count})</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr style="background:#fef2f2;">
+          <th style="padding:6px 10px;text-align:left;">Ticker</th>
+          <th style="padding:6px 10px;text-align:left;">Price</th>
+          <th style="padding:6px 10px;text-align:left;">P&amp;L</th>
+          <th style="padding:6px 10px;text-align:left;">Reason</th>
+        </tr>
+        {sell_rows}
+      </table>
+    </div>"""
+
+    no_signals = ""
+    if not buy_signals and not sell_signals:
+        no_signals = """
+    <div style="padding:20px;text-align:center;color:#6b7280;">
+      <p>No new signals this scan. Patience is edge.</p>
+    </div>"""
+
+    return f"""\
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:0;padding:20px;background:#f9fafb;">
+  <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;">
+    <div style="background:#1e293b;padding:16px 20px;">
+      <h2 style="margin:0;color:#fff;font-size:18px;">📊 Sterling Signals — {tf} Scan Summary</h2>
+    </div>
+    {buy_section}
+    {sell_section}
+    {no_signals}
+    <div style="padding:12px 20px;background:#f1f5f9;font-size:12px;color:#64748b;text-align:center;">
+      Sterling Signals — Automated Scan Alert &bull; {date_str}
+    </div>
+  </div>
+</body>
+</html>"""
+
+
+def send_scan_summary(
+    buy_signals: list,
+    sell_signals: list,
+    timeframe: str = "weekly",
+) -> Dict[str, str]:
+    """Send a single combined notification with all buy and sell signals.
+
+    Replaces per-signal send_sell_notification() calls. Both buy and sell
+    signals are merged into one email and one WhatsApp message.
+
+    Args:
+        buy_signals:  List of dicts with keys: symbol, price, theme, conviction,
+                      final_decision (from signals.json buy_signals)
+        sell_signals: List of dicts with keys: symbol, price, entry_price, reason,
+                      pnl_pct (from signals.json sell_signals)
+        timeframe:    "weekly" or "daily"
+
+    Returns:
+        Dict with status per channel: {"email": "sent", "whatsapp": "sent"}
+    """
+    total = len(buy_signals) + len(sell_signals)
+    print(f"\n  Scan summary notification: {len(buy_signals)} buys, {len(sell_signals)} sells")
+    logger.info(
+        "Scan summary: %d buys, %d sells — sending combined notification",
+        len(buy_signals), len(sell_signals),
+    )
+
+    if total == 0:
+        print("  No signals — skipping notification")
+        return {"email": "skipped", "whatsapp": "skipped"}
+
+    # ── Build messages ────────────────────────────────────────────────────────
+    subject = f"📊 Sterling Signals — {timeframe.capitalize()} Scan: {len(buy_signals)} buys, {len(sell_signals)} exits"
+    body_text = _build_summary_email_text(buy_signals, sell_signals, timeframe)
+    body_html = _build_summary_email_html(buy_signals, sell_signals, timeframe)
+    whatsapp_msg = _build_summary_whatsapp(buy_signals, sell_signals, timeframe)
+
+    # ── Fire channels independently ───────────────────────────────────────────
+    result: Dict[str, str] = {}
+    result["email"] = _send_email(subject, body_text, body_html)
+    result["whatsapp"] = _send_whatsapp(whatsapp_msg)
+
+    print(f"  Notification result: email={result['email']}, whatsapp={result['whatsapp']}")
+    logger.info("Scan summary result: email=%s, whatsapp=%s", result["email"], result["whatsapp"])
+
+    return result
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # CLI / SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -575,8 +829,37 @@ if __name__ == "__main__":
         print()
 
     elif args.send_test:
-        print("\n  Sending test sell notification...")
-        result = send_sell_notification(**test_kwargs)
+        print("\n  Sending test combined scan summary...")
+        test_buy_signals = [
+            {
+                "symbol": "TEST1",
+                "price": 25.50,
+                "theme": "Grid Infrastructure",
+                "conviction": 4,
+                "final_decision": "PASS",
+            },
+            {
+                "symbol": "TEST2",
+                "price": 42.75,
+                "theme": "Defense Manufacturing",
+                "conviction": 3,
+                "final_decision": "PASS",
+            },
+        ]
+        test_sell_signals = [
+            {
+                "symbol": "TEST3",
+                "price": 18.00,
+                "entry_price": 20.00,
+                "reason": "First Exit — HMA Bearish Pivot",
+                "pnl_pct": -10.0,
+            },
+        ]
+        result = send_scan_summary(
+            buy_signals=test_buy_signals,
+            sell_signals=test_sell_signals,
+            timeframe="weekly",
+        )
         print(f"\n  Result: {result}")
         print()
 

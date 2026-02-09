@@ -15,7 +15,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install twilio
+        run: |
+          pip install twilio
+          pip install -r requirements.txt
 
       - name: Check notification config
         env:
@@ -30,7 +32,7 @@ jobs:
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
         run: python -m distribution.notifications --check-config
 
-      - name: Send test notification
+      - name: Send test combined notification
         env:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}

@@ -112,7 +112,7 @@ jobs:
           echo "scanner_complete=true" >> $GITHUB_OUTPUT
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 1.5: SEND SELL SIGNAL NOTIFICATIONS (email + WhatsApp)
+      # STEP 1.5: SEND SCAN SUMMARY NOTIFICATION (buy + sell in one message)
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Check notification channel config
@@ -130,7 +130,7 @@ jobs:
         run: |
           python -m distribution.notifications --check-config
 
-      - name: Send sell signal notifications
+      - name: Send scan summary notification
         if: always() && steps.scanner.outputs.scanner_complete == 'true'
         env:
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
@@ -143,7 +143,7 @@ jobs:
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
-          python << 'NOTIFY_SELLS'
+          python << 'NOTIFY_SUMMARY'
           import json, sys, logging
           from pathlib import Path
 
@@ -155,33 +155,27 @@ jobs:
               sys.exit(0)
 
           data = json.loads(signals_path.read_text())
+          buy_signals = data.get("buy_signals", [])
           sell_signals = data.get("sell_signals", [])
 
-          if not sell_signals:
-              print("No sell signals — no notifications needed")
+          if not buy_signals and not sell_signals:
+              print("No buy or sell signals — no notifications needed")
               sys.exit(0)
 
           try:
-              from distribution.notifications import send_sell_notification
+              from distribution.notifications import send_scan_summary
           except ImportError as e:
               print(f"Notification module not available: {e}")
               sys.exit(0)
 
-          for sig in sell_signals:
-              print(f"Sending SELL notification for {sig.get('symbol', 'UNKNOWN')}...")
-              send_sell_notification(
-                  ticker=sig.get("symbol", ""),
-                  signal_type=sig.get("reason", "TRAILING STOP"),
-                  entry_price=float(sig.get("entry_price", 0)),
-                  current_price=float(sig.get("price", 0)),
-                  highest_close=float(sig.get("highest_close", 0)),
-                  stop_level=float(sig.get("stop_level", 0)),
-                  pnl_pct=float(sig.get("pnl_pct", 0)),
-                  theme=sig.get("theme", ""),
-                  timeframe="weekly",
-                  entry_date=sig.get("entry_date", ""),
-              )
-          NOTIFY_SELLS
+          print(f"Sending combined notification: {len(buy_signals)} buys, {len(sell_signals)} sells")
+          result = send_scan_summary(
+              buy_signals=buy_signals,
+              sell_signals=sell_signals,
+              timeframe="weekly",
+          )
+          print(f"Result: {result}")
+          NOTIFY_SUMMARY
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════

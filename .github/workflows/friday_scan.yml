@@ -261,6 +261,16 @@ jobs:
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 4.75: GENERATE PORTFOLIO VISUAL DASHBOARD (HTML + PNG)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Portfolio Dashboard
+        run: |
+          echo "Generating portfolio visual dashboard..."
+          python -m content.portfolio_visual || echo "Portfolio dashboard generation failed (non-critical)"
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
       # STEP 5: GENERATE TWEETS (35 for the week - 5 per day)
       # ═══════════════════════════════════════════════════════════════════════════
 

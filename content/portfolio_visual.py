@@ -40,8 +40,6 @@ from config.output_paths import (
 from config.settings import (
     CURRENCY_SYMBOL,
     STARTING_CAPITAL_PER_POSITION,
-    can_show_entry_price,
-    get_conviction_text,
 )
 
 # Marketing validation
@@ -239,7 +237,7 @@ def generate_dashboard_html(data: Dict) -> str:
     nav_str = f"{currency}{nav:,.0f}" if nav else "—"
     return_str = _pnl_text(total_return) if nav else "—"
     alpha_str = f"+{alpha:.1f}%" if alpha >= 0 else f"{alpha:.1f}%"
-    win_rate_str = f"{win_rate:.0f}%" if performance else "—"
+    win_rate_str = f"{win_rate:.0f}%" if performance and win_rate > 0 else "N/A"
 
     stats_html = f"""<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;">
       {_stat_box(nav_str, "Portfolio NAV")}
@@ -253,15 +251,8 @@ def generate_dashboard_html(data: Dict) -> str:
     for i, t in enumerate(open_positions):
         bg = COLORS["card_bg"] if i % 2 == 0 else COLORS["dark_bg"]
 
-        # Entry price: only show if ≥25% gain
-        pos_dict = {"status": t.status, "pnl_pct": t.pnl_pct}
-        if can_show_entry_price(pos_dict) and t.entry_price > 0:
-            entry_str = f"${t.entry_price:.2f}"
-        else:
-            entry_str = "—"
-
-        # Conviction text
-        conviction_str = get_conviction_text(t.conviction) if t.conviction else "—"
+        # Entry price — always show
+        entry_str = f"${t.entry_price:.2f}" if t.entry_price > 0 else "—"
 
         # P&L
         pnl_html = f'<span style="color:{_pnl_color(t.pnl_pct)};font-weight:700;">{_pnl_text(t.pnl_pct)}</span>'
@@ -275,7 +266,6 @@ def generate_dashboard_html(data: Dict) -> str:
           <td style="padding:10px 12px;">{entry_str}</td>
           <td style="padding:10px 12px;text-align:center;">{t.days_held}d</td>
           <td style="padding:10px 12px;text-align:right;">{pnl_html}</td>
-          <td style="padding:10px 12px;text-align:center;color:{COLORS['text_muted']};">{conviction_str}</td>
         </tr>"""
 
     positions_section = ""
@@ -293,7 +283,6 @@ def generate_dashboard_html(data: Dict) -> str:
             <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Entry</th>
             <th style="padding:8px 12px;text-align:center;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Held</th>
             <th style="padding:8px 12px;text-align:right;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">P&L</th>
-            <th style="padding:8px 12px;text-align:center;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Outlook</th>
           </tr>
         </thead>
         <tbody>

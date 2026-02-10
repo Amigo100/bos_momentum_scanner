@@ -1,56 +1,56 @@
 {
-  "scan_date": "2026-02-09",
+  "scan_date": "2026-02-10",
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "STNE",
-      "symbol": "STNE",
-      "price": 17.99,
-      "beta": 1.89,
+      "ticker": "NKTR",
+      "symbol": "NKTR",
+      "price": 56.0,
+      "beta": 1.83,
       "banker_score": 100,
-      "sector": "Technology",
-      "industry": "Software - Infrastructure",
-      "theme": "Technology"
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "theme": "Healthcare"
     },
     {
-      "ticker": "TSEM",
-      "symbol": "TSEM",
-      "price": 147.53,
-      "beta": 2.49,
+      "ticker": "ZURA",
+      "symbol": "ZURA",
+      "price": 6.44,
+      "beta": 2.37,
       "banker_score": 100,
-      "sector": "Technology",
-      "industry": "Semiconductors",
-      "theme": "Technology"
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "theme": "Healthcare"
     },
     {
-      "ticker": "WULF",
-      "symbol": "WULF",
-      "price": 16.65,
-      "beta": 2.85,
-      "banker_score": 100,
-      "sector": "Financial Services",
-      "industry": "Capital Markets",
-      "theme": "Financial Services"
-    },
-    {
-      "ticker": "ADTN",
-      "symbol": "ADTN",
-      "price": 10.4,
-      "beta": 2.27,
-      "banker_score": 98.3,
-      "sector": "Technology",
-      "industry": "Communication Equipment",
-      "theme": "Technology"
-    },
-    {
-      "ticker": "PRIM",
-      "symbol": "PRIM",
-      "price": 162.61,
-      "beta": 2.27,
-      "banker_score": 97.9,
+      "ticker": "LGN",
+      "symbol": "LGN",
+      "price": 53.46,
+      "beta": 2.44,
+      "banker_score": 99.9,
       "sector": "Industrials",
       "industry": "Engineering & Construction",
       "theme": "Industrials"
+    },
+    {
+      "ticker": "AMKR",
+      "symbol": "AMKR",
+      "price": 53.46,
+      "beta": 3.24,
+      "banker_score": 88.0,
+      "sector": "Technology",
+      "industry": "Semiconductor Equipment & Materials",
+      "theme": "Technology"
+    },
+    {
+      "ticker": "CAMT",
+      "symbol": "CAMT",
+      "price": 154.0,
+      "beta": 2.25,
+      "banker_score": 83.1,
+      "sector": "Technology",
+      "industry": "Semiconductor Equipment & Materials",
+      "theme": "Technology"
     }
   ],
   "sell_signals": []

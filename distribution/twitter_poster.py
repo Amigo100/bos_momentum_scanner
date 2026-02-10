@@ -137,11 +137,18 @@ def validate_before_posting(tweet: Dict) -> tuple:
     if negative_pnl:
         return (False, f"BLOCKED: Negative P&L in tweet: {negative_pnl}")
 
-    # 2. Check for critical banned terms
+    # 2. Check for critical banned terms (word-boundary for short terms)
     text_lower = text.lower()
     for term in CRITICAL_BANNED:
-        if term.lower() in text_lower:
-            return (False, f"BLOCKED: Banned term '{term}' in tweet")
+        term_lower = term.lower()
+        if len(term) <= 4 and term.isascii():
+            # Short terms need word-boundary matching to avoid false positives
+            # e.g. "BST" matching inside "substack", "HMA" inside "PHARMA"
+            if re.search(r'\b' + re.escape(term_lower) + r'\b', text_lower):
+                return (False, f"BLOCKED: Banned term '{term}' in tweet")
+        else:
+            if term_lower in text_lower:
+                return (False, f"BLOCKED: Banned term '{term}' in tweet")
 
     # 2b. Check for old color system (word-boundary)
     old_colors = ['teal', 'purple', 'violet', 'amber']

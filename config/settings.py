@@ -1153,6 +1153,65 @@ def get_ticker_history(ticker: str) -> List[str]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# LIVE TWEET SYSTEM CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# xAI / Grok models
+MODEL_CONTEXT = "grok-3-fast"
+MODEL_LIVE_TWEET = "claude-sonnet-4-5-20250929"
+XAI_BASE_URL = "https://api.x.ai/v1"
+
+# Cost controls
+DAILY_COST_LIMIT_USD = 1.00               # Hard limit — kills generation if exceeded
+MONTHLY_COST_LIMIT_USD = 30.00            # Alert threshold
+COST_LOG_FILE = TRADES_DIR / "live_cost_log.json"
+
+# Content controls
+MAX_TWEETS_PER_DAY = 12                   # Hard cap across all accounts
+MAX_SAME_TICKER_PER_DAY = 3              # Max tweets about same ticker per day
+CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_REACTION
+MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
+
+# Chart-img.com integration (REST API — CI-compatible, no browser needed)
+CHARTIMG_API_URL = "https://api.chart-img.com/v2/tradingview/advanced-chart"
+CHART_IMG_WIDTH = 800                     # pixels
+CHART_IMG_HEIGHT = 450                    # pixels
+CHART_IMG_INTERVAL = "1W"                 # Default weekly
+
+# Live queue path
+LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
+
+# Tracked themes for Grok context gathering
+TRACKED_THEMES: List[str] = [
+    "copper", "infrastructure", "defense", "AI", "data centers",
+    "rare earth", "quantum computing", "space", "crypto mining",
+    "nuclear", "semiconductors", "reshoring",
+]
+
+# Weekend behavior
+WEEKEND_MAX_TWEETS = 4
+WEEKEND_CATEGORIES: List[str] = [
+    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT",
+]
+
+# Exchange mapping for chart-img.com (ticker → exchange prefix)
+EXCHANGE_MAP: Dict[str, str] = {
+    "WCC": "NYSE", "STRL": "NASDAQ", "MOD": "NYSE",
+    "MATV": "NASDAQ", "LUMN": "NYSE", "FIX": "NYSE",
+    "RCAT": "NASDAQ", "IBKR": "NASDAQ", "CGON": "NASDAQ",
+    "TLN": "NYSE", "VNET": "NASDAQ",
+}
+
+# Centralized API pricing (per million tokens)
+API_PRICING: Dict[str, Dict[str, float]] = {
+    "grok-3-fast": {"input": 0.20, "output": 0.50},
+    "claude-sonnet-4-5-20250929": {"input": 3.00, "output": 15.00},
+    "claude-sonnet-4-20250514": {"input": 3.00, "output": 15.00},
+}
+TOOL_CALL_COST = 0.005  # Per search/tool call
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 

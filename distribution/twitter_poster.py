@@ -59,6 +59,12 @@ TRADES_DIR = BASE_DIR / "trades"
 QUEUE_FILE = TRADES_DIR / "content_queue.json"
 DAILY_QUEUE_FILE = TRADES_DIR / "daily_content_queue.json"
 
+# Live system queue (Phase 5 — live tweet system)
+try:
+    from config import LIVE_QUEUE_FILE
+except ImportError:
+    LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
+
 # 7-slot system (Eastern Time)
 # Slots 1, 6, 7 pull from the DAILY queue (fresh intraday content)
 # Slots 2-5 pull from the WEEKLY queue (generated on Friday)
@@ -101,6 +107,80 @@ def is_duplicate_content(tweet_text: str, queue: List[Dict]) -> bool:
             if posted_text == normalized_text:
                 return True
     return False
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LIVE QUEUE SUPPORT (Phase 5 — live tweet system)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Account key → live queue variant mapping
+LIVE_ACCOUNT_MAP = {
+    "main": "variant_1",
+    "account2": "variant_2",
+    "account3": "variant_3",
+}
+
+
+def find_next_live_content(queue: List[Dict], account_key: str) -> Optional[Dict]:
+    """Find next pending tweet from the live queue for a specific account.
+
+    Live queue items use 'account' field (variant_1/variant_2/variant_3)
+    instead of slot/scheduled_date.
+
+    Args:
+        queue: Live content queue list
+        account_key: Account identifier ('main', 'account2', 'account3')
+
+    Returns:
+        Next pending item for this account, or None
+    """
+    target_variant = LIVE_ACCOUNT_MAP.get(account_key, "variant_1")
+    for item in queue:
+        if item.get("status") == "pending" and item.get("account") == target_variant:
+            return item
+    return None
+
+
+def check_similarity_duplicate(text: str, queue: List[Dict], hours: int = 24) -> tuple:
+    """Check if a tweet is too similar to recently posted tweets.
+
+    Uses SequenceMatcher with 0.7 threshold within a time window.
+
+    Args:
+        text: Tweet text to check
+        queue: Queue list to check against
+        hours: Lookback window in hours
+
+    Returns:
+        Tuple of (is_duplicate: bool, reason: str)
+    """
+    from difflib import SequenceMatcher
+
+    now = datetime.now(ZoneInfo("America/New_York"))
+    text_lower = text.lower().strip()
+
+    for item in queue:
+        if item.get("status") != "posted":
+            continue
+        posted_at = item.get("posted_at")
+        if not posted_at:
+            continue
+        try:
+            posted_time = datetime.fromisoformat(posted_at)
+            if posted_time.tzinfo is None:
+                posted_time = posted_time.replace(tzinfo=ZoneInfo("UTC"))
+            if (now - posted_time).total_seconds() > hours * 3600:
+                continue
+        except (ValueError, TypeError):
+            continue
+
+        similarity = SequenceMatcher(
+            None, text_lower, item.get("text", "").lower().strip()
+        ).ratio()
+        if similarity > 0.7:
+            return (True, f"Too similar ({similarity:.0%}) to tweet posted at {posted_at}")
+
+    return (False, "")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -768,6 +848,57 @@ def post_for_account(account_key: str, args, target_slot) -> int:
     Returns:
         0 on success, 1 on failure.
     """
+    # ── LIVE QUEUE MODE (Phase 5 — live tweet system) ──────────────────────
+    if getattr(args, 'live_queue', False):
+        queue_file = LIVE_QUEUE_FILE
+        print(f"\n  📂 [{account_key}] Live Queue: {queue_file}")
+
+        if not queue_file.exists():
+            print(f"  ⚠ [{account_key}] Live queue not found: {queue_file}")
+            return 0
+
+        queue = load_queue(queue_file)
+
+        pending = [t for t in queue if t.get("status") == "pending"]
+        posted = [t for t in queue if t.get("status") == "posted"]
+        print(f"  📊 [{account_key}] Status: {len(posted)} posted, {len(pending)} pending")
+
+        content_item = find_next_live_content(queue, account_key)
+
+        if not content_item:
+            print(f"\n  ℹ️  [{account_key}] No pending live content")
+            return 0
+
+        # Similarity duplicate check (fuzzy, 24h window)
+        tweet_text = content_item.get('text', '')
+        is_dup, dup_reason = check_similarity_duplicate(tweet_text, queue)
+        if is_dup:
+            print(f"\n  ⚠️  [{account_key}] SIMILAR DUPLICATE: {dup_reason}")
+            content_item['status'] = 'skipped'
+            content_item['skip_reason'] = dup_reason
+            if not args.dry_run:
+                save_queue(queue, queue_file)
+            return 0
+
+        # Initialize clients
+        if args.dry_run:
+            client_v2, api_v1 = None, None
+        else:
+            client_v2, api_v1 = get_clients(account_key)
+            if client_v2 is None:
+                print(f"  ⚠ [{account_key}] No credentials, skipping")
+                return 0
+
+        print(f"\n  📝 [{account_key}] LIVE TWEET")
+        success = post_tweet(client_v2, api_v1, content_item, dry_run=args.dry_run)
+
+        if not args.dry_run:
+            save_queue(queue, queue_file)
+            print(f"\n  💾 [{account_key}] Live queue updated: {queue_file}")
+
+        return 0 if success else 1
+
+    # ── EXISTING QUEUE MODE (weekly/daily — unchanged) ─────────────────────
     # If a specific queue was given on CLI, use it
     if args.queue:
         queue_file = Path(args.queue)
@@ -850,6 +981,8 @@ def main() -> int:
                         help="Which slot to post (1-7 or 'all'). Slots 1/6/7=daily, 2-5=weekly")
     parser.add_argument("--account", type=str, default="main",
                         help="Account to post to (main, account2, account3, or all)")
+    parser.add_argument("--live-queue", action="store_true",
+                        help="Post from live content queue only (live tweet system)")
     args = parser.parse_args()
 
     print("\n" + "═" * 60)

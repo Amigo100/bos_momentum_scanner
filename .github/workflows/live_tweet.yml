@@ -1,0 +1,164 @@
+name: Live Tweet Generation
+
+on:
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      force_type:
+        description: 'Force tweet type (RECEIPT, MARKET_REACTION, THEME_MOMENTUM, etc.)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run (generate but do not post)'
+        required: false
+        type: boolean
+        default: false
+
+  # Weekday slots (Mon-Fri) — UTC times targeting ET slots
+  # Both EST and EDT crons fire; scripts use ET-aware datetime
+  schedule:
+    # Slot 1: ~07:30 ET pre-market (weekdays only)
+    - cron: '30 12 * * 1-5'   # EST
+    - cron: '30 11 * * 1-5'   # EDT
+    # Slot 2: ~10:00 ET morning (weekdays only)
+    - cron: '0 15 * * 1-5'    # EST
+    - cron: '0 14 * * 1-5'    # EDT
+    # Slot 3: ~12:30 ET midday (weekdays only)
+    - cron: '30 17 * * 1-5'   # EST
+    - cron: '30 16 * * 1-5'   # EDT
+    # Slot 4: ~15:30 ET power hour (weekdays only, CRITICAL)
+    - cron: '30 20 * * 1-5'   # EST
+    - cron: '30 19 * * 1-5'   # EDT
+    # Slot 5: ~18:00 ET after-hours (weekdays only)
+    - cron: '0 23 * * 1-5'    # EST
+    - cron: '0 22 * * 1-5'    # EDT
+    # Weekend reduced schedule (Sat + Sun — 2 slots only)
+    - cron: '0 15 * * 0,6'    # Weekend ~10:00 ET (EST)
+    - cron: '0 14 * * 0,6'    # Weekend ~10:00 ET (EDT)
+    - cron: '0 21 * * 0,6'    # Weekend ~16:00 ET (EST)
+    - cron: '0 20 * * 0,6'    # Weekend ~16:00 ET (EDT)
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+  CHARTIMG_API_KEY: ${{ secrets.CHARTIMG_API_KEY }}
+  TRADINGVIEW_SESSION: ${{ secrets.TRADINGVIEW_SESSION }}
+  TRADINGVIEW_LAYOUT_ID: ${{ secrets.TRADINGVIEW_LAYOUT_ID }}
+  # Main account (@AlexSterlingGBR)
+  X1_API_KEY: ${{ secrets.X1_API_KEY }}
+  X1_API_SECRET: ${{ secrets.X1_API_SECRET }}
+  X1_ACCESS_TOKEN: ${{ secrets.X1_ACCESS_TOKEN }}
+  X1_ACCESS_SECRET: ${{ secrets.X1_ACCESS_SECRET }}
+  # Account 2
+  X2_API_KEY: ${{ secrets.X2_API_KEY }}
+  X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
+  X2_ACCESS_TOKEN: ${{ secrets.X2_ACCESS_TOKEN }}
+  X2_ACCESS_SECRET: ${{ secrets.X2_ACCESS_SECRET }}
+  # Account 3
+  X3_API_KEY: ${{ secrets.X3_API_KEY }}
+  X3_API_SECRET: ${{ secrets.X3_API_SECRET }}
+  X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
+  X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
+
+permissions:
+  contents: write
+
+# Prevent overlapping live-tweet runs
+concurrency:
+  group: live-tweet-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Gather live market context
+        run: python -m content.live_context_gatherer
+        continue-on-error: true
+
+      - name: Generate live tweet
+        id: generate
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.force_type }}" != "" ]; then
+            ARGS="$ARGS --force-type ${{ github.event.inputs.force_type }}"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python -m content.live_tweet_generator $ARGS
+
+      - name: Generate charts for flagged tweets
+        run: python -m content.chart_generator
+        continue-on-error: true
+
+      - name: Post tweets (all accounts, staggered)
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          echo "=== Posting to main account ==="
+          python -m distribution.twitter_poster --account main --live-queue || true
+
+          echo "=== Waiting 10 min for account 2 ==="
+          sleep 600
+          python -m distribution.twitter_poster --account account2 --live-queue || true
+
+          echo "=== Waiting 10 min for account 3 ==="
+          sleep 600
+          python -m distribution.twitter_poster --account account3 --live-queue || true
+
+      - name: Commit queue updates
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Stage live system files
+          git add trades/live_content_queue.json 2>/dev/null || true
+          git add trades/live_context.json 2>/dev/null || true
+          git add trades/live_cost_log.json 2>/dev/null || true
+          git add trades/charts/live_*.png 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Live tweet: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            # Pull with rebase before push to avoid race conditions
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed - attempting merge"
+              git rebase --abort 2>/dev/null || true
+              git pull origin ${{ github.ref_name }}
+            }
+            git push
+          fi
+        continue-on-error: true
+
+      - name: Report status
+        if: always()
+        run: |
+          echo "## Live Tweet Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry Run:** ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Force Type:** ${{ github.event.inputs.force_type || 'auto' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+
+          # Show cost summary if available
+          if [ -f "trades/live_cost_log.json" ]; then
+            COST=$(python3 -c "import json; print(f\"\${json.load(open('trades/live_cost_log.json')).get('total_usd', 0):.4f}\")" 2>/dev/null || echo "N/A")
+            echo "- **Daily Cost:** $COST" >> $GITHUB_STEP_SUMMARY
+          fi

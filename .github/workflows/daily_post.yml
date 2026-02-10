@@ -176,7 +176,55 @@ jobs:
           echo "To fix: Run friday_scan.yml or daily_scan.yml manually"
           exit 1
 
+      - name: Check if live system already posted
+        id: check_live
+        run: |
+          python3 << 'CHECK_LIVE'
+          import json, os
+          from datetime import datetime, timedelta
+          from zoneinfo import ZoneInfo
+
+          live_posted = "false"
+          try:
+              queue_path = "trades/live_content_queue.json"
+              if os.path.exists(queue_path):
+                  with open(queue_path) as f:
+                      queue = json.load(f)
+                  now = datetime.now(ZoneInfo("America/New_York"))
+                  cutoff = now - timedelta(hours=3)
+                  recent_posts = []
+                  for t in queue:
+                      if t.get("status") != "posted":
+                          continue
+                      pa = t.get("posted_at")
+                      if not pa:
+                          continue
+                      try:
+                          pt = datetime.fromisoformat(pa)
+                          if pt.tzinfo is None:
+                              pt = pt.replace(tzinfo=ZoneInfo("UTC"))
+                          if pt > cutoff:
+                              recent_posts.append(t)
+                      except (ValueError, TypeError):
+                          continue
+                  if recent_posts:
+                      live_posted = "true"
+                      print(f"Live system posted {len(recent_posts)} tweet(s) in last 3h — skipping batch post")
+                  else:
+                      print("No recent live posts — batch posting will proceed")
+              else:
+                  print("No live queue file — batch posting will proceed")
+          except Exception as e:
+              print(f"Live check failed (harmless): {e}")
+              live_posted = "false"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"live_posted={live_posted}\n")
+          CHECK_LIVE
+        continue-on-error: true
+
       - name: Post to all accounts (staggered)
+        if: steps.check_live.outputs.live_posted != 'true'
         id: post
         run: |
           SLOT="${{ steps.slot.outputs.slot }}"
@@ -237,6 +285,7 @@ jobs:
           git add trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json 2>/dev/null || true
           git add trades/daily_content_queue.json trades/daily_content_queue_account2.json trades/daily_content_queue_account3.json 2>/dev/null || true
           git add trades/tweet_tracking.json 2>/dev/null || true
+          git add trades/live_content_queue.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -263,6 +312,7 @@ jobs:
             trades/daily_content_queue.json
             trades/daily_content_queue_account2.json
             trades/daily_content_queue_account3.json
+            trades/live_content_queue.json
           retention-days: 14
         if: always()
 

@@ -3,54 +3,54 @@
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "AEHR",
-      "symbol": "AEHR",
-      "price": 33.85,
-      "beta": 3.87,
-      "banker_score": 100,
+      "ticker": "PUMP",
+      "symbol": "PUMP",
+      "price": 11.62,
+      "beta": 2.53,
+      "banker_score": 75.7,
+      "sector": "Energy",
+      "industry": "Oil & Gas Equipment & Services",
+      "theme": "Energy"
+    },
+    {
+      "ticker": "NVMI",
+      "symbol": "NVMI",
+      "price": 475.83,
+      "beta": 3.02,
+      "banker_score": 75.1,
       "sector": "Technology",
       "industry": "Semiconductor Equipment & Materials",
       "theme": "Technology"
     },
     {
-      "ticker": "NG",
-      "symbol": "NG",
-      "price": 11.79,
-      "beta": 1.69,
-      "banker_score": 100,
+      "ticker": "FMC",
+      "symbol": "FMC",
+      "price": 16.05,
+      "beta": 2.34,
+      "banker_score": 74.6,
       "sector": "Basic Materials",
-      "industry": "Gold",
+      "industry": "Agricultural Inputs",
       "theme": "Basic Materials"
     },
     {
-      "ticker": "KC",
-      "symbol": "KC",
-      "price": 14.43,
-      "beta": 2.41,
-      "banker_score": 90.6,
-      "sector": "Technology",
-      "industry": "Software - Application",
-      "theme": "Technology"
-    },
-    {
-      "ticker": "AMRC",
-      "symbol": "AMRC",
-      "price": 33.69,
+      "ticker": "FRMI",
+      "symbol": "FRMI",
+      "price": 9.52,
       "beta": 2.76,
-      "banker_score": 83.1,
-      "sector": "Industrials",
-      "industry": "Engineering & Construction",
-      "theme": "Industrials"
+      "banker_score": 71.4,
+      "sector": "",
+      "industry": "",
+      "theme": ""
     },
     {
-      "ticker": "SGML",
-      "symbol": "SGML",
-      "price": 13.62,
-      "beta": 1.58,
-      "banker_score": 77.2,
-      "sector": "Basic Materials",
-      "industry": "Other Industrial Metals & Mining",
-      "theme": "Basic Materials"
+      "ticker": "VSAT",
+      "symbol": "VSAT",
+      "price": 45.33,
+      "beta": 4.05,
+      "banker_score": 69.6,
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "theme": "Technology"
     }
   ],
   "sell_signals": []

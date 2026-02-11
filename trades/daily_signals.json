@@ -1,56 +1,56 @@
 {
-  "scan_date": "2026-02-10",
+  "scan_date": "2026-02-11",
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "RAPP",
-      "symbol": "RAPP",
-      "price": 28.25,
-      "beta": 1.85,
-      "banker_score": 75.4,
-      "sector": "Healthcare",
-      "industry": "Biotechnology",
-      "theme": "Healthcare"
-    },
-    {
-      "ticker": "ONTO",
-      "symbol": "ONTO",
-      "price": 217.71,
-      "beta": 2.7,
-      "banker_score": 74.1,
+      "ticker": "AEHR",
+      "symbol": "AEHR",
+      "price": 33.85,
+      "beta": 3.87,
+      "banker_score": 100,
       "sector": "Technology",
       "industry": "Semiconductor Equipment & Materials",
       "theme": "Technology"
     },
     {
-      "ticker": "CSIQ",
-      "symbol": "CSIQ",
-      "price": 21.83,
-      "beta": 3.31,
-      "banker_score": 67.8,
-      "sector": "Technology",
-      "industry": "Solar",
-      "theme": "Technology"
+      "ticker": "NG",
+      "symbol": "NG",
+      "price": 11.79,
+      "beta": 1.69,
+      "banker_score": 100,
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "theme": "Basic Materials"
     },
     {
-      "ticker": "ADEA",
-      "symbol": "ADEA",
-      "price": 19.24,
-      "beta": 2.36,
-      "banker_score": 65.1,
+      "ticker": "KC",
+      "symbol": "KC",
+      "price": 14.43,
+      "beta": 2.41,
+      "banker_score": 90.6,
       "sector": "Technology",
       "industry": "Software - Application",
       "theme": "Technology"
     },
     {
-      "ticker": "ALLT",
-      "symbol": "ALLT",
-      "price": 10.43,
-      "beta": 2.35,
-      "banker_score": 61.7,
-      "sector": "Technology",
-      "industry": "Software - Infrastructure",
-      "theme": "Technology"
+      "ticker": "AMRC",
+      "symbol": "AMRC",
+      "price": 33.69,
+      "beta": 2.76,
+      "banker_score": 83.1,
+      "sector": "Industrials",
+      "industry": "Engineering & Construction",
+      "theme": "Industrials"
+    },
+    {
+      "ticker": "SGML",
+      "symbol": "SGML",
+      "price": 13.62,
+      "beta": 1.58,
+      "banker_score": 77.2,
+      "sector": "Basic Materials",
+      "industry": "Other Industrial Metals & Mining",
+      "theme": "Basic Materials"
     }
   ],
   "sell_signals": []

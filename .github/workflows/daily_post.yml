@@ -19,31 +19,36 @@ on:
         default: 'false'
         type: boolean
 
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CRON DISABLED — Live tweet system (live_tweet.yml) now handles posting.
+  # Re-enable when ready to run batch + live side-by-side, or if reverting
+  # to the batch-only system.
+  # ═══════════════════════════════════════════════════════════════════════════
   # 7-slot schedule (Eastern Time via UTC)
   # Two cron entries per slot: EST (UTC-5) and EDT (UTC-4)
   # Both fire; the poster uses get_current_slot() to auto-detect
-  schedule:
-    # Slot 1: 07:30 ET - Daily signal pre-market recap (weekdays only)
-    - cron: '30 12 * * 1-5'   # EST
-    - cron: '30 11 * * 1-5'   # EDT
-    # Slot 2: 10:00 ET - Weekly content (daily)
-    - cron: '0 15 * * *'      # EST
-    - cron: '0 14 * * *'      # EDT
-    # Slot 3: 12:30 ET - Weekly content (daily)
-    - cron: '30 17 * * *'     # EST
-    - cron: '30 16 * * *'     # EDT
-    # Slot 4: 15:30 ET - Weekly content / power hour (daily, CRITICAL)
-    - cron: '30 20 * * *'     # EST
-    - cron: '30 19 * * *'     # EDT
-    # Slot 5: 18:00 ET - Weekly content (daily)
-    - cron: '0 23 * * *'      # EST
-    - cron: '0 22 * * *'      # EDT
-    # Slot 6: 17:00 ET - Daily signals post-close (weekdays only)
-    - cron: '0 22 * * 1-5'    # EST
-    - cron: '0 21 * * 1-5'    # EDT
-    # Slot 7: 18:30 ET - Daily overflow / weekly (weekdays only)
-    - cron: '30 23 * * 1-5'   # EST
-    - cron: '30 22 * * 1-5'   # EDT
+  # schedule:
+  #   # Slot 1: 07:30 ET - Daily signal pre-market recap (weekdays only)
+  #   - cron: '30 12 * * 1-5'   # EST
+  #   - cron: '30 11 * * 1-5'   # EDT
+  #   # Slot 2: 10:00 ET - Weekly content (daily)
+  #   - cron: '0 15 * * *'      # EST
+  #   - cron: '0 14 * * *'      # EDT
+  #   # Slot 3: 12:30 ET - Weekly content (daily)
+  #   - cron: '30 17 * * *'     # EST
+  #   - cron: '30 16 * * *'     # EDT
+  #   # Slot 4: 15:30 ET - Weekly content / power hour (daily, CRITICAL)
+  #   - cron: '30 20 * * *'     # EST
+  #   - cron: '30 19 * * *'     # EDT
+  #   # Slot 5: 18:00 ET - Weekly content (daily)
+  #   - cron: '0 23 * * *'      # EST
+  #   - cron: '0 22 * * *'      # EDT
+  #   # Slot 6: 17:00 ET - Daily signals post-close (weekdays only)
+  #   - cron: '0 22 * * 1-5'    # EST
+  #   - cron: '0 21 * * 1-5'    # EDT
+  #   # Slot 7: 18:30 ET - Daily overflow / weekly (weekdays only)
+  #   - cron: '30 23 * * 1-5'   # EST
+  #   - cron: '30 22 * * 1-5'   # EDT
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

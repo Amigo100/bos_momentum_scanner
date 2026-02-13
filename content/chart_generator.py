@@ -55,7 +55,16 @@ except ImportError:
     CHART_IMG_WIDTH = 800
     CHART_IMG_HEIGHT = 450
     CHART_IMG_INTERVAL = "1W"
-    EXCHANGE_MAP = {}
+    EXCHANGE_MAP = {
+        "WCC": "NYSE", "STRL": "NASDAQ", "MOD": "NYSE",
+        "MATV": "NASDAQ", "LUMN": "NYSE", "FIX": "NYSE",
+        "RCAT": "NASDAQ", "IBKR": "NASDAQ", "CGON": "NASDAQ",
+        "TLN": "NYSE", "VNET": "NASDAQ",
+        "IESC": "NYSE", "AAON": "NASDAQ", "AMSC": "NASDAQ",
+        "AMPX": "NYSE", "APLD": "NASDAQ", "ASPI": "NASDAQ",
+        "BITF": "NASDAQ", "SOFI": "NASDAQ", "HIVE": "NASDAQ",
+        "EVTL": "NYSE", "NVDA": "NASDAQ", "AMD": "NASDAQ",
+    }
 
 
 CHARTS_DIR = TRADES_DIR / "charts"

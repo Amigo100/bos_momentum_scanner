@@ -14,51 +14,45 @@ on:
         type: boolean
         default: false
 
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CRON SCHEDULES — Currently DISABLED for initial deployment testing.
+  # After a successful workflow_dispatch dry-run, uncomment the schedule
+  # block below to enable automated live tweeting.
+  # ═══════════════════════════════════════════════════════════════════════════
   # Weekday slots (Mon-Fri) — UTC times targeting ET slots
   # Both EST and EDT crons fire; scripts use ET-aware datetime
-  schedule:
-    # Slot 1: ~07:30 ET pre-market (weekdays only)
-    - cron: '30 12 * * 1-5'   # EST
-    - cron: '30 11 * * 1-5'   # EDT
-    # Slot 2: ~10:00 ET morning (weekdays only)
-    - cron: '0 15 * * 1-5'    # EST
-    - cron: '0 14 * * 1-5'    # EDT
-    # Slot 3: ~12:30 ET midday (weekdays only)
-    - cron: '30 17 * * 1-5'   # EST
-    - cron: '30 16 * * 1-5'   # EDT
-    # Slot 4: ~15:30 ET power hour (weekdays only, CRITICAL)
-    - cron: '30 20 * * 1-5'   # EST
-    - cron: '30 19 * * 1-5'   # EDT
-    # Slot 5: ~18:00 ET after-hours (weekdays only)
-    - cron: '0 23 * * 1-5'    # EST
-    - cron: '0 22 * * 1-5'    # EDT
-    # Weekend reduced schedule (Sat + Sun — 2 slots only)
-    - cron: '0 15 * * 0,6'    # Weekend ~10:00 ET (EST)
-    - cron: '0 14 * * 0,6'    # Weekend ~10:00 ET (EDT)
-    - cron: '0 21 * * 0,6'    # Weekend ~16:00 ET (EST)
-    - cron: '0 20 * * 0,6'    # Weekend ~16:00 ET (EDT)
+  # schedule:
+  #   # Slot 1: ~07:30 ET pre-market (weekdays only)
+  #   - cron: '30 12 * * 1-5'   # EST
+  #   - cron: '30 11 * * 1-5'   # EDT
+  #   # Slot 2: ~10:00 ET morning (weekdays only)
+  #   - cron: '0 15 * * 1-5'    # EST
+  #   - cron: '0 14 * * 1-5'    # EDT
+  #   # Slot 3: ~12:30 ET midday (weekdays only)
+  #   - cron: '30 17 * * 1-5'   # EST
+  #   - cron: '30 16 * * 1-5'   # EDT
+  #   # Slot 4: ~15:30 ET power hour (weekdays only, CRITICAL)
+  #   - cron: '30 20 * * 1-5'   # EST
+  #   - cron: '30 19 * * 1-5'   # EDT
+  #   # Slot 5: ~18:00 ET after-hours (weekdays only)
+  #   - cron: '0 23 * * 1-5'    # EST
+  #   - cron: '0 22 * * 1-5'    # EDT
+  #   # Weekend reduced schedule (Sat + Sun — 2 slots only)
+  #   - cron: '0 15 * * 0,6'    # Weekend ~10:00 ET (EST)
+  #   - cron: '0 14 * * 0,6'    # Weekend ~10:00 ET (EDT)
+  #   - cron: '0 21 * * 0,6'    # Weekend ~16:00 ET (EST)
+  #   - cron: '0 20 * * 0,6'    # Weekend ~16:00 ET (EDT)
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
   XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
   CHARTIMG_API_KEY: ${{ secrets.CHARTIMG_API_KEY }}
-  TRADINGVIEW_SESSION: ${{ secrets.TRADINGVIEW_SESSION }}
-  TRADINGVIEW_LAYOUT_ID: ${{ secrets.TRADINGVIEW_LAYOUT_ID }}
-  # Main account (@AlexSterlingGBR)
-  X1_API_KEY: ${{ secrets.X1_API_KEY }}
-  X1_API_SECRET: ${{ secrets.X1_API_SECRET }}
-  X1_ACCESS_TOKEN: ${{ secrets.X1_ACCESS_TOKEN }}
-  X1_ACCESS_SECRET: ${{ secrets.X1_ACCESS_SECRET }}
-  # Account 2
-  X2_API_KEY: ${{ secrets.X2_API_KEY }}
-  X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
-  X2_ACCESS_TOKEN: ${{ secrets.X2_ACCESS_TOKEN }}
-  X2_ACCESS_SECRET: ${{ secrets.X2_ACCESS_SECRET }}
-  # Account 3
-  X3_API_KEY: ${{ secrets.X3_API_KEY }}
-  X3_API_SECRET: ${{ secrets.X3_API_SECRET }}
-  X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
-  X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
+  # Main account (@AlexSterlingGBR) — map X_* secrets to X1_* env vars
+  # Code uses X1_ prefix (config/settings.py TWITTER_ACCOUNTS['main']['env_prefix'] = 'X1')
+  X1_API_KEY: ${{ secrets.X_API_KEY }}
+  X1_API_SECRET: ${{ secrets.X_API_SECRET }}
+  X1_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+  X1_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
 
 permissions:
   contents: write
@@ -71,7 +65,7 @@ concurrency:
 jobs:
   generate-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -108,19 +102,11 @@ jobs:
         run: python -m content.chart_generator
         continue-on-error: true
 
-      - name: Post tweets (all accounts, staggered)
+      - name: Post tweet (account 1 only)
         if: github.event.inputs.dry_run != 'true'
         run: |
-          echo "=== Posting to main account ==="
+          echo "=== Posting to main account (@AlexSterlingGBR) ==="
           python -m distribution.twitter_poster --account main --live-queue || true
-
-          echo "=== Waiting 10 min for account 2 ==="
-          sleep 600
-          python -m distribution.twitter_poster --account account2 --live-queue || true
-
-          echo "=== Waiting 10 min for account 3 ==="
-          sleep 600
-          python -m distribution.twitter_poster --account account3 --live-queue || true
 
       - name: Commit queue updates
         run: |
@@ -155,6 +141,7 @@ jobs:
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Dry Run:** ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Force Type:** ${{ github.event.inputs.force_type || 'auto' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Account:** main (@AlexSterlingGBR)" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
 
           # Show cost summary if available

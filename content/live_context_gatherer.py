@@ -3,9 +3,9 @@
 LIVE CONTEXT GATHERER - Real-Time Market Snapshot via Grok
 ==========================================================
 
-Queries xAI Grok 3 Fast with X Search + Web Search to get a structured
-snapshot of current market conditions, filtered through Sterling Signals'
-portfolio holdings and tracked themes.
+Queries xAI Grok via the Responses API with X Search + Web Search to get a
+structured snapshot of current market conditions, filtered through Sterling
+Signals' portfolio holdings and tracked themes.
 
 Output is consumed by live_tweet_generator.py to produce timely tweets.
 
@@ -26,16 +26,16 @@ import re
 import argparse
 import logging
 import time
-from datetime import datetime, timedelta, time as dtime
+from datetime import datetime, timedelta, time as dtime, timezone
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 from zoneinfo import ZoneInfo
 
 try:
-    import openai
+    import requests
 except ImportError:
-    print("ERROR: openai not installed. Run: pip install openai")
+    print("ERROR: requests not installed. Run: pip install requests")
     sys.exit(1)
 
 
@@ -46,25 +46,31 @@ logger = logging.getLogger(__name__)
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-TRADES_DIR = BASE_DIR / "trades"
+try:
+    from config import (
+        TRADES_DIR, TRACKED_THEMES, CONTEXT_STALENESS_HOURS,
+        MODEL_CONTEXT, XAI_BASE_URL,
+    )
+    MODEL = MODEL_CONTEXT
+except ImportError:
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    TRADES_DIR = BASE_DIR / "trades"
+    MODEL = "grok-4-fast-non-reasoning"
+    XAI_BASE_URL = "https://api.x.ai/v1"
+    CONTEXT_STALENESS_HOURS = 4
+    TRACKED_THEMES = [
+        "copper", "infrastructure", "defense", "AI", "data centers",
+        "rare earth", "quantum computing", "space", "crypto mining",
+        "nuclear", "semiconductors", "reshoring",
+    ]
 
+# Local-only constants (not in config)
 PORTFOLIO_FILE = TRADES_DIR / "portfolio.csv"
 SIGNALS_FILE = TRADES_DIR / "signals.json"
 LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
 LIVE_CONTEXT_FILE = TRADES_DIR / "live_context.json"
-
-MODEL = "grok-3-fast"
-XAI_BASE_URL = "https://api.x.ai/v1"
 MAX_RETRIES = 2
 API_TIMEOUT = 30
-CONTEXT_STALENESS_HOURS = 4
-
-TRACKED_THEMES = [
-    "copper", "infrastructure", "defense", "AI", "data centers",
-    "rare earth", "quantum computing", "space", "crypto mining",
-    "nuclear", "semiconductors", "reshoring",
-]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -244,7 +250,9 @@ def check_stale_context() -> Optional[Dict]:
         if not gathered_at:
             return None
         gathered_time = datetime.fromisoformat(gathered_at)
-        age_hours = (datetime.utcnow() - gathered_time).total_seconds() / 3600
+        if gathered_time.tzinfo is None:
+            gathered_time = gathered_time.replace(tzinfo=timezone.utc)
+        age_hours = (datetime.now(timezone.utc) - gathered_time).total_seconds() / 3600
         if age_hours < CONTEXT_STALENESS_HOURS:
             data['context_stale'] = True
             return data
@@ -265,7 +273,7 @@ def build_fallback_context(positions: List[Dict]) -> Dict:
         })
 
     return {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "market_snapshot": {
             "spy_move": "N/A",
             "qqq_move": "N/A",
@@ -284,7 +292,7 @@ def build_fallback_context(positions: List[Dict]) -> Dict:
 
 def gather_live_context() -> ContextResult:
     """
-    Query Grok 3 Fast for live market context.
+    Query Grok via the Responses API for live market context.
 
     Returns:
         ContextResult with market data, cost, and error info.
@@ -319,8 +327,12 @@ def gather_live_context() -> ContextResult:
     )
     user_prompt = build_context_query(positions, signals, recent_tweets)
 
-    # Create xAI client
-    client = openai.OpenAI(api_key=api_key, base_url=XAI_BASE_URL)
+    # Construct Responses API request
+    api_url = f"{XAI_BASE_URL}/responses"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
 
     last_error = None
     for attempt in range(MAX_RETRIES + 1):
@@ -330,28 +342,57 @@ def gather_live_context() -> ContextResult:
             time.sleep(wait)
 
         try:
-            response = client.chat.completions.create(
-                model=MODEL,
-                messages=[
+            payload = {
+                "model": MODEL,
+                "tools": [{"type": "web_search"}, {"type": "x_search"}],
+                "input": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-                search_parameters={"mode": "auto"},
-                temperature=0.3,
-                timeout=API_TIMEOUT,
+                "temperature": 0.3,
+            }
+
+            resp = requests.post(
+                api_url, headers=headers, json=payload, timeout=API_TIMEOUT,
             )
 
-            # Extract text
-            raw_text = response.choices[0].message.content
+            if resp.status_code == 429:
+                last_error = "Rate limited: HTTP 429"
+                logger.warning(f"Attempt {attempt + 1}: {last_error}")
+                continue
+
+            if resp.status_code != 200:
+                last_error = f"API error: HTTP {resp.status_code} — {resp.text[:200]}"
+                logger.warning(f"Attempt {attempt + 1}: {last_error}")
+                continue
+
+            data = resp.json()
+
+            # Extract text from Responses API output
+            # Text can be in output[].type=="message" -> content[].type=="output_text"
+            # OR output[].type=="text" (varies by model/version)
+            raw_text = ""
+            for block in data.get("output", []):
+                if block.get("type") == "message":
+                    for cb in block.get("content", []):
+                        if cb.get("type") == "output_text":
+                            raw_text += cb.get("text", "")
+                elif block.get("type") == "text":
+                    raw_text += block.get("text", "")
+
+            if not raw_text:
+                last_error = "Empty response from API"
+                logger.warning(f"Attempt {attempt + 1}: {last_error}")
+                continue
 
             # Parse JSON
             context_data = parse_json_response(raw_text)
 
-            # Estimate cost (Grok 3 Fast: $0.20/M input, $0.50/M output)
-            usage = response.usage
+            # Estimate cost
+            usage = data.get("usage", {})
             if usage:
-                input_tokens = getattr(usage, 'prompt_tokens', 0) or 0
-                output_tokens = getattr(usage, 'completion_tokens', 0) or 0
+                input_tokens = usage.get("input_tokens", 0) or 0
+                output_tokens = usage.get("output_tokens", 0) or 0
                 result.cost = (input_tokens * 0.20 + output_tokens * 0.50) / 1_000_000
 
             result.context_data = context_data
@@ -360,14 +401,14 @@ def gather_live_context() -> ContextResult:
         except json.JSONDecodeError as e:
             last_error = f"JSON parse error: {e}"
             logger.warning(f"Attempt {attempt + 1}: {last_error}")
-        except openai.RateLimitError as e:
-            last_error = f"Rate limited: {e}"
-            logger.warning(f"Attempt {attempt + 1}: {last_error}")
-        except openai.APITimeoutError as e:
+        except requests.exceptions.Timeout as e:
             last_error = f"Timeout: {e}"
             logger.warning(f"Attempt {attempt + 1}: {last_error}")
-        except openai.APIError as e:
-            last_error = f"API error: {e}"
+        except requests.exceptions.ConnectionError as e:
+            last_error = f"Connection error: {e}"
+            logger.warning(f"Attempt {attempt + 1}: {last_error}")
+        except requests.exceptions.RequestException as e:
+            last_error = f"Request error: {e}"
             logger.warning(f"Attempt {attempt + 1}: {last_error}")
         except Exception as e:
             last_error = f"Unexpected error: {e}"
@@ -397,7 +438,7 @@ def gather_live_context() -> ContextResult:
 
 def save_context(context_data: Dict, output_path: Optional[Path] = None) -> Path:
     """Save context data to JSON file with metadata."""
-    context_data["gathered_at"] = datetime.utcnow().isoformat()
+    context_data["gathered_at"] = datetime.now(timezone.utc).isoformat()
     context_data["is_market_hours"] = is_market_open()
     context_data["is_extended_hours"] = is_extended_hours()
 
@@ -434,7 +475,7 @@ def main() -> int:
         print(f"\n  Time: {now_et.strftime('%Y-%m-%d %H:%M ET')}")
         print(f"  Market open: {is_market_open()}")
         print(f"  Extended hours: {is_extended_hours()}")
-        print("  Querying Grok 3 Fast with live search...")
+        print(f"  Querying {MODEL} with live search...")
 
     result = gather_live_context()
 

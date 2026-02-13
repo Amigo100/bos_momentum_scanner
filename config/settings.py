@@ -69,22 +69,63 @@ KILLED_CATEGORIES: List[str] = [
 # TRADING PARAMETERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-TRAILING_STOP_PCT = 20.0      # 20% trailing stop from highest close
-STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop
+# ── Legacy parameters (used by daily_scanner ONLY) ──────────────────────────
+TRAILING_STOP_PCT = 20.0      # 20% trailing stop — daily scanner only
+STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop — daily scanner only
+BETA_THRESHOLD = 1.5          # Minimum beta — daily scanner only
+BANKER_CENTER = 50            # Neutral point (at VWAP) — daily scanner only
+BANKER_SCALE_FACTOR = 5       # How quickly banker moves from center — daily scanner only
+VWAP_PERIOD = 20              # Days for VWAP calculation — daily scanner only
 
-BETA_THRESHOLD = 1.5          # Minimum beta for entry
+# ── Sterling Grid Indicator Parameters (V1-V4 backtest-validated) ────────────
+# These are the PRODUCTION parameters for the weekly scanner pipeline.
+# Source: sterling_indicators.py (exact match to backtest)
+HMA_PERIOD = 21               # Hull Moving Average period (on weekly HL2)
+PRICE_CAP = 25.0              # Maximum entry price for buy signals
+RSI_PERIOD = 14               # RSI(14) for entry "rsi_above_50" condition
+MACD_FAST = 12                # MACD fast EMA
+MACD_SLOW = 26                # MACD slow EMA
+MACD_SIGNAL_PERIOD = 9        # MACD signal EMA
 
-# Banker entry gate: "rising" check (current bar > previous bar)
-# Static thresholds removed — backtesting proved rising check is optimal.
-# Tier ranking thresholds (70/60) are applied inline in scanner.py for ranking only.
+# Undercurrent parameters — UC = clip(1.5 × (RSI(10) − 50), 0, 20)
+# NOT a VWAP indicator. RSI(10)-based momentum oscillator.
+UC_TARGET_DAYS = 50           # Target days for internal RSI calculation
+UC_SENSITIVITY = 1.5          # Scaling factor applied to (RSI - 50)
+UC_TIMEFRAME = "weekly"       # Divisor = 5.0 → RSI length = round(50/5) = 10
 
-# Banker formula parameters: banker = BANKER_CENTER + (deviation_pct * BANKER_SCALE_FACTOR)
-BANKER_CENTER = 50            # Neutral point (at VWAP)
-BANKER_SCALE_FACTOR = 5       # How quickly banker moves from center
-VWAP_PERIOD = 20              # Days for VWAP calculation
+# Tiered profit lock — exit when current close <= lock_level
+# CRITICAL: Tier determined by CURRENT return, not peak. Tiers can degrade.
+# (threshold_as_fraction, trail_pct_from_peak)
+LOCK_TIERS = [
+    (2.00, 0.15),   # current_return >= +200% → 15% trail from peak
+    (1.00, 0.20),   # current_return >= +100% → 20% trail from peak
+    (0.50, 0.25),   # current_return >= +50%  → 25% trail from peak
+]
 
-# HMA (Hull Moving Average) parameters
-HMA_PERIOD = 21               # HMA lookback period for BoS calculation
+# ── Position Sizing — Conviction-Tiered (15×6 Recommended Config) ────────────
+MAX_CONCURRENT_POSITIONS = 6
+MIN_CASH_RESERVE_PCT = 0.10   # Always keep 10% cash
+
+# Conviction tiers: conviction_range → equity_pct, max_slots
+CONVICTION_TIERS = {
+    'HIGH':     {'min_conviction': 8, 'max_conviction': 10, 'equity_pct': 0.20, 'max_slots': 2,
+                 'label': 'STRONG BUY (high conviction)'},
+    'STANDARD': {'min_conviction': 7, 'max_conviction': 7,  'equity_pct': 0.15, 'max_slots': 3,
+                 'label': 'STRONG BUY (standard)'},
+    'SPEC':     {'min_conviction': 4, 'max_conviction': 6,  'equity_pct': 0.08, 'max_slots': 2,
+                 'label': 'SPEC BUY'},
+}
+
+# Gear-shift configurations: conservative/recommended/aggressive
+SIZING_GEARS = {
+    'conservative': {'base_pct': 0.10, 'max_positions': 8,
+                     'tiers': {'HIGH': 0.12, 'STANDARD': 0.10, 'SPEC': 0.06}},
+    'recommended':  {'base_pct': 0.15, 'max_positions': 6,
+                     'tiers': {'HIGH': 0.20, 'STANDARD': 0.15, 'SPEC': 0.08}},
+    'aggressive':   {'base_pct': 0.20, 'max_positions': 5,
+                     'tiers': {'HIGH': 0.25, 'STANDARD': 0.20, 'SPEC': 0.10}},
+}
+DEFAULT_SIZING_GEAR = 'recommended'
 
 # Daily scanner parameters (Phase 3)
 DAILY_SIGNAL_MAX = 5               # Max new buy signals per daily scan
@@ -120,12 +161,18 @@ MODEL_OPUS = "claude-opus-4-5-20251101"     # Deep analysis (DD, complex tasks)
 
 # Default model for each component
 MODEL_THEMATIC = MODEL_SONNET
-MODEL_GATEKEEPER = MODEL_SONNET
 MODEL_TWEET = MODEL_SONNET
 MODEL_NEWSLETTER = MODEL_SONNET
 MODEL_MARKET = MODEL_SONNET
-MODEL_DD_QUICK = MODEL_SONNET
-MODEL_DD_FULL = MODEL_OPUS
+
+# Sterling Grid LLM gates
+MODEL_INVESTMENT_GATE = MODEL_SONNET   # Investment Gate (replaces Gatekeeper + DD Automator)
+MODEL_DEEP_DD = MODEL_OPUS             # Deep DD (Opus + extended thinking, 1-3 stocks only)
+DEEP_DD_THINKING_BUDGET = 10000        # Max tokens for extended thinking in Deep DD
+
+# Legacy model aliases — removed in Sterling Grid upgrade (Feb 2026)
+# If you see import errors for MODEL_GATEKEEPER or MODEL_DD_QUICK,
+# use MODEL_INVESTMENT_GATE or MODEL_DEEP_DD instead.
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -487,14 +534,31 @@ SIGNAL_BRAND = "GREEN signal"  # Instead of "PASS signal"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 SIGNAL_TYPES: Dict[str, Dict] = {
+    # ── Sterling Grid verdicts (Investment Gate) ──
+    'STRONG_BUY': {
+        'description': 'Investment Gate STRONG BUY — full conviction entry',
+        'public_name': 'GREEN Signal',
+        'show_publicly': True,
+    },
+    'SPEC_BUY': {
+        'description': 'Investment Gate SPEC BUY — speculative entry',
+        'public_name': 'GREEN Signal',
+        'show_publicly': True,
+    },
+    'NO_GO': {
+        'description': 'Investment Gate NO GO — do not enter',
+        'public_name': None,
+        'show_publicly': False,
+    },
+    # ── Legacy verdicts (backward compat with existing portfolio) ──
     'PASS': {
-        'description': 'Cleared all 5 gates - full GREEN signal',
+        'description': 'Cleared all 5 gates - full GREEN signal (legacy)',
         'public_name': 'GREEN Signal',
         'gates_required': [1, 2, 3, 4, 5],
         'show_publicly': True,
     },
     'CONSIDER': {
-        'description': 'Cleared gates 1-4, watching for gate 5',
+        'description': 'Cleared gates 1-4, watching for gate 5 (legacy)',
         'public_name': 'On Our Radar',
         'gates_required': [1, 2, 3, 4],
         'show_publicly': True,
@@ -772,11 +836,17 @@ SIGNAL_COLORS: Dict[str, Dict] = {
 }
 
 CONVICTION_LANGUAGE: Dict[int, str] = {
-    5: 'Extremely Bullish',
-    4: 'Bullish',
-    3: 'Watching',
-    2: 'Cautious',
-    1: None,  # Do not post publicly
+    10: 'Extremely Bullish',
+    9: 'Extremely Bullish',
+    8: 'Extremely Bullish',
+    7: 'Bullish',
+    6: 'Watching',
+    5: 'Watching',
+    4: 'Watching',
+    3: None,   # Do not post publicly
+    2: None,   # Do not post publicly
+    1: None,   # Do not post publicly
+    # Legacy 1-5 backward compatibility (existing portfolio entries)
 }
 
 ENTRY_PRICE_RULES: Dict[str, any] = {
@@ -824,12 +894,15 @@ def get_signal_emoji(signal_type: str) -> str:
 def get_conviction_text(score: int) -> str:
     """Convert conviction score to public-facing language.
 
+    Supports both new 1-10 scale and legacy 1-5 scale.
+
     Args:
-        score: Conviction score (1-5)
+        score: Conviction score (1-10 new scale, 1-5 legacy)
 
     Returns:
         Public-facing text ('Extremely Bullish', 'Bullish', 'Watching', etc.)
-        Returns 'Watching' as default for invalid scores
+        Returns 'Watching' as default for invalid scores.
+        Returns None for scores that should not be posted publicly (1-3).
     """
     return CONVICTION_LANGUAGE.get(score, 'Watching')
 
@@ -1157,7 +1230,7 @@ def get_ticker_history(ticker: str) -> List[str]:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # xAI / Grok models
-MODEL_CONTEXT = "grok-3-fast"
+MODEL_CONTEXT = "grok-4-fast-non-reasoning"
 MODEL_LIVE_TWEET = "claude-sonnet-4-5-20250929"
 XAI_BASE_URL = "https://api.x.ai/v1"
 
@@ -1174,8 +1247,8 @@ MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
 # Chart-img.com integration (REST API — CI-compatible, no browser needed)
 CHARTIMG_API_URL = "https://api.chart-img.com/v2/tradingview/advanced-chart"
-CHART_IMG_WIDTH = 800                     # pixels
-CHART_IMG_HEIGHT = 450                    # pixels
+CHART_IMG_WIDTH = 1200                    # pixels (Chart-IMG Pro tier, 16:9 for X/Twitter)
+CHART_IMG_HEIGHT = 675                    # pixels
 CHART_IMG_INTERVAL = "1W"                 # Default weekly
 
 # Live queue path
@@ -1196,15 +1269,22 @@ WEEKEND_CATEGORIES: List[str] = [
 
 # Exchange mapping for chart-img.com (ticker → exchange prefix)
 EXCHANGE_MAP: Dict[str, str] = {
+    # Original
     "WCC": "NYSE", "STRL": "NASDAQ", "MOD": "NYSE",
     "MATV": "NASDAQ", "LUMN": "NYSE", "FIX": "NYSE",
     "RCAT": "NASDAQ", "IBKR": "NASDAQ", "CGON": "NASDAQ",
     "TLN": "NYSE", "VNET": "NASDAQ",
+    # Portfolio additions
+    "IESC": "NYSE", "AAON": "NASDAQ", "AMSC": "NASDAQ",
+    "AMPX": "NYSE", "APLD": "NASDAQ", "ASPI": "NASDAQ",
+    "BITF": "NASDAQ", "SOFI": "NASDAQ", "HIVE": "NASDAQ",
+    "EVTL": "NYSE", "NVDA": "NASDAQ", "AMD": "NASDAQ",
 }
 
 # Centralized API pricing (per million tokens)
 API_PRICING: Dict[str, Dict[str, float]] = {
     "grok-3-fast": {"input": 0.20, "output": 0.50},
+    "grok-4-fast-non-reasoning": {"input": 0.20, "output": 0.50},
     "claude-sonnet-4-5-20250929": {"input": 3.00, "output": 15.00},
     "claude-sonnet-4-20250514": {"input": 3.00, "output": 15.00},
 }

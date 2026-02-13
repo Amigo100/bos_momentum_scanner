@@ -27,7 +27,7 @@ import random
 import argparse
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -57,28 +57,37 @@ logger = logging.getLogger(__name__)
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-TRADES_DIR = BASE_DIR / "trades"
+try:
+    from config import (
+        TRADES_DIR, LIVE_QUEUE_FILE,
+        MAX_TWEETS_PER_DAY, MAX_SAME_TICKER_PER_DAY,
+        MIN_HOURS_BETWEEN_SAME_TICKER, CONTEXT_STALENESS_HOURS,
+        MODEL_LIVE_TWEET, WEEKEND_MAX_TWEETS, WEEKEND_CATEGORIES as _WEEKEND_CATS,
+    )
+    MODEL = MODEL_LIVE_TWEET
+    WEEKEND_CATEGORIES = set(_WEEKEND_CATS)  # Config stores List, local needs Set
+except ImportError:
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    TRADES_DIR = BASE_DIR / "trades"
+    LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
+    MODEL = "claude-sonnet-4-5-20250929"
+    MAX_TWEETS_PER_DAY = 12
+    WEEKEND_MAX_TWEETS = 4
+    MAX_SAME_TICKER_PER_DAY = 3
+    MIN_HOURS_BETWEEN_SAME_TICKER = 3
+    CONTEXT_STALENESS_HOURS = 4
+    WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT"}
 
+# Local-only constants (not in config)
 PORTFOLIO_FILE = TRADES_DIR / "portfolio.csv"
 SIGNALS_FILE = TRADES_DIR / "signals.json"
 LIVE_CONTEXT_FILE = TRADES_DIR / "live_context.json"
-LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
 FAILED_TWEETS_FILE = TRADES_DIR / "failed_tweets.json"
-STYLE_GUIDE_PATH = BASE_DIR / "FINTWIT_STYLE_GUIDE.md"
+STYLE_GUIDE_PATH = Path(__file__).resolve().parent.parent / "FINTWIT_STYLE_GUIDE.md"
 
-MODEL = "claude-sonnet-4-5-20250929"
 MAX_TOKENS = 1500
 MAX_TWEET_CHARS = 280
 MAX_REPAIR_ATTEMPTS = 2
-
-# Decision logic limits
-MAX_TWEETS_PER_DAY = 12
-WEEKEND_MAX_TWEETS = 4
-MAX_SAME_TICKER_PER_DAY = 3
-MIN_HOURS_BETWEEN_SAME_TICKER = 3
-CONTEXT_STALENESS_HOURS = 4
-WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT"}
 
 # Live system valid categories (subset of VALID_CATEGORIES)
 LIVE_VALID_CATEGORIES = {
@@ -712,7 +721,9 @@ def validate_tweet(
         if gathered_at:
             try:
                 gathered_time = datetime.fromisoformat(gathered_at)
-                age_hours = (datetime.utcnow() - gathered_time).total_seconds() / 3600
+                if gathered_time.tzinfo is None:
+                    gathered_time = gathered_time.replace(tzinfo=timezone.utc)
+                age_hours = (datetime.now(timezone.utc) - gathered_time).total_seconds() / 3600
                 if age_hours > CONTEXT_STALENESS_HOURS:
                     failures.append(
                         f"step9_staleness: context {age_hours:.1f}h old, MARKET_REACTION blocked"
@@ -742,14 +753,51 @@ def validate_tweet(
 # QUEUE WRITING
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _prune_queue(queue: List[Dict], max_age_days: int = 7) -> List[Dict]:
+    """Remove old posted/skipped/failed items. Keep all pending items.
+
+    Prevents unbounded queue growth that causes git bloat and slow dedup.
+
+    Args:
+        queue: Full queue list
+        max_age_days: Remove non-pending items older than this
+
+    Returns:
+        Pruned queue list
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
+    pruned = []
+    removed = 0
+    for item in queue:
+        if item.get("status") == "pending":
+            pruned.append(item)
+            continue
+        generated_at = item.get("generated_at", "")
+        try:
+            gen_time = datetime.fromisoformat(generated_at)
+            if gen_time.tzinfo is None:
+                gen_time = gen_time.replace(tzinfo=timezone.utc)
+            if gen_time >= cutoff:
+                pruned.append(item)
+                continue
+        except (ValueError, TypeError):
+            pruned.append(item)  # Keep items with bad dates
+            continue
+        removed += 1
+    if removed > 0:
+        print(f"  🧹 Pruned {removed} items older than {max_age_days} days")
+    return pruned
+
+
 def write_to_live_queue(
     validated_tweets: List[Dict], decision: Dict, context: Dict, cost: float,
 ) -> Path:
     """Write validated tweets to the live content queue."""
-    # Load existing queue
+    # Load existing queue and prune old items
     queue = load_json_list(LIVE_QUEUE_FILE)
+    queue = _prune_queue(queue)
 
-    now_utc = datetime.utcnow()
+    now_utc = datetime.now(timezone.utc)
     now_et = datetime.now(ZoneInfo("America/New_York"))
     timestamp_str = now_et.strftime("%Y%m%d_%H%M%S")
 
@@ -799,7 +847,7 @@ def log_failed_tweet(tweet_dict: Dict, failures: List[str]):
         "text": tweet_dict.get("text", ""),
         "category": tweet_dict.get("category", ""),
         "failures": failures,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     })
     # Keep last 100 entries
     failed = failed[-100:]

@@ -582,7 +582,10 @@ def post_tweet(client_v2, api_v1, tweet: Dict, dry_run: bool = False) -> bool:
         return False
 
     print(f"\n  📝 Tweet: {tweet_id}")
-    print(f"  📅 Scheduled: {tweet.get('scheduled_date')} slot {tweet.get('slot')}")
+    if tweet.get('scheduled_date'):
+        print(f"  📅 Scheduled: {tweet.get('scheduled_date')} slot {tweet.get('slot')}")
+    else:
+        print(f"  📡 Mode: LIVE | Generated: {tweet.get('scheduled_time', tweet.get('generated_at', 'N/A'))}")
     print(f"  📊 Category: {tweet.get('category')}")
     if tweet.get("ticker"):
         print(f"  💹 Ticker: ${tweet.get('ticker')}")
@@ -755,7 +758,10 @@ def post_thread(client_v2, api_v1, thread_item: Dict, dry_run: bool = False) -> 
     print(f"\n  🧵 Thread: {thread_id}")
     print(f"  📚 Topic: {thread_topic}")
     print(f"  📊 Tweets: {len(thread_tweets)}")
-    print(f"  📅 Scheduled: {thread_item.get('scheduled_date')} slot {thread_item.get('slot')}")
+    if thread_item.get('scheduled_date'):
+        print(f"  📅 Scheduled: {thread_item.get('scheduled_date')} slot {thread_item.get('slot')}")
+    else:
+        print(f"  📡 Mode: LIVE")
 
     reply_to_id = None  # First tweet has no parent
 

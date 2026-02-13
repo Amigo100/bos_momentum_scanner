@@ -72,19 +72,22 @@ def _sample_signals() -> dict:
         ],
         "buy_signals": [
             {"symbol": "NVDA", "price": 142.50, "theme": "AI Infrastructure",
-             "catalyst_summary": "Data center CapEx surge", "tier": "TIER1", "conviction": 4},
+             "catalyst_summary": "Data center CapEx surge", "tier": "TIER1", "conviction": 8,
+             "uc": 14.5, "gate_verdict": "STRONG_BUY"},
             {"symbol": "INOD", "price": 61.54, "theme": "Power Grid",
-             "catalyst_summary": "Grid modernisation", "tier": "TIER1", "conviction": 4},
+             "catalyst_summary": "Grid modernisation", "tier": "TIER1", "conviction": 7,
+             "uc": 16.2, "gate_verdict": "STRONG_BUY"},
             {"symbol": "AMPX", "price": 18.30, "theme": "Nuclear Renaissance",
-             "catalyst_summary": "DOE contract", "tier": "TIER2", "conviction": 3},
+             "catalyst_summary": "DOE contract", "tier": "TIER2", "conviction": 5,
+             "uc": 9.0, "gate_verdict": "SPEC_BUY"},
         ],
         "sell_signals": [
-            {"symbol": "VNET", "price": 10.80, "reason": "Weekly BoS Down",
+            {"symbol": "VNET", "price": 10.80, "reason": "ExD exit (structural trend reversal)",
              "entry_price": 12.00, "highest_close": 14.00},
         ],
         "consider_signals": [
-            {"symbol": "IONQ", "price": 42.15, "action": "Wait for pullback"},
-            {"symbol": "QUBT", "price": 8.90, "action": "Extended move"},
+            {"symbol": "IONQ", "price": 42.15, "action": "Wait for pullback", "conviction": 5},
+            {"symbol": "QUBT", "price": 8.90, "action": "Extended move", "conviction": 4},
         ],
     }
 
@@ -94,9 +97,9 @@ def _sample_portfolio_csv(tmpdir: Path) -> Path:
     csv_path = tmpdir / "portfolio.csv"
     csv_path.write_text(
         "ticker,status,entry_date,entry_price,exit_date,exit_price,highest_close,theme,tier,signal_type,conviction,notes,current_price\n"
-        "RCAT,OPEN,2025-12-29,8.50,,,12.19,Drone Technology,TIER1,TRADE,4,,13.25\n"
-        "IBKR,OPEN,2025-12-29,65.00,,,72.93,Financials,TIER1,TRADE,5,,72.00\n"
-        "LOSER,OPEN,2025-12-29,20.00,,,20.00,BadTheme,TIER3,TRADE,2,,15.00\n"
+        "RCAT,OPEN,2025-12-29,8.50,,,12.19,Drone Technology,TIER1,TRADE,8,,13.25\n"
+        "IBKR,OPEN,2025-12-29,65.00,,,72.93,Financials,TIER1,TRADE,7,,72.00\n"
+        "LOSER,OPEN,2025-12-29,20.00,,,20.00,BadTheme,TIER3,TRADE,4,,15.00\n"
     )
     return csv_path
 
@@ -388,12 +391,14 @@ class TestChartFlagSetCorrectly:
 
     def test_chart_flag_set_correctly(self):
         # Categories that REQUIRE charts
-        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL", "PERFORMANCE"}
+        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL", "PERFORMANCE",
+                     "RECEIPT", "SIGNAL_ALERT"}
 
         # Categories that do NOT require charts
         not_required = {"THEME_ANALYSIS", "WATCHLIST", "EDUCATIONAL",
                         "MARKET_COMMENTARY", "ENGAGEMENT", "NEWSLETTER_CTA",
-                        "TECHNICAL_ANALYSIS"}
+                        "TECHNICAL_ANALYSIS", "MARKET_REACTION", "DIP_OPPORTUNITY",
+                        "THEME_MOMENTUM"}
 
         # Verify against CHART_REQUIRED_CATEGORIES
         assert CHART_REQUIRED_CATEGORIES == required, \

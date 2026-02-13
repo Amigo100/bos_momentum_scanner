@@ -71,6 +71,34 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
         "chart_required": False,
         "min_elements": ["value proposition"],
     },
+    # ═══════════════════════════════════════════════════════════════
+    # LIVE TWEET CATEGORIES (used by live_tweet_generator.py)
+    # ═══════════════════════════════════════════════════════════════
+    "MARKET_REACTION": {
+        "source": "Live Grok context — real-time market moves",
+        "chart_required": False,
+        "min_elements": ["$TICKER", "price movement", "context"],
+    },
+    "RECEIPT": {
+        "source": "Portfolio winners — entry vs current price",
+        "chart_required": True,
+        "min_elements": ["$TICKER", "entry price", "current price", "% gain"],
+    },
+    "SIGNAL_ALERT": {
+        "source": "Scanner signals — new or recent",
+        "chart_required": True,
+        "min_elements": ["$TICKER", "entry price"],
+    },
+    "DIP_OPPORTUNITY": {
+        "source": "Market dips — buying opportunity framing",
+        "chart_required": False,
+        "min_elements": ["context", "$TICKER", "opportunity"],
+    },
+    "THEME_MOMENTUM": {
+        "source": "Theme breakouts with multiple tickers",
+        "chart_required": False,
+        "min_elements": ["theme name", "3+ $TICKERs with prices"],
+    },
 }
 
 # Categories that REQUIRE a chart attachment
@@ -196,13 +224,14 @@ class ContentData:
 # here as regex patterns for the terminology-specific validation step.
 
 INTERNAL_TERM_PATTERNS: List[str] = [
+    # Legacy indicator terms
     r"\bHMA\b",
     r"\bBoS\b",
     r"\bBOS\b",
     r"\bBanker\b",
     r"\btier\s*[123]\b",
     r"\bTIER[123]\b",
-    r"\bconviction\s*\d\b",
+    r"\bconviction\s*\d+\b",
     r"\bconviction\s+score\b",
     r"\bVWAP\b",
     r"\bgate\s*[1-5]\b",
@@ -212,4 +241,19 @@ INTERNAL_TERM_PATTERNS: List[str] = [
     r"\bRSI\b",
     r"\bMACD\b",
     r"\bKDJ\b",
+    # Sterling Grid terms (never reveal publicly)
+    r"\bUC\b",
+    r"\bundercurrent\b",
+    r"\bExD\b",
+    r"\bprofit\s+lock\b",
+    r"\btiered\s+stop\b",
+    r"\bgear\s+shift\b",
+    r"\bprice\s+cap\b",
+    r"\binvestment\s+gate\b",
+    r"\bdeep\s+dd\b",
+    r"\bSTRONG\s+BUY\b",
+    r"\bSPEC\s+BUY\b",
+    r"\bNO\s+GO\b",
+    r"\bvaluation\s+regime\b",
+    r"\bkill\s+switch\b",
 ]

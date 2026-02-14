@@ -1,215 +1,178 @@
 {
-  "timestamp": "2026-02-07 04:05:06",
+  "timestamp": "2026-02-14 11:43:15",
   "timeframe": "WEEKLY",
-  "entry_criteria": "Weekly BoS Up + Hot Theme + PASS decision (generates GREEN signal)",
-  "exit_criteria": "Weekly BoS Down OR 20.0% trailing stop",
+  "entry_criteria": "Sterling Grid: HMA slope\u2191 + RSI>50 + MACD cross-up + UC rising + Price<$25 + Theme + Investment Gate PASS",
+  "exit_criteria": "ExD compound exit (HMA falling + UC falling) OR tiered profit lock (+200%\u219215%, +100%\u219220%, +50%\u219225%)",
   "stats": {
     "tickers_loaded": 885,
     "data_downloaded": 885,
-    "beta_gte_1_5": 324,
-    "weekly_bos_up": 4,
-    "technical_signals": 3,
-    "theme_confirmed": 1,
+    "price_under_cap": 430,
+    "hma_slope_rising": 195,
+    "rsi_above_50": 190,
+    "macd_cross_up": 10,
+    "uc_rising_above": 54,
+    "buy_signal": 4,
+    "technical_signals": 4,
+    "theme_confirmed": 3,
     "final_trade": 0,
-    "final_consider": 1
+    "final_consider": 0,
+    "beta_gte_1_5": 323,
+    "weekly_bos_up": 4
   },
   "themes": [
     {
-      "name": "Grid Infrastructure & Power Generation",
+      "name": "AI Power Infrastructure & Grid Modernization",
       "rank": 1,
       "classification": "PRIME",
       "theme_type": "BOTTLENECK",
-      "composite_score": 9.0,
-      "thesis_summary": "AI's exponential power demand is creating an unprecedented infrastructure bottleneck where technological advancement is being constrained by physical power delivery. With data centers needing 5x-7x more power while grid infrastructure takes 5-15 years to build, this represents a massive multi-year investment cycle that's barely begun.",
+      "composite_score": 8.6,
+      "thesis_summary": "Power availability has become the primary constraint on AI expansion, forcing a strategic pivot from relying on public grids to developing integrated power solutions. This creates a multi-year investment cycle in grid modernization, nuclear power, and energy infrastructure as hyperscalers invest hundreds of billions in dedicated power generation.",
       "key_catalysts": [
-        "AI data center power demand surge",
-        "Transformer lead times at 143 weeks",
-        "Grid investment needs to double to $600B by 2030",
-        "1,500 GW renewable projects waiting for grid connection"
+        "Global data center power demand to grow from 55GW to 84GW by 2028",
+        "Trump administration promising to 'open up energy plants' for AI",
+        "Microsoft/Oracle each announcing >10GW data center projects",
+        "Grid connection backlogs forcing on-site power generation solutions"
       ],
       "momentum_score": 8,
-      "catalyst_score": 10
+      "catalyst_score": 9,
+      "valuation_regime": "FUNDAMENTAL"
     },
     {
-      "name": "Defense Manufacturing & Supply Chain Security",
+      "name": "Defense Industrial Base Modernization",
       "rank": 2,
-      "classification": "PRIME",
-      "theme_type": "BOTTLENECK",
-      "composite_score": 8.2,
-      "thesis_summary": "Defense spending surge is creating bottlenecks in manufacturing capacity and supply chain resilience that require multi-year rebuilding efforts. Focus on companies solving critical supply constraints rather than just benefiting from budget increases.",
-      "key_catalysts": [
-        "Europe defense spending to double to \u20ac650-750B by 2030",
-        "Russell 2000 Aerospace & Defense +358% earnings growth forecast",
-        "Ukraine conflict exposing supply bottlenecks",
-        "Supply chain reshoring mandates"
-      ],
-      "momentum_score": 8,
-      "catalyst_score": 9
-    },
-    {
-      "name": "Precious Metals & Alternative Stores of Value",
-      "rank": 3,
-      "classification": "PRIME",
+      "classification": "INVESTABLE",
       "theme_type": "TREND",
-      "composite_score": 7.5,
-      "thesis_summary": "Precious metals benefiting from unique combination of industrial demand (AI/renewables driving silver) and financial demand (fiscal concerns driving gold). Silver's industrial usage provides more durable demand than purely financial plays.",
+      "composite_score": 7.4,
+      "thesis_summary": "Geopolitical tensions and defense budget increases are driving a multi-year modernization cycle, with supply chain bottlenecks in solid rocket motors, electronics, and manufacturing creating investment opportunities in defense industrial capacity expansion and next-generation production technologies.",
       "key_catalysts": [
-        "Industrial silver demand from AI/renewable tech",
-        "Fiscal concerns driving debasement trade",
-        "Central bank gold purchases",
-        "Supply constraints in mining"
-      ],
-      "momentum_score": 9,
-      "catalyst_score": 8
-    },
-    {
-      "name": "Energy Storage & Battery Infrastructure",
-      "rank": 4,
-      "classification": "PRIME",
-      "theme_type": "BOTTLENECK",
-      "composite_score": 7.5,
-      "thesis_summary": "Energy storage is the critical enabler for both renewable grid integration and AI data center backup power. Theme benefits from solving multiple infrastructure bottlenecks simultaneously while supply chain constraints create additional pricing power.",
-      "key_catalysts": [
-        "Grid modernization requiring storage for renewables",
-        "AI data centers needing backup power systems",
-        "EV charging infrastructure expansion",
-        "China rare earth export restrictions"
+        "Pentagon FY2026 budget request of $961.6B plus $150B reconciliation",
+        "Defense reindustrialization and supply chain reshoring initiatives",
+        "Solid rocket motor supply chain investments ($73M+ contracts announced)",
+        "3D printing/additive manufacturing scaling for expeditionary production"
       ],
       "momentum_score": 7,
-      "catalyst_score": 8
+      "catalyst_score": 8,
+      "valuation_regime": "FUNDAMENTAL"
     },
     {
-      "name": "Communication Services - AI Monetization",
+      "name": "Healthcare Sector Contrarian Recovery",
+      "rank": 3,
+      "classification": "INVESTABLE",
+      "theme_type": "CONTRARIAN",
+      "composite_score": 7.0,
+      "thesis_summary": "After 2.5 years of underperformance due to policy uncertainty and COVID impacts, healthcare is positioned for recovery as drug pricing clarity emerges, AI adoption accelerates, and valuations remain attractive relative to expected returns. The sector offers defensive characteristics with AI-driven efficiency upside.",
+      "key_catalysts": [
+        "Policy headwinds around drug pricing and ACA largely cleared",
+        "AI adoption in healthcare driving efficiency gains",
+        "Potential ACA subsidies extension compromise",
+        "Healthcare earnings revisions turning positive"
+      ],
+      "momentum_score": 6,
+      "catalyst_score": 7,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Communication Services AI Monetization",
+      "rank": 4,
+      "classification": "INVESTABLE",
+      "theme_type": "TREND",
+      "composite_score": 6.4,
+      "thesis_summary": "Communication services companies are successfully monetizing AI investments through improved advertising efficiency and new product offerings, with continued capex driving infrastructure demand. While crowded, fundamental earnings support and AI monetization runway justify continued exposure.",
+      "key_catalysts": [
+        "Q4 2025 earnings beats from Alphabet and Meta driving sector growth",
+        "Continued hyperscaler AI capex driving infrastructure demand",
+        "AI model monetization accelerating beyond ChatGPT and coding assistants"
+      ],
+      "momentum_score": 6,
+      "catalyst_score": 7,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Financial Services AI Adoption & Rate Environment",
       "rank": 5,
       "classification": "INVESTABLE",
       "theme_type": "TREND",
-      "composite_score": 6.5,
-      "thesis_summary": "Communication services shifting from AI spending phase to AI profit phase, with companies using AI to improve advertising efficiency and develop new revenue streams. Crowding risk offset by strong fundamental catalyst of earnings acceleration.",
+      "composite_score": 6.0,
+      "thesis_summary": "Financial services positioned to benefit from AI infrastructure financing demand and potential improvement in rate environment, though near-term momentum weak. AI adoption by banks creating operational efficiency opportunities while deregulation expectations provide additional tailwind.",
       "key_catalysts": [
-        "AI monetization phase beginning",
-        "Communication Services earnings acceleration to 11.3% in 2026",
-        "Digital advertising efficiency improvements from AI",
-        "Enterprise AI adoption scaling"
+        "AI capex buildout creating demand for banking services",
+        "Potential yield curve steepening benefiting bank margins",
+        "Deregulation expectations under new administration"
       ],
-      "momentum_score": 7,
-      "catalyst_score": 7
-    },
-    {
-      "name": "European Equities - Relative Value Recovery",
-      "rank": 6,
-      "classification": "INVESTABLE",
-      "theme_type": "CONTRARIAN",
-      "composite_score": 6.5,
-      "thesis_summary": "European equities offering relative value as smart money diversifies away from US concentration. Defense spending boom and energy security themes provide structural support while valuations remain attractive vs US.",
-      "key_catalysts": [
-        "Smart money flowing to international diversification",
-        "Declining correlation with US markets",
-        "Defense spending boom in Europe",
-        "Valuation gap vs US markets"
-      ],
-      "momentum_score": 6,
-      "catalyst_score": 6
-    },
-    {
-      "name": "Small-Cap Value - Earnings Revision Divergence",
-      "rank": 7,
-      "classification": "INVESTABLE",
-      "theme_type": "CONTRARIAN",
-      "composite_score": 6.5,
-      "thesis_summary": "Small-cap value positioned for relative outperformance as earnings growth expectations diverge favorably vs large caps, while Fed cuts improve lending environment for smaller companies. Extreme underweight creates asymmetric opportunity.",
-      "key_catalysts": [
-        "Non-Mag 7 earnings growth accelerating vs Mag 7 flattening",
-        "Fed rate cuts benefiting small-cap lending",
-        "Reshoring benefiting domestic-focused companies",
-        "Extreme valuation discount to large caps"
-      ],
-      "momentum_score": 4,
-      "catalyst_score": 6
+      "momentum_score": 5,
+      "catalyst_score": 6,
+      "valuation_regime": "FUNDAMENTAL"
     }
   ],
   "pass_signals": [],
-  "consider_signals": [
+  "consider_signals": [],
+  "buy_signals": [],
+  "sell_signals": [],
+  "assessed_signals": [
     {
-      "symbol": "MATV",
-      "tier": "TIER1",
-      "price": 14.55,
-      "beta": 1.67,
-      "banker": 100,
-      "return_20d": 11.2,
-      "theme": "Defense Manufacturing & Supply Chain Security",
+      "symbol": "FSLY",
+      "price": 18.26,
+      "theme": "AI Power Infrastructure & Grid Modernization",
       "theme_score": 0.0,
-      "pure_play_score": 40,
       "theme_verdict": "GOOD FIT",
-      "final_decision": "CONSIDER",
-      "conviction": 2,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "High (50%+)",
-      "bullish_factors": [
-        "Director insider buying pattern (6 buys vs 1 sell)",
-        "Q3 2025 beat by 25.81% ($0.39 vs $0.27)",
-        "SAS segment showing 4 consecutive quarters growth"
-      ],
-      "risk_factors": [
-        "Massive negative earnings and margins",
-        "High debt burden",
-        "FAM segment facing demand headwinds"
-      ],
-      "reasoning": "While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and -$436M TTM earnings create major concerns. The theme fit is good but execution risk is high.",
-      "action": "Consider smaller position - watching for gate 5",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
-      "dd_fatal_flaw": ""
-    }
-  ],
-  "buy_signals": [
+      "final_decision": "FAIL",
+      "tier": "TIER1"
+    },
     {
-      "symbol": "MATV",
-      "tier": "TIER1",
-      "price": 14.55,
-      "beta": 1.67,
-      "banker": 100,
-      "return_20d": 11.2,
-      "theme": "Defense Manufacturing & Supply Chain Security",
+      "symbol": "HCSG",
+      "price": 21.59,
+      "theme": "Healthcare Sector Contrarian Recovery",
       "theme_score": 0.0,
-      "pure_play_score": 40,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "CONSIDER",
-      "conviction": 2,
-      "sector_status": "NEUTRAL",
-      "upside_potential": "High (50%+)",
-      "bullish_factors": [
-        "Director insider buying pattern (6 buys vs 1 sell)",
-        "Q3 2025 beat by 25.81% ($0.39 vs $0.27)",
-        "SAS segment showing 4 consecutive quarters growth"
-      ],
-      "risk_factors": [
-        "Massive negative earnings and margins",
-        "High debt burden",
-        "FAM segment facing demand headwinds"
-      ],
-      "reasoning": "While MATV has clear catalyst potential with earnings approaching and SAS momentum, severe fundamental issues including $412M goodwill impairment and -$436M TTM earnings create major concerns. The theme fit is good but execution risk is high.",
-      "action": "Consider smaller position",
-      "dd_verdict": "",
-      "dd_conviction": 0,
-      "dd_position_size": "",
-      "dd_key_catalyst": "",
-      "dd_fatal_flaw": ""
-    }
-  ],
-  "sell_signals": [
+      "theme_verdict": "STRONG FIT",
+      "final_decision": "FAIL",
+      "tier": "TIER1"
+    },
     {
-      "symbol": "LUMN",
-      "price": 8.06,
-      "reason": "Weekly BoS Down — Capital Preservation Protocol active",
-      "entry_price": 8.82,
-      "highest_close": 8.82,
-      "drawdown_pct": 8.616780045351472
+      "symbol": "HLIT",
+      "price": 10.68,
+      "theme": "AI Power Infrastructure & Grid Modernization",
+      "theme_score": 0.0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "FAIL",
+      "tier": "TIER1"
     }
   ],
-  "assessed_signals": [],
-  "historical_winners": [],
-  "big_wins": [],
+  "historical_winners": [
+    {
+      "ticker": "VNET",
+      "entry_price": 10.4,
+      "current_price": 13.8,
+      "pnl_pct": 32.692307692307686,
+      "signal_date": "2026-01-09",
+      "theme": "Data Center Cooling / Liquid Cooling"
+    },
+    {
+      "ticker": "STRL",
+      "entry_price": 362.53,
+      "current_price": 437.77,
+      "pnl_pct": 20.754144484594384,
+      "signal_date": "2026-01-22",
+      "theme": "AI Cooling & Data Center Infrastructure"
+    },
+    {
+      "ticker": "MOD",
+      "entry_price": 184.66,
+      "current_price": 216.5,
+      "pnl_pct": 17.242499729232108,
+      "signal_date": "2026-01-30",
+      "theme": ""
+    }
+  ],
+  "big_wins": [
+    {
+      "ticker": "VNET",
+      "entry_price": 10.4,
+      "current_price": 13.8,
+      "pnl_pct": 32.692307692307686,
+      "signal_date": "2026-01-09",
+      "theme": "Data Center Cooling / Liquid Cooling",
+      "threshold_crossed": 25.0
+    }
+  ],
   "home_runs": []
 }

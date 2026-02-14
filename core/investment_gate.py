@@ -715,7 +715,7 @@ def apply_results_to_stocks(stocks: List[Any], results: List[InvestmentGateResul
     fail_stocks = []
 
     for stock in stocks:
-        ticker = getattr(stock, 'symbol', stock.get('symbol', stock.get('ticker', '')))
+        ticker = getattr(stock, 'symbol', getattr(stock, 'ticker', ''))
         if ticker not in lookup:
             continue
 

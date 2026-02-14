@@ -2460,38 +2460,40 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "entry_price": h.entry_price,
                 "current_price": h.current_price,
                 "pnl_pct": h.pnl_pct,
-                "signal_date": h.signal_date,
+                "signal_date": h.entry_date,
                 "theme": h.theme,
             }
             for h in historical if h.pnl_pct >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
         ]
 
-        big_wins = find_big_wins(threshold=MARKETING_THRESHOLDS.get('big_win_threshold', 25.0))
+        all_big_wins = find_big_wins()
+        big_win_threshold = MARKETING_THRESHOLDS.get('big_win_threshold', 25.0)
+        home_run_threshold = MARKETING_THRESHOLDS.get('home_run_threshold', 50.0)
+
         signals_data["big_wins"] = [
             {
                 "ticker": w.ticker,
                 "entry_price": w.entry_price,
                 "current_price": w.current_price,
                 "pnl_pct": w.pnl_pct,
-                "signal_date": w.signal_date,
+                "signal_date": w.entry_date,
                 "theme": w.theme,
                 "threshold_crossed": w.threshold_crossed,
             }
-            for w in big_wins
+            for w in all_big_wins if w.pnl_pct >= big_win_threshold
         ]
 
-        home_runs = find_big_wins(threshold=MARKETING_THRESHOLDS.get('home_run_threshold', 50.0))
         signals_data["home_runs"] = [
             {
                 "ticker": w.ticker,
                 "entry_price": w.entry_price,
                 "current_price": w.current_price,
                 "pnl_pct": w.pnl_pct,
-                "signal_date": w.signal_date,
+                "signal_date": w.entry_date,
                 "theme": w.theme,
                 "threshold_crossed": w.threshold_crossed,
             }
-            for w in home_runs
+            for w in all_big_wins if w.pnl_pct >= home_run_threshold
         ]
 
         print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} winners, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
@@ -2591,7 +2593,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     print(f"     • {rel_path(analysis_log)}")
     print(f"     • {rel_path(report_current)} (current week)")
     if archive:
-        print(f"     • {rel_path(report_file)} (dated archive)")
+        print(f"     • {rel_path(report_archive)} (dated archive)")
 
     # ═══════════════════════════════════════════════════════════════════════════
     # GENERATE NEWSLETTER BRIEFING

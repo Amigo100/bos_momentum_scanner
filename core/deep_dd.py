@@ -60,7 +60,7 @@ REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
 MODEL = "claude-opus-4-20250514"
-MAX_OUTPUT_TOKENS = 8000
+MAX_OUTPUT_TOKENS = 16000
 THINKING_BUDGET = 10000
 INTER_STOCK_DELAY = 15.0  # Opus is slower, give it room
 
@@ -625,7 +625,7 @@ def apply_dd_to_stocks(stocks: List[Any], dd_results: List[DeepDDResult]) -> tup
     dd_fail = []
 
     for stock in stocks:
-        ticker = getattr(stock, 'symbol', stock.get('symbol', stock.get('ticker', '')))
+        ticker = getattr(stock, 'symbol', getattr(stock, 'ticker', ''))
         if ticker not in lookup:
             continue
 

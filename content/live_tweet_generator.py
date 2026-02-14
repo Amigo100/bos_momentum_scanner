@@ -693,10 +693,13 @@ def validate_tweet(
     if len(text) > MAX_TWEET_CHARS:
         failures.append(f"step6_chars: {len(text)} > {MAX_TWEET_CHARS}")
 
-    # Step 7: Chart flag consistency (auto-fix, don't fail)
-    # Categories that need charts in the live system
-    live_chart_categories = {"SIGNAL_ALERT", "RECEIPT"}
-    expected_chart = category in live_chart_categories
+    # Step 7: Chart flag — recommend chart for any tweet with a specific ticker
+    # Always chart: SIGNAL_ALERT, RECEIPT
+    # Chart when ticker present: MARKET_REACTION, DIP_OPPORTUNITY, THEME_MOMENTUM
+    always_chart = {"SIGNAL_ALERT", "RECEIPT"}
+    chart_if_ticker = {"MARKET_REACTION", "DIP_OPPORTUNITY", "THEME_MOMENTUM"}
+    has_ticker = bool(tweet_dict.get("primary_ticker"))
+    expected_chart = category in always_chart or (category in chart_if_ticker and has_ticker)
     if tweet_dict.get("chart_recommended") != expected_chart:
         tweet_dict["chart_recommended"] = expected_chart
         # Auto-fixed, not a failure

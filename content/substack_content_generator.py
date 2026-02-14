@@ -377,7 +377,7 @@ def generate_saturday_weekly_signals() -> str:
     funnel_html = ""
     if stats:
         scanned = stats.get('tickers_loaded', 0)
-        bos_up = stats.get('weekly_bos_up', stats.get('bos_bullish', 0))
+        bos_up = stats.get('buy_signal', stats.get('weekly_bos_up', stats.get('bos_bullish', 0)))
         tech = stats.get('technical_signals', stats.get('meets_technical_gate', 0))
         theme_conf = stats.get('theme_confirmed', 0)
         final = stats.get('final_trade', 0)

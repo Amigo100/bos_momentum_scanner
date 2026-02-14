@@ -118,6 +118,9 @@ COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from thes
 ## SCANNER BRIEFING (Themes & Signals)
 {scanner_briefing}
 
+## THEME DETAILS (Sub-Scores)
+{theme_details}
+
 ## DUE DILIGENCE RESULTS
 {dd_results}
 
@@ -149,14 +152,16 @@ COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from thes
 
 **5. NEW TRADES THIS WEEK** 🎯
 (SKIP THIS SECTION if no PASS signals - see below for themes-only format)
-For each DD-PASS signal:
+For each DD-PASS signal, include ALL available DD fields:
 - Ticker & company name
-- DD Verdict (STRONG BUY / SPEC BUY)
-- Entry price, position size
-- Key catalyst and timing
-- Math to 50% return
-- Bear case & counter
-- Risk to monitor
+- DD Verdict (GREEN signal / GREEN signal speculative)
+- **The Pitch:** elevator pitch for why this stock (from dd_elevator_pitch)
+- **Why Now:** catalyst timing and urgency (from dd_why_now)
+- **The Math:** path to 50%+ return with specific numbers (from dd_the_math)
+- **Bear Case:** the bear thesis AND why it's wrong (from dd_bear_case)
+- **Risk to Monitor:** the single biggest risk to watch (from dd_risk_to_monitor)
+- **Action:** entry recommendation (from dd_action)
+- Entry price, position size, conviction
 - [CHART: TICKER] placeholder
 
 **5-ALT. NO NEW SIGNALS THIS WEEK** 🎯
@@ -202,7 +207,8 @@ def compile_newsletter_llm(
     scanner_briefing: str,
     dd_results: str,
     portfolio_status: str,
-    benchmark_comparison: str = ""
+    benchmark_comparison: str = "",
+    theme_details: str = ""
 ) -> str:
     """Use Claude to compile the full newsletter."""
     if anthropic is None:
@@ -218,6 +224,7 @@ def compile_newsletter_llm(
     prompt = COMPILATION_PROMPT.format(
         market_context=market_context or "[No market context available]",
         scanner_briefing=scanner_briefing or "[No scanner briefing available]",
+        theme_details=theme_details or "[No theme sub-score data available]",
         dd_results=dd_results or "[No DD results available]",
         portfolio_status=portfolio_status or "[No portfolio data available]",
         benchmark_comparison=benchmark_comparison or "[No benchmark data available]"
@@ -320,17 +327,130 @@ def load_dd_results() -> tuple[str, int]:
 
     lines = []
     for signal in buy_signals:
-        if signal.get("dd_verdict"):
-            lines.append(f"### {signal['symbol']} - {signal.get('dd_verdict', 'N/A')}")
-            lines.append(f"- **Conviction:** {signal.get('dd_conviction', 'N/A')}/10")
-            lines.append(f"- **Position Size:** {signal.get('dd_position_size', 'N/A')}")
-            if signal.get('dd_key_catalyst'):
-                lines.append(f"- **Key Catalyst:** {signal['dd_key_catalyst']}")
-            if signal.get('dd_fatal_flaw'):
-                lines.append(f"- **Fatal Flaw:** {signal['dd_fatal_flaw']}")
-            lines.append("")
+        decision = signal.get("final_decision", "")
+        symbol = signal.get("symbol", "???")
+
+        # Build header with verdict/decision
+        verdict = signal.get("dd_verdict", decision or "N/A")
+        lines.append(f"### {symbol} - {verdict}")
+
+        # Core DD fields
+        if signal.get("dd_conviction"):
+            lines.append(f"- **Conviction:** {signal['dd_conviction']}/10")
+        elif signal.get("conviction"):
+            lines.append(f"- **Conviction:** {signal['conviction']}/10")
+        if signal.get("dd_position_size"):
+            lines.append(f"- **Position Size:** {signal['dd_position_size']}")
+
+        # Deep DD fields (written by scanner but previously ignored)
+        if signal.get("dd_elevator_pitch"):
+            lines.append(f"- **The Pitch:** {signal['dd_elevator_pitch']}")
+        if signal.get("dd_why_now"):
+            lines.append(f"- **Why Now:** {signal['dd_why_now']}")
+        if signal.get("dd_the_math"):
+            lines.append(f"- **The Math:** {signal['dd_the_math']}")
+        if signal.get("dd_bear_case"):
+            lines.append(f"- **Bear Case:** {signal['dd_bear_case']}")
+        if signal.get("dd_risk_to_monitor"):
+            lines.append(f"- **Risk to Monitor:** {signal['dd_risk_to_monitor']}")
+        if signal.get("dd_action"):
+            lines.append(f"- **Action:** {signal['dd_action']}")
+
+        # Investment Gate fields (fallback context)
+        if signal.get("gate_math"):
+            lines.append(f"- **Return Path:** {signal['gate_math']}")
+        if signal.get("gate_bear_case"):
+            lines.append(f"- **Gate Bear Case:** {signal['gate_bear_case']}")
+
+        # Legacy fields
+        if signal.get("dd_key_catalyst"):
+            lines.append(f"- **Key Catalyst:** {signal['dd_key_catalyst']}")
+        if signal.get("dd_fatal_flaw"):
+            lines.append(f"- **Fatal Flaw:** {signal['dd_fatal_flaw']}")
+
+        # Bullish/risk factors
+        if signal.get("bullish_factors"):
+            lines.append("- **Bullish Factors:** " + "; ".join(signal["bullish_factors"]))
+        if signal.get("risk_factors"):
+            lines.append("- **Risk Factors:** " + "; ".join(signal["risk_factors"]))
+
+        lines.append("")
 
     return "\n".join(lines) if lines else "[DD not yet run]", pass_count
+
+
+def load_theme_details() -> str:
+    """Load theme sub-score details from signals.json.
+
+    Extracts composite_score, catalyst_score, momentum_score, crowding_score,
+    runway_score plus thesis_summary, key_catalysts, and classification for
+    each theme discovered by the thematic analyzer.
+
+    Returns:
+        Formatted markdown table with theme sub-score breakdown.
+    """
+    # Find signals.json
+    signals_file = None
+    if OUTPUT_PATHS_AVAILABLE:
+        current_dir = get_current_dir()
+        signals_file = current_dir / "signals.json"
+        if not signals_file.exists():
+            signals_file = None
+
+    if signals_file is None:
+        signals_file = TRADES_DIR / "signals.json"
+
+    if not signals_file.exists():
+        return ""
+
+    with open(signals_file, 'r') as f:
+        data = json.load(f)
+
+    themes = data.get("themes", [])
+    if not themes:
+        return ""
+
+    lines = [
+        "### Theme Sub-Scores",
+        "",
+        "| Theme | Class | Composite | Catalyst | Momentum | Crowding | Runway |",
+        "|-------|-------|-----------|----------|----------|----------|--------|",
+    ]
+
+    for theme in themes:
+        name = theme.get("name", "Unknown")
+        classification = theme.get("classification", "N/A")
+        composite = theme.get("composite_score", 0)
+        catalyst = theme.get("catalyst_score", 0)
+        momentum = theme.get("momentum_score", 0)
+        crowding = theme.get("crowding_score", 0)
+        runway = theme.get("runway_score", 0)
+
+        lines.append(
+            f"| {name} | {classification} | {composite:.1f} | "
+            f"{catalyst:.1f} | {momentum:.1f} | {crowding:.1f} | {runway:.1f} |"
+        )
+
+    lines.append("")
+
+    # Add thesis summaries and catalysts for PRIME/INVESTABLE themes
+    top_themes = [t for t in themes if t.get("classification") in ("PRIME", "INVESTABLE")]
+    if top_themes:
+        lines.append("#### Top Theme Details")
+        lines.append("")
+        for theme in top_themes:
+            name = theme.get("name", "Unknown")
+            thesis = theme.get("thesis_summary", "")
+            catalysts = theme.get("key_catalysts", [])
+
+            lines.append(f"**{name}** ({theme.get('classification', 'N/A')})")
+            if thesis:
+                lines.append(f"- Thesis: {thesis}")
+            if catalysts:
+                lines.append(f"- Key Catalysts: {', '.join(catalysts[:3])}")
+            lines.append("")
+
+    return "\n".join(lines)
 
 
 def load_portfolio_status() -> str:
@@ -464,7 +584,16 @@ def generate_benchmark_comparison() -> str:
     if compounding and compounding.get('inception_date'):
         portfolio_return = compounding['total_return_pct']
         spy_return = compounding['spy_return_pct']
-        alpha = compounding['alpha_pct']
+        alpha_spy = compounding['alpha_pct']
+        qqq_return = compounding.get('qqq_return_pct', 0.0)
+        alpha_qqq = compounding.get('alpha_vs_qqq_pct', 0.0)
+
+        # Get max drawdown if available
+        max_dd = None
+        try:
+            max_dd = pm.et.get_max_drawdown() if hasattr(pm, 'et') else None
+        except Exception:
+            pass
 
         lines = [
             "### Performance vs Benchmark (Since Inception)",
@@ -473,17 +602,23 @@ def generate_benchmark_comparison() -> str:
             "|--------|--------|",
             f"| **Portfolio (Compounding)** | {portfolio_return:+.1f}% |",
             f"| **S&P 500** | {spy_return:+.1f}% |",
-            f"| **Alpha** | {alpha:+.1f}% |",
-            f"| **Since** | {compounding['inception_date']} |",
-            "",
+            f"| **Alpha vs S&P 500** | {alpha_spy:+.1f}% |",
+            f"| **NASDAQ (QQQ)** | {qqq_return:+.1f}% |",
+            f"| **Alpha vs NASDAQ** | {alpha_qqq:+.1f}% |",
         ]
 
-        if alpha > 0:
-            lines.append(f"*Outperforming the S&P 500 by {alpha:.1f} percentage points since inception.*")
-        elif alpha < 0:
-            lines.append(f"*Underperforming SPY by {abs(alpha):.1f}pp since inception. Staying disciplined.*")
+        if max_dd is not None:
+            lines.append(f"| **Max Drawdown** | {max_dd:+.1f}% |")
+
+        lines.append(f"| **Since** | {compounding['inception_date']} |")
+        lines.append("")
+
+        if alpha_spy > 0:
+            lines.append(f"*Outperforming the S&P 500 by {alpha_spy:.1f}pp and NASDAQ by {alpha_qqq:.1f}pp since inception.*")
+        elif alpha_spy < 0 and alpha_qqq < 0:
+            lines.append(f"*Underperforming SPY by {abs(alpha_spy):.1f}pp since inception. Staying disciplined.*")
         else:
-            lines.append("*Tracking the market benchmark.*")
+            lines.append("*Tracking the market benchmarks.*")
         lines.append("")
         return "\n".join(lines)
 
@@ -867,12 +1002,20 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
             print("    ⚠️ No portfolio data")
 
         # Step 4b: Generate benchmark comparison
-        print("\n  Step 4b: Benchmark Comparison (Portfolio vs SPY)")
+        print("\n  Step 4b: Benchmark Comparison (Portfolio vs SPY/QQQ)")
         benchmark_comparison = generate_benchmark_comparison()
         if benchmark_comparison:
-            print("    ✅ Generated SPY comparison")
+            print("    ✅ Generated SPY + NASDAQ comparison")
         else:
             print("    ⚠️ No benchmark data")
+
+        # Step 4c: Load theme sub-scores
+        print("\n  Step 4c: Theme Sub-Scores")
+        theme_details = load_theme_details()
+        if theme_details:
+            print("    ✅ Loaded theme sub-scores from signals.json")
+        else:
+            print("    ⚠️ No theme data available")
 
         # Step 5: LLM compilation
         print("\n  Step 5: LLM Newsletter Compilation")
@@ -881,7 +1024,8 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
             scanner_briefing,
             dd_results,
             portfolio_status,
-            benchmark_comparison
+            benchmark_comparison,
+            theme_details
         )
 
         if compiled_newsletter:

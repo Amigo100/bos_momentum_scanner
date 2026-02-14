@@ -175,8 +175,10 @@ def _load_whatsapp_config() -> Optional[Dict]:
 def _format_signal_label(signal_type: str) -> str:
     """Map signal_type to human-readable label per PRD 5.2."""
     labels = {
-        "BEARISH PIVOT": "HMA Bearish Pivot",
-        "TRAILING STOP": "20% Trailing Stop",
+        "BEARISH PIVOT": "Structural Exit Signal",
+        "TRAILING STOP": "Capital Preservation Triggered",
+        "EXD EXIT": "Structural Exit Signal",
+        "PROFIT LOCK": "Capital Preservation Triggered",
         "EXIT": "First Exit Triggered",
     }
     return labels.get(signal_type.upper(), signal_type)
@@ -208,7 +210,7 @@ Signal:         {_format_signal_label(signal_type)}
 Entry Price:    ${entry_price:.2f}{entry_str}
 Current Price:  ${current_price:.2f}
 Highest Close:  ${highest_close:.2f}
-Stop Level:     ${stop_level:.2f} ({stop_pct:.0f}% trailing)
+Stop Level:     ${stop_level:.2f} (Capital Preservation)
 P&L:            {pnl_sign}{pnl_pct:.1f}% (private — not published)
 Theme:          {theme}
 Timeframe:      {timeframe.capitalize()}
@@ -275,7 +277,7 @@ def _build_html(
         <tr><td style="padding:6px 0;color:#6b7280;">Highest Close</td>
             <td style="padding:6px 0;">${highest_close:.2f}</td></tr>
         <tr><td style="padding:6px 0;color:#6b7280;">Stop Level</td>
-            <td style="padding:6px 0;">${stop_level:.2f} ({stop_pct:.0f}% trailing)</td></tr>
+            <td style="padding:6px 0;">${stop_level:.2f} (Capital Preservation)</td></tr>
         <tr><td style="padding:6px 0;color:#6b7280;">P&amp;L</td>
             <td style="padding:6px 0;font-weight:600;color:{pnl_color};">{pnl_sign}{pnl_pct:.1f}%
                 <span style="color:#9ca3af;font-weight:400;font-size:12px;">(private — not published)</span></td></tr>
@@ -323,7 +325,7 @@ def _build_whatsapp_message(
         f"Entry: ${entry_price:.2f}{entry_str}\n"
         f"Current: ${current_price:.2f}\n"
         f"High: ${highest_close:.2f}\n"
-        f"Stop: ${stop_level:.2f} ({stop_pct:.0f}%)\n"
+        f"Stop: ${stop_level:.2f} (Capital Preservation)\n"
         f"P&L: {pnl_sign}{pnl_pct:.1f}%\n"
         f"Theme: {theme}\n"
         f"Timeframe: {timeframe.capitalize()}\n"

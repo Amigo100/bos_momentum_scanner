@@ -3,7 +3,7 @@
 CHART CAPTURE - TradingView Screenshots with Playwright
 ========================================================
 
-Captures TradingView charts with your custom BoS/Banker indicators
+Captures TradingView charts with your custom Sterling Grid indicators
 using a persistent Chrome session.
 
 IMPORTANT: TradingView custom indicators require authentication.

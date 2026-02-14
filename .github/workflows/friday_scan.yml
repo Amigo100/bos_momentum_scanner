@@ -246,7 +246,22 @@ jobs:
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4.5: GENERATE SUBSTACK CONTENT (Mon/Thu/Sat/Sun posts)
+      # STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate DD HTML Posts
+        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        run: |
+          if [ -f "content/dd_post_generator.py" ]; then
+            echo "Generating DD HTML posts per buy signal..."
+            python -m content.dd_post_generator || echo "DD post generation failed (non-critical)"
+          else
+            echo "content/dd_post_generator.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 4.6: GENERATE SUBSTACK CONTENT (Mon/Thu/Sat/Sun posts)
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Substack Content

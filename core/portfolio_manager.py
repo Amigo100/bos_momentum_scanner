@@ -77,7 +77,9 @@ try:
         TRAILING_STOP_PCT, STOP_WARNING_PCT,
         DEFAULT_POSITION_SHARES, MAX_PORTFOLIO_BACKUPS,
         STARTING_CAPITAL_PER_POSITION, CURRENCY_SYMBOL, EQUITY_CURVE_FILE,
+        LOCK_TIERS,
     )
+    from core.sterling_indicators import check_profit_lock
 except ImportError:
     # Fallback if config.py not available (e.g. standalone use)
     TRAILING_STOP_PCT = 20.0
@@ -87,6 +89,8 @@ except ImportError:
     STARTING_CAPITAL_PER_POSITION = 5000.0
     CURRENCY_SYMBOL = "£"
     EQUITY_CURVE_FILE = "equity_curve.csv"
+    LOCK_TIERS = [(2.00, 0.15), (1.00, 0.20), (0.50, 0.25)]
+    check_profit_lock = None  # Will be imported at use site if needed
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -185,6 +189,10 @@ class Trade:
     conviction: int = 0
     notes: str = ""
     stop_pct: float = 0.0  # Per-trade trailing stop %; 0 = use global default
+    # Sterling Grid position sizing fields
+    position_size_pct: float = 0.0   # % of equity allocated (from conviction tier)
+    position_dollars: float = 0.0    # Dollar amount allocated
+    sizing_gear: str = ""            # conservative / recommended / aggressive
 
     # Calculated fields (not stored in CSV, computed on load)
     current_price: float = 0.0
@@ -218,15 +226,22 @@ class Trade:
             self.pnl_pct = ((price_for_calc / self.entry_price) - 1) * 100
             self.pnl_usd = (price_for_calc - self.entry_price) * DEFAULT_POSITION_SHARES
         
-        # Stop level — always 20% trailing stop (first exit strategy)
-        effective_stop_pct = TRAILING_STOP_PCT
-        if self.highest_close > 0:
-            self.stop_level = self.highest_close * (1 - effective_stop_pct / 100)
-        
-        # Distance to stop
+        # Stop level — tiered profit lock (Sterling Grid)
+        # Below +50% return: only ExD can exit (no trailing stop → stop_level = 0)
+        # Above +50%: trailing stop based on return tier
+        self.stop_level = 0.0
+        if self.entry_price > 0 and self.highest_close > 0 and check_profit_lock is not None:
+            lock_result = check_profit_lock(self.entry_price, price_for_calc, self.highest_close)
+            if lock_result.get('active', False):
+                self.stop_level = lock_result.get('lock_level', 0.0)
+
+        # Distance to stop (0 if no profit lock active — only ExD can exit)
         if self.status == "OPEN" and self.current_price > 0 and self.stop_level > 0:
             self.distance_to_stop_pct = ((self.current_price - self.stop_level) / self.current_price) * 100
             self.stop_alert = self.distance_to_stop_pct <= STOP_WARNING_PCT
+        elif self.status == "OPEN":
+            self.distance_to_stop_pct = 0.0  # No profit lock active
+            self.stop_alert = False
         
         # Days held
         if self.entry_date:
@@ -289,6 +304,9 @@ class Trade:
             'conviction': str(self.conviction) if self.conviction else "",
             'notes': self.notes,
             'stop_pct': f"{self.stop_pct:.1f}" if self.stop_pct > 0 else "",
+            'position_size_pct': f"{self.position_size_pct:.1f}" if self.position_size_pct > 0 else "",
+            'position_dollars': f"{self.position_dollars:.0f}" if self.position_dollars > 0 else "",
+            'sizing_gear': self.sizing_gear,
         }
     
     @classmethod
@@ -308,6 +326,9 @@ class Trade:
             conviction=int(row.get('conviction') or 0),
             notes=row.get('notes', ''),
             stop_pct=float(row.get('stop_pct') or 0),
+            position_size_pct=float(row.get('position_size_pct') or 0),
+            position_dollars=float(row.get('position_dollars') or 0),
+            sizing_gear=row.get('sizing_gear', ''),
         )
 
 
@@ -328,6 +349,9 @@ class EquitySnapshot:
     spy_value: float = 0.0         # What total_deployed in SPY would be worth
     spy_return_pct: float = 0.0    # SPY return since inception
     alpha_pct: float = 0.0         # total_return_pct - spy_return_pct
+    qqq_value: float = 0.0         # What total_deployed in QQQ would be worth
+    qqq_return_pct: float = 0.0    # QQQ (NASDAQ) return since inception
+    alpha_vs_qqq_pct: float = 0.0  # total_return_pct - qqq_return_pct
 
     def to_csv_row(self) -> Dict:
         return {
@@ -341,6 +365,9 @@ class EquitySnapshot:
             'spy_value': f"{self.spy_value:.2f}",
             'spy_return_pct': f"{self.spy_return_pct:.2f}",
             'alpha_pct': f"{self.alpha_pct:.2f}",
+            'qqq_value': f"{self.qqq_value:.2f}",
+            'qqq_return_pct': f"{self.qqq_return_pct:.2f}",
+            'alpha_vs_qqq_pct': f"{self.alpha_vs_qqq_pct:.2f}",
         }
 
     @classmethod
@@ -356,12 +383,16 @@ class EquitySnapshot:
             spy_value=float(row.get('spy_value') or 0),
             spy_return_pct=float(row.get('spy_return_pct') or 0),
             alpha_pct=float(row.get('alpha_pct') or 0),
+            qqq_value=float(row.get('qqq_value') or 0),
+            qqq_return_pct=float(row.get('qqq_return_pct') or 0),
+            alpha_vs_qqq_pct=float(row.get('alpha_vs_qqq_pct') or 0),
         )
 
 
 EQUITY_SNAPSHOT_FIELDS = [
     'date', 'nav', 'cash', 'invested', 'total_deployed',
     'open_count', 'total_return_pct', 'spy_value', 'spy_return_pct', 'alpha_pct',
+    'qqq_value', 'qqq_return_pct', 'alpha_vs_qqq_pct',
 ]
 
 
@@ -414,7 +445,8 @@ class EquityTracker:
                     continue
         return min(dates).strftime("%Y-%m-%d") if dates else ""
 
-    def calculate_nav(self, trades: List[Trade], spy_data: pd.DataFrame = None) -> EquitySnapshot:
+    def calculate_nav(self, trades: List[Trade], spy_data: pd.DataFrame = None,
+                      qqq_data: pd.DataFrame = None) -> EquitySnapshot:
         """Calculate current NAV using the compounding replay model.
 
         Replays all trade events chronologically:
@@ -511,6 +543,25 @@ class EquityTracker:
 
         alpha_pct = total_return_pct - spy_return_pct
 
+        # QQQ (NASDAQ) comparison: same logic as SPY
+        qqq_value = total_deployed  # Default: flat
+        qqq_return_pct = 0.0
+
+        if qqq_data is not None and not qqq_data.empty and inception_date:
+            try:
+                start_dt = pd.Timestamp(inception_date)
+                qqq_after_start = qqq_data[qqq_data.index >= start_dt]
+                if len(qqq_after_start) >= 2:
+                    qqq_start_price = qqq_after_start['Close'].iloc[0]
+                    qqq_end_price = qqq_after_start['Close'].iloc[-1]
+                    if qqq_start_price > 0:
+                        qqq_return_pct = ((qqq_end_price / qqq_start_price) - 1) * 100
+                        qqq_value = total_deployed * (1 + qqq_return_pct / 100)
+            except Exception:
+                pass
+
+        alpha_vs_qqq_pct = total_return_pct - qqq_return_pct
+
         return EquitySnapshot(
             date=datetime.now().strftime("%Y-%m-%d"),
             nav=round(nav, 2),
@@ -522,6 +573,9 @@ class EquityTracker:
             spy_value=round(spy_value, 2),
             spy_return_pct=round(spy_return_pct, 2),
             alpha_pct=round(alpha_pct, 2),
+            qqq_value=round(qqq_value, 2),
+            qqq_return_pct=round(qqq_return_pct, 2),
+            alpha_vs_qqq_pct=round(alpha_vs_qqq_pct, 2),
         )
 
     def record_snapshot(self, snapshot: EquitySnapshot) -> None:
@@ -570,13 +624,15 @@ class PortfolioManager:
     
     CSV_FIELDNAMES = [
         'ticker', 'status', 'entry_date', 'entry_price', 'exit_date', 'exit_price',
-        'highest_close', 'theme', 'tier', 'signal_type', 'conviction', 'notes', 'stop_pct'
+        'highest_close', 'theme', 'tier', 'signal_type', 'conviction', 'notes', 'stop_pct',
+        'position_size_pct', 'position_dollars', 'sizing_gear'
     ]
     
     def __init__(self, portfolio_file: Optional[Path] = None):
         self.portfolio_file = portfolio_file or PORTFOLIO_FILE
         self.trades: List[Trade] = []
         self.spy_data: pd.DataFrame = None
+        self.qqq_data: pd.DataFrame = None
         self.equity_tracker = EquityTracker()
         self._load()
     
@@ -639,17 +695,18 @@ class PortfolioManager:
     # TRADE MANAGEMENT
     # ───────────────────────────────────────────────────────────────────────────
     
-    def add_trade(self, ticker: str, entry_price: float, theme: str = "", 
+    def add_trade(self, ticker: str, entry_price: float, theme: str = "",
                   tier: str = "", signal_type: str = "PASS", conviction: int = 0,
-                  notes: str = "") -> Trade:
+                  notes: str = "", position_size_pct: float = 0.0,
+                  position_dollars: float = 0.0, sizing_gear: str = "") -> Trade:
         """Add a new trade to the portfolio."""
-        
+
         # Check if already exists as open position
         existing = self.get_open_position(ticker)
         if existing:
             print(f"  ⚠ {ticker} already has an open position")
             return existing
-        
+
         trade = Trade(
             ticker=ticker.upper(),
             status="OPEN",
@@ -660,14 +717,17 @@ class PortfolioManager:
             tier=tier,
             signal_type=signal_type,
             conviction=conviction,
-            notes=notes
+            notes=notes,
+            position_size_pct=position_size_pct,
+            position_dollars=position_dollars,
+            sizing_gear=sizing_gear,
         )
-        
+
         self.trades.append(trade)
         self._save()
-        
+
         return trade
-    
+
     def add_trade_from_stock(self, stock) -> Trade:
         """Add trade from a Stock object (scanner integration)."""
         return self.add_trade(
@@ -677,7 +737,10 @@ class PortfolioManager:
             tier=getattr(stock, 'tier', ''),
             signal_type=getattr(stock, 'final_decision', 'PASS'),
             conviction=getattr(stock, 'conviction', 0),
-            notes=""
+            notes="",
+            position_size_pct=getattr(stock, 'position_size_pct', 0.0),
+            position_dollars=getattr(stock, 'position_dollars', 0.0),
+            sizing_gear=getattr(stock, 'sizing_gear', ''),
         )
     
     def flag_exit(self, ticker: str, exit_price: float, reason: str = "Manual exit") -> Optional[Trade]:
@@ -797,41 +860,46 @@ class PortfolioManager:
     
     def check_stop_signals(self, stocks_dict: Dict) -> List[Trade]:
         """
-        Check for positions that hit their trailing stop.
-        
+        Check for positions that hit their tiered profit lock.
+
+        Sterling Grid exit: tiered profit lock only (ExD is handled by scanner).
+        Below +50% return: no trailing stop (only ExD can exit).
+
         Returns list of trades that should be flagged as STOPPED.
         """
         triggered = []
-        
+
         for trade in self.get_open_positions():
             if trade.ticker not in stocks_dict:
                 continue
-            
+
             stock = stocks_dict[trade.ticker]
             current_price = stock.price
-            
+
             # Update highest close
             if current_price > trade.highest_close:
                 trade.highest_close = current_price
-            
-            # Calculate stop level — always 20% trailing stop (first exit strategy)
-            effective_stop_pct = TRAILING_STOP_PCT
-            stop_level = trade.highest_close * (1 - effective_stop_pct / 100)
-            
-            # Check if stopped out
-            if current_price <= stop_level:
-                trade.status = "STOPPED"
-                trade.exit_date = datetime.now().strftime("%Y-%m-%d")
-                trade.exit_price = current_price
-                trade.notes = f"{trade.notes}; Trailing stop hit at ${current_price:.2f}".strip("; ")
-                trade.calculate_metrics()
-                triggered.append(trade)
-            else:
-                trade.calculate_metrics(current_price)
-        
+
+            # Check tiered profit lock (Sterling Grid)
+            if check_profit_lock is not None and trade.entry_price > 0:
+                lock_result = check_profit_lock(trade.entry_price, current_price, trade.highest_close)
+                if lock_result.get('triggered', False):
+                    tier_info = lock_result.get('active_tier', 'unknown')
+                    lock_level = lock_result.get('lock_level', 0)
+                    trade.status = "STOPPED"
+                    trade.exit_date = datetime.now().strftime("%Y-%m-%d")
+                    trade.exit_price = current_price
+                    trade.notes = f"{trade.notes}; Profit lock ({tier_info}) at ${current_price:.2f}, lock=${lock_level:.2f}".strip("; ")
+                    trade.calculate_metrics()
+                    triggered.append(trade)
+                    continue
+
+            # Not triggered — update metrics
+            trade.calculate_metrics(current_price)
+
         if triggered:
             self._save()
-        
+
         return triggered
     
     # ───────────────────────────────────────────────────────────────────────────
@@ -848,6 +916,17 @@ class PortfolioManager:
             except Exception as e:
                 print(f"  ⚠ Error loading SPY data: {e}")
                 self.spy_data = pd.DataFrame()
+
+    def _load_qqq_data(self) -> None:
+        """Load NASDAQ-100 (QQQ) data for benchmarking."""
+        if self.qqq_data is None:
+            try:
+                self.qqq_data = yf.download("QQQ", period="2y", progress=False)
+                if isinstance(self.qqq_data.columns, pd.MultiIndex):
+                    self.qqq_data.columns = self.qqq_data.columns.get_level_values(0)
+            except Exception as e:
+                print(f"  ⚠ Error loading QQQ data: {e}")
+                self.qqq_data = pd.DataFrame()
     
     def get_spy_return(self, days: int) -> float:
         """Get S&P 500 return over specified calendar days (backward from today)."""
@@ -1044,11 +1123,14 @@ class PortfolioManager:
     def update_equity_curve(self) -> EquitySnapshot:
         """Calculate current NAV and record to equity curve.
 
-        Loads SPY data for benchmark, computes compounding NAV,
+        Loads SPY and QQQ data for benchmarks, computes compounding NAV,
         and appends snapshot to equity_curve.csv.
         """
         self._load_spy_data()
-        snapshot = self.equity_tracker.calculate_nav(self.trades, self.spy_data)
+        self._load_qqq_data()
+        snapshot = self.equity_tracker.calculate_nav(
+            self.trades, self.spy_data, self.qqq_data
+        )
         self.equity_tracker.record_snapshot(snapshot)
         return snapshot
 
@@ -1074,6 +1156,9 @@ class PortfolioManager:
             'spy_value': snapshot.spy_value,
             'spy_return_pct': snapshot.spy_return_pct,
             'alpha_pct': snapshot.alpha_pct,
+            'qqq_value': snapshot.qqq_value,
+            'qqq_return_pct': snapshot.qqq_return_pct,
+            'alpha_vs_qqq_pct': snapshot.alpha_vs_qqq_pct,
             'max_drawdown_pct': max_dd,
             'inception_date': inception,
             'currency': CURRENCY_SYMBOL,

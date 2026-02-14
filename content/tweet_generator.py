@@ -1157,7 +1157,7 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
             entry = float(h.get("entry_price", 0) or 0)
             current = float(h.get("current_price", 0) or 0)
             highest = float(h.get("highest_close", 0) or 0)
-            stop_level = highest * 0.80 if highest > 0 else 0  # 20% trailing stop
+            stop_level = highest * 0.80 if highest > 0 else 0  # Capital preservation level (approximate)
             slot_data["tickers"].append({
                 "symbol": h.get("ticker", "??"),
                 "price": current,

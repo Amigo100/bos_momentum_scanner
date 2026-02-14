@@ -1122,6 +1122,11 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
         print(f"  ⚠️ Charts missing: {', '.join(missing_charts)}")
         print(f"     Run: python chart_capture.py --ticker {' '.join(missing_charts)}")
 
+    # Determine final output path for user instructions
+    if OUTPUT_PATHS_AVAILABLE:
+        output_path = current_dir / "newsletter.html"
+    # else output_path was set in the fallback block above
+
     print(f"\n  📋 Next steps:")
     print(f"     1. Open {output_path} in browser")
     print(f"     2. Copy the content (Cmd+A, Cmd+C)")

@@ -18,7 +18,7 @@ import json
 import os
 import shutil
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -36,6 +36,7 @@ except ImportError:
     COST_LOG_FILE = BASE_DIR / "trades" / "live_cost_log.json"
     DAILY_COST_LIMIT_USD = 1.00
     API_PRICING = {
+        "grok-4-fast-non-reasoning": {"input": 2.00, "output": 10.00},
         "grok-3-fast": {"input": 0.20, "output": 0.50},
         "claude-sonnet-4-5-20250929": {"input": 3.00, "output": 15.00},
         "claude-sonnet-4-20250514": {"input": 3.00, "output": 15.00},
@@ -49,7 +50,7 @@ except ImportError:
 
 def _load_log() -> Dict:
     """Load cost log from disk. Auto-resets if the date has changed."""
-    today = str(datetime.utcnow().date())
+    today = str(datetime.now(timezone.utc).date())
 
     if not COST_LOG_FILE.exists():
         return {"date": today, "total_usd": 0.0, "calls": []}
@@ -125,7 +126,7 @@ def log_cost(
         "service": service,
         "model": model,
         "cost": cost,
-        "time": datetime.utcnow().isoformat(),
+        "time": datetime.now(timezone.utc).isoformat(),
     })
     log["total_usd"] = round(log["total_usd"] + cost, 6)
     _save_log(log)

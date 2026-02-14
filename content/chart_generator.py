@@ -26,7 +26,7 @@ import os
 import shutil
 import sys
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -166,7 +166,7 @@ def generate_chart(
 
         # Save chart
         CHARTS_DIR.mkdir(parents=True, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M")
         filename = f"live_{ticker.upper()}_{timestamp}.png"
         output_path = CHARTS_DIR / filename
 

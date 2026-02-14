@@ -45,11 +45,11 @@ except ImportError:
     DAILY_COST_LIMIT_USD = 1.00
     MONTHLY_COST_LIMIT_USD = 30.00
     XAI_BASE_URL = "https://api.x.ai/v1"
-    MODEL_CONTEXT = "grok-3-fast"
+    MODEL_CONTEXT = "grok-4-fast-non-reasoning"
     MODEL_LIVE_TWEET = "claude-sonnet-4-5-20250929"
-    CHARTIMG_API_URL = "https://api.chart-img.com/v2/tradingview/advanced-chart"
-    CHART_IMG_WIDTH = 800
-    CHART_IMG_HEIGHT = 450
+    CHARTIMG_API_URL = "https://api.chart-img.com/v1/tradingview/advanced-chart"
+    CHART_IMG_WIDTH = 1200
+    CHART_IMG_HEIGHT = 675
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -158,10 +158,10 @@ def check_chartimg_api() -> Dict:
                 "key": api_key,
                 "symbol": "NASDAQ:AAPL",
                 "interval": "1D",
-                "width": 200,
-                "height": 150,
+                "width": 320,
+                "height": 220,
             },
-            timeout=15,
+            timeout=30,
         )
         if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
             return {"status": "pass", "detail": "chart-img.com responding"}

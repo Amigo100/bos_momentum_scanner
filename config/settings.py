@@ -1246,7 +1246,7 @@ CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_REACTION
 MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
 # Chart-img.com integration (REST API — CI-compatible, no browser needed)
-CHARTIMG_API_URL = "https://api.chart-img.com/v2/tradingview/advanced-chart"
+CHARTIMG_API_URL = "https://api.chart-img.com/v1/tradingview/advanced-chart"
 CHART_IMG_WIDTH = 1200                    # pixels (Chart-IMG Pro tier, 16:9 for X/Twitter)
 CHART_IMG_HEIGHT = 675                    # pixels
 CHART_IMG_INTERVAL = "1W"                 # Default weekly

@@ -15,33 +15,31 @@ on:
         default: false
 
   # ═══════════════════════════════════════════════════════════════════════════
-  # CRON SCHEDULES — Currently DISABLED for initial deployment testing.
-  # After a successful workflow_dispatch dry-run, uncomment the schedule
-  # block below to enable automated live tweeting.
+  # CRON SCHEDULES — ACTIVE. Live tweeting enabled 2026-02-14.
+  # Weekday slots (Mon-Fri) — UTC times targeting ET slots.
+  # Both EST and EDT crons fire; scripts use ET-aware datetime.
   # ═══════════════════════════════════════════════════════════════════════════
-  # Weekday slots (Mon-Fri) — UTC times targeting ET slots
-  # Both EST and EDT crons fire; scripts use ET-aware datetime
-  # schedule:
-  #   # Slot 1: ~07:30 ET pre-market (weekdays only)
-  #   - cron: '30 12 * * 1-5'   # EST
-  #   - cron: '30 11 * * 1-5'   # EDT
-  #   # Slot 2: ~10:00 ET morning (weekdays only)
-  #   - cron: '0 15 * * 1-5'    # EST
-  #   - cron: '0 14 * * 1-5'    # EDT
-  #   # Slot 3: ~12:30 ET midday (weekdays only)
-  #   - cron: '30 17 * * 1-5'   # EST
-  #   - cron: '30 16 * * 1-5'   # EDT
-  #   # Slot 4: ~15:30 ET power hour (weekdays only, CRITICAL)
-  #   - cron: '30 20 * * 1-5'   # EST
-  #   - cron: '30 19 * * 1-5'   # EDT
-  #   # Slot 5: ~18:00 ET after-hours (weekdays only)
-  #   - cron: '0 23 * * 1-5'    # EST
-  #   - cron: '0 22 * * 1-5'    # EDT
-  #   # Weekend reduced schedule (Sat + Sun — 2 slots only)
-  #   - cron: '0 15 * * 0,6'    # Weekend ~10:00 ET (EST)
-  #   - cron: '0 14 * * 0,6'    # Weekend ~10:00 ET (EDT)
-  #   - cron: '0 21 * * 0,6'    # Weekend ~16:00 ET (EST)
-  #   - cron: '0 20 * * 0,6'    # Weekend ~16:00 ET (EDT)
+  schedule:
+    # Slot 1: ~07:30 ET pre-market (weekdays only)
+    - cron: '30 12 * * 1-5'   # EST
+    - cron: '30 11 * * 1-5'   # EDT
+    # Slot 2: ~10:00 ET morning (weekdays only)
+    - cron: '0 15 * * 1-5'    # EST
+    - cron: '0 14 * * 1-5'    # EDT
+    # Slot 3: ~12:30 ET midday (weekdays only)
+    - cron: '30 17 * * 1-5'   # EST
+    - cron: '30 16 * * 1-5'   # EDT
+    # Slot 4: ~15:30 ET power hour (weekdays only, CRITICAL)
+    - cron: '30 20 * * 1-5'   # EST
+    - cron: '30 19 * * 1-5'   # EDT
+    # Slot 5: ~18:00 ET after-hours (weekdays only)
+    - cron: '0 23 * * 1-5'    # EST
+    - cron: '0 22 * * 1-5'    # EDT
+    # Weekend reduced schedule (Sat + Sun — 2 slots only)
+    - cron: '0 15 * * 0,6'    # Weekend ~10:00 ET (EST)
+    - cron: '0 14 * * 0,6'    # Weekend ~10:00 ET (EDT)
+    - cron: '0 21 * * 0,6'    # Weekend ~16:00 ET (EST)
+    - cron: '0 20 * * 0,6'    # Weekend ~16:00 ET (EDT)
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

@@ -91,12 +91,12 @@ def ensure_output_structure() -> Tuple[Path, Path]:
     Creates:
     - trades/current/
     - trades/current/substack_notes/
+    - trades/current/substack_posts/
     - trades/current/charts/
-    - trades/current/tweets/
     - trades/weeks/YYYY-WXX/
     - trades/weeks/YYYY-WXX/substack_notes/
+    - trades/weeks/YYYY-WXX/substack_posts/
     - trades/weeks/YYYY-WXX/charts/
-    - trades/weeks/YYYY-WXX/tweets/
     - trades/portfolio_backups/
 
     Returns:

@@ -381,6 +381,33 @@ jobs:
       # STEP 7: COMMIT RESULTS TO REPO
       # ═══════════════════════════════════════════════════════════════════════════
 
+      - name: Record workflow status
+        if: always()
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone
+          record = {
+              'workflow': 'friday_scan',
+              'run_id': int('${{ github.run_id }}'),
+              'status': '${{ job.status }}',
+              'started_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'completed_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'duration_seconds': 0,
+              'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
+              'trigger': '${{ github.event_name }}'
+          }
+          f = 'trades/workflow_status.json'
+          try:
+              entries = json.load(open(f))
+          except:
+              entries = []
+          entries.append(record)
+          entries = entries[-100:]
+          json.dump(entries, open(f, 'w'), indent=2)
+          print(f'Recorded friday_scan: ${{ job.status }}')
+          "
+
       - name: Commit and push results
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -393,12 +420,41 @@ jobs:
           else
             DATE=$(date '+%Y-%m-%d')
             git commit -m "Weekly scan results $DATE"
+            # Pull with rebase before push to avoid race conditions
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed - attempting merge"
+              git rebase --abort 2>/dev/null || true
+              git pull origin ${{ github.ref_name }}
+            }
             git push
             echo "Results committed and pushed"
           fi
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 8: SUMMARY
+      # STEP 8: DEPLOY DASHBOARD
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Deploy dashboard to Vercel
+        if: success()
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN not set — skipping dashboard deploy"
+            exit 0
+          fi
+          echo "📦 Bundling dashboard data..."
+          cd dashboard
+          bash scripts/bundle-data.sh
+          echo "🚀 Deploying to Vercel..."
+          npx vercel deploy --prod --token "$VERCEL_TOKEN" --yes
+          echo "✅ Dashboard deployed"
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 9: SUMMARY
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Summary

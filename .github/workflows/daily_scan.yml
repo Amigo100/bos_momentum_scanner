@@ -230,6 +230,33 @@ jobs:
           retention-days: 7
         continue-on-error: true
 
+      - name: Record workflow status
+        if: always()
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone
+          record = {
+              'workflow': 'daily_scan',
+              'run_id': int('${{ github.run_id }}'),
+              'status': '${{ job.status }}',
+              'started_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'completed_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'duration_seconds': 0,
+              'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
+              'trigger': '${{ github.event_name }}'
+          }
+          f = 'trades/workflow_status.json'
+          try:
+              entries = json.load(open(f))
+          except:
+              entries = []
+          entries.append(record)
+          entries = entries[-100:]
+          json.dump(entries, open(f, 'w'), indent=2)
+          print(f'Recorded daily_scan: ${{ job.status }}')
+          "
+
       - name: Commit and push results
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -253,7 +280,30 @@ jobs:
           fi
 
       # ═══════════════════════════════════════════════════════════════════════
-      # STEP 6: SUMMARY
+      # STEP 6: DEPLOY DASHBOARD
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Deploy dashboard to Vercel
+        if: success()
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN not set — skipping dashboard deploy"
+            exit 0
+          fi
+          echo "📦 Bundling dashboard data..."
+          cd dashboard
+          bash scripts/bundle-data.sh
+          echo "🚀 Deploying to Vercel..."
+          npx vercel deploy --prod --token "$VERCEL_TOKEN" --yes
+          echo "✅ Dashboard deployed"
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # STEP 7: SUMMARY
       # ═══════════════════════════════════════════════════════════════════════
 
       - name: Generate Summary

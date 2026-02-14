@@ -247,8 +247,8 @@ PERSONAS: Dict[str, Dict] = {
         'signature_phrases': [
             "The scanner doesn't lie.",
             "Data drives decisions.",
-            "That's the 5-Gate System in action.",
-            "Quality over quantity. Always.",
+            "That's the system in action.",
+            "Precision matters. Always.",
         ],
     },
     'account2': {
@@ -1264,7 +1264,7 @@ TRACKED_THEMES: List[str] = [
 # Weekend behavior
 WEEKEND_MAX_TWEETS = 4
 WEEKEND_CATEGORIES: List[str] = [
-    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT",
+    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT",
 ]
 
 # Exchange mapping for chart-img.com (ticker → exchange prefix)

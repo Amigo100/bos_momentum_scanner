@@ -52,11 +52,12 @@ on:
 
 env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-  # Main account (@AlexSterlingGBR)
-  X1_API_KEY: ${{ secrets.X1_API_KEY }}
-  X1_API_SECRET: ${{ secrets.X1_API_SECRET }}
-  X1_ACCESS_TOKEN: ${{ secrets.X1_ACCESS_TOKEN }}
-  X1_ACCESS_SECRET: ${{ secrets.X1_ACCESS_SECRET }}
+  # Main account (@AlexSterlingGBR) — map X_* secrets to X1_* env vars
+  # Code uses X1_ prefix (config/settings.py TWITTER_ACCOUNTS['main']['env_prefix'] = 'X1')
+  X1_API_KEY: ${{ secrets.X_API_KEY }}
+  X1_API_SECRET: ${{ secrets.X_API_SECRET }}
+  X1_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+  X1_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
   # Account 2
   X2_API_KEY: ${{ secrets.X2_API_KEY }}
   X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
@@ -281,6 +282,33 @@ jobs:
           MILESTONE_CHECK
         continue-on-error: true
 
+      - name: Record workflow status
+        if: always()
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone
+          record = {
+              'workflow': 'daily_post',
+              'run_id': int('${{ github.run_id }}'),
+              'status': '${{ job.status }}',
+              'started_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'completed_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'duration_seconds': 0,
+              'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
+              'trigger': '${{ github.event_name }}'
+          }
+          f = 'trades/workflow_status.json'
+          try:
+              entries = json.load(open(f))
+          except:
+              entries = []
+          entries.append(record)
+          entries = entries[-100:]
+          json.dump(entries, open(f, 'w'), indent=2)
+          print(f'Recorded daily_post: ${{ job.status }}')
+          "
+
       - name: Commit updated content queues
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -291,6 +319,7 @@ jobs:
           git add trades/daily_content_queue.json trades/daily_content_queue_account2.json trades/daily_content_queue_account3.json 2>/dev/null || true
           git add trades/tweet_tracking.json 2>/dev/null || true
           git add trades/live_content_queue.json 2>/dev/null || true
+          git add trades/workflow_status.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -304,6 +333,25 @@ jobs:
             }
             git push
           fi
+        continue-on-error: true
+
+      - name: Deploy dashboard to Vercel
+        if: success()
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN not set — skipping dashboard deploy"
+            exit 0
+          fi
+          echo "📦 Bundling dashboard data..."
+          cd dashboard
+          bash scripts/bundle-data.sh
+          echo "🚀 Deploying to Vercel..."
+          npx vercel deploy --prod --token "$VERCEL_TOKEN" --yes
+          echo "✅ Dashboard deployed"
         continue-on-error: true
 
       - name: Upload updated content queues

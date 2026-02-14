@@ -63,6 +63,7 @@ try:
         MAX_TWEETS_PER_DAY, MAX_SAME_TICKER_PER_DAY,
         MIN_HOURS_BETWEEN_SAME_TICKER, CONTEXT_STALENESS_HOURS,
         MODEL_LIVE_TWEET, WEEKEND_MAX_TWEETS, WEEKEND_CATEGORIES as _WEEKEND_CATS,
+        PERSONAS, get_persona,
     )
     MODEL = MODEL_LIVE_TWEET
     WEEKEND_CATEGORIES = set(_WEEKEND_CATS)  # Config stores List, local needs Set
@@ -76,7 +77,7 @@ except ImportError:
     MAX_SAME_TICKER_PER_DAY = 3
     MIN_HOURS_BETWEEN_SAME_TICKER = 3
     CONTEXT_STALENESS_HOURS = 4
-    WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT"}
+    WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT"}
 
 # Local-only constants (not in config)
 PORTFOLIO_FILE = TRADES_DIR / "portfolio.csv"
@@ -273,6 +274,26 @@ def count_ticker_today(ticker: str, recent_tweets: List[Dict]) -> int:
     return count
 
 
+def _count_category_this_week(category: str, recent_tweets: List[Dict]) -> int:
+    """Count how many tweets of a given category were posted in the last 7 days."""
+    week_start = datetime.now(ZoneInfo("America/New_York")) - timedelta(days=7)
+    count = 0
+    for t in recent_tweets:
+        if t.get("category") != category:
+            continue
+        if t.get("status") not in ("pending", "posted"):
+            continue
+        try:
+            gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
+            if gen.tzinfo is None:
+                gen = gen.replace(tzinfo=ZoneInfo("UTC"))
+            if gen > week_start:
+                count += 1
+        except (ValueError, TypeError):
+            pass
+    return count
+
+
 def should_post_newsletter_cta(recent_tweets: List[Dict], target_per_week: int = 2) -> bool:
     """Check if newsletter CTA is due (2x/week)."""
     week_start = datetime.now(ZoneInfo("America/New_York")) - timedelta(days=7)
@@ -317,6 +338,86 @@ def find_tickers_for_theme(theme: str, portfolio: List[Dict], signals: dict) -> 
     return [t for t in tickers if t][:3]
 
 
+def _prepare_slot_data(
+    decision: Dict, portfolio: List[Dict], signals: Dict,
+) -> Dict[str, Dict]:
+    """
+    Prepare per-account slot assignments with different tickers & angles.
+
+    Gathers all content candidates, assigns top 3 DIFFERENT tickers to 3 accounts.
+    If < 3 unique tickers available, reuses ticker but with a different angle.
+
+    Returns:
+        {
+            "variant_1": {"ticker": "AAA", "category": "RECEIPT", "angle": "data-driven"},
+            "variant_2": {"ticker": "BBB", "category": "EDUCATIONAL", "angle": "explains-why"},
+            "variant_3": {"ticker": "CCC", "category": "MARKET_REACTION", "angle": "punchy-direct"},
+        }
+    """
+    candidates = []  # List of (ticker, priority) tuples
+
+    # 1. Decision tickers (highest priority)
+    for t in decision.get("tickers", []):
+        t = t.lstrip('$')
+        if t:
+            candidates.append(t)
+
+    # 2. Portfolio winners (>10% gain, sorted by P&L descending)
+    scored = []
+    for row in portfolio:
+        entry = float(row.get('entry_price') or 0)
+        highest = float(row.get('highest_close') or 0)
+        if entry > 0 and highest > 0:
+            pnl = ((highest - entry) / entry) * 100
+            if pnl > 10:
+                scored.append((row['ticker'], pnl))
+    scored.sort(key=lambda x: x[1], reverse=True)
+    for t, _ in scored:
+        if t not in candidates:
+            candidates.append(t)
+
+    # 3. Fresh scanner buy_signals
+    for sig in signals.get('buy_signals', []):
+        sym = sig.get('symbol', '').upper()
+        if sym and sym not in candidates:
+            candidates.append(sym)
+
+    # Assign to 3 accounts — different tickers when possible
+    category = decision.get("type", "ENGAGEMENT")
+    angles = ["data-driven", "explains-why", "punchy-direct"]
+    # Alternate categories for persona variety when same base category
+    angle_categories = {
+        "data-driven": category,
+        "explains-why": "EDUCATIONAL" if category not in ("EDUCATIONAL", "ENGAGEMENT") else category,
+        "punchy-direct": category,
+    }
+
+    slot_data = {}
+    used_tickers = set()
+
+    for i, variant in enumerate(ACCOUNT_VARIANTS):
+        # Find next unused ticker
+        ticker = ""
+        for c in candidates:
+            if c not in used_tickers:
+                ticker = c
+                used_tickers.add(c)
+                break
+
+        # If no unused ticker available, reuse first candidate with different angle
+        if not ticker and candidates:
+            ticker = candidates[0]
+
+        angle = angles[i]
+        slot_data[variant] = {
+            "ticker": ticker,
+            "category": angle_categories.get(angle, category),
+            "angle": angle,
+        }
+
+    return slot_data
+
+
 def decide_tweet_type(
     context: Dict, portfolio: List[Dict], signals: Dict, recent_tweets: List[Dict]
 ) -> Dict:
@@ -336,6 +437,32 @@ def decide_tweet_type(
     if tweets_today >= max_today:
         return {"action": "skip", "reason": f"Daily cap reached ({tweets_today}/{max_today})"}
 
+    # Priority 0: Fresh scanner signals (< 48h old PASS/buy signals)
+    # Critical for Sunday PM — followers need tickers before Monday open
+    now_et = datetime.now(ZoneInfo("America/New_York"))
+    signal_timestamp = signals.get("timestamp", "")
+    if signal_timestamp:
+        try:
+            signal_time = datetime.strptime(signal_timestamp, "%Y-%m-%d %H:%M:%S")
+            signal_time = signal_time.replace(tzinfo=ZoneInfo("America/New_York"))
+            hours_since_scan = (now_et - signal_time).total_seconds() / 3600
+        except (ValueError, TypeError):
+            hours_since_scan = 999
+
+        if hours_since_scan < 48:
+            for sig in signals.get("buy_signals", []):
+                ticker = sig.get("symbol", "").upper()
+                if ticker and not recently_tweeted(ticker, recent_tweets, hours=6):
+                    # Sunday PM (after 15:00 ET) = highest priority for pre-Monday signals
+                    is_sunday_pm = now_et.weekday() == 6 and now_et.hour >= 15
+                    return {
+                        "action": "tweet",
+                        "type": "SIGNAL_ALERT",
+                        "reason": f"Fresh scanner signal: ${ticker} (scan {hours_since_scan:.0f}h ago)",
+                        "tickers": [ticker],
+                        "urgency": "high" if is_sunday_pm else "medium",
+                    }
+
     # Priority 1: Portfolio movers (>=2% move)
     for mover in movers:
         try:
@@ -354,6 +481,11 @@ def decide_tweet_type(
             tweet_type = "DIP_OPPORTUNITY"
         else:
             tweet_type = "MARKET_REACTION"
+
+        # Weekend guard: markets closed — only RECEIPT is valid for movers
+        if is_weekend and tweet_type in ("MARKET_REACTION", "DIP_OPPORTUNITY"):
+            continue
+
         return {
             "action": "tweet",
             "type": tweet_type,
@@ -386,9 +518,9 @@ def decide_tweet_type(
                 "urgency": opp.get("urgency", "medium"),
             }
 
-    # Priority 4: Market commentary (volatile/bearish mood)
+    # Priority 4: Market commentary (volatile/bearish mood) — weekdays only
     mood = market.get("market_mood", "quiet")
-    if mood in ("volatile", "bearish") and not recently_tweeted_type("MARKET_REACTION", recent_tweets, hours=4):
+    if mood in ("volatile", "bearish") and not is_weekend and not recently_tweeted_type("MARKET_REACTION", recent_tweets, hours=4):
         return {
             "action": "tweet",
             "type": "MARKET_REACTION",
@@ -407,32 +539,117 @@ def decide_tweet_type(
             "urgency": "low",
         }
 
-    # Priority 6: Filler (quiet days)
-    if tweets_today < 4 and not is_weekend:
+    # Priority 6: Filler (quiet days — weekday or weekend)
+    if tweets_today < 4:
+        if is_weekend:
+            # Weekend: restrict to weekend-safe categories only
+            filler_type = random.choice(sorted(WEEKEND_CATEGORIES & {"EDUCATIONAL", "ENGAGEMENT", "RECEIPT"}))
+        else:
+            filler_type = random.choice(["EDUCATIONAL", "ENGAGEMENT"])
         return {
             "action": "tweet",
-            "type": random.choice(["EDUCATIONAL", "ENGAGEMENT"]),
+            "type": filler_type,
             "reason": "Quiet market — filler content with live context",
             "tickers": get_best_performing_tickers(portfolio, n=1),
             "urgency": "low",
         }
 
-    return {"action": "skip", "reason": "No tweetable events and daily minimum met"}
+    # ── Minimum daily cadence fallback ──────────────────────────────────────
+    # Ensures at least 1 tweet/day even on quiet days. Cascade:
+    #   1. RECEIPT (if winning open positions exist, not recently posted)
+    #   2. EDUCATIONAL (if < 3 this week, not recently posted)
+    #   3. ENGAGEMENT (final fallback)
+    #   4. skip (only if all fallbacks exhausted)
+
+    best_tickers = get_best_performing_tickers(portfolio, n=1)
+    if best_tickers and not recently_tweeted_type("RECEIPT", recent_tweets, hours=8):
+        return {
+            "action": "tweet",
+            "type": "RECEIPT",
+            "reason": "Cadence fallback — showcase winning position",
+            "tickers": best_tickers,
+            "urgency": "low",
+        }
+
+    if _count_category_this_week("EDUCATIONAL", recent_tweets) < 3 and not recently_tweeted_type("EDUCATIONAL", recent_tweets, hours=6):
+        return {
+            "action": "tweet",
+            "type": "EDUCATIONAL",
+            "reason": "Cadence fallback — educational content",
+            "tickers": best_tickers or [],
+            "urgency": "low",
+        }
+
+    if not recently_tweeted_type("ENGAGEMENT", recent_tweets, hours=6):
+        return {
+            "action": "tweet",
+            "type": "ENGAGEMENT",
+            "reason": "Cadence fallback — engagement content",
+            "tickers": best_tickers or [],
+            "urgency": "low",
+        }
+
+    return {"action": "skip", "reason": "No tweetable events and all cadence fallbacks exhausted"}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PROMPTS (PRD Section 6.3-6.4)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def build_system_prompt(style_guide: str) -> str:
-    """Build the Sonnet system prompt for tweet generation."""
+def build_system_prompt(
+    style_guide: str, slot_assignments: Optional[Dict[str, Dict]] = None
+) -> str:
+    """Build the Sonnet system prompt for tweet generation.
+
+    Args:
+        style_guide: FinTwit style guide text
+        slot_assignments: Optional per-account slot data from _prepare_slot_data()
+    """
     banned_sample = ", ".join(f'"{t}"' for t in CRITICAL_BANNED[:40])
+
+    # Build persona instructions if slot data available
+    persona_block = ""
+    if slot_assignments:
+        persona_lines = []
+        account_map = {
+            "variant_1": "main",
+            "variant_2": "account2",
+            "variant_3": "account3",
+        }
+        prd_names = {
+            "main": "Alex",
+            "account2": "Rozalia",
+            "account3": "James",
+        }
+        for variant, slot in slot_assignments.items():
+            acct_key = account_map.get(variant, "main")
+            persona = get_persona(acct_key)
+            prd_name = prd_names.get(acct_key, "Alex")
+            voice = persona.get("voice", {})
+            traits = ", ".join(voice.get("traits", []))
+            tone = voice.get("tone", "professional")
+            phrases = persona.get("signature_phrases", [])
+            phrase_hint = f'Style hint: "{phrases[0]}"' if phrases else ""
+
+            persona_lines.append(
+                f"- {variant} ({prd_name} — {persona.get('archetype', 'Analyst')}): "
+                f"Tone = {tone}, traits = [{traits}]. "
+                f"Angle = {slot.get('angle', 'general')}. {phrase_hint}"
+            )
+
+        persona_block = f"""
+PERSONA DIFFERENTIATION (CRITICAL — these must sound like 3 different traders):
+{chr(10).join(persona_lines)}
+Each variant MUST have a distinctly different voice matching its persona above.
+variant_1 = data-driven analyst, variant_2 = approachable mentor, variant_3 = punchy practitioner.
+DO NOT just rearrange words — write as if 3 different people are tweeting.
+"""
 
     return f"""You are the voice of Sterling Signals, a momentum trading newsletter on FinTwit.
 
 STYLE RULES (non-negotiable):
 {style_guide}
-
+{persona_block}
 YOUR TASK:
 Generate exactly 3 tweet variants for the same moment. Each variant must:
 - Sound like a different human wrote it (not just rearranged words)
@@ -477,8 +694,18 @@ def format_portfolio_for_prompt(portfolio: List[Dict]) -> str:
     return "\n".join(lines) if lines else "No open positions"
 
 
-def build_user_prompt(decision: Dict, context: Dict, portfolio: List[Dict]) -> str:
-    """Build the user prompt with live market context."""
+def build_user_prompt(
+    decision: Dict, context: Dict, portfolio: List[Dict],
+    slot_assignments: Optional[Dict[str, Dict]] = None,
+) -> str:
+    """Build the user prompt with live market context.
+
+    Args:
+        decision: Tweet type decision dict
+        context: Live market context
+        portfolio: Portfolio data
+        slot_assignments: Optional per-account slot data from _prepare_slot_data()
+    """
     market = context.get("market_snapshot", {})
     movers = context.get("portfolio_movers", [])
     themes = context.get("theme_activity", [])
@@ -487,6 +714,31 @@ def build_user_prompt(decision: Dict, context: Dict, portfolio: List[Dict]) -> s
     movers_text = json.dumps(movers, indent=2) if movers else "No significant moves"
     themes_text = json.dumps(themes, indent=2) if themes else "All themes quiet"
     trending_text = ", ".join(trending) if trending else "Nothing specific"
+
+    # Build per-account assignment instructions
+    assignment_block = ""
+    if slot_assignments:
+        prd_names = {
+            "variant_1": "Alex",
+            "variant_2": "Rozalia",
+            "variant_3": "James",
+        }
+        lines = []
+        for variant, slot in slot_assignments.items():
+            name = prd_names.get(variant, "Account")
+            ticker = slot.get("ticker", "")
+            cat = slot.get("category", decision.get("type", ""))
+            angle = slot.get("angle", "general")
+            ticker_str = f"${ticker}" if ticker else "best portfolio position"
+            lines.append(f"  {variant} ({name}): Focus on {ticker_str} — {cat} — {angle} angle")
+
+        assignment_block = f"""
+PER-ACCOUNT ASSIGNMENTS (CRITICAL — each account gets a DIFFERENT focus):
+{chr(10).join(lines)}
+Each variant MUST focus on its assigned ticker. Do NOT give all 3 the same ticker unless assigned above.
+"""
+
+    generation_instruction = "Generate 3 variants now, each matching its assigned persona and ticker above." if slot_assignments else "Generate 3 variants now."
 
     return f"""CURRENT MARKET STATE:
 - SPY: {market.get('spy_move', 'N/A')} | QQQ: {market.get('qqq_move', 'N/A')} | VIX: {market.get('vix', 'N/A')}
@@ -505,11 +757,11 @@ FINTWIT IS DISCUSSING:
 TWEET TYPE REQUESTED: {decision.get('type', 'ENGAGEMENT')}
 REASON: {decision.get('reason', '')}
 FOCUS TICKER(S): {', '.join(f'${t}' for t in decision.get('tickers', []))}
-
+{assignment_block}
 PORTFOLIO CONTEXT (for accuracy — use ONLY these real numbers):
 {format_portfolio_for_prompt(portfolio)}
 
-Generate 3 variants now."""
+{generation_instruction}"""
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -528,10 +780,11 @@ def parse_json_response(text: str) -> Dict:
 def call_sonnet(
     decision: Dict, context: Dict, portfolio: List[Dict],
     style_guide: str, client: anthropic.Anthropic,
+    slot_assignments: Optional[Dict[str, Dict]] = None,
 ) -> List[Dict]:
     """Generate 3 tweet variants in a single Sonnet call."""
-    system_prompt = build_system_prompt(style_guide)
-    user_prompt = build_user_prompt(decision, context, portfolio)
+    system_prompt = build_system_prompt(style_guide, slot_assignments=slot_assignments)
+    user_prompt = build_user_prompt(decision, context, portfolio, slot_assignments=slot_assignments)
 
     response = client.messages.create(
         model=MODEL,
@@ -633,9 +886,10 @@ def validate_tweet(
     all_variants: Optional[List[Dict]] = None,
     context: Optional[Dict] = None,
     recent_tweets: Optional[List[Dict]] = None,
+    slot_assignments: Optional[Dict[str, Dict]] = None,
 ) -> ValidationResult:
     """
-    Run the 10-step validation pipeline on a tweet.
+    Run the 10-step validation pipeline on a tweet (+ step 8.5 slot collision).
 
     Args:
         tweet_dict: Tweet data with 'text', 'category', 'chart_recommended', etc.
@@ -643,6 +897,7 @@ def validate_tweet(
         all_variants: Other variants in this batch (for step 8 cross-dedup)
         context: Live context data (for step 9 staleness check)
         recent_tweets: Recent tweet queue (for step 10 daily repetition)
+        slot_assignments: Per-account slot data (for step 8.5 collision check)
 
     Returns:
         ValidationResult with passed flag and failure list.
@@ -704,7 +959,7 @@ def validate_tweet(
         tweet_dict["chart_recommended"] = expected_chart
         # Auto-fixed, not a failure
 
-    # Step 8: Cross-account dedup (if other variants provided)
+    # Step 8: Cross-account dedup (if other variants provided) — PRD: <70% similarity
     if all_variants:
         for other in all_variants:
             if other.get("account") == tweet_dict.get("account"):
@@ -712,11 +967,32 @@ def validate_tweet(
             similarity = SequenceMatcher(
                 None, text_lower, other.get("text", "").lower()
             ).ratio()
-            if similarity > 0.60:
+            if similarity > 0.70:
                 failures.append(
                     f"step8_dedup: {similarity:.0%} similar to {other.get('account', '?')}"
                 )
                 break
+
+    # Step 8.5: Slot collision check (different tickers per account)
+    if slot_assignments and all_variants:
+        my_account = tweet_dict.get("account", "")
+        my_ticker = (tweet_dict.get("primary_ticker") or "").lstrip('$')
+        if my_ticker and my_account:
+            # Check if slot_assignments explicitly assigned the same ticker to multiple accounts
+            assigned_tickers = {v: s.get("ticker", "") for v, s in slot_assignments.items()}
+            unique_assigned = set(t for t in assigned_tickers.values() if t)
+            shared_ticker_allowed = len(unique_assigned) < len(assigned_tickers)
+
+            if not shared_ticker_allowed:
+                for other in all_variants:
+                    other_account = other.get("account", "")
+                    if other_account == my_account:
+                        continue
+                    other_ticker = (other.get("primary_ticker") or "").lstrip('$')
+                    if other_ticker and other_ticker == my_ticker:
+                        failures.append(
+                            f"step8_5_collision: ${my_ticker} used by both {my_account} and {other_account}"
+                        )
 
     # Step 9: Context staleness check
     if context and category == "MARKET_REACTION":
@@ -910,9 +1186,13 @@ def generate_live_tweet(
         return {"status": "failed", "reason": "ANTHROPIC_API_KEY not set"}
     client = anthropic.Anthropic(api_key=api_key)
 
-    # 5. Generate tweets via Sonnet
+    # 4b. Prepare per-account slot assignments (different tickers per persona)
+    slot_assignments = _prepare_slot_data(decision, portfolio, signals)
+    logger.info("Slot assignments: %s", {v: s.get("ticker") for v, s in slot_assignments.items()})
+
+    # 5. Generate tweets via Sonnet (with persona + slot data)
     try:
-        raw_tweets = call_sonnet(decision, context, portfolio, style_guide, client)
+        raw_tweets = call_sonnet(decision, context, portfolio, style_guide, client, slot_assignments=slot_assignments)
     except json.JSONDecodeError as e:
         logger.error("Failed to parse Sonnet response: %s", e)
         return {"status": "failed", "reason": f"json_parse_error: {e}"}
@@ -937,6 +1217,7 @@ def generate_live_tweet(
             all_variants=validated,  # Already-validated for cross-dedup
             context=context,
             recent_tweets=recent_tweets,
+            slot_assignments=slot_assignments,
         )
 
         if result.passed:
@@ -962,6 +1243,7 @@ def generate_live_tweet(
                 all_variants=validated,
                 context=context,
                 recent_tweets=recent_tweets,
+                slot_assignments=slot_assignments,
             )
             if result.passed:
                 validated.append(repaired)

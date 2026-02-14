@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a2332;
+  --bg-card-hover: #1f2b3d;
+  --border: #2a3548;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-teal: #2dd4bf;
+  --accent-violet: #a78bfa;
+  --accent-amber: #fbbf24;
+  --accent-green: #34d399;
+  --accent-red: #f87171;
+  --accent-blue: #60a5fa;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Stat card glow effects */
+.stat-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 35, 50, 0.8) 100%);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+.stat-card:hover {
+  border-color: rgba(45, 212, 191, 0.3);
+  box-shadow: 0 0 20px rgba(45, 212, 191, 0.05);
+}
+
+/* Status badges */
+.badge-posted { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); }
+.badge-pending { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
+.badge-failed { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+.badge-skipped { background: rgba(100, 116, 139, 0.15); color: var(--text-muted); }
+.badge-upcoming { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
+.badge-expired { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); opacity: 0.7; }
+
+/* Table styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.data-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(42, 53, 72, 0.5);
+  color: var(--text-secondary);
+}
+.data-table tr:hover td {
+  background: rgba(26, 35, 50, 0.5);
+}
+
+/* Tab navigation */
+.tab-active {
+  color: var(--accent-teal);
+  border-bottom: 2px solid var(--accent-teal);
+}
+.tab-inactive {
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+.tab-inactive:hover {
+  color: var(--text-secondary);
+}
+
+/* Signal color system */
+.signal-teal { color: var(--accent-teal); }
+.signal-violet { color: var(--accent-violet); }
+.signal-amber { color: var(--accent-amber); }
+
+/* PnL colors */
+.pnl-positive { color: var(--accent-green); }
+.pnl-negative { color: var(--accent-red); }
+
+/* Theme classification badges */
+.theme-prime { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); }
+.theme-investable { background: rgba(96, 165, 250, 0.15); color: var(--accent-blue); }
+.theme-selective { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
+.theme-avoid { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+
+/* Card with subtle gradient border */
+.gradient-border {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(167, 139, 250, 0.1));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* Next tweet card highlight */
+.next-tweet-card {
+  border-color: rgba(45, 212, 191, 0.4);
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
+}
+
+/* Newsletter card accent */
+.newsletter-card {
+  border-left: 3px solid var(--accent-teal);
+}
+
+/* Tweet expired state */
+.tweet-expired {
+  opacity: 0.5;
+}
+
+/* Progress bar (daily success meter) */
+.progress-bar-track {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(42, 53, 72, 0.5);
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+/* Signal card expand animation */
+.signal-card-expand {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+.signal-card-expand.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+.signal-card-expand.expanded {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* Week pill selector */
+.week-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  background: rgba(42, 53, 72, 0.5);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.week-pill:hover {
+  border-color: rgba(45, 212, 191, 0.2);
+  color: var(--text-secondary);
+}
+.week-pill-active {
+  background: rgba(45, 212, 191, 0.15);
+  color: var(--accent-teal);
+  border-color: rgba(45, 212, 191, 0.3);
+}
+.week-pill-dimmed {
+  opacity: 0.4;
+  cursor: default;
+}
+.week-pill-dimmed:hover {
+  border-color: transparent;
+  color: var(--text-muted);
+}
+
+/* Select / dropdown styling */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 28px;
+}
+select:focus {
+  outline: none;
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.3);
+}

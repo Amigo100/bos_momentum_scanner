@@ -51,6 +51,16 @@ env:
   X1_API_SECRET: ${{ secrets.X_API_SECRET }}
   X1_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
   X1_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+  # Account 2 (@Rdobrogowska) — activates when X2_* secrets are added
+  X2_API_KEY: ${{ secrets.X2_API_KEY }}
+  X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
+  X2_ACCESS_TOKEN: ${{ secrets.X2_ACCESS_TOKEN }}
+  X2_ACCESS_SECRET: ${{ secrets.X2_ACCESS_SECRET }}
+  # Account 3 — activates when X3_* secrets are added
+  X3_API_KEY: ${{ secrets.X3_API_KEY }}
+  X3_API_SECRET: ${{ secrets.X3_API_SECRET }}
+  X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
+  X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
 
 permissions:
   contents: write
@@ -63,7 +73,7 @@ concurrency:
 jobs:
   generate-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
 
     steps:
       - name: Checkout repository
@@ -100,11 +110,54 @@ jobs:
         run: python -m content.chart_generator
         continue-on-error: true
 
-      - name: Post tweet (account 1 only)
+      - name: Post tweet — Account 1 (Alex)
         if: github.event.inputs.dry_run != 'true'
         run: |
-          echo "=== Posting to main account (@AlexSterlingGBR) ==="
+          echo "=== Posting to Account 1 (@AlexSterlingGBR) ==="
           python -m distribution.twitter_poster --account main --live-queue || true
+
+      - name: Post tweet — Account 2 (Rozalia)
+        if: github.event.inputs.dry_run != 'true' && env.X2_API_KEY != ''
+        run: |
+          echo "=== Staggering 10 minutes before Account 2 ==="
+          sleep 600
+          echo "=== Posting to Account 2 (@Rdobrogowska) ==="
+          python -m distribution.twitter_poster --account account2 --live-queue || true
+
+      - name: Post tweet — Account 3 (James)
+        if: github.event.inputs.dry_run != 'true' && env.X3_API_KEY != ''
+        run: |
+          echo "=== Staggering 10 minutes before Account 3 ==="
+          sleep 600
+          echo "=== Posting to Account 3 ==="
+          python -m distribution.twitter_poster --account account3 --live-queue || true
+
+      - name: Record workflow status
+        if: always()
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone
+          record = {
+              'workflow': 'live_tweet',
+              'run_id': int('${{ github.run_id }}'),
+              'status': '${{ job.status }}',
+              'started_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'completed_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'duration_seconds': 0,
+              'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
+              'trigger': '${{ github.event_name }}'
+          }
+          f = 'trades/workflow_status.json'
+          try:
+              entries = json.load(open(f))
+          except:
+              entries = []
+          entries.append(record)
+          entries = entries[-100:]
+          json.dump(entries, open(f, 'w'), indent=2)
+          print(f'Recorded live_tweet: ${{ job.status }}')
+          "
 
       - name: Commit queue updates
         run: |
@@ -116,6 +169,7 @@ jobs:
           git add trades/live_context.json 2>/dev/null || true
           git add trades/live_cost_log.json 2>/dev/null || true
           git add trades/charts/live_*.png 2>/dev/null || true
+          git add trades/workflow_status.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -139,7 +193,9 @@ jobs:
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Dry Run:** ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Force Type:** ${{ github.event.inputs.force_type || 'auto' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Account:** main (@AlexSterlingGBR)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Account 1:** main (@AlexSterlingGBR)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Account 2:** $([ -n \"$X2_API_KEY\" ] && echo 'active' || echo 'not configured')" >> $GITHUB_STEP_SUMMARY
+          echo "- **Account 3:** $([ -n \"$X3_API_KEY\" ] && echo 'active' || echo 'not configured')" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
 
           # Show cost summary if available

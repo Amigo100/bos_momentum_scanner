@@ -368,7 +368,6 @@ trades/
 | File | Purpose |
 |------|---------|
 | `utils/verify_tweets.py` | Verify tweet generator output |
-| `utils/verify_reaction_tweets.py` | Verify reaction generator output |
 | `utils/run_full_pipeline.py` | Full pipeline runner |
 | `utils/tradingview_login.py` | TradingView browser login |
 | `utils/setup_scheduler.py` | macOS scheduler setup |

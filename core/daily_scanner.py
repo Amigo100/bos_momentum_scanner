@@ -43,10 +43,13 @@ warnings.filterwarnings("ignore")
 
 from core.scanner import (
     calculate_beta,
+    load_tickers,
+)
+# Legacy indicators preserved for daily scanner (weekly uses sterling_indicators)
+from core.legacy_indicators import (
     calculate_banker,
     calculate_hma,
     find_pivots,
-    load_tickers,
 )
 from config import (
     BETA_THRESHOLD,

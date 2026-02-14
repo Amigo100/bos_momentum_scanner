@@ -20,9 +20,18 @@
 
 ### Trading Strategy (Internal Reference Only)
 
+**Weekly Scanner (Sterling Grid — V2/V4 backtest-validated):**
 ```
-ENTRY:  Weekly HMA Pivot BUY + Beta ≥1.5 + Banker Rising + Theme Confirmed + Gatekeeper PASS
-EXIT:   First exit — 20% trailing stop from highest weekly close OR Weekly BoS Down (whichever first)
+ENTRY:  HMA(21) slope rising + RSI(14) > 50 + MACD(12,26,9) cross-up + UC rising above + Price < $25
+        → Investment Gate (Sonnet) → Deep DD (Opus, 1-3 stocks)
+EXIT:   ExD (HMA falling + UC falling) OR Tiered Profit Lock (+200%→15%, +100%→20%, +50%→25% trail)
+SIZING: Conviction-tiered: HIGH 8-10=20%, STANDARD 7=15%, SPEC 4-6=8% | Max 6 positions, 10% cash reserve
+```
+
+**Daily Scanner (unchanged — legacy indicators):**
+```
+ENTRY:  Daily HMA Pivot BUY + Beta ≥1.5 + Banker Rising (max 5/day, dedup vs weekly)
+EXIT:   Daily BoS Down OR 20% trailing stop (whichever first)
 ```
 
 > **IMPORTANT:** These specific strategy details are for internal documentation only.
@@ -38,16 +47,19 @@ All public-facing content (tweets, newsletter, notes) must follow these rules.
 
 | Internal Term | Public Alternative |
 |---------------|-------------------|
-| "20% trailing stop" | "Capital Preservation Protocol" |
-| "HMA pivots" | "Structural Pivot Confirmation" |
-| "Banker indicator" / "Banker rising" / "UC rising" | "Institutional Accumulation Divergence" |
+| "20% trailing stop" / "tiered stop" / "profit lock" | "Capital Preservation Protocol" |
+| "HMA pivots" / "HMA slope" | "Structural Pivot Confirmation" |
+| "Banker indicator" / "Banker rising" / "UC rising" / "Undercurrent" / "UC indicator" | "Institutional Accumulation Divergence" |
 | "Beta >= 1.5" | "Volatility Expansion Criteria" |
-| "Weekly BoS (Break of Structure)" | "Structural Trend Confirmation" |
+| "Weekly BoS (Break of Structure)" / "ExD exit" | "Structural Trend Confirmation" |
 | "Tier 1/2/3 classification" | "Conviction Rating" |
-| "Gatekeeper" | "The 5th Gate: Forensic Audit" |
+| "Gatekeeper" / "Investment Gate" | "The 5th Gate: Forensic Audit" |
 | "Theme scoring" | "Sector Flow Analysis" |
+| "Price cap" / "$25 cap" | "Universe filter" |
+| "Gear shift" / "sizing gear" | "Position management" |
+| "STRONG BUY" / "SPEC BUY" / "NO_GO" (verdicts) | "GREEN signal" / "GREEN signal (speculative)" |
 
-**Also BANNED:** UK ISA, ISA account, GMT, BST, UK Time, RSI, MACD, KDJ
+**Also BANNED:** UK ISA, ISA account, GMT, BST, UK Time, RSI, MACD, KDJ, conviction 6-10 numeric values
 
 ### Approved Marketing Phrases
 
@@ -118,13 +130,12 @@ Replace internal conviction scores with public-facing language:
 
 | Internal Score | Public Language |
 |---------------|-----------------|
-| Conviction 5 | Extremely Bullish |
-| Conviction 4 | Bullish |
-| Conviction 3 | Watching |
-| Conviction 2 | Cautious |
-| Conviction 1 | Do not post publicly |
+| Conviction 8-10 | Extremely Bullish |
+| Conviction 7 | Bullish |
+| Conviction 4-6 | Watching |
+| Conviction 1-3 | Do not post publicly |
 
-**BANNED:** Never use "conviction 5", "conviction 4", "conviction score" in public content.
+**BANNED:** Never use "conviction 8", "conviction score", or any numeric conviction value in public content.
 
 ### Entry Price Display Rules
 
@@ -202,11 +213,15 @@ python -m core.daily_scanner --top 100             # Limit universe to top 100 b
 ```bash
 python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv --account all  # Weekly tweets (3 accounts)
 python -m content.tweet_generator --daily --signals trades/daily_signals.json --account all                     # Daily tweets
-python -m content.newsletter_compiler --full        # Compile full newsletter with DD
+python -m content.newsletter_compiler --full        # Compile full newsletter with DD + themes + QQQ
+python -m content.dd_post_generator                 # Generate DD HTML posts per buy signal
+python -m content.dd_post_generator --ticker NVDA   # DD post for specific ticker
+python -m content.dd_post_generator --dry-run       # Preview DD posts without saving
 python -m content.substack_notes_generator          # Generate Tuesday/Thursday notes
 python -m content.substack_content_generator --all  # Generate Mon/Thu/Sat/Sun Substack posts (HTML)
 python -m content.market_analyzer --save            # Generate market context analysis
-python -m core.dd_automator                         # Run automated due diligence
+python -m content.portfolio_visual                  # Generate portfolio dashboard HTML + PNG
+python -m content.portfolio_visual --dry-run        # Preview dashboard HTML without PNG
 ```
 
 ### Backup Management
@@ -276,10 +291,12 @@ trades/
             tuesday_note.md               # "Portfolio Pulse" → Substack Tuesday
             thursday_note.md              # "Trade Spotlight" → Substack Thursday
         substack_posts/                   # Rich HTML posts
+            dd_TICKER.html                # DD post per buy signal (generated by dd_post_generator)
             monday_market_analysis.html   # → Post Monday
             thursday_theme_spotlight.html  # → Post Thursday
             saturday_weekly_signals.html   # → Post Saturday
             sunday_deep_dive.html          # → Post Sunday
+        portfolio_dashboard.html          # Portfolio dashboard with equity curve SVG
 
     # ─── CHARTS ───
     charts/
@@ -302,12 +319,14 @@ trades/
 #### `core/` — Scanner Pipeline
 | File | Purpose |
 |------|---------|
-| `core/scanner.py` | Main weekly pipeline orchestrator |
-| `core/daily_scanner.py` | Daily timeframe scanner (Mon-Fri after close) |
+| `core/scanner.py` | Main weekly pipeline orchestrator (Sterling Grid indicators) |
+| `core/daily_scanner.py` | Daily timeframe scanner (Mon-Fri, uses legacy indicators) |
+| `core/sterling_indicators.py` | **NEW** — Sterling Grid indicators (HMA slope, RSI, MACD, UC, ExD, profit lock, position sizing) |
+| `core/investment_gate.py` | **NEW** — Investment Gate (Sonnet, replaces gatekeeper) |
+| `core/deep_dd.py` | **NEW** — Deep DD (Opus + extended thinking, 1-3 stocks) |
+| `core/legacy_indicators.py` | **NEW** — Old Banker/HMA/BoS indicators preserved for daily scanner |
 | `core/thematic_analyzer.py` | LLM theme discovery and scoring |
-| `core/gatekeeper.py` | LLM final quality gate |
-| `core/portfolio_manager.py` | Trade tracking, P&L, Google Sheets export |
-| `core/dd_automator.py` | Automated due diligence for PASS signals |
+| `core/portfolio_manager.py` | Trade tracking, P&L, tiered profit lock, conviction-sized positions |
 | `core/due_diligence.py` | DD prompt generation |
 
 #### `content/` — Content Generation
@@ -317,7 +336,9 @@ trades/
 | `content/models.py` | Shared data classes: Tweet, ContentData, SlotAssignment, ValidationResult |
 | `content/content_planner.py` | Content planning |
 | `content/morning_briefing.py` | Briefing formatter |
-| `content/newsletter_compiler.py` | Compile full newsletter with DD integration |
+| `content/newsletter_compiler.py` | Compile full newsletter with DD integration, theme sub-scores, QQQ benchmark |
+| `content/dd_post_generator.py` | **NEW** — Standalone DD HTML posts per buy signal (for Substack) |
+| `content/portfolio_visual.py` | Portfolio HTML dashboard with equity curve SVG, SPY/QQQ benchmarks |
 | `content/substack_notes_generator.py` | Tuesday/Thursday mid-week Substack notes |
 | `content/substack_content_generator.py` | Mon/Thu/Sat/Sun Substack posts |
 | `content/market_analyzer.py` | Market context analysis via LLM |
@@ -353,12 +374,15 @@ trades/
 | `utils/setup_scheduler.py` | macOS scheduler setup |
 | `utils/backup_cleanup.py` | Portfolio backup dedup (newest per calendar week) |
 
-#### `tests/` — Test Suite
+#### `tests/` — Test Suite (217 tests)
 | File | Purpose |
 |------|---------|
-| `tests/test_integration.py` | Cross-module integration tests (20 tests) |
-| `tests/test_daily_scanner.py` | Daily scanner unit tests (10 tests) |
-| `tests/test_tweet_generator_v2.py` | Tweet generator v2 unit tests (20 tests) |
+| `tests/test_sterling_indicators.py` | **NEW** — Sterling Grid indicator unit tests (63 tests) |
+| `tests/test_integration.py` | Cross-module integration tests (34 tests) — includes QQQ benchmark + DD post generator |
+| `tests/test_daily_scanner.py` | Daily scanner unit tests (11 tests) |
+| `tests/test_tweet_generator_v2.py` | Tweet generator v2 unit tests (24 tests) |
+| `tests/test_tweet_gen_audit_fixes.py` | Tweet generator audit fix tests |
+| `tests/test_tweet_gen_integration.py` | Tweet generator integration tests |
 | `tests/test_edge_cases.py` | Edge case tests |
 | `tests/test_safeguards.py` | Safety guard tests |
 
@@ -1923,6 +1947,29 @@ Solution:
 ---
 
 ## D. Changelog
+
+### 2026-02-14 (Portfolio Dashboard, Newsletter & DD Posts Upgrade)
+
+- **Portfolio dashboard enhanced** — `content/portfolio_visual.py`: Equity curve SVG chart (Portfolio/SPY/QQQ polylines), 6-stat grid (NAV, Return, Win Rate, Alpha vs SPY, Alpha vs NASDAQ, Max Drawdown), enhanced positions table with Current Price and Stop Distance columns, timestamp with refresh instructions
+- **QQQ/NASDAQ benchmark** — `core/portfolio_manager.py`: Added `qqq_value`, `qqq_return_pct`, `alpha_vs_qqq_pct` to `EquitySnapshot`; backward-compatible CSV deserialization; `calculate_nav()` accepts `qqq_data`; `get_compounding_summary()` returns QQQ fields
+- **Newsletter compiler upgraded** — `content/newsletter_compiler.py`: `load_dd_results()` now extracts all Deep DD fields (elevator_pitch, why_now, the_math, bear_case, risk_to_monitor, action); new `load_theme_details()` for theme sub-score table; `generate_benchmark_comparison()` includes QQQ + max drawdown; `COMPILATION_PROMPT` expanded with `{theme_details}` section and full DD field guidance
+- **DD HTML post generator** — **NEW** `content/dd_post_generator.py`: Standalone dark-theme HTML pages per buy signal with The Pitch, Why Now, The Math, Bear Case, Risk to Monitor, Theme Context (progress bars for sub-scores), Investment Gate Summary, Action card; marketing-safe (sanitizes via `INTERNAL_TERMINOLOGY_MAP`); optional Playwright PNG screenshots; CLI: `python -m content.dd_post_generator`
+- **Pipeline integration** — DD post generation added to `run_friday.sh` (step 4.5) and `.github/workflows/friday_scan.yml`
+- **Test suite expanded** — 204 → 217 tests; new `TestQQQBenchmark` (5 tests) and `TestDDPostGenerator` (8 tests) in `test_integration.py`
+
+### 2026-02-13 (Sterling Grid Upgrade)
+
+- **Sterling Grid indicators** — Complete replacement of weekly scanner technical indicators based on V1-V4 backtesting (+633% at 10x10, 79% win rate):
+  - **Entry**: HMA(21) slope rising + RSI(14) > 50 + MACD(12,26,9) cross-up + UC rising above + Price < $25 (replaces HMA Pivot BoS + Beta ≥1.5 + Banker Rising)
+  - **Exit**: ExD compound exit (HMA falling + UC falling) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25% trail) (replaces BoS Down + flat 20% trailing stop)
+  - **LLM gates**: Investment Gate (Sonnet) + Deep DD (Opus with extended thinking) (replaces Gatekeeper + DD Automator)
+- **Conviction scale expanded** — 1-5 → 1-10: HIGH 8-10, STANDARD 7, SPEC 4-6, NO GO 1-3
+- **Position sizing** — Conviction-tiered: HIGH=20%, STANDARD=15%, SPEC=8% of equity; max 6 positions; 10% cash reserve; gear system (conservative/recommended/aggressive)
+- **New files**: `core/sterling_indicators.py`, `core/investment_gate.py`, `core/deep_dd.py`, `core/legacy_indicators.py`
+- **Legacy indicators preserved** — `core/legacy_indicators.py` preserves old Banker/HMA/BoS for daily scanner (unchanged)
+- **Retired to archive**: `core/gatekeeper.py`, `core/dd_automator.py` → `archive/legacy_code/`
+- **Test suite expanded** — 141 → 217 tests; new `tests/test_sterling_indicators.py` with 63 indicator unit tests
+- **Backward compatibility** — `signals.json` maps `"banker": uc_value` for downstream content systems; portfolio CSV supports graceful defaults for new columns; daily scanner fully unchanged
 
 ### 2026-02-09 (First Exit Strategy)
 

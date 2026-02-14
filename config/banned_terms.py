@@ -74,6 +74,29 @@ CRITICAL_BANNED: List[str] = [
     "proprietary entry", "proprietary signal",
     "PASS signal",
 
+    # ── Sterling Grid internal terms (NEVER reveal publicly) ────────────────
+    "Undercurrent", "undercurrent",
+    "UC indicator", "UC rising", "UC falling",
+    "UC > 0", "UC above zero",
+    "RSI(10)", "RSI(14)", "RSI 10", "RSI 14",
+    "MACD cross", "MACD crossover", "MACD cross-up",
+    "MACD(12,26,9)", "MACD 12 26 9",
+    "profit lock", "Profit lock", "tiered stop", "Tiered stop",
+    "tiered profit", "Tiered profit",
+    "ExD", "ExD exit", "ExD signal",
+    "compound exit", "Compound exit",
+    "gear shift", "Gear shift", "sizing gear",
+    "price cap", "Price cap", "$25 cap",
+    "Investment Gate", "investment gate",
+    "Deep DD", "deep DD", "Deep dd",
+    "STRONG BUY", "SPEC BUY", "NO GO",
+    "valuation regime", "Valuation regime",
+    "kill switch", "Kill switch",
+
+    # ── Conviction scores 1-10 (internal scale — NEVER use numbers publicly) ─
+    "conviction 10", "conviction 9", "conviction 8",
+    "conviction 7", "conviction 6",
+
     # ── US-specific retirement accounts (wrong audience context) ──────────────
     "Roth IRA", "Roth",
     "PDT", "PDT rule", "pattern day trader",
@@ -188,7 +211,29 @@ INTERNAL_TERMINOLOGY_MAP = {
     "AMBER signal": "CONSIDER signal",
     "PASS signal": "GREEN signal",
 
+    # Sterling Grid terms → public language
+    "Undercurrent": "institutional accumulation",
+    "UC indicator": "institutional accumulation",
+    "UC rising": "institutional accumulation",
+    "ExD exit": "structural exit signal",
+    "ExD signal": "structural exit signal",
+    "profit lock": "trailing stop",
+    "tiered stop": "trailing stop",
+    "STRONG BUY": "GREEN signal",
+    "SPEC BUY": "GREEN signal (speculative)",
+    "NO GO": "did not pass screening",
+    "Investment Gate": "fundamental screening",
+    "Deep DD": "deep analysis",
+    "price cap": "price criteria",
+    "gear shift": "position sizing",
+    "valuation regime": "market conditions",
+
     # Conviction language (internal score → public)
+    "conviction 10": "Extremely Bullish",
+    "conviction 9": "Extremely Bullish",
+    "conviction 8": "Extremely Bullish",
+    "conviction 7": "Bullish",
+    "conviction 6": "Watching",
     "conviction 5": "Extremely Bullish",
     "conviction 4": "Bullish",
     "conviction 3": "Watching",

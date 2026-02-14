@@ -6,6 +6,13 @@ PORTFOLIO VISUAL DASHBOARD — HTML + PNG
 Generates a dark-themed, self-contained HTML portfolio dashboard
 and optional PNG screenshots for sharing on X/Twitter and Substack.
 
+Features:
+    - 6-box stat grid (NAV, Return, Win Rate, Alpha vs SPY, Alpha vs NASDAQ, Max DD)
+    - Inline SVG equity curve chart (Portfolio vs SPY vs NASDAQ)
+    - Enhanced positions table (Ticker, Theme, Entry, Current, Held, P&L, Stop Dist)
+    - Recent exits table
+    - All self-contained (inline CSS, no external deps)
+
 Outputs:
     - trades/current/portfolio_visual.html  (+ weekly archive)
     - trades/charts/portfolio_dashboard.png          (1400x900, X/Twitter)
@@ -40,13 +47,14 @@ from config.output_paths import (
 from config.settings import (
     CURRENCY_SYMBOL,
     STARTING_CAPITAL_PER_POSITION,
+    get_conviction_text,
 )
 
 # Marketing validation
 from config.marketing_vocabulary import validate_content
 
 # Portfolio data
-from core.portfolio_manager import PortfolioManager
+from core.portfolio_manager import PortfolioManager, EquitySnapshot
 
 # Playwright (optional — graceful fallback)
 try:
@@ -97,8 +105,12 @@ EXIT_REASON_MAP = {
     "CLOSED": "Position closed",
     "TRAILING STOP": "Capital preservation triggered",
     "BEARISH PIVOT": "Structural exit",
-    "Weekly BoS Down": "Structural exit",
-    "Daily BoS Down": "Structural exit",
+    "Weekly BoS Down": "Structural exit",  # Legacy (pre-Sterling Grid)
+    "Daily BoS Down": "Structural exit",   # Legacy (pre-Sterling Grid)
+    "ExD exit": "Structural exit",
+    "Profit lock": "Capital preservation triggered",
+    "EXD EXIT": "Structural exit",
+    "PROFIT LOCK": "Capital preservation triggered",
 }
 
 
@@ -116,6 +128,8 @@ def _load_dashboard_data() -> Dict:
             recent_exits: List[Trade] from last 30 days
             compounding: Dict from get_compounding_summary()
             performance: Dict from get_performance_summary()
+            equity_snapshots: List[EquitySnapshot] from equity curve
+            max_drawdown: float from get_max_drawdown()
             date_str: Formatted date string
             total_open: int
     """
@@ -152,11 +166,22 @@ def _load_dashboard_data() -> Dict:
     except Exception as e:
         logger.warning("Could not load performance summary: %s", e)
 
+    # Equity curve snapshots
+    equity_snapshots = []
+    max_drawdown = 0.0
+    try:
+        equity_snapshots = pm.equity_tracker.snapshots
+        max_drawdown = pm.equity_tracker.get_max_drawdown()
+    except Exception as e:
+        logger.warning("Could not load equity snapshots: %s", e)
+
     return {
         "open_positions": open_positions,
         "recent_exits": recent_exits,
         "compounding": compounding,
         "performance": performance,
+        "equity_snapshots": equity_snapshots,
+        "max_drawdown": max_drawdown,
         "date_str": datetime.now().strftime("%B %d, %Y"),
         "total_open": len(open_positions),
     }
@@ -205,6 +230,165 @@ def _safe_exit_reason(trade) -> str:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# EQUITY CURVE SVG CHART
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def _generate_equity_curve_svg(
+    snapshots: List[EquitySnapshot],
+    width: int = 860,
+    height: int = 280,
+) -> str:
+    """Generate an inline SVG equity curve chart.
+
+    Plots three lines: Portfolio (teal), SPY (muted), QQQ (violet).
+    All self-contained — no JavaScript or external dependencies.
+
+    Args:
+        snapshots: List of EquitySnapshot objects (sorted by date).
+        width: SVG viewport width in pixels.
+        height: SVG viewport height in pixels.
+
+    Returns:
+        SVG HTML string ready for embedding.
+    """
+    if len(snapshots) < 2:
+        return f"""<div style="background:{COLORS['card_bg']};border:1px solid {COLORS['border']};border-radius:8px;padding:40px;text-align:center;color:{COLORS['text_muted']};">
+          <p style="margin:0;font-size:14px;">Equity curve requires at least 2 data points.</p>
+          <p style="margin:8px 0 0 0;font-size:12px;">Run the scanner a few times to build history.</p>
+        </div>"""
+
+    # Margins for axes labels
+    margin_left = 60
+    margin_right = 20
+    margin_top = 30
+    margin_bottom = 40
+    plot_w = width - margin_left - margin_right
+    plot_h = height - margin_top - margin_bottom
+
+    # Extract data series
+    dates = [s.date for s in snapshots]
+    portfolio_returns = [s.total_return_pct for s in snapshots]
+    spy_returns = [s.spy_return_pct for s in snapshots]
+    qqq_returns = [s.qqq_return_pct for s in snapshots]
+
+    # Combine all values for Y-axis scaling
+    all_vals = portfolio_returns + spy_returns + qqq_returns
+    y_min = min(all_vals)
+    y_max = max(all_vals)
+
+    # Add 10% padding
+    y_range = y_max - y_min if y_max != y_min else 10.0
+    y_min -= y_range * 0.1
+    y_max += y_range * 0.1
+    y_range = y_max - y_min
+
+    n = len(snapshots)
+
+    def x_pos(i):
+        return margin_left + (i / (n - 1)) * plot_w if n > 1 else margin_left + plot_w / 2
+
+    def y_pos(val):
+        return margin_top + (1 - (val - y_min) / y_range) * plot_h if y_range > 0 else margin_top + plot_h / 2
+
+    def polyline_points(values):
+        pts = []
+        for i, v in enumerate(values):
+            pts.append(f"{x_pos(i):.1f},{y_pos(v):.1f}")
+        return " ".join(pts)
+
+    # Build SVG elements
+    svg_parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" '
+        f'style="width:100%;max-width:{width}px;height:auto;display:block;margin:0 auto;">'
+    ]
+
+    # Background
+    svg_parts.append(
+        f'<rect x="0" y="0" width="{width}" height="{height}" fill="{COLORS["card_bg"]}" rx="8"/>'
+    )
+
+    # Grid lines (horizontal)
+    num_gridlines = 5
+    for i in range(num_gridlines + 1):
+        gy = margin_top + (i / num_gridlines) * plot_h
+        gval = y_max - (i / num_gridlines) * y_range
+        svg_parts.append(
+            f'<line x1="{margin_left}" y1="{gy:.1f}" x2="{width - margin_right}" y2="{gy:.1f}" '
+            f'stroke="{COLORS["border"]}" stroke-width="0.5" stroke-dasharray="4,4"/>'
+        )
+        svg_parts.append(
+            f'<text x="{margin_left - 8}" y="{gy + 4:.1f}" text-anchor="end" '
+            f'fill="{COLORS["text_muted"]}" font-size="10" font-family="sans-serif">{gval:+.1f}%</text>'
+        )
+
+    # Zero line
+    if y_min < 0 < y_max:
+        zero_y = y_pos(0)
+        svg_parts.append(
+            f'<line x1="{margin_left}" y1="{zero_y:.1f}" x2="{width - margin_right}" y2="{zero_y:.1f}" '
+            f'stroke="{COLORS["text_muted"]}" stroke-width="0.5" opacity="0.5"/>'
+        )
+
+    # X-axis date labels (show first, last, and a few middle ones)
+    label_indices = [0, n - 1]
+    if n > 4:
+        label_indices = [0, n // 4, n // 2, 3 * n // 4, n - 1]
+    for idx in label_indices:
+        if idx < n:
+            lx = x_pos(idx)
+            date_label = dates[idx][5:]  # MM-DD format
+            svg_parts.append(
+                f'<text x="{lx:.1f}" y="{height - 8}" text-anchor="middle" '
+                f'fill="{COLORS["text_muted"]}" font-size="10" font-family="sans-serif">{date_label}</text>'
+            )
+
+    # Data lines
+    line_configs = [
+        (spy_returns, COLORS["text_muted"], "1.5", "S&P 500"),
+        (qqq_returns, COLORS["violet"], "1.5", "NASDAQ"),
+        (portfolio_returns, COLORS["teal"], "2.5", "Portfolio"),
+    ]
+
+    for values, color, stroke_w, _label in line_configs:
+        points = polyline_points(values)
+        svg_parts.append(
+            f'<polyline points="{points}" fill="none" stroke="{color}" '
+            f'stroke-width="{stroke_w}" stroke-linejoin="round" stroke-linecap="round"/>'
+        )
+
+    # Latest value dots
+    for values, color, _sw, _label in line_configs:
+        last_x = x_pos(n - 1)
+        last_y = y_pos(values[-1])
+        svg_parts.append(
+            f'<circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="3" fill="{color}"/>'
+        )
+
+    # Legend
+    legend_x = margin_left + 10
+    legend_y = margin_top + 8
+    legend_items = [
+        (COLORS["teal"], "Portfolio"),
+        (COLORS["text_muted"], "S&P 500"),
+        (COLORS["violet"], "NASDAQ"),
+    ]
+    for i, (color, label) in enumerate(legend_items):
+        lx = legend_x + i * 100
+        svg_parts.append(
+            f'<line x1="{lx}" y1="{legend_y}" x2="{lx + 20}" y2="{legend_y}" '
+            f'stroke="{color}" stroke-width="2"/>'
+        )
+        svg_parts.append(
+            f'<text x="{lx + 25}" y="{legend_y + 4}" fill="{COLORS["text"]}" '
+            f'font-size="11" font-family="sans-serif">{label}</text>'
+        )
+
+    svg_parts.append("</svg>")
+    return "\n".join(svg_parts)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # HTML GENERATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -222,6 +406,8 @@ def generate_dashboard_html(data: Dict) -> str:
     recent_exits = data["recent_exits"]
     compounding = data.get("compounding", {})
     performance = data.get("performance", {})
+    equity_snapshots = data.get("equity_snapshots", [])
+    max_drawdown = data.get("max_drawdown", 0.0)
     date_str = data["date_str"]
     total_open = data["total_open"]
 
@@ -229,24 +415,55 @@ def generate_dashboard_html(data: Dict) -> str:
     currency = compounding.get("currency", CURRENCY_SYMBOL)
     nav = compounding.get("current_nav", 0)
     total_return = compounding.get("total_return_pct", 0)
-    alpha = compounding.get("alpha_pct", 0)
+    alpha_spy = compounding.get("alpha_pct", 0)
+    alpha_qqq = compounding.get("alpha_vs_qqq_pct", 0)
     win_rate = performance.get("win_rate", 0)
     inception = compounding.get("inception_date", "")
 
-    # ── Summary stat boxes ─────────────────────────────────────────────────
+    # ── Summary stat boxes (3+3 grid) ────────────────────────────────────
     nav_str = f"{currency}{nav:,.0f}" if nav else "—"
     return_str = _pnl_text(total_return) if nav else "—"
-    alpha_str = f"+{alpha:.1f}%" if alpha >= 0 else f"{alpha:.1f}%"
     win_rate_str = f"{win_rate:.0f}%" if performance and win_rate > 0 else "N/A"
+    alpha_spy_str = f"+{alpha_spy:.1f}%" if alpha_spy >= 0 else f"{alpha_spy:.1f}%"
+    alpha_qqq_str = f"+{alpha_qqq:.1f}%" if alpha_qqq >= 0 else f"{alpha_qqq:.1f}%"
+    dd_str = f"{max_drawdown:.1f}%" if max_drawdown < 0 else "0.0%"
 
-    stats_html = f"""<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;">
+    stats_html = f"""<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;">
       {_stat_box(nav_str, "Portfolio NAV")}
       {_stat_box(return_str, "Total Return", _pnl_color(total_return))}
-      {_stat_box(alpha_str, "Alpha vs S&P 500", _pnl_color(alpha))}
       {_stat_box(win_rate_str, "Win Rate")}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px 0;">
+      {_stat_box(alpha_spy_str, "Alpha vs S&P 500", _pnl_color(alpha_spy))}
+      {_stat_box(alpha_qqq_str, "Alpha vs NASDAQ", _pnl_color(alpha_qqq))}
+      {_stat_box(dd_str, "Max Drawdown", COLORS["red_loss"] if max_drawdown < 0 else COLORS["text_muted"])}
     </div>"""
 
-    # ── Open positions table ───────────────────────────────────────────────
+    # ── Equity curve chart ────────────────────────────────────────────────
+    equity_chart_html = ""
+    if equity_snapshots and len(equity_snapshots) >= 2:
+        svg = _generate_equity_curve_svg(equity_snapshots)
+        equity_chart_html = f"""
+    <div style="margin:0 0 24px 0;">
+      <h2 style="color:{COLORS['teal']};font-size:18px;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid {COLORS['border']};">
+        Equity Curve
+      </h2>
+      {svg}
+    </div>"""
+    elif equity_snapshots and len(equity_snapshots) < 2:
+        equity_chart_html = f"""
+    <div style="margin:0 0 24px 0;">
+      <h2 style="color:{COLORS['teal']};font-size:18px;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid {COLORS['border']};">
+        Equity Curve
+      </h2>
+      {_generate_equity_curve_svg(equity_snapshots)}
+    </div>"""
+
+    # ── Open positions table (enhanced) ──────────────────────────────────
+    th_style = f"padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;"
+    th_style_center = f"padding:8px 12px;text-align:center;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;"
+    th_style_right = f"padding:8px 12px;text-align:right;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;"
+
     position_rows = ""
     for i, t in enumerate(open_positions):
         bg = COLORS["card_bg"] if i % 2 == 0 else COLORS["dark_bg"]
@@ -254,18 +471,31 @@ def generate_dashboard_html(data: Dict) -> str:
         # Entry price — always show
         entry_str = f"${t.entry_price:.2f}" if t.entry_price > 0 else "—"
 
+        # Current price
+        current_str = f"${t.current_price:.2f}" if t.current_price > 0 else "—"
+
         # P&L
         pnl_html = f'<span style="color:{_pnl_color(t.pnl_pct)};font-weight:700;">{_pnl_text(t.pnl_pct)}</span>'
 
         # Theme (truncate if long)
-        theme_str = (t.theme[:22] + "..") if len(t.theme) > 24 else t.theme
+        theme_str = (t.theme[:18] + "..") if len(t.theme) > 20 else t.theme
+
+        # Stop distance
+        stop_dist = getattr(t, 'distance_to_stop_pct', 0.0) or 0.0
+        if stop_dist > 0:
+            stop_color = COLORS["green_gain"] if stop_dist > 15 else (COLORS["gold"] if stop_dist > 10 else COLORS["red_loss"])
+            stop_str = f'<span style="color:{stop_color};">{stop_dist:.0f}%</span>'
+        else:
+            stop_str = f'<span style="color:{COLORS["text_muted"]};">—</span>'
 
         position_rows += f"""<tr style="background:{bg};">
           <td style="padding:10px 12px;font-weight:700;color:{COLORS['teal']};">${t.ticker}</td>
           <td style="padding:10px 12px;color:{COLORS['text_muted']};">{theme_str}</td>
           <td style="padding:10px 12px;">{entry_str}</td>
+          <td style="padding:10px 12px;">{current_str}</td>
           <td style="padding:10px 12px;text-align:center;">{t.days_held}d</td>
           <td style="padding:10px 12px;text-align:right;">{pnl_html}</td>
+          <td style="padding:10px 12px;text-align:center;">{stop_str}</td>
         </tr>"""
 
     positions_section = ""
@@ -278,11 +508,13 @@ def generate_dashboard_html(data: Dict) -> str:
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         <thead>
           <tr style="border-bottom:2px solid {COLORS['border']};">
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Ticker</th>
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Theme</th>
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Entry</th>
-            <th style="padding:8px 12px;text-align:center;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Held</th>
-            <th style="padding:8px 12px;text-align:right;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">P&L</th>
+            <th style="{th_style}">Ticker</th>
+            <th style="{th_style}">Theme</th>
+            <th style="{th_style}">Entry</th>
+            <th style="{th_style}">Current</th>
+            <th style="{th_style_center}">Held</th>
+            <th style="{th_style_right}">P&L</th>
+            <th style="{th_style_center}">Stop Dist</th>
           </tr>
         </thead>
         <tbody>
@@ -321,10 +553,10 @@ def generate_dashboard_html(data: Dict) -> str:
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         <thead>
           <tr style="border-bottom:2px solid {COLORS['border']};">
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Ticker</th>
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Exit Date</th>
-            <th style="padding:8px 12px;text-align:right;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">P&L</th>
-            <th style="padding:8px 12px;text-align:left;color:{COLORS['text_muted']};font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Reason</th>
+            <th style="{th_style}">Ticker</th>
+            <th style="{th_style}">Exit Date</th>
+            <th style="{th_style_right}">P&L</th>
+            <th style="{th_style}">Reason</th>
           </tr>
         </thead>
         <tbody>
@@ -337,6 +569,9 @@ def generate_dashboard_html(data: Dict) -> str:
     inception_html = ""
     if inception:
         inception_html = f'<span style="color:{COLORS["text_muted"]};font-size:13px;"> | Since {inception}</span>'
+
+    # ── Timestamp ──────────────────────────────────────────────────────────
+    generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # ── Full HTML ──────────────────────────────────────────────────────────
     html = f"""<!DOCTYPE html>
@@ -357,10 +592,16 @@ def generate_dashboard_html(data: Dict) -> str:
       <p style="margin:8px 0 0 0;color:{COLORS['text_muted']};font-size:14px;">
         {date_str} | {total_open} Open Position{"s" if total_open != 1 else ""}{inception_html}
       </p>
+      <p style="margin:4px 0 0 0;color:{COLORS['border']};font-size:11px;">
+        Generated: {generated_at} ET | Refresh: python -m content.portfolio_visual
+      </p>
     </div>
 
     <!-- SUMMARY STATS -->
     {stats_html}
+
+    <!-- EQUITY CURVE -->
+    {equity_chart_html}
 
     <!-- OPEN POSITIONS -->
     {positions_section}
@@ -542,6 +783,7 @@ def main() -> int:
         return 1
 
     print(f"  {data['total_open']} open positions, {len(data['recent_exits'])} recent exits")
+    print(f"  {len(data.get('equity_snapshots', []))} equity curve snapshots")
 
     # ── Generate HTML ──────────────────────────────────────────────────────
     print("\n  Generating HTML dashboard...")

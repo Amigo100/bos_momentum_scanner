@@ -278,6 +278,28 @@ else
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+log_header "STEP 4.5: Generating DD HTML Posts (per buy signal)"
+
+if [ -f "content/dd_post_generator.py" ]; then
+    DD_ARGS=""
+    if [ "$TEST_MODE" = true ]; then
+        DD_ARGS="--dry-run"
+        log_warning "Test mode: dry-run only"
+    fi
+
+    log_step "python3 -m content.dd_post_generator $DD_ARGS"
+    python3 -m content.dd_post_generator $DD_ARGS || {
+        log_warning "DD post generation failed - continuing anyway"
+    }
+    log_success "DD posts generated"
+else
+    log_warning "content/dd_post_generator.py not found, skipping"
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # STEP 5: GENERATE TWEETS
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -346,6 +368,7 @@ echo "  Generated files (new structure):"
 echo "    • trades/current/newsletter.html       ← Copy to Substack Saturday"
 echo "    • trades/current/newsletter_briefing.md"
 echo "    • trades/current/signals.json"
+echo "    • trades/current/substack_posts/dd_*.html  ← DD posts per signal"
 echo "    • trades/current/substack_notes/"
 echo "        ├── tuesday_note.md                ← Copy to Substack Tuesday"
 echo "        └── thursday_note.md               ← Copy to Substack Thursday"

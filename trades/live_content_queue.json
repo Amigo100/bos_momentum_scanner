@@ -124,14 +124,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-14T08:58:34.058911-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-02-14T13:58:34.058909+00:00",
-    "cost_usd": 0.012793
+    "cost_usd": 0.012793,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260214_085834_v3",
@@ -205,5 +206,60 @@
     },
     "generated_at": "2026-02-15T14:34:37.208342+00:00",
     "cost_usd": 0.013274
+  },
+  {
+    "id": "live_20260215_103200_v1",
+    "text": "$VNET from $10.40 entry \u2192 $13.80 high.\n\n+32.7% on the data center cooling play.\n\nSystem caught the infrastructure rotation early. Discipline held through the noise.",
+    "category": "RECEIPT",
+    "primary_ticker": "$VNET",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260215_1532.png",
+    "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-15T15:32:00.691849+00:00",
+    "cost_usd": 0.013165,
+    "error": "401 Unauthorized\nUnauthorized"
+  },
+  {
+    "id": "live_20260215_103200_v2",
+    "text": "$STRL is up 20.8% from our $362.53 entry because AI infrastructure needs cooling solutions.\n\nWhen big tech spends billions on data centers, someone has to keep them from overheating.\n\nThat's the thesis.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$STRL",
+    "account": "variant_2",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-15T15:32:00.691849+00:00",
+    "cost_usd": 0.013165
+  },
+  {
+    "id": "live_20260215_103200_v3",
+    "text": "$MOD entry $184.66, high $219.27.\n\n+18.7% and holding structure.\n\nThis is what happens when you let winners run.",
+    "category": "RECEIPT",
+    "primary_ticker": "$MOD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_MOD_20260215_1532.png",
+    "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-15T15:32:00.691849+00:00",
+    "cost_usd": 0.013165
   }
 ]

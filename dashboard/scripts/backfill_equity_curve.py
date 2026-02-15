@@ -257,10 +257,13 @@ def main():
     for day in trading_days:
         date_str = day.strftime("%Y-%m-%d")
 
-        # Skip if we already have this date in existing curve
+        # Reuse existing entry only if it has valid QQQ data
         if date_str in existing:
-            all_snapshots[date_str] = existing[date_str]
-            continue
+            qqq_val = float(existing[date_str].get("qqq_value") or 0)
+            if qqq_val > 0:
+                all_snapshots[date_str] = existing[date_str]
+                continue
+            # else: recalculate — stale entry from before QQQ benchmark was added
 
         snapshot = calculate_nav_for_date(trades, prices, day.to_pydatetime(), inception)
         all_snapshots[date_str] = snapshot

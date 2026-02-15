@@ -262,7 +262,7 @@ const SLOT_TIMES: Record<number, string> = {
 };
 
 function enrichTweet(tweet: Tweet, source: "weekly" | "daily" | "live"): EnrichedTweet {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
   const isPosted = tweet.posted === true || tweet.status === "posted";
 
   let displayStatus: EnrichedTweet["displayStatus"];
@@ -433,8 +433,8 @@ export function getEnrichedTweets(): EnrichedTweetData {
   }
 
   // ─── 7-Day Rolling Stats per Account ───
-  const today = new Date().toISOString().slice(0, 10);
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+  const sevenDaysAgo = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
 
   function computeRolling(tweets: EnrichedTweet[], accountName: string): RollingStats {
     const recent = tweets.filter((t) => {

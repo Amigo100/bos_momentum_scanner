@@ -79,22 +79,64 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check timezone season (skip wrong-season cron)
+        id: tz_check
+        run: |
+          # Both EST and EDT crons fire year-round. Only run the one matching
+          # the current season to prevent duplicate workflow runs per slot.
+          # Skip this check for manual triggers (workflow_dispatch).
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Manual trigger — always run"
+            exit 0
+          fi
+          CURRENT_UTC_HOUR=$(date -u +%H)
+          # Detect current ET offset: EST=-05, EDT=-04
+          pip install --quiet tzdata 2>/dev/null || true
+          ET_OFFSET=$(python3 -c "from datetime import datetime; from zoneinfo import ZoneInfo; print(datetime.now(ZoneInfo('America/New_York')).strftime('%z')[:3])")
+          echo "ET offset: $ET_OFFSET, UTC hour: $CURRENT_UTC_HOUR"
+          # EST season (-05): correct UTC hours are 12,15,17,20,21,23
+          #   Wrong (EDT crons): 11,14,16,19,20,22
+          # EDT season (-04): correct UTC hours are 11,14,16,19,20,22
+          #   Wrong (EST crons): 12,15,17,20,21,23
+          if [ "$ET_OFFSET" = "-05" ]; then
+            case "$CURRENT_UTC_HOUR" in
+              11|14|16|19|20|22)
+                echo "skip=true" >> $GITHUB_OUTPUT
+                echo "EDT cron fired during EST season — skipping"
+                exit 0 ;;
+            esac
+          else
+            case "$CURRENT_UTC_HOUR" in
+              12|15|17|21|23)
+                echo "skip=true" >> $GITHUB_OUTPUT
+                echo "EST cron fired during EDT season — skipping"
+                exit 0 ;;
+            esac
+          fi
+          echo "skip=false" >> $GITHUB_OUTPUT
+          echo "Correct season cron — proceeding"
+
       - name: Set up Python
+        if: steps.tz_check.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
       - name: Install dependencies
+        if: steps.tz_check.outputs.skip != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Gather live market context
+        if: steps.tz_check.outputs.skip != 'true'
         run: python -m content.live_context_gatherer
         continue-on-error: true
 
       - name: Generate live tweet
+        if: steps.tz_check.outputs.skip != 'true'
         id: generate
         run: |
           ARGS=""
@@ -107,17 +149,18 @@ jobs:
           python -m content.live_tweet_generator $ARGS
 
       - name: Generate charts for flagged tweets
+        if: steps.tz_check.outputs.skip != 'true'
         run: python -m content.chart_generator
         continue-on-error: true
 
       - name: Post tweet — Account 1 (Alex)
-        if: github.event.inputs.dry_run != 'true'
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
         run: |
           echo "=== Posting to Account 1 (@AlexSterlingGBR) ==="
           python -m distribution.twitter_poster --account main --live-queue || true
 
       - name: Post tweet — Account 2 (Rozalia)
-        if: github.event.inputs.dry_run != 'true' && env.X2_API_KEY != ''
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true' && env.X2_API_KEY != ''
         run: |
           echo "=== Staggering 10 minutes before Account 2 ==="
           sleep 600
@@ -125,7 +168,7 @@ jobs:
           python -m distribution.twitter_poster --account account2 --live-queue || true
 
       - name: Post tweet — Account 3 (James)
-        if: github.event.inputs.dry_run != 'true' && env.X3_API_KEY != ''
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true' && env.X3_API_KEY != ''
         run: |
           echo "=== Staggering 10 minutes before Account 3 ==="
           sleep 600
@@ -160,6 +203,7 @@ jobs:
           "
 
       - name: Commit queue updates
+        if: steps.tz_check.outputs.skip != 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"

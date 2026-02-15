@@ -347,6 +347,18 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
         (signals['close'] < PRICE_CAP)
     )
 
+    # Tier 2 — Watchlist: relaxed criteria, mutually exclusive with buy
+    # MACD histogram > 0 persists for 10-20 weeks during bullish trends,
+    # vs macd_cross_up which fires on exactly 1 bar. This catches stocks
+    # where momentum is positive but the precise inflection hasn't fired.
+    signals['macd_hist_positive'] = (signals['macd_histogram'] > 0).fillna(False)
+    signals['watchlist_signal'] = (
+        signals['hma_slope_rising'] &
+        signals['macd_hist_positive'] &
+        (signals['close'] < PRICE_CAP) &
+        ~signals['buy_signal']             # Exclude Tier 1 buys
+    )
+
     return signals
 
 
@@ -492,6 +504,8 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
         'uc_rsi10': round(float(cur['uc_rsi10']), 1) if pd.notna(cur['uc_rsi10']) else None,
         'uc_rising_above': bool(cur['uc_rising_above']),
         'buy_signal': bool(cur['buy_signal']),
+        'macd_hist_positive': bool(cur['macd_hist_positive']),
+        'watchlist_signal': bool(cur['watchlist_signal']),
         'exd_exit_signal': bool(cur_exit['exd_signal']),
         'price_under_25': float(cur['close']) < PRICE_CAP,
     }
@@ -512,6 +526,16 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
 
         if result['buy_signal']:
             print(f"  >> BUY SIGNAL ACTIVE — Send to LLM gate pipeline <<")
+        elif result['watchlist_signal']:
+            # Tier 2: Show which Tier 1 conditions are still missing
+            tier1_missing = []
+            if not result['rsi_above_50']: tier1_missing.append('RSI>50')
+            if not result['macd_cross_up']: tier1_missing.append('MACD cross-up')
+            if not result['uc_rising_above']: tier1_missing.append('UC rising')
+            waiting_for = ', '.join(tier1_missing) if tier1_missing else 'MACD cross-up'
+            print(f"  >> WATCHLIST (Tier 2) — Momentum setup forming <<")
+            print(f"     Trend bullish, MACD positive — waiting for: {waiting_for}")
+            print(f"     (If MACD crosses above signal next week, this becomes a Tier 1 buy)")
         else:
             missing = []
             if not result['hma_slope_rising']: missing.append('HMA slope')
@@ -611,6 +635,8 @@ def dump_history(ticker: str) -> pd.DataFrame:
     history['uc_rsi_10'] = entry['uc_rsi10']
     history['uc_rising_above'] = entry['uc_rising_above']
     history['buy_signal'] = entry['buy_signal']
+    history['macd_hist_positive'] = entry['macd_hist_positive']
+    history['watchlist_signal'] = entry['watchlist_signal']
     history['exd_exit'] = exit_sig['exd_signal']
 
     filename = f"{ticker}_weekly_indicators.csv"
@@ -772,8 +798,9 @@ if __name__ == "__main__":
         print("  (Exact match to V1-V4 backtest calculations)")
         print("  Recommended sizing: 15×6 with conviction tiers")
         print()
-        print("Scan for buy signals:")
+        print("Scan for buy + watchlist signals:")
         print("  python sterling_indicators.py MARA RKLB IONQ")
+        print("  python sterling_indicators.py MARA RKLB IONQ --exclude-open MARA,RKLB")
         print()
         print("Check open positions (ticker:entry_price):")
         print("  python sterling_indicators.py --check MARA:5.50 RKLB:12.00")
@@ -791,17 +818,24 @@ if __name__ == "__main__":
         print("  python sterling_indicators.py --history MARA")
         print()
         print("Sizing gears: --gear conservative|recommended|aggressive (default: recommended)")
+        print("Exclude open positions from watchlist: --exclude-open MARA,RKLB,IONQ")
         sys.exit(1)
 
-    # Parse optional --gear flag from anywhere in args
+    # Parse optional --gear and --exclude-open flags from anywhere in args
     gear = 'recommended'
+    exclude_open = set()
     filtered_args = []
+    skip_next = False
     for i, arg in enumerate(sys.argv[1:], 1):
-        if arg == '--gear' and i + 1 < len(sys.argv):
+        if skip_next:
+            skip_next = False
+            continue
+        if arg == '--gear' and i < len(sys.argv) - 1:
             gear = sys.argv[i + 1]
-            # Skip the next arg too
-        elif i > 1 and sys.argv[i - 1] == '--gear':
-            continue  # This is the gear value, already captured
+            skip_next = True
+        elif arg == '--exclude-open' and i < len(sys.argv) - 1:
+            exclude_open = {t.strip().upper() for t in sys.argv[i + 1].split(',')}
+            skip_next = True
         else:
             filtered_args.append(arg)
 
@@ -889,16 +923,30 @@ if __name__ == "__main__":
         print("=" * 68)
 
         buy_signals = []
+        watchlist_signals = []
         for ticker in filtered_args:
             result = scan_ticker(ticker.upper())
             if result.get('buy_signal'):
-                buy_signals.append(result['ticker'])
+                label = result['ticker']
+                if result['ticker'] in exclude_open:
+                    label += ' (open)'
+                buy_signals.append(label)
+            elif result.get('watchlist_signal'):
+                if result['ticker'] not in exclude_open:
+                    watchlist_signals.append(result['ticker'])
 
         print(f"\n{'=' * 68}")
         if buy_signals:
-            print(f"  BUY SIGNALS: {', '.join(buy_signals)}")
+            print(f"  BUY SIGNALS (Tier 1): {', '.join(buy_signals)}")
             print(f"  -> Send to LLM gate pipeline for conviction scoring")
             print(f"  -> Then run: --size EQUITY CONVICTION to calculate position size")
         else:
             print(f"  No buy signals this week.")
+        print()
+        if watchlist_signals:
+            print(f"  WATCHLIST (Tier 2): {', '.join(watchlist_signals)}")
+            print(f"  -> Setup forming — monitor weekly for Tier 1 trigger")
+            print(f"  -> Suitable for newsletter coverage / thematic analysis")
+        else:
+            print(f"  No watchlist signals.")
         print(f"{'=' * 68}")

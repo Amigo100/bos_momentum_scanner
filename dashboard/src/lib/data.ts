@@ -343,6 +343,11 @@ export interface EnrichedTweetData {
     account3: EnrichedTweet[];
   };
   nextTweet: EnrichedTweet | null;
+  nextTweetByAccount: {
+    account1: EnrichedTweet | null;
+    account2: EnrichedTweet | null;
+    account3: EnrichedTweet | null;
+  };
   failed: FailedTweet[];
   stats: {
     posted: number;
@@ -382,7 +387,20 @@ export function getEnrichedTweets(): EnrichedTweetData {
     account3: [...a3w, ...a3d, ...liveByAccount.account3].sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
   };
 
-  // Find the next tweet to post (earliest upcoming across all accounts)
+  // Find the next tweet to post — globally and per-account
+  function findNextUpcoming(tweets: EnrichedTweet[]): EnrichedTweet | null {
+    const upcoming = tweets
+      .filter((t) => t.displayStatus === "upcoming")
+      .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+    return upcoming.length > 0 ? upcoming[0] : null;
+  }
+
+  const nextTweetByAccount = {
+    account1: findNextUpcoming(accounts.account1),
+    account2: findNextUpcoming(accounts.account2),
+    account3: findNextUpcoming(accounts.account3),
+  };
+
   const allUpcoming = [...accounts.account1, ...accounts.account2, ...accounts.account3]
     .filter((t) => t.displayStatus === "upcoming")
     .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
@@ -443,7 +461,7 @@ export function getEnrichedTweets(): EnrichedTweetData {
     account3: computeRolling(accounts.account3, "Account 3"),
   };
 
-  return { accounts, nextTweet, failed, stats, dailyStats, rollingStats };
+  return { accounts, nextTweet, nextTweetByAccount, failed, stats, dailyStats, rollingStats };
 }
 
 // Keep legacy functions for backward compatibility

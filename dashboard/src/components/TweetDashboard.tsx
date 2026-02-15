@@ -284,7 +284,7 @@ function useCountdown(nextTweet: EnrichedTweet | null): string {
       const timeStr = nextTweet.time || "12:00";
       if (!dateStr) return "";
 
-      // Get current time in ET via Intl formatter
+      // Get current time in ET via Intl formatter (no Date parsing to avoid UTC issues)
       const etFormatter = new Intl.DateTimeFormat("en-US", {
         timeZone: "America/New_York",
         year: "numeric", month: "2-digit", day: "2-digit",
@@ -294,17 +294,20 @@ function useCountdown(nextTweet: EnrichedTweet | null): string {
       const nowParts = Object.fromEntries(
         etFormatter.formatToParts(new Date()).map(p => [p.type, p.value])
       );
-      // Build ms-since-midnight for current ET time and target ET time
       const nowMins = parseInt(nowParts.hour) * 60 + parseInt(nowParts.minute);
       const nowDateStr = `${nowParts.year}-${nowParts.month}-${nowParts.day}`;
 
       const [tH, tM] = timeStr.split(":").map(Number);
       const targetMins = tH * 60 + tM;
 
-      // Calculate day offset + intraday diff
-      const nowDate = new Date(nowDateStr + "T00:00:00");
-      const targetDate = new Date(dateStr + "T00:00:00");
-      const dayDiffMs = targetDate.getTime() - nowDate.getTime();
+      // Calculate day offset using pure date string math (no Date constructor)
+      // Parse YYYY-MM-DD strings to days-since-epoch to get day difference
+      const [nY, nM, nD] = nowDateStr.split("-").map(Number);
+      const [tY, tMo, tD] = dateStr.split("-").map(Number);
+      // Use Date.UTC to get reliable day diff (UTC midnight — no TZ offset ambiguity)
+      const nowDayMs = Date.UTC(nY, nM - 1, nD);
+      const targetDayMs = Date.UTC(tY, tMo - 1, tD);
+      const dayDiffMs = targetDayMs - nowDayMs;
       const diffMs = dayDiffMs + (targetMins - nowMins) * 60000;
       if (Math.abs(diffMs) < 60000) return "Due now";
       if (diffMs < 0) {
@@ -334,7 +337,8 @@ function useCountdown(nextTweet: EnrichedTweet | null): string {
 export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
   const [activeAccount, setActiveAccount] = useState<"account1" | "account2" | "account3">("account1");
   const [activeTab, setActiveTab] = useState<"upcoming" | "history">("upcoming");
-  const countdown = useCountdown(data.nextTweet);
+  const accountNextTweet = data.nextTweetByAccount[activeAccount];
+  const countdown = useCountdown(accountNextTweet);
 
   const accountLabels: Record<string, string> = {
     account1: "Account 1 (@AlexSterlingGBR)",
@@ -380,7 +384,7 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
     activeTab === "upcoming" ? (a, b) => a.localeCompare(b) : (a, b) => b.localeCompare(a)
   );
 
-  const nextTweetId = data.nextTweet?.id;
+  const nextTweetId = accountNextTweet?.id;
 
   // Today in ET for "(Today)" badge
   const todayET = useMemo(() => {
@@ -471,10 +475,10 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
         </span>
       </div>
 
-      {/* Next Tweet Highlight (only on upcoming tab) */}
-      {activeTab === "upcoming" && data.nextTweet && (
+      {/* Next Tweet Highlight (only on upcoming tab, per-account) */}
+      {activeTab === "upcoming" && accountNextTweet && (
         <div className="mb-6">
-          <TweetCard tweet={data.nextTweet} isNext={true} countdown={countdown} />
+          <TweetCard tweet={accountNextTweet} isNext={true} countdown={countdown} />
         </div>
       )}
 

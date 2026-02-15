@@ -284,13 +284,28 @@ function useCountdown(nextTweet: EnrichedTweet | null): string {
       const timeStr = nextTweet.time || "12:00";
       if (!dateStr) return "";
 
-      // Build target datetime in ET
-      const targetStr = `${dateStr}T${timeStr}:00`;
-      // Parse as ET using a trick: create date, then compute diff
-      const nowET = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
-      const targetET = new Date(new Date(targetStr).toLocaleString("en-US", { timeZone: "America/New_York" }));
+      // Get current time in ET via Intl formatter
+      const etFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hour12: false,
+      });
+      const nowParts = Object.fromEntries(
+        etFormatter.formatToParts(new Date()).map(p => [p.type, p.value])
+      );
+      // Build ms-since-midnight for current ET time and target ET time
+      const nowMins = parseInt(nowParts.hour) * 60 + parseInt(nowParts.minute);
+      const nowDateStr = `${nowParts.year}-${nowParts.month}-${nowParts.day}`;
 
-      const diffMs = targetET.getTime() - nowET.getTime();
+      const [tH, tM] = timeStr.split(":").map(Number);
+      const targetMins = tH * 60 + tM;
+
+      // Calculate day offset + intraday diff
+      const nowDate = new Date(nowDateStr + "T00:00:00");
+      const targetDate = new Date(dateStr + "T00:00:00");
+      const dayDiffMs = targetDate.getTime() - nowDate.getTime();
+      const diffMs = dayDiffMs + (targetMins - nowMins) * 60000;
       if (Math.abs(diffMs) < 60000) return "Due now";
       if (diffMs < 0) {
         const mins = Math.floor(Math.abs(diffMs) / 60000);

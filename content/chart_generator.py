@@ -233,12 +233,12 @@ def update_queue_chart_paths(queue_path: Optional[Path] = None) -> int:
         print(f"  ERROR: Failed to read queue: {e}")
         return 0
 
-    # Find items needing charts
+    # Find items needing charts (including items with stale/non-existent chart paths)
     needs_chart = [
         item for item in queue
         if item.get("chart_recommended", False)
-        and not item.get("chart_path")
         and item.get("status") == "pending"
+        and (not item.get("chart_path") or not Path(item["chart_path"]).exists())
     ]
 
     if not needs_chart:

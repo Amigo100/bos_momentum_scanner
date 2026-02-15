@@ -299,7 +299,7 @@ function normalizeLiveTweet(raw: any): Tweet {
     id: raw.id || "",
     day: "",
     slot: 0,
-    time: raw.scheduled_time ? new Date(raw.scheduled_time).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }) : "",
+    time: raw.scheduled_time ? new Date(raw.scheduled_time).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/New_York" }) : "",
     text: raw.text || "",
     category: raw.category || "LIVE",
     scheduled_date: raw.scheduled_time ? raw.scheduled_time.slice(0, 10) : "",

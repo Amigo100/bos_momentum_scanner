@@ -186,7 +186,7 @@ def recently_tweeted(ticker: str, recent_tweets: List[Dict], hours: int = 3) -> 
     ticker = ticker.lstrip('$')
     cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
     for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted"):
+        if t.get("status") not in ("pending", "posted", "failed"):
             continue
         pt = (t.get("primary_ticker") or "").lstrip('$')
         if pt == ticker:
@@ -206,7 +206,7 @@ def recently_tweeted_theme(theme: str, recent_tweets: List[Dict], hours: int = 6
     cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
     theme_lower = theme.lower()
     for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted"):
+        if t.get("status") not in ("pending", "posted", "failed"):
             continue
         text_lower = t.get("text", "").lower()
         if theme_lower in text_lower:
@@ -225,7 +225,7 @@ def recently_tweeted_type(tweet_type: str, recent_tweets: List[Dict], hours: int
     """Check if this tweet type was used in last N hours."""
     cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
     for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted"):
+        if t.get("status") not in ("pending", "posted", "failed"):
             continue
         if t.get("category") == tweet_type:
             try:
@@ -952,7 +952,7 @@ def validate_tweet(
     # Always chart: SIGNAL_ALERT, RECEIPT
     # Chart when ticker present: MARKET_REACTION, DIP_OPPORTUNITY, THEME_MOMENTUM
     always_chart = {"SIGNAL_ALERT", "RECEIPT"}
-    chart_if_ticker = {"MARKET_REACTION", "DIP_OPPORTUNITY", "THEME_MOMENTUM"}
+    chart_if_ticker = {"MARKET_REACTION", "DIP_OPPORTUNITY", "THEME_MOMENTUM", "NEWSLETTER_CTA", "EDUCATIONAL"}
     has_ticker = bool(tweet_dict.get("primary_ticker"))
     expected_chart = category in always_chart or (category in chart_if_ticker and has_ticker)
     if tweet_dict.get("chart_recommended") != expected_chart:

@@ -47,14 +47,15 @@
     "chart_recommended": true,
     "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260214_2356.png",
     "scheduled_time": "2026-02-14T06:52:49.562625-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-02-14T11:52:49.562623+00:00",
-    "cost_usd": 0.01285
+    "cost_usd": 0.01285,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260214_065249_v2",
@@ -149,5 +150,60 @@
     },
     "generated_at": "2026-02-14T13:58:34.058909+00:00",
     "cost_usd": 0.012793
+  },
+  {
+    "id": "live_20260215_093437_v1",
+    "text": "$VNET entry $10.40 \u2192 high $13.80 (+32.7%).\n\nData center cooling infrastructure is the play institutions are quietly accumulating.\n\nDiscord gets the full scanner breakdown + entries before Twitter.\n\nLink in bio.",
+    "category": "NEWSLETTER_CTA",
+    "primary_ticker": "$VNET",
+    "account": "variant_1",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-15T09:34:37.208343-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-15T14:34:37.208342+00:00",
+    "cost_usd": 0.013274,
+    "error": "401 Unauthorized\nUnauthorized"
+  },
+  {
+    "id": "live_20260215_093437_v2",
+    "text": "$STRL up 20.8% from $362.53 entry because AI cooling isn't optional anymore.\n\nData centers need liquid cooling at scale. This is the infrastructure enabling the AI build-out.\n\nTheme has legs.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$STRL",
+    "account": "variant_2",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-15T09:34:37.208343-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-15T14:34:37.208342+00:00",
+    "cost_usd": 0.013274
+  },
+  {
+    "id": "live_20260215_093437_v3",
+    "text": "$MOD from $184.66 \u2192 $219.27 high.\n\n+18.7% and still running.\n\nDiscord got this before the breakout. You can too \u2014 link in bio.",
+    "category": "NEWSLETTER_CTA",
+    "primary_ticker": "$MOD",
+    "account": "variant_3",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-15T09:34:37.208343-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-15T14:34:37.208342+00:00",
+    "cost_usd": 0.013274
   }
 ]

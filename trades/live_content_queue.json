@@ -293,14 +293,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-02-16T13:43:56.076772+00:00",
-    "cost_usd": 0.013055
+    "cost_usd": 0.013055,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260216_084356_v3",
@@ -319,5 +320,61 @@
     },
     "generated_at": "2026-02-16T13:43:56.076772+00:00",
     "cost_usd": 0.013055
+  },
+  {
+    "id": "live_20260216_103228_v1",
+    "text": "$VNET entry at $10.40, currently riding +32.7% to $13.80.\n\nData center cooling theme has institutional momentum. Position sizing matters when conviction meets execution.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$VNET",
+    "account": "variant_1",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T15:32:28.061354+00:00",
+    "cost_usd": 0.013025,
+    "posted_at": "2026-02-16T15:32:28.736322",
+    "tweet_id": "2023420220736520306"
+  },
+  {
+    "id": "live_20260216_103228_v2",
+    "text": "$STRL up 20.8% from our $362.53 entry.\n\nWhy AI cooling matters: every data center needs thermal management before adding chips. Infrastructure always comes first.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$STRL",
+    "account": "variant_2",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T15:32:28.061354+00:00",
+    "cost_usd": 0.013025
+  },
+  {
+    "id": "live_20260216_103228_v3",
+    "text": "$MOD from $184.66 to $219.27.\n\n+18.7% and holding.\n\nThis is what patience looks like.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$MOD",
+    "account": "variant_3",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T15:32:28.061354+00:00",
+    "cost_usd": 0.013025
   }
 ]

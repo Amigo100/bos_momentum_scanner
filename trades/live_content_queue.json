@@ -350,14 +350,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-02-16T15:32:28.061354+00:00",
-    "cost_usd": 0.013025
+    "cost_usd": 0.013025,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260216_103228_v3",
@@ -376,5 +377,61 @@
     },
     "generated_at": "2026-02-16T15:32:28.061354+00:00",
     "cost_usd": 0.013025
+  },
+  {
+    "id": "live_20260216_120902_v1",
+    "text": "$VNET from $10.40 entry to $13.80 high.\n\n+32.7% on the liquid cooling thesis.\n\nData center infrastructure names continue to confirm the structural shift. This one's still in motion.",
+    "category": "RECEIPT",
+    "primary_ticker": "$VNET",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260216_1709.png",
+    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T17:09:02.375023+00:00",
+    "cost_usd": 0.013184,
+    "posted_at": "2026-02-16T17:09:13.727858",
+    "tweet_id": "2023444567832314102"
+  },
+  {
+    "id": "live_20260216_120902_v2",
+    "text": "$STRL holding through $437 changed everything.\n\nEntry at $362.53, now +20.8%.\n\nHere's why this matters: AI cooling isn't a trade \u2014 it's infrastructure spending with multi-year tailwinds. Position accordingly.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$STRL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260216_1709.png",
+    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T17:09:02.375023+00:00",
+    "cost_usd": 0.013184
+  },
+  {
+    "id": "live_20260216_120902_v3",
+    "text": "$MOD entry $184.66 \u2192 high $219.27\n\n+18.7%\n\nCleared resistance, held structure, delivered. Next.",
+    "category": "RECEIPT",
+    "primary_ticker": "$MOD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_MOD_20260216_1709.png",
+    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-02-16T17:09:02.375023+00:00",
+    "cost_usd": 0.013184
   }
 ]

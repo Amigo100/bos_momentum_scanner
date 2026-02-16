@@ -407,14 +407,15 @@
     "chart_recommended": true,
     "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260216_1709.png",
     "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-02-16T17:09:02.375023+00:00",
-    "cost_usd": 0.013184
+    "cost_usd": 0.013184,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260216_120902_v3",

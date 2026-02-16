@@ -1,91 +1,57 @@
 {
-  "scan_date": "2026-02-14",
+  "scan_date": "2026-02-16",
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "LYEL",
-      "symbol": "LYEL",
-      "price": 25.84,
-      "beta": 1.81,
-      "banker_score": 81.4,
-      "sector": "Healthcare",
-      "industry": "Biotechnology",
-      "theme": "Healthcare"
-    },
-    {
-      "ticker": "NTGR",
-      "symbol": "NTGR",
-      "price": 21.94,
-      "beta": 1.7,
-      "banker_score": 73.3,
+      "ticker": "WYFI",
+      "symbol": "WYFI",
+      "price": 19.42,
+      "beta": 4.77,
+      "banker_score": 49.1,
       "sector": "Technology",
-      "industry": "Communication Equipment",
+      "industry": "Software - Application",
       "theme": "Technology"
     },
     {
-      "ticker": "CRSP",
-      "symbol": "CRSP",
-      "price": 53.07,
-      "beta": 1.84,
-      "banker_score": 58.1,
+      "ticker": "ETOR",
+      "symbol": "ETOR",
+      "price": 27.46,
+      "beta": 2.18,
+      "banker_score": 29.7,
+      "sector": "Financial Services",
+      "industry": "Capital Markets",
+      "theme": "Financial Services"
+    },
+    {
+      "ticker": "CADL",
+      "symbol": "CADL",
+      "price": 5.68,
+      "beta": 2.15,
+      "banker_score": 28.8,
       "sector": "Healthcare",
       "industry": "Biotechnology",
       "theme": "Healthcare"
     },
     {
-      "ticker": "KURA",
-      "symbol": "KURA",
-      "price": 8.31,
-      "beta": 1.55,
-      "banker_score": 53.4,
+      "ticker": "BEAM",
+      "symbol": "BEAM",
+      "price": 27.92,
+      "beta": 2.34,
+      "banker_score": 26.9,
       "sector": "Healthcare",
       "industry": "Biotechnology",
       "theme": "Healthcare"
     },
     {
-      "ticker": "S",
-      "symbol": "S",
-      "price": 13.87,
-      "beta": 1.54,
-      "banker_score": 52.0,
-      "sector": "Technology",
-      "industry": "Software - Infrastructure",
-      "theme": "Technology"
+      "ticker": "BROS",
+      "symbol": "BROS",
+      "price": 53.2,
+      "beta": 1.62,
+      "banker_score": 25.7,
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "theme": "Consumer Cyclical"
     }
   ],
-  "sell_signals": [
-    {
-      "symbol": "PWP",
-      "ticker": "PWP",
-      "price": 21.479999542236328,
-      "reason": "Daily BoS Down at $21.48",
-      "entry_price": 24.34,
-      "highest_close": 24.34,
-      "pnl_pct": -11.75,
-      "theme": "Financial Services",
-      "entry_date": "2026-02-09"
-    },
-    {
-      "symbol": "STNE",
-      "ticker": "STNE",
-      "price": 16.860000610351562,
-      "reason": "Daily BoS Down at $16.86",
-      "entry_price": 17.99,
-      "highest_close": 17.99,
-      "pnl_pct": -6.28,
-      "theme": "Technology",
-      "entry_date": "2026-02-09"
-    },
-    {
-      "symbol": "FMC",
-      "ticker": "FMC",
-      "price": 14.34000015258789,
-      "reason": "Daily BoS Down at $14.34",
-      "entry_price": 16.05,
-      "highest_close": 16.05,
-      "pnl_pct": -10.65,
-      "theme": "Basic Materials",
-      "entry_date": "2026-02-11"
-    }
-  ]
+  "sell_signals": []
 }

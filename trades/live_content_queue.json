@@ -236,14 +236,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-02-15T15:32:00.691849+00:00",
-    "cost_usd": 0.013165
+    "cost_usd": 0.013165,
+    "error": "401 Unauthorized\nUnauthorized"
   },
   {
     "id": "live_20260215_103200_v3",
@@ -262,5 +263,61 @@
     },
     "generated_at": "2026-02-15T15:32:00.691849+00:00",
     "cost_usd": 0.013165
+  },
+  {
+    "id": "live_20260216_084356_v1",
+    "text": "$VNET up 32.7% from entry at $10.40. Data center cooling infrastructure isn't speculation anymore \u2014 it's institutional accumulation. Watching for continuation above $13.80.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$VNET",
+    "account": "variant_1",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-16T13:43:56.076772+00:00",
+    "cost_usd": 0.013055,
+    "posted_at": "2026-02-16T13:43:56.775702",
+    "tweet_id": "2023392907147813090"
+  },
+  {
+    "id": "live_20260216_084356_v2",
+    "text": "$STRL holding strong at +20.8% from our $362.53 entry. Here's why this matters: AI cooling demand isn't cyclical, it's structural. Data centers need what they build.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$STRL",
+    "account": "variant_2",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-16T13:43:56.076772+00:00",
+    "cost_usd": 0.013055
+  },
+  {
+    "id": "live_20260216_084356_v3",
+    "text": "$MOD from $184.66 to $219.27.\n\n+18.7% and barely breaking a sweat.\n\nEyes on this one.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$MOD",
+    "account": "variant_3",
+    "chart_recommended": false,
+    "chart_path": null,
+    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-16T13:43:56.076772+00:00",
+    "cost_usd": 0.013055
   }
 ]

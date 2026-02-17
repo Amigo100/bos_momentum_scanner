@@ -1,27 +1,124 @@
 {
-  "scan_date": "2026-02-16",
+  "scan_date": "2026-02-17",
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "RIOT",
-      "symbol": "RIOT",
-      "price": 15.22,
-      "beta": 3.87,
-      "banker_score": 25.5,
-      "sector": "Financial Services",
-      "industry": "Capital Markets",
-      "theme": "Financial Services"
+      "ticker": "LBRT",
+      "symbol": "LBRT",
+      "price": 26.69,
+      "beta": 2.36,
+      "banker_score": 100,
+      "sector": "Energy",
+      "industry": "Oil & Gas Equipment & Services",
+      "theme": "Energy"
     },
     {
-      "ticker": "SOC",
-      "symbol": "SOC",
-      "price": 8.89,
-      "beta": 3.6,
-      "banker_score": 4.9,
-      "sector": "Energy",
-      "industry": "Oil & Gas Drilling",
-      "theme": "Energy"
+      "ticker": "NCLH",
+      "symbol": "NCLH",
+      "price": 24.12,
+      "beta": 1.91,
+      "banker_score": 93.0,
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "theme": "Consumer Cyclical"
+    },
+    {
+      "ticker": "ELF",
+      "symbol": "ELF",
+      "price": 87.28,
+      "beta": 2.7,
+      "banker_score": 72.5,
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "theme": "Consumer Defensive"
+    },
+    {
+      "ticker": "AOSL",
+      "symbol": "AOSL",
+      "price": 22.71,
+      "beta": 2.86,
+      "banker_score": 70.2,
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "theme": "Technology"
+    },
+    {
+      "ticker": "DBRG",
+      "symbol": "DBRG",
+      "price": 15.41,
+      "beta": 1.59,
+      "banker_score": 50.4,
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "theme": "Financial Services"
     }
   ],
-  "sell_signals": []
+  "sell_signals": [
+    {
+      "symbol": "ZURA",
+      "ticker": "ZURA",
+      "price": 6.110000133514404,
+      "reason": "Daily BoS Down at $6.11",
+      "entry_price": 6.44,
+      "highest_close": 6.44,
+      "pnl_pct": -5.12,
+      "theme": "Healthcare",
+      "entry_date": "2026-02-10"
+    },
+    {
+      "symbol": "LGN",
+      "ticker": "LGN",
+      "price": 47.599998474121094,
+      "reason": "Daily BoS Down at $47.60",
+      "entry_price": 53.46,
+      "highest_close": 53.62,
+      "pnl_pct": -10.96,
+      "theme": "Industrials",
+      "entry_date": "2026-02-10"
+    },
+    {
+      "symbol": "AMKR",
+      "ticker": "AMKR",
+      "price": 46.84000015258789,
+      "reason": "Daily BoS Down at $46.84",
+      "entry_price": 53.46,
+      "highest_close": 56.17,
+      "pnl_pct": -12.38,
+      "theme": "Technology",
+      "entry_date": "2026-02-10"
+    },
+    {
+      "symbol": "CSIQ",
+      "ticker": "CSIQ",
+      "price": 19.059999465942383,
+      "reason": "Daily BoS Down at $19.06",
+      "entry_price": 21.83,
+      "highest_close": 21.83,
+      "pnl_pct": -12.69,
+      "theme": "Technology",
+      "entry_date": "2026-02-10"
+    },
+    {
+      "symbol": "NVMI",
+      "ticker": "NVMI",
+      "price": 442.30999755859375,
+      "reason": "Daily BoS Down at $442.31",
+      "entry_price": 475.83,
+      "highest_close": 475.83,
+      "pnl_pct": -7.04,
+      "theme": "Technology",
+      "entry_date": "2026-02-11"
+    },
+    {
+      "symbol": "BROS",
+      "ticker": "BROS",
+      "price": 53.56999969482422,
+      "reason": "Daily BoS Down at $53.57",
+      "entry_price": 53.2,
+      "highest_close": 53.56999969482422,
+      "pnl_pct": 0.7,
+      "theme": "Consumer Cyclical",
+      "entry_date": "2026-02-16"
+    }
+  ]
 }

@@ -86,14 +86,15 @@
     "chart_recommended": true,
     "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260214_2356.png",
     "scheduled_time": "2026-02-14T06:52:49.562625-05:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-02-14T11:52:49.562623+00:00",
-    "cost_usd": 0.01285
+    "cost_usd": 0.01285,
+    "error": "402 Payment Required\nYour enrolled account [2016998530842533888] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260214_085834_v1",
@@ -454,5 +455,62 @@
     "cost_usd": 0.013168,
     "posted_at": "2026-02-16T23:29:19.575502",
     "tweet_id": "2023540222474989828"
+  },
+  {
+    "id": "live_20260217_084329_v1",
+    "text": "$APLD holding $35.87 while broader crypto miners pull back.\n\n$65B in HPC contracts signed. Power capacity = new alpha.\n\nWhen quality names dip on sector rotation, that's when the setup earns its keep.",
+    "category": "DIP_OPPORTUNITY",
+    "primary_ticker": "APLD",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_APLD_20260217_1343.png",
+    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "+0.24%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T13:43:29.146366+00:00",
+    "cost_usd": 0.013056,
+    "posted_at": "2026-02-17T13:43:40.256498",
+    "tweet_id": "2023755225064939714"
+  },
+  {
+    "id": "live_20260217_084329_v2",
+    "text": "$VNET from $10.40 \u2192 $13.80 (+32.7%) because liquid cooling solves AI's heat problem.\n\nData centers need 10x cooling capacity by 2028. That's not hype \u2014 that's infrastructure math.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VNET",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260217_1343.png",
+    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.24%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T13:43:29.146366+00:00",
+    "cost_usd": 0.013056,
+    "error": "403 Forbidden\nYour client app is not configured with the appropriate oauth1 app permissions for this endpoint."
+  },
+  {
+    "id": "live_20260217_084329_v3",
+    "text": "$STRL entry $362.53, high $437.77.\n\n+20.8% and still climbing.\n\nAI cooling isn't optional when chips run this hot. Eyes on this one.",
+    "category": "DIP_OPPORTUNITY",
+    "primary_ticker": "$STRL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260217_1343.png",
+    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.24%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T13:43:29.146366+00:00",
+    "cost_usd": 0.013056
   }
 ]

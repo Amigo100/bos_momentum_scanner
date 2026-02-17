@@ -1,128 +1,134 @@
 {
-  "timestamp": "2026-02-16T23:28:56.934046+00:00",
+  "timestamp": "2026-02-17T13:45:00Z",
   "market_snapshot": {
-    "spy_move": "N/A",
-    "qqq_move": "N/A",
-    "vix": "N/A",
-    "market_mood": "unknown",
-    "headline": "Market data unavailable \u2014 using portfolio context only"
+    "spy_move": "+0.24%",
+    "qqq_move": "+0.07%",
+    "vix": "21.95",
+    "market_mood": "volatile",
+    "headline": "S&P 500 hits record close amid AI-driven optimism, but rising VIX signals tariff and geopolitical jitters."
   },
   "portfolio_movers": [
     {
-      "ticker": "$VNET",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $10.40"
-    },
-    {
-      "ticker": "$CGON",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $53.92"
-    },
-    {
       "ticker": "$APLD",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $37.40"
-    },
-    {
-      "ticker": "$WCC",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $281.63"
-    },
-    {
-      "ticker": "$IESC",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $474.43"
-    },
-    {
-      "ticker": "$STRL",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $362.53"
-    },
-    {
-      "ticker": "$AAON",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $95.64"
-    },
-    {
-      "ticker": "$AMSC",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $33.28"
-    },
-    {
-      "ticker": "$MOD",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $184.66"
-    },
-    {
-      "ticker": "$LUMN",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $8.82"
-    },
-    {
-      "ticker": "$AMPX",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $12.44"
-    },
-    {
-      "ticker": "$ASPI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $5.82"
-    },
-    {
-      "ticker": "$BITF",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $2.14"
-    },
-    {
-      "ticker": "$SOFI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $20.86"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $2.33"
-    },
-    {
-      "ticker": "$EVTL",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $4.53"
+      "move": "-3.5%",
+      "price": "$35.87",
+      "context": "Bitcoin miners pivoting to AI data centers, but APLD dips on broader crypto pullback"
     },
     {
       "ticker": "$NVDA",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $185.41"
+      "move": "+1.2%",
+      "price": "$185.00",
+      "context": "AI infrastructure boom fuels semiconductor demand amid copper shortage concerns"
+    },
+    {
+      "ticker": "$WCC",
+      "move": "+2.5%",
+      "price": "$288.67",
+      "context": "Copper prices surge on AI data center and defense spending forecasts"
     },
     {
       "ticker": "$AMD",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $208.44"
+      "move": "+0.8%",
+      "price": "$210.20",
+      "context": "Semiconductor rally tied to AI and reshoring initiatives"
+    },
+    {
+      "ticker": "$BITF",
+      "move": "-1.8%",
+      "price": "$2.10",
+      "context": "Crypto mining firms like BITF face pressure but eye AI pivot opportunities"
     }
   ],
-  "theme_activity": [],
-  "fintwit_trending": [],
-  "news_events": [],
-  "tweet_opportunities": [],
-  "fallback_mode": true,
-  "gathered_at": "2026-02-16T23:28:56.934078+00:00",
+  "theme_activity": [
+    {
+      "theme": "copper",
+      "status": "breaking",
+      "detail": "Global shortage intensifies with AI data centers projected to consume 500K tons annually by 2030, pushing prices toward $12,000/ton"
+    },
+    {
+      "theme": "AI",
+      "status": "active",
+      "detail": "Hyperscalers invest $2.5T through 2030 in AI infrastructure, driving power and copper demand"
+    },
+    {
+      "theme": "data centers",
+      "status": "active",
+      "detail": "Bitcoin miners pivot to AI/HPC, signing $65B contracts; power becomes key bottleneck"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Surging spending adds to copper demand, with US designating it critical mineral"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "quiet",
+      "detail": "Global sales hit $800B in 2025, projected $850B in 2026 amid reshoring and AI push"
+    },
+    {
+      "theme": "crypto mining",
+      "status": "quiet",
+      "detail": "Firms like APLD and BITF shift to AI, reducing mining revenue to <20% by late 2026"
+    }
+  ],
+  "fintwit_trending": [
+    "$NVDA AI boom",
+    "copper shortage",
+    "tariff risks",
+    "$APLD pivot",
+    "VIX spike"
+  ],
+  "news_events": [
+    {
+      "event": "US proposes critical minerals trade bloc",
+      "impact": "counters China dominance in rare earths, boosts reshoring for semiconductors and defense",
+      "relevance": "high"
+    },
+    {
+      "event": "Supreme Court delays tariff ruling",
+      "impact": "prolongs uncertainty on IEEPA tariffs, pressuring trade-exposed sectors like infrastructure",
+      "relevance": "medium"
+    },
+    {
+      "event": "US-Iran nuclear talks in Geneva",
+      "impact": "eases geopolitical risk premium on oil, but failure could spike energy costs for data centers",
+      "relevance": "medium"
+    },
+    {
+      "event": "February CPI at 2.4%",
+      "impact": "cools inflation fears, supports Fed rate cut odds in July, aiding growth stocks like NVDA",
+      "relevance": "high"
+    }
+  ],
+  "tweet_opportunities": [
+    {
+      "type": "THEME_MOMENTUM",
+      "reason": "Copper shortage breaking news ties directly to portfolio themes like infrastructure and AI data centers, highlighting $WCC upside",
+      "tickers": [
+        "$WCC"
+      ],
+      "urgency": "high"
+    },
+    {
+      "type": "MARKET_REACTION",
+      "reason": "VIX above 20 for third day signals volatility from tariffs/geopolitics, positioning AI semis like $NVDA as resilient plays",
+      "tickers": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "urgency": "medium"
+    },
+    {
+      "type": "DIP_OPPORTUNITY",
+      "reason": "$APLD and $BITF dip on crypto weakness but AI pivot news offers entry for data center theme exposure",
+      "tickers": [
+        "$APLD",
+        "$BITF"
+      ],
+      "urgency": "high"
+    }
+  ],
+  "gathered_at": "2026-02-17T13:43:19.112557+00:00",
   "is_market_hours": false,
   "is_extended_hours": true
 }

@@ -1,109 +1,99 @@
 {
-  "timestamp": "2026-02-17T13:45:00Z",
+  "timestamp": "2026-02-17T16:00:00Z",
   "market_snapshot": {
-    "spy_move": "+0.24%",
-    "qqq_move": "+0.07%",
-    "vix": "21.95",
-    "market_mood": "volatile",
-    "headline": "S&P 500 hits record close amid AI-driven optimism, but rising VIX signals tariff and geopolitical jitters."
+    "spy_move": "-0.74%",
+    "qqq_move": "-1.11%",
+    "vix": "21.98",
+    "market_mood": "bearish",
+    "headline": "US stocks decline amid rising geopolitical tensions and tariff uncertainties, with Nasdaq hit hardest by tech sector weakness."
   },
   "portfolio_movers": [
     {
       "ticker": "$APLD",
-      "move": "-3.5%",
-      "price": "$35.87",
-      "context": "Bitcoin miners pivoting to AI data centers, but APLD dips on broader crypto pullback"
+      "move": "-2.46%",
+      "price": "$35.28",
+      "context": "pullback in AI data center stocks amid broader tech selloff"
     },
     {
       "ticker": "$NVDA",
-      "move": "+1.2%",
+      "move": "-1.2%",
       "price": "$185.00",
-      "context": "AI infrastructure boom fuels semiconductor demand amid copper shortage concerns"
-    },
-    {
-      "ticker": "$WCC",
-      "move": "+2.5%",
-      "price": "$288.67",
-      "context": "Copper prices surge on AI data center and defense spending forecasts"
+      "context": "SoftBank exits position, adding pressure on AI chip leaders"
     },
     {
       "ticker": "$AMD",
-      "move": "+0.8%",
-      "price": "$210.20",
-      "context": "Semiconductor rally tied to AI and reshoring initiatives"
+      "move": "-0.8%",
+      "price": "$208.00",
+      "context": "semiconductor sector dips on market volatility"
     },
     {
-      "ticker": "$BITF",
-      "move": "-1.8%",
-      "price": "$2.10",
-      "context": "Crypto mining firms like BITF face pressure but eye AI pivot opportunities"
+      "ticker": "$WCC",
+      "move": "+1.5%",
+      "price": "$285.50",
+      "context": "copper demand surge from AI infrastructure boosts mining equipment play"
+    },
+    {
+      "ticker": "$MOD",
+      "move": "+0.9%",
+      "price": "$186.30",
+      "context": "defense spending tailwinds amid geopolitical risks"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "Global shortage intensifies with AI data centers projected to consume 500K tons annually by 2030, pushing prices toward $12,000/ton"
+      "detail": "AI data centers and defense spending projected to drive 50% demand growth by 2040, exacerbating supply shortages"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "Hyperscalers invest $2.5T through 2030 in AI infrastructure, driving power and copper demand"
+      "detail": "Bitcoin miners pivoting to AI infrastructure with $65B in contracts, boosting data center plays"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "Bitcoin miners pivot to AI/HPC, signing $65B contracts; power becomes key bottleneck"
+      "detail": "Hyperscale facilities require up to 50,000 tons of copper each, fueling commodity crunch"
     },
     {
       "theme": "defense",
       "status": "active",
-      "detail": "Surging spending adds to copper demand, with US designating it critical mineral"
+      "detail": "Geopolitical tensions in Iran and Venezuela increase military spending, supporting sector momentum"
     },
     {
       "theme": "semiconductors",
       "status": "quiet",
-      "detail": "Global sales hit $800B in 2025, projected $850B in 2026 amid reshoring and AI push"
-    },
-    {
-      "theme": "crypto mining",
-      "status": "quiet",
-      "detail": "Firms like APLD and BITF shift to AI, reducing mining revenue to <20% by late 2026"
+      "detail": "New DWDM laser sources for AI infrastructure debut, but sector faces tariff risks"
     }
   ],
   "fintwit_trending": [
-    "$NVDA AI boom",
+    "AI data centers",
     "copper shortage",
-    "tariff risks",
-    "$APLD pivot",
-    "VIX spike"
+    "NVDA SoftBank exit",
+    "tariff impacts",
+    "crypto to AI pivot"
   ],
   "news_events": [
     {
-      "event": "US proposes critical minerals trade bloc",
-      "impact": "counters China dominance in rare earths, boosts reshoring for semiconductors and defense",
+      "event": "Supreme Court delays ruling on Trump tariffs",
+      "impact": "heightens uncertainty for global trade and inflation",
       "relevance": "high"
     },
     {
-      "event": "Supreme Court delays tariff ruling",
-      "impact": "prolongs uncertainty on IEEPA tariffs, pressuring trade-exposed sectors like infrastructure",
-      "relevance": "medium"
-    },
-    {
-      "event": "US-Iran nuclear talks in Geneva",
-      "impact": "eases geopolitical risk premium on oil, but failure could spike energy costs for data centers",
-      "relevance": "medium"
-    },
-    {
-      "event": "February CPI at 2.4%",
-      "impact": "cools inflation fears, supports Fed rate cut odds in July, aiding growth stocks like NVDA",
+      "event": "Geopolitical tensions rise in Iran and Venezuela",
+      "impact": "risk-off sentiment pressures equities and boosts defense themes",
       "relevance": "high"
+    },
+    {
+      "event": "Fed minutes release upcoming",
+      "impact": "focus on inflation and rate path amid tariff pressures",
+      "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "Copper shortage breaking news ties directly to portfolio themes like infrastructure and AI data centers, highlighting $WCC upside",
+      "reason": "Copper shortage breaking news ties directly to AI and infrastructure portfolio themes, actionable for $WCC and related plays",
       "tickers": [
         "$WCC"
       ],
@@ -111,24 +101,23 @@
     },
     {
       "type": "MARKET_REACTION",
-      "reason": "VIX above 20 for third day signals volatility from tariffs/geopolitics, positioning AI semis like $NVDA as resilient plays",
+      "reason": "Tech pullback creates dip buy opportunity in AI/semiconductor holdings like $APLD and $NVDA amid pivot news",
       "tickers": [
-        "$NVDA",
-        "$AMD"
+        "$APLD",
+        "$NVDA"
       ],
       "urgency": "medium"
     },
     {
       "type": "DIP_OPPORTUNITY",
-      "reason": "$APLD and $BITF dip on crypto weakness but AI pivot news offers entry for data center theme exposure",
+      "reason": "Defense stocks resilient in risk-off environment; highlight $MOD strength on geopolitics",
       "tickers": [
-        "$APLD",
-        "$BITF"
+        "$MOD"
       ],
-      "urgency": "high"
+      "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-17T13:43:19.112557+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": true
+  "gathered_at": "2026-02-17T16:03:38.644354+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

@@ -1,44 +1,5 @@
 [
   {
-    "id": "live_20260210_1430_v1",
-    "text": "WCC breaking out of a multi-week base. Infrastructure spending keeps flowing.",
-    "category": "RECEIPT",
-    "primary_ticker": "WCC",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "trades/charts/WCC_weekly_20260208.png",
-    "scheduled_time": "2026-02-10T14:30:00-05:00",
-    "status": "skipped",
-    "skip_reason": "Superseded by newer STRL receipt tweet",
-    "context_snapshot": {
-      "spy_at_generation": "+0.3%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-10T19:25:00Z",
-    "cost_usd": 0.015,
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "live_20260210_1430_v2",
-    "text": "Infrastructure plays continue to build. Watch WCC here.",
-    "category": "RECEIPT",
-    "primary_ticker": "WCC",
-    "account": "variant_2",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-10T14:30:00-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.3%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-10T19:25:00Z",
-    "cost_usd": 0.015,
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
     "id": "live_20260214_065249_v1",
     "text": "$VNET from $10.40 to $13.80 high.\n\n+32.7% on the data center cooling play. When infrastructure meets AI compute demand, moves like this happen.\n\nStill holding.",
     "category": "RECEIPT",
@@ -421,6 +382,64 @@
     },
     "generated_at": "2026-02-17T18:13:34.696268+00:00",
     "cost_usd": 0.013737,
+    "error": "402 Payment Required\nYour enrolled account [2016998530842533888] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260217_182936_v1",
+    "text": "$APLD down 4.9% to $33.56 while AI data center demand stays intact. Entry at $37.40 \u2014 pullbacks on noise, not fundamentals, create opportunity. Crypto to AI pivot thesis unchanged.",
+    "category": "DIP_OPPORTUNITY",
+    "primary_ticker": "$APLD",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_APLD_20260217_2329.png",
+    "scheduled_time": "2026-02-17T18:29:36.653368-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T23:29:36.653367+00:00",
+    "cost_usd": 0.013847,
+    "posted_at": "2026-02-17T23:29:47.651978",
+    "tweet_id": "2023902728464773357"
+  },
+  {
+    "id": "live_20260217_182936_v2",
+    "text": "$EVTL at $4.46 is how you play defense spending without chasing. Drone tech getting real budget allocation now \u2014 entry was $4.53, and the thesis takes time to unfold. Patience pays here.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_EVTL_20260217_2329.png",
+    "scheduled_time": "2026-02-17T18:29:36.653368-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T23:29:36.653367+00:00",
+    "cost_usd": 0.013847,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260217_182936_v3",
+    "text": "$CGON sitting flat at $53.87. Healthcare names don't move on headlines \u2014 they move on data. Entry $53.92. Watching.",
+    "category": "DIP_OPPORTUNITY",
+    "primary_ticker": "$CGON",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_CGON_20260217_2329.png",
+    "scheduled_time": "2026-02-17T18:29:36.653368-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-02-17T23:29:36.653367+00:00",
+    "cost_usd": 0.013847,
     "error": "402 Payment Required\nYour enrolled account [2016998530842533888] does not have any credits to fulfill this request."
   }
 ]

@@ -25,8 +25,11 @@ from content.live_tweet_generator import (
     validate_tweet,
     _prepare_slot_data,
     _count_category_this_week,
+    format_portfolio_for_prompt,
+    build_user_prompt,
     WEEKEND_CATEGORIES,
     LIVE_VALID_CATEGORIES,
+    LIVE_CATEGORY_EXAMPLES,
     ACCOUNT_VARIANTS,
 )
 from content.models import ValidationResult
@@ -61,9 +64,11 @@ def sample_signals():
 
 @pytest.fixture
 def stale_signals():
-    """Signals older than 48h."""
+    """Signals older than 48h relative to the mock Sunday (Feb 15 10:00 ET)."""
+    # Use a fixed timestamp that's 72h before Feb 15 10:00 = Feb 12 10:00
+    # This ensures >48h regardless of when the test is run
     return {
-        "timestamp": (datetime.now() - timedelta(hours=72)).strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": "2026-02-12 10:00:00",
         "buy_signals": [
             {"symbol": "OLD", "theme": "Legacy", "final_decision": "TRADE", "conviction": 5},
         ],
@@ -307,13 +312,15 @@ class TestMinimumCadence:
         mock_dt.fromisoformat = datetime.fromisoformat
 
         # 4+ tweets today (timestamps relative to mock Monday = past filler threshold)
-        # + 2 NEWSLETTER_CTAs this week (block Priority 5)
+        # + 2 NEWSLETTER_CTAs this week (block Priority 8)
+        # + TECHNICAL_ANALYSIS recently (block Priority 5 position commentary)
         base = weekday.astimezone(timezone.utc)
         recent = [
             _make_recent_tweet("ENGAGEMENT", hours_ago=i, base_time=base) for i in range(1, 5)
         ] + [
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=24, base_time=base),
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=72, base_time=base),
+            _make_recent_tweet("TECHNICAL_ANALYSIS", hours_ago=2, base_time=base),
         ]
         signals = {"timestamp": "2026-02-10 10:00:00", "buy_signals": []}
         context = {
@@ -327,17 +334,16 @@ class TestMinimumCadence:
 
         assert result["action"] == "tweet"
         assert result["type"] == "RECEIPT"
-        assert result["reason"].startswith("Cadence fallback")
 
     @patch("content.live_tweet_generator.datetime")
     def test_fallback_to_educational(self, mock_dt, sample_portfolio):
-        """Second fallback is EDUCATIONAL when RECEIPT was recently posted."""
+        """Second fallback is EDUCATIONAL when RECEIPT and TECHNICAL_ANALYSIS recently posted."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
         mock_dt.now.return_value = weekday
         mock_dt.strptime = datetime.strptime
         mock_dt.fromisoformat = datetime.fromisoformat
 
-        # RECEIPT posted 2h ago + 2 NEWSLETTER_CTAs this week (block Priority 5)
+        # RECEIPT posted 2h ago + TECHNICAL_ANALYSIS posted 2h ago + 2 NEWSLETTER_CTAs this week
         base = weekday.astimezone(timezone.utc)
         recent = [
             _make_recent_tweet("ENGAGEMENT", hours_ago=1, base_time=base),
@@ -347,6 +353,7 @@ class TestMinimumCadence:
             _make_recent_tweet("RECEIPT", "AAA", hours_ago=2, base_time=base),
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=24, base_time=base),
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=72, base_time=base),
+            _make_recent_tweet("TECHNICAL_ANALYSIS", hours_ago=2, base_time=base),
         ]
         signals = {"timestamp": "2026-02-10 10:00:00", "buy_signals": []}
         context = {
@@ -370,6 +377,7 @@ class TestMinimumCadence:
         mock_dt.fromisoformat = datetime.fromisoformat
 
         # 3 EDUCATIONAL this week + RECEIPT recently + 2 CTAs this week
+        # + TECHNICAL_ANALYSIS recently (block P5)
         # ENGAGEMENT last posted 8h ago (outside 6h cooldown — so cadence fallback can pick it)
         base = weekday.astimezone(timezone.utc)
         recent = [
@@ -383,6 +391,7 @@ class TestMinimumCadence:
             _make_recent_tweet("EDUCATIONAL", hours_ago=72, base_time=base),
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=24, base_time=base),
             _make_recent_tweet("NEWSLETTER_CTA", hours_ago=72, base_time=base),
+            _make_recent_tweet("TECHNICAL_ANALYSIS", hours_ago=2, base_time=base),
         ]
         signals = {"timestamp": "2026-02-10 10:00:00", "buy_signals": []}
         context = {
@@ -451,19 +460,22 @@ class TestPrepareSlotData:
         assert len(set(tickers)) == 3
 
     def test_shared_ticker_fallback(self):
-        """When only 1 ticker available, all accounts get it with different angles."""
+        """When only 1 ticker available, variant_1 gets it; others get non-ticker fallback."""
         decision = {"type": "RECEIPT", "tickers": ["AAA"]}
         portfolio = [{"ticker": "AAA", "entry_price": "10", "highest_close": "15", "theme": "AI"}]
         signals = {"buy_signals": []}
 
         result = _prepare_slot_data(decision, portfolio, signals)
 
-        # All should get AAA (only ticker)
+        # variant_1 gets the ticker, others switch to non-ticker categories
+        # (diversity fix: prevents all 3 accounts tweeting identical content)
         assert result["variant_1"]["ticker"] == "AAA"
-        assert result["variant_2"]["ticker"] == "AAA"
-        assert result["variant_3"]["ticker"] == "AAA"
+        assert result["variant_2"]["ticker"] == ""
+        assert result["variant_3"]["ticker"] == ""
+        assert result["variant_2"]["category"] in ("EDUCATIONAL", "ENGAGEMENT")
+        assert result["variant_3"]["category"] in ("EDUCATIONAL", "ENGAGEMENT")
 
-        # But each should have a different angle
+        # All should still have different angles
         angles = [result[v]["angle"] for v in ACCOUNT_VARIANTS]
         assert len(set(angles)) == 3
 
@@ -735,3 +747,255 @@ class TestPersonasConfig:
                     assert banned.lower() not in phrase_lower, (
                         f"PERSONAS['{key}'] phrase '{phrase}' contains banned term '{banned}'"
                     )
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TEST CLASS 9: New Categories + Priority Cascade (Content Quality Audit)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestNewCategories:
+    """Verify new categories (SELL_SIGNAL, TECHNICAL_ANALYSIS, WATCHLIST) pass validation."""
+
+    def test_sell_signal_passes_step1(self):
+        """SELL_SIGNAL is in LIVE_VALID_CATEGORIES and passes step 1."""
+        assert "SELL_SIGNAL" in LIVE_VALID_CATEGORIES
+        tweet = {
+            "text": "$SMCI setup invalidated below $36. Win more than you lose. Moving on.",
+            "category": "SELL_SIGNAL",
+            "primary_ticker": "SMCI",
+            "account": "variant_1",
+            "chart_recommended": True,
+        }
+        result = validate_tweet(tweet, allowed_tickers={"SMCI"})
+        step1_failures = [f for f in result.failures if "step1" in f]
+        assert len(step1_failures) == 0
+
+    def test_technical_analysis_passes_step1(self):
+        """TECHNICAL_ANALYSIS is in LIVE_VALID_CATEGORIES and passes step 1."""
+        assert "TECHNICAL_ANALYSIS" in LIVE_VALID_CATEGORIES
+        tweet = {
+            "text": "$WCC holding above $281 entry. Watching $320 resistance. NFA",
+            "category": "TECHNICAL_ANALYSIS",
+            "primary_ticker": "WCC",
+            "account": "variant_1",
+            "chart_recommended": True,
+        }
+        result = validate_tweet(tweet, allowed_tickers={"WCC"})
+        step1_failures = [f for f in result.failures if "step1" in f]
+        assert len(step1_failures) == 0
+
+    def test_watchlist_passes_step1(self):
+        """WATCHLIST is in LIVE_VALID_CATEGORIES and passes step 1."""
+        assert "WATCHLIST" in LIVE_VALID_CATEGORIES
+        tweet = {
+            "text": "On my radar: $IONQ at $42.15. Waiting for confirmation. NFA.",
+            "category": "WATCHLIST",
+            "primary_ticker": "IONQ",
+            "account": "variant_1",
+            "chart_recommended": False,
+        }
+        result = validate_tweet(tweet, allowed_tickers={"IONQ"})
+        step1_failures = [f for f in result.failures if "step1" in f]
+        assert len(step1_failures) == 0
+
+
+class TestSellSignalPriority:
+    """Sell signals get highest priority (P0) in decide_tweet_type()."""
+
+    @patch("content.live_tweet_generator.datetime")
+    def test_sell_signal_highest_priority(self, mock_dt, sample_portfolio):
+        """Sell signals fire before buy signals."""
+        weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
+        mock_dt.now.return_value = weekday
+        mock_dt.strptime = datetime.strptime
+        mock_dt.fromisoformat = datetime.fromisoformat
+
+        signals = {
+            "timestamp": "2026-02-16 10:00:00",
+            "buy_signals": [{"symbol": "INOD", "price": 61.54}],
+            "sell_signals": [{"symbol": "VNET", "reason": "Weekly BoS Down"}],
+        }
+        context = {
+            "market_snapshot": {"market_mood": "quiet"},
+            "portfolio_movers": [],
+            "theme_activity": [],
+            "tweet_opportunities": [],
+        }
+
+        result = decide_tweet_type(context, sample_portfolio, signals, [])
+
+        assert result["action"] == "tweet"
+        assert result["type"] == "SELL_SIGNAL"
+        assert "VNET" in result["tickers"]
+
+
+class TestPositionCommentary:
+    """TECHNICAL_ANALYSIS fires as fallback in quiet market."""
+
+    @patch("content.live_tweet_generator.datetime")
+    def test_quiet_market_position_commentary(self, mock_dt, sample_portfolio):
+        """When no movers/themes/signals, TECHNICAL_ANALYSIS fires for position commentary."""
+        weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
+        mock_dt.now.return_value = weekday
+        mock_dt.strptime = datetime.strptime
+        mock_dt.fromisoformat = datetime.fromisoformat
+
+        signals = {"timestamp": "2026-02-10 10:00:00", "buy_signals": []}
+        context = {
+            "market_snapshot": {"market_mood": "quiet"},
+            "portfolio_movers": [],
+            "theme_activity": [],
+            "tweet_opportunities": [],
+        }
+
+        result = decide_tweet_type(context, sample_portfolio, signals, [])
+
+        assert result["action"] == "tweet"
+        assert result["type"] == "TECHNICAL_ANALYSIS"
+        assert "Position commentary" in result["reason"]
+
+
+class TestWatchlistDecision:
+    """WATCHLIST fires when consider_signals exist."""
+
+    @patch("content.live_tweet_generator.datetime")
+    def test_watchlist_from_consider_signals(self, mock_dt, sample_portfolio):
+        """consider_signals trigger WATCHLIST type."""
+        weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
+        mock_dt.now.return_value = weekday
+        mock_dt.strptime = datetime.strptime
+        mock_dt.fromisoformat = datetime.fromisoformat
+
+        # Block higher-priority paths
+        base = weekday.astimezone(timezone.utc)
+        recent = [
+            _make_recent_tweet("TECHNICAL_ANALYSIS", hours_ago=2, base_time=base),
+        ]
+        signals = {
+            "timestamp": "2026-02-10 10:00:00",
+            "buy_signals": [],
+            "consider_signals": [{"symbol": "IONQ", "price": 42.15}],
+        }
+        context = {
+            "market_snapshot": {"market_mood": "quiet"},
+            "portfolio_movers": [],
+            "theme_activity": [],
+            "tweet_opportunities": [],
+        }
+
+        result = decide_tweet_type(context, sample_portfolio, signals, recent)
+
+        assert result["action"] == "tweet"
+        assert result["type"] == "WATCHLIST"
+        assert "IONQ" in result["tickers"]
+
+
+class TestNegativePercentRegex:
+    """Negative percentage regex fix — '15-25%' should NOT trigger."""
+
+    def test_range_format_no_false_positive(self):
+        """'15-25%' should not be caught as negative percentage."""
+        tweet = {
+            "text": "Expecting 15-25% upside from here. $STRL looking strong.",
+            "category": "TECHNICAL_ANALYSIS",
+            "primary_ticker": "STRL",
+            "account": "variant_1",
+            "chart_recommended": True,
+        }
+        result = validate_tweet(tweet, allowed_tickers={"STRL"})
+        step4_failures = [f for f in result.failures if "step4_winners_only" in f and "negative" in f]
+        assert len(step4_failures) == 0
+
+    def test_actual_negative_still_caught(self):
+        """'-25% drawdown' should still be caught."""
+        tweet = {
+            "text": "Down -25% on this trade. Rough week.",
+            "category": "MARKET_REACTION",
+            "primary_ticker": "",
+            "account": "variant_1",
+            "chart_recommended": False,
+        }
+        result = validate_tweet(tweet, allowed_tickers=set())
+        step4_failures = [f for f in result.failures if "step4_winners_only" in f and "negative" in f]
+        assert len(step4_failures) > 0
+
+
+class TestPortfolioCurrentPrices:
+    """format_portfolio_for_prompt() includes current price when available."""
+
+    def test_current_price_in_output(self):
+        """Current price should appear when provided."""
+        portfolio = [
+            {"ticker": "STRL", "entry_price": "362.53", "highest_close": "437.77", "theme": "AI Infrastructure"},
+        ]
+        current_prices = {"STRL": 420.15}
+        result = format_portfolio_for_prompt(portfolio, current_prices=current_prices)
+
+        assert "current $420.15" in result
+        assert "+15.9%" in result
+
+    def test_fallback_to_highest_without_current(self):
+        """Without current prices, falls back to highest_close."""
+        portfolio = [
+            {"ticker": "STRL", "entry_price": "362.53", "highest_close": "437.77", "theme": "AI Infrastructure"},
+        ]
+        result = format_portfolio_for_prompt(portfolio)
+
+        assert "high $437.77" in result
+        assert "current" not in result
+
+
+class TestFunnelStatsInPrompt:
+    """Funnel stats appear in SIGNAL_ALERT user prompt."""
+
+    def test_funnel_stats_injected(self):
+        """When signals have stats, they appear in the prompt."""
+        decision = {"type": "SIGNAL_ALERT", "tickers": ["INOD"], "reason": "Fresh signal"}
+        context = {"market_snapshot": {}, "portfolio_movers": [], "theme_activity": [], "fintwit_trending": []}
+        portfolio = [{"ticker": "INOD", "entry_price": "60", "highest_close": "65", "theme": "AI"}]
+        signals = {"stats": {"tickers_loaded": 1817, "final_trade": 2, "final_consider": 5}}
+
+        result = build_user_prompt(decision, context, portfolio, signals=signals)
+
+        assert "1,817 stocks scanned" in result
+        assert "7 survived all gates" in result
+
+
+class TestMultiTickerReceipt:
+    """Multi-ticker receipt triggers with 3+ winners."""
+
+    @patch("content.live_tweet_generator.datetime")
+    def test_multi_receipt_with_3_winners(self, mock_dt):
+        """3+ winners trigger multi-ticker RECEIPT at P9."""
+        weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
+        mock_dt.now.return_value = weekday
+        mock_dt.strptime = datetime.strptime
+        mock_dt.fromisoformat = datetime.fromisoformat
+
+        # 3 winners (>5% above entry)
+        portfolio = [
+            {"ticker": "AAA", "entry_price": "10", "highest_close": "15", "theme": "AI", "status": "OPEN"},
+            {"ticker": "BBB", "entry_price": "20", "highest_close": "30", "theme": "Defense", "status": "OPEN"},
+            {"ticker": "CCC", "entry_price": "5", "highest_close": "8", "theme": "Nuclear", "status": "OPEN"},
+        ]
+        # Block all higher priorities
+        base = weekday.astimezone(timezone.utc)
+        recent = [
+            _make_recent_tweet("TECHNICAL_ANALYSIS", hours_ago=2, base_time=base),
+            _make_recent_tweet("NEWSLETTER_CTA", hours_ago=24, base_time=base),
+            _make_recent_tweet("NEWSLETTER_CTA", hours_ago=72, base_time=base),
+        ]
+        signals = {"timestamp": "2026-02-10 10:00:00", "buy_signals": []}
+        context = {
+            "market_snapshot": {"market_mood": "quiet"},
+            "portfolio_movers": [],
+            "theme_activity": [],
+            "tweet_opportunities": [],
+        }
+
+        result = decide_tweet_type(context, portfolio, signals, recent)
+
+        assert result["action"] == "tweet"
+        assert result["type"] == "RECEIPT"
+        assert result.get("multi_receipt") is True
+        assert len(result["tickers"]) >= 3

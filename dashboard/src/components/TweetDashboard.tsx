@@ -2,21 +2,23 @@
 
 import { useState, useMemo, useEffect } from "react";
 import type { EnrichedTweet, EnrichedTweetData, FailedTweet, DailyStats, RollingStats } from "@/lib/data";
+import { getTodayCronSlots, computeCountdownMs, formatCountdown, BATCH_SLOT_TIMES, type CronSlot } from "@/lib/cronSchedule";
 
 // ─── Sub-components ───
 
 function StatusBadge({ status }: { status: EnrichedTweet["displayStatus"] }) {
-  const styles: Record<string, { bg: string; color: string }> = {
-    posted: { bg: "rgba(45, 212, 191, 0.15)", color: "var(--accent-teal)" },
-    upcoming: { bg: "rgba(251, 191, 36, 0.15)", color: "var(--accent-amber)" },
-    expired: { bg: "rgba(100, 116, 139, 0.15)", color: "var(--text-muted)" },
-    skipped: { bg: "rgba(100, 116, 139, 0.15)", color: "var(--text-muted)" },
-    failed: { bg: "rgba(248, 113, 113, 0.15)", color: "var(--accent-red)" },
+  const styles: Record<string, { bg: string; color: string; label: string }> = {
+    posted: { bg: "rgba(45, 212, 191, 0.15)", color: "var(--accent-teal)", label: "posted" },
+    upcoming: { bg: "rgba(251, 191, 36, 0.15)", color: "var(--accent-amber)", label: "upcoming" },
+    expired: { bg: "rgba(100, 116, 139, 0.15)", color: "var(--text-muted)", label: "expired" },
+    skipped: { bg: "rgba(100, 116, 139, 0.15)", color: "var(--text-muted)", label: "skipped" },
+    failed: { bg: "rgba(248, 113, 113, 0.15)", color: "var(--accent-red)", label: "failed" },
+    abandoned: { bg: "rgba(167, 139, 250, 0.15)", color: "var(--accent-violet)", label: "not posted" },
   };
   const s = styles[status] || styles.expired;
   return (
     <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: s.bg, color: s.color }}>
-      {status}
+      {s.label}
     </span>
   );
 }
@@ -47,14 +49,14 @@ function formatFullDate(dateStr: string): string {
 }
 
 function TweetCard({ tweet, isNext, countdown }: { tweet: EnrichedTweet; isNext: boolean; countdown?: string }) {
-  const isExpired = tweet.displayStatus === "expired";
+  const isDimmed = tweet.displayStatus === "expired" || tweet.displayStatus === "abandoned";
   const fullDate = formatFullDate(tweet.scheduled_date);
 
   return (
     <div
       className="stat-card rounded-xl p-4 mb-3"
       style={{
-        opacity: isExpired ? 0.5 : 1,
+        opacity: isDimmed ? 0.5 : 1,
         borderColor: isNext ? "rgba(45, 212, 191, 0.4)" : undefined,
         boxShadow: isNext ? "0 0 15px rgba(45, 212, 191, 0.1)" : undefined,
       }}
@@ -73,6 +75,15 @@ function TweetCard({ tweet, isNext, countdown }: { tweet: EnrichedTweet; isNext:
               {countdown}
             </span>
           )}
+        </div>
+      )}
+
+      {/* Countdown for non-next upcoming tweets */}
+      {!isNext && tweet.displayStatus === "upcoming" && countdown && (
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-mono" style={{ color: "var(--accent-amber)" }}>
+            {countdown}
+          </span>
         </div>
       )}
 
@@ -115,14 +126,37 @@ function TweetCard({ tweet, isNext, countdown }: { tweet: EnrichedTweet; isNext:
           {tweet.posted_at && (
             <span>
               Posted:{" "}
-              {new Date(tweet.posted_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              {new Date(tweet.posted_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })} ET
             </span>
           )}
           {tweet.tweet_id && (
-            <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>ID: {tweet.tweet_id.slice(-8)}</span>
+            <a
+              href={`https://x.com/i/status/${tweet.tweet_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+              style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--accent-blue)" }}
+            >
+              View on X
+            </a>
           )}
         </div>
       </div>
+
+      {/* Error message for failed tweets */}
+      {tweet.displayStatus === "failed" && tweet.error && (
+        <div
+          className="mt-2 p-2 rounded text-xs"
+          style={{
+            background: "rgba(248, 113, 113, 0.08)",
+            border: "1px solid rgba(248, 113, 113, 0.2)",
+            color: "var(--accent-red)",
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
+        >
+          {tweet.error}
+        </div>
+      )}
     </div>
   );
 }
@@ -192,10 +226,127 @@ function LiveClock() {
   );
 }
 
+// ─── Today's Cron Schedule ───
+
+function TodaySchedule({ tweets }: { tweets: EnrichedTweet[] }) {
+  const [slots, setSlots] = useState<CronSlot[]>([]);
+  const [now, setNow] = useState("");
+
+  useEffect(() => {
+    setSlots(getTodayCronSlots());
+    function tick() {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).formatToParts(new Date());
+      const h = parts.find((p) => p.type === "hour")?.value || "00";
+      const m = parts.find((p) => p.type === "minute")?.value || "00";
+      setNow(`${h}:${m}`);
+    }
+    tick();
+    const id = setInterval(tick, 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (slots.length === 0) return null;
+
+  const todayET = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+
+  function slotStatus(slot: CronSlot): "done" | "next" | "pending" | "missed" {
+    const [sH, sM] = slot.timeET.split(":").map(Number);
+    const slotMins = sH * 60 + sM;
+    const [nH, nM] = now.split(":").map(Number);
+    const nowMins = nH * 60 + nM;
+
+    // Check if any tweet posted today matches this slot window (90-min)
+    const todayTweets = tweets.filter(
+      (t) =>
+        t.displayStatus === "posted" &&
+        (t.scheduled_date === todayET || (t.posted_at && t.posted_at.startsWith(todayET)))
+    );
+    const hasPosted = todayTweets.some((t) => {
+      const tTime = t.time || t.posted_at?.slice(11, 16) || "";
+      if (!tTime) return false;
+      const [tH, tM] = tTime.split(":").map(Number);
+      const tMins = tH * 60 + tM;
+      return Math.abs(tMins - slotMins) <= 90;
+    });
+
+    if (hasPosted) return "done";
+    if (nowMins < slotMins) {
+      // Is this the next pending slot?
+      const pendingSlots = slots
+        .filter((s) => {
+          const [h, m] = s.timeET.split(":").map(Number);
+          return h * 60 + m > nowMins;
+        })
+        .sort((a, b) => a.timeET.localeCompare(b.timeET));
+      if (pendingSlots.length > 0 && pendingSlots[0].timeET === slot.timeET) return "next";
+      return "pending";
+    }
+    return "missed";
+  }
+
+  return (
+    <div className="stat-card rounded-xl p-4 mb-6">
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+          Today&apos;s Cron Schedule
+        </div>
+        <div className="text-xs font-mono" style={{ color: "var(--text-muted)" }}>
+          {now} ET
+        </div>
+      </div>
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {slots.map((slot, i) => {
+          const status = slotStatus(slot);
+          const colors = {
+            done: { bg: "rgba(45, 212, 191, 0.15)", border: "rgba(45, 212, 191, 0.4)", text: "var(--accent-teal)" },
+            next: { bg: "rgba(251, 191, 36, 0.15)", border: "rgba(251, 191, 36, 0.4)", text: "var(--accent-amber)" },
+            pending: { bg: "rgba(42, 53, 72, 0.3)", border: "var(--border)", text: "var(--text-muted)" },
+            missed: { bg: "rgba(248, 113, 113, 0.1)", border: "rgba(248, 113, 113, 0.3)", text: "var(--accent-red)" },
+          };
+          const c = colors[status];
+          return (
+            <div
+              key={i}
+              className={`flex-shrink-0 rounded-lg px-3 py-2 text-center min-w-[90px] ${status === "next" ? "cron-slot-next" : ""}`}
+              style={{ background: c.bg, border: `1px solid ${c.border}` }}
+            >
+              <div className="text-sm font-medium font-mono" style={{ color: c.text }}>
+                {slot.timeET}
+              </div>
+              <div className="text-[10px] mt-0.5" style={{ color: "var(--text-muted)" }}>
+                {slot.label}
+              </div>
+              <div className="text-xs mt-1">
+                {status === "done" && <span style={{ color: "var(--accent-teal)" }}>Posted</span>}
+                {status === "next" && (
+                  <span className="font-mono" style={{ color: "var(--accent-amber)" }}>
+                    {formatCountdown(computeCountdownMs(todayET, slot.timeET))}
+                  </span>
+                )}
+                {status === "pending" && <span style={{ color: "var(--text-muted)" }}>--</span>}
+                {status === "missed" && <span style={{ color: "var(--accent-red)" }}>Missed</span>}
+              </div>
+              {slot.critical && (
+                <div className="text-[9px] mt-0.5 font-medium" style={{ color: "var(--accent-amber)" }}>
+                  CRITICAL
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Daily Success Meter ───
 
 function DailySuccessMeter({ dailyStats }: { dailyStats: Record<string, DailyStats> }) {
-  // Get today in ET
   const todayET = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
   const today = dailyStats[todayET];
 
@@ -223,7 +374,7 @@ function DailySuccessMeter({ dailyStats }: { dailyStats: Record<string, DailySta
         <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
           {today.posted} of {total} posted
           {today.failed > 0 && (
-            <span style={{ color: "var(--accent-red)" }}> \u00B7 {today.failed} failed</span>
+            <span style={{ color: "var(--accent-red)" }}> &middot; {today.failed} failed</span>
           )}
         </div>
       </div>
@@ -233,10 +384,10 @@ function DailySuccessMeter({ dailyStats }: { dailyStats: Record<string, DailySta
         <div className="progress-bar-fill" style={{ width: `${expiredPct}%`, background: "var(--text-muted)", marginLeft: "1px" }} />
       </div>
       <div className="flex gap-4 mt-2 text-xs" style={{ color: "var(--text-muted)" }}>
-        <span><span style={{ color: "var(--accent-teal)" }}>\u25CF</span> Posted: {today.posted}</span>
-        {today.failed > 0 && <span><span style={{ color: "var(--accent-red)" }}>\u25CF</span> Failed: {today.failed}</span>}
-        <span><span style={{ color: "var(--accent-amber)" }}>\u25CF</span> Pending: {today.pending}</span>
-        {today.expired > 0 && <span><span style={{ color: "var(--text-muted)" }}>\u25CF</span> Expired: {today.expired}</span>}
+        <span><span style={{ color: "var(--accent-teal)" }}>{"\u25CF"}</span> Posted: {today.posted}</span>
+        {today.failed > 0 && <span><span style={{ color: "var(--accent-red)" }}>{"\u25CF"}</span> Failed: {today.failed}</span>}
+        <span><span style={{ color: "var(--accent-amber)" }}>{"\u25CF"}</span> Pending: {today.pending}</span>
+        {today.expired > 0 && <span><span style={{ color: "var(--text-muted)" }}>{"\u25CF"}</span> Expired: {today.expired}</span>}
       </div>
     </div>
   );
@@ -270,75 +421,44 @@ function RollingStatsRow({ stats }: { stats: RollingStats }) {
   );
 }
 
-// ─── Countdown helper ───
+// ─── Per-tweet countdowns ───
 
-function useCountdown(nextTweet: EnrichedTweet | null): string {
-  const [countdown, setCountdown] = useState("");
+function useCountdowns(tweets: EnrichedTweet[]): Map<string, string> {
+  const [countdowns, setCountdowns] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
-    if (!nextTweet) return;
-
-    function compute() {
-      if (!nextTweet) return "";
-      const dateStr = nextTweet.scheduled_date || "";
-      const timeStr = nextTweet.time || "12:00";
-      if (!dateStr) return "";
-
-      // Get current time in ET via Intl formatter (no Date parsing to avoid UTC issues)
-      const etFormatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        year: "numeric", month: "2-digit", day: "2-digit",
-        hour: "2-digit", minute: "2-digit", second: "2-digit",
-        hour12: false,
-      });
-      const nowParts = Object.fromEntries(
-        etFormatter.formatToParts(new Date()).map(p => [p.type, p.value])
-      );
-      const nowMins = parseInt(nowParts.hour) * 60 + parseInt(nowParts.minute);
-      const nowDateStr = `${nowParts.year}-${nowParts.month}-${nowParts.day}`;
-
-      const [tH, tM] = timeStr.split(":").map(Number);
-      const targetMins = tH * 60 + tM;
-
-      // Calculate day offset using pure date string math (no Date constructor)
-      // Parse YYYY-MM-DD strings to days-since-epoch to get day difference
-      const [nY, nM, nD] = nowDateStr.split("-").map(Number);
-      const [tY, tMo, tD] = dateStr.split("-").map(Number);
-      // Use Date.UTC to get reliable day diff (UTC midnight — no TZ offset ambiguity)
-      const nowDayMs = Date.UTC(nY, nM - 1, nD);
-      const targetDayMs = Date.UTC(tY, tMo - 1, tD);
-      const dayDiffMs = targetDayMs - nowDayMs;
-      const diffMs = dayDiffMs + (targetMins - nowMins) * 60000;
-      if (Math.abs(diffMs) < 60000) return "Due now";
-      if (diffMs < 0) {
-        const mins = Math.floor(Math.abs(diffMs) / 60000);
-        if (mins < 60) return `Overdue ${mins}m`;
-        const hrs = Math.floor(mins / 60);
-        return `Overdue ${hrs}h ${mins % 60}m`;
-      }
-      const mins = Math.floor(diffMs / 60000);
-      if (mins < 60) return `in ${mins}m`;
-      const hrs = Math.floor(mins / 60);
-      if (hrs < 24) return `in ${hrs}h ${mins % 60}m`;
-      const days = Math.floor(hrs / 24);
-      return `in ${days}d ${hrs % 24}h`;
+    const upcomingTweets = tweets.filter((t) => t.displayStatus === "upcoming");
+    if (upcomingTweets.length === 0) {
+      setCountdowns(new Map());
+      return;
     }
 
-    setCountdown(compute());
-    const id = setInterval(() => setCountdown(compute()), 30000);
-    return () => clearInterval(id);
-  }, [nextTweet]);
+    function compute(): Map<string, string> {
+      const map = new Map<string, string>();
+      for (const t of upcomingTweets) {
+        const dateStr = t.scheduled_date;
+        const timeStr = t.scheduledTimeET || t.time || BATCH_SLOT_TIMES[t.slot] || "12:00";
+        if (!dateStr) continue;
+        const ms = computeCountdownMs(dateStr, timeStr);
+        const key = t.id || t.sortKey;
+        map.set(key, formatCountdown(ms));
+      }
+      return map;
+    }
 
-  return countdown;
+    setCountdowns(compute());
+    const id = setInterval(() => setCountdowns(compute()), 30000);
+    return () => clearInterval(id);
+  }, [tweets]);
+
+  return countdowns;
 }
 
 // ─── Main Component ───
 
 export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
   const [activeAccount, setActiveAccount] = useState<"account1" | "account2" | "account3">("account1");
-  const [activeTab, setActiveTab] = useState<"upcoming" | "history">("upcoming");
-  const accountNextTweet = data.nextTweetByAccount[activeAccount];
-  const countdown = useCountdown(accountNextTweet);
+  const [activeTab, setActiveTab] = useState<"upcoming" | "history" | "issues">("upcoming");
 
   const accountLabels: Record<string, string> = {
     account1: "Account 1 (@AlexSterlingGBR)",
@@ -349,20 +469,42 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
   const tweets = data.accounts[activeAccount];
   const rollingStats = data.rollingStats[activeAccount];
 
-  // Split into upcoming and history
-  const { upcoming, history } = useMemo(() => {
+  // All tweets from all accounts for schedule matching
+  const allTweets = useMemo(
+    () => [...data.accounts.account1, ...data.accounts.account2, ...data.accounts.account3],
+    [data.accounts]
+  );
+
+  // Split into upcoming, history (posted only), issues
+  const { upcoming, history, issues } = useMemo(() => {
     const upcoming = tweets
       .filter((t) => t.displayStatus === "upcoming")
-      .sort((a, b) => a.sortKey.localeCompare(b.sortKey)); // chronological: next first
+      .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
     const history = tweets
-      .filter((t) => t.displayStatus !== "upcoming")
-      .sort((a, b) => b.sortKey.localeCompare(a.sortKey)); // reverse-chron: most recent first
+      .filter((t) => t.displayStatus === "posted")
+      .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
 
-    return { upcoming, history };
+    const issues = tweets
+      .filter((t) => ["failed", "abandoned", "expired", "skipped"].includes(t.displayStatus))
+      .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+
+    return { upcoming, history, issues };
   }, [tweets]);
 
-  const displayedTweets = activeTab === "upcoming" ? upcoming : history;
+  const displayedTweets = activeTab === "upcoming" ? upcoming : activeTab === "history" ? history : issues;
+
+  // Per-tweet countdowns for upcoming tweets
+  const countdowns = useCountdowns(tweets);
+
+  // Find next tweet for this account
+  const accountNextTweet = useMemo(() => {
+    const up = tweets
+      .filter((t) => t.displayStatus === "upcoming")
+      .sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+    return up.length > 0 ? up[0] : null;
+  }, [tweets]);
+  const nextTweetId = accountNextTweet?.id;
 
   // Group by date
   const groupedByDate = useMemo(() => {
@@ -384,8 +526,6 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
     activeTab === "upcoming" ? (a, b) => a.localeCompare(b) : (a, b) => b.localeCompare(a)
   );
 
-  const nextTweetId = accountNextTweet?.id;
-
   // Today in ET for "(Today)" badge
   const todayET = useMemo(() => {
     try {
@@ -404,11 +544,23 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
             Tweet Command Centre
           </h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            {data.stats.posted} posted \u00B7 {data.stats.upcoming} upcoming \u00B7 {data.stats.expired} expired \u00B7 {data.stats.total} total
+            {data.stats.posted} posted
+            {data.stats.upcoming > 0 && <> &middot; {data.stats.upcoming} upcoming</>}
+            {data.stats.failed > 0 && (
+              <span style={{ color: "var(--accent-red)" }}> &middot; {data.stats.failed} failed</span>
+            )}
+            {data.stats.abandoned > 0 && (
+              <span style={{ color: "var(--accent-violet)" }}> &middot; {data.stats.abandoned} not posted</span>
+            )}
+            {data.stats.expired > 0 && <> &middot; {data.stats.expired} expired</>}
+            {" "}&middot; {data.stats.total} total
           </p>
         </div>
         <LiveClock />
       </div>
+
+      {/* Today's Cron Schedule */}
+      <TodaySchedule tweets={allTweets} />
 
       {/* Daily Success Meter */}
       <DailySuccessMeter dailyStats={data.dailyStats} />
@@ -446,7 +598,7 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
         </div>
       )}
 
-      {/* Upcoming / History Tabs */}
+      {/* Upcoming / History / Issues Tabs */}
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveTab("upcoming")}
@@ -470,6 +622,17 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
         >
           History ({history.length})
         </button>
+        <button
+          onClick={() => setActiveTab("issues")}
+          className="text-xs px-4 py-2 rounded-lg font-medium transition-all"
+          style={{
+            background: activeTab === "issues" ? "rgba(248, 113, 113, 0.15)" : "rgba(42, 53, 72, 0.5)",
+            color: activeTab === "issues" ? "var(--accent-red)" : "var(--text-muted)",
+            border: activeTab === "issues" ? "1px solid rgba(248, 113, 113, 0.3)" : "1px solid transparent",
+          }}
+        >
+          Issues ({issues.length + data.failed.length})
+        </button>
         <span className="text-xs self-center ml-2" style={{ color: "var(--text-muted)" }}>
           {displayedTweets.length} tweets
         </span>
@@ -478,12 +641,16 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
       {/* Next Tweet Highlight (only on upcoming tab, per-account) */}
       {activeTab === "upcoming" && accountNextTweet && (
         <div className="mb-6">
-          <TweetCard tweet={accountNextTweet} isNext={true} countdown={countdown} />
+          <TweetCard
+            tweet={accountNextTweet}
+            isNext={true}
+            countdown={countdowns.get(accountNextTweet.id || accountNextTweet.sortKey)}
+          />
         </div>
       )}
 
       {/* Timeline by Date */}
-      {sortedDates.length === 0 && (
+      {sortedDates.length === 0 && activeTab !== "issues" && (
         <div className="stat-card rounded-xl p-8 text-center">
           <p style={{ color: "var(--text-muted)" }}>
             {activeTab === "upcoming" ? "No upcoming tweets scheduled." : "No tweet history yet."}
@@ -523,26 +690,34 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
                 key={`${dateKey}-${i}-${t.id || t.sortKey}`}
                 tweet={t}
                 isNext={activeTab === "upcoming" && t.id === nextTweetId && t.id !== undefined && t.id !== ""}
-                countdown={activeTab === "upcoming" && t.id === nextTweetId && t.id !== undefined && t.id !== "" ? countdown : undefined}
+                countdown={countdowns.get(t.id || t.sortKey)}
               />
             ))}
           </div>
         );
       })}
 
-      {/* Validation Failures (always visible at bottom) */}
-      {data.failed.length > 0 && (
-        <div className="mt-10">
-          <h2
-            className="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center gap-2"
+      {/* Validation Failures (shown in issues tab) */}
+      {activeTab === "issues" && data.failed.length > 0 && (
+        <div className="mt-4">
+          <h3
+            className="text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2"
             style={{ color: "var(--accent-red)" }}
           >
             <span className="w-8 h-px" style={{ background: "rgba(248, 113, 113, 0.3)" }} />
             Validation Failures ({data.failed.length})
-          </h2>
+            <span className="flex-1 h-px" style={{ background: "rgba(248, 113, 113, 0.3)" }} />
+          </h3>
           {data.failed.slice(0, 10).map((f, i) => (
             <FailedTweetCard key={`fail-${i}`} tweet={f} />
           ))}
+        </div>
+      )}
+
+      {/* Empty state for issues tab */}
+      {activeTab === "issues" && issues.length === 0 && data.failed.length === 0 && (
+        <div className="stat-card rounded-xl p-8 text-center">
+          <p style={{ color: "var(--text-muted)" }}>No issues found. All tweets are healthy.</p>
         </div>
       )}
     </div>

@@ -248,12 +248,14 @@ export interface Tweet {
   account?: string;
   primary_ticker?: string;
   cost_usd?: number;
+  error?: string;
 }
 
 export interface EnrichedTweet extends Tweet {
   source: "weekly" | "daily" | "live";
-  displayStatus: "upcoming" | "posted" | "expired" | "skipped" | "failed";
+  displayStatus: "upcoming" | "posted" | "expired" | "skipped" | "failed" | "abandoned";
   sortKey: string;
+  scheduledTimeET: string;
 }
 
 // Slot time mapping for generating sortKey
@@ -272,6 +274,10 @@ function enrichTweet(tweet: Tweet, source: "weekly" | "daily" | "live"): Enriche
     displayStatus = "skipped";
   } else if (tweet.status === "failed") {
     displayStatus = "failed";
+  } else if (source === "live" && tweet.status === "pending") {
+    // Live tweets are reactive: pending items from past cron runs
+    // will never be posted — the next cron generates fresh content.
+    displayStatus = "abandoned";
   } else if (tweet.scheduled_date && tweet.scheduled_date >= today) {
     displayStatus = "upcoming";
   } else {
@@ -282,8 +288,9 @@ function enrichTweet(tweet: Tweet, source: "weekly" | "daily" | "live"): Enriche
   const time = tweet.time || SLOT_TIMES[tweet.slot] || "12:00";
   const date = tweet.scheduled_date || tweet.timestamp?.slice(0, 10) || "9999-99-99";
   const sortKey = `${date}T${time}`;
+  const scheduledTimeET = time;
 
-  return { ...tweet, source, displayStatus, sortKey };
+  return { ...tweet, source, displayStatus, sortKey, scheduledTimeET };
 }
 
 function mapLiveAccountToNumber(account: string): "account1" | "account2" | "account3" {
@@ -315,6 +322,7 @@ function normalizeLiveTweet(raw: any): Tweet {
     account: raw.account,
     primary_ticker: raw.primary_ticker,
     cost_usd: raw.cost_usd,
+    error: raw.error,
   };
 }
 
@@ -353,6 +361,8 @@ export interface EnrichedTweetData {
     posted: number;
     upcoming: number;
     expired: number;
+    failed: number;
+    abandoned: number;
     total: number;
   };
   dailyStats: Record<string, DailyStats>;
@@ -360,15 +370,8 @@ export interface EnrichedTweetData {
 }
 
 export function getEnrichedTweets(): EnrichedTweetData {
-  // Load all queues
-  const a1w = ((readJSON("content_queue.json") as Tweet[]) || []).map((t) => enrichTweet(t, "weekly"));
-  const a1d = ((readJSON("daily_content_queue.json") as Tweet[]) || []).map((t) => enrichTweet(t, "daily"));
-  const a2w = ((readJSON("content_queue_account2.json") as Tweet[]) || []).map((t) => enrichTweet(t, "weekly"));
-  const a2d = ((readJSON("daily_content_queue_account2.json") as Tweet[]) || []).map((t) => enrichTweet(t, "daily"));
-  const a3w = ((readJSON("content_queue_account3.json") as Tweet[]) || []).map((t) => enrichTweet(t, "weekly"));
-  const a3d = ((readJSON("daily_content_queue_account3.json") as Tweet[]) || []).map((t) => enrichTweet(t, "daily"));
-
-  // Live tweets - split by account
+  // Live tweets only — batch queues (content_queue.json, daily_content_queue.json)
+  // are from the disabled daily_post.yml workflow and will never post.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const liveRaw = (readJSON("live_content_queue.json") as any[]) || [];
   const liveByAccount: { account1: EnrichedTweet[]; account2: EnrichedTweet[]; account3: EnrichedTweet[] } = {
@@ -382,9 +385,9 @@ export function getEnrichedTweets(): EnrichedTweetData {
   }
 
   const accounts = {
-    account1: [...a1w, ...a1d, ...liveByAccount.account1].sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
-    account2: [...a2w, ...a2d, ...liveByAccount.account2].sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
-    account3: [...a3w, ...a3d, ...liveByAccount.account3].sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+    account1: liveByAccount.account1.sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+    account2: liveByAccount.account2.sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+    account3: liveByAccount.account3.sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
   };
 
   // Find the next tweet to post — globally and per-account
@@ -412,6 +415,8 @@ export function getEnrichedTweets(): EnrichedTweetData {
     posted: all.filter((t) => t.displayStatus === "posted").length,
     upcoming: all.filter((t) => t.displayStatus === "upcoming").length,
     expired: all.filter((t) => t.displayStatus === "expired").length,
+    failed: all.filter((t) => t.displayStatus === "failed").length,
+    abandoned: all.filter((t) => t.displayStatus === "abandoned").length,
     total: all.length,
   };
 
@@ -464,26 +469,24 @@ export function getEnrichedTweets(): EnrichedTweetData {
   return { accounts, nextTweet, nextTweetByAccount, failed, stats, dailyStats, rollingStats };
 }
 
-// Keep legacy functions for backward compatibility
+// Legacy functions — only load live queue now (batch queues disabled)
 export function getTweets(): { weekly: Tweet[]; daily: Tweet[]; live: Tweet[] } {
-  const weekly = (readJSON("content_queue.json") as Tweet[]) || [];
-  const daily = (readJSON("daily_content_queue.json") as Tweet[]) || [];
   const live = (readJSON("live_content_queue.json") as Tweet[]) || [];
-  return { weekly, daily, live };
+  return { weekly: [], daily: [], live };
 }
 
 export function getAllAccountTweets(): { account1: Tweet[]; account2: Tweet[]; account3: Tweet[] } {
-  const a1w = (readJSON("content_queue.json") as Tweet[]) || [];
-  const a1d = (readJSON("daily_content_queue.json") as Tweet[]) || [];
-  const a2w = (readJSON("content_queue_account2.json") as Tweet[]) || [];
-  const a2d = (readJSON("daily_content_queue_account2.json") as Tweet[]) || [];
-  const a3w = (readJSON("content_queue_account3.json") as Tweet[]) || [];
-  const a3d = (readJSON("daily_content_queue_account3.json") as Tweet[]) || [];
-  return {
-    account1: [...a1w, ...a1d],
-    account2: [...a2w, ...a2d],
-    account3: [...a3w, ...a3d],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const liveRaw = (readJSON("live_content_queue.json") as any[]) || [];
+  const result: { account1: Tweet[]; account2: Tweet[]; account3: Tweet[] } = {
+    account1: [], account2: [], account3: [],
   };
+  for (const raw of liveRaw) {
+    const normalized = normalizeLiveTweet(raw);
+    const acct = mapLiveAccountToNumber(raw.account || "variant_1");
+    result[acct].push(normalized);
+  }
+  return result;
 }
 
 // ─── Signals ───

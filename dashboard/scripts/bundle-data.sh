@@ -32,8 +32,6 @@ mkdir -p "$DATA_DIR/weeks"
 
 # ─── Core data files ───
 for f in portfolio.csv portfolio_google_sheets.csv equity_curve.csv signals.json daily_signals.json \
-         content_queue.json content_queue_account2.json content_queue_account3.json \
-         daily_content_queue.json daily_content_queue_account2.json daily_content_queue_account3.json \
          live_content_queue.json failed_tweets.json tweet_tracking.json \
          workflow_status.json; do
   if [ -f "$TRADES_DIR/$f" ]; then

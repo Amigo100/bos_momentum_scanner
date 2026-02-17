@@ -1246,6 +1246,26 @@ MAX_SAME_TICKER_PER_DAY = 3              # Max tweets about same ticker per day
 CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_REACTION
 MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
+# Diversity controls (ported from batch system — prevents repetitive tweets)
+CATEGORY_WEEKLY_TARGETS: Dict[str, int] = {
+    "RECEIPT": 12,           # ~25% of ~50 tweets/week
+    "SIGNAL_ALERT": 7,       # ~15%
+    "MARKET_REACTION": 7,    # ~15%
+    "THEME_MOMENTUM": 5,     # ~10%
+    "EDUCATIONAL": 3,        # max 3/week (PRD D28)
+    "ENGAGEMENT": 5,         # ~10%
+    "NEWSLETTER_CTA": 2,     # 2/week
+    "DIP_OPPORTUNITY": 4,    # ~8%
+    "SELL_SIGNAL": 3,        # exit signals — always high priority
+    "TECHNICAL_ANALYSIS": 5, # position commentary with catalysts
+    "WATCHLIST": 3,          # CONSIDER/CAUTION signals
+}
+MAX_SAME_CATEGORY_PER_DAY = 3            # No more than 3 of same category per day
+QUEUE_DEDUP_HOURS = 48                   # Similarity window for dedup
+QUEUE_DEDUP_THRESHOLD = 0.80             # Max similarity ratio to recent tweets
+OPENING_DEDUP_THRESHOLD = 0.70           # Max similarity for opening sentences
+MAX_OPENING_HISTORY = 10                 # Track last N openings for dedup
+
 # Chart-img.com integration (REST API — CI-compatible, no browser needed)
 CHARTIMG_API_URL = "https://api.chart-img.com/v1/tradingview/advanced-chart"
 CHART_IMG_WIDTH = 1200                    # pixels (Chart-IMG Pro tier, 16:9 for X/Twitter)
@@ -1265,7 +1285,7 @@ TRACKED_THEMES: List[str] = [
 # Weekend behavior
 WEEKEND_MAX_TWEETS = 4
 WEEKEND_CATEGORIES: List[str] = [
-    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT",
+    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT", "WATCHLIST",
 ]
 
 # Exchange mapping for chart-img.com (ticker → exchange prefix)

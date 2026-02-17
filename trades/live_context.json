@@ -1,93 +1,109 @@
 {
-  "timestamp": "2026-02-17T17:00:00Z",
+  "timestamp": "2026-02-17T18:00:00Z",
   "market_snapshot": {
-    "spy_move": "-0.26%",
-    "qqq_move": "-0.61%",
-    "vix": "22.5",
-    "market_mood": "volatile",
-    "headline": "US markets open lower amid tariff tensions and sector rotation from tech to value stocks."
+    "spy_move": "+0.1%",
+    "qqq_move": "-0.2%",
+    "vix": "20.6",
+    "market_mood": "mixed",
+    "headline": "US markets close mixed amid AI disruption fears and tariff uncertainties, with S&P up marginally while Nasdaq slips."
   },
   "portfolio_movers": [
     {
       "ticker": "$APLD",
-      "move": "-2.46%",
-      "price": "$35.28",
-      "context": "pullback in data center stocks amid broader AI sector weakness"
+      "move": "-6.7%",
+      "price": "$32.91",
+      "context": "pullback in data center and AI mining pivot amid broader tech weakness"
     },
     {
       "ticker": "$NVDA",
       "move": "-1.2%",
       "price": "$185.00",
-      "context": "semiconductor sell-off as chip stocks face tariff risks"
+      "context": "AI chip demand strong but sector rotation pressures semiconductors"
     },
     {
       "ticker": "$WCC",
       "move": "+1.5%",
-      "price": "$285.50",
-      "context": "copper-related gains from AI data center demand surge"
+      "price": "$285.80",
+      "context": "copper price surge on AI data center demand"
     },
     {
       "ticker": "$MOD",
-      "move": "+0.8%",
-      "price": "$186.10",
-      "context": "defense spending boost amid geopolitical tensions"
+      "move": "+2.0%",
+      "price": "$188.35",
+      "context": "defense spending boost from geopolitical tensions"
+    },
+    {
+      "ticker": "$BITF",
+      "move": "-0.5%",
+      "price": "$2.13",
+      "context": "crypto miners shifting to AI infrastructure amid Bitcoin dip"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "global shortage intensifies with AI data centers projected to consume 500k tons annually by 2030"
+      "detail": "copper futures rally toward $12,000 on AI data center and defense demand, supply shortages looming"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "pivot by crypto miners to AI infrastructure drives demand, but tariff risks loom"
+      "detail": "AI data centers driving massive copper and power needs, bitcoin miners pivoting to AI contracts worth $65B"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "Bitcoin miners securing $65B in AI/HPC contracts, boosting reshoring plays"
-    },
-    {
-      "theme": "semiconductors",
-      "status": "quiet",
-      "detail": "industry sales near $800B in 2025, but 2026 growth tempered by trade barriers"
+      "detail": "hyperscale AI facilities consuming up to 50,000 tons of copper each, political backlash on energy use"
     },
     {
       "theme": "defense",
       "status": "active",
-      "detail": "surging spending adds to copper demand, supporting related infrastructure stocks"
+      "detail": "geopolitical tensions and spending surge adding to copper demand, US proposes critical minerals trade bloc"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "quiet",
+      "detail": "US-China tech war intensifies, rare earth pricing mechanisms discussed with allies"
+    },
+    {
+      "theme": "crypto mining",
+      "status": "active",
+      "detail": "miners like APLD and BITF repurposing for AI, revenue shift from crypto to HPC expected"
     }
   ],
   "fintwit_trending": [
-    "copper shortage",
+    "$APLD",
+    "$NVDA",
     "AI data centers",
-    "tariff impacts",
-    "sector rotation",
-    "Fed hold"
+    "copper shortage",
+    "$OCUL"
   ],
   "news_events": [
     {
-      "event": "US-Canada tariff tensions escalate",
-      "impact": "potential 35% tariffs on imports risk higher inflation and supply chain disruptions",
+      "event": "Upcoming PCE and Q4 GDP release Feb 20",
+      "impact": "potential inflation spike from tariffs, growth cooling to 2.8-3.0%",
       "relevance": "high"
     },
     {
-      "event": "Fed holds rates at 3.50-3.75%",
-      "impact": "hawkish stance delays cuts amid sticky inflation from tariffs and stimulus",
+      "event": "US proposes critical minerals trade bloc",
+      "impact": "counters China dominance in rare earths, supports reshoring",
       "relevance": "high"
     },
     {
       "event": "Supreme Court delays tariff ruling",
-      "impact": "uncertainty prolongs trade war effects on semiconductors and reshoring",
+      "impact": "prolongs uncertainty on IEEPA tariffs, sticky inflation risks",
+      "relevance": "medium"
+    },
+    {
+      "event": "Geopolitical tensions in Venezuela, Iran",
+      "impact": "elevates defense spending, energy market volatility",
       "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "copper shortage news highlights infrastructure and data center plays like $WCC amid AI boom",
+      "reason": "copper breaking out on AI and defense themes, ties to $WCC and infrastructure plays",
       "tickers": [
         "$WCC"
       ],
@@ -95,7 +111,7 @@
     },
     {
       "type": "DIP_OPPORTUNITY",
-      "reason": "$APLD dip in volatile data center sector offers entry for AI pivot narrative",
+      "reason": "$APLD dip in volatile data center space, AI pivot intact despite pullback",
       "tickers": [
         "$APLD"
       ],
@@ -103,14 +119,24 @@
     },
     {
       "type": "MARKET_REACTION",
-      "reason": "Fed hold and tariff news pressure semis, potential bounce in $NVDA on oversold conditions",
+      "reason": "mixed close with tariff data deluge Friday, highlight portfolio resilience in themes",
       "tickers": [
-        "$NVDA"
+        "$NVDA",
+        "$MOD"
       ],
-      "urgency": "medium"
+      "urgency": "high"
+    },
+    {
+      "type": "ENGAGEMENT",
+      "reason": "fintwit buzzing on AI miners and copper squeeze, poll on next big theme",
+      "tickers": [
+        "$BITF",
+        "$HIVE"
+      ],
+      "urgency": "low"
     }
   ],
-  "gathered_at": "2026-02-17T17:31:45.660998+00:00",
+  "gathered_at": "2026-02-17T18:13:05.654731+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

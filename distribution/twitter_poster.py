@@ -325,6 +325,27 @@ def get_clients(account_key: str = 'main') -> tuple:
     return client_v2, api_v1
 
 
+def verify_credentials(account_key: str = 'main') -> tuple:
+    """Verify Twitter credentials by calling GET /2/users/me (read-only, free).
+
+    Returns:
+        Tuple of (success: bool, message: str).
+    """
+    client_v2, _ = get_clients(account_key)
+    if client_v2 is None:
+        return False, "credentials missing"
+    try:
+        me = client_v2.get_me()
+        if me and me.data:
+            return True, f"authenticated as @{me.data.username} (id: {me.data.id})"
+        return False, "get_me() returned empty response"
+    except tweepy.TweepyException as e:
+        err = str(e)
+        if "401" in err or "Unauthorized" in err:
+            return False, f"401 Unauthorized — token invalid or expired: {err}"
+        return False, f"auth failed: {err}"
+
+
 def get_queue_path(account_key: str = 'main') -> Path:
     """Get the content queue file path for a given account.
 
@@ -989,11 +1010,38 @@ def main() -> int:
                         help="Account to post to (main, account2, account3, or all)")
     parser.add_argument("--live-queue", action="store_true",
                         help="Post from live content queue only (live tweet system)")
+    parser.add_argument("--verify", action="store_true",
+                        help="Verify Twitter credentials for all accounts (no posting)")
     args = parser.parse_args()
 
     print("\n" + "═" * 60)
     print("  TWITTER POSTER - Automated X Posting")
     print("═" * 60)
+
+    # ── Verify mode: check credentials and exit ──
+    if args.verify:
+        print("\n  🔑 Credential Verification\n")
+        try:
+            from config import TWITTER_ACCOUNTS
+            accounts = list(TWITTER_ACCOUNTS.keys())
+        except ImportError:
+            accounts = ['main']
+
+        all_ok = True
+        for account_key in accounts:
+            try:
+                from config import TWITTER_ACCOUNTS as accts
+                prefix = accts[account_key]['env_prefix']
+            except (ImportError, KeyError):
+                prefix = 'X1'
+            ok, msg = verify_credentials(account_key)
+            emoji = "✅" if ok else "❌"
+            print(f"  {emoji} {account_key} ({prefix}_*): {msg}")
+            if not ok:
+                all_ok = False
+
+        print()
+        return 0 if all_ok else 1
 
     target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
 

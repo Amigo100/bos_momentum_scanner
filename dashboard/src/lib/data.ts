@@ -344,6 +344,14 @@ export interface RollingStats {
   successRate: number;
 }
 
+export interface AccountHealth {
+  lastPosted: string | null;       // ISO timestamp of most recent successful post
+  lastFailed: string | null;       // ISO timestamp of most recent failure
+  lastError: string | null;        // Error message from most recent failure
+  consecutiveFailures: number;     // Count of failures before first posted (recent→old)
+  status: "active" | "failing" | "idle";
+}
+
 export interface EnrichedTweetData {
   accounts: {
     account1: EnrichedTweet[];
@@ -367,6 +375,7 @@ export interface EnrichedTweetData {
   };
   dailyStats: Record<string, DailyStats>;
   rollingStats: Record<string, RollingStats>;
+  accountHealth: Record<string, AccountHealth>;
 }
 
 export function getEnrichedTweets(): EnrichedTweetData {
@@ -466,7 +475,58 @@ export function getEnrichedTweets(): EnrichedTweetData {
     account3: computeRolling(accounts.account3, "Account 3"),
   };
 
-  return { accounts, nextTweet, nextTweetByAccount, failed, stats, dailyStats, rollingStats };
+  // ─── Account Health ───
+  function computeHealth(tweets: EnrichedTweet[]): AccountHealth {
+    // Sort by generated_at / timestamp descending (most recent first)
+    const sorted = [...tweets].sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || ""));
+
+    let lastPosted: string | null = null;
+    let lastFailed: string | null = null;
+    let lastError: string | null = null;
+    let consecutiveFailures = 0;
+    let foundPosted = false;
+
+    for (const t of sorted) {
+      if (t.displayStatus === "posted") {
+        if (!lastPosted) lastPosted = t.posted_at || t.timestamp || null;
+        foundPosted = true;
+        break; // stop counting consecutive failures
+      } else if (t.displayStatus === "failed") {
+        if (!lastFailed) {
+          lastFailed = t.timestamp || null;
+          lastError = t.error || null;
+        }
+        consecutiveFailures++;
+      }
+      // Skip upcoming/abandoned/expired — they don't indicate health
+    }
+
+    // Determine status
+    let status: AccountHealth["status"] = "idle";
+    if (lastPosted) {
+      const postedAge = Date.now() - new Date(lastPosted).getTime();
+      const hours48 = 48 * 60 * 60 * 1000;
+      if (postedAge < hours48 && consecutiveFailures < 2) {
+        status = "active";
+      } else if (consecutiveFailures >= 2) {
+        status = "failing";
+      } else if (foundPosted) {
+        status = "idle";
+      }
+    } else if (consecutiveFailures >= 2) {
+      status = "failing";
+    }
+
+    return { lastPosted, lastFailed, lastError, consecutiveFailures, status };
+  }
+
+  const accountHealth: Record<string, AccountHealth> = {
+    account1: computeHealth(accounts.account1),
+    account2: computeHealth(accounts.account2),
+    account3: computeHealth(accounts.account3),
+  };
+
+  return { accounts, nextTweet, nextTweetByAccount, failed, stats, dailyStats, rollingStats, accountHealth };
 }
 
 // Legacy functions — only load live queue now (batch queues disabled)
@@ -915,6 +975,45 @@ export function getWorkflowStatus(): SystemHealth {
   const lastUpdated = sorted.length > 0 ? sorted[0].completed_at : null;
 
   return { overall, message, workflows, lastUpdated };
+}
+
+// ─── Live Workflow Summary ───
+
+export interface LiveWorkflowSummary {
+  lastRunAt: string | null;
+  lastRunStatus: string;
+  runsToday: number;
+  accountResults: Record<string, number> | null; // per-account exit codes from latest run
+}
+
+export function getLiveWorkflowSummary(): LiveWorkflowSummary {
+  const runs = (readJSON("workflow_status.json") as Array<{
+    workflow: string;
+    status: string;
+    completed_at?: string;
+    started_at?: string;
+    account_results?: Record<string, number>;
+  }>) || [];
+
+  const liveRuns = runs
+    .filter((r) => r.workflow === "live_tweet")
+    .sort((a, b) => (b.completed_at || b.started_at || "").localeCompare(a.completed_at || a.started_at || ""));
+
+  const latest = liveRuns[0] || null;
+
+  // Count today's runs in ET
+  const todayET = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+  const runsToday = liveRuns.filter((r) => {
+    const ts = r.completed_at || r.started_at || "";
+    return ts.startsWith(todayET);
+  }).length;
+
+  return {
+    lastRunAt: latest?.completed_at || latest?.started_at || null,
+    lastRunStatus: latest?.status || "unknown",
+    runsToday,
+    accountResults: latest?.account_results || null,
+  };
 }
 
 // ─── System Log Generator ───

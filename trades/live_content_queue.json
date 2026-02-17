@@ -86,7 +86,7 @@
     "chart_recommended": true,
     "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260214_2356.png",
     "scheduled_time": "2026-02-14T06:52:49.562625-05:00",
-    "status": "failed",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
@@ -94,7 +94,7 @@
     },
     "generated_at": "2026-02-14T11:52:49.562623+00:00",
     "cost_usd": 0.01285,
-    "error": "402 Payment Required\nYour enrolled account [2016998530842533888] does not have any credits to fulfill this request."
+    "skip_reason": "Manually cleared for fresh run"
   },
   {
     "id": "live_20260214_085834_v1",
@@ -144,14 +144,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-14T08:58:34.058911-05:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-02-14T13:58:34.058909+00:00",
-    "cost_usd": 0.012793
+    "cost_usd": 0.012793,
+    "skip_reason": "Manually cleared for fresh run"
   },
   {
     "id": "live_20260215_093437_v1",
@@ -181,7 +182,7 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-15T09:34:37.208343-05:00",
-    "status": "failed",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
@@ -189,7 +190,7 @@
     },
     "generated_at": "2026-02-15T14:34:37.208342+00:00",
     "cost_usd": 0.013274,
-    "error": "401 Unauthorized\nUnauthorized"
+    "skip_reason": "Manually cleared for fresh run"
   },
   {
     "id": "live_20260215_093437_v3",
@@ -200,14 +201,15 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-15T09:34:37.208343-05:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-02-15T14:34:37.208342+00:00",
-    "cost_usd": 0.013274
+    "cost_usd": 0.013274,
+    "skip_reason": "Manually cleared for fresh run"
   },
   {
     "id": "live_20260215_103200_v1",
@@ -237,7 +239,7 @@
     "chart_recommended": false,
     "chart_path": null,
     "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
-    "status": "failed",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
@@ -245,7 +247,7 @@
     },
     "generated_at": "2026-02-15T15:32:00.691849+00:00",
     "cost_usd": 0.013165,
-    "error": "401 Unauthorized\nUnauthorized"
+    "skip_reason": "Manually cleared for fresh run"
   },
   {
     "id": "live_20260215_103200_v3",
@@ -256,261 +258,14 @@
     "chart_recommended": true,
     "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_MOD_20260215_1532.png",
     "scheduled_time": "2026-02-15T10:32:00.691850-05:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-02-15T15:32:00.691849+00:00",
-    "cost_usd": 0.013165
-  },
-  {
-    "id": "live_20260216_084356_v1",
-    "text": "$VNET up 32.7% from entry at $10.40. Data center cooling infrastructure isn't speculation anymore \u2014 it's institutional accumulation. Watching for continuation above $13.80.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$VNET",
-    "account": "variant_1",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-16T13:43:56.076772+00:00",
-    "cost_usd": 0.013055,
-    "posted_at": "2026-02-16T13:43:56.775702",
-    "tweet_id": "2023392907147813090"
-  },
-  {
-    "id": "live_20260216_084356_v2",
-    "text": "$STRL holding strong at +20.8% from our $362.53 entry. Here's why this matters: AI cooling demand isn't cyclical, it's structural. Data centers need what they build.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$STRL",
-    "account": "variant_2",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-16T13:43:56.076772+00:00",
-    "cost_usd": 0.013055,
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "live_20260216_084356_v3",
-    "text": "$MOD from $184.66 to $219.27.\n\n+18.7% and barely breaking a sweat.\n\nEyes on this one.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$MOD",
-    "account": "variant_3",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T08:43:56.076774-05:00",
-    "status": "pending",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-16T13:43:56.076772+00:00",
-    "cost_usd": 0.013055
-  },
-  {
-    "id": "live_20260216_103228_v1",
-    "text": "$VNET entry at $10.40, currently riding +32.7% to $13.80.\n\nData center cooling theme has institutional momentum. Position sizing matters when conviction meets execution.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$VNET",
-    "account": "variant_1",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T15:32:28.061354+00:00",
-    "cost_usd": 0.013025,
-    "posted_at": "2026-02-16T15:32:28.736322",
-    "tweet_id": "2023420220736520306"
-  },
-  {
-    "id": "live_20260216_103228_v2",
-    "text": "$STRL up 20.8% from our $362.53 entry.\n\nWhy AI cooling matters: every data center needs thermal management before adding chips. Infrastructure always comes first.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$STRL",
-    "account": "variant_2",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T15:32:28.061354+00:00",
-    "cost_usd": 0.013025,
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "live_20260216_103228_v3",
-    "text": "$MOD from $184.66 to $219.27.\n\n+18.7% and holding.\n\nThis is what patience looks like.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$MOD",
-    "account": "variant_3",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-02-16T10:32:28.061355-05:00",
-    "status": "pending",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T15:32:28.061354+00:00",
-    "cost_usd": 0.013025
-  },
-  {
-    "id": "live_20260216_120902_v1",
-    "text": "$VNET from $10.40 entry to $13.80 high.\n\n+32.7% on the liquid cooling thesis.\n\nData center infrastructure names continue to confirm the structural shift. This one's still in motion.",
-    "category": "RECEIPT",
-    "primary_ticker": "$VNET",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260216_1709.png",
-    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T17:09:02.375023+00:00",
-    "cost_usd": 0.013184,
-    "posted_at": "2026-02-16T17:09:13.727858",
-    "tweet_id": "2023444567832314102"
-  },
-  {
-    "id": "live_20260216_120902_v2",
-    "text": "$STRL holding through $437 changed everything.\n\nEntry at $362.53, now +20.8%.\n\nHere's why this matters: AI cooling isn't a trade \u2014 it's infrastructure spending with multi-year tailwinds. Position accordingly.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$STRL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260216_1709.png",
-    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T17:09:02.375023+00:00",
-    "cost_usd": 0.013184,
-    "error": "401 Unauthorized\nUnauthorized"
-  },
-  {
-    "id": "live_20260216_120902_v3",
-    "text": "$MOD entry $184.66 \u2192 high $219.27\n\n+18.7%\n\nCleared resistance, held structure, delivered. Next.",
-    "category": "RECEIPT",
-    "primary_ticker": "$MOD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_MOD_20260216_1709.png",
-    "scheduled_time": "2026-02-16T12:09:02.375024-05:00",
-    "status": "pending",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-02-16T17:09:02.375023+00:00",
-    "cost_usd": 0.013184
-  },
-  {
-    "id": "live_20260216_182914_v1",
-    "text": "$STRL entry $362.53 \u2192 high $437.77 = +20.8%\n\nAI cooling infrastructure worked because the thesis was obvious: data centers need thermal management before they need more chips.\n\nThemes win when the fundamental tailwind is undeniable.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "STRL",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260216_2329.png",
-    "scheduled_time": "2026-02-16T18:29:14.910196-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-16T23:29:14.910195+00:00",
-    "cost_usd": 0.013168,
-    "posted_at": "2026-02-16T23:29:19.575502",
-    "tweet_id": "2023540222474989828"
-  },
-  {
-    "id": "live_20260217_084329_v1",
-    "text": "$APLD holding $35.87 while broader crypto miners pull back.\n\n$65B in HPC contracts signed. Power capacity = new alpha.\n\nWhen quality names dip on sector rotation, that's when the setup earns its keep.",
-    "category": "DIP_OPPORTUNITY",
-    "primary_ticker": "APLD",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_APLD_20260217_1343.png",
-    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-17T13:43:29.146366+00:00",
-    "cost_usd": 0.013056,
-    "posted_at": "2026-02-17T13:43:40.256498",
-    "tweet_id": "2023755225064939714"
-  },
-  {
-    "id": "live_20260217_084329_v2",
-    "text": "$VNET from $10.40 \u2192 $13.80 (+32.7%) because liquid cooling solves AI's heat problem.\n\nData centers need 10x cooling capacity by 2028. That's not hype \u2014 that's infrastructure math.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VNET",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_VNET_20260217_1343.png",
-    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-17T13:43:29.146366+00:00",
-    "cost_usd": 0.013056,
-    "error": "403 Forbidden\nYour client app is not configured with the appropriate oauth1 app permissions for this endpoint."
-  },
-  {
-    "id": "live_20260217_084329_v3",
-    "text": "$STRL entry $362.53, high $437.77.\n\n+20.8% and still climbing.\n\nAI cooling isn't optional when chips run this hot. Eyes on this one.",
-    "category": "DIP_OPPORTUNITY",
-    "primary_ticker": "$STRL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/trades/charts/live_STRL_20260217_1343.png",
-    "scheduled_time": "2026-02-17T08:43:29.146367-05:00",
-    "status": "pending",
-    "context_snapshot": {
-      "spy_at_generation": "+0.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-02-17T13:43:29.146366+00:00",
-    "cost_usd": 0.013056
+    "cost_usd": 0.013165,
+    "skip_reason": "Manually cleared for fresh run"
   }
 ]

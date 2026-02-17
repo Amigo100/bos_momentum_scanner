@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import type { EnrichedTweet, EnrichedTweetData, FailedTweet, DailyStats, RollingStats } from "@/lib/data";
+import type { EnrichedTweet, EnrichedTweetData, FailedTweet, DailyStats, RollingStats, AccountHealth, LiveWorkflowSummary } from "@/lib/data";
 import { getTodayCronSlots, computeCountdownMs, formatCountdown, BATCH_SLOT_TIMES, type CronSlot } from "@/lib/cronSchedule";
 
 // ─── Sub-components ───
@@ -454,9 +454,89 @@ function useCountdowns(tweets: EnrichedTweet[]): Map<string, string> {
   return countdowns;
 }
 
+// ─── Account Health Badge ───
+
+function AccountHealthBadge({ health }: { health: AccountHealth }) {
+  const dotColors = {
+    active: "var(--accent-green)",
+    failing: "var(--accent-red)",
+    idle: "var(--text-muted)",
+  };
+
+  function timeAgo(iso: string | null): string {
+    if (!iso) return "";
+    const ms = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(ms / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
+  }
+
+  let label: string;
+  if (health.status === "active") {
+    label = `Last posted ${timeAgo(health.lastPosted)}`;
+  } else if (health.status === "failing") {
+    const errHint = health.lastError?.includes("401") ? "auth" : health.lastError?.slice(0, 20) || "error";
+    label = `${health.consecutiveFailures} failure${health.consecutiveFailures > 1 ? "s" : ""} (${errHint})`;
+  } else {
+    label = "No posts";
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 mt-1">
+      <span
+        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+        style={{
+          background: dotColors[health.status],
+          boxShadow: health.status === "failing" ? `0 0 4px ${dotColors.failing}` : undefined,
+        }}
+      />
+      <span className="text-[10px]" style={{ color: dotColors[health.status] }}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// ─── Workflow Run Indicator ───
+
+function WorkflowIndicator({ summary }: { summary: LiveWorkflowSummary }) {
+  const isSuccess = summary.lastRunStatus === "success";
+  const dotColor = summary.lastRunAt
+    ? isSuccess ? "var(--accent-green)" : "var(--accent-red)"
+    : "var(--text-muted)";
+
+  function formatTime(iso: string | null): string {
+    if (!iso) return "never";
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(new Date(iso));
+    } catch {
+      return iso.slice(11, 16);
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}>
+      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: dotColor }} />
+      <span>
+        Last cron: <span className="font-mono">{formatTime(summary.lastRunAt)} ET</span>
+        {" "}&middot; {summary.lastRunStatus}
+        {" "}&middot; {summary.runsToday} run{summary.runsToday !== 1 ? "s" : ""} today
+      </span>
+    </div>
+  );
+}
+
 // ─── Main Component ───
 
-export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
+export function TweetDashboard({ data, workflowSummary }: { data: EnrichedTweetData; workflowSummary?: LiveWorkflowSummary }) {
   const [activeAccount, setActiveAccount] = useState<"account1" | "account2" | "account3">("account1");
   const [activeTab, setActiveTab] = useState<"upcoming" | "history" | "issues">("upcoming");
 
@@ -556,7 +636,10 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
             {" "}&middot; {data.stats.total} total
           </p>
         </div>
-        <LiveClock />
+        <div className="flex flex-col items-end gap-1">
+          <LiveClock />
+          {workflowSummary && <WorkflowIndicator summary={workflowSummary} />}
+        </div>
       </div>
 
       {/* Today's Cron Schedule */}
@@ -577,15 +660,18 @@ export function TweetDashboard({ data }: { data: EnrichedTweetData }) {
               onClick={() => setActiveAccount(acct)}
               className={`px-4 py-3 text-sm font-medium transition-all ${isActive ? "tab-active" : "tab-inactive"}`}
             >
-              {accountLabels[acct]}
-              <span className="ml-2 text-xs opacity-70">
-                ({count})
-                {rolling && rolling.total > 0 && (
-                  <span className="ml-1" style={{ color: rolling.successRate >= 90 ? "var(--accent-green)" : rolling.successRate >= 70 ? "var(--accent-amber)" : "var(--accent-red)" }}>
-                    {rolling.successRate}%
-                  </span>
-                )}
-              </span>
+              <div className="flex items-center gap-1">
+                {accountLabels[acct]}
+                <span className="text-xs opacity-70">
+                  ({count})
+                  {rolling && rolling.total > 0 && (
+                    <span className="ml-1" style={{ color: rolling.successRate >= 90 ? "var(--accent-green)" : rolling.successRate >= 70 ? "var(--accent-amber)" : "var(--accent-red)" }}>
+                      {rolling.successRate}%
+                    </span>
+                  )}
+                </span>
+              </div>
+              {data.accountHealth[acct] && <AccountHealthBadge health={data.accountHealth[acct]} />}
             </button>
           );
         })}

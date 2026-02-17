@@ -153,27 +153,93 @@ jobs:
         run: python -m content.chart_generator
         continue-on-error: true
 
+      - name: Validate Twitter credentials
+        id: cred_check
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          python3 -c "
+          import os
+          for acct, prefix in [('account1','X1'),('account2','X2'),('account3','X3')]:
+              has = all(os.environ.get(f'{prefix}_{s}') for s in ['API_KEY','API_SECRET','ACCESS_TOKEN','ACCESS_SECRET'])
+              emoji = '✅' if has else '❌'
+              print(f'  {emoji} {acct} ({prefix}_*): {\"configured\" if has else \"MISSING\"}')
+              with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+                  f.write(f'{acct}={\"configured\" if has else \"missing\"}\n')
+          "
+
       - name: Post tweet — Account 1 (Alex)
+        id: post_account1
         if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
         run: |
           echo "=== Posting to Account 1 (@AlexSterlingGBR) ==="
-          python -m distribution.twitter_poster --account main --live-queue || true
+          RESULT=0
+          python -m distribution.twitter_poster --account main --live-queue || RESULT=$?
+          echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
+          [ "$RESULT" -ne 0 ] && echo "::warning::Account 1 posting returned exit code $RESULT"
+          exit 0
 
       - name: Post tweet — Account 2 (Rozalia)
+        id: post_account2
         if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true' && env.X2_API_KEY != ''
         run: |
           echo "=== Staggering 10 minutes before Account 2 ==="
           sleep 600
           echo "=== Posting to Account 2 (@Rdobrogowska) ==="
-          python -m distribution.twitter_poster --account account2 --live-queue || true
+          RESULT=0
+          python -m distribution.twitter_poster --account account2 --live-queue || RESULT=$?
+          echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
+          [ "$RESULT" -ne 0 ] && echo "::warning::Account 2 posting returned exit code $RESULT"
+          exit 0
 
       - name: Post tweet — Account 3 (James)
+        id: post_account3
         if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true' && env.X3_API_KEY != ''
         run: |
           echo "=== Staggering 10 minutes before Account 3 ==="
           sleep 600
           echo "=== Posting to Account 3 ==="
-          python -m distribution.twitter_poster --account account3 --live-queue || true
+          RESULT=0
+          python -m distribution.twitter_poster --account account3 --live-queue || RESULT=$?
+          echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
+          [ "$RESULT" -ne 0 ] && echo "::warning::Account 3 posting returned exit code $RESULT"
+          exit 0
+
+      - name: Clean stale live queue items
+        if: steps.tz_check.outputs.skip != 'true'
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone
+          f = 'trades/live_content_queue.json'
+          try:
+              queue = json.load(open(f))
+          except Exception:
+              exit(0)
+          now = datetime.now(timezone.utc)
+          changed = 0
+          for item in queue:
+              if item.get('status') != 'pending':
+                  continue
+              sched = item.get('scheduled_time', '')
+              if not sched:
+                  continue
+              try:
+                  dt = datetime.fromisoformat(sched)
+                  if dt.tzinfo is None:
+                      dt = dt.replace(tzinfo=timezone.utc)
+                  hours_old = (now - dt).total_seconds() / 3600
+                  if hours_old > 4:
+                      item['status'] = 'abandoned'
+                      item['skip_reason'] = f'Stale: {hours_old:.0f}h old'
+                      changed += 1
+              except (ValueError, TypeError):
+                  pass
+          if changed:
+              json.dump(queue, open(f, 'w'), indent=2)
+              print(f'Cleaned {changed} stale items')
+          else:
+              print('No stale items found')
+          "
 
       - name: Record workflow status
         if: always()
@@ -181,6 +247,11 @@ jobs:
           python3 -c "
           import json
           from datetime import datetime, timezone
+
+          def parse_exit(val):
+              try: return int(val)
+              except: return -1
+
           record = {
               'workflow': 'live_tweet',
               'run_id': int('${{ github.run_id }}'),
@@ -189,7 +260,12 @@ jobs:
               'completed_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
               'duration_seconds': 0,
               'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
-              'trigger': '${{ github.event_name }}'
+              'trigger': '${{ github.event_name }}',
+              'account_results': {
+                  'account1': parse_exit('${{ steps.post_account1.outputs.exit_code }}'),
+                  'account2': parse_exit('${{ steps.post_account2.outputs.exit_code }}'),
+                  'account3': parse_exit('${{ steps.post_account3.outputs.exit_code }}'),
+              }
           }
           f = 'trades/workflow_status.json'
           try:
@@ -200,6 +276,10 @@ jobs:
           entries = entries[-100:]
           json.dump(entries, open(f, 'w'), indent=2)
           print(f'Recorded live_tweet: ${{ job.status }}')
+          accts = record['account_results']
+          for k, v in accts.items():
+              label = {0: 'posted', -1: 'skipped'}.get(v, f'FAILED({v})')
+              print(f'  {k}: {label}')
           "
 
       - name: Commit queue updates
@@ -237,10 +317,33 @@ jobs:
           echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Dry Run:** ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Force Type:** ${{ github.event.inputs.force_type || 'auto' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Account 1:** main (@AlexSterlingGBR)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Account 2:** $([ -n \"$X2_API_KEY\" ] && echo 'active' || echo 'not configured')" >> $GITHUB_STEP_SUMMARY
-          echo "- **Account 3:** $([ -n \"$X3_API_KEY\" ] && echo 'active' || echo 'not configured')" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Per-account results table
+          echo "### Account Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Account | Handle | Credentials | Post Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|-------------|-------------|" >> $GITHUB_STEP_SUMMARY
+
+          # Account 1
+          A1_CREDS=$([ -n "$X1_API_KEY" ] && echo "configured" || echo "MISSING")
+          A1_EXIT="${{ steps.post_account1.outputs.exit_code }}"
+          A1_STATUS=$([ "$A1_EXIT" = "0" ] && echo "Posted" || ([ -z "$A1_EXIT" ] && echo "Skipped" || echo "FAILED ($A1_EXIT)"))
+          echo "| 1 | @AlexSterlingGBR | $A1_CREDS | $A1_STATUS |" >> $GITHUB_STEP_SUMMARY
+
+          # Account 2
+          A2_CREDS=$([ -n "$X2_API_KEY" ] && echo "configured" || echo "MISSING")
+          A2_EXIT="${{ steps.post_account2.outputs.exit_code }}"
+          A2_STATUS=$([ "$A2_EXIT" = "0" ] && echo "Posted" || ([ -z "$A2_EXIT" ] && echo "Skipped" || echo "FAILED ($A2_EXIT)"))
+          echo "| 2 | @Rdobrogowska | $A2_CREDS | $A2_STATUS |" >> $GITHUB_STEP_SUMMARY
+
+          # Account 3
+          A3_CREDS=$([ -n "$X3_API_KEY" ] && echo "configured" || echo "MISSING")
+          A3_EXIT="${{ steps.post_account3.outputs.exit_code }}"
+          A3_STATUS=$([ "$A3_EXIT" = "0" ] && echo "Posted" || ([ -z "$A3_EXIT" ] && echo "Skipped" || echo "FAILED ($A3_EXIT)"))
+          echo "| 3 | @JamesSterling | $A3_CREDS | $A3_STATUS |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
           # Show cost summary if available
           if [ -f "trades/live_cost_log.json" ]; then

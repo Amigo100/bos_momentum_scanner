@@ -1,140 +1,116 @@
 {
-  "timestamp": "2026-02-18T18:00:00Z",
+  "timestamp": "2026-02-18T23:59:59Z",
   "market_snapshot": {
-    "spy_move": "-0.27%",
-    "qqq_move": "-0.51%",
-    "vix": "18.70",
-    "market_mood": "volatile",
-    "headline": "US markets dip amid tariff escalation fears and geopolitical tensions, with VIX spiking on AI infrastructure volatility."
+    "spy_move": "+0.1%",
+    "qqq_move": "+0.1%",
+    "vix": "19.62",
+    "market_mood": "mixed",
+    "headline": "US indices close slightly higher amid choppy trading and anticipation of Fed minutes, with VIX easing to 19.62."
   },
   "portfolio_movers": [
     {
       "ticker": "$APLD",
-      "move": "-4.88%",
+      "move": "-10.2%",
       "price": "$33.56",
-      "context": "pullback in data center stocks despite AI demand surge"
+      "context": "pullback from recent highs amid broader data center volatility, but AI pivot potential intact"
     },
     {
       "ticker": "$NVDA",
-      "move": "+1.2%",
-      "price": "$185.00",
-      "context": "positioning ahead of earnings amid AI chip frenzy"
+      "move": "+1.5%",
+      "price": "$195.20",
+      "context": "positioning ahead of Feb 25 earnings with Citi bullish upgrade"
     },
     {
       "ticker": "$WCC",
       "move": "+0.8%",
-      "price": "$284.00",
-      "context": "copper prices rising on AI data center demand"
+      "price": "$283.90",
+      "context": "copper demand surge from AI data centers and defense spending"
     },
     {
       "ticker": "$MOD",
-      "move": "+1.5%",
-      "price": "$187.40",
-      "context": "defense spending boost from geopolitical risks"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "+2.3%",
-      "price": "$2.38",
-      "context": "crypto miners pivoting to AI infrastructure"
+      "move": "+1.2%",
+      "price": "$186.80",
+      "context": "defense modernization driving copper-intensive military tech demand"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "copper futures up 1.5% on AI data center and electrification demand shortages"
+      "detail": "S&P Global forecasts 10M ton shortfall by 2040 from AI data centers and defense, pushing prices to records"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "NVIDIA Blackwell driving data center expansions, hyperscalers signing $65B in AI contracts"
+      "detail": "AI infrastructure pivot by crypto miners to data centers accelerating, with power bottlenecks emerging"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "Bitcoin miners pivoting to AI, power demand projected to hit 123GW by 2035"
+      "detail": "Bitcoin miners signing $65B AI/HPC contracts, repurposing facilities for hyperscalers"
     },
     {
       "theme": "defense",
       "status": "active",
-      "detail": "US tariffs and geopolitics boosting defense spending, rare earth supply chain tensions"
+      "detail": "Geopolitical tensions and electrification boosting copper demand triple by 2040"
     },
     {
       "theme": "semiconductors",
-      "status": "active",
-      "detail": "memory chip shortages persisting into 2026, HBM demand tight for AI chips"
-    },
-    {
-      "theme": "crypto mining",
-      "status": "active",
-      "detail": "miners like TeraWulf expanding AI infrastructure footprint through 2030"
+      "status": "quiet",
+      "detail": "Global sales projected to hit record highs in 2026 amid AI chip demand"
     }
   ],
   "fintwit_trending": [
     "AI data centers",
     "copper shortage",
-    "tariffs impact",
-    "NVIDIA earnings",
-    "Bitcoin miners AI pivot"
+    "NVDA earnings",
+    "tariffs impact"
   ],
   "news_events": [
     {
-      "event": "US tariffs escalate to 13% average",
-      "impact": "potential 17% effective rate by year-end, inflating costs for semiconductors and rare earths",
+      "event": "Fed minutes release",
+      "impact": "hawkish signals on rates amid tariff uncertainties",
       "relevance": "high"
     },
     {
-      "event": "Geopolitical tensions rise",
-      "impact": "US-Iran and Arctic risks pressuring supply chains, boosting defense and reshoring themes",
+      "event": "Tariff escalation to 13% average",
+      "impact": "Goldman warns of 17% effective rate hitting reshoring and imports",
       "relevance": "high"
     },
     {
-      "event": "Fed holds rates at 3.5-3.75%",
-      "impact": "data-dependent stance amid tariff-driven inflation risks",
-      "relevance": "medium"
-    },
-    {
-      "event": "Analog Devices Q1 earnings",
-      "impact": "strong revenue outlook despite macro challenges, signaling semiconductor resilience",
+      "event": "Geopolitical tensions US-Iran",
+      "impact": "potential war risks boosting defense spending",
       "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "copper shortage intensifying with AI data centers consuming up to 50K tons per facility, lifting $WCC and infrastructure plays",
+      "reason": "Copper shortage breaking news ties directly to portfolio themes like infrastructure and AI, avoid recent tweets",
       "tickers": [
         "$WCC"
       ],
       "urgency": "high"
     },
     {
+      "type": "MARKET_REACTION",
+      "reason": "Fed minutes hawkish tone pressuring semis but NVDA resilient pre-earnings",
+      "tickers": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "urgency": "medium"
+    },
+    {
       "type": "DIP_OPPORTUNITY",
-      "reason": "$APLD dipping on broader market volatility but AI pivot in mining to data centers supports rebound",
+      "reason": "APLD dip in volatile data center space offers entry amid AI pivot momentum",
       "tickers": [
         "$APLD"
       ],
       "urgency": "medium"
-    },
-    {
-      "type": "MARKET_REACTION",
-      "reason": "tariffs hitting 90-year high, accelerating reshoring and defense momentum for $MOD",
-      "tickers": [
-        "$MOD"
-      ],
-      "urgency": "high"
-    },
-    {
-      "type": "SIGNAL_ALERT",
-      "reason": "crypto miners like $HIVE gaining on AI infrastructure contracts amid power demand surge",
-      "tickers": [
-        "$HIVE"
-      ],
-      "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-18T18:08:54.821806+00:00",
-  "is_market_hours": true,
+  "gathered_at": "2026-02-18T23:30:55.854515+00:00",
+  "is_market_hours": false,
   "is_extended_hours": false
 }

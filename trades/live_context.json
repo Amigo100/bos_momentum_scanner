@@ -1,99 +1,109 @@
 {
-  "timestamp": "2026-02-18T17:00:00Z",
+  "timestamp": "2026-02-18T18:00:00Z",
   "market_snapshot": {
-    "spy_move": "+0.8%",
-    "qqq_move": "+1.3%",
-    "vix": "18.7",
-    "market_mood": "bullish",
-    "headline": "US stocks rally on economic resilience and AI infrastructure momentum amid tariff pressures."
+    "spy_move": "-0.27%",
+    "qqq_move": "-0.51%",
+    "vix": "18.70",
+    "market_mood": "volatile",
+    "headline": "US markets dip amid tariff escalation fears and geopolitical tensions, with VIX spiking on AI infrastructure volatility."
   },
   "portfolio_movers": [
     {
       "ticker": "$APLD",
-      "move": "-2.6%",
-      "price": "$32.70",
-      "context": "pullback in data center AI demand surge"
+      "move": "-4.88%",
+      "price": "$33.56",
+      "context": "pullback in data center stocks despite AI demand surge"
     },
     {
       "ticker": "$NVDA",
       "move": "+1.2%",
       "price": "$185.00",
-      "context": "positioning ahead of earnings on AI chip demand"
+      "context": "positioning ahead of earnings amid AI chip frenzy"
     },
     {
       "ticker": "$WCC",
-      "move": "+1.5%",
-      "price": "$285.80",
-      "context": "copper price rally from AI infrastructure needs"
+      "move": "+0.8%",
+      "price": "$284.00",
+      "context": "copper prices rising on AI data center demand"
     },
     {
       "ticker": "$MOD",
-      "move": "+0.8%",
-      "price": "$186.10",
-      "context": "defense spending boost in geopolitical tensions"
+      "move": "+1.5%",
+      "price": "$187.40",
+      "context": "defense spending boost from geopolitical risks"
     },
     {
-      "ticker": "$VNET",
-      "move": "-1.2%",
-      "price": "$10.28",
-      "context": "bearish technical cross in data center sector"
+      "ticker": "$HIVE",
+      "move": "+2.3%",
+      "price": "$2.38",
+      "context": "crypto miners pivoting to AI infrastructure"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "copper futures hit record highs on AI data center demand surge and US tariffs"
+      "detail": "copper futures up 1.5% on AI data center and electrification demand shortages"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "AI infrastructure driving copper usage up 30% in 2026 projections"
+      "detail": "NVIDIA Blackwell driving data center expansions, hyperscalers signing $65B in AI contracts"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "copper demand for data centers forecast to double by 2040 amid AI boom"
+      "detail": "Bitcoin miners pivoting to AI, power demand projected to hit 123GW by 2035"
     },
     {
       "theme": "defense",
       "status": "active",
-      "detail": "geopolitical tensions and electrification boosting copper and tech spending"
+      "detail": "US tariffs and geopolitics boosting defense spending, rare earth supply chain tensions"
     },
     {
       "theme": "semiconductors",
-      "status": "quiet",
-      "detail": "NVDA and AMD steady ahead of earnings with AI chip focus"
+      "status": "active",
+      "detail": "memory chip shortages persisting into 2026, HBM demand tight for AI chips"
+    },
+    {
+      "theme": "crypto mining",
+      "status": "active",
+      "detail": "miners like TeraWulf expanding AI infrastructure footprint through 2030"
     }
   ],
   "fintwit_trending": [
-    "AI infrastructure",
+    "AI data centers",
     "copper shortage",
-    "NVDA earnings",
-    "tariff impacts",
-    "data center power"
+    "tariffs impact",
+    "NVIDIA earnings",
+    "Bitcoin miners AI pivot"
   ],
   "news_events": [
     {
       "event": "US tariffs escalate to 13% average",
-      "impact": "inflationary pressure from trade war, potential Fed pause",
+      "impact": "potential 17% effective rate by year-end, inflating costs for semiconductors and rare earths",
       "relevance": "high"
     },
     {
-      "event": "Fed minutes release upcoming",
-      "impact": "hawkish signals on sticky inflation from tariffs",
+      "event": "Geopolitical tensions rise",
+      "impact": "US-Iran and Arctic risks pressuring supply chains, boosting defense and reshoring themes",
       "relevance": "high"
     },
     {
-      "event": "Geopolitical tensions US-Iran nuclear talks",
-      "impact": "risk-off sentiment in defense and energy sectors",
+      "event": "Fed holds rates at 3.5-3.75%",
+      "impact": "data-dependent stance amid tariff-driven inflation risks",
+      "relevance": "medium"
+    },
+    {
+      "event": "Analog Devices Q1 earnings",
+      "impact": "strong revenue outlook despite macro challenges, signaling semiconductor resilience",
       "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "copper breaking records on AI demand, ties to portfolio infrastructure plays like WCC",
+      "reason": "copper shortage intensifying with AI data centers consuming up to 50K tons per facility, lifting $WCC and infrastructure plays",
       "tickers": [
         "$WCC"
       ],
@@ -101,22 +111,30 @@
     },
     {
       "type": "DIP_OPPORTUNITY",
-      "reason": "VNET showing bearish cross but undervalued in data center theme amid AI surge",
+      "reason": "$APLD dipping on broader market volatility but AI pivot in mining to data centers supports rebound",
       "tickers": [
-        "$VNET"
+        "$APLD"
       ],
       "urgency": "medium"
     },
     {
       "type": "MARKET_REACTION",
-      "reason": "bullish market on resilience, highlight defense boost for MOD amid geopolitics",
+      "reason": "tariffs hitting 90-year high, accelerating reshoring and defense momentum for $MOD",
       "tickers": [
         "$MOD"
+      ],
+      "urgency": "high"
+    },
+    {
+      "type": "SIGNAL_ALERT",
+      "reason": "crypto miners like $HIVE gaining on AI infrastructure contracts amid power demand surge",
+      "tickers": [
+        "$HIVE"
       ],
       "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-18T17:34:45.157187+00:00",
+  "gathered_at": "2026-02-18T18:08:54.821806+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

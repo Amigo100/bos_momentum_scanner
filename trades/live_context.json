@@ -1,92 +1,99 @@
 {
-  "timestamp": "2026-02-18T23:59:59Z",
+  "timestamp": "2026-02-19T13:45:00Z",
   "market_snapshot": {
-    "spy_move": "+0.1%",
-    "qqq_move": "+0.1%",
-    "vix": "19.62",
-    "market_mood": "mixed",
-    "headline": "US indices close slightly higher amid choppy trading and anticipation of Fed minutes, with VIX easing to 19.62."
+    "spy_move": "+0.3%",
+    "qqq_move": "+0.4%",
+    "vix": "20.5",
+    "market_mood": "bullish",
+    "headline": "US stocks climb on solid economic data and easing AI concerns ahead of Fed minutes."
   },
   "portfolio_movers": [
     {
-      "ticker": "$APLD",
-      "move": "-10.2%",
-      "price": "$33.56",
-      "context": "pullback from recent highs amid broader data center volatility, but AI pivot potential intact"
+      "ticker": "$NVDA",
+      "move": "+1.8%",
+      "price": "$188.20",
+      "context": "up on multi-year AI infrastructure partnership with Meta boosting data center demand"
     },
     {
-      "ticker": "$NVDA",
-      "move": "+1.5%",
-      "price": "$195.20",
-      "context": "positioning ahead of Feb 25 earnings with Citi bullish upgrade"
+      "ticker": "$AMD",
+      "move": "+0.9%",
+      "price": "$210.30",
+      "context": "gains amid semiconductor strength from AI chip demand surge"
+    },
+    {
+      "ticker": "$APLD",
+      "move": "-8.5%",
+      "price": "$34.25",
+      "context": "declines following recent highs in data center AI pivot"
     },
     {
       "ticker": "$WCC",
-      "move": "+0.8%",
-      "price": "$283.90",
-      "context": "copper demand surge from AI data centers and defense spending"
+      "move": "+1.2%",
+      "price": "$285.00",
+      "context": "rises on copper demand from AI and infrastructure electrification"
     },
     {
       "ticker": "$MOD",
-      "move": "+1.2%",
-      "price": "$186.80",
-      "context": "defense modernization driving copper-intensive military tech demand"
+      "move": "+0.7%",
+      "price": "$186.00",
+      "context": "modest gain tied to defense spending increases in modernization efforts"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "S&P Global forecasts 10M ton shortfall by 2040 from AI data centers and defense, pushing prices to records"
+      "detail": "demand projected to rise 50% by 2040 from AI data centers and electrification, intensifying supply shortages"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "AI infrastructure pivot by crypto miners to data centers accelerating, with power bottlenecks emerging"
+      "detail": "easing jitters lift chipmakers; partnerships like NVDA-Meta drive infrastructure momentum"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "Bitcoin miners signing $65B AI/HPC contracts, repurposing facilities for hyperscalers"
-    },
-    {
-      "theme": "defense",
-      "status": "active",
-      "detail": "Geopolitical tensions and electrification boosting copper demand triple by 2040"
+      "detail": "crypto miners pivoting to AI hosting, with power demand surging 175% by 2030"
     },
     {
       "theme": "semiconductors",
+      "status": "active",
+      "detail": "AI memory shortages and chip demand boost sector; Analog Devices outlook signals surge"
+    },
+    {
+      "theme": "defense",
       "status": "quiet",
-      "detail": "Global sales projected to hit record highs in 2026 amid AI chip demand"
+      "detail": "modernization efforts increasing copper and equipment needs amid geopolitical tensions"
     }
   ],
   "fintwit_trending": [
-    "AI data centers",
+    "AI infrastructure",
+    "semiconductor chips",
     "copper shortage",
-    "NVDA earnings",
-    "tariffs impact"
+    "data center pivot",
+    "Fed minutes"
   ],
   "news_events": [
     {
-      "event": "Fed minutes release",
-      "impact": "hawkish signals on rates amid tariff uncertainties",
+      "event": "Fed January minutes release",
+      "impact": "hawkish on tariffs and inflation persistence, no rate cuts expected soon",
       "relevance": "high"
     },
     {
-      "event": "Tariff escalation to 13% average",
-      "impact": "Goldman warns of 17% effective rate hitting reshoring and imports",
-      "relevance": "high"
-    },
-    {
-      "event": "Geopolitical tensions US-Iran",
-      "impact": "potential war risks boosting defense spending",
+      "event": "Geopolitical tensions in Venezuela and Greenland",
+      "impact": "tariff threats and supply chain disruptions weighing on markets",
       "relevance": "medium"
+    },
+    {
+      "event": "Supreme Court tariff ruling delay",
+      "impact": "prolongs uncertainty on trade policies affecting reshoring and imports",
+      "relevance": "high"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "Copper shortage breaking news ties directly to portfolio themes like infrastructure and AI, avoid recent tweets",
+      "reason": "copper demand surge from AI data centers creates actionable momentum for related infrastructure plays like $WCC",
       "tickers": [
         "$WCC"
       ],
@@ -94,7 +101,7 @@
     },
     {
       "type": "MARKET_REACTION",
-      "reason": "Fed minutes hawkish tone pressuring semis but NVDA resilient pre-earnings",
+      "reason": "NVDA-Meta AI partnership news driving semis higher, opportunity to highlight portfolio winners amid Fed caution",
       "tickers": [
         "$NVDA",
         "$AMD"
@@ -103,14 +110,14 @@
     },
     {
       "type": "DIP_OPPORTUNITY",
-      "reason": "APLD dip in volatile data center space offers entry amid AI pivot momentum",
+      "reason": "APLD pullback after AI pivot hype offers entry for data center theme exposure",
       "tickers": [
         "$APLD"
       ],
       "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-18T23:30:55.854515+00:00",
+  "gathered_at": "2026-02-19T13:47:00.300053+00:00",
   "is_market_hours": false,
-  "is_extended_hours": false
+  "is_extended_hours": true
 }

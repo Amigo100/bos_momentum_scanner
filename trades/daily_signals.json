@@ -3,67 +3,55 @@
   "timeframe": "daily",
   "buy_signals": [
     {
-      "ticker": "CAPR",
-      "symbol": "CAPR",
-      "price": 29.15,
-      "beta": 2.1,
-      "banker_score": 100,
+      "ticker": "MGTX",
+      "symbol": "MGTX",
+      "price": 7.54,
+      "beta": 1.82,
+      "banker_score": 39.5,
       "sector": "Healthcare",
       "industry": "Biotechnology",
       "theme": "Healthcare"
     },
     {
-      "ticker": "BAND",
-      "symbol": "BAND",
-      "price": 14.54,
-      "beta": 1.53,
-      "banker_score": 77.4,
+      "ticker": "LUNR",
+      "symbol": "LUNR",
+      "price": 18.19,
+      "beta": 3.82,
+      "banker_score": 37.6,
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "theme": "Industrials"
+    },
+    {
+      "ticker": "DCTH",
+      "symbol": "DCTH",
+      "price": 9.53,
+      "beta": 1.63,
+      "banker_score": 34.8,
+      "sector": "Healthcare",
+      "industry": "Medical Devices",
+      "theme": "Healthcare"
+    },
+    {
+      "ticker": "KYTX",
+      "symbol": "KYTX",
+      "price": 8.1,
+      "beta": 3.35,
+      "banker_score": 33.8,
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "theme": "Healthcare"
+    },
+    {
+      "ticker": "GDYN",
+      "symbol": "GDYN",
+      "price": 6.99,
+      "beta": 1.72,
+      "banker_score": 31.7,
       "sector": "Technology",
-      "industry": "Software - Infrastructure",
-      "theme": "Technology"
-    },
-    {
-      "ticker": "CZR",
-      "symbol": "CZR",
-      "price": 21.89,
-      "beta": 1.55,
-      "banker_score": 77.0,
-      "sector": "Consumer Cyclical",
-      "industry": "Resorts & Casinos",
-      "theme": "Consumer Cyclical"
-    },
-    {
-      "ticker": "WHD",
-      "symbol": "WHD",
-      "price": 58.78,
-      "beta": 1.5,
-      "banker_score": 68.1,
-      "sector": "Energy",
-      "industry": "Oil & Gas Equipment & Services",
-      "theme": "Energy"
-    },
-    {
-      "ticker": "FIVN",
-      "symbol": "FIVN",
-      "price": 17.18,
-      "beta": 2.15,
-      "banker_score": 45.4,
-      "sector": "Technology",
-      "industry": "Software - Infrastructure",
+      "industry": "Information Technology Services",
       "theme": "Technology"
     }
   ],
-  "sell_signals": [
-    {
-      "symbol": "LYEL",
-      "ticker": "LYEL",
-      "price": 21.600000381469727,
-      "reason": "Daily BoS Down at $21.60",
-      "entry_price": 25.84,
-      "highest_close": 25.84,
-      "pnl_pct": -16.41,
-      "theme": "Healthcare",
-      "entry_date": "2026-02-14"
-    }
-  ]
+  "sell_signals": []
 }

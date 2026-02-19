@@ -1,150 +1,141 @@
 {
-  "timestamp": "2026-02-19T15:45:00Z",
+  "timestamp": "2026-02-19T16:00:00Z",
   "market_snapshot": {
-    "spy_move": "+0.8%",
-    "qqq_move": "+1.3%",
-    "vix": "19.7",
-    "market_mood": "bullish",
-    "headline": "US stocks rally on economic resilience and AI-driven sector gains amid tariff uncertainties."
+    "spy_move": "+0.3%",
+    "qqq_move": "+0.4%",
+    "vix": "20.4",
+    "market_mood": "mixed",
+    "headline": "US stocks climb on solid economic data and easing AI concerns, though Fed minutes signal no rush for rate cuts amid tariff impacts."
   },
   "portfolio_movers": [
     {
+      "ticker": "$APLD",
+      "move": "-4.9%",
+      "price": "$31.91",
+      "context": "Nvidia fully divests $177M stake, pressuring data center AI infrastructure play"
+    },
+    {
       "ticker": "$NVDA",
-      "move": "+2.5%",
-      "price": "$245.20",
-      "context": "AI infrastructure demand surge boosting chip leaders"
+      "move": "+1.2%",
+      "price": "$185.00",
+      "context": "AI chip demand surges with easing sector jitters"
     },
     {
       "ticker": "$AMD",
-      "move": "+1.8%",
-      "price": "$225.60",
-      "context": "Semiconductor strength from data center expansion"
-    },
-    {
-      "ticker": "$MOD",
-      "move": "+3.2%",
-      "price": "$190.45",
-      "context": "Defense spending tied to geopolitical tensions"
-    },
-    {
-      "ticker": "$WCC",
-      "move": "+1.5%",
-      "price": "$285.70",
-      "context": "Copper price uptick from AI and electrification news"
+      "move": "+0.8%",
+      "price": "$210.00",
+      "context": "Semiconductor strength amid AI infrastructure buildout"
     },
     {
       "ticker": "$BITF",
-      "move": "+4.1%",
-      "price": "$2.23",
-      "context": "Crypto miners pivoting to AI data centers for revenue growth"
+      "move": "+2.5%",
+      "price": "$2.20",
+      "context": "Crypto miners pivot to AI data centers boosting momentum"
     },
     {
       "ticker": "$HIVE",
-      "move": "+3.7%",
-      "price": "$2.42",
-      "context": "AI contracts offsetting Bitcoin price decline"
+      "move": "+3.1%",
+      "price": "$2.40",
+      "context": "AI/HPC contracts drive crypto mining infrastructure shift"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "Demand surge from AI data centers projected to consume 500k tons annually by 2030, prices nearing $12,500/ton"
+      "detail": "AI data centers and electrification drive 50% demand surge by 2040, risking supply shortages"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "Hyperscalers signing $65B in AI/HPC contracts with miners, boosting infrastructure plays"
+      "detail": "Easing jitters lift chip stocks; infrastructure pivot from crypto miners accelerates"
     },
     {
       "theme": "data centers",
       "status": "active",
-      "detail": "Power demand to rise 175% by 2030, driving copper and energy infrastructure needs"
-    },
-    {
-      "theme": "defense",
-      "status": "active",
-      "detail": "Geopolitical tensions and spending intensification creating supply bottlenecks for copper"
+      "detail": "Bitcoin miners secure $65B AI/HPC contracts, reshaping power and compute infrastructure"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Memory chip shortages and AI workloads accelerating demand for HBM and DRAM"
+      "detail": "Analog Devices Q2 outlook highlights AI chip demand surge"
     },
     {
       "theme": "crypto mining",
       "status": "active",
-      "detail": "Miners like BITF and HIVE pivoting to AI computing for diversified revenue amid BTC dip"
+      "detail": "Revenue shift to under 20% from mining by late 2026 as AI infrastructure takes over"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "quiet",
+      "detail": "Tariff pressures on metals and imports weigh on sector costs"
     }
   ],
   "fintwit_trending": [
     "AI infrastructure",
     "copper shortage",
-    "data center power",
-    "semiconductor memory",
-    "crypto AI pivot",
-    "tariff impacts"
+    "semiconductors",
+    "crypto to AI pivot",
+    "tariffs impact"
   ],
   "news_events": [
     {
       "event": "Fed minutes released",
-      "impact": "split on rate path with AI economic effects noted, cuts delayed to July",
+      "impact": "policymakers open to rate hikes if inflation elevated, no cuts until July",
       "relevance": "high"
     },
     {
-      "event": "SCOTUS tariff ruling imminent",
-      "impact": "potential revocation could ease inflation but spark trade war escalation",
-      "relevance": "high"
-    },
-    {
-      "event": "US imports plunge 7% in 2025",
-      "impact": "tariffs reshaping supply chains, highest goods deficit on record",
+      "event": "US trade deficit deepens to -$70.3B",
+      "impact": "tariffs reshape imports, sector fortunes shift",
       "relevance": "medium"
     },
     {
-      "event": "Geopolitical tensions US-Iran",
-      "impact": "oil prices up, safe-haven flows supporting defense and energy themes",
+      "event": "SCOTUS tariff ruling imminent",
+      "impact": "potential invalidation could ease inflation, boost risk assets",
+      "relevance": "high"
+    },
+    {
+      "event": "US-Iran tensions escalate",
+      "impact": "oil and gold rise on supply disruption fears",
       "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "Copper demand exploding from AI data centers, actionable for infrastructure and mining plays",
+      "reason": "Copper demand exploding from AI data centers creates supply crisis narrative for infrastructure plays",
       "tickers": [
-        "$WCC",
-        "$AMPX"
+        "$WCC"
       ],
       "urgency": "high"
     },
     {
-      "type": "MARKET_REACTION",
-      "reason": "Fed minutes highlight AI's economic impact, delaying cuts but boosting tech sentiment",
+      "type": "DIP_OPPORTUNITY",
+      "reason": "APLD dips on Nvidia exit but AI pivot intact with strong analyst targets",
       "tickers": [
-        "$NVDA",
-        "$AMD"
+        "$APLD"
       ],
       "urgency": "medium"
     },
     {
-      "type": "DIP_OPPORTUNITY",
-      "reason": "Crypto miners undervalued amid BTC dip but gaining from AI pivots",
+      "type": "MARKET_REACTION",
+      "reason": "Fed hawkish tone and tariff delays pressure semis, but AI demand supports rebound",
+      "tickers": [
+        "$AMD"
+      ],
+      "urgency": "low"
+    },
+    {
+      "type": "THEME_MOMENTUM",
+      "reason": "Crypto miners winning AI data center race with massive contracts",
       "tickers": [
         "$BITF",
         "$HIVE"
       ],
       "urgency": "high"
-    },
-    {
-      "type": "SIGNAL_ALERT",
-      "reason": "Defense stocks rallying on geopolitics, MOD breaking out",
-      "tickers": [
-        "$MOD"
-      ],
-      "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-19T15:39:32.087873+00:00",
+  "gathered_at": "2026-02-19T17:28:14.427812+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

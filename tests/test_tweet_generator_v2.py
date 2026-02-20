@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from content.models import (
+from twitter.models import (
     CHART_REQUIRED_CATEGORIES,
     INTERNAL_TERM_PATTERNS,
     TWEET_CATEGORIES,
@@ -24,7 +24,7 @@ from content.models import (
     Tweet,
     ValidationResult,
 )
-from content.tweet_generator import (
+from twitter.tweet_generator import (
     _build_content_data,
     _generate_tweet,
     _log_failed_tweet,

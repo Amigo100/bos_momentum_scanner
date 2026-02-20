@@ -20,7 +20,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from content.live_tweet_generator import (
+from twitter.live_tweet_generator import (
     decide_tweet_type,
     validate_tweet,
     _prepare_slot_data,
@@ -32,7 +32,7 @@ from content.live_tweet_generator import (
     LIVE_CATEGORY_EXAMPLES,
     ACCOUNT_VARIANTS,
 )
-from content.models import ValidationResult
+from twitter.models import ValidationResult
 from config import PERSONAS
 
 
@@ -134,7 +134,7 @@ class TestWeekendSignalAlert:
         """SIGNAL_ALERT must be in WEEKEND_CATEGORIES set."""
         assert "SIGNAL_ALERT" in WEEKEND_CATEGORIES
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_fresh_signal_triggers_on_sunday_pm(
         self, mock_dt, sample_portfolio, sample_signals, empty_recent_tweets, quiet_context,
     ):
@@ -151,7 +151,7 @@ class TestWeekendSignalAlert:
         assert result["type"] == "SIGNAL_ALERT"
         assert result["urgency"] == "high"  # Sunday PM = high urgency
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_stale_signal_skipped(
         self, mock_dt, sample_portfolio, stale_signals, empty_recent_tweets, quiet_context,
     ):
@@ -166,7 +166,7 @@ class TestWeekendSignalAlert:
         # Should fall through to filler or cadence, NOT SIGNAL_ALERT
         assert result.get("type") != "SIGNAL_ALERT"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_already_tweeted_signal_skipped(
         self, mock_dt, sample_portfolio, sample_signals,
     ):
@@ -194,7 +194,7 @@ class TestWeekendSignalAlert:
         if result["type"] == "SIGNAL_ALERT":
             assert result.get("tickers", [None])[0] not in ("DDD", "EEE")
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_saturday_signal_not_high_urgency(
         self, mock_dt, sample_portfolio, sample_signals, empty_recent_tweets, quiet_context,
     ):
@@ -218,7 +218,7 @@ class TestWeekendSignalAlert:
 class TestWeekendContentGeneration:
     """Weekend content should generate — filler is no longer blocked."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_filler_fires_on_weekends(
         self, mock_dt, sample_portfolio, quiet_context,
     ):
@@ -236,7 +236,7 @@ class TestWeekendContentGeneration:
         # Should be a weekend-safe category
         assert result["type"] in WEEKEND_CATEGORIES
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_market_reaction_blocked_on_weekends(
         self, mock_dt, sample_portfolio, volatile_context,
     ):
@@ -252,7 +252,7 @@ class TestWeekendContentGeneration:
         assert result["action"] == "tweet"
         assert result["type"] != "MARKET_REACTION"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_dip_opportunity_blocked_on_weekends(
         self, mock_dt, sample_portfolio,
     ):
@@ -273,7 +273,7 @@ class TestWeekendContentGeneration:
 
         assert result.get("type") != "DIP_OPPORTUNITY"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_receipt_allowed_on_weekends(
         self, mock_dt, sample_portfolio,
     ):
@@ -303,7 +303,7 @@ class TestWeekendContentGeneration:
 class TestMinimumCadence:
     """When nothing tweetable, fallback cascade: RECEIPT → EDUCATIONAL → ENGAGEMENT."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_fallback_to_receipt(self, mock_dt, sample_portfolio):
         """First fallback is RECEIPT when winning positions exist."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))  # Monday
@@ -335,7 +335,7 @@ class TestMinimumCadence:
         assert result["action"] == "tweet"
         assert result["type"] == "RECEIPT"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_fallback_to_educational(self, mock_dt, sample_portfolio):
         """Second fallback is EDUCATIONAL when RECEIPT and TECHNICAL_ANALYSIS recently posted."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -368,7 +368,7 @@ class TestMinimumCadence:
         assert result["action"] == "tweet"
         assert result["type"] == "EDUCATIONAL"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_educational_3_per_week_cap(self, mock_dt, sample_portfolio):
         """EDUCATIONAL caps at 3/week — after that, skip to ENGAGEMENT."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -406,7 +406,7 @@ class TestMinimumCadence:
         assert result["action"] == "tweet"
         assert result["type"] == "ENGAGEMENT"
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_engagement_as_last_resort(self, mock_dt):
         """ENGAGEMENT is the final fallback when RECEIPT and EDUCATIONAL exhausted."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -802,7 +802,7 @@ class TestNewCategories:
 class TestSellSignalPriority:
     """Sell signals get highest priority (P0) in decide_tweet_type()."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_sell_signal_highest_priority(self, mock_dt, sample_portfolio):
         """Sell signals fire before buy signals."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -832,7 +832,7 @@ class TestSellSignalPriority:
 class TestPositionCommentary:
     """TECHNICAL_ANALYSIS fires as fallback in quiet market."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_quiet_market_position_commentary(self, mock_dt, sample_portfolio):
         """When no movers/themes/signals, TECHNICAL_ANALYSIS fires for position commentary."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -858,7 +858,7 @@ class TestPositionCommentary:
 class TestWatchlistDecision:
     """WATCHLIST fires when consider_signals exist."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_watchlist_from_consider_signals(self, mock_dt, sample_portfolio):
         """consider_signals trigger WATCHLIST type."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))
@@ -964,7 +964,7 @@ class TestFunnelStatsInPrompt:
 class TestMultiTickerReceipt:
     """Multi-ticker receipt triggers with 3+ winners."""
 
-    @patch("content.live_tweet_generator.datetime")
+    @patch("twitter.live_tweet_generator.datetime")
     def test_multi_receipt_with_3_winners(self, mock_dt):
         """3+ winners trigger multi-ticker RECEIPT at P9."""
         weekday = datetime(2026, 2, 16, 14, 0, tzinfo=ZoneInfo("America/New_York"))

@@ -54,5 +54,14 @@ trades/daily_portfolio_backups/
 # Daily portfolio (separate from weekly - user-specific)
 trades/daily_portfolio.csv
 
+# Section output directories (generated data, not source code)
+portfolio/output/
+scanner/output/
+substack/output/
+twitter/output/
+
+# Dashboard bundled data (generated at build time)
+dashboard/data/
+
 # Chart images committed for tweet posting pipeline
 # (small files ~50-100KB, needed by daily_post workflow)

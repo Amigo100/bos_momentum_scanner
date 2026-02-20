@@ -3,24 +3,18 @@
 OUTPUT PATHS - Centralized folder structure management
 ======================================================
 
-Provides consistent output directory structure across all modules:
-- trades/current/     - Always latest week's outputs
-- trades/weeks/YYYY-WXX/ - Historical archives by ISO week
+Multi-section output path registry. Each section owns its outputs:
+- scanner/output/     - Scan results, signals, reports
+- portfolio/output/   - Portfolio CSVs, equity curve, backups
+- substack/output/    - Newsletter, posts, notes
+- twitter/output/     - Tweet queues, charts, tracking
 
 Usage:
-    from output_paths import (
-        get_current_dir,
-        get_week_dir,
+    from config.output_paths import (
+        SCANNER_OUTPUT, PORTFOLIO_OUTPUT, SUBSTACK_OUTPUT, TWITTER_OUTPUT,
+        get_scanner_current_dir, get_substack_current_dir,
         ensure_output_structure,
-        get_output_paths
     )
-
-    # Get paths
-    paths = get_output_paths()
-    signals_file = paths['current'] / 'signals.json'
-
-    # Ensure directories exist
-    ensure_output_structure()
 """
 
 import shutil
@@ -30,11 +24,60 @@ from typing import Dict, List, Optional, Tuple
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CONFIGURATION
+# BASE CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
 BASE_DIR = Path(__file__).resolve().parent.parent  # Project root (one level up from config/)
+
+# Section output roots
+SCANNER_OUTPUT = BASE_DIR / "scanner" / "output"
+PORTFOLIO_OUTPUT = BASE_DIR / "portfolio" / "output"
+SUBSTACK_OUTPUT = BASE_DIR / "substack" / "output"
+TWITTER_OUTPUT = BASE_DIR / "twitter" / "output"
+
+# Legacy alias — DEPRECATED, kept for gradual migration
 TRADES_DIR = BASE_DIR / "trades"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SCANNER OUTPUT PATHS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
+DAILY_SIGNALS_FILE = SCANNER_OUTPUT / "daily_signals.json"
+ANALYSIS_LOG = SCANNER_OUTPUT / "analysis_log.csv"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PORTFOLIO OUTPUT PATHS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+PORTFOLIO_FILE = PORTFOLIO_OUTPUT / "portfolio.csv"
+DAILY_PORTFOLIO_FILE = PORTFOLIO_OUTPUT / "daily_portfolio.csv"
+SHEETS_EXPORT_FILE = PORTFOLIO_OUTPUT / "portfolio_google_sheets.csv"
+EQUITY_CURVE_FILE = PORTFOLIO_OUTPUT / "equity_curve.csv"
+PORTFOLIO_BACKUP_DIR = PORTFOLIO_OUTPUT / "portfolio_backups"
+DAILY_PORTFOLIO_BACKUP_DIR = PORTFOLIO_OUTPUT / "daily_portfolio_backups"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TWITTER OUTPUT PATHS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+CONTENT_QUEUE_FILE = TWITTER_OUTPUT / "content_queue.json"
+CONTENT_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "content_queue_account2.json"
+CONTENT_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "content_queue_account3.json"
+DAILY_QUEUE_FILE = TWITTER_OUTPUT / "daily_content_queue.json"
+DAILY_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "daily_content_queue_account2.json"
+DAILY_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "daily_content_queue_account3.json"
+LIVE_QUEUE_FILE = TWITTER_OUTPUT / "live_content_queue.json"
+LIVE_CONTEXT_FILE = TWITTER_OUTPUT / "live_context.json"
+LIVE_COST_LOG_FILE = TWITTER_OUTPUT / "live_cost_log.json"
+TWEET_TRACKING_FILE = TWITTER_OUTPUT / "tweet_tracking.json"
+CELEBRATIONS_FILE = TWITTER_OUTPUT / "celebrations.json"
+FAILED_TWEETS_FILE = TWITTER_OUTPUT / "failed_tweets.json"
+WORKFLOW_STATUS_FILE = TWITTER_OUTPUT / "workflow_status.json"
+CHARTS_DIR = TWITTER_OUTPUT / "charts"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -42,98 +85,110 @@ TRADES_DIR = BASE_DIR / "trades"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def get_week_identifier(dt: Optional[datetime] = None) -> str:
-    """
-    Get ISO week identifier string (YYYY-WXX format).
-
-    Args:
-        dt: datetime object (defaults to now)
-
-    Returns:
-        String like '2026-W04' for week 4 of 2026
-    """
+    """Get ISO week identifier string (YYYY-WXX format)."""
     if dt is None:
         dt = datetime.now()
     iso_cal = dt.isocalendar()
     return f"{iso_cal.year}-W{iso_cal.week:02d}"
 
 
+# ── Scanner directories ──────────────────────────────────────────────────────
+
+def get_scanner_current_dir() -> Path:
+    """Get scanner/output/current/ for latest scanner outputs."""
+    return SCANNER_OUTPUT / "current"
+
+
+def get_scanner_archive_dir(dt: Optional[datetime] = None) -> Path:
+    """Get scanner/output/archive/YYYY-WXX/ for weekly archives."""
+    week_id = get_week_identifier(dt)
+    return SCANNER_OUTPUT / "archive" / week_id
+
+
+# ── Substack directories ─────────────────────────────────────────────────────
+
+def get_substack_current_dir() -> Path:
+    """Get substack/output/current/ for latest substack outputs."""
+    return SUBSTACK_OUTPUT / "current"
+
+
+def get_substack_archive_dir(dt: Optional[datetime] = None) -> Path:
+    """Get substack/output/archive/YYYY-WXX/ for weekly archives."""
+    week_id = get_week_identifier(dt)
+    return SUBSTACK_OUTPUT / "archive" / week_id
+
+
+# ── Legacy compatibility ──────────────────────────────────────────────────────
+
 def get_current_dir() -> Path:
-    """
-    Get the 'current' output directory for latest outputs.
-
-    This directory always contains the most recent week's outputs,
-    making it easy to find files without knowing the exact date.
-
-    Returns:
-        Path to trades/current/
-    """
-    return TRADES_DIR / "current"
+    """DEPRECATED: Use get_scanner_current_dir() or get_substack_current_dir()."""
+    return get_scanner_current_dir()
 
 
 def get_week_dir(dt: Optional[datetime] = None) -> Path:
-    """
-    Get the weekly archive directory for a specific date.
+    """DEPRECATED: Use get_scanner_archive_dir() or get_substack_archive_dir()."""
+    return get_scanner_archive_dir(dt)
 
-    Args:
-        dt: datetime object (defaults to now)
 
-    Returns:
-        Path to trades/weeks/YYYY-WXX/
-    """
-    week_id = get_week_identifier(dt)
-    return TRADES_DIR / "weeks" / week_id
-
+# ═══════════════════════════════════════════════════════════════════════════════
+# STRUCTURE INITIALIZATION
+# ═══════════════════════════════════════════════════════════════════════════════
 
 def ensure_output_structure() -> Tuple[Path, Path]:
     """
-    Ensure all output directories exist.
+    Ensure all section output directories exist.
 
-    Creates:
-    - trades/current/
-    - trades/current/substack_notes/
-    - trades/current/substack_posts/
-    - trades/current/charts/
-    - trades/weeks/YYYY-WXX/
-    - trades/weeks/YYYY-WXX/substack_notes/
-    - trades/weeks/YYYY-WXX/substack_posts/
-    - trades/weeks/YYYY-WXX/charts/
-    - trades/portfolio_backups/
+    Creates all necessary directories across all sections.
 
     Returns:
-        Tuple of (current_dir, week_dir)
+        Tuple of (scanner_current_dir, scanner_archive_dir) for backward compat
     """
-    current_dir = get_current_dir()
-    week_dir = get_week_dir()
+    scanner_current = get_scanner_current_dir()
+    scanner_archive = get_scanner_archive_dir()
+    substack_current = get_substack_current_dir()
+    substack_archive = get_substack_archive_dir()
 
-    # Create directory structures
-    subdirs = ['substack_notes', 'substack_posts', 'charts']
+    # Scanner output dirs
+    scanner_current.mkdir(parents=True, exist_ok=True)
+    scanner_archive.mkdir(parents=True, exist_ok=True)
 
-    for subdir in subdirs:
-        (current_dir / subdir).mkdir(parents=True, exist_ok=True)
-        (week_dir / subdir).mkdir(parents=True, exist_ok=True)
+    # Substack output dirs with subdirs
+    for d in [substack_current, substack_archive]:
+        (d / "substack_notes").mkdir(parents=True, exist_ok=True)
+        (d / "substack_posts").mkdir(parents=True, exist_ok=True)
 
-    # Also ensure root current and week dirs exist
-    current_dir.mkdir(parents=True, exist_ok=True)
-    week_dir.mkdir(parents=True, exist_ok=True)
+    # Portfolio output dirs
+    PORTFOLIO_OUTPUT.mkdir(parents=True, exist_ok=True)
+    PORTFOLIO_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    DAILY_PORTFOLIO_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Ensure portfolio backups dir exists
-    (TRADES_DIR / "portfolio_backups").mkdir(exist_ok=True)
+    # Twitter output dirs
+    TWITTER_OUTPUT.mkdir(parents=True, exist_ok=True)
+    CHARTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    return current_dir, week_dir
+    return scanner_current, scanner_archive
 
 
 def get_output_paths() -> Dict[str, Path]:
     """
     Get all standard output paths as a dictionary.
 
-    Returns:
-        Dict with keys: 'trades', 'current', 'week', 'backups'
+    Returns dict with section output roots and commonly used paths.
     """
     return {
-        'trades': TRADES_DIR,
-        'current': get_current_dir(),
-        'week': get_week_dir(),
-        'backups': TRADES_DIR / "portfolio_backups"
+        'scanner': SCANNER_OUTPUT,
+        'portfolio': PORTFOLIO_OUTPUT,
+        'substack': SUBSTACK_OUTPUT,
+        'twitter': TWITTER_OUTPUT,
+        'scanner_current': get_scanner_current_dir(),
+        'scanner_archive': get_scanner_archive_dir(),
+        'substack_current': get_substack_current_dir(),
+        'substack_archive': get_substack_archive_dir(),
+        'backups': PORTFOLIO_BACKUP_DIR,
+        # Legacy aliases
+        'trades': SCANNER_OUTPUT,
+        'current': get_scanner_current_dir(),
+        'week': get_scanner_archive_dir(),
     }
 
 
@@ -141,49 +196,58 @@ def get_output_paths() -> Dict[str, Path]:
 # FILE OPERATIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def save_to_current_and_archive(content: str, filename: str) -> Tuple[Path, Path]:
-    """
-    Save a file to both current/ and weekly archive directories.
-
-    Args:
-        content: File content to write
-        filename: Name of the file (e.g., 'signals.json')
-
-    Returns:
-        Tuple of (current_path, archive_path)
-    """
-    current_dir, week_dir = ensure_output_structure()
-
-    current_path = current_dir / filename
-    archive_path = week_dir / filename
+def save_to_scanner_current_and_archive(content: str, filename: str) -> Tuple[Path, Path]:
+    """Save a file to both scanner current/ and archive/ directories."""
+    ensure_output_structure()
+    current_path = get_scanner_current_dir() / filename
+    archive_path = get_scanner_archive_dir() / filename
 
     with open(current_path, 'w') as f:
         f.write(content)
-
     with open(archive_path, 'w') as f:
         f.write(content)
 
     return current_path, archive_path
 
 
+def save_to_substack_current_and_archive(content: str, filename: str,
+                                          subdir: Optional[str] = None) -> Tuple[Path, Path]:
+    """Save a file to both substack current/ and archive/ directories."""
+    ensure_output_structure()
+    current_dir = get_substack_current_dir()
+    archive_dir = get_substack_archive_dir()
+
+    if subdir:
+        current_dir = current_dir / subdir
+        archive_dir = archive_dir / subdir
+        current_dir.mkdir(parents=True, exist_ok=True)
+        archive_dir.mkdir(parents=True, exist_ok=True)
+
+    current_path = current_dir / filename
+    archive_path = archive_dir / filename
+
+    with open(current_path, 'w') as f:
+        f.write(content)
+    with open(archive_path, 'w') as f:
+        f.write(content)
+
+    return current_path, archive_path
+
+
+# Legacy alias
+def save_to_current_and_archive(content: str, filename: str) -> Tuple[Path, Path]:
+    """DEPRECATED: Use save_to_scanner_current_and_archive() or save_to_substack_current_and_archive()."""
+    return save_to_scanner_current_and_archive(content, filename)
+
+
 def copy_to_current_and_archive(source: Path, filename: Optional[str] = None) -> Tuple[Path, Path]:
-    """
-    Copy a file to both current/ and weekly archive directories.
-
-    Args:
-        source: Source file path
-        filename: Optional override for destination filename
-
-    Returns:
-        Tuple of (current_path, archive_path)
-    """
-    current_dir, week_dir = ensure_output_structure()
-
+    """DEPRECATED: Copy to scanner current + archive."""
+    ensure_output_structure()
     if filename is None:
         filename = source.name
 
-    current_path = current_dir / filename
-    archive_path = week_dir / filename
+    current_path = get_scanner_current_dir() / filename
+    archive_path = get_scanner_archive_dir() / filename
 
     shutil.copy(source, current_path)
     shutil.copy(source, archive_path)
@@ -196,33 +260,31 @@ def copy_to_current_and_archive(source: Path, filename: Optional[str] = None) ->
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def get_relative_path(path: Path) -> str:
-    """
-    Get path relative to current working directory for display.
-
-    Args:
-        path: Absolute path
-
-    Returns:
-        Relative path string if within cwd, else absolute path
-    """
+    """Get path relative to current working directory for display."""
     try:
         return str(path.relative_to(Path.cwd()))
     except ValueError:
         return str(path)
 
 
-def list_weekly_archives() -> List[str]:
+def list_weekly_archives(section: str = "scanner") -> List[str]:
     """
-    List all available weekly archive directories.
+    List all available weekly archive directories for a section.
 
-    Returns:
-        List of week identifiers (e.g., ['2026-W03', '2026-W04'])
+    Args:
+        section: "scanner" or "substack"
     """
-    weeks_dir = TRADES_DIR / "weeks"
-    if not weeks_dir.exists():
+    if section == "scanner":
+        archive_dir = SCANNER_OUTPUT / "archive"
+    elif section == "substack":
+        archive_dir = SUBSTACK_OUTPUT / "archive"
+    else:
+        archive_dir = SCANNER_OUTPUT / "archive"
+
+    if not archive_dir.exists():
         return []
 
-    return sorted([d.name for d in weeks_dir.iterdir() if d.is_dir()])
+    return sorted([d.name for d in archive_dir.iterdir() if d.is_dir()])
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -235,33 +297,32 @@ def main() -> int:
 
     parser = argparse.ArgumentParser(description="Output path management")
     parser.add_argument("--init", action="store_true", help="Initialize directory structure")
-    parser.add_argument("--symlinks", action="store_true", help=argparse.SUPPRESS)
-
     args = parser.parse_args()
 
     if args.init:
         print("Initializing output directory structure...")
-        current_dir, week_dir = ensure_output_structure()
-        print(f"  Created: {get_relative_path(current_dir)}")
-        print(f"  Created: {get_relative_path(week_dir)}")
-        return 0
-
-    if args.symlinks:
-        print("Legacy symlinks are no longer needed — outputs live in trades/current/")
+        ensure_output_structure()
+        print("  All section output directories created.")
         return 0
 
     # Default: print paths
     print("\nOutput Paths:")
-    print(f"  TRADES_DIR:  {TRADES_DIR}")
-    print(f"  Current:     {get_current_dir()}")
-    print(f"  This Week:   {get_week_dir()}")
+    print(f"  Scanner:     {SCANNER_OUTPUT}")
+    print(f"    Current:   {get_scanner_current_dir()}")
+    print(f"    Archive:   {get_scanner_archive_dir()}")
+    print(f"  Portfolio:   {PORTFOLIO_OUTPUT}")
+    print(f"  Substack:    {SUBSTACK_OUTPUT}")
+    print(f"    Current:   {get_substack_current_dir()}")
+    print(f"    Archive:   {get_substack_archive_dir()}")
+    print(f"  Twitter:     {TWITTER_OUTPUT}")
     print(f"  Week ID:     {get_week_identifier()}")
 
-    archives = list_weekly_archives()
-    if archives:
-        print(f"\nArchives ({len(archives)}):")
-        for archive in archives[-5:]:  # Last 5
-            print(f"    {archive}")
+    for section in ["scanner", "substack"]:
+        archives = list_weekly_archives(section)
+        if archives:
+            print(f"\n  {section.title()} Archives ({len(archives)}):")
+            for archive in archives[-5:]:
+                print(f"    {archive}")
 
     return 0
 

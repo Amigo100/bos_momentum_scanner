@@ -21,8 +21,8 @@ from unittest.mock import patch
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from distribution.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from content.tweet_generator import validate_tweet_length, get_tweet_char_count
+from twitter.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
+from twitter.tweet_generator import validate_tweet_length, get_tweet_char_count
 from config import get_highlight_threshold
 
 
@@ -129,42 +129,42 @@ class TestSPYComparisonSafeguard:
     We mock calculate_portfolio_vs_spy to control the return value.
     """
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_below_threshold(self, mock_calc):
         """Should not post if alpha is below 5%."""
         mock_calc.return_value = {'should_post_beat_spy': False}
         result = should_post_beat_spy()
         assert result == False
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_above_threshold(self, mock_calc):
         """Should post if alpha is above 5%."""
         mock_calc.return_value = {'should_post_beat_spy': True}
         result = should_post_beat_spy()
         assert result == True
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_exactly_at_threshold(self, mock_calc):
         """Should post if alpha is exactly at threshold."""
         mock_calc.return_value = {'should_post_beat_spy': True}
         result = should_post_beat_spy()
         assert result == True
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_invalid(self, mock_calc):
         """No comparable positions should return False."""
         mock_calc.return_value = {'should_post_beat_spy': False, 'can_compare': False}
         result = should_post_beat_spy()
         assert result == False
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_missing_alpha(self, mock_calc):
         """When calculate returns False for posting, should return False."""
         mock_calc.return_value = {'should_post_beat_spy': False}
         result = should_post_beat_spy()
         assert result == False
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_spy_comparison_missing_key_returns_false(self, mock_calc):
         """If calculate_portfolio_vs_spy returns dict without 'should_post_beat_spy' key, should default False."""
         mock_calc.return_value = {'error': 'price_fetch_failed'}

@@ -104,10 +104,10 @@ jobs:
           fi
 
           echo ""
-          echo "Running: python -m core.scanner $SCANNER_ARGS"
+          echo "Running: python -m scanner.scanner $SCANNER_ARGS"
           echo ""
 
-          python -m core.scanner $SCANNER_ARGS
+          python -m scanner.scanner $SCANNER_ARGS
 
           echo "scanner_complete=true" >> $GITHUB_OUTPUT
 
@@ -128,7 +128,7 @@ jobs:
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
-          python -m distribution.notifications --check-config
+          python -m utils.notifications --check-config
 
       - name: Send scan summary notification
         if: always() && steps.scanner.outputs.scanner_complete == 'true'
@@ -149,7 +149,7 @@ jobs:
 
           logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-          signals_path = Path("trades/signals.json")
+          signals_path = Path("scanner/output/signals.json")
           if not signals_path.exists():
               print("No signals.json found — skipping notifications")
               sys.exit(0)
@@ -163,7 +163,7 @@ jobs:
               sys.exit(0)
 
           try:
-              from distribution.notifications import send_scan_summary
+              from utils.notifications import send_scan_summary
           except ImportError as e:
               print(f"Notification module not available: {e}")
               sys.exit(0)
@@ -185,23 +185,23 @@ jobs:
       - name: Generate Funnel Graphic
         if: ${{ github.event.inputs.skip_charts != 'true' }}
         run: |
-          if [ -f "content/funnel_graphic.py" ]; then
+          if [ -f "twitter/funnel_graphic.py" ]; then
             echo "Generating funnel graphic from scan stats..."
-            python -m content.funnel_graphic || echo "Funnel graphic generation failed (non-critical)"
+            python -m twitter.funnel_graphic || echo "Funnel graphic generation failed (non-critical)"
           fi
         continue-on-error: true
 
       - name: Capture TradingView Charts
         if: ${{ github.event.inputs.skip_charts != 'true' }}
         run: |
-          if [ -f "content/chart_capture.py" ]; then
+          if [ -f "twitter/chart_capture.py" ]; then
             pip install playwright && playwright install chromium
             # Load saved TradingView cookies from secret if available
             if [ -n "$TRADINGVIEW_COOKIES" ]; then
               echo "$TRADINGVIEW_COOKIES" > .tradingview_cookies.json
             fi
-            python -m content.chart_capture \
-              --tickers-from trades/signals.json \
+            python -m twitter.chart_capture \
+              --tickers-from scanner/output/signals.json \
               --include-portfolio \
               --headless \
               --use-cookies \
@@ -218,13 +218,13 @@ jobs:
       - name: Generate Market Analysis
         if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
         run: |
-          if [ -f "content/market_analyzer.py" ]; then
+          if [ -f "substack/market_analyzer.py" ]; then
             echo "Generating market analysis via Claude + web search..."
-            python -m content.market_analyzer --save || {
+            python -m substack.market_analyzer --save || {
               echo "Market analysis failed - continuing anyway"
             }
           else
-            echo "content/market_analyzer.py not found, skipping"
+            echo "substack/market_analyzer.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -235,13 +235,13 @@ jobs:
       - name: Compile Newsletter
         if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
         run: |
-          if [ -f "content/newsletter_compiler.py" ]; then
+          if [ -f "substack/newsletter_compiler.py" ]; then
             echo "Compiling newsletter via LLM..."
-            python -m content.newsletter_compiler --full || {
+            python -m substack.newsletter_compiler --full || {
               echo "Newsletter compilation failed - continuing anyway"
             }
           else
-            echo "content/newsletter_compiler.py not found, skipping"
+            echo "substack/newsletter_compiler.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -252,11 +252,11 @@ jobs:
       - name: Generate DD HTML Posts
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
-          if [ -f "content/dd_post_generator.py" ]; then
+          if [ -f "substack/dd_post_generator.py" ]; then
             echo "Generating DD HTML posts per buy signal..."
-            python -m content.dd_post_generator || echo "DD post generation failed (non-critical)"
+            python -m substack.dd_post_generator || echo "DD post generation failed (non-critical)"
           else
-            echo "content/dd_post_generator.py not found, skipping"
+            echo "substack/dd_post_generator.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -264,14 +264,14 @@ jobs:
       # STEP 4.6: GENERATE SUBSTACK CONTENT (Mon/Thu/Sat/Sun posts)
       # ═══════════════════════════════════════════════════════════════════════════
 
-      - name: Generate Substack Content
+      - name: Generate Substack Posts (4-5/week)
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
-          if [ -f "content/substack_content_generator.py" ]; then
-            echo "Generating Substack posts (Monday/Thursday/Saturday/Sunday)..."
-            python -m content.substack_content_generator --all || echo "Substack content generation failed (non-critical)"
+          if [ -f "substack/content_generator.py" ]; then
+            echo "Generating Substack posts (Sat/Tue/Wed/Thu + optional Fri)..."
+            python -m substack.content_generator --all || echo "Substack posts generation failed (non-critical)"
           else
-            echo "content/substack_content_generator.py not found, skipping"
+            echo "substack/content_generator.py not found, skipping"
           fi
         continue-on-error: true
 
@@ -282,7 +282,7 @@ jobs:
       - name: Generate Portfolio Dashboard
         run: |
           echo "Generating portfolio visual dashboard..."
-          python -m content.portfolio_visual || echo "Portfolio dashboard generation failed (non-critical)"
+          python -m substack.portfolio_visual || echo "Portfolio dashboard generation failed (non-critical)"
         continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════════
@@ -293,16 +293,16 @@ jobs:
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
           echo "Generating weekly tweets via tweet_generator v2 (3× LLM runs for unique content)..."
-          python -m content.tweet_generator \
-            --signals trades/signals.json \
-            --portfolio trades/portfolio.csv \
-            --output trades/ \
+          python -m twitter.tweet_generator \
+            --signals scanner/output/signals.json \
+            --portfolio portfolio/output/portfolio.csv \
+            --output twitter/output/ \
             --account all
 
       - name: Validate content queue JSON
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          for f in trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json; do
+          for f in twitter/output/content_queue.json twitter/output/content_queue_account2.json twitter/output/content_queue_account3.json; do
             if [ -f "$f" ]; then
               COUNT=$(python -c "import json; print(len(json.load(open('$f'))))")
               echo "✅ $f: $COUNT tweets"
@@ -312,17 +312,23 @@ jobs:
           done
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
+      # STEP 5.5: GENERATE SUBSTACK NOTES BATCH (21 notes for the week)
       # ═══════════════════════════════════════════════════════════════════════════
 
-      - name: Generate Substack Notes
+      - name: Generate Substack Notes Batch (21 notes/week)
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
-          if [ -f "content/substack_notes_generator.py" ]; then
-            echo "Generating Substack notes for Tuesday + Thursday..."
-            python -m content.substack_notes_generator
+          if [ -f "substack/notes_batch_generator.py" ]; then
+            echo "Generating 21 Substack notes (3/day for the week)..."
+            python -m substack.notes_batch_generator || {
+              echo "Batch generator failed, falling back to legacy 2-note generator..."
+              python -m substack.notes_generator || echo "Legacy notes also failed (non-critical)"
+            }
+          elif [ -f "substack/notes_generator.py" ]; then
+            echo "Batch generator not found, using legacy 2-note generator..."
+            python -m substack.notes_generator
           else
-            echo "content/substack_notes_generator.py not found, skipping"
+            echo "No notes generator found, skipping"
           fi
         continue-on-error: true
 
@@ -335,10 +341,10 @@ jobs:
         with:
           name: scan-results-${{ github.run_id }}
           path: |
-            trades/current/
-            trades/signals.json
-            trades/portfolio.csv
-            trades/portfolio_google_sheets.csv
+            scanner/output/current/
+            scanner/output/signals.json
+            portfolio/output/portfolio.csv
+            portfolio/output/portfolio_google_sheets.csv
             logs/
           retention-days: 30
 
@@ -346,7 +352,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: substack-notes-${{ github.run_id }}
-          path: trades/current/substack_notes/
+          path: substack/output/current/substack_notes/
           retention-days: 7
         continue-on-error: true
 
@@ -354,7 +360,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: substack-posts-${{ github.run_id }}
-          path: trades/current/substack_posts/
+          path: substack/output/current/substack_posts/
           retention-days: 30
         continue-on-error: true
 
@@ -363,16 +369,16 @@ jobs:
         with:
           name: content-queue
           path: |
-            trades/content_queue.json
-            trades/content_queue_account2.json
-            trades/content_queue_account3.json
+            twitter/output/content_queue.json
+            twitter/output/content_queue_account2.json
+            twitter/output/content_queue_account3.json
           retention-days: 14
 
       - name: Upload charts (if captured)
         uses: actions/upload-artifact@v4
         with:
           name: charts-${{ github.run_id }}
-          path: trades/charts/
+          path: twitter/output/charts/
           retention-days: 30
         if: always()
         continue-on-error: true
@@ -397,7 +403,7 @@ jobs:
               'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
               'trigger': '${{ github.event_name }}'
           }
-          f = 'trades/workflow_status.json'
+          f = 'twitter/output/workflow_status.json'
           try:
               entries = json.load(open(f))
           except:
@@ -413,7 +419,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add trades/ 2>/dev/null || true
+          git add scanner/output/ portfolio/output/ substack/output/ twitter/output/ 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -464,9 +470,9 @@ jobs:
           echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f "trades/current/report.txt" ]; then
+          if [ -f "scanner/output/current/report.txt" ]; then
             echo '```' >> $GITHUB_STEP_SUMMARY
-            head -100 trades/current/report.txt >> $GITHUB_STEP_SUMMARY
+            head -100 scanner/output/current/report.txt >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
@@ -475,26 +481,31 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "### Weekly Outputs" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/current" ] && echo "- ✅ trades/current/ (this week's outputs)" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/current/newsletter.html" ] && echo "  - newsletter.html (copy to Substack Saturday)" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/current/report.txt" ] && echo "  - report.txt (scan summary)" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/current/substack_notes" ] && echo "  - substack_notes/ (Tuesday + Thursday notes)" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/current/substack_posts" ] && echo "  - substack_posts/ (Mon/Thu/Sat/Sun posts)" >> $GITHUB_STEP_SUMMARY
+          [ -d "scanner/output/current" ] && echo "- ✅ scanner/output/current/ (this week's scanner outputs)" >> $GITHUB_STEP_SUMMARY
+          [ -d "substack/output/current" ] && echo "- ✅ substack/output/current/ (this week's substack outputs)" >> $GITHUB_STEP_SUMMARY
+          [ -f "substack/output/current/newsletter.html" ] && echo "  - newsletter.html (copy to Substack Saturday)" >> $GITHUB_STEP_SUMMARY
+          [ -f "scanner/output/current/report.txt" ] && echo "  - report.txt (scan summary)" >> $GITHUB_STEP_SUMMARY
+          [ -d "substack/output/current/substack_notes" ] && echo "  - substack_notes/ (21 notes for the week, 3/day)" >> $GITHUB_STEP_SUMMARY
+          [ -d "substack/output/current/substack_posts" ] && echo "  - substack_posts/ (4-5 posts: Sat/Tue/Wed/Thu/Fri)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "### Core Data" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/signals.json" ] && echo "- ✅ signals.json" >> $GITHUB_STEP_SUMMARY
-          [ -f "trades/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat trades/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
-          [ -d "trades/charts" ] && echo "- ✅ charts/ ($(ls trades/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
+          [ -f "scanner/output/signals.json" ] && echo "- ✅ signals.json" >> $GITHUB_STEP_SUMMARY
+          [ -f "twitter/output/content_queue.json" ] && echo "- ✅ content_queue.json ($(cat twitter/output/content_queue.json | grep -c '"id"') tweets)" >> $GITHUB_STEP_SUMMARY
+          [ -d "twitter/output/charts" ] && echo "- ✅ charts/ ($(ls twitter/output/charts/*.png 2>/dev/null | wc -l) images)" >> $GITHUB_STEP_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Weekly Workflow" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Day | Action | File |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Saturday | Publish newsletter | trades/current/newsletter.html |" >> $GITHUB_STEP_SUMMARY
-          echo "| Tuesday | Post Substack note | trades/current/substack_notes/tuesday_note.md |" >> $GITHUB_STEP_SUMMARY
-          echo "| Thursday | Post Substack note | trades/current/substack_notes/thursday_note.md |" >> $GITHUB_STEP_SUMMARY
+          echo "| Saturday | Publish newsletter + Weekly Recap post + 3 notes | substack/output/current/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Sunday | 3 notes | substack/output/current/substack_notes/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Monday | 3 notes | substack/output/current/substack_notes/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tuesday | DD/Stock Dive post + 3 notes | substack/output/current/substack_posts/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Wednesday | Theme Deep Dive post + 3 notes | substack/output/current/substack_posts/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Thursday | Stock Dive/Portfolio post + 3 notes | substack/output/current/substack_posts/ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Friday | Quick Take (optional) + 3 notes | substack/output/current/ |" >> $GITHUB_STEP_SUMMARY
           echo "| Daily | Auto-post tweets | Via daily_post.yml |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Completed:** $(date -u)" >> $GITHUB_STEP_SUMMARY
@@ -514,8 +525,8 @@ jobs:
           echo "⚠️ Friday Scan FAILED - sending notification..."
 
           # Check if email_notifier.py exists and email vars are set
-          if [ -f "distribution/email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
-            python -m distribution.email_notifier \
+          if [ -f "utils/email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
+            python -m utils.email_notifier \
               --subject "⚠️ Friday Scan FAILED - $(date '+%Y-%m-%d')" \
               --body "The Friday weekly scan workflow failed. Check GitHub Actions for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               || echo "Email notification failed"

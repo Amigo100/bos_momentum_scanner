@@ -18,20 +18,44 @@ from pathlib import Path
 import pandas as pd
 import yfinance as yf
 
-# Resolve paths
+# Resolve paths — section-specific output directories
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
-TRADES_DIR = PROJECT_ROOT / "trades"
-PORTFOLIO_CSV = TRADES_DIR / "portfolio.csv"
-EQUITY_CSV = TRADES_DIR / "equity_curve.csv"
+PORTFOLIO_OUTPUT = PROJECT_ROOT / "portfolio" / "output"
+PORTFOLIO_CSV = PORTFOLIO_OUTPUT / "portfolio.csv"
+EQUITY_CSV = PORTFOLIO_OUTPUT / "equity_curve.csv"
+
+# Legacy fallback paths (used if section dirs don't have the files yet)
+LEGACY_TRADES_DIR = PROJECT_ROOT / "trades"
+LEGACY_PORTFOLIO_CSV = LEGACY_TRADES_DIR / "portfolio.csv"
+LEGACY_EQUITY_CSV = LEGACY_TRADES_DIR / "equity_curve.csv"
 
 ALLOC_PER_TRADE = 5000.0  # £5,000 per position
 
 
+def _resolve_portfolio_csv():
+    """Find portfolio.csv: prefer section-specific, fallback to legacy trades/."""
+    if PORTFOLIO_CSV.exists():
+        return PORTFOLIO_CSV
+    if LEGACY_PORTFOLIO_CSV.exists():
+        return LEGACY_PORTFOLIO_CSV
+    return PORTFOLIO_CSV  # Will error naturally if neither exists
+
+
+def _resolve_equity_csv():
+    """Find equity_curve.csv: prefer section-specific, fallback to legacy trades/."""
+    if EQUITY_CSV.exists():
+        return EQUITY_CSV
+    if LEGACY_EQUITY_CSV.exists():
+        return LEGACY_EQUITY_CSV
+    return EQUITY_CSV  # Will be created if it doesn't exist
+
+
 def load_trades():
     """Load all trades from portfolio.csv."""
+    portfolio_path = _resolve_portfolio_csv()
     trades = []
-    with open(PORTFOLIO_CSV, "r") as f:
+    with open(portfolio_path, "r") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row.get("ticker"):
@@ -51,8 +75,9 @@ def load_trades():
 def load_existing_curve():
     """Load existing equity_curve.csv entries as a dict keyed by date."""
     existing = {}
-    if EQUITY_CSV.exists():
-        with open(EQUITY_CSV, "r") as f:
+    equity_path = _resolve_equity_csv()
+    if equity_path.exists():
+        with open(equity_path, "r") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if row.get("date"):
@@ -222,9 +247,11 @@ def main():
     print("  Equity Curve Backfill")
     print("=" * 60)
 
-    if not PORTFOLIO_CSV.exists():
-        print(f"  ERROR: {PORTFOLIO_CSV} not found")
+    portfolio_path = _resolve_portfolio_csv()
+    if not portfolio_path.exists():
+        print(f"  ERROR: portfolio.csv not found at {PORTFOLIO_CSV} or {LEGACY_PORTFOLIO_CSV}")
         sys.exit(1)
+    print(f"  Portfolio CSV: {portfolio_path}")
 
     trades = load_trades()
     print(f"  Loaded {len(trades)} trades from portfolio.csv")
@@ -275,6 +302,9 @@ def main():
         "total_return_pct", "spy_value", "spy_return_pct", "alpha_pct",
         "qqq_value", "qqq_return_pct", "alpha_vs_qqq_pct",
     ]
+
+    # Ensure output directory exists
+    EQUITY_CSV.parent.mkdir(parents=True, exist_ok=True)
 
     with open(EQUITY_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)

@@ -144,8 +144,8 @@ else
 fi
 
 # Check required files
-if [ ! -f "core/scanner.py" ]; then
-    log_error "core/scanner.py not found in current directory"
+if [ ! -f "scanner/scanner.py" ]; then
+    log_error "scanner/scanner.py not found in current directory"
     exit 1
 fi
 
@@ -172,8 +172,8 @@ else
     SCANNER_ARGS="$SCANNER_ARGS --web-search"
 fi
 
-log_step "python3 -m core.scanner $SCANNER_ARGS"
-python3 -m core.scanner $SCANNER_ARGS
+log_step "python3 -m scanner.scanner $SCANNER_ARGS"
+python3 -m scanner.scanner $SCANNER_ARGS
 
 log_success "Scanner complete (DD results applied, portfolio updated)"
 
@@ -186,13 +186,13 @@ if [ "$SKIP_CHARTS" = true ]; then
 else
     log_header "STEP 1.5: Generating Funnel Graphic"
 
-    if [ -f "content/funnel_graphic.py" ]; then
-        log_step "python3 -m content.funnel_graphic"
-        python3 -m content.funnel_graphic || {
+    if [ -f "twitter/funnel_graphic.py" ]; then
+        log_step "python3 -m twitter.funnel_graphic"
+        python3 -m twitter.funnel_graphic || {
             log_warning "Funnel graphic generation failed - continuing anyway"
         }
     else
-        log_warning "content/funnel_graphic.py not found, skipping"
+        log_warning "twitter/funnel_graphic.py not found, skipping"
     fi
 fi
 
@@ -205,23 +205,18 @@ if [ "$SKIP_CHARTS" = true ]; then
 else
     log_header "STEP 2: Capturing TradingView Charts"
 
-    if [ -f "content/chart_capture.py" ]; then
+    if [ -f "twitter/chart_capture.py" ]; then
         # Extract tickers from latest signals
-        if [ -f "trades/signals.json" ]; then
-            log_step "python3 -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless"
-            python3 -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless || {
-                log_warning "Chart capture failed - continuing anyway"
-            }
-        elif [ -f "trades/latest_signals.json" ]; then
-            log_step "python3 -m content.chart_capture --tickers-from trades/latest_signals.json --include-portfolio --headless"
-            python3 -m content.chart_capture --tickers-from trades/latest_signals.json --include-portfolio --headless || {
+        if [ -f "scanner/output/signals.json" ]; then
+            log_step "python3 -m twitter.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --headless"
+            python3 -m twitter.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --headless || {
                 log_warning "Chart capture failed - continuing anyway"
             }
         else
             log_warning "No signals.json found, skipping chart capture"
         fi
     else
-        log_warning "content/chart_capture.py not found, skipping"
+        log_warning "twitter/chart_capture.py not found, skipping"
     fi
 fi
 
@@ -234,18 +229,18 @@ if [ "$SKIP_NEWSLETTER" = true ]; then
 else
     log_header "STEP 3: Generating Market Analysis (Claude + Web Search)"
 
-    if [ -f "content/market_analyzer.py" ]; then
+    if [ -f "substack/market_analyzer.py" ]; then
         MARKET_ARGS="--save"
         if [ "$TEST_MODE" = true ]; then
             log_warning "Test mode: Skipping market analysis API call"
         else
-            log_step "python3 -m content.market_analyzer $MARKET_ARGS"
-            python3 -m content.market_analyzer $MARKET_ARGS || {
+            log_step "python3 -m substack.market_analyzer $MARKET_ARGS"
+            python3 -m substack.market_analyzer $MARKET_ARGS || {
                 log_warning "Market analysis failed - continuing anyway"
             }
         fi
     else
-        log_warning "content/market_analyzer.py not found, skipping"
+        log_warning "substack/market_analyzer.py not found, skipping"
     fi
 fi
 
@@ -258,7 +253,7 @@ if [ "$SKIP_NEWSLETTER" = true ]; then
 else
     log_header "STEP 4: Newsletter Compilation (Market + Briefing + DD → HTML)"
 
-    if [ -f "content/newsletter_compiler.py" ]; then
+    if [ -f "substack/newsletter_compiler.py" ]; then
         NEWSLETTER_ARGS=""
         if [ "$TEST_MODE" = true ]; then
             # Basic compilation only (no LLM)
@@ -268,12 +263,12 @@ else
             NEWSLETTER_ARGS="--full"
         fi
 
-        log_step "python3 -m content.newsletter_compiler $NEWSLETTER_ARGS"
-        python3 -m content.newsletter_compiler $NEWSLETTER_ARGS || {
+        log_step "python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS"
+        python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS || {
             log_warning "Newsletter compilation failed - continuing anyway"
         }
     else
-        log_warning "content/newsletter_compiler.py not found, skipping"
+        log_warning "substack/newsletter_compiler.py not found, skipping"
     fi
 fi
 
@@ -283,20 +278,20 @@ fi
 
 log_header "STEP 4.5: Generating DD HTML Posts (per buy signal)"
 
-if [ -f "content/dd_post_generator.py" ]; then
+if [ -f "substack/dd_post_generator.py" ]; then
     DD_ARGS=""
     if [ "$TEST_MODE" = true ]; then
         DD_ARGS="--dry-run"
         log_warning "Test mode: dry-run only"
     fi
 
-    log_step "python3 -m content.dd_post_generator $DD_ARGS"
-    python3 -m content.dd_post_generator $DD_ARGS || {
+    log_step "python3 -m substack.dd_post_generator $DD_ARGS"
+    python3 -m substack.dd_post_generator $DD_ARGS || {
         log_warning "DD post generation failed - continuing anyway"
     }
     log_success "DD posts generated"
 else
-    log_warning "content/dd_post_generator.py not found, skipping"
+    log_warning "substack/dd_post_generator.py not found, skipping"
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -305,24 +300,68 @@ fi
 
 log_header "STEP 5: Generating Tweets (3 accounts × 35 tweets)"
 
-TWEET_ARGS="--signals trades/signals.json --portfolio trades/portfolio.csv --output trades/"
+TWEET_ARGS="--signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv --output twitter/output/"
 
-log_step "python3 -m content.tweet_generator $TWEET_ARGS"
-python3 -m content.tweet_generator $TWEET_ARGS
+log_step "python3 -m twitter.tweet_generator $TWEET_ARGS"
+python3 -m twitter.tweet_generator $TWEET_ARGS
 log_success "Tweet generation complete (tweet_generator v2)"
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# STEP 5.5: GENERATE SUBSTACK NOTES (Tuesday + Thursday)
+# STEP 5.5: GENERATE CONTENT PRODUCTION GUIDE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-log_header "STEP 5.5: Generating Substack Notes (Tuesday + Thursday)"
+log_header "STEP 5.5: Generating Content Production Guide"
 
-if [ -f "content/substack_notes_generator.py" ]; then
-    log_step "python3 -m content.substack_notes_generator"
-    python3 -m content.substack_notes_generator
-    log_success "Substack notes generated"
+if [ -f "substack/content_production_guide.py" ]; then
+    GUIDE_ARGS=""
+    if [ "$TEST_MODE" = true ]; then
+        GUIDE_ARGS="--dry-run"
+        log_warning "Test mode: dry-run only"
+    fi
+
+    log_step "python3 -m substack.content_production_guide $GUIDE_ARGS"
+    python3 -m substack.content_production_guide $GUIDE_ARGS || {
+        log_warning "Content production guide generation failed - continuing anyway"
+    }
+    log_success "Content production guide generated"
+    log_warning "Generate posts on-demand: attach guide to Claude.ai (Opus 4.6)"
 else
-    log_warning "content/substack_notes_generator.py not found, skipping"
+    log_warning "substack/content_production_guide.py not found, skipping"
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# STEP 5.6: GENERATE SUBSTACK NOTES BATCH (21 notes for the week)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+log_header "STEP 5.6: Generating Substack Notes Batch (21 notes for the week)"
+
+if [ -f "substack/notes_batch_generator.py" ]; then
+    NOTES_ARGS=""
+    if [ "$TEST_MODE" = true ]; then
+        NOTES_ARGS="--no-llm"
+        log_warning "Test mode: Using --no-llm for notes"
+    fi
+
+    log_step "python3 -m substack.notes_batch_generator $NOTES_ARGS"
+    python3 -m substack.notes_batch_generator $NOTES_ARGS || {
+        log_warning "Notes batch generation failed - continuing anyway"
+        # Fallback to legacy 2-note generator
+        log_step "Falling back to legacy notes generator..."
+        if [ -f "substack/notes_generator.py" ]; then
+            python3 -m substack.notes_generator || {
+                log_warning "Legacy notes generation also failed"
+            }
+        fi
+    }
+    log_success "Substack notes batch generated"
+else
+    # Fallback to legacy 2-note generator
+    log_warning "Batch generator not found, using legacy 2-note generator"
+    if [ -f "substack/notes_generator.py" ]; then
+        log_step "python3 -m substack.notes_generator"
+        python3 -m substack.notes_generator
+        log_success "Legacy substack notes generated"
+    fi
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -335,7 +374,10 @@ if [ "$NO_PUSH" = true ]; then
     log_warning "Skipping git push (--no-push)"
 else
     log_step "Staging changes..."
-    git add trades/ 2>/dev/null || true
+    git add scanner/output/ 2>/dev/null || true
+    git add portfolio/output/ 2>/dev/null || true
+    git add substack/output/ 2>/dev/null || true
+    git add twitter/output/ 2>/dev/null || true
     git add *.json 2>/dev/null || true
 
     if git diff --cached --quiet; then
@@ -364,35 +406,48 @@ fi
 
 log_header "PIPELINE COMPLETE"
 
-echo "  Generated files (new structure):"
-echo "    • trades/current/newsletter.html       ← Copy to Substack Saturday"
-echo "    • trades/current/newsletter_briefing.md"
-echo "    • trades/current/signals.json"
-echo "    • trades/current/substack_posts/dd_*.html  ← DD posts per signal"
-echo "    • trades/current/substack_notes/"
-echo "        ├── tuesday_note.md                ← Copy to Substack Tuesday"
-echo "        └── thursday_note.md               ← Copy to Substack Thursday"
-[ -d "trades/current/charts" ] && echo "    • trades/current/charts/*.png"
-[ -d "trades/current/tweets" ] && echo "    • trades/current/tweets/content_queue.json"
+echo "  Generated files:"
+echo "    • substack/output/current/newsletter.html             ← Substack Saturday"
+echo "    • scanner/output/current/newsletter_briefing.md"
+echo "    • scanner/output/signals.json"
+echo "    • substack/output/current/content_production_guide.md ← Attach to Claude.ai"
+echo "    • substack/output/current/substack_posts/"
+echo "        └── dd_*.html                                      ← DD posts per signal"
+echo "    • substack/output/current/substack_notes/"
+echo "        ├── *_1_*.md, *_2_*.md, *_3_*.md                   ← 21 notes (3/day)"
+echo "        ├── tuesday_note.md                                ← Legacy compat"
+echo "        ├── thursday_note.md                               ← Legacy compat"
+echo "        └── notes_manifest.json                            ← Batch tracking"
+[ -d "twitter/output/charts" ] && echo "    • twitter/output/charts/*.png"
 echo ""
-echo "  Archived to: trades/weeks/$(date '+%G-W%V')/"
+echo "  Archived to: scanner/output/weeks/$(date '+%G-W%V')/"
 echo ""
 
 if [ "$TEST_MODE" = true ]; then
     echo -e "${YELLOW}  ⚠ This was a TEST run - no real API calls made${NC}"
 else
     echo "  Pipeline completed with full automation:"
-    echo "    ✅ Scanner ran with DD (only DD-PASS signals in portfolio)"
-    echo "    ✅ Market analysis generated via Claude + web search"
+    echo "    ✅ Scanner ran with DD"
+    echo "    ✅ Market analysis generated via Claude"
     echo "    ✅ Newsletter compiled with embedded charts"
+    echo "    ✅ Content production guide generated (adaptive schedule for the week)"
+    echo "    ✅ 21 Substack notes generated (3/day)"
     echo "    ✅ 35 tweets generated for the week"
-    echo "    ✅ Substack notes for Tuesday + Thursday"
     echo ""
-    echo "  Weekly workflow:"
-    echo "    Saturday:  Copy trades/current/newsletter.html to Substack"
-    echo "    Tuesday:   Copy trades/current/substack_notes/tuesday_note.md to Substack Notes"
-    echo "    Thursday:  Copy trades/current/substack_notes/thursday_note.md to Substack Notes"
+    echo "  Daily content workflow (handbook v5 — 4-category adaptive system):"
+    echo "    1. Open content_production_guide.md → check today's category + topic"
+    echo "    2. Open content_prompt_handbook_v5.md → copy the matching category prompt"
+    echo "    3. Attach content_production_guide.md to Claude.ai (Opus 4.6 + extended thinking)"
+    echo "    4. Paste prompt → get HTML post + 3 HTML notes"
+    echo "    5. Paste into Substack"
+    echo ""
+    echo "  Adaptive content calendar (categories assigned by scanner output):"
+    echo "    Sunday:    Performance Review (newsletter) + 3 notes"
+    echo "    Mon-Sat:   Ticker Deep Dive / Theme Rotation / Educational + 3 notes"
+    echo "    Saturday:  Notes only (3 notes, no post)"
     echo "    Daily:     Tweets auto-post via GitHub Actions"
+    echo ""
+    echo "  Reference: substack/docs/content_prompt_handbook_v5.md"
 fi
 
 echo ""

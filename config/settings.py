@@ -21,8 +21,22 @@ from typing import Dict, List
 # ═══════════════════════════════════════════════════════════════════════════════
 
 BASE_DIR = Path(__file__).resolve().parent.parent  # Project root (one level up from config/)
+TICKERS_FILE = BASE_DIR / "scanner" / "complete_tickers.txt"
+
+# Section output roots (canonical definitions in config/output_paths.py)
+from config.output_paths import (
+    SCANNER_OUTPUT, PORTFOLIO_OUTPUT, SUBSTACK_OUTPUT, TWITTER_OUTPUT,
+    SIGNALS_FILE, DAILY_SIGNALS_FILE, ANALYSIS_LOG,
+    PORTFOLIO_FILE, DAILY_PORTFOLIO_FILE, SHEETS_EXPORT_FILE, EQUITY_CURVE_FILE,
+    PORTFOLIO_BACKUP_DIR, DAILY_PORTFOLIO_BACKUP_DIR,
+    LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
+    CHARTS_DIR, FAILED_TWEETS_FILE, WORKFLOW_STATUS_FILE,
+    CONTENT_QUEUE_FILE, DAILY_QUEUE_FILE,
+    TWEET_TRACKING_FILE, CELEBRATIONS_FILE,
+)
+
+# Legacy alias — DEPRECATED, kept for backward compat
 TRADES_DIR = BASE_DIR / "trades"
-TICKERS_FILE = BASE_DIR / "complete_tickers.txt"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -143,7 +157,7 @@ MAX_PORTFOLIO_BACKUPS = 30     # Keep last N portfolio backups
 
 STARTING_CAPITAL_PER_POSITION = 5000.0  # £5,000 per position
 CURRENCY_SYMBOL = "£"
-EQUITY_CURVE_FILE = "equity_curve.csv"
+# EQUITY_CURVE_FILE imported from config.output_paths (full Path to portfolio/output/equity_curve.csv)
 
 # Content staleness
 TWEET_STALENESS_DAYS = 3       # Skip tweets more than N days past scheduled date
@@ -1238,7 +1252,7 @@ XAI_BASE_URL = "https://api.x.ai/v1"
 # Cost controls
 DAILY_COST_LIMIT_USD = 1.00               # Hard limit — kills generation if exceeded
 MONTHLY_COST_LIMIT_USD = 30.00            # Alert threshold
-COST_LOG_FILE = TRADES_DIR / "live_cost_log.json"
+COST_LOG_FILE = LIVE_COST_LOG_FILE  # Alias for backward compat
 
 # Content controls
 MAX_TWEETS_PER_DAY = 12                   # Hard cap across all accounts
@@ -1272,8 +1286,7 @@ CHART_IMG_WIDTH = 1200                    # pixels (Chart-IMG Pro tier, 16:9 for
 CHART_IMG_HEIGHT = 675                    # pixels
 CHART_IMG_INTERVAL = "1W"                 # Default weekly
 
-# Live queue path
-LIVE_QUEUE_FILE = TRADES_DIR / "live_content_queue.json"
+# LIVE_QUEUE_FILE imported from config.output_paths
 
 # Tracked themes for Grok context gathering
 TRACKED_THEMES: List[str] = [

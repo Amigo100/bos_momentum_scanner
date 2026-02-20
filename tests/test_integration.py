@@ -28,7 +28,7 @@ import pytest
 
 # ── Module imports (units under test) ────────────────────────────────────────
 
-from content.models import (
+from twitter.models import (
     Tweet,
     ValidationResult,
     SlotAssignment,
@@ -38,7 +38,7 @@ from content.models import (
     VALID_CATEGORIES,
     INTERNAL_TERM_PATTERNS,
 )
-from content.tweet_generator import (
+from twitter.tweet_generator import (
     _validate_tweet,
     _plan_weekly_schedule,
     _build_content_data,
@@ -57,7 +57,7 @@ from config.banned_terms import (
     check_banned_phrases,
     check_loser_focus,
 )
-from distribution.twitter_poster import (
+from twitter.poster import (
     DAILY_SLOTS,
     WEEKLY_SLOTS,
     get_queue_for_slot,
@@ -391,10 +391,10 @@ class TestFridayPipelineIntegration:
         assert sig["symbol"] == "VNET"
 
         # Mock the notification function to verify it's called correctly
-        with patch("distribution.notifications.send_sell_notification") as mock_notify:
+        with patch("utils.notifications.send_sell_notification") as mock_notify:
             mock_notify.return_value = {"email": "sent", "whatsapp": "sent"}
 
-            from distribution.notifications import send_sell_notification
+            from utils.notifications import send_sell_notification
 
             result = send_sell_notification(
                 ticker=sig["symbol"],
@@ -579,13 +579,13 @@ class TestDailyPipelineIntegration:
 
         sig = sell_signals[0]
 
-        with patch("distribution.notifications._send_email") as mock_email, \
-             patch("distribution.notifications._send_whatsapp") as mock_whatsapp:
+        with patch("utils.notifications._send_email") as mock_email, \
+             patch("utils.notifications._send_whatsapp") as mock_whatsapp:
 
             mock_email.return_value = True
             mock_whatsapp.return_value = True
 
-            from distribution.notifications import send_sell_notification
+            from utils.notifications import send_sell_notification
 
             result = send_sell_notification(
                 ticker=sig["symbol"],
@@ -1079,7 +1079,7 @@ class TestQQQBenchmark:
 
     def test_equity_snapshot_qqq_fields_exist(self):
         """EquitySnapshot has qqq_value, qqq_return_pct, alpha_vs_qqq_pct."""
-        from core.portfolio_manager import EquitySnapshot
+        from portfolio.manager import EquitySnapshot
 
         snap = EquitySnapshot(date="2026-02-14", nav=50000.0)
         assert hasattr(snap, "qqq_value")
@@ -1091,7 +1091,7 @@ class TestQQQBenchmark:
 
     def test_equity_snapshot_csv_round_trip(self):
         """EquitySnapshot serializes and deserializes QQQ fields via CSV."""
-        from core.portfolio_manager import EquitySnapshot
+        from portfolio.manager import EquitySnapshot
 
         original = EquitySnapshot(
             date="2026-02-14",
@@ -1116,7 +1116,7 @@ class TestQQQBenchmark:
 
     def test_equity_snapshot_backward_compat(self):
         """Old CSV rows without QQQ fields load with defaults (0.0)."""
-        from core.portfolio_manager import EquitySnapshot
+        from portfolio.manager import EquitySnapshot
 
         # Simulate old CSV row without QQQ fields
         old_row = {
@@ -1143,7 +1143,7 @@ class TestQQQBenchmark:
 
     def test_qqq_fields_in_snapshot_fields_list(self):
         """EQUITY_SNAPSHOT_FIELDS includes QQQ field names."""
-        from core.portfolio_manager import EQUITY_SNAPSHOT_FIELDS
+        from portfolio.manager import EQUITY_SNAPSHOT_FIELDS
 
         assert "qqq_value" in EQUITY_SNAPSHOT_FIELDS
         assert "qqq_return_pct" in EQUITY_SNAPSHOT_FIELDS
@@ -1156,7 +1156,7 @@ class TestQQQBenchmark:
         real market data, so instead verify the snapshot fields flow into
         the summary dict format by checking the field list.
         """
-        from core.portfolio_manager import EquitySnapshot
+        from portfolio.manager import EquitySnapshot
 
         snap = EquitySnapshot(
             date="2026-02-14",
@@ -1231,7 +1231,7 @@ class TestDDPostGenerator:
 
     def test_generate_dd_post_basic(self, sample_dd_signal):
         """generate_dd_post() produces valid HTML with all sections."""
-        from content.dd_post_generator import generate_dd_post
+        from substack.dd_post_generator import generate_dd_post
 
         html = generate_dd_post(sample_dd_signal)
 
@@ -1247,7 +1247,7 @@ class TestDDPostGenerator:
 
     def test_generate_dd_post_with_themes(self, sample_dd_signal, sample_themes):
         """DD post includes theme context with progress bars when themes provided."""
-        from content.dd_post_generator import generate_dd_post
+        from substack.dd_post_generator import generate_dd_post
 
         html = generate_dd_post(sample_dd_signal, sample_themes)
 
@@ -1264,7 +1264,7 @@ class TestDDPostGenerator:
 
     def test_dd_post_marketing_safety(self, sample_dd_signal):
         """DD post HTML passes marketing vocabulary validation."""
-        from content.dd_post_generator import generate_dd_post
+        from substack.dd_post_generator import generate_dd_post
         from config.marketing_vocabulary import validate_content as _validate_content
         import re
 
@@ -1278,7 +1278,7 @@ class TestDDPostGenerator:
 
     def test_dd_post_missing_fields_graceful(self):
         """DD post handles missing DD fields gracefully with 'Analysis pending'."""
-        from content.dd_post_generator import generate_dd_post
+        from substack.dd_post_generator import generate_dd_post
 
         minimal_signal = {
             "symbol": "TEST",
@@ -1296,7 +1296,7 @@ class TestDDPostGenerator:
 
     def test_progress_bar_generation(self):
         """_progress_bar() generates correct width percentages."""
-        from content.dd_post_generator import _progress_bar
+        from substack.dd_post_generator import _progress_bar
 
         bar = _progress_bar(8.0, 10.0, "Test Score", "#2DD4BF")
         assert "width:80%" in bar
@@ -1313,7 +1313,7 @@ class TestDDPostGenerator:
 
     def test_sanitize_text_replaces_internal_terms(self):
         """_sanitize_text() replaces internal terminology with public alternatives."""
-        from content.dd_post_generator import _sanitize_text
+        from substack.dd_post_generator import _sanitize_text
 
         # Test known internal term replacement
         result = _sanitize_text("STRONG BUY signal detected")
@@ -1321,7 +1321,7 @@ class TestDDPostGenerator:
 
     def test_dd_post_signal_badge(self):
         """Signal badge renders correctly for PASS and CONSIDER."""
-        from content.dd_post_generator import _signal_badge
+        from substack.dd_post_generator import _signal_badge
 
         pass_badge = _signal_badge("PASS")
         assert "GREEN SIGNAL" in pass_badge
@@ -1331,7 +1331,7 @@ class TestDDPostGenerator:
 
     def test_dd_post_no_banned_terms_in_footer(self):
         """Footer uses approved marketing language only."""
-        from content.dd_post_generator import generate_dd_post
+        from substack.dd_post_generator import generate_dd_post
         import re
 
         signal = {

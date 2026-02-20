@@ -30,7 +30,7 @@ from pathlib import Path
 import pytest
 
 try:
-    from content.tweet_generator import (
+    from twitter.tweet_generator import (
         generate_weekly_content,
         DATA_DEPENDENT_CATEGORIES,
     )
@@ -40,7 +40,7 @@ except ImportError:
 
 skipif_no_imports = pytest.mark.skipif(
     not _IMPORTS_OK,
-    reason="content.tweet_generator not importable",
+    reason="twitter.tweet_generator not importable",
 )
 
 
@@ -320,7 +320,7 @@ class TestFullPipelineIntegration:
         # ── Mock: Anthropic client → _MockClient ─────────────────────────
         # Patch at the module level where it's imported
         monkeypatch.setattr(
-            "content.tweet_generator.anthropic.Anthropic",
+            "twitter.tweet_generator.anthropic.Anthropic",
             _MockClient,
         )
 
@@ -340,7 +340,7 @@ class TestFullPipelineIntegration:
             return attached
 
         monkeypatch.setattr(
-            "content.tweet_generator._attach_chart_paths",
+            "twitter.tweet_generator._attach_chart_paths",
             _mock_attach_charts,
         )
 

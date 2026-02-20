@@ -30,7 +30,7 @@ from pathlib import Path
 import pytest
 
 try:
-    from content.models import (
+    from twitter.models import (
         ContentData,
         Tweet,
         ValidationResult,
@@ -38,7 +38,7 @@ try:
         CHART_REQUIRED_CATEGORIES,
         VALID_CATEGORIES,
     )
-    from content.tweet_generator import (
+    from twitter.tweet_generator import (
         _build_content_data,
         _prepare_slot_data,
         _validate_tweet,
@@ -64,7 +64,7 @@ except ImportError:
 
 skipif_no_imports = pytest.mark.skipif(
     not _IMPORTS_OK,
-    reason="content.models or content.tweet_generator not importable",
+    reason="twitter.models or twitter.tweet_generator not importable",
 )
 
 
@@ -762,7 +762,7 @@ class TestChartFallback:
 
     def test_performance_not_dropped_without_charts(self, tmp_path):
         """PERFORMANCE tweets are NOT dropped even without charts (soft requirement)."""
-        from content.tweet_generator import _write_queues, ACCOUNT_QUEUES
+        from twitter.tweet_generator import _write_queues, ACCOUNT_QUEUES
 
         tweet = _make_tweet(
             text="$WCC +11.9%. Scanner receipts. NFA!",

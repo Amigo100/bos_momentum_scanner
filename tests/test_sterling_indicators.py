@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from core.sterling_indicators import (
+from scanner.sterling_indicators import (
     _wma,
     calculate_hma,
     calculate_hma_slope,

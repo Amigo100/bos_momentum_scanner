@@ -28,18 +28,18 @@ if [ "$1" == "--login" ]; then
     echo "  📌 Log in, wait for indicators to load, then the script continues."
     echo ""
     rm -rf .playwright_profile  # Clear old session
-    python chart_capture.py --tickers-from trades/signals.json --include-portfolio --save-cookies
+    python -m twitter.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --save-cookies
 else
     # Check if playwright profile exists
     if [ ! -d ".playwright_profile" ]; then
         echo "  ⚠️  No saved session found. Running in login mode..."
         echo "  📌 Log in to TradingView when the browser opens."
         echo ""
-        python chart_capture.py --tickers-from trades/signals.json --include-portfolio --save-cookies
+        python -m twitter.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --save-cookies
     else
         echo "  ✓ Using saved TradingView session (headless)"
         echo ""
-        python chart_capture.py --tickers-from trades/signals.json --include-portfolio --headless --skip-wait
+        python -m twitter.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --headless --skip-wait
     fi
 fi
 
@@ -47,12 +47,12 @@ fi
 echo ""
 echo "═══════════════════════════════════════════════════════════════════════════════"
 
-if [ -f "trades/charts/chart_manifest.json" ]; then
-    CHART_COUNT=$(ls trades/charts/*.png 2>/dev/null | wc -l | tr -d ' ')
+if [ -f "twitter/output/charts/chart_manifest.json" ]; then
+    CHART_COUNT=$(ls twitter/output/charts/*.png 2>/dev/null | wc -l | tr -d ' ')
     echo "  ✅ Captured $CHART_COUNT charts"
     echo ""
-    echo "  📁 trades/charts/"
-    ls trades/charts/*.png 2>/dev/null | while read f; do echo "     $(basename $f)"; done | head -15
+    echo "  📁 twitter/output/charts/"
+    ls twitter/output/charts/*.png 2>/dev/null | while read f; do echo "     $(basename $f)"; done | head -15
     echo ""
     echo "  📱 Tweets: Charts auto-attached via content_queue.json"
     echo "  📰 Newsletter: Paste into Substack manually"

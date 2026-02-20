@@ -159,20 +159,20 @@ elif [ -d "$LEGACY_TRADES_DIR/weeks" ]; then
   substack_archive_source="$LEGACY_TRADES_DIR/weeks"
 fi
 
-# Collect all week names from both sources
-declare -A all_weeks
+# Collect all week names from both sources (POSIX-compatible, no declare -A)
+all_weeks_file=$(mktemp)
 if [ -n "$archive_source" ]; then
   for week_dir in "$archive_source"/2026-W*; do
-    [ -d "$week_dir" ] && all_weeks[$(basename "$week_dir")]=1
+    [ -d "$week_dir" ] && basename "$week_dir" >> "$all_weeks_file"
   done
 fi
 if [ -n "$substack_archive_source" ] && [ "$substack_archive_source" != "$archive_source" ]; then
   for week_dir in "$substack_archive_source"/2026-W*; do
-    [ -d "$week_dir" ] && all_weeks[$(basename "$week_dir")]=1
+    [ -d "$week_dir" ] && basename "$week_dir" >> "$all_weeks_file"
   done
 fi
 
-for week in "${!all_weeks[@]}"; do
+for week in $(sort -u "$all_weeks_file" 2>/dev/null); do
   mkdir -p "$DATA_DIR/archive/$week"
 
   # Scanner archive: signals, report
@@ -201,6 +201,7 @@ for week in "${!all_weeks[@]}"; do
 
   echo "   + archive/$week/"
 done
+rm -f "$all_weeks_file"
 
 # ─── Generate manifest ───
 echo "{\"bundled_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"sources\": {\"portfolio\": \"$PORTFOLIO_DIR\", \"scanner\": \"$SCANNER_DIR\", \"twitter\": \"$TWITTER_DIR\", \"substack\": \"$SUBSTACK_DIR\"}}" > "$DATA_DIR/manifest.json"

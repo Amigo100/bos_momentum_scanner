@@ -65,6 +65,7 @@ export function SubstackViewer({
     New: { bg: "rgba(52, 211, 153, 0.15)", color: "var(--accent-green)" },
     Legacy: { bg: "rgba(100, 116, 139, 0.15)", color: "var(--text-muted)" },
     "DD Post": { bg: "rgba(96, 165, 250, 0.15)", color: "var(--accent-blue)" },
+    Note: { bg: "rgba(251, 191, 36, 0.15)", color: "var(--accent-amber)" },
   };
 
   return (

@@ -715,6 +715,8 @@ export interface SubstackNote {
   title: string;
   content: string;
   week: string;
+  format: "md" | "html";
+  size?: number;
 }
 
 export interface SubstackContent {
@@ -766,19 +768,23 @@ export function getSubstackContent(week?: string): SubstackContentResult {
     }
   }
 
-  // Notes
+  // Notes (md and html)
   const currentNotesDir = resolveDir(SUBSTACK_DIR, path.join("current", "substack_notes"));
   if (fs.existsSync(currentNotesDir)) {
     for (const file of fs.readdirSync(currentNotesDir)) {
-      if (file.endsWith(".md")) {
+      if (file.endsWith(".md") || file.endsWith(".html")) {
         const filePath = path.join(currentNotesDir, file);
         const content = readFile(filePath) || "";
-        const baseName = file.replace(".md", "");
+        const isHtml = file.endsWith(".html");
+        const baseName = file.replace(/\.(md|html)$/, "");
+        const stat = fs.statSync(filePath);
         notes.push({
           filename: file,
           title: NOTE_TITLES[baseName] || baseName.replace(/_/g, " "),
           content,
           week: "current",
+          format: isHtml ? "html" : "md",
+          size: stat.size,
         });
       }
     }
@@ -822,19 +828,23 @@ export function getSubstackContent(week?: string): SubstackContentResult {
         }
       }
 
-      // Notes
+      // Notes (md and html)
       const notesDir = path.join(weekDir, "substack_notes");
       if (fs.existsSync(notesDir)) {
         for (const file of fs.readdirSync(notesDir)) {
-          if (file.endsWith(".md")) {
+          if (file.endsWith(".md") || file.endsWith(".html")) {
             const filePath = path.join(notesDir, file);
             const content = readFile(filePath) || "";
-            const baseName = file.replace(".md", "");
+            const isHtml = file.endsWith(".html");
+            const baseName = file.replace(/\.(md|html)$/, "");
+            const stat = fs.statSync(filePath);
             notes.push({
               filename: file,
               title: NOTE_TITLES[baseName] || baseName.replace(/_/g, " "),
               content,
               week: w,
+              format: isHtml ? "html" : "md",
+              size: stat.size,
             });
           }
         }

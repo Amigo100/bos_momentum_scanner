@@ -118,12 +118,14 @@ elif [ -d "$LEGACY_TRADES_DIR/current/substack_posts" ]; then
   echo "   + current/substack_posts/ (from legacy)"
 fi
 
-# Substack notes
+# Substack notes (md and html)
 if [ -d "$SUBSTACK_DIR/current/substack_notes" ]; then
   cp "$SUBSTACK_DIR/current/substack_notes/"*.md "$DATA_DIR/current/substack_notes/" 2>/dev/null || true
+  cp "$SUBSTACK_DIR/current/substack_notes/"*.html "$DATA_DIR/current/substack_notes/" 2>/dev/null || true
   echo "   + current/substack_notes/ (from section)"
 elif [ -d "$LEGACY_TRADES_DIR/current/substack_notes" ]; then
   cp "$LEGACY_TRADES_DIR/current/substack_notes/"*.md "$DATA_DIR/current/substack_notes/" 2>/dev/null || true
+  cp "$LEGACY_TRADES_DIR/current/substack_notes/"*.html "$DATA_DIR/current/substack_notes/" 2>/dev/null || true
   echo "   + current/substack_notes/ (from legacy)"
 fi
 
@@ -202,6 +204,7 @@ for week in $(sort -u "$all_weeks_file" 2>/dev/null); do
     if [ -d "$substack_week/substack_notes" ]; then
       mkdir -p "$DATA_DIR/archive/$week/substack_notes"
       cp "$substack_week/substack_notes/"*.md "$DATA_DIR/archive/$week/substack_notes/" 2>/dev/null || true
+      cp "$substack_week/substack_notes/"*.html "$DATA_DIR/archive/$week/substack_notes/" 2>/dev/null || true
     fi
   fi
 

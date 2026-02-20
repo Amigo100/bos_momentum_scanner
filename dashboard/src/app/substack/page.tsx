@@ -93,33 +93,47 @@ export default function SubstackPage() {
             </div>
           ))}
 
-          {/* Notes (compact cards) */}
+          {/* Notes */}
           {currentNotes.length > 0 && (
             <div className="grid md:grid-cols-2 gap-4 mb-4">
-              {currentNotes.map((note) => (
-                <div key={`note-current-${note.filename}`} className="stat-card rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full font-medium"
-                      style={{
-                        background: "rgba(251, 191, 36, 0.15)",
-                        color: "var(--accent-amber)",
-                      }}
+              {currentNotes.map((note) =>
+                note.format === "html" ? (
+                  <SubstackViewer
+                    key={`note-current-${note.filename}`}
+                    post={{
+                      filename: note.filename,
+                      title: note.title,
+                      html: note.content,
+                      week: note.week,
+                      size: note.size || note.content.length,
+                    }}
+                    formatBadge="Note"
+                  />
+                ) : (
+                  <div key={`note-current-${note.filename}`} className="stat-card rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{
+                          background: "rgba(251, 191, 36, 0.15)",
+                          color: "var(--accent-amber)",
+                        }}
+                      >
+                        NOTE
+                      </span>
+                      <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                        {note.title}
+                      </span>
+                    </div>
+                    <pre
+                      className="text-xs leading-relaxed whitespace-pre-wrap overflow-auto"
+                      style={{ color: "var(--text-secondary)", maxHeight: 200 }}
                     >
-                      NOTE
-                    </span>
-                    <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                      {note.title}
-                    </span>
+                      {note.content}
+                    </pre>
                   </div>
-                  <pre
-                    className="text-xs leading-relaxed whitespace-pre-wrap overflow-auto"
-                    style={{ color: "var(--text-secondary)", maxHeight: 200 }}
-                  >
-                    {note.content}
-                  </pre>
-                </div>
-              ))}
+                )
+              )}
             </div>
           )}
 
@@ -272,36 +286,50 @@ export default function SubstackPage() {
                 {/* Notes */}
                 {weekNotes.length > 0 && (
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    {weekNotes.map((note) => (
-                      <div
-                        key={`note-${weekKey}-${note.filename}`}
-                        className="stat-card rounded-xl p-4"
-                      >
-                        <div className="flex items-center gap-2 mb-3">
-                          <span
-                            className="text-xs px-2 py-0.5 rounded-full font-medium"
-                            style={{
-                              background: "rgba(251, 191, 36, 0.15)",
-                              color: "var(--accent-amber)",
-                            }}
-                          >
-                            NOTE
-                          </span>
-                          <span
-                            className="text-sm font-semibold"
-                            style={{ color: "var(--text-primary)" }}
-                          >
-                            {note.title}
-                          </span>
-                        </div>
-                        <pre
-                          className="text-xs leading-relaxed whitespace-pre-wrap overflow-auto"
-                          style={{ color: "var(--text-secondary)", maxHeight: 200 }}
+                    {weekNotes.map((note) =>
+                      note.format === "html" ? (
+                        <SubstackViewer
+                          key={`note-${weekKey}-${note.filename}`}
+                          post={{
+                            filename: note.filename,
+                            title: note.title,
+                            html: note.content,
+                            week: note.week,
+                            size: note.size || note.content.length,
+                          }}
+                          formatBadge="Note"
+                        />
+                      ) : (
+                        <div
+                          key={`note-${weekKey}-${note.filename}`}
+                          className="stat-card rounded-xl p-4"
                         >
-                          {note.content}
-                        </pre>
-                      </div>
-                    ))}
+                          <div className="flex items-center gap-2 mb-3">
+                            <span
+                              className="text-xs px-2 py-0.5 rounded-full font-medium"
+                              style={{
+                                background: "rgba(251, 191, 36, 0.15)",
+                                color: "var(--accent-amber)",
+                              }}
+                            >
+                              NOTE
+                            </span>
+                            <span
+                              className="text-sm font-semibold"
+                              style={{ color: "var(--text-primary)" }}
+                            >
+                              {note.title}
+                            </span>
+                          </div>
+                          <pre
+                            className="text-xs leading-relaxed whitespace-pre-wrap overflow-auto"
+                            style={{ color: "var(--text-secondary)", maxHeight: 200 }}
+                          >
+                            {note.content}
+                          </pre>
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
 

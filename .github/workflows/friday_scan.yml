@@ -334,8 +334,8 @@ jobs:
         if: ${{ github.event.inputs.skip_newsletter != 'true' }}
         run: |
           if [ -f "substack/notes_batch_generator.py" ]; then
-            echo "Generating 21 Substack notes (3/day for the week)..."
-            python -m substack.notes_batch_generator || {
+            echo "Generating 21 Substack notes (3/day for the week) as HTML..."
+            python -m substack.notes_batch_generator --html || {
               echo "Batch generator failed, falling back to legacy 2-note generator..."
               python -m substack.notes_generator || echo "Legacy notes also failed (non-critical)"
             }

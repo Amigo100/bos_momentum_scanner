@@ -312,6 +312,21 @@ jobs:
           done
 
       # ═══════════════════════════════════════════════════════════════════════════
+      # STEP 5.25: GENERATE CONTENT PRODUCTION GUIDE (weekly schedule + context)
+      # ═══════════════════════════════════════════════════════════════════════════
+
+      - name: Generate Content Production Guide
+        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        run: |
+          if [ -f "substack/content_production_guide.py" ]; then
+            echo "Generating content production guide (adaptive schedule + context doc)..."
+            python -m substack.content_production_guide || echo "Content production guide generation failed (non-critical)"
+          else
+            echo "substack/content_production_guide.py not found, skipping"
+          fi
+        continue-on-error: true
+
+      # ═══════════════════════════════════════════════════════════════════════════
       # STEP 5.5: GENERATE SUBSTACK NOTES BATCH (21 notes for the week)
       # ═══════════════════════════════════════════════════════════════════════════
 

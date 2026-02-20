@@ -133,6 +133,12 @@ if [ -f "$SUBSTACK_DIR/current/content_schedule.json" ]; then
   echo "   + current/content_schedule.json (from section)"
 fi
 
+# Content production guide (for dashboard context viewer)
+if [ -f "$SUBSTACK_DIR/current/content_production_guide.md" ]; then
+  cp "$SUBSTACK_DIR/current/content_production_guide.md" "$DATA_DIR/current/"
+  echo "   + current/content_production_guide.md (from section)"
+fi
+
 # Handbook v5 (for dashboard prompt library)
 if [ -f "$PROJECT_ROOT/substack/docs/content_prompt_handbook_v5.md" ]; then
   mkdir -p "$DATA_DIR/docs"

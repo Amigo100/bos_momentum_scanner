@@ -1216,6 +1216,37 @@ export function getContentSchedule(): ContentSchedule | null {
   return readJSON(filePath) as ContentSchedule | null;
 }
 
+export interface ContentProductionGuide {
+  markdown: string;
+  charCount: number;
+  lineCount: number;
+  generatedDate: string | null;
+  weekNumber: string | null;
+}
+
+export function getContentProductionGuide(): ContentProductionGuide | null {
+  const filePath = resolveFile(SUBSTACK_DIR, path.join("current", "content_production_guide.md"));
+  const content = readFile(filePath);
+  if (!content) return null;
+
+  // Parse generation metadata from last line: *Generated: 2026-02-20 19:52:12 | Week 8*
+  let generatedDate: string | null = null;
+  let weekNumber: string | null = null;
+  const metaMatch = content.match(/\*Generated: (.+?) \| Week (\d+)\*/);
+  if (metaMatch) {
+    generatedDate = metaMatch[1];
+    weekNumber = metaMatch[2];
+  }
+
+  return {
+    markdown: content,
+    charCount: content.length,
+    lineCount: content.split("\n").length,
+    generatedDate,
+    weekNumber,
+  };
+}
+
 export function getHandbookPrompts(): HandbookPrompt[] {
   // Try bundled docs first, then source docs
   let handbookPath: string;

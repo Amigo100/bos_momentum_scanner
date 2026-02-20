@@ -1,1 +1,0 @@
-# Core scanner pipeline modules

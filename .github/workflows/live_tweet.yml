@@ -132,7 +132,7 @@ jobs:
 
       - name: Gather live market context
         if: steps.tz_check.outputs.skip != 'true'
-        run: python -m content.live_context_gatherer
+        run: python -m twitter.live_context_gatherer
         continue-on-error: true
 
       - name: Generate live tweet
@@ -146,11 +146,11 @@ jobs:
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
-          python -m content.live_tweet_generator $ARGS
+          python -m twitter.live_tweet_generator $ARGS
 
       - name: Generate charts for flagged tweets
         if: steps.tz_check.outputs.skip != 'true'
-        run: python -m content.chart_generator
+        run: python -m twitter.chart_generator
         continue-on-error: true
 
       - name: Validate Twitter credentials
@@ -173,7 +173,7 @@ jobs:
         run: |
           echo "=== Posting to Account 1 (@AlexSterlingGBR) ==="
           RESULT=0
-          python -m distribution.twitter_poster --account main --live-queue || RESULT=$?
+          python -m twitter.poster --account main --live-queue || RESULT=$?
           echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
           [ "$RESULT" -ne 0 ] && echo "::warning::Account 1 posting returned exit code $RESULT"
           exit 0
@@ -186,7 +186,7 @@ jobs:
           sleep 600
           echo "=== Posting to Account 2 (@Rdobrogowska) ==="
           RESULT=0
-          python -m distribution.twitter_poster --account account2 --live-queue || RESULT=$?
+          python -m twitter.poster --account account2 --live-queue || RESULT=$?
           echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
           [ "$RESULT" -ne 0 ] && echo "::warning::Account 2 posting returned exit code $RESULT"
           exit 0
@@ -199,7 +199,7 @@ jobs:
           sleep 600
           echo "=== Posting to Account 3 ==="
           RESULT=0
-          python -m distribution.twitter_poster --account account3 --live-queue || RESULT=$?
+          python -m twitter.poster --account account3 --live-queue || RESULT=$?
           echo "exit_code=$RESULT" >> $GITHUB_OUTPUT
           [ "$RESULT" -ne 0 ] && echo "::warning::Account 3 posting returned exit code $RESULT"
           exit 0
@@ -210,7 +210,7 @@ jobs:
           python3 -c "
           import json
           from datetime import datetime, timezone
-          f = 'trades/live_content_queue.json'
+          f = 'twitter/output/live_content_queue.json'
           try:
               queue = json.load(open(f))
           except Exception:
@@ -267,7 +267,7 @@ jobs:
                   'account3': parse_exit('${{ steps.post_account3.outputs.exit_code }}'),
               }
           }
-          f = 'trades/workflow_status.json'
+          f = 'twitter/output/workflow_status.json'
           try:
               entries = json.load(open(f))
           except:
@@ -289,11 +289,11 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Stage live system files
-          git add trades/live_content_queue.json 2>/dev/null || true
-          git add trades/live_context.json 2>/dev/null || true
-          git add trades/live_cost_log.json 2>/dev/null || true
-          git add trades/charts/live_*.png 2>/dev/null || true
-          git add trades/workflow_status.json 2>/dev/null || true
+          git add twitter/output/live_content_queue.json 2>/dev/null || true
+          git add twitter/output/live_context.json 2>/dev/null || true
+          git add twitter/output/live_cost_log.json 2>/dev/null || true
+          git add twitter/output/charts/live_*.png 2>/dev/null || true
+          git add twitter/output/workflow_status.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -346,7 +346,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Show cost summary if available
-          if [ -f "trades/live_cost_log.json" ]; then
-            COST=$(python3 -c "import json; print(f\"\${json.load(open('trades/live_cost_log.json')).get('total_usd', 0):.4f}\")" 2>/dev/null || echo "N/A")
+          if [ -f "twitter/output/live_cost_log.json" ]; then
+            COST=$(python3 -c "import json; print(f\"\${json.load(open('twitter/output/live_cost_log.json')).get('total_usd', 0):.4f}\")" 2>/dev/null || echo "N/A")
             echo "- **Daily Cost:** $COST" >> $GITHUB_STEP_SUMMARY
           fi

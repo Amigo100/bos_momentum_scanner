@@ -86,10 +86,10 @@ jobs:
           fi
 
           echo ""
-          echo "Running: python -m core.daily_scanner $SCANNER_ARGS"
+          echo "Running: python -m scanner.daily_scanner $SCANNER_ARGS"
           echo ""
 
-          python -m core.daily_scanner $SCANNER_ARGS
+          python -m scanner.daily_scanner $SCANNER_ARGS
 
           echo "scanner_complete=true" >> $GITHUB_OUTPUT
 
@@ -110,7 +110,7 @@ jobs:
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
-          python -m distribution.notifications --check-config
+          python -m utils.notifications --check-config
 
       - name: Send scan summary notification
         if: always() && steps.scanner.outputs.scanner_complete == 'true'
@@ -131,7 +131,7 @@ jobs:
 
           logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-          signals_path = Path("trades/daily_signals.json")
+          signals_path = Path("scanner/output/daily_signals.json")
           if not signals_path.exists():
               print("No daily_signals.json found — skipping notifications")
               sys.exit(0)
@@ -145,7 +145,7 @@ jobs:
               sys.exit(0)
 
           try:
-              from distribution.notifications import send_scan_summary
+              from utils.notifications import send_scan_summary
           except ImportError as e:
               print(f"Notification module not available: {e}")
               sys.exit(0)
@@ -178,8 +178,8 @@ jobs:
             echo "$TRADINGVIEW_COOKIES" > .tradingview_cookies.json
           fi
 
-          python -m content.chart_capture \
-            --tickers-from trades/daily_signals.json \
+          python -m twitter.chart_capture \
+            --tickers-from scanner/output/daily_signals.json \
             --headless \
             --skip-wait \
             --timeframe daily \
@@ -194,17 +194,17 @@ jobs:
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
           echo "Generating daily tweets via tweet_generator v2 (3× LLM runs)..."
-          python -m content.tweet_generator \
+          python -m twitter.tweet_generator \
             --daily \
-            --signals trades/daily_signals.json \
-            --portfolio trades/portfolio.csv \
+            --signals scanner/output/daily_signals.json \
+            --portfolio portfolio/output/portfolio.csv \
             --account all \
             || echo "Daily tweet generation failed"
 
       - name: Validate daily content queues
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
         run: |
-          for f in trades/daily_content_queue.json trades/daily_content_queue_account2.json trades/daily_content_queue_account3.json; do
+          for f in twitter/output/daily_content_queue.json twitter/output/daily_content_queue_account2.json twitter/output/daily_content_queue_account3.json; do
             if [ -f "$f" ]; then
               COUNT=$(python -c "import json; print(len(json.load(open('$f'))))")
               echo "  $f: $COUNT tweets"
@@ -222,11 +222,11 @@ jobs:
         with:
           name: daily-scan-${{ github.run_id }}
           path: |
-            trades/daily_signals.json
-            trades/daily_content_queue.json
-            trades/daily_content_queue_account2.json
-            trades/daily_content_queue_account3.json
-            trades/charts/
+            scanner/output/daily_signals.json
+            twitter/output/daily_content_queue.json
+            twitter/output/daily_content_queue_account2.json
+            twitter/output/daily_content_queue_account3.json
+            twitter/output/charts/
           retention-days: 7
         continue-on-error: true
 
@@ -246,7 +246,7 @@ jobs:
               'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
               'trigger': '${{ github.event_name }}'
           }
-          f = 'trades/workflow_status.json'
+          f = 'twitter/output/workflow_status.json'
           try:
               entries = json.load(open(f))
           except:
@@ -262,7 +262,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add trades/ 2>/dev/null || true
+          git add scanner/output/ portfolio/output/ substack/output/ twitter/output/ 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -313,9 +313,9 @@ jobs:
           echo "## Daily Scan Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f "trades/daily_signals.json" ]; then
-            PASS_COUNT=$(python -c "import json; d=json.load(open('trades/daily_signals.json')); print(len(d.get('buy_signals',[])))" 2>/dev/null || echo "?")
-            SELL_COUNT=$(python -c "import json; d=json.load(open('trades/daily_signals.json')); print(len(d.get('sell_signals',[])))" 2>/dev/null || echo "?")
+          if [ -f "scanner/output/daily_signals.json" ]; then
+            PASS_COUNT=$(python -c "import json; d=json.load(open('scanner/output/daily_signals.json')); print(len(d.get('buy_signals',[])))" 2>/dev/null || echo "?")
+            SELL_COUNT=$(python -c "import json; d=json.load(open('scanner/output/daily_signals.json')); print(len(d.get('sell_signals',[])))" 2>/dev/null || echo "?")
             echo "- **PASS signals:** $PASS_COUNT" >> $GITHUB_STEP_SUMMARY
             echo "- **Sell signals:** $SELL_COUNT" >> $GITHUB_STEP_SUMMARY
           else
@@ -335,8 +335,8 @@ jobs:
         run: |
           echo "Daily scan FAILED"
 
-          if [ -f "distribution/email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
-            python -m distribution.email_notifier \
+          if [ -f "utils/email_notifier.py" ] && [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
+            python -m utils.email_notifier \
               --subject "Daily Scan FAILED - $(date '+%Y-%m-%d')" \
               --body "The daily scan workflow failed. Check GitHub Actions for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               || echo "Email notification failed"

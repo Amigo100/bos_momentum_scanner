@@ -3,33 +3,99 @@ import fs from "fs";
 import Papa from "papaparse";
 
 // ─── Data Resolution ───
-// Local dev: reads from ../trades/ (live data)
+// Local dev: reads from section-specific output directories (live data)
+//   portfolio/output/  - portfolio.csv, equity_curve.csv
+//   scanner/output/    - signals.json, analysis_log.csv, current/, archive/
+//   twitter/output/    - tweet queues, charts, tracking, workflow_status
+//   substack/output/   - newsletter, posts, notes
 // Vercel: reads from dashboard/data/ (bundled at build time)
 
-function resolveTradesDir(): string {
+function isBundled(): boolean {
   const bundledDir = path.join(process.cwd(), "data");
-  const localDir = path.resolve(process.cwd(), "..", "trades");
-
-  // Prefer bundled data (Vercel deployment)
-  if (fs.existsSync(path.join(bundledDir, "manifest.json"))) {
-    return bundledDir;
-  }
-
-  // Fallback to local trades/ (development)
-  if (fs.existsSync(localDir)) {
-    return localDir;
-  }
-
-  // Last resort: bundled dir even without manifest
-  return bundledDir;
+  return fs.existsSync(path.join(bundledDir, "manifest.json"));
 }
 
-const TRADES_DIR = resolveTradesDir();
+const BUNDLED_DIR = path.join(process.cwd(), "data");
+const PROJECT_ROOT = path.resolve(process.cwd(), "..");
+
+// Section-specific output directories (local development)
+const PORTFOLIO_DIR = path.join(PROJECT_ROOT, "portfolio", "output");
+const SCANNER_DIR = path.join(PROJECT_ROOT, "scanner", "output");
+const TWITTER_DIR = path.join(PROJECT_ROOT, "twitter", "output");
+const SUBSTACK_DIR = path.join(PROJECT_ROOT, "substack", "output");
+
+// Legacy fallback: trades/ directory (used if section dirs don't exist yet)
+const LEGACY_TRADES_DIR = path.join(PROJECT_ROOT, "trades");
+
+/**
+ * Resolve a file path by checking section-specific directories first,
+ * then falling back to bundled data (Vercel) or legacy trades/ directory.
+ * legacyRelativePath allows mapping to a different legacy path
+ * (e.g. "archive/W08/signals.json" maps to "weeks/W08/signals.json" in legacy).
+ */
+function resolveFile(sectionDir: string, relativePath: string, legacyRelativePath?: string): string {
+  // Bundled deployment: everything is in data/
+  if (isBundled()) {
+    return path.join(BUNDLED_DIR, relativePath);
+  }
+
+  // Section-specific directory (new layout)
+  const sectionPath = path.join(sectionDir, relativePath);
+  if (fs.existsSync(sectionPath)) {
+    return sectionPath;
+  }
+
+  // Legacy fallback: try the explicit legacy path first, then same relative path
+  if (legacyRelativePath) {
+    const legacyMapped = path.join(LEGACY_TRADES_DIR, legacyRelativePath);
+    if (fs.existsSync(legacyMapped)) {
+      return legacyMapped;
+    }
+  }
+
+  const legacyPath = path.join(LEGACY_TRADES_DIR, relativePath);
+  if (fs.existsSync(legacyPath)) {
+    return legacyPath;
+  }
+
+  // Default to section path (will fail gracefully in read functions)
+  return sectionPath;
+}
+
+/**
+ * Resolve a directory path, checking section-specific first, then legacy.
+ * legacyRelativePath allows mapping to a different legacy path
+ * (e.g. "archive" in section dirs maps to "weeks" in legacy trades/).
+ */
+function resolveDir(sectionDir: string, relativePath: string, legacyRelativePath?: string): string {
+  if (isBundled()) {
+    return path.join(BUNDLED_DIR, relativePath);
+  }
+
+  const sectionPath = path.join(sectionDir, relativePath);
+  if (fs.existsSync(sectionPath)) {
+    return sectionPath;
+  }
+
+  // Legacy fallback: try the explicit legacy path first, then same relative path
+  if (legacyRelativePath) {
+    const legacyMapped = path.join(LEGACY_TRADES_DIR, legacyRelativePath);
+    if (fs.existsSync(legacyMapped)) {
+      return legacyMapped;
+    }
+  }
+
+  const legacyPath = path.join(LEGACY_TRADES_DIR, relativePath);
+  if (fs.existsSync(legacyPath)) {
+    return legacyPath;
+  }
+
+  return sectionPath;
+}
 
 function readJSON(filePath: string): unknown | null {
   try {
-    const full = path.isAbsolute(filePath) ? filePath : path.join(TRADES_DIR, filePath);
-    const raw = fs.readFileSync(full, "utf-8");
+    const raw = fs.readFileSync(filePath, "utf-8");
     return JSON.parse(raw);
   } catch {
     return null;
@@ -38,8 +104,7 @@ function readJSON(filePath: string): unknown | null {
 
 function readCSV(filePath: string): Record<string, string>[] {
   try {
-    const full = path.isAbsolute(filePath) ? filePath : path.join(TRADES_DIR, filePath);
-    const raw = fs.readFileSync(full, "utf-8");
+    const raw = fs.readFileSync(filePath, "utf-8");
     const result = Papa.parse(raw, { header: true, skipEmptyLines: true });
     return result.data as Record<string, string>[];
   } catch {
@@ -49,8 +114,7 @@ function readCSV(filePath: string): Record<string, string>[] {
 
 function readFile(filePath: string): string | null {
   try {
-    const full = path.isAbsolute(filePath) ? filePath : path.join(TRADES_DIR, filePath);
-    return fs.readFileSync(full, "utf-8");
+    return fs.readFileSync(filePath, "utf-8");
   } catch {
     return null;
   }
@@ -132,9 +196,9 @@ function calculateLockStatus(p: Position): LockStatus {
 }
 
 export function getPortfolio(): Position[] {
-  const rows = readCSV("portfolio_google_sheets.csv");
+  const rows = readCSV(resolveFile(PORTFOLIO_DIR, "portfolio_google_sheets.csv"));
   if (rows.length === 0) {
-    return readCSV("portfolio.csv").map((r) => ({
+    return readCSV(resolveFile(PORTFOLIO_DIR, "portfolio.csv")).map((r) => ({
       ticker: r.ticker || "",
       status: r.status || "OPEN",
       entry_date: r.entry_date || "",
@@ -213,7 +277,7 @@ export interface EquityPoint {
 }
 
 export function getEquityCurve(): EquityPoint[] {
-  return readCSV("equity_curve.csv").map((r) => ({
+  return readCSV(resolveFile(PORTFOLIO_DIR, "equity_curve.csv")).map((r) => ({
     date: r.date || "",
     nav: parseFloat(r.nav) || 0,
     total_return_pct: parseFloat(r.total_return_pct) || 0,
@@ -382,7 +446,7 @@ export function getEnrichedTweets(): EnrichedTweetData {
   // Live tweets only — batch queues (content_queue.json, daily_content_queue.json)
   // are from the disabled daily_post.yml workflow and will never post.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const liveRaw = (readJSON("live_content_queue.json") as any[]) || [];
+  const liveRaw = (readJSON(resolveFile(TWITTER_DIR, "live_content_queue.json")) as any[]) || [];
   const liveByAccount: { account1: EnrichedTweet[]; account2: EnrichedTweet[]; account3: EnrichedTweet[] } = {
     account1: [], account2: [], account3: [],
   };
@@ -531,13 +595,13 @@ export function getEnrichedTweets(): EnrichedTweetData {
 
 // Legacy functions — only load live queue now (batch queues disabled)
 export function getTweets(): { weekly: Tweet[]; daily: Tweet[]; live: Tweet[] } {
-  const live = (readJSON("live_content_queue.json") as Tweet[]) || [];
+  const live = (readJSON(resolveFile(TWITTER_DIR, "live_content_queue.json")) as Tweet[]) || [];
   return { weekly: [], daily: [], live };
 }
 
 export function getAllAccountTweets(): { account1: Tweet[]; account2: Tweet[]; account3: Tweet[] } {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const liveRaw = (readJSON("live_content_queue.json") as any[]) || [];
+  const liveRaw = (readJSON(resolveFile(TWITTER_DIR, "live_content_queue.json")) as any[]) || [];
   const result: { account1: Tweet[]; account2: Tweet[]; account3: Tweet[] } = {
     account1: [], account2: [], account3: [],
   };
@@ -623,11 +687,11 @@ export interface SignalsData {
 }
 
 export function getSignals(): SignalsData | null {
-  return readJSON("signals.json") as SignalsData | null;
+  return readJSON(resolveFile(SCANNER_DIR, "signals.json")) as SignalsData | null;
 }
 
 export function getDailySignals(): unknown | null {
-  return readJSON("daily_signals.json");
+  return readJSON(resolveFile(SCANNER_DIR, "daily_signals.json"));
 }
 
 // ─── Substack ───
@@ -676,7 +740,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
 
   // ─── Current week ───
   // Newsletter
-  const currentNewsletter = path.join(TRADES_DIR, "current", "newsletter.html");
+  const currentNewsletter = resolveFile(SUBSTACK_DIR, path.join("current", "newsletter.html"));
   if (fs.existsSync(currentNewsletter)) {
     const html = readFile(currentNewsletter) || "";
     const stat = fs.statSync(currentNewsletter);
@@ -684,7 +748,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
   }
 
   // Posts
-  const currentPostsDir = path.join(TRADES_DIR, "current", "substack_posts");
+  const currentPostsDir = resolveDir(SUBSTACK_DIR, path.join("current", "substack_posts"));
   if (fs.existsSync(currentPostsDir)) {
     for (const file of fs.readdirSync(currentPostsDir)) {
       if (file.endsWith(".html")) {
@@ -703,7 +767,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
   }
 
   // Notes
-  const currentNotesDir = path.join(TRADES_DIR, "current", "substack_notes");
+  const currentNotesDir = resolveDir(SUBSTACK_DIR, path.join("current", "substack_notes"));
   if (fs.existsSync(currentNotesDir)) {
     for (const file of fs.readdirSync(currentNotesDir)) {
       if (file.endsWith(".md")) {
@@ -721,16 +785,18 @@ export function getSubstackContent(week?: string): SubstackContentResult {
   }
 
   // ─── Week archives ───
-  const weeksDir = path.join(TRADES_DIR, "weeks");
-  if (fs.existsSync(weeksDir)) {
-    const weeks = fs.readdirSync(weeksDir).filter((d) => d.startsWith("2026-W")).sort().reverse();
+  const substackArchiveDir = resolveDir(SUBSTACK_DIR, "archive", "weeks");
+  if (fs.existsSync(substackArchiveDir)) {
+    const weeks = fs.readdirSync(substackArchiveDir).filter((d) => d.startsWith("2026-W")).sort().reverse();
     for (const w of weeks) {
       if (week && w !== week && week !== "all") continue;
       // Skip current ISO week from archives to avoid duplication with current/ folder
       if (w === currentISOWeek && (!week || week === "all")) continue;
 
+      const weekDir = path.join(substackArchiveDir, w);
+
       // Newsletter
-      const nPath = path.join(weeksDir, w, "newsletter.html");
+      const nPath = path.join(weekDir, "newsletter.html");
       if (fs.existsSync(nPath)) {
         const html = readFile(nPath) || "";
         const stat = fs.statSync(nPath);
@@ -738,7 +804,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
       }
 
       // Posts
-      const postsDir = path.join(weeksDir, w, "substack_posts");
+      const postsDir = path.join(weekDir, "substack_posts");
       if (fs.existsSync(postsDir)) {
         for (const file of fs.readdirSync(postsDir)) {
           if (file.endsWith(".html")) {
@@ -757,7 +823,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
       }
 
       // Notes
-      const notesDir = path.join(weeksDir, w, "substack_notes");
+      const notesDir = path.join(weekDir, "substack_notes");
       if (fs.existsSync(notesDir)) {
         for (const file of fs.readdirSync(notesDir)) {
           if (file.endsWith(".md")) {
@@ -796,30 +862,44 @@ export interface WeekSummary {
 }
 
 export function getWeeks(): WeekSummary[] {
-  const weeksDir = path.join(TRADES_DIR, "weeks");
-  if (!fs.existsSync(weeksDir)) return [];
+  const scannerArchive = resolveDir(SCANNER_DIR, "archive", "weeks");
+  const substackArchive = resolveDir(SUBSTACK_DIR, "archive", "weeks");
 
-  return fs
-    .readdirSync(weeksDir)
-    .filter((d) => d.startsWith("2026-W"))
+  // Collect week names from both scanner and substack archives
+  const weekSet = new Set<string>();
+  for (const dir of [scannerArchive, substackArchive]) {
+    if (fs.existsSync(dir)) {
+      for (const d of fs.readdirSync(dir)) {
+        if (d.startsWith("2026-W")) weekSet.add(d);
+      }
+    }
+  }
+
+  return Array.from(weekSet)
     .sort()
     .reverse()
     .map((w) => {
-      const wDir = path.join(weeksDir, w);
-      const files = fs.readdirSync(wDir);
+      const scannerWeekDir = path.join(scannerArchive, w);
+      const substackWeekDir = path.join(substackArchive, w);
+      const scannerFiles = fs.existsSync(scannerWeekDir) ? fs.readdirSync(scannerWeekDir) : [];
+      const substackFiles = fs.existsSync(substackWeekDir) ? fs.readdirSync(substackWeekDir) : [];
       return {
         week: w,
-        hasSignals: files.includes("signals.json"),
-        hasNewsletter: files.includes("newsletter.html"),
-        hasSubstackPosts: fs.existsSync(path.join(wDir, "substack_posts")),
-        hasNotes: fs.existsSync(path.join(wDir, "substack_notes")),
-        fileCount: files.length,
+        hasSignals: scannerFiles.includes("signals.json"),
+        hasNewsletter: substackFiles.includes("newsletter.html"),
+        hasSubstackPosts: fs.existsSync(path.join(substackWeekDir, "substack_posts")),
+        hasNotes: fs.existsSync(path.join(substackWeekDir, "substack_notes")),
+        fileCount: scannerFiles.length + substackFiles.length,
       };
     });
 }
 
 export function getWeekSignals(week: string): SignalsData | null {
-  return readJSON(path.join(TRADES_DIR, "weeks", week, "signals.json")) as SignalsData | null;
+  return readJSON(resolveFile(
+    SCANNER_DIR,
+    path.join("archive", week, "signals.json"),
+    path.join("weeks", week, "signals.json"),
+  )) as SignalsData | null;
 }
 
 // ─── Failed tweets ───
@@ -832,7 +912,7 @@ export interface FailedTweet {
 }
 
 export function getFailedTweets(): FailedTweet[] {
-  return (readJSON("failed_tweets.json") as FailedTweet[]) || [];
+  return (readJSON(resolveFile(TWITTER_DIR, "failed_tweets.json")) as FailedTweet[]) || [];
 }
 
 // ─── Workflow Status ───
@@ -877,7 +957,7 @@ const WORKFLOW_CONFIG: Record<string, { displayName: string; expectedPerWeek: nu
 };
 
 export function getWorkflowStatus(): SystemHealth {
-  const runs = (readJSON("workflow_status.json") as WorkflowRun[]) || [];
+  const runs = (readJSON(resolveFile(TWITTER_DIR, "workflow_status.json")) as WorkflowRun[]) || [];
 
   if (runs.length === 0) {
     return {
@@ -987,7 +1067,7 @@ export interface LiveWorkflowSummary {
 }
 
 export function getLiveWorkflowSummary(): LiveWorkflowSummary {
-  const runs = (readJSON("workflow_status.json") as Array<{
+  const runs = (readJSON(resolveFile(TWITTER_DIR, "workflow_status.json")) as Array<{
     workflow: string;
     status: string;
     completed_at?: string;
@@ -1105,6 +1185,95 @@ export function generateSystemLog(): string {
 
   lines.push("=== END LOG ===");
   return lines.join("\n");
+}
+
+// ─── Content Schedule & Handbook Prompts ───
+
+export interface ScheduleEntry {
+  day: string;
+  category: string;
+  topic: string;
+  theme_style: string;
+  note_types: string[];
+  handbook_prompt: string;
+}
+
+export interface ContentSchedule {
+  week: string;
+  generated: string;
+  schedule: ScheduleEntry[];
+}
+
+export interface HandbookPrompt {
+  id: string;
+  title: string;
+  type: "post" | "notes" | "trade-alert";
+  prompt: string;
+}
+
+export function getContentSchedule(): ContentSchedule | null {
+  const filePath = resolveFile(SUBSTACK_DIR, path.join("current", "content_schedule.json"));
+  return readJSON(filePath) as ContentSchedule | null;
+}
+
+export function getHandbookPrompts(): HandbookPrompt[] {
+  // Try bundled docs first, then source docs
+  let handbookPath: string;
+  if (isBundled()) {
+    handbookPath = path.join(BUNDLED_DIR, "docs", "content_prompt_handbook_v5.md");
+  } else {
+    handbookPath = path.join(PROJECT_ROOT, "substack", "docs", "content_prompt_handbook_v5.md");
+  }
+
+  const content = readFile(handbookPath);
+  if (!content) return [];
+
+  const prompts: HandbookPrompt[] = [];
+
+  // Split by ## sections (level 2 headers)
+  const sections = content.split(/^## /m).slice(1); // skip content before first ##
+
+  for (const section of sections) {
+    const lines = section.split("\n");
+    const sectionTitle = lines[0].trim();
+
+    // Skip non-prompt sections (How to Use, Quick Reference, etc.)
+    if (!sectionTitle.startsWith("Category") && !sectionTitle.startsWith("Trade Alert") && !sectionTitle.startsWith("Daily Notes")) {
+      continue;
+    }
+
+    // Determine type
+    let type: HandbookPrompt["type"] = "post";
+    if (sectionTitle.startsWith("Trade Alert")) type = "trade-alert";
+    if (sectionTitle.startsWith("Daily Notes")) type = "notes";
+
+    // Find all code fences in this section
+    const sectionText = section;
+    const fenceRegex = /### (?:Post Prompt|Notes Prompt)\s*\n+```\n([\s\S]*?)```/g;
+    let match;
+    while ((match = fenceRegex.exec(sectionText)) !== null) {
+      const promptText = match[1].trim();
+      if (promptText.length > 0) {
+        const id = sectionTitle
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+        // For the Notes section, use a distinct title
+        const isNotes = match[0].includes("Notes Prompt");
+        const title = isNotes && type !== "notes" ? `${sectionTitle} (Notes)` : sectionTitle;
+        const finalType = isNotes ? "notes" : type;
+
+        prompts.push({
+          id: isNotes ? `${id}-notes` : id,
+          title,
+          type: finalType,
+          prompt: promptText,
+        });
+      }
+    }
+  }
+
+  return prompts;
 }
 
 // ─── Helpers ───

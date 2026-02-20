@@ -135,7 +135,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: content-queue
-          path: trades/
+          path: twitter/output/
         continue-on-error: true
 
       - name: Check for content queues
@@ -144,17 +144,17 @@ jobs:
           WEEKLY_EXISTS=false
           DAILY_EXISTS=false
 
-          if [ -f "trades/content_queue.json" ]; then
+          if [ -f "twitter/output/content_queue.json" ]; then
             WEEKLY_EXISTS=true
-            TWEET_COUNT=$(python -c "import json; print(len(json.load(open('trades/content_queue.json'))))" 2>/dev/null || echo 0)
+            TWEET_COUNT=$(python -c "import json; print(len(json.load(open('twitter/output/content_queue.json'))))" 2>/dev/null || echo 0)
             echo "Weekly queue: $TWEET_COUNT tweets"
           else
             echo "No weekly content queue found"
           fi
 
-          if [ -f "trades/daily_content_queue.json" ]; then
+          if [ -f "twitter/output/daily_content_queue.json" ]; then
             DAILY_EXISTS=true
-            DAILY_COUNT=$(python -c "import json; print(len(json.load(open('trades/daily_content_queue.json'))))" 2>/dev/null || echo 0)
+            DAILY_COUNT=$(python -c "import json; print(len(json.load(open('twitter/output/daily_content_queue.json'))))" 2>/dev/null || echo 0)
             echo "Daily queue: $DAILY_COUNT tweets"
           else
             echo "No daily content queue (normal on weekends)"
@@ -192,7 +192,7 @@ jobs:
 
           live_posted = "false"
           try:
-              queue_path = "trades/live_content_queue.json"
+              queue_path = "twitter/output/live_content_queue.json"
               if os.path.exists(queue_path):
                   with open(queue_path) as f:
                       queue = json.load(f)
@@ -245,23 +245,23 @@ jobs:
           # based on get_current_slot() and the DAILY_SLOTS/WEEKLY_SLOTS mapping
 
           echo "=== Posting to main account ==="
-          python -m distribution.twitter_poster --slot $SLOT --account main $DRY_FLAG $FORCE_FLAG || true
+          python -m twitter.poster --slot $SLOT --account main $DRY_FLAG $FORCE_FLAG || true
 
           echo "=== Waiting 10 min for account 2 ==="
           sleep 600
-          python -m distribution.twitter_poster --slot $SLOT --account account2 $DRY_FLAG $FORCE_FLAG || true
+          python -m twitter.poster --slot $SLOT --account account2 $DRY_FLAG $FORCE_FLAG || true
 
           echo "=== Waiting 10 min for account 3 ==="
           sleep 600
-          python -m distribution.twitter_poster --slot $SLOT --account account3 $DRY_FLAG $FORCE_FLAG || true
+          python -m twitter.poster --slot $SLOT --account account3 $DRY_FLAG $FORCE_FLAG || true
 
       - name: Check Milestone Quote Opportunities
         if: success()
         run: |
           python << 'MILESTONE_CHECK'
           try:
-              from distribution.self_quote_tracker import get_unquoted_milestones
-              from distribution.signal_tracker import get_uncelebrated_wins
+              from twitter.self_quote_tracker import get_unquoted_milestones
+              from twitter.signal_tracker import get_uncelebrated_wins
 
               milestones = get_unquoted_milestones() or []
               uncelebrated = get_uncelebrated_wins() or []
@@ -298,7 +298,7 @@ jobs:
               'error': None if '${{ job.status }}' == 'success' else 'Workflow ${{ job.status }}',
               'trigger': '${{ github.event_name }}'
           }
-          f = 'trades/workflow_status.json'
+          f = 'twitter/output/workflow_status.json'
           try:
               entries = json.load(open(f))
           except:
@@ -315,11 +315,11 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Stage both weekly and daily queue files
-          git add trades/content_queue.json trades/content_queue_account2.json trades/content_queue_account3.json 2>/dev/null || true
-          git add trades/daily_content_queue.json trades/daily_content_queue_account2.json trades/daily_content_queue_account3.json 2>/dev/null || true
-          git add trades/tweet_tracking.json 2>/dev/null || true
-          git add trades/live_content_queue.json 2>/dev/null || true
-          git add trades/workflow_status.json 2>/dev/null || true
+          git add twitter/output/content_queue.json twitter/output/content_queue_account2.json twitter/output/content_queue_account3.json 2>/dev/null || true
+          git add twitter/output/daily_content_queue.json twitter/output/daily_content_queue_account2.json twitter/output/daily_content_queue_account3.json 2>/dev/null || true
+          git add twitter/output/tweet_tracking.json 2>/dev/null || true
+          git add twitter/output/live_content_queue.json 2>/dev/null || true
+          git add twitter/output/workflow_status.json 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -359,13 +359,13 @@ jobs:
         with:
           name: content-queue
           path: |
-            trades/content_queue.json
-            trades/content_queue_account2.json
-            trades/content_queue_account3.json
-            trades/daily_content_queue.json
-            trades/daily_content_queue_account2.json
-            trades/daily_content_queue_account3.json
-            trades/live_content_queue.json
+            twitter/output/content_queue.json
+            twitter/output/content_queue_account2.json
+            twitter/output/content_queue_account3.json
+            twitter/output/daily_content_queue.json
+            twitter/output/daily_content_queue_account2.json
+            twitter/output/daily_content_queue_account3.json
+            twitter/output/live_content_queue.json
           retention-days: 14
         if: always()
 

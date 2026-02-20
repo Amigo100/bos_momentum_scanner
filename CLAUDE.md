@@ -152,12 +152,17 @@ This prevents revealing entries that haven't been validated by performance.
 | Day | Automated | Manual |
 |-----|-----------|--------|
 | **Mon-Fri 4:35 PM ET** | Daily scan → signals → charts → tweets → notifications | - |
-| **Friday 4:15 PM ET** | Full weekly scan, DD, tweets, newsletter via GitHub Actions | - |
-| **Saturday** | Tweet posting (7 slots/day) | Copy newsletter to Substack, add charts |
-| **Sunday** | Tweet posting (5 slots — weekly only) | - |
-| **Monday-Friday** | Tweet posting (7 slots/day) + daily scan | - |
-| **Tuesday** | Tweet posting, Substack Note ready | Post Tuesday "Portfolio Pulse" note |
-| **Thursday** | Tweet posting, Substack Note ready | Post Thursday "Trade Spotlight" note |
+| **Friday 4:15 PM ET** | Full weekly scan, DD, tweets, newsletter, content guide via GitHub Actions | - |
+| **Saturday** | Tweet posting (7 slots/day) | Copy newsletter to Substack, add charts; post 3 notes |
+| **Sunday** | Tweet posting (5 slots — weekly only) | Performance Review post + 3 notes |
+| **Monday-Friday** | Tweet posting (7 slots/day) + daily scan | 1 Substack post (adaptive category) + 3 notes |
+
+**Daily content workflow (handbook v5 — 4 adaptive categories):**
+1. Open `substack/output/current/content_production_guide.md` → check today's category + topic
+2. Open `substack/docs/content_prompt_handbook_v5.md` → copy the matching category prompt
+3. Attach the content production guide to Claude.ai (Opus 4.6 + extended thinking)
+4. Paste prompt → get HTML post + 3 HTML notes
+5. Paste into Substack
 
 ### Daily Tweet Schedule (7-Slot System, Eastern Time)
 
@@ -181,55 +186,59 @@ This prevents revealing entries that haven't been validated by performance.
 
 ### Production Scan (Costs ~$1-3)
 ```bash
-python -m core.scanner --web-search              # Full pipeline with web search
-python -m core.scanner --web-search --top 50     # Limit to top 50 by beta
+python -m scanner.scanner --web-search              # Full pipeline with web search
+python -m scanner.scanner --web-search --top 50     # Limit to top 50 by beta
 ```
 
 ### Free Testing (No API Costs)
 ```bash
-python -m core.scanner --no-llm                  # Technical scan only
-python -m core.scanner --no-llm --top 20         # Quick test with 20 tickers
-python -m core.scanner --no-momentum             # Themes only, skip gatekeeper
+python -m scanner.scanner --no-llm                  # Technical scan only
+python -m scanner.scanner --no-llm --top 20         # Quick test with 20 tickers
+python -m scanner.scanner --no-momentum             # Themes only, skip gatekeeper
 ```
 
 ### Portfolio Management
 ```bash
-python -m core.portfolio_manager --report        # View portfolio summary
-python -m core.portfolio_manager --update        # Refresh prices via yfinance
-python -m core.portfolio_manager --export        # Export for Google Sheets
-python -m core.portfolio_manager --add TICKER --price 10.50 --theme "AI"   # Manual add
-python -m core.portfolio_manager --exit TICKER --exit-price 15.00          # Manual exit
-python -m core.portfolio_manager --migrate       # One-time: migrate legacy files
+python -m portfolio.manager --report        # View portfolio summary
+python -m portfolio.manager --update        # Refresh prices via yfinance
+python -m portfolio.manager --export        # Export for Google Sheets
+python -m portfolio.manager --add TICKER --price 10.50 --theme "AI"   # Manual add
+python -m portfolio.manager --exit TICKER --exit-price 15.00          # Manual exit
+python -m portfolio.manager --migrate       # One-time: migrate legacy files
 ```
 
 ### Daily Scanner (Mon-Fri, automated)
 ```bash
-python -m core.daily_scanner                       # Full daily scan (after market close)
-python -m core.daily_scanner --dry-run             # Show signals without writing
-python -m core.daily_scanner --top 100             # Limit universe to top 100 by beta
+python -m scanner.daily_scanner                       # Full daily scan (after market close)
+python -m scanner.daily_scanner --dry-run             # Show signals without writing
+python -m scanner.daily_scanner --top 100             # Limit universe to top 100 by beta
 ```
 
 ### Content Generation
 ```bash
-python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv --account all  # Weekly tweets (3 accounts)
-python -m content.tweet_generator --daily --signals trades/daily_signals.json --account all                     # Daily tweets
-python -m content.newsletter_compiler --full        # Compile full newsletter with DD + themes + QQQ
-python -m content.dd_post_generator                 # Generate DD HTML posts per buy signal
-python -m content.dd_post_generator --ticker NVDA   # DD post for specific ticker
-python -m content.dd_post_generator --dry-run       # Preview DD posts without saving
-python -m content.substack_notes_generator          # Generate Tuesday/Thursday notes
-python -m content.substack_content_generator --all  # Generate Mon/Thu/Sat/Sun Substack posts (HTML)
-python -m content.market_analyzer --save            # Generate market context analysis
-python -m content.portfolio_visual                  # Generate portfolio dashboard HTML + PNG
-python -m content.portfolio_visual --dry-run        # Preview dashboard HTML without PNG
+python -m twitter.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv --account all  # Weekly tweets
+python -m twitter.tweet_generator --daily --signals scanner/output/daily_signals.json --account all                               # Daily tweets
+python -m substack.newsletter_compiler --full        # Compile full newsletter with DD + themes + QQQ
+python -m substack.dd_post_generator                 # Generate DD HTML posts per buy signal
+python -m substack.dd_post_generator --ticker NVDA   # DD post for specific ticker
+python -m substack.dd_post_generator --dry-run       # Preview DD posts without saving
+python -m substack.notes_generator                   # Generate Tuesday/Thursday notes (legacy)
+python -m substack.notes_batch_generator             # Generate 21 notes/week (3/day)
+python -m substack.notes_batch_generator --html      # Generate notes as HTML files
+python -m substack.notes_batch_generator --day monday # Single day
+python -m substack.content_generator --all           # Generate Mon/Thu/Sat/Sun Substack posts (HTML)
+python -m substack.content_production_guide          # Generate weekly content schedule + context doc
+python -m substack.market_analyzer --save            # Generate market context analysis
+python -m substack.portfolio_visual                  # Generate portfolio dashboard HTML + PNG
+python -m substack.portfolio_visual --dry-run        # Preview dashboard HTML without PNG
 ```
 
 ### Backup Management
 ```bash
-python -m utils.backup_cleanup                      # Preview duplicate removal
-python -m utils.backup_cleanup --execute            # Remove duplicates (keep newest per week)
-python -m utils.backup_cleanup --list               # List backups grouped by week
-python -m utils.backup_cleanup --stats              # Show backup statistics
+python -m portfolio.backup_cleanup                      # Preview duplicate removal
+python -m portfolio.backup_cleanup --execute            # Remove duplicates (keep newest per week)
+python -m portfolio.backup_cleanup --list               # List backups grouped by week
+python -m portfolio.backup_cleanup --stats              # Show backup statistics
 ```
 
 ### Full Pipeline (Automated via GitHub Actions)
@@ -246,137 +255,162 @@ python -m pytest tests/ -v -k "banned"            # Run specific test pattern
 
 ### Debugging
 ```bash
-python -m py_compile core/scanner.py             # Syntax check
-python -m py_compile core/portfolio_manager.py   # Syntax check
-python -m py_compile core/daily_scanner.py       # Syntax check
+python -m py_compile scanner/scanner.py             # Syntax check
+python -m py_compile portfolio/manager.py           # Syntax check
+python -m py_compile scanner/daily_scanner.py       # Syntax check
 ```
 
 ---
 
 ## File Locations Quick Reference
 
-### Output Directory Structure (trades/)
+### Output Directory Structure (5-Section Layout)
+
+Each section owns its output files. Paths are defined in `config/output_paths.py`.
 
 ```
-trades/
-    # ─── CORE DATA (root — used by 10+ modules) ───
-    portfolio.csv                         # Source of truth (weekly trades)
-    daily_portfolio.csv                   # Daily timeframe trades (separate)
-    portfolio_google_sheets.csv           # Export with calculated P&L
+scanner/output/
     signals.json                          # Latest weekly scan results
     daily_signals.json                    # Latest daily scan results
     analysis_log.csv                      # Append-only historical data
+    current/
+        report.txt                        # Scan summary
+        signals.json                      # Copy of weekly signals
+        newsletter_briefing.md            # Scanner briefing for newsletter
+        market_analysis.md                # Market context via Claude
+    archive/
+        2026-WXX/                         # Archived by ISO week
+            report.txt, signals.json, newsletter_briefing.md, market_analysis.md
 
-    # ─── CONTENT QUEUES (root — used by twitter_poster + GH Actions) ───
+portfolio/output/
+    portfolio.csv                         # Source of truth (weekly trades)
+    daily_portfolio.csv                   # Daily timeframe trades (separate)
+    portfolio_google_sheets.csv           # Export with calculated P&L
+    equity_curve.csv                      # NAV tracking over time
+    portfolio_backups/                    # Deduped: 1 per calendar week, newest kept
+    daily_portfolio_backups/
+
+substack/output/
+    current/
+        newsletter.html                   # Compiled newsletter → Substack Saturday
+        portfolio_visual.html             # Portfolio dashboard with equity curve SVG
+        content_production_guide.md       # Adaptive weekly schedule + context (attach to Claude.ai)
+        substack_notes/
+            *_1_*.md/html, *_2_*.md/html  # 21 notes (3/day) — .html with --html flag
+            tuesday_note.md               # Legacy compat
+            thursday_note.md              # Legacy compat
+            notes_manifest.json           # Batch tracking
+        substack_posts/                   # Rich HTML posts
+            dd_TICKER.html                # DD post per buy signal
+            wednesday_theme_deep_dive.html
+            thursday_stock_deep_dive.html
+            friday_portfolio_showcase.html
+    archive/
+        2026-WXX/                         # Archived by ISO week
+            newsletter.html, portfolio_visual.html,
+            substack_notes/, substack_posts/
+
+twitter/output/
+    # ─── Content Queues (used by poster + GH Actions) ───
     content_queue.json                    # Account 1 weekly (slots 2-5)
     content_queue_account2.json           # Account 2 weekly
     content_queue_account3.json           # Account 3 weekly
     daily_content_queue.json              # Account 1 daily (slots 1/6/7)
     daily_content_queue_account2.json     # Account 2 daily
     daily_content_queue_account3.json     # Account 3 daily
-
-    # ─── TRACKING (root — pipeline-written) ───
+    # ─── Live Tweet System ───
+    live_content_queue.json               # Live tweet queue
+    live_context.json                     # Market context for live tweets
+    live_cost_log.json                    # API cost tracking
+    workflow_status.json                  # Pipeline status
+    # ─── Tracking ───
     tweet_tracking.json                   # Self-quote milestone tracker
     celebrations.json                     # Win milestone tracker
     failed_tweets.json                    # Validation failure log
-
-    # ─── CURRENT WEEK OUTPUTS ───
-    current/
-        newsletter_briefing.md            # Scanner briefing for newsletter
-        newsletter.html                   # Compiled newsletter → Substack Saturday
-        report.txt                        # Scan summary
-        signals.json                      # Copy of weekly signals
-        market_analysis.md                # Market context via Claude
-        substack_notes/
-            tuesday_note.md               # "Portfolio Pulse" → Substack Tuesday
-            thursday_note.md              # "Trade Spotlight" → Substack Thursday
-        substack_posts/                   # Rich HTML posts
-            dd_TICKER.html                # DD post per buy signal (generated by dd_post_generator)
-            monday_market_analysis.html   # → Post Monday
-            thursday_theme_spotlight.html  # → Post Thursday
-            saturday_weekly_signals.html   # → Post Saturday
-            sunday_deep_dive.html          # → Post Sunday
-        portfolio_dashboard.html          # Portfolio dashboard with equity curve SVG
-
-    # ─── CHARTS ───
+    # ─── Charts ───
     charts/
         *.png, chart_manifest.json, funnel_graphic.png
-
-    # ─── ARCHIVES ───
-    weeks/
-        2026-WXX/                         # Archived by ISO week
-            newsletter_briefing.md, newsletter.html, report.txt,
-            signals.json, market_analysis.md,
-            substack_notes/, substack_posts/
-
-    # ─── BACKUPS (deduped: 1 per calendar week, newest kept) ───
-    portfolio_backups/
-    daily_portfolio_backups/
 ```
 
 ### Source Files
 
-#### `core/` — Scanner Pipeline
+#### `scanner/` — Scanner Pipeline
 | File | Purpose |
 |------|---------|
-| `core/scanner.py` | Main weekly pipeline orchestrator (Sterling Grid indicators) |
-| `core/daily_scanner.py` | Daily timeframe scanner (Mon-Fri, uses legacy indicators) |
-| `core/sterling_indicators.py` | **NEW** — Sterling Grid indicators (HMA slope, RSI, MACD, UC, ExD, profit lock, position sizing) |
-| `core/investment_gate.py` | **NEW** — Investment Gate (Sonnet, replaces gatekeeper) |
-| `core/deep_dd.py` | **NEW** — Deep DD (Opus + extended thinking, 1-3 stocks) |
-| `core/legacy_indicators.py` | **NEW** — Old Banker/HMA/BoS indicators preserved for daily scanner |
-| `core/thematic_analyzer.py` | LLM theme discovery and scoring |
-| `core/portfolio_manager.py` | Trade tracking, P&L, tiered profit lock, conviction-sized positions |
-| `core/due_diligence.py` | DD prompt generation |
+| `scanner/scanner.py` | Main weekly pipeline orchestrator (Sterling Grid indicators) |
+| `scanner/daily_scanner.py` | Daily timeframe scanner (Mon-Fri, uses legacy indicators) |
+| `scanner/sterling_indicators.py` | Sterling Grid indicators (HMA slope, RSI, MACD, UC, ExD, profit lock, position sizing) |
+| `scanner/investment_gate.py` | Investment Gate (Sonnet, replaces gatekeeper) |
+| `scanner/deep_dd.py` | Deep DD (Opus + extended thinking, 1-3 stocks) |
+| `scanner/legacy_indicators.py` | Old Banker/HMA/BoS indicators preserved for daily scanner |
+| `scanner/thematic_analyzer.py` | LLM theme discovery and scoring |
+| `scanner/due_diligence.py` | DD prompt generation |
+| `scanner/complete_tickers.txt` | Ticker universe (~1800 stocks) |
 
-#### `content/` — Content Generation
+#### `portfolio/` — Portfolio Management
 | File | Purpose |
 |------|---------|
-| `content/tweet_generator.py` | **v2** — Unified voice tweet generation (weekly + daily) |
-| `content/models.py` | Shared data classes: Tweet, ContentData, SlotAssignment, ValidationResult |
-| `content/content_planner.py` | Content planning |
-| `content/morning_briefing.py` | Briefing formatter |
-| `content/newsletter_compiler.py` | Compile full newsletter with DD integration, theme sub-scores, QQQ benchmark |
-| `content/dd_post_generator.py` | **NEW** — Standalone DD HTML posts per buy signal (for Substack) |
-| `content/portfolio_visual.py` | Portfolio HTML dashboard with equity curve SVG, SPY/QQQ benchmarks |
-| `content/substack_notes_generator.py` | Tuesday/Thursday mid-week Substack notes |
-| `content/substack_content_generator.py` | Mon/Thu/Sat/Sun Substack posts |
-| `content/market_analyzer.py` | Market context analysis via LLM |
-| `content/chart_capture.py` | TradingView chart screenshots (weekly + daily timeframes) |
-| `content/winner_showcase_generator.py` | Winner showcase with entry prices |
-| `content/funnel_graphic.py` | Funnel visualization |
+| `portfolio/manager.py` | Trade tracking, P&L, tiered profit lock, conviction-sized positions |
+| `portfolio/backup_cleanup.py` | Portfolio backup dedup (newest per calendar week) |
 
-#### `distribution/` — Posting & Notifications
+#### `substack/` — Substack Content System
 | File | Purpose |
 |------|---------|
-| `distribution/twitter_poster.py` | X/Twitter posting (7-slot system, dual queues) |
-| `distribution/notifications.py` | Sell signal notifications (email + WhatsApp) |
-| `distribution/signal_tracker.py` | Win tracking |
-| `distribution/self_quote_tracker.py` | Track tweets for milestone quoting |
-| `distribution/email_notifier.py` | SMTP email notifications (general) |
+| `substack/newsletter_compiler.py` | Compile full newsletter with DD integration, theme sub-scores, QQQ benchmark |
+| `substack/content_generator.py` | Mon/Thu/Sat/Sun Substack posts (HTML) |
+| `substack/notes_generator.py` | Tuesday/Thursday mid-week Substack notes (legacy) |
+| `substack/notes_batch_generator.py` | Batch note generation (21/week, 3/day, `--html` for HTML output) |
+| `substack/dd_post_generator.py` | Standalone DD HTML posts per buy signal (for Substack) |
+| `substack/html_templates.py` | HTML template definitions for posts |
+| `substack/content_production_guide.py` | Content production guide: adaptive schedule, context doc for Claude.ai |
+| `substack/learning_content_library.py` | Educational content library |
+| `substack/market_analyzer.py` | Market context analysis via LLM |
+| `substack/portfolio_visual.py` | Portfolio HTML dashboard with equity curve SVG, SPY/QQQ benchmarks |
 
-#### `config/` — Configuration
+#### `twitter/` — Twitter/X Content System
+| File | Purpose |
+|------|---------|
+| `twitter/tweet_generator.py` | **v2** — Unified voice tweet generation (weekly + daily) |
+| `twitter/live_tweet_generator.py` | Live tweet generation (market hours) |
+| `twitter/live_context_gatherer.py` | Market context gathering for live tweets |
+| `twitter/poster.py` | X/Twitter posting (7-slot system, dual queues) |
+| `twitter/models.py` | Shared data classes: Tweet, ContentData, SlotAssignment, ValidationResult |
+| `twitter/chart_capture.py` | TradingView chart screenshots (weekly + daily timeframes) |
+| `twitter/chart_generator.py` | Chart generation via chart-img API |
+| `twitter/funnel_graphic.py` | Funnel visualization |
+| `twitter/winner_showcase_generator.py` | Winner showcase with entry prices |
+| `twitter/signal_tracker.py` | Win tracking |
+| `twitter/self_quote_tracker.py` | Track tweets for milestone quoting |
+| `twitter/health_check.py` | Live tweet system health monitoring |
+| `twitter/cost_tracker.py` | API cost tracking with daily kill switch |
+| `twitter/verify_tweets.py` | Verify tweet generator output |
+| `twitter/tradingview_login.py` | TradingView browser login |
+
+#### `config/` — Shared Configuration
 | File | Purpose |
 |------|---------|
 | `config/settings.py` | All constants, thresholds, API config |
 | `config/__init__.py` | Re-exports settings (backwards compat: `from config import X`) |
+| `config/output_paths.py` | Multi-section output path registry |
 | `config/banned_terms.py` | Single source of truth for banned terms, phrases, patterns |
 | `config/marketing_vocabulary.py` | Marketing vocabulary validation |
-| `config/output_paths.py` | Centralized folder structure management |
 
-#### `utils/` — Utilities
+#### `utils/` — Shared Utilities
 | File | Purpose |
 |------|---------|
-| `utils/verify_tweets.py` | Verify tweet generator output |
-| `utils/run_full_pipeline.py` | Full pipeline runner |
-| `utils/tradingview_login.py` | TradingView browser login |
-| `utils/setup_scheduler.py` | macOS scheduler setup |
-| `utils/backup_cleanup.py` | Portfolio backup dedup (newest per calendar week) |
+| `utils/notifications.py` | Sell signal notifications (email + WhatsApp) |
+| `utils/email_notifier.py` | SMTP email notifications (general) |
 
-#### `tests/` — Test Suite (217 tests)
+#### `dashboard/` — Next.js Dashboard
 | File | Purpose |
 |------|---------|
-| `tests/test_sterling_indicators.py` | **NEW** — Sterling Grid indicator unit tests (63 tests) |
+| `dashboard/src/lib/data.ts` | Data loading from section output directories |
+| `dashboard/scripts/bundle-data.sh` | Bundle data from 4 section outputs |
+
+#### `tests/` — Test Suite
+| File | Purpose |
+|------|---------|
+| `tests/test_sterling_indicators.py` | Sterling Grid indicator unit tests (63 tests) |
 | `tests/test_integration.py` | Cross-module integration tests (34 tests) — includes QQQ benchmark + DD post generator |
 | `tests/test_daily_scanner.py` | Daily scanner unit tests (11 tests) |
 | `tests/test_tweet_generator_v2.py` | Tweet generator v2 unit tests (24 tests) |
@@ -384,6 +418,8 @@ trades/
 | `tests/test_tweet_gen_integration.py` | Tweet generator integration tests |
 | `tests/test_edge_cases.py` | Edge case tests |
 | `tests/test_safeguards.py` | Safety guard tests |
+| `tests/test_substack_content_v2.py` | Substack content generator tests |
+| `tests/test_live_tweet.py` | Live tweet system tests |
 
 #### Root-Level & Workflow Files
 | File | Purpose |
@@ -392,7 +428,7 @@ trades/
 | `.github/workflows/friday_scan.yml` | Friday automated scan + tweet generation |
 | `.github/workflows/daily_scan.yml` | Mon-Fri daily scanner + notifications + tweets |
 | `.github/workflows/daily_post.yml` | 7-slot daily tweet posting (14 cron triggers) |
-| `complete_tickers.txt` | Ticker universe (~1800 stocks) |
+| `.github/workflows/live_tweet.yml` | Live tweet system (market hours) |
 | `requirements.txt` | Python dependencies |
 
 ---
@@ -1044,11 +1080,11 @@ These trigger automatic FAIL:
 
 1. **Friday PM:** Run scanner -> generates `latest_newsletter_briefing.md`
 2. **Saturday AM:**
-   - Run `python -m content.market_analyzer --save` -> get market context
+   - Run `python -m substack.market_analyzer --save` -> get market context
 3. **Optional DD:**
-   - Automated via `python -m core.dd_automator` (runs as part of scanner)
+   - Automated via `python -m scanner.deep_dd` (runs as part of scanner)
 4. **Compile:**
-   - Run `python -m content.newsletter_compiler --full`
+   - Run `python -m substack.newsletter_compiler --full`
    - Generates publication-ready HTML newsletter
 5. **Publish:**
    - Copy to Substack
@@ -1160,7 +1196,7 @@ Creates plist at `~/Library/LaunchAgents/com.bos.scanner.plist`:
 **Components:**
 - `content/reaction_generator.py` - Generates 3×35 tweets per week (primary)
 - `content/tweet_generator.py` - Legacy fallback tweet generator
-- `trades/content_queue.json` - Tweet queue with posting status
+- `twitter/output/content_queue.json` - Tweet queue with posting status
 - `.github/workflows/daily_post.yml` - Posts 5 tweets daily
 
 **Configuration (GitHub Secrets):**
@@ -1188,8 +1224,8 @@ TWITTER_ACCESS_SECRET
 
 **Components:**
 - `content/substack_notes_generator.py` - Generates Tuesday/Thursday notes
-- `trades/current/substack_notes/tuesday_note.md` - "Portfolio Pulse" update
-- `trades/current/substack_notes/thursday_note.md` - "Trade Spotlight" update
+- `substack/output/current/substack_notes/tuesday_note.md` - "Portfolio Pulse" update
+- `substack/output/current/substack_notes/thursday_note.md` - "Trade Spotlight" update
 
 **Manual step:** Copy notes to Substack Notes interface (~2 min each)
 
@@ -1254,8 +1290,8 @@ def publish_via_email(newsletter_content, subject):
 
 **Components:**
 - `chart_capture.py` - Playwright-based TradingView screenshot capture
-- `trades/charts/` - Output directory for chart images
-- `trades/charts/chart_manifest.json` - Tracks captured charts with paths
+- `twitter/output/charts/` - Output directory for chart images
+- `twitter/output/charts/chart_manifest.json` - Tracks captured charts with paths
 
 **Configuration:**
 - Layout ID: `rxC5j0SK` (saved with custom indicators)
@@ -1265,13 +1301,13 @@ def publish_via_email(newsletter_content, subject):
 **Usage:**
 ```bash
 # Capture specific tickers
-python -m content.chart_capture --tickers AAPL,NVDA
+python -m twitter.chart_capture --tickers AAPL,NVDA
 
 # Capture from signals file
-python -m content.chart_capture --tickers-from trades/signals.json
+python -m twitter.chart_capture --tickers-from scanner/output/signals.json
 
 # Headless mode (for CI)
-python -m content.chart_capture --tickers AAPL --headless
+python -m twitter.chart_capture --tickers AAPL --headless
 ```
 
 **Integration:**
@@ -1639,7 +1675,7 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
      - Gatekeeper: 2-3 searches per stock
 
   Portfolio: 6 open position(s) tracked
-     - trades/portfolio.csv
+     - portfolio/output/portfolio.csv
      - Google Sheets export on completion
 
 ------------------------------------------------------------------------------
@@ -1729,8 +1765,8 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
   PORTFOLIO UPDATE
 ------------------------------------------------------------------------------
   Portfolio: 6 open, 2 closed
-  CSV: trades/portfolio.csv
-  Google Sheets export: trades/portfolio_google_sheets.csv
+  CSV: portfolio/output/portfolio.csv
+  Google Sheets export: portfolio/output/portfolio_google_sheets.csv
 
   Performance (closed trades):
      Win Rate: 75% | Avg Win: +42.3% | Avg Loss: -18.2%
@@ -1767,14 +1803,12 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
   RESULTS SAVED
 ------------------------------------------------------------------------------
   Files:
-     - trades/signals_20260117.json
-     - trades/analysis_log.csv (appended)
-     - trades/report_20260117.txt
-     - trades/latest_report.txt
-     - trades/latest_newsletter_briefing.md
-     - trades/portfolio.csv
-     - trades/portfolio_google_sheets.csv
-     - trades/grok_prompts/latest_grok_prompts.md
+     - scanner/output/signals.json
+     - scanner/output/analysis_log.csv (appended)
+     - scanner/output/current/report.txt
+     - scanner/output/current/newsletter_briefing.md
+     - portfolio/output/portfolio.csv
+     - portfolio/output/portfolio_google_sheets.csv
 
 ------------------------------------------------------------------------------
   COST SUMMARY
@@ -1797,7 +1831,7 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
 
 ```
 [ ] Run full scan
-    python -m core.scanner --web-search
+    python -m scanner.scanner --web-search
 
 [ ] Review terminal output
     - Note PASS signals
@@ -1805,7 +1839,7 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
     - Review cost summary
 
 [ ] Quick portfolio check
-    python -m core.portfolio_manager --report
+    python -m portfolio.manager --report
 ```
 
 ### Saturday Morning
@@ -1815,10 +1849,10 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
     cat trades/latest_newsletter_briefing.md
 
 [ ] Generate market context (optional)
-    python -m content.market_analyzer --save
+    python -m substack.market_analyzer --save
 
 [ ] Compile newsletter
-    python -m content.newsletter_compiler --full
+    python -m substack.newsletter_compiler --full
     -> Generates publication-ready HTML
 
 [ ] Add TradingView charts
@@ -1862,7 +1896,7 @@ export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
 
 ```
 [ ] Check portfolio prices
-    python -m core.portfolio_manager --update
+    python -m portfolio.manager --update
 
 [ ] Check Google Sheets for live P&L
     - Open your synced Google Sheet
@@ -1938,7 +1972,7 @@ Problem: Malformed portfolio.csv
 
 Solution:
 1. Restore from backup:
-   cp trades/portfolio_backups/portfolio_YYYYMMDD_HHMMSS.csv trades/portfolio.csv
+   cp portfolio/output/portfolio_backups/portfolio_YYYYMMDD_HHMMSS.csv portfolio/output/portfolio.csv
 
 2. Or recreate from signals.json + manual entry
 ```
@@ -1947,12 +1981,40 @@ Solution:
 
 ## D. Changelog
 
+### 2026-02-20 (Substack Content System Overhaul — Handbook v5)
+
+- **4-category adaptive system** — Replaced fixed 7-day content schedule with 4 adaptive categories (Ticker Deep Dive, Theme Rotation, Educational, Performance Review) assigned dynamically based on scanner output
+- **Content Prompt Handbook v5** — `substack/docs/content_prompt_handbook_v5.md`: 4 category post prompts, 2 trade alert prompts, 1 universal notes prompt with embedded day-aware rotation matrix, full Quick Reference section with banned terms and HTML specs
+- **Content production guide enhanced** — `substack/content_production_guide.py`: Added Saturday to schedule, note types per day from rotation matrix, handbook prompt references per category, fixed stock count to ~1,800
+- **HTML notes support** — `substack/notes_batch_generator.py`: Added `--html` CLI flag, `HTML_NOTE_TEMPLATE`, `wrap_note_html()` markdown-to-HTML converter, updated `NoteSpec` with `.html` extension support
+- **Daily workflow simplified** — 5-step daily process: open context doc → copy category prompt → attach to Claude.ai (Opus 4.6 + extended thinking) → get HTML post + 3 HTML notes → paste to Substack
+- **Newsletter strategy doc updated** — `substack/docs/newsletter_strategy.md` aligned with 4-category system, updated module paths and output paths
+- **Handbook v4 archived** — `content_prompt_handbook_v4.md` moved to `archive/pre_reorg/`
+
+### 2026-02-19 (5-Section Codebase Reorganization)
+
+- **5-section structure** — Reorganized from `core/`, `content/`, `distribution/` flat packages into 5 domain-specific sections: `scanner/`, `portfolio/`, `substack/`, `twitter/`, `dashboard/`, each owning scripts, docs, and outputs
+- **File moves** — 35+ Python files moved via `git mv` with full import rewriting:
+  - `core/*.py` → `scanner/*.py` (8 files)
+  - `core/portfolio_manager.py` → `portfolio/manager.py`
+  - `content/tweet_generator.py`, `content/models.py`, etc. → `twitter/*.py` (13 files)
+  - `content/newsletter_compiler.py`, etc. → `substack/*.py` (10 files)
+  - `distribution/notifications.py`, `distribution/email_notifier.py` → `utils/*.py`
+  - `utils/health_check.py`, `utils/cost_tracker.py`, etc. → `twitter/*.py` (4 files)
+- **Multi-section output paths** — `config/output_paths.py` redesigned as centralized path registry with `SCANNER_OUTPUT`, `PORTFOLIO_OUTPUT`, `SUBSTACK_OUTPUT`, `TWITTER_OUTPUT` roots and named constants for every file path
+- **TRADES_DIR eliminated** — 175+ references across 35 files replaced with section-specific named constants from `config/output_paths.py`; legacy `TRADES_DIR` alias kept in `config/output_paths.py` only
+- **Output data files moved** — `trades/` contents split into section outputs: scanner data → `scanner/output/`, portfolio CSVs → `portfolio/output/`, newsletter/posts → `substack/output/`, tweet queues/charts → `twitter/output/`
+- **Weekly archives split** — `trades/weeks/YYYY-WXX/` archives split between `scanner/output/archive/` (report.txt, signals.json) and `substack/output/archive/` (newsletter.html, substack_posts/, substack_notes/)
+- **All workflows updated** — 5 GitHub Actions workflow files, 2 shell scripts updated with new `python -m` module paths and output file paths
+- **Dashboard updated** — `data.ts` uses section-specific directory resolution with legacy `trades/` fallback; `bundle-data.sh` copies from 4 section output directories
+- **Test suite intact** — All tests pass with updated imports and mock patches
+
 ### 2026-02-14 (Portfolio Dashboard, Newsletter & DD Posts Upgrade)
 
 - **Portfolio dashboard enhanced** — `content/portfolio_visual.py`: Equity curve SVG chart (Portfolio/SPY/QQQ polylines), 6-stat grid (NAV, Return, Win Rate, Alpha vs SPY, Alpha vs NASDAQ, Max Drawdown), enhanced positions table with Current Price and Stop Distance columns, timestamp with refresh instructions
 - **QQQ/NASDAQ benchmark** — `core/portfolio_manager.py`: Added `qqq_value`, `qqq_return_pct`, `alpha_vs_qqq_pct` to `EquitySnapshot`; backward-compatible CSV deserialization; `calculate_nav()` accepts `qqq_data`; `get_compounding_summary()` returns QQQ fields
 - **Newsletter compiler upgraded** — `content/newsletter_compiler.py`: `load_dd_results()` now extracts all Deep DD fields (elevator_pitch, why_now, the_math, bear_case, risk_to_monitor, action); new `load_theme_details()` for theme sub-score table; `generate_benchmark_comparison()` includes QQQ + max drawdown; `COMPILATION_PROMPT` expanded with `{theme_details}` section and full DD field guidance
-- **DD HTML post generator** — **NEW** `content/dd_post_generator.py`: Standalone dark-theme HTML pages per buy signal with The Pitch, Why Now, The Math, Bear Case, Risk to Monitor, Theme Context (progress bars for sub-scores), Investment Gate Summary, Action card; marketing-safe (sanitizes via `INTERNAL_TERMINOLOGY_MAP`); optional Playwright PNG screenshots; CLI: `python -m content.dd_post_generator`
+- **DD HTML post generator** — **NEW** `substack/dd_post_generator.py`: Standalone dark-theme HTML pages per buy signal with The Pitch, Why Now, The Math, Bear Case, Risk to Monitor, Theme Context (progress bars for sub-scores), Investment Gate Summary, Action card; marketing-safe (sanitizes via `INTERNAL_TERMINOLOGY_MAP`); optional Playwright PNG screenshots; CLI: `python -m substack.dd_post_generator`
 - **Pipeline integration** — DD post generation added to `run_friday.sh` (step 4.5) and `.github/workflows/friday_scan.yml`
 - **Test suite expanded** — 204 → 217 tests; new `TestQQQBenchmark` (5 tests) and `TestDDPostGenerator` (8 tests) in `test_integration.py`
 

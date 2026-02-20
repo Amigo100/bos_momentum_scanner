@@ -23,8 +23,8 @@ from unittest.mock import patch, MagicMock
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from distribution.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from content.tweet_generator import validate_tweet_length
+from twitter.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
+from twitter.tweet_generator import validate_tweet_length
 
 
 class TestExactlyAtThreshold:
@@ -102,7 +102,7 @@ class TestEmptyPortfolio:
         result = has_enough_wins([], min_pnl=15.0, min_winners=2)
         assert result == False
 
-    @patch("distribution.signal_tracker.calculate_portfolio_vs_spy")
+    @patch("twitter.signal_tracker.calculate_portfolio_vs_spy")
     def test_empty_portfolio_spy_comparison(self, mock_calc):
         """Empty portfolio should fail SPY comparison safeguard."""
         mock_calc.return_value = {'should_post_beat_spy': False, 'can_compare': False}

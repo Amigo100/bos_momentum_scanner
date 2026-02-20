@@ -16,7 +16,7 @@ import pandas as pd
 import pytest
 
 # ── Module under test ─────────────────────────────────────────────────────────
-from core.daily_scanner import (
+from scanner.daily_scanner import (
     DailySignal,
     DailyTrade,
     calculate_bos_daily,
@@ -85,10 +85,10 @@ def _write_csv(path: Path, rows: list, fieldnames: list):
 class TestDailyScannerMax5Signals:
     """Test 1: Only top 5 signals by Banker score are returned."""
 
-    @patch("core.daily_scanner.download_daily_data")
-    @patch("core.daily_scanner.download_spy_returns")
-    @patch("core.daily_scanner.load_tickers")
-    @patch("core.daily_scanner._get_ticker_info", return_value=("Technology", "Software"))
+    @patch("scanner.daily_scanner.download_daily_data")
+    @patch("scanner.daily_scanner.download_spy_returns")
+    @patch("scanner.daily_scanner.load_tickers")
+    @patch("scanner.daily_scanner._get_ticker_info", return_value=("Technology", "Software"))
     def test_daily_scanner_max_5_signals(
         self, mock_info, mock_tickers, mock_spy, mock_download
     ):
@@ -109,9 +109,9 @@ class TestDailyScannerMax5Signals:
 
         # Patch indicator functions so all 10 pass
         with (
-            patch("core.daily_scanner.calculate_beta", return_value=2.0),
-            patch("core.daily_scanner.calculate_banker", side_effect=lambda df: (60 + hash(str(df.index[0])) % 20, 50)),
-            patch("core.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
+            patch("scanner.daily_scanner.calculate_beta", return_value=2.0),
+            patch("scanner.daily_scanner.calculate_banker", side_effect=lambda df: (60 + hash(str(df.index[0])) % 20, 50)),
+            patch("scanner.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
         ):
             with tempfile.TemporaryDirectory() as tmpdir:
                 dp_path = Path(tmpdir) / "daily_portfolio.csv"
@@ -132,10 +132,10 @@ class TestDailyScannerMax5Signals:
 class TestDailyScannerDedupWeekly:
     """Test 2: Tickers with OPEN weekly positions are excluded."""
 
-    @patch("core.daily_scanner.download_daily_data")
-    @patch("core.daily_scanner.download_spy_returns")
-    @patch("core.daily_scanner.load_tickers")
-    @patch("core.daily_scanner._get_ticker_info", return_value=("Tech", "Software"))
+    @patch("scanner.daily_scanner.download_daily_data")
+    @patch("scanner.daily_scanner.download_spy_returns")
+    @patch("scanner.daily_scanner.load_tickers")
+    @patch("scanner.daily_scanner._get_ticker_info", return_value=("Tech", "Software"))
     def test_daily_scanner_dedup_weekly(
         self, mock_info, mock_tickers, mock_spy, mock_download
     ):
@@ -145,9 +145,9 @@ class TestDailyScannerDedupWeekly:
         mock_download.return_value = {t: _make_df() for t in tickers}
 
         with (
-            patch("core.daily_scanner.calculate_beta", return_value=2.0),
-            patch("core.daily_scanner.calculate_banker", return_value=(70.0, 60.0)),
-            patch("core.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
+            patch("scanner.daily_scanner.calculate_beta", return_value=2.0),
+            patch("scanner.daily_scanner.calculate_banker", return_value=(70.0, 60.0)),
+            patch("scanner.daily_scanner.calculate_bos_daily", return_value=(True, False, {})),
         ):
             with tempfile.TemporaryDirectory() as tmpdir:
                 dp_path = Path(tmpdir) / "daily_portfolio.csv"
@@ -255,7 +255,7 @@ class TestDailySellSignalBearishPivot:
         df = _make_df(120, base_price=115.0)  # close above trailing stop level
 
         # Mock BoS returning bearish signal
-        with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
+        with patch("scanner.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
             sells = check_daily_sell_signals([trade], {"TEST": df})
 
         # BoS Down should CLOSE the trade immediately
@@ -282,7 +282,7 @@ class TestDailyBoSDownPriority:
 
         df = _make_df(120, base_price=79.0)
 
-        with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
+        with patch("scanner.daily_scanner.calculate_bos_daily", return_value=(False, True, {})):
             sells = check_daily_sell_signals([trade], {"TEST": df})
 
         assert len(sells) == 1, f"Expected 1 sell signal, got {len(sells)}"
@@ -308,7 +308,7 @@ class TestDailySellSignalTrailingStop:
         # Override the last close to exactly 79
         df.iloc[-1, df.columns.get_loc("Close")] = 79.0
 
-        with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, False, {})):
+        with patch("scanner.daily_scanner.calculate_bos_daily", return_value=(False, False, {})):
             sells = check_daily_sell_signals([trade], {"TEST": df})
 
         assert trade.status == "STOPPED", f"Expected STOPPED, got {trade.status}"
@@ -338,7 +338,7 @@ class TestDailyPortfolioAtomicWrites:
             assert loaded[0].ticker == "AAPL"
 
             # Now simulate a crash during write by patching os.replace to fail
-            with patch("core.daily_scanner.os.replace", side_effect=OSError("Simulated crash")):
+            with patch("scanner.daily_scanner.os.replace", side_effect=OSError("Simulated crash")):
                 new_trades = [
                     DailyTrade(ticker="MSFT", entry_price=300.0, status="OPEN"),
                     DailyTrade(ticker="GOOG", entry_price=150.0, status="OPEN"),
@@ -388,16 +388,16 @@ class TestDailySignalsJsonOutput:
 class TestDailyScanEmptyResults:
     """Test 9: No signals → empty list, no crash, portfolio unchanged."""
 
-    @patch("core.daily_scanner.download_daily_data")
-    @patch("core.daily_scanner.download_spy_returns")
-    @patch("core.daily_scanner.load_tickers")
+    @patch("scanner.daily_scanner.download_daily_data")
+    @patch("scanner.daily_scanner.download_spy_returns")
+    @patch("scanner.daily_scanner.load_tickers")
     def test_daily_scan_empty_results(self, mock_tickers, mock_spy, mock_download):
         mock_tickers.return_value = ["AAPL", "MSFT"]
         mock_spy.return_value = _make_spy_returns()
         mock_download.return_value = {t: _make_df() for t in ["AAPL", "MSFT"]}
 
         # All tickers fail technical gate (beta too low)
-        with patch("core.daily_scanner.calculate_beta", return_value=0.5):
+        with patch("scanner.daily_scanner.calculate_beta", return_value=0.5):
             with tempfile.TemporaryDirectory() as tmpdir:
                 dp_path = Path(tmpdir) / "daily_portfolio.csv"
                 wp_path = Path(tmpdir) / "portfolio.csv"
@@ -439,16 +439,16 @@ class TestDailySellNotificationCalled:
         df = _make_df(120, base_price=11.5, trend=0.0)
         df.iloc[-1, df.columns.get_loc("Close")] = 11.50
 
-        with patch("core.daily_scanner.calculate_bos_daily", return_value=(False, False, {})):
+        with patch("scanner.daily_scanner.calculate_bos_daily", return_value=(False, False, {})):
             sells = check_daily_sell_signals([trade], {"RCAT": df})
 
         assert len(sells) == 1
         assert sells[0].status == "STOPPED"
 
         # Now test that _send_daily_sell_notifications calls send_sell_notification
-        from core.daily_scanner import _send_daily_sell_notifications
+        from scanner.daily_scanner import _send_daily_sell_notifications
 
-        with patch("distribution.notifications.send_sell_notification") as mock_notify:
+        with patch("utils.notifications.send_sell_notification") as mock_notify:
             _send_daily_sell_notifications(sells)
 
             mock_notify.assert_called_once()

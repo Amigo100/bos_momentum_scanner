@@ -1,11 +1,14 @@
-import { getSubstackContent, getWeeks, weekToDateRange } from "@/lib/data";
+import { getSubstackContent, getWeeks, weekToDateRange, getContentSchedule, getHandbookPrompts } from "@/lib/data";
 import { SubstackViewer } from "@/components/SubstackViewer";
+import { ContentSchedule } from "@/components/ContentSchedule";
 
 export const dynamic = "force-dynamic";
 
 export default function SubstackPage() {
   const content = getSubstackContent("all");
   const weeks = getWeeks();
+  const contentSchedule = getContentSchedule();
+  const handbookPrompts = getHandbookPrompts();
 
   // Build combined week data: newsletters, posts, notes grouped by week
   const weekKeys = new Set<string>();
@@ -37,6 +40,9 @@ export default function SubstackPage() {
           {totalNewsletters} newsletters · {totalPosts} posts · {totalNotes} notes · {weekOrder.length} weeks
         </p>
       </div>
+
+      {/* Content Schedule & Prompts */}
+      <ContentSchedule schedule={contentSchedule} prompts={handbookPrompts} />
 
       {/* Week Overview Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">

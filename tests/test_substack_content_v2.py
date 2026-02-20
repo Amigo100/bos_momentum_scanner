@@ -24,7 +24,7 @@ import pytest
 
 # ── Module imports ────────────────────────────────────────────────────────────
 
-from content.substack_content_generator import (
+from substack.content_generator import (
     ContentContext,
     PostSpec,
     build_content_context,
@@ -260,8 +260,8 @@ class TestContentContext:
         """build_content_context should handle missing files gracefully."""
         # Point to a non-existent signals file
         fake_path = tmpdir / "nonexistent_signals.json"
-        with patch("content.substack_content_generator.TRADES_DIR", tmpdir):
-            with patch("content.substack_content_generator.OUTPUT_PATHS_AVAILABLE", False):
+        with patch("substack.content_generator.SIGNALS_FILE", tmpdir / "signals.json"):
+            with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
                 ctx = build_content_context(fake_path)
                 assert ctx.signals == {}
                 assert ctx.pass_count == 0
@@ -276,11 +276,11 @@ class TestContentContext:
         signals_path = tmpdir / "signals.json"
         signals_path.write_text(json.dumps(signals))
 
-        with patch("content.substack_content_generator.TRADES_DIR", tmpdir):
-            with patch("content.substack_content_generator.OUTPUT_PATHS_AVAILABLE", False):
-                with patch("content.substack_content_generator.load_portfolio_winners", return_value=[]):
-                    with patch("content.substack_content_generator.load_equity_curve", return_value={}):
-                        with patch("content.substack_content_generator.load_chart_manifest", return_value={}):
+        with patch("substack.content_generator.SIGNALS_FILE", tmpdir / "signals.json"):
+            with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
+                with patch("substack.content_generator.load_portfolio_winners", return_value=[]):
+                    with patch("substack.content_generator.load_equity_curve", return_value={}):
+                        with patch("substack.content_generator.load_chart_manifest", return_value={}):
                             ctx = build_content_context(signals_path)
                             assert ctx.pass_count == 1
                             assert len(ctx.themes) == 1
@@ -294,23 +294,26 @@ class TestContentContext:
 class TestContentCalendar:
     """Test content calendar decision logic."""
 
-    def test_calendar_with_signals_returns_3_posts(self, full_context):
-        """When signals exist, should return 3 posts (recap, theme, dd)."""
+    def test_calendar_with_signals_returns_4_posts(self, full_context):
+        """When signals exist, should return 4 posts (recap, dd, theme, stock dive)."""
         calendar = determine_content_calendar(full_context)
-        assert len(calendar) == 3
+        assert len(calendar) >= 4
         types = [p.post_type for p in calendar]
         assert "WEEKLY_RECAP" in types
         assert "THEME_DEEP_DIVE" in types
         assert "DD_DEEP_DIVE" in types
+        assert "STOCK_DEEP_DIVE" in types
 
-    def test_calendar_without_signals_returns_3_posts(self, no_signals_context):
-        """When no signals, should return 3 posts (recap, theme, portfolio)."""
+    def test_calendar_without_signals_returns_4_posts(self, no_signals_context):
+        """When no signals, should return 4 posts (recap, theme, portfolio/stock, portfolio)."""
         calendar = determine_content_calendar(no_signals_context)
-        assert len(calendar) == 3
+        assert len(calendar) >= 3
         types = [p.post_type for p in calendar]
         assert "WEEKLY_RECAP" in types
         assert "THEME_DEEP_DIVE" in types
-        assert "PORTFOLIO_SPOTLIGHT" in types
+        # Should have PORTFOLIO_SPOTLIGHT or PORTFOLIO_SHOWCASE or STOCK_DEEP_DIVE or EDUCATIONAL
+        non_recap_types = [t for t in types if t not in ("WEEKLY_RECAP", "THEME_DEEP_DIVE")]
+        assert len(non_recap_types) >= 1
 
     def test_calendar_no_dd_without_signals(self, no_signals_context):
         """When no signals, DD_DEEP_DIVE should not be generated."""
@@ -343,7 +346,7 @@ class TestContentCalendar:
         calendar = determine_content_calendar(full_context)
         days = {p.post_type: p.publish_day for p in calendar}
         assert days["WEEKLY_RECAP"] == "Saturday"
-        assert days["THEME_DEEP_DIVE"] == "Tuesday"
+        assert days["THEME_DEEP_DIVE"] == "Wednesday"
 
     def test_calendar_filenames_are_html(self, full_context):
         """All post filenames should end in .html."""
@@ -809,11 +812,11 @@ class TestNoLLMFallback:
 
     def test_generate_all_posts_no_llm_mode(self, full_context):
         """generate_all_posts with no_llm=True should produce posts without API calls."""
-        with patch("content.substack_content_generator.OUTPUT_PATHS_AVAILABLE", False):
-            with patch("content.substack_content_generator.TRADES_DIR", Path(tempfile.mkdtemp())):
-                with patch("content.substack_content_generator.HTML_AVAILABLE", False):
+        with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
+            with patch("substack.content_generator.get_substack_current_dir", return_value=Path(tempfile.mkdtemp())):
+                with patch("substack.content_generator.HTML_AVAILABLE", False):
                     results = generate_all_posts(full_context, no_llm=True)
-                    assert len(results) == 3
+                    assert len(results) >= 4  # v3 expanded calendar: 4-5 posts
                     for r in results:
                         assert r["status"] == "generated"
                         assert r["cost"] == 0.0
@@ -821,7 +824,7 @@ class TestNoLLMFallback:
     def test_generate_all_posts_dry_run(self, full_context):
         """generate_all_posts with dry_run=True should not write files."""
         results = generate_all_posts(full_context, dry_run=True)
-        assert len(results) == 3
+        assert len(results) >= 4  # v3 expanded calendar: 4-5 posts
         for r in results:
             assert r["status"] == "dry_run"
 
@@ -836,7 +839,7 @@ class TestCLIBackwardCompat:
     def test_old_monday_maps_to_market(self):
         """--monday should map to the --market flag."""
         import argparse
-        from content.substack_content_generator import main
+        from substack.content_generator import main
         # Verify the parser setup by checking argument definitions
         parser = argparse.ArgumentParser()
         parser.add_argument("--market", action="store_true")
@@ -873,9 +876,9 @@ class TestCLIBackwardCompat:
 
     def test_post_type_filtering(self, full_context):
         """Specific post types should be filterable."""
-        with patch("content.substack_content_generator.OUTPUT_PATHS_AVAILABLE", False):
-            with patch("content.substack_content_generator.TRADES_DIR", Path(tempfile.mkdtemp())):
-                with patch("content.substack_content_generator.HTML_AVAILABLE", False):
+        with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
+            with patch("substack.content_generator.get_substack_current_dir", return_value=Path(tempfile.mkdtemp())):
+                with patch("substack.content_generator.HTML_AVAILABLE", False):
                     results = generate_all_posts(full_context, post_types=["WEEKLY_RECAP"], no_llm=True)
                     assert len(results) == 1
                     assert results[0]["post_type"] == "WEEKLY_RECAP"

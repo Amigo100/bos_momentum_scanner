@@ -1,161 +1,151 @@
 {
-  "timestamp": "2026-02-20T15:30:00Z",
+  "timestamp": "2026-02-20T16:00:00Z",
   "market_snapshot": {
-    "spy_move": "+0.48%",
-    "qqq_move": "+0.63%",
-    "vix": "19.81",
-    "market_mood": "mixed",
-    "headline": "US equities advance amid AI and infrastructure optimism, but volatility lingers on tariff and Fed uncertainties."
+    "spy_move": "+0.3%",
+    "qqq_move": "+0.4%",
+    "vix": "19.4",
+    "market_mood": "bullish",
+    "headline": "US stocks rise after Supreme Court strikes down Trump's tariffs, easing trade tensions and boosting risk appetite."
   },
   "portfolio_movers": [
     {
       "ticker": "$APLD",
-      "move": "-3.3%",
-      "price": "$36.17",
-      "context": "NVIDIA stake reduction triggers sell-off in data center play"
+      "move": "-1.2%",
+      "price": "$31.53",
+      "context": "data center pivot amid AI infrastructure boom, but pressured by broader tech volatility"
     },
     {
       "ticker": "$NVDA",
-      "move": "+1.2%",
-      "price": "$185.41",
-      "context": "AI chip demand sustains momentum ahead of earnings"
+      "move": "+1.1%",
+      "price": "$185.50",
+      "context": "rebounds on easing AI jitters and tariff relief impacting supply chains"
     },
     {
       "ticker": "$AMD",
       "move": "+0.8%",
-      "price": "$208.44",
-      "context": "Semiconductor resilience amid AI infrastructure buildout"
-    },
-    {
-      "ticker": "$MOD",
-      "move": "+2.5%",
-      "price": "$184.66",
-      "context": "Defense spending surge boosts modular construction for military bases"
-    },
-    {
-      "ticker": "$WCC",
-      "move": "+1.1%",
-      "price": "$281.63",
-      "context": "Copper price rally on AI data center demand"
+      "price": "$210.20",
+      "context": "gains from semiconductor sector rotation post-tariff ruling"
     },
     {
       "ticker": "$BITF",
-      "move": "+4.2%",
-      "price": "$2.14",
-      "context": "Bitcoin miners pivot to AI computing contracts"
+      "move": "+2.5%",
+      "price": "$2.19",
+      "context": "crypto miners rally on Bitcoin strength and AI data center contract buzz"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "+1.8%",
+      "price": "$2.37",
+      "context": "benefits from pivot to AI cloud services amid mining revenue shift"
+    },
+    {
+      "ticker": "$SOFI",
+      "move": "-0.5%",
+      "price": "$20.78",
+      "context": "slight dip despite fintech resilience in mixed macro environment"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "AI data centers and defense spending projected to drive 50% demand growth by 2040, risking supply shortages"
+      "detail": "S&P warns of intensifying shortage from AI data centers and defense spending, projecting 50% demand growth by 2040"
     },
     {
       "theme": "infrastructure",
       "status": "active",
-      "detail": "Reshoring efforts and data center expansion accelerate copper and modular construction needs"
+      "detail": "Tariff ruling boosts reshoring plays as supply chain costs ease"
     },
     {
       "theme": "defense",
       "status": "active",
-      "detail": "Geopolitical tensions boost spending on weaponry and infrastructure, tripling copper demand by 2040"
+      "detail": "Geopolitical tensions and spending surge drive copper and rare earth demand"
     },
     {
       "theme": "AI",
-      "status": "breaking",
-      "detail": "Hyperscalers sign $65B in AI/HPC contracts with miners, fueling data center power and chip surge"
+      "status": "active",
+      "detail": "Data centers fuel copper crunch; miners pivot to AI contracts worth $65B in 2025"
     },
     {
       "theme": "data centers",
-      "status": "active",
-      "detail": "Bitcoin miners pivot to AI infrastructure, with energy demand up 175% by 2030"
+      "status": "breaking",
+      "detail": "Bitcoin miners like APLD and HIVE secure hyperscaler deals, shifting revenue from crypto"
     },
     {
       "theme": "semiconductors",
-      "status": "active",
-      "detail": "US leads in advanced chips, but China closing gap; memory shortages strain AI supply"
+      "status": "quiet",
+      "detail": "Tariff strike-down reduces import risks, supporting NVDA and AMD supply chains"
     },
     {
       "theme": "crypto mining",
       "status": "active",
-      "detail": "Miners shift to AI data centers, revenue from mining drops to under 20% by late 2026"
-    },
-    {
-      "theme": "rare earth",
-      "status": "active",
-      "detail": "US proposes trade bloc and funding for domestic magnets to counter China dominance"
-    },
-    {
-      "theme": "nuclear",
-      "status": "quiet",
-      "detail": "Baseload power for AI grids gains traction, but no major moves today"
+      "detail": "Revenue projected to drop below 20% by end-2026 as firms like BITF focus on AI infrastructure"
     },
     {
       "theme": "reshoring",
       "status": "active",
-      "detail": "$1B funding for US rare-earth factory highlights supply chain security push"
+      "detail": "US proposes critical minerals trade bloc to counter China dominance in rare earths"
     }
   ],
   "fintwit_trending": [
-    "AI infrastructure",
+    "AI data centers",
     "copper shortage",
-    "defense spending",
-    "data center pivot",
-    "semiconductors"
+    "tariff ruling",
+    "Bitcoin miners pivot",
+    "NVDA earnings watch"
   ],
   "news_events": [
     {
-      "event": "Supreme Court rules on Trump tariffs",
-      "impact": "strikes down global tariffs, easing trade tensions but raising reshoring urgency",
+      "event": "Supreme Court strikes down Trump tariffs",
+      "impact": "eases trade war fears, supports global supply chains for semis and infrastructure",
       "relevance": "high"
     },
     {
-      "event": "Fed January minutes release",
-      "impact": "hawkish tone on inflation persists amid growth slowdown",
+      "event": "Q4 GDP and PCE data release",
+      "impact": "potential inflation spike from prior tariffs, tests Fed's rate path",
       "relevance": "high"
     },
     {
-      "event": "US GDP data deluge",
-      "impact": "potential inflation-growth collision as shutdown backlog clears",
+      "event": "US proposes rare earth price mechanism with allies",
+      "impact": "bolsters reshoring efforts against China, aids defense and EV themes",
       "relevance": "medium"
     },
     {
-      "event": "Geopolitical flare-ups",
-      "impact": "oil surge and defense boosts create buying opportunities",
+      "event": "Geopolitical tensions in Middle East",
+      "impact": "lifts oil prices, indirect pressure on data center energy costs",
       "relevance": "medium"
     }
   ],
   "tweet_opportunities": [
     {
       "type": "THEME_MOMENTUM",
-      "reason": "Copper demand exploding from AI data centers and defense; portfolio tickers like $WCC and $MOD positioned for breakout",
+      "reason": "Copper shortage breaking news ties directly to AI/data center themes in portfolio like APLD and HIVE",
       "tickers": [
-        "$WCC",
-        "$MOD"
+        "$APLD",
+        "$HIVE"
+      ],
+      "urgency": "high"
+    },
+    {
+      "type": "MARKET_REACTION",
+      "reason": "Tariff ruling boosts semis and reshoring plays, highlighting NVDA/AMD gains without repeating recent tweets",
+      "tickers": [
+        "$NVDA",
+        "$AMD"
       ],
       "urgency": "high"
     },
     {
       "type": "DIP_OPPORTUNITY",
-      "reason": "$APLD sell-off on NVIDIA news creates entry for data center exposure amid $65B AI contracts",
+      "reason": "SOFI minor dip in bullish market offers entry amid fintech stability post-macro relief",
       "tickers": [
-        "$APLD"
+        "$SOFI"
       ],
       "urgency": "medium"
     },
     {
-      "type": "MARKET_REACTION",
-      "reason": "Tariff ruling eases macro pressure, boosting reshoring themes like rare earth and semiconductors in portfolio",
-      "tickers": [
-        "$AMD",
-        "$NVDA"
-      ],
-      "urgency": "high"
-    },
-    {
-      "type": "SIGNAL_ALERT",
-      "reason": "Bitcoin miners like $BITF gaining on AI pivot; monitor for momentum continuation",
+      "type": "ENGAGEMENT",
+      "reason": "FinTwit buzzing on miners' AI pivot; poll or question on BITF/HIVE shift to engage audience",
       "tickers": [
         "$BITF",
         "$HIVE"
@@ -163,7 +153,7 @@
       "urgency": "medium"
     }
   ],
-  "gathered_at": "2026-02-20T15:30:35.951474+00:00",
+  "gathered_at": "2026-02-20T17:06:33.532011+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

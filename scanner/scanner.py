@@ -1,21 +1,27 @@
 #!/usr/bin/env python3
 """
-STERLING GRID MOMENTUM SCANNER - INTEGRATED PIPELINE (WEEKLY TIMEFRAME)
-========================================================================
+STERLING GRID MOMENTUM SCANNER V6 - INTEGRATED PIPELINE (WEEKLY TIMEFRAME)
+============================================================================
 
-Complete pipeline for WEEKLY momentum trading using Sterling Grid indicators
-(V1-V4 backtest validated: +633% at 10x10 sizing, 79% win rate).
+Complete pipeline for WEEKLY momentum trading using Sterling Grid indicators.
+V6 backtest validated: Tiered 20/10/5 = +3294% return, -5.1% DD, 645x ret/DD.
 
-ENTRY CRITERIA (all 5 must fire on same weekly bar):
-1. HMA(21) slope rising (structural trend confirmation)
-2. RSI(14) > 50 (momentum above midline)
-3. MACD(12,26,9) cross-up (timing confirmation — single bar event)
-4. UC rising above (UC > UC.shift(1) AND UC > 0 — institutional accumulation)
-5. Price < $25 (price cap)
+ENTRY CRITERIA (V6: HMA pivot + OR-gated confirmation):
+1. HMA(21) PIVOT LOW — V-bottom: HMA[i-2] > HMA[i-1] < HMA[i]
+2. At least ONE confirmation gate:
+   a. UC rising (UC > UC.shift(1)) — institutional accumulation  (OR)
+   b. MACD(12,26,9) cross-up — timing confirmation (single bar event)
+3. Price < $25 (price cap)
 Plus: Theme fit (Thematic Analyzer) + Investment Gate PASS
 
+QUALITY TIERS (at signal bar):
+- T1: UC rising AND MACD cross-up (both gates) → 20% of equity
+- T2: MACD cross-up only (timing confirmed)    → 10% of equity
+- T3: UC rising only (regime confirmed)         →  5% of equity
+Maximum 8 concurrent positions.
+
 EXIT CRITERIA (first exit — whichever fires first):
-1. ExD compound exit (HMA falling + UC falling on same bar) → immediate exit
+1. ExD compound exit (HMA PIVOT HIGH + UC falling on same bar) → immediate exit
 2. Tiered profit lock:
    - Current return >= +200%: 15% trail from peak
    - Current return >= +100%: 20% trail from peak
@@ -70,16 +76,16 @@ from config import (
     MIN_TRADING_DAYS,
     PRICE_CAP,
     LOCK_TIERS,
-    CONVICTION_TIERS,
+    QUALITY_TIERS,
     SIZING_GEARS,
     MAX_CONCURRENT_POSITIONS,
-    MIN_CASH_RESERVE_PCT,
     DEFAULT_SIZING_GEAR,
 )
 
-# Sterling Grid indicators (V1-V4 backtest-validated)
+# Sterling Grid indicators (V6 — pivot entry, OR-gated, quality tiers)
 from scanner.sterling_indicators import (
     resample_to_weekly,
+    calculate_hma_pivots,
     generate_entry_signal,
     generate_exit_signal,
     check_profit_lock,
@@ -147,9 +153,10 @@ BETA_MIN = BETA_THRESHOLD
 BETA_SIGNAL = BETA_THRESHOLD
 TRAILING_STOP_PCT = float(_CFG_TRAILING_STOP_PCT)  # Used by daily scanner only
 
-# Note: Weekly scanner now uses Sterling Grid indicators instead of BoS + Banker.
-# Entry: HMA slope rising + RSI(14)>50 + MACD cross-up + UC rising above + Price < $25
-# Exit: ExD (HMA falling + UC falling) OR tiered profit lock
+# Note: Weekly scanner uses Sterling Grid V6 indicators instead of BoS + Banker.
+# Entry: HMA pivot low + (UC rising OR MACD cross-up) + Price < $25
+# Exit: ExD (HMA pivot high + UC falling) OR tiered profit lock
+# Tiers: T1 (both gates, 20%), T2 (MACD, 10%), T3 (UC, 5%)
 
 
 def rel_path(p: Path) -> str:
@@ -170,15 +177,17 @@ class Stock:
     price: float = 0.0
     beta: float = 0.0  # Informational only — no longer an entry gate
 
-    # ── Sterling Grid indicator fields (V1-V4 backtest) ─────────────────────
-    # HMA slope direction
+    # ── Sterling Grid indicator fields (V6 backtest) ─────────────────────
+    # HMA pivot signals (V6 entry/exit triggers)
     hma_value: float = 0.0
-    hma_slope_rising: bool = False
-    hma_slope_falling: bool = False
-    # RSI(14) entry gate
+    hma_pivot_low: bool = False      # V-bottom: HMA[i-2] > HMA[i-1] < HMA[i]
+    hma_pivot_high: bool = False     # V-top: HMA[i-2] < HMA[i-1] > HMA[i]
+    hma_slope_rising: bool = False   # Informational (used for watchlist)
+    hma_slope_falling: bool = False  # Informational
+    # RSI(14) — computed for display, NOT an entry gate in V6
     rsi14: float = 0.0
-    rsi_above_50: bool = False
-    # MACD timing gate
+    rsi_above_50: bool = False       # Informational only
+    # MACD timing gate (OR-gated with UC in V6)
     macd_cross_up: bool = False
     macd_line: float = 0.0
     macd_signal_line: float = 0.0
@@ -186,12 +195,15 @@ class Stock:
     # Undercurrent (UC) — RSI(10)-based, NOT VWAP
     uc: float = 0.0
     uc_prev: float = 0.0
-    uc_rising_above: bool = False
+    uc_rising: bool = False          # V6: UC > UC.shift(1) — no >0 requirement
+    uc_rising_above: bool = False    # V4 legacy: UC > prev AND UC > 0
     uc_falling: bool = False
     # Composite signals
-    price_under_cap: bool = False  # Price < $25
-    buy_signal: bool = False       # All 5 entry conditions met on same bar
-    exd_signal: bool = False       # ExD exit (HMA falling + UC falling)
+    price_under_cap: bool = False    # Price < $25
+    buy_signal: bool = False         # V6: HMA pivot + (UC OR MACD) + price
+    exd_signal: bool = False         # V6: HMA pivot high + UC falling
+    # Quality tier (V6: determined by which gates active at signal bar)
+    quality_tier: int = 0            # 0=no signal, 1=T1 (both), 2=T2 (MACD), 3=T3 (UC)
     # Week date from data
     week_date: str = ""
 
@@ -235,7 +247,7 @@ class Stock:
     # ── Position sizing fields ───────────────────────────────────────────────
     position_size_pct: float = 0.0    # % of equity allocated
     position_dollars: float = 0.0     # Dollar amount allocated
-    position_tier: str = ""           # HIGH / STANDARD / SPEC
+    position_tier: str = ""           # T1 / T2 / T3 (quality tier label)
     sizing_gear: str = ""             # conservative / recommended / aggressive
 
     # ── Deep DD fields (Opus + extended thinking) ────────────────────────────
@@ -254,22 +266,38 @@ class Stock:
     dd_action: str = ""
 
     def meets_technical_criteria(self) -> bool:
-        """Check if stock meets Sterling Grid technical entry criteria.
+        """Check if stock meets Sterling Grid V6 technical entry criteria.
 
-        All 5 conditions must be true on the same weekly bar:
-        1. HMA(21) slope rising
-        2. RSI(14) > 50
-        3. MACD(12,26,9) cross-up (single bar)
-        4. UC rising above (UC > UC.shift(1) AND UC > 0)
-        5. Price < $25
+        V6 entry: HMA(21) pivot low AND (UC rising OR MACD cross-up) AND Price < $25
         """
         return self.buy_signal
 
     def get_tier(self) -> str:
-        """Assign tier — all stocks passing technical gate are TIER1."""
+        """Return quality tier label based on which gates are active at signal bar.
+        
+        T1: UC rising AND MACD cross-up (both gates — 20% equity)
+        T2: MACD cross-up only (timing confirmed — 10% equity)
+        T3: UC rising only (regime confirmed — 5% equity)
+        """
         if not self.meets_technical_criteria():
             return ""
-        return "TIER1"
+        if self.quality_tier == 1:
+            return "T1"
+        elif self.quality_tier == 2:
+            return "T2"
+        elif self.quality_tier == 3:
+            return "T3"
+        # Fallback: classify from indicator state
+        if self.uc_rising and self.macd_cross_up:
+            self.quality_tier = 1
+            return "T1"
+        elif self.macd_cross_up:
+            self.quality_tier = 2
+            return "T2"
+        elif self.uc_rising:
+            self.quality_tier = 3
+            return "T3"
+        return "T3"  # Default to lowest tier if somehow unclassified
     
     def passes_theme_gate(self) -> bool:
         """Check if passes thematic analyzer gate."""
@@ -284,14 +312,20 @@ class Stock:
 class ScanStats:
     tickers_loaded: int = 0
     data_downloaded: int = 0
-    # Sterling Grid indicator stats
+    # Sterling Grid V6 indicator stats
     price_under_cap: int = 0       # Price < $25
-    hma_slope_rising: int = 0      # HMA(21) slope rising
-    rsi_above_50: int = 0          # RSI(14) > 50
+    hma_pivot_low: int = 0         # HMA(21) V-bottom pivot (V6 entry trigger)
+    hma_slope_rising: int = 0      # HMA(21) slope rising (informational)
+    rsi_above_50: int = 0          # RSI(14) > 50 (informational, not a gate)
     macd_cross_up: int = 0         # MACD single-bar cross-up
-    uc_rising_above: int = 0       # UC > UC.shift(1) AND UC > 0
-    buy_signal: int = 0            # All 5 conditions met
-    exd_exit: int = 0              # ExD exit signal active
+    uc_rising: int = 0             # V6: UC > UC.shift(1) (no >0 req)
+    uc_rising_above: int = 0       # V4 legacy: UC > prev AND UC > 0
+    buy_signal: int = 0            # V6: pivot + (UC OR MACD) + price
+    exd_exit: int = 0              # V6: HMA pivot high + UC falling
+    # Quality tier counts
+    tier_t1: int = 0               # Both gates (UC + MACD)
+    tier_t2: int = 0               # MACD only
+    tier_t3: int = 0               # UC only
     # Legacy stats (kept for backward compat)
     beta_gte_1_5: int = 0
     bos_bullish: int = 0
@@ -368,13 +402,15 @@ def calculate_beta(returns: pd.Series, benchmark_returns: pd.Series) -> float:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Dict[str, Stock]:
-    """Download data and calculate Sterling Grid indicators for all tickers.
+    """Download data and calculate Sterling Grid V6 indicators for all tickers.
 
     For each ticker:
     1. Check price < $25 (fast filter)
     2. Resample daily → weekly
-    3. Calculate all 5 entry conditions via generate_entry_signal()
-    4. Calculate exit conditions via generate_exit_signal()
+    3. Calculate V6 entry conditions via generate_entry_signal()
+       (HMA pivot + OR-gated UC/MACD + quality tier classification)
+    4. Calculate V6 exit conditions via generate_exit_signal()
+       (HMA pivot high + UC falling)
     5. Beta calculated for informational display (not a gate)
     """
     stocks = {}
@@ -433,11 +469,13 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                             weekly = resample_to_weekly(df)
 
                             if len(weekly) >= HMA_PERIOD + 10:
-                                # Entry signal (all 5 conditions)
+                                # Entry signal (V6: pivot + OR-gated)
                                 entry_data = generate_entry_signal(weekly)
                                 cur = entry_data.iloc[-1]
 
                                 stock.hma_value = round(float(cur['hma']), 4) if pd.notna(cur['hma']) else 0.0
+                                stock.hma_pivot_low = bool(cur['hma_pivot_low'])
+                                stock.hma_pivot_high = bool(cur['hma_pivot_high'])
                                 stock.hma_slope_rising = bool(cur['hma_slope_rising'])
                                 stock.rsi14 = round(float(cur['rsi14']), 1) if pd.notna(cur['rsi14']) else 0.0
                                 stock.rsi_above_50 = bool(cur['rsi_above_50'])
@@ -446,10 +484,12 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                                 stock.macd_signal_line = round(float(cur['signal_line']), 4) if pd.notna(cur['signal_line']) else 0.0
                                 stock.macd_histogram = round(float(cur['macd_histogram']), 4) if pd.notna(cur['macd_histogram']) else 0.0
                                 stock.uc = round(float(cur['uc']), 2) if pd.notna(cur['uc']) else 0.0
+                                stock.uc_rising = bool(cur['uc_rising'])
                                 stock.uc_rising_above = bool(cur['uc_rising_above'])
                                 stock.buy_signal = bool(cur['buy_signal'])
+                                stock.quality_tier = int(cur['quality_tier']) if pd.notna(cur['quality_tier']) else 0
 
-                                # Exit signal (ExD)
+                                # Exit signal (V6 ExD: HMA pivot high + UC falling)
                                 exit_data = generate_exit_signal(weekly)
                                 cur_exit = exit_data.iloc[-1]
 
@@ -571,6 +611,7 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
         
         confirmed = []
         rejected = []
+        orphan_candidates = []  # Tickers that didn't fit top themes — candidates for rescue
         
         for stock in signals:
             if stock.symbol in analysis_map:
@@ -592,20 +633,59 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
                     if a.passes_maturity_gate():
                         confirmed.append(stock)
                     else:
+                        # Candidate for orphan rescue — didn't fit top themes
+                        orphan_candidates.append(stock)
                         rejected.append(stock)
                 elif a.passes_gate():
                     confirmed.append(stock)
                 else:
+                    # Candidate for orphan rescue — didn't fit top themes
+                    orphan_candidates.append(stock)
                     rejected.append(stock)
             else:
                 stock.theme_verdict = "NOT ANALYZED"
+                orphan_candidates.append(stock)
                 rejected.append(stock)
+        
+        # ─────────────────────────────────────────────────────────────────
+        # Step 2b: ORPHAN RESCUE — Bottom-up theme discovery
+        # For tickers that got WEAK/MODERATE FIT, check if they belong to
+        # a different high-quality theme missed by the top-5 scan.
+        # ─────────────────────────────────────────────────────────────────
+        rescued_stocks = []
+        if orphan_candidates:
+            orphan_tickers = [s.symbol for s in orphan_candidates]
+            try:
+                rescued_analyses = analyzer.run_step_2b_orphan_rescue(orphan_tickers)
+                rescued_map = {a.ticker: a for a in rescued_analyses if a.passes_gate()}
+                
+                for stock in orphan_candidates:
+                    if stock.symbol in rescued_map:
+                        a = rescued_map[stock.symbol]
+                        # Update stock with rescued theme data
+                        stock.theme = a.primary_theme or ""
+                        stock.theme_score = a.theme_score or 0.0
+                        stock.pure_play_score = a.pure_play_score
+                        stock.theme_verdict = a.verdict + " [RESCUED]"
+                        stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
+                        stock.valuation_regime = getattr(a, 'valuation_regime', '')
+                        
+                        # Move from rejected → confirmed
+                        if stock in rejected:
+                            rejected.remove(stock)
+                        confirmed.append(stock)
+                        rescued_stocks.append(stock)
+            except Exception as e:
+                print(f"  ⚠ Orphan rescue error (non-fatal): {e}")
+                # Continue without rescue — original rejected list stands
         
         # Brief summary (detailed output already shown by analyzer)
         print(f"\n  {'═' * 70}")
         print(f"  THEMATIC GATE COMPLETE")
         print(f"  {'═' * 70}")
         print(f"    ✅ Passing to next stage: {len(confirmed)} stocks")
+        if rescued_stocks:
+            print(f"       (of which {len(rescued_stocks)} rescued via orphan path: {', '.join(s.symbol for s in rescued_stocks)})")
         print(f"    ❌ Filtered out: {len(rejected)} stocks")
         print(f"  {'─' * 70}")
         
@@ -693,6 +773,7 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
                 analysis_map = {a.ticker: a for a in analyses}
                 confirmed = []
                 rejected = []
+                orphan_candidates2 = []
                 for stock in signals:
                     if stock.symbol in analysis_map:
                         a = analysis_map[stock.symbol]
@@ -701,14 +782,40 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
                         stock.pure_play_score = a.pure_play_score
                         stock.theme_verdict = a.verdict
                         if hasattr(a, 'passes_maturity_gate') and callable(a.passes_maturity_gate):
-                            (confirmed if a.passes_maturity_gate() else rejected).append(stock)
+                            if a.passes_maturity_gate():
+                                confirmed.append(stock)
+                            else:
+                                orphan_candidates2.append(stock)
+                                rejected.append(stock)
                         elif a.passes_gate():
                             confirmed.append(stock)
                         else:
+                            orphan_candidates2.append(stock)
                             rejected.append(stock)
                     else:
                         stock.theme_verdict = "NOT ANALYZED"
+                        orphan_candidates2.append(stock)
                         rejected.append(stock)
+                # Orphan rescue on retry path
+                if orphan_candidates2:
+                    try:
+                        orphan_tickers2 = [s.symbol for s in orphan_candidates2]
+                        rescued2 = analyzer2.run_step_2b_orphan_rescue(orphan_tickers2)
+                        rescued_map2 = {a.ticker: a for a in rescued2 if a.passes_gate()}
+                        for stock in orphan_candidates2:
+                            if stock.symbol in rescued_map2:
+                                a = rescued_map2[stock.symbol]
+                                stock.theme = a.primary_theme or ""
+                                stock.theme_score = a.theme_score or 0.0
+                                stock.pure_play_score = a.pure_play_score
+                                stock.theme_verdict = a.verdict + " [RESCUED]"
+                                stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
+                                stock.valuation_regime = getattr(a, 'valuation_regime', '')
+                                if stock in rejected:
+                                    rejected.remove(stock)
+                                confirmed.append(stock)
+                    except Exception:
+                        pass  # Continue without rescue on retry
                 return confirmed, themes_context, themes_data
         except Exception as e2:
             print(f"  ⚠ Retry also failed: {e2}")
@@ -828,10 +935,10 @@ class SellSignal:
 
 def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
     """
-    Check for sell signals on open positions using Sterling Grid exit criteria.
+    Check for sell signals on open positions using Sterling Grid V6 exit criteria.
 
     EXIT CRITERIA (first exit — whichever fires first):
-    1. ExD compound exit (HMA falling + UC falling on same bar) → EXIT immediately
+    1. ExD compound exit (HMA PIVOT HIGH + UC falling on same bar) → EXIT immediately
     2. Tiered profit lock (based on CURRENT return, not peak) → EXIT immediately
        - Current return >= +200%: 15% trail from peak
        - Current return >= +100%: 20% trail from peak
@@ -870,9 +977,9 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
             # CHECK EXIT CRITERIA (first exit — whichever fires first)
             exit_reasons = []
 
-            # 1. ExD compound exit (HMA falling + UC falling)
+            # 1. ExD compound exit (HMA pivot high + UC falling)
             if stock.exd_signal:
-                exit_reasons.append(f"ExD exit (HMA falling + UC falling)")
+                exit_reasons.append(f"ExD exit (HMA pivot high + UC falling)")
 
             # 2. Tiered profit lock
             lock_result = check_profit_lock(trade.entry_price, current_price, trade.highest_close)
@@ -1012,23 +1119,34 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print("  STEP 4: Sterling Grid Indicator Statistics")
     print("─" * 70)
 
-    # Count Sterling Grid indicator stats
+    # Count Sterling Grid V6 indicator stats
     eligible_stocks = []  # Stocks under price cap (eligible for entry)
 
     for stock in stocks.values():
         if stock.price_under_cap:
             stats.price_under_cap += 1
             eligible_stocks.append(stock)
+        if stock.hma_pivot_low:
+            stats.hma_pivot_low += 1
         if stock.hma_slope_rising:
             stats.hma_slope_rising += 1
         if stock.rsi_above_50:
             stats.rsi_above_50 += 1
         if stock.macd_cross_up:
             stats.macd_cross_up += 1
+        if stock.uc_rising:
+            stats.uc_rising += 1
         if stock.uc_rising_above:
             stats.uc_rising_above += 1
         if stock.buy_signal:
             stats.buy_signal += 1
+            # Count by quality tier
+            if stock.quality_tier == 1:
+                stats.tier_t1 += 1
+            elif stock.quality_tier == 2:
+                stats.tier_t2 += 1
+            elif stock.quality_tier == 3:
+                stats.tier_t3 += 1
         if stock.exd_signal:
             stats.exd_exit += 1
         # Legacy stats for backward compat
@@ -1042,7 +1160,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         eligible_stocks = eligible_stocks[:top_n]
         print(f"  (Limited to top {top_n} by UC)")
 
-    print(f"\n  STERLING GRID FILTER RESULTS:")
+    print(f"\n  STERLING GRID V6 FILTER RESULTS:")
     print(f"  ────────────────────────────────────")
     print(f"  Total tickers scanned:    {stats.tickers_loaded:>6}")
     print(f"  Data downloaded:          {stats.data_downloaded:>6}")
@@ -1050,21 +1168,25 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         # Internal terminology for debugging
         print(f"  Price < ${PRICE_CAP:.0f}:            {stats.price_under_cap:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  HMA slope rising:         {stats.hma_slope_rising:>6}")
-        print(f"  RSI(14) > 50:             {stats.rsi_above_50:>6}")
+        print(f"  HMA pivot low (V6):       {stats.hma_pivot_low:>6}")
+        print(f"  HMA slope rising:         {stats.hma_slope_rising:>6}  (informational)")
+        print(f"  RSI(14) > 50:             {stats.rsi_above_50:>6}  (informational)")
         print(f"  MACD cross-up:            {stats.macd_cross_up:>6}")
-        print(f"  UC rising above:          {stats.uc_rising_above:>6}")
+        print(f"  UC rising (V6):           {stats.uc_rising:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  BUY signal (all 5):       {stats.buy_signal:>6}")
+        print(f"  BUY signal (V6):          {stats.buy_signal:>6}")
+        if stats.buy_signal > 0:
+            print(f"    T1 (both gates):        {stats.tier_t1:>6}")
+            print(f"    T2 (MACD only):         {stats.tier_t2:>6}")
+            print(f"    T3 (UC only):           {stats.tier_t3:>6}")
         print(f"  ExD exit signal:          {stats.exd_exit:>6}")
     else:
         # Marketing-safe terminology
         print(f"  Price qualified:          {stats.price_under_cap:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  Structural trend rising:  {stats.hma_slope_rising:>6}")
-        print(f"  Momentum confirmed:       {stats.rsi_above_50:>6}")
+        print(f"  Structural pivot (V6):    {stats.hma_pivot_low:>6}")
         print(f"  Timing confirmed:         {stats.macd_cross_up:>6}")
-        print(f"  Accumulation rising:      {stats.uc_rising_above:>6}")
+        print(f"  Accumulation rising:      {stats.uc_rising:>6}")
         print(f"  ────────────────────────────────────")
         print(f"  Full entry signal:        {stats.buy_signal:>6}")
         print(f"  Exit signals:             {stats.exd_exit:>6}")
@@ -1088,37 +1210,39 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print(f"  │  DIAGNOSTIC: Sample Tickers (--verbose mode)                    │")
         print(f"  └─────────────────────────────────────────────────────────────────┘")
 
-    # Buy signals (all 5 conditions met)
+    # Buy signals (V6: HMA pivot + OR-gated confirmation)
     buy_signal_stocks = [s for s in stocks.values() if s.buy_signal]
     if verbose:
-        print(f"\n  🟢 BUY SIGNALS (all 5 conditions): {len(buy_signal_stocks)}")
+        print(f"\n  🟢 BUY SIGNALS (V6 pivot + gate): {len(buy_signal_stocks)}")
     else:
         print(f"\n  🟢 FULL ENTRY SIGNALS: {len(buy_signal_stocks)}")
     if buy_signal_stocks and verbose:
         for s in sorted(buy_signal_stocks, key=lambda x: -x.uc)[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} RSI={s.rsi14:.0f} HMA={'↑' if s.hma_slope_rising else '↓'}{held_flag}")
+            tier_label = s.get_tier() or "?"
+            print(f"      {s.symbol:<6} ${s.price:<8.2f} {tier_label} UC={s.uc:.1f} RSI={s.rsi14:.0f} HMA={'⌄' if s.hma_pivot_low else '↑' if s.hma_slope_rising else '↓'}{held_flag}")
 
     # ExD exit signals
     exd_stocks = [s for s in stocks.values() if s.exd_signal]
     if verbose:
-        print(f"  🔴 ExD EXIT: {len(exd_stocks)} (HMA falling + UC falling)")
+        print(f"  🔴 ExD EXIT: {len(exd_stocks)} (HMA pivot high + UC falling)")
     else:
         print(f"  🔴 EXIT SIGNALS: {len(exd_stocks)} (positions closed)")
     if exd_stocks and verbose:
         for s in exd_stocks[:sample_size]:
-            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} HMA={'↑' if s.hma_slope_rising else '↓'}")
+            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} HMA={'⌃' if s.hma_pivot_high else '↓' if s.hma_slope_falling else '↑'}")
 
     # Entry candidates under price cap with buy signal
     buy_under_cap = [s for s in eligible_stocks if s.buy_signal]
     if verbose:
-        print(f"\n  ⭐ ENTRY CANDIDATES (Buy + <${PRICE_CAP:.0f}): {len(buy_under_cap)}")
+        print(f"\n  ⭐ ENTRY CANDIDATES (V6 Signal + <${PRICE_CAP:.0f}): {len(buy_under_cap)}")
     else:
-        print(f"\n  ⭐ ENTRY CANDIDATES (5-Gate Qualified): {len(buy_under_cap)}")
+        print(f"\n  ⭐ ENTRY CANDIDATES (Gate Qualified): {len(buy_under_cap)}")
     if buy_under_cap:
         for s in sorted(buy_under_cap, key=lambda x: -x.uc)[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} RSI={s.rsi14:.0f} MACD={'✓' if s.macd_cross_up else '✗'}{held_flag}")
+            tier_label = s.get_tier() or "?"
+            print(f"      {s.symbol:<6} ${s.price:<8.2f} {tier_label} UC={s.uc:.1f} RSI={s.rsi14:.0f} MACD={'✓' if s.macd_cross_up else '✗'}{held_flag}")
 
     if not verbose:
         print(f"\n  💡 Use --verbose for detailed diagnostics")
@@ -1129,7 +1253,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     print("\n" + "─" * 70)
     print("  STEP 5: Applying Sterling Grid Technical Gates")
     print("─" * 70)
-    print(f"\n  📊 Entry: HMA slope↑ + RSI>50 + MACD cross-up + UC rising + Price<${PRICE_CAP:.0f}")
+    print(f"\n  📊 Entry (V6): HMA pivot↓ + (UC rising OR MACD cross-up) + Price<${PRICE_CAP:.0f}")
 
     technical_signals = []
     momentum_rejected = []  # Kept for backwards compatibility (always empty)
@@ -1142,19 +1266,23 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
                 technical_signals.append(stock)
                 stats.technical_signals += 1
 
-    print(f"\n  STERLING GRID GATE RESULTS:")
+    print(f"\n  STERLING GRID V6 GATE RESULTS:")
     print(f"  ────────────────────────────────────")
     print(f"  Price < ${PRICE_CAP:.0f} eligible:      {len(eligible_stocks):>5}")
-    print(f"  Buy signal (all 5 gates):  {stats.meets_technical_gate:>5}")
+    print(f"  Buy signal (V6 pivot):     {stats.meets_technical_gate:>5}")
     print(f"  ────────────────────────────────────")
-    print(f"  TECHNICAL SIGNALS (TIER1): {stats.technical_signals:>5}")
+    print(f"  TECHNICAL SIGNALS:         {stats.technical_signals:>5}")
+    if stats.technical_signals > 0:
+        print(f"    T1 (UC + MACD, 20%):     {stats.tier_t1:>5}")
+        print(f"    T2 (MACD only, 10%):     {stats.tier_t2:>5}")
+        print(f"    T3 (UC only, 5%):        {stats.tier_t3:>5}")
     print(f"  ────────────────────────────────────")
 
     if technical_signals:
         print(f"\n  ✅ TECHNICAL SIGNALS:")
         for s in sorted(technical_signals, key=lambda x: -x.uc):
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"    {s.tier}  {s.symbol:<6} ${s.price:>8.2f}  UC={s.uc:.1f}  RSI={s.rsi14:.0f}  MACD={'✓' if s.macd_cross_up else '✗'}  HMA={'↑' if s.hma_slope_rising else '↓'}{held_flag}")
+            print(f"    {s.tier}  {s.symbol:<6} ${s.price:>8.2f}  UC={s.uc:.1f}  RSI={s.rsi14:.0f}  MACD={'✓' if s.macd_cross_up else '✗'}  HMA={'⌄' if s.hma_pivot_low else '↑'}{held_flag}")
 
     if not technical_signals:
         print("\n  No technical signals to process")
@@ -1215,7 +1343,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         sorted_confirmed = sorted(confirmed, key=lambda x: -x.uc)
         for s in sorted_confirmed[:5]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"     {s.symbol:<6} | {s.tier} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | 20d={s.return_20d:+.1f}%{held_flag}")
+            print(f"     {s.symbol:<6} | {s.tier} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d={s.return_20d:+.1f}%{held_flag}")
         if len(sorted_confirmed) > 5:
             print(f"     ... and {len(sorted_confirmed) - 5} more")
     else:
@@ -1255,7 +1383,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # STEP 8: Check Sell Signals (ExD compound exit OR tiered profit lock)
     # ─────────────────────────────────────────────────────────────────────────
     print("\n" + "─" * 70)
-    print("  STEP 8: Checking Sell Signals (ExD exit OR Tiered Profit Lock)")
+    print("  STEP 8: Checking Sell Signals (ExD Pivot High exit OR Tiered Profit Lock)")
     print("─" * 70)
     
     sell_signals = check_sell_signals(stocks)
@@ -1302,7 +1430,8 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
                 print(f"\n  {s.symbol} | {s.tier} | ${s.price:.2f}")
                 print(f"  Conviction: {stars} ({conv}/10)")
                 if s.gate_verdict:
-                    print(f"  Gate: {s.gate_verdict} | UC={s.uc:.1f} | RSI={s.rsi14:.0f}")
+                    print(f"  Gate: {s.gate_verdict} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} (info)")
+                    print(f"  V6 Entry: Pivot={'✓' if s.hma_pivot_low else '✗'} | UC_rising={'✓' if s.uc_rising else '✗'} | MACD={'✓' if s.macd_cross_up else '✗'}")
                 print(f"  Theme: {s.theme or 'N/A'} ({s.theme_verdict})")
                 if s.gate_catalyst or s.catalyst_summary:
                     print(f"  📅 Catalyst: {s.gate_catalyst or s.catalyst_summary}")
@@ -1352,7 +1481,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
         print("\n  Pipeline summary:")
         print(f"    • {stats.tickers_loaded} tickers scanned")
         print(f"    • {stats.price_under_cap} under ${PRICE_CAP:.0f} price cap")
-        print(f"    • {stats.buy_signal} with full buy signal (all 5 gates)")
+        print(f"    • {stats.buy_signal} with full buy signal (V6 pivot + gate)")
         print(f"    • {stats.meets_technical_gate} met technical gate")
         print(f"    • {stats.theme_confirmed} passed theme gate")
         print(f"    • {stats.final_trade} PASS (GREEN), {stats.final_consider} CONSIDER, {stats.final_skip} SKIP")
@@ -1370,7 +1499,7 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
 
     print(f"\n  " + "═" * 66)
     print(f"  EXIT STRATEGY (first exit — whichever fires first):")
-    print(f"    • ExD compound exit (HMA falling + UC falling) = immediate exit")
+    print(f"    • ExD compound exit (HMA pivot high + UC falling) = immediate exit")
     print(f"    • Tiered profit lock (>=+200%→15%, >=+100%→20%, >=+50%→25% trail)")
     print(f"    • Below +50% return: only ExD can trigger exit")
     print(f"    • Whichever fires first closes the position")
@@ -1414,7 +1543,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     # HEADER
     # ═══════════════════════════════════════════════════════════════════════════
     lines.append("=" * 72)
-    lines.append("  BoS MOMENTUM SCANNER - WEEKLY REPORT")
+    lines.append("  BoS MOMENTUM SCANNER V6 - WEEKLY REPORT")
     lines.append(f"  {date_display}")
     lines.append(f"  Generated: {timestamp}")
     lines.append("=" * 72)
@@ -1455,11 +1584,10 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append(f"  Data retrieved:            {stats.data_downloaded:>6}")
     lines.append(f"  Price < ${PRICE_CAP:.0f}:             {stats.price_under_cap:>6}")
     lines.append("")
-    lines.append(f"  HMA slope rising:          {stats.hma_slope_rising:>6}")
-    lines.append(f"  RSI(14) > 50:              {stats.rsi_above_50:>6}")
+    lines.append(f"  HMA pivot low (V6):        {stats.hma_pivot_low:>6}")
     lines.append(f"  MACD cross-up:             {stats.macd_cross_up:>6}")
-    lines.append(f"  UC rising above:           {stats.uc_rising_above:>6}")
-    lines.append(f"  Buy signal (all 5):        {stats.buy_signal:>6}")
+    lines.append(f"  UC rising (V6):            {stats.uc_rising:>6}")
+    lines.append(f"  Buy signal (V6):           {stats.buy_signal:>6}")
     lines.append(f"  Met technical gate:        {stats.meets_technical_gate:>6}")
     lines.append(f"  Theme confirmed:           {stats.theme_confirmed:>6}")
     
@@ -1474,7 +1602,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
 
         # Table header
         lines.append("")
-        lines.append(f"  {'TIER':<6} {'SYMBOL':<7} {'PRICE':>9} {'UC':>6} {'RSI':>5} {'MACD':>5} {'THEME':<20}")
+        lines.append(f"  {'TIER':<6} {'SYMBOL':<7} {'PRICE':>9} {'UC':>6} {'RSI':>5} {'MACD':>5} {'UC↑':>4} {'THEME':<20}")
         lines.append("  " + "-" * 68)
 
         all_entry_signals = trades + considers + technical_only + theme_confirmed
@@ -1483,7 +1611,8 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
         for s in all_entry_signals:
             theme_short = (s.theme[:18] + "..") if s.theme and len(s.theme) > 20 else (s.theme or "N/A")
             macd_flag = "✓" if s.macd_cross_up else "✗"
-            lines.append(f"  {s.tier:<6} {s.symbol:<7} ${s.price:>7.2f} {s.uc:>6.1f} {s.rsi14:>5.0f} {macd_flag:>5} {theme_short:<20}")
+            uc_flag = "✓" if s.uc_rising else "✗"
+            lines.append(f"  {s.tier:<6} {s.symbol:<7} ${s.price:>7.2f} {s.uc:>6.1f} {s.rsi14:>5.0f} {macd_flag:>5} {uc_flag:>4} {theme_short:<20}")
 
         # Detailed breakdown for each signal
         lines.append("")
@@ -1494,8 +1623,8 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
             decision_label = s.final_decision if s.final_decision else "PASSED"
             lines.append(f"")
             lines.append(f"  ■ {s.symbol} ({s.tier}) - {decision_label}")
-            lines.append(f"    Price: ${s.price:.2f} | UC: {s.uc:.1f} | RSI: {s.rsi14:.0f} | MACD: {'cross-up' if s.macd_cross_up else 'no'}")
-            lines.append(f"    HMA: {'↑ rising' if s.hma_slope_rising else '↓ falling'} | 20-Day Return: {s.return_20d:+.1f}%")
+            lines.append(f"    Price: ${s.price:.2f} | UC: {s.uc:.1f} | RSI: {s.rsi14:.0f} (info) | MACD: {'cross-up' if s.macd_cross_up else 'no'}")
+            lines.append(f"    V6: Pivot={'✓' if s.hma_pivot_low else '✗'} | UC_rising={'✓' if s.uc_rising else '✗'} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d: {s.return_20d:+.1f}%")
             if s.theme:
                 lines.append(f"    Theme: {s.theme}")
                 lines.append(f"    Theme Verdict: {s.theme_verdict} | Pure Play: {s.pure_play_score}%")
@@ -1538,7 +1667,7 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append("─" * 72)
     lines.append("  EXIT STRATEGY (first exit — whichever fires first)")
     lines.append("─" * 72)
-    lines.append("  1. ExD compound exit (HMA falling + UC falling) = immediate exit")
+    lines.append("  1. ExD compound exit (HMA PIVOT HIGH + UC falling) = immediate exit")
     lines.append("  2. Tiered profit lock (return-based trailing stop):")
     lines.append("     • >= +200% return: 15% trail from peak")
     lines.append("     • >= +100% return: 20% trail from peak")
@@ -1552,15 +1681,22 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     # ═══════════════════════════════════════════════════════════════════════════
     lines.append("")
     lines.append("─" * 72)
-    lines.append("  ENTRY CRITERIA REFERENCE (Sterling Grid)")
+    lines.append("  ENTRY CRITERIA REFERENCE (Sterling Grid V6)")
     lines.append("─" * 72)
     lines.append(f"  1. Price < ${PRICE_CAP:.0f} (price cap)")
-    lines.append("  2. HMA(21) slope rising (structural trend confirmation)")
-    lines.append("  3. RSI(14) > 50 (momentum above midline)")
-    lines.append("  4. MACD(12,26,9) cross-up (timing confirmation)")
-    lines.append("  5. UC rising above (institutional accumulation starting)")
+    lines.append("  2. HMA(21) PIVOT LOW — V-bottom confirmation")
+    lines.append("  3. At least ONE confirmation gate:")
+    lines.append("     a. UC rising (institutional accumulation)")
+    lines.append("     b. MACD(12,26,9) cross-up (timing confirmation)")
+    lines.append("  RSI(14) computed for informational display, NOT an entry gate.")
     lines.append("")
-    lines.append("  All 5 must fire on the same weekly bar. Plus theme + Investment Gate.")
+    lines.append("  QUALITY TIERS (at signal bar):")
+    lines.append("  T1: UC rising AND MACD cross-up → 20% equity")
+    lines.append("  T2: MACD cross-up only          → 10% equity")
+    lines.append("  T3: UC rising only               →  5% equity")
+    lines.append("  Max 8 concurrent positions.")
+    lines.append("")
+    lines.append("  V6 entry fires on pivot + gate. Plus theme + Investment Gate.")
     
     # ═══════════════════════════════════════════════════════════════════════════
     # FOOTER
@@ -1697,9 +1833,9 @@ def generate_newsletter_briefing(
                 lines.append(f"|--------|-------|")
                 lines.append(f"| **Price** | ${s.price:.2f} |")
                 lines.append(f"| **Theme** | {s.theme or 'N/A'} ({s.theme_verdict}) |")
-                lines.append(f"| **Tier** | {s.tier} |")
+                lines.append(f"| **Tier** | {s.tier} (Quality Tier {s.quality_tier}) |")
                 lines.append(f"| **Beta** | {s.beta:.2f} |")
-                lines.append(f"| **Banker** | {s.banker:.0f} |")
+                lines.append(f"| **UC** | {s.uc:.0f} (rising={'✓' if s.uc_rising else '✗'}) |")
                 lines.append(f"| **Conviction** | {'★' * s.conviction}{'☆' * (5 - s.conviction)} |")
                 if s.catalyst_summary:
                     lines.append(f"| **Catalyst** | {s.catalyst_summary} |")
@@ -1796,7 +1932,7 @@ def generate_newsletter_briefing(
             lines.append("*These stocks passed technical and thematic gates but require manual due diligence:*")
             lines.append("")
             for s in technical_only:
-                lines.append(f"- **{s.symbol}** - ${s.price:.2f} | {s.theme or 'N/A'} | Tier {s.tier} | Banker {s.banker:.0f}")
+                lines.append(f"- **{s.symbol}** - ${s.price:.2f} | {s.theme or 'N/A'} | {s.tier} | UC {s.uc:.0f}")
             lines.append("")
             lines.append("---")
             lines.append("")
@@ -1806,7 +1942,7 @@ def generate_newsletter_briefing(
         if stats:
             lines.append("**Pipeline Summary:**")
             lines.append(f"- Tickers scanned: {stats.tickers_loaded}")
-            lines.append(f"- Weekly BoS Up: {stats.bos_bullish}")
+            lines.append(f"- V6 buy signals: {stats.buy_signal}")
             lines.append(f"- Technical signals: {stats.meets_technical_gate}")
             lines.append(f"- Theme confirmed: {stats.theme_confirmed}")
             lines.append("")
@@ -2325,15 +2461,19 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
 
     # Build signals JSON data — helper to create signal dict
     def _signal_dict(s: Stock) -> dict:
-        """Build a signal dict for a single stock with Sterling Grid fields."""
+        """Build a signal dict for a single stock with Sterling Grid V6 fields."""
         return {
             "symbol": s.symbol,
             "tier": s.tier,
+            "quality_tier": s.quality_tier,
             "price": s.price,
-            # Sterling Grid indicators
+            # Sterling Grid V6 indicators
             "uc": s.uc,
+            "uc_rising": s.uc_rising,
             "rsi14": s.rsi14,
             "macd_cross_up": s.macd_cross_up,
+            "hma_pivot_low": s.hma_pivot_low,
+            "hma_pivot_high": s.hma_pivot_high,
             "hma_slope_rising": s.hma_slope_rising,
             "buy_signal": s.buy_signal,
             "exd_signal": s.exd_signal,
@@ -2341,6 +2481,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             "beta": s.beta,
             "banker": s.uc,  # Map UC → banker key for downstream compat
             "return_20d": s.return_20d,
+            "uc_rising_above": s.uc_rising_above,  # V4 legacy
             # Theme
             "theme": s.theme,
             "theme_score": s.theme_score,
@@ -2382,17 +2523,22 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     signals_data = {
         "timestamp": timestamp,
         "timeframe": "WEEKLY",
-        "entry_criteria": f"Sterling Grid: HMA slope↑ + RSI>50 + MACD cross-up + UC rising + Price<${PRICE_CAP:.0f} + Theme + Investment Gate PASS",
-        "exit_criteria": "ExD compound exit (HMA falling + UC falling) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)",
+        "entry_criteria": f"Sterling Grid V6: HMA pivot↓ + (UC rising OR MACD cross-up) + Price<${PRICE_CAP:.0f} + Theme + Investment Gate PASS",
+        "exit_criteria": "ExD compound exit (HMA pivot high + UC falling) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)",
         "stats": {
             "tickers_loaded": stats.tickers_loaded,
             "data_downloaded": stats.data_downloaded,
             "price_under_cap": stats.price_under_cap,
+            "hma_pivot_low": stats.hma_pivot_low,
             "hma_slope_rising": stats.hma_slope_rising,
             "rsi_above_50": stats.rsi_above_50,
             "macd_cross_up": stats.macd_cross_up,
+            "uc_rising": stats.uc_rising,
             "uc_rising_above": stats.uc_rising_above,
             "buy_signal": stats.buy_signal,
+            "tier_t1": stats.tier_t1,
+            "tier_t2": stats.tier_t2,
+            "tier_t3": stats.tier_t3,
             "technical_signals": stats.meets_technical_gate,
             "theme_confirmed": stats.theme_confirmed,
             "final_trade": stats.final_trade,
@@ -2701,16 +2847,17 @@ def main() -> int:
     # Header
     print("\n")
     print("╔" + "═" * 68 + "╗")
-    print("║" + "BoS MOMENTUM SCANNER - WEEKLY TIMEFRAME".center(68) + "║")
+    print("║" + "BoS MOMENTUM SCANNER V6 - WEEKLY TIMEFRAME".center(68) + "║")
     print("║" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").center(68) + "║")
     print("╚" + "═" * 68 + "╝")
     
     # Show entry/exit criteria (marketing-safe by default, detailed with --verbose)
     if args.verbose:
-        print(f"\n  ENTRY: HMA slope↑ + RSI>50 + MACD cross-up + UC rising + Price<${PRICE_CAP:.0f}")
-        print("  EXIT:  ExD (HMA↓ + UC↓) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)")
+        print(f"\n  ENTRY (V6): HMA pivot↓ + (UC rising OR MACD cross-up) + Price<${PRICE_CAP:.0f}")
+        print("  TIERS: T1 (both, 20%) | T2 (MACD, 10%) | T3 (UC, 5%) | Max 8 positions")
+        print("  EXIT:  ExD (HMA pivot↑ + UC↓) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)")
     else:
-        print("\n  ENTRY: 5-Gate Screening (Structural + Momentum + Timing + Accumulation + Price)")
+        print("\n  ENTRY (V6): Pivot + Confirmation Gate Screening (Structural + Timing/Accumulation + Price)")
         print("  EXIT:  Capital Preservation Protocol (first exit — whichever fires first)")
     
     # Show pipeline based on options

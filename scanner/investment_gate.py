@@ -65,7 +65,7 @@ REPORTS_DIR = BASE_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 
 MODEL = "claude-sonnet-4-20250514"
-MAX_TOKENS = 5000
+MAX_TOKENS = 8000
 INTER_STOCK_DELAY = 8.0
 RATE_LIMIT_COOLDOWN = 60.0
 
@@ -159,8 +159,8 @@ SYSTEM_PROMPT = """You are a Senior Investment Analyst at a High-Conviction Grow
 
 CONTEXT:
 This stock has already passed:
-- Technical buy signal: Weekly HMA breakout + institutional accumulation (UC rising) + >25% below 52-week high
-- Thematic analysis: Confirmed to be in a healthy, trending investment theme with good company fit
+- Technical buy signal: Weekly V6 momentum pivot (HMA pivot low V-bottom + at least one confirmation gate: UC rising indicating institutional accumulation OR MACD cross-up for timing + Price under $25). Quality tier assigned at signal: T1 (both gates, 20% sizing), T2 (MACD only, 10%), T3 (UC only, 5%).
+- Thematic analysis: Confirmed to be in a healthy investment theme with good company fit
 
 YOUR MISSION:
 Answer ONE question: "Should we buy this stock on Monday?"
@@ -205,14 +205,24 @@ IMMEDIATE DISQUALIFIERS (→ NO GO, stop analysis):
 - CFO/CEO resigned in last 60 days (without clear succession)
 - Shelf offering (S-3) filed in last 30 days with no stated use
 - Active SEC or DOJ investigation
-- Earnings in < 5 trading days (binary risk too high)
+- For OPTIONALITY or TRANSITION regime: Earnings in < 5 trading days (binary risk too high on stocks not yet priced on earnings)
 - For FUNDAMENTAL regime: earnings revisions turned negative across the board
+
+EARNINGS TIMING — REGIME-DEPENDENT RULE:
+- FUNDAMENTAL regime + earnings in < 5 days + revisions ACCELERATING:
+  This is a CATALYST, not a risk. Note as CAUTION FLAG but CONTINUE analysis.
+  The technical signal likely fired BECAUSE smart money is positioning for the beat.
+- FUNDAMENTAL regime + earnings in < 5 days + revisions STABLE/DECELERATING/NEGATIVE:
+  DISQUALIFIER. Binary risk without positive setup.
+- OPTIONALITY/TRANSITION regime + earnings in < 5 days:
+  DISQUALIFIER. Pre-revenue earnings are genuinely unpredictable.
 
 CAUTION FLAGS (note but continue):
 - Earnings in 5-15 trading days → flag timing risk
 - Short interest > 25% → flag volatility risk
 - Single analyst downgrade → one opinion, not a trend
 - Insider selling under 10b5-1 plan → scheduled, not panic
+- Average daily trading volume < $1M or float < 5M shares → LIQUIDITY CONCERN, factor into position sizing (recommend REDUCED)
 
 ═══════════════════════════════════════════════════════════════════
 PHASE 2: CATALYST VALIDATION (Search 3-4)
@@ -959,7 +969,7 @@ def main() -> int:
         "price": args.price,
         "beta": 2.0,
         "banker": 65.0,
-        "tier": "TIER1",
+        "tier": "T1",
         "theme": args.theme or "Test Theme",
         "theme_fit": "GOOD FIT",
         "theme_classification": "INVESTABLE",

@@ -111,6 +111,7 @@ class CostTracker:
     # Call counts by step
     step1_calls: int = 0
     step2_calls: int = 0
+    step2b_calls: int = 0  # Orphan rescue calls
     
     # Pricing (per 1M tokens) - Sonnet 4.5 defaults
     input_price_per_m: float = 3.0   # $3/1M input tokens (Sonnet)
@@ -145,6 +146,8 @@ class CostTracker:
             self.step1_calls += 1
         elif step == "step2":
             self.step2_calls += 1
+        elif step == "step2b":
+            self.step2b_calls += 1
     
     def get_token_cost(self) -> float:
         """Calculate token cost"""
@@ -167,7 +170,7 @@ class CostTracker:
         print("─" * 60)
         print(f"  Tokens:  {self.input_tokens:,} input + {self.output_tokens:,} output")
         print(f"  Searches: {self.web_searches}")
-        print(f"  API Calls: {self.step1_calls} (Step 1) + {self.step2_calls} (Step 2)")
+        print(f"  API Calls: {self.step1_calls} (Step 1) + {self.step2_calls} (Step 2) + {self.step2b_calls} (Orphan Rescue)")
         print(f"\n  Token cost:  ${self.get_token_cost():.4f}")
         print(f"  Search cost: ${self.get_search_cost():.4f}")
         print(f"  ─────────────────────")
@@ -182,6 +185,7 @@ class CostTracker:
             "web_searches": self.web_searches,
             "step1_calls": self.step1_calls,
             "step2_calls": self.step2_calls,
+            "step2b_calls": self.step2b_calls,
             "token_cost": self.get_token_cost(),
             "search_cost": self.get_search_cost(),
             "total_cost": self.get_total_cost()
@@ -389,6 +393,7 @@ class Theme:
             "name": self.name,
             "classification": self.classification,
             "theme_type": self.theme_type,
+            "valuation_regime": self.valuation_regime,  # Critical for regime-aware Step 2 scoring
             "composite_score": round(self.composite_score, 1),
             "primary_etfs": self.primary_etfs[:3],  # Limit ETFs
             "key_catalysts": self.key_catalysts[:3],  # Limit catalysts
@@ -422,6 +427,8 @@ class TickerAnalysis:
     # Theme classification fields
     theme_classification: str = "INVESTABLE"  # PRIME / INVESTABLE / SELECTIVE / AVOID
     conviction: str = "Medium"  # High / Medium / Low
+    valuation_regime: str = ""  # OPTIONALITY / FUNDAMENTAL / TRANSITION (from theme)
+    assessment_method: str = ""  # REVENUE or BUSINESS_MODEL (how theme fit was scored)
     
     # Stock-specific scores (from new prompt)
     theme_fit_score: float = 0.0
@@ -436,6 +443,10 @@ class TickerAnalysis:
     earnings_risk: bool = False
     short_interest: str = ""
     red_flags: List[str] = None
+    
+    # Orphan rescue (Step 2b)
+    rescued: bool = False            # True if ticker was rescued via bottom-up orphan path
+    orphan_theme_discovered: str = ""  # Theme discovered by orphan rescue (vs. mapped from Step 1)
     
     def __post_init__(self):
         if self.red_flags is None:
@@ -869,7 +880,7 @@ For each theme, identify its lifecycle stage. This is different from theme type 
 | MAINSTREAM | Wide recognition, retail participation | Record ETF inflows, universal buy ratings, CNBC daily | Tradeable but requires strong technical signal |
 | MATURITY | Growth decelerating, competition intense | Revenue beats shrinking, competitor flood, margin pressure | AVOID for new positions |
 
-**WE STRONGLY PREFER EMERGENCE and EARLY ADOPTION stages.** Mainstream themes are only acceptable if our "Room to Run" filter triggers (stock >25% below 52-week high in a still-healthy theme). Maturity stage themes should be classified AVOID regardless of other scores.
+**WE STRONGLY PREFER EMERGENCE and EARLY ADOPTION stages.** Mainstream themes are only acceptable if stocks within them are showing fresh momentum breakouts in a still-healthy theme. Maturity stage themes should be classified AVOID regardless of other scores.
 
 ### ═══════════════════════════════════════════════════════════════════════════
 ### OUTPUT FORMAT
@@ -1009,12 +1020,12 @@ If a theme was INVESTABLE last week, it should remain INVESTABLE unless somethin
 """
 
 STEP_2_PROMPT_TEMPLATE = """
-## MAP TICKERS TO THEMES (With Revenue Verification)
+## MAP TICKERS TO THEMES
 
 Given the top themes from Step 1, determine how well each ticker fits its best theme.
 
 **NOTE:** This is theme mapping ONLY. Detailed risk assessment and catalyst checking
-happens in the Gatekeeper step. Focus on theme fit and company position.
+happens in the Investment Gate step. Focus on theme fit and company position.
 
 ### TOP THEMES FROM STEP 1:
 {themes_json}
@@ -1028,28 +1039,67 @@ happens in the Gatekeeper step. Focus on theme fit and company position.
 
 ## 1. THEME FIT (How much does this company benefit from the theme?)
 
+**CRITICAL FIRST STEP: Check the theme's VALUATION REGIME from Step 1 data above.**
+The regime determines HOW you measure theme fit.
+
+### For FUNDAMENTAL regime themes (revenue-driven companies):
+
 **Required search:** "[company] revenue breakdown business segments"
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| PURE PLAY | >70% of revenue/business directly tied to theme | 9-10 |
-| STRONG | 50-70% exposure | 7-8 |
-| MODERATE | 30-50% exposure | 5-6 |
-| WEAK | <30% exposure | 1-4 |
+| PURE PLAY | >70% of revenue directly tied to theme | 9-10 |
+| STRONG | 50-70% revenue exposure | 7-8 |
+| MODERATE | 30-50% revenue exposure | 5-6 |
+| WEAK | <30% revenue exposure | 1-4 |
+
+### For OPTIONALITY regime themes (pre-revenue / milestone-driven companies):
+
+Many companies in OPTIONALITY themes have little or no revenue. Scoring them on
+revenue % would classify every pre-revenue pure-play as WEAK FIT, which is wrong.
+
+**Required search:** "[company] technology business model TAM focus"
+
+| Rating | Criteria | Score |
+|--------|----------|-------|
+| PURE PLAY | Company's ENTIRE business model/technology is the theme (e.g., RGTI is 100% quantum computing) | 9-10 |
+| STRONG | Primary technology/product line directly addresses theme (>50% of R&D/focus) | 7-8 |
+| MODERATE | Meaningful but not primary exposure to theme | 5-6 |
+| WEAK | Tangential connection, theme is a side project | 1-4 |
+
+**For OPTIONALITY, verify BUSINESS MODEL ALIGNMENT instead of revenue:**
+1. Is the company's core technology/product directly about this theme?
+2. Does the company's TAM depend on this theme succeeding?
+3. Would this stock move with theme sentiment? (If quantum hype grows, does this
+   stock benefit directly?)
+
+### For TRANSITION regime themes:
+Use a BLEND — check both early revenue traction AND business model alignment.
+If revenue exists, weight it. If still mostly pre-revenue, use OPTIONALITY criteria.
 
 ### ═══════════════════════════════════════════════════════════════════════════
-### CRITICAL: VERIFY REVENUE, NOT NARRATIVE
+### CRITICAL: VERIFY SUBSTANCE, NOT NARRATIVE
 ### ═══════════════════════════════════════════════════════════════════════════
 
 Do NOT loosely associate companies with themes based on narrative or media coverage.
 For each ticker, you MUST verify:
 
+**For FUNDAMENTAL regime:**
 1. **What % of REVENUE actually comes from this theme?**
    If <30%, this is WEAK FIT regardless of how the company is perceived.
-
 2. **Is the company's PRIMARY business model aligned with the theme?**
    The company's largest revenue segment must be related to the theme.
 
+**For OPTIONALITY regime:**
+1. **Is the company's CORE TECHNOLOGY actually about this theme?**
+   A company that mentions "quantum" in a press release but builds classical
+   software is WEAK FIT. A company whose entire product IS quantum computing
+   is PURE PLAY regardless of revenue.
+2. **Does the company have CREDIBLE technology in this space?**
+   Patents, peer-reviewed work, government contracts, or working prototypes —
+   not just announcements.
+
+**For ALL regimes — the ETF correlation test still applies:**
 3. **Would this stock move with the theme ETF?**
    If the relevant theme ETF drops 20%, would this stock drop similarly?
    If not, the mapping is probably wrong.
@@ -1066,6 +1116,7 @@ For each ticker, you MUST verify:
 | APP | Social Media / Advertising | AI-Powered Ad Tech | Revenue is ad-tech platform with AI optimization, not a social media company |
 
 **When in doubt, check:** Search "[ticker] 10-K revenue breakdown by segment" to find actual numbers.
+For pre-revenue companies, search "[ticker] technology patents core product" instead.
 
 **If a ticker doesn't fit ANY identified theme well (score <5 on all), assign it to the
 closest theme but flag it as WEAK FIT. Do not force-fit a company into a theme it
@@ -1077,10 +1128,10 @@ doesn't belong to just because it's in a similar sector.**
 
 | Rating | Criteria | Score |
 |--------|----------|-------|
-| LEADER | Top 2 market share | 9-10 |
-| CHALLENGER | Top 5, gaining share | 7-8 |
-| NICHE | Specialized, defensible | 5-6 |
-| LAGGARD | Losing share | 1-4 |
+| LEADER | Top 2 market share or recognized technology leader | 9-10 |
+| CHALLENGER | Top 5, gaining share or rapidly advancing technology | 7-8 |
+| NICHE | Specialized, defensible position | 5-6 |
+| LAGGARD | Losing share or falling behind technologically | 1-4 |
 
 ### ═══════════════════════════════════════════════════════════════════════════
 ### VERDICT RULES
@@ -1096,8 +1147,8 @@ doesn't belong to just because it's in a similar sector.**
 | SELECTIVE | <7 | Any | MODERATE FIT |
 | AVOID | Any | Any | WEAK FIT |
 
-**STRONG FIT** → Pass to Gatekeeper for final assessment
-**GOOD FIT** → Pass to Gatekeeper
+**STRONG FIT** → Pass to Investment Gate for final assessment
+**GOOD FIT** → Pass to Investment Gate
 **MODERATE FIT** → Skip unless exceptional circumstances
 **WEAK FIT** → Do not proceed
 
@@ -1118,12 +1169,15 @@ Respond with ONLY valid JSON (no markdown, no explanation):
 
       "primary_theme": "Theme Name",
       "theme_classification": "PRIME/INVESTABLE/SELECTIVE/AVOID",
+      "valuation_regime": "OPTIONALITY/FUNDAMENTAL/TRANSITION",
 
       "theme_fit": {{
         "score": 8,
+        "assessment_method": "REVENUE or BUSINESS_MODEL",
         "exposure_pct": 75,
-        "primary_revenue_segment": "What the company actually makes most of its money from",
-        "rationale": "Brief explanation of theme exposure with revenue evidence"
+        "exposure_basis": "Revenue from cloud security segment (FUNDAMENTAL) OR Entire technology platform is quantum computing (OPTIONALITY)",
+        "primary_revenue_segment": "What the company actually makes most of its money from, or 'PRE-REVENUE' if applicable",
+        "rationale": "Brief explanation of theme exposure with evidence"
       }},
 
       "company_position": {{
@@ -1152,6 +1206,149 @@ Respond with ONLY valid JSON (no markdown, no explanation):
     }}
   }}
 }}
+"""
+
+
+STEP_2B_ORPHAN_PROMPT_TEMPLATE = """
+## ORPHAN TICKER RESCUE — Bottom-Up Theme Discovery
+
+These tickers passed technical screening but did NOT fit any of the top themes
+identified in Step 1. Rather than discard them, evaluate whether they belong to
+a DIFFERENT high-quality investment theme that wasn't in our top-5 list.
+
+Today's date: {TODAY}
+
+### TICKERS TO RESCUE:
+{ticker_list}
+
+### TOP THEMES ALREADY IDENTIFIED (these tickers did NOT fit these):
+{existing_themes_summary}
+
+### ═══════════════════════════════════════════════════════════════════════════
+### YOUR TASK (for each ticker)
+### ═══════════════════════════════════════════════════════════════════════════
+
+**STEP 1: Identify the ticker's ACTUAL primary investment theme.**
+Search "[company] business model revenue segments {YEAR}" to understand what the
+company actually does. Then identify the investment theme it belongs to.
+
+The theme should be specific enough to be investable (e.g., "Small Modular Nuclear
+Reactors" not just "Energy") but broad enough to have multiple beneficiaries.
+
+**STEP 2: Quick-evaluate that theme using the same 5-factor framework.**
+For each factor, do ONE targeted search and score 1-10:
+
+1. **CATALYST STRENGTH (30%)** — Search "[theme] catalysts {YEAR}"
+   Score 8-10 if multiple specific catalysts in next 6-12 months.
+   Score 5-7 if general tailwinds. Score 1-4 if no catalysts.
+
+2. **MOMENTUM DIRECTION (20%)** — Search "[theme] ETF performance {YEAR}"
+   Score 8-10 if accelerating. Score 6-7 if steady. Score 3-5 if decelerating.
+
+3. **CROWDING LEVEL (15%)** — Search "[theme] fund flows crowding {YEAR}"
+   Score 8-10 if under-owned. Score 5-7 if moderate. Score 2-4 if overcrowded.
+
+4. **RUNWAY REMAINING (10%)** — Search "[theme] market penetration growth"
+   Score 8-10 if <40% penetration. Score 5-7 if 40-70%. Score 2-4 if >70%.
+
+5. **CAPITAL CYCLE HEALTH (25%, HAS VETO)** — Search "[theme] capex vs revenue {YEAR}"
+   First determine valuation regime (OPTIONALITY / FUNDAMENTAL / TRANSITION).
+   Score using the same regime-specific criteria as Step 1.
+   **VETO: If score <= 3, cap classification at SELECTIVE regardless of composite.**
+
+**COMPOSITE** = (Catalyst × 0.30) + (Momentum × 0.20) + (Crowding × 0.15) + (Runway × 0.10) + (Capital Health × 0.25)
+
+| Composite | Classification |
+|-----------|----------------|
+| 7.5+      | PRIME          |
+| 6.0-7.4   | INVESTABLE     |
+| 4.5-5.9   | SELECTIVE      |
+| < 4.5     | AVOID          |
+
+**STEP 3: Score the ticker's fit to its OWN theme.**
+Use the same fit criteria as Step 2 (revenue % for FUNDAMENTAL, business model
+alignment for OPTIONALITY). Score company position (Leader/Challenger/Niche/Laggard).
+
+Apply the same verdict rules:
+| Theme Class | Theme Fit | Company Position | Verdict |
+|-------------|-----------|------------------|---------|
+| PRIME       | 7+        | Leader/Challenger | STRONG FIT |
+| PRIME       | 5-6       | Any               | GOOD FIT |
+| INVESTABLE  | 7+        | Leader/Challenger | STRONG FIT |
+| INVESTABLE  | 5-6       | Any               | GOOD FIT |
+| SELECTIVE   | 7+        | Leader only       | GOOD FIT |
+| SELECTIVE   | <7        | Any               | MODERATE FIT |
+| AVOID       | Any       | Any               | WEAK FIT |
+
+### ═══════════════════════════════════════════════════════════════════════════
+### CRITICAL: BE HONEST ABOUT THEME QUALITY
+### ═══════════════════════════════════════════════════════════════════════════
+
+The purpose of this step is to RESCUE stocks in genuinely good themes that were
+missed by the top-5 scan — NOT to rubber-stamp every orphan. Most orphans will
+still fail because their theme is SELECTIVE or AVOID. That's correct behavior.
+
+A ticker should only be rescued if:
+1. Its theme is genuinely PRIME or INVESTABLE (not borderline)
+2. The company is a genuine fit for the theme (not force-mapped)
+3. The theme wasn't in the top-5 because of scope limits, not because it's weak
+
+**DO NOT rescue tickers in themes that are:**
+- Fading, overcrowded, or capital-cycle-broken
+- Too vague ("Technology" is not a theme)
+- Already covered by the top-5 list under a different name
+
+### ═══════════════════════════════════════════════════════════════════════════
+### OUTPUT FORMAT
+### ═══════════════════════════════════════════════════════════════════════════
+
+Respond with ONLY valid JSON (no markdown, no explanation):
+
+{{{{
+  "analysis_date": "YYYY-MM-DD",
+  "orphan_rescue_results": [
+    {{{{
+      "ticker": "SYMBOL",
+      "company_name": "Full Company Name",
+      "sector": "Sector",
+
+      "discovered_theme": {{{{
+        "name": "Specific Theme Name",
+        "theme_type": "BOTTLENECK/TREND/CONTRARIAN",
+        "valuation_regime": "OPTIONALITY/FUNDAMENTAL/TRANSITION",
+        "catalyst_score": 7,
+        "momentum_score": 6,
+        "crowding_score": 8,
+        "runway_score": 7,
+        "capital_health_score": 7,
+        "composite_score": 7.1,
+        "classification": "INVESTABLE",
+        "veto_applied": false,
+        "investment_thesis": "2-3 sentence thesis",
+        "key_catalysts": ["Catalyst 1", "Catalyst 2"],
+        "primary_risks": ["Risk 1"]
+      }}}},
+
+      "theme_fit": {{{{
+        "score": 8,
+        "assessment_method": "REVENUE or BUSINESS_MODEL",
+        "exposure_pct": 75,
+        "rationale": "Why this company fits this theme"
+      }}}},
+
+      "company_position": {{{{
+        "score": 7,
+        "position": "Leader/Challenger/Niche/Laggard",
+        "rationale": "Market position assessment"
+      }}}},
+
+      "verdict": "STRONG FIT/GOOD FIT/MODERATE FIT/WEAK FIT",
+      "verdict_rationale": "One sentence summary",
+      "rescue_justified": true,
+      "rescue_rationale": "Why this ticker deserves rescue (or why not)"
+    }}}}
+  ]
+}}}}
 """
 
 
@@ -1219,7 +1416,7 @@ class ThematicAnalyzer:
                 # Determine which model to use
                 if step == "step1" and self.config.model_step1:
                     model = self.config.model_step1
-                elif step == "step2" and self.config.model_step2:
+                elif step in ("step2", "step2b") and self.config.model_step2:
                     model = self.config.model_step2
                 else:
                     model = self.config.model
@@ -2090,9 +2287,11 @@ class ThematicAnalyzer:
             # Look up theme classification from our themes list
             primary_theme_name = analysis.get("primary_theme")
             theme_classification = "INVESTABLE"  # Default
+            theme_valuation_regime = ""  # Default - will look up from theme
             for theme in self.themes:
                 if theme.name == primary_theme_name:
                     theme_classification = theme.classification
+                    theme_valuation_regime = theme.valuation_regime
                     break
             
             ticker_analysis = TickerAnalysis(
@@ -2117,6 +2316,8 @@ class ThematicAnalyzer:
                 # New fields from refined prompt
                 theme_classification=analysis.get("theme_classification", theme_classification),
                 conviction=analysis.get("conviction", "Medium"),
+                valuation_regime=analysis.get("valuation_regime", theme_valuation_regime),
+                assessment_method=theme_fit.get("assessment_method", ""),
                 theme_fit_score=theme_fit.get("score", 0),
                 theme_fit_pct=theme_fit.get("exposure_pct", 0) if isinstance(theme_fit.get("exposure_pct", 0), (int, float)) else 0,
                 company_position_score=company_pos.get("score", 0),
@@ -2289,6 +2490,188 @@ class ThematicAnalyzer:
         
         return self.ticker_analyses
     
+    def run_step_2b_orphan_rescue(self, orphan_tickers: List[str]) -> List[TickerAnalysis]:
+        """Step 2b: Bottom-up orphan rescue for tickers that didn't fit any top theme.
+        
+        For each orphan ticker, discovers its ACTUAL primary theme, evaluates that
+        theme on the same 5-factor framework, and scores the ticker's fit to its own
+        theme. Only rescues tickers in genuinely PRIME/INVESTABLE themes with
+        STRONG/GOOD FIT.
+        
+        Args:
+            orphan_tickers: List of ticker symbols that got WEAK/MODERATE FIT in Step 2
+            
+        Returns:
+            List of TickerAnalysis objects for rescued tickers (may be empty)
+        """
+        
+        if not orphan_tickers:
+            return []
+        
+        self.logger.info("")
+        self.logger.info("=" * 60)
+        self.logger.info("STEP 2b: ORPHAN RESCUE — Bottom-Up Theme Discovery")
+        self.logger.info("=" * 60)
+        self.logger.info(f"Evaluating {len(orphan_tickers)} orphan tickers: {', '.join(orphan_tickers)}")
+        
+        print(f"\n  {'═' * 90}")
+        print(f"  STEP 2b: ORPHAN RESCUE — Bottom-Up Theme Discovery")
+        print(f"  {'─' * 90}")
+        print(f"  {len(orphan_tickers)} tickers didn't fit top themes. Checking if they belong")
+        print(f"  to different high-quality themes missed by the top-down scan.")
+        print(f"  {'═' * 90}")
+        
+        # Build existing themes summary (brief, to save tokens)
+        existing_themes_summary = "\n".join(
+            f"  - {t.name} ({t.classification}, {t.composite_score:.1f}/10)"
+            for t in self.themes
+        )
+        
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        year_str = datetime.now().strftime("%Y")
+        
+        prompt = STEP_2B_ORPHAN_PROMPT_TEMPLATE.format(
+            TODAY=today_str,
+            YEAR=year_str,
+            ticker_list=", ".join(orphan_tickers),
+            existing_themes_summary=existing_themes_summary
+        )
+        
+        messages = [{"role": "user", "content": prompt}]
+        
+        # Rate limit cooldown before orphan rescue call
+        self.rate_limiter.wait_for_inter_step_cooldown("Step 2b - Orphan Rescue")
+        
+        response_text = self._call_api_with_retry(
+            messages, "Step 2b - Orphan Rescue", step="step2b"
+        )
+        
+        # Parse response
+        data = self._extract_json(response_text)
+        
+        # Convert to TickerAnalysis objects
+        rescued_analyses = []
+        orphan_results = data.get("orphan_rescue_results", [])
+        
+        # Try to fetch price data via yfinance
+        price_data = self._fetch_price_data(orphan_tickers)
+        
+        for result in orphan_results:
+            ticker = result.get("ticker", "")
+            rescue_justified = result.get("rescue_justified", False)
+            
+            # Extract discovered theme data
+            discovered = result.get("discovered_theme", {})
+            theme_fit = result.get("theme_fit", {})
+            company_pos = result.get("company_position", {})
+            verdict = result.get("verdict", "WEAK FIT")
+            
+            # Theme classification from discovered theme
+            theme_classification = discovered.get("classification", "SELECTIVE")
+            valuation_regime = discovered.get("valuation_regime", "")
+            
+            # Use yfinance data if available
+            yf_data = price_data.get(ticker, {})
+            price = yf_data.get('price') or result.get('current_price')
+            sector = yf_data.get('sector')
+            if not sector or sector == 'Unknown':
+                sector = result.get('sector', 'Unknown')
+            
+            # Pure play score from theme fit
+            pure_play = theme_fit.get("exposure_pct", 0)
+            if isinstance(pure_play, str):
+                pure_play = int(pure_play.replace("%", "").strip()) if pure_play else 0
+            
+            ticker_analysis = TickerAnalysis(
+                ticker=ticker,
+                company_name=result.get("company_name", ticker),
+                primary_theme=discovered.get("name", ""),
+                theme_score=discovered.get("composite_score", 0),
+                theme_rank=None,  # No rank — orphan theme is standalone
+                secondary_themes=[],
+                pure_play_score=int(pure_play),
+                market_position=company_pos.get("position", "Unknown"),
+                upside_score=discovered.get("composite_score", 0),
+                upside_rationale=result.get("verdict_rationale", ""),
+                verdict=verdict,
+                action=result.get("rescue_rationale", ""),
+                valuation_metric="",
+                key_catalysts=discovered.get("key_catalysts", []),
+                risks=[{"risk": r} if isinstance(r, str) else r
+                       for r in discovered.get("primary_risks", [])],
+                current_price=price,
+                sector=sector,
+                
+                # Theme classification from discovered theme
+                theme_classification=theme_classification,
+                conviction="High" if verdict == "STRONG FIT" and theme_classification == "PRIME"
+                    else "High" if verdict == "STRONG FIT" and theme_classification == "INVESTABLE"
+                    else "Medium" if verdict == "GOOD FIT"
+                    else "Low",
+                valuation_regime=valuation_regime,
+                assessment_method=theme_fit.get("assessment_method", ""),
+                
+                theme_fit_score=theme_fit.get("score", 0),
+                theme_fit_pct=pure_play if isinstance(pure_play, (int, float)) else 0,
+                company_position_score=company_pos.get("score", 0),
+                company_position=company_pos.get("position", ""),
+                
+                # Mark as rescued
+                rescued=True,
+                orphan_theme_discovered=discovered.get("name", ""),
+            )
+            
+            rescued_analyses.append(ticker_analysis)
+        
+        # =====================================================================
+        # DISPLAY ORPHAN RESCUE RESULTS
+        # =====================================================================
+        
+        rescued_passing = [t for t in rescued_analyses if t.passes_gate()]
+        rescued_failed = [t for t in rescued_analyses if not t.passes_gate()]
+        
+        print(f"\n  {'═' * 90}")
+        print(f"  ORPHAN RESCUE RESULTS")
+        print(f"  {'═' * 90}")
+        
+        if rescued_passing:
+            print(f"\n  🔄 RESCUED — Passing via bottom-up theme discovery ({len(rescued_passing)} stocks)")
+            print(f"  {'─' * 90}")
+            
+            for t in rescued_passing:
+                verdict_emoji = "🟢" if t.verdict == "STRONG FIT" else "🟡"
+                print(f"\n  ┌{'─' * 86}┐")
+                print(f"  │  {verdict_emoji} {t.ticker} - {t.company_name}  [RESCUED]")
+                print(f"  ├{'─' * 86}┤")
+                print(f"  │  Discovered Theme: {t.primary_theme}")
+                print(f"  │  Theme Classification: {t.theme_classification} ({t.theme_score:.1f}/10)")
+                print(f"  │  Valuation Regime: {t.valuation_regime}")
+                print(f"  │  Verdict: {t.verdict}  │  Pure Play: {t.pure_play_score}%")
+                print(f"  │  Position: {t.market_position}  │  Conviction: {t.conviction}")
+                if t.upside_rationale:
+                    rationale_short = t.upside_rationale[:120] + "..." if len(t.upside_rationale) > 120 else t.upside_rationale
+                    print(f"  │  Rationale: {rationale_short}")
+                if t.key_catalysts:
+                    cats = "; ".join(str(c)[:50] for c in t.key_catalysts[:3])
+                    print(f"  │  Catalysts: {cats}")
+                print(f"  └{'─' * 86}┘")
+        
+        if rescued_failed:
+            print(f"\n  ❌ NOT RESCUED — Theme too weak or poor fit ({len(rescued_failed)} stocks)")
+            print(f"  {'─' * 90}")
+            for t in rescued_failed:
+                theme_short = t.primary_theme[:30] if t.primary_theme else "Unknown"
+                print(f"    {t.ticker:<8} │ {t.verdict:<15} │ {theme_short:<30} │ {t.theme_classification}")
+        
+        print(f"\n  {'─' * 90}")
+        print(f"  Orphan Rescue: {len(rescued_passing)} rescued / {len(rescued_failed)} confirmed reject / {len(orphan_tickers)} evaluated")
+        print(f"  {'═' * 90}\n")
+        
+        # Add rescued analyses to the main ticker_analyses list
+        self.ticker_analyses.extend(rescued_analyses)
+        
+        return rescued_analyses
+    
     def save_trade_log(self, filepath: Optional[str] = None) -> str:
         """Save passing tickers to trade log CSV"""
         
@@ -2369,6 +2752,8 @@ class ThematicAnalyzer:
             "summary": {
                 "total_tickers": len(self.ticker_analyses),
                 "passing_gate": len([t for t in self.ticker_analyses if t.passes_gate()]),
+                "rescued_tickers": [t.ticker for t in self.ticker_analyses if t.rescued],
+                "rescued_passing": [t.ticker for t in self.ticker_analyses if t.rescued and t.passes_gate()],
                 "strong_fits": [t.ticker for t in self.ticker_analyses if t.verdict == "STRONG FIT"],
                 "good_fits": [t.ticker for t in self.ticker_analyses if t.verdict == "GOOD FIT"],
                 "no_theme_fit": [t.ticker for t in self.ticker_analyses if t.verdict == "NO THEME FIT"]
@@ -2450,8 +2835,9 @@ class ThematicAnalyzer:
         
         if passing_tickers:
             for t in passing_tickers:
+                rescued_tag = " [RESCUED]" if t.rescued else ""
                 lines.append(
-                    f"{t.ticker}: {t.primary_theme} | "
+                    f"{t.ticker}{rescued_tag}: {t.primary_theme} | "
                     f"Upside: {t.upside_score}/10 | "
                     f"Price: ${t.current_price:.2f if t.current_price else 'N/A'}"
                 )
@@ -2581,6 +2967,18 @@ class ThematicAnalyzer:
         else:
             self.run_step_2(tickers)
         
+        # Step 2b: Orphan rescue — bottom-up theme discovery for tickers that
+        # didn't fit any top theme. Only runs if there are orphans to rescue.
+        orphan_tickers = [
+            t.ticker for t in self.ticker_analyses
+            if t.verdict in ("WEAK FIT", "MODERATE FIT", "NO THEME FIT")
+        ]
+        if orphan_tickers:
+            self.logger.info(f"Found {len(orphan_tickers)} orphan tickers for rescue evaluation")
+            self.run_step_2b_orphan_rescue(orphan_tickers)
+        else:
+            self.logger.info("No orphan tickers — skipping Step 2b")
+        
         # Save outputs
         self.save_trade_log()
         analysis_file = self.save_full_analysis()
@@ -2600,6 +2998,9 @@ class ThematicAnalyzer:
         self.logger.info(f"Themes identified: {len(self.themes)}")
         self.logger.info(f"Tickers analyzed: {len(self.ticker_analyses)}")
         self.logger.info(f"Tickers passing gate: {len([t for t in self.ticker_analyses if t.passes_gate()])}")
+        rescued_count = len([t for t in self.ticker_analyses if t.rescued and t.passes_gate()])
+        if rescued_count:
+            self.logger.info(f"  (of which {rescued_count} rescued via orphan path)")
         self.logger.info(f"Trade log: {self.config.trade_log_file}")
         self.logger.info(f"Full analysis: {analysis_file}")
         

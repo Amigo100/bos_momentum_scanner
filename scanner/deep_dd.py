@@ -101,6 +101,9 @@ class DeepDDResult:
     valuation_regime: str = ""    # OPTIONALITY / FUNDAMENTAL / TRANSITION
     regime_assessment: str = ""   # How regime affects the analysis
 
+    # ── Gate Challenge ──
+    gate_challenge: str = ""      # What the Investment Gate got wrong or underweighted
+
     # ── Fatal Flaw (if NO GO) ──
     fatal_flaw: str = ""          # Specific reason for rejection
     reconsider_if: str = ""       # What would flip the verdict
@@ -133,13 +136,22 @@ SYSTEM_PROMPT = """You are the Lead Portfolio Manager at a high-conviction growt
 
 CONTEXT:
 This stock has passed:
-1. Technical screening: Weekly HMA breakout + institutional accumulation (UC rising) + >25% below 52w high
-2. Thematic analysis: Confirmed in a healthy trending theme with good company fit
+1. Technical screening: Weekly V6 momentum pivot (HMA pivot low V-bottom + at least one confirmation gate: UC rising indicating institutional accumulation OR MACD cross-up for timing + Price <$25). Quality tier: T1 (both gates), T2 (MACD only), T3 (UC only).
+2. Thematic analysis: Confirmed in a healthy investment theme with good company fit
 3. Investment Gate: Initial quality check passed — catalysts confirmed, no disqualifiers
 
 YOUR TWO JOBS:
 1. VALIDATE OR VETO: Does deep analysis confirm the Investment Gate's pass? You have veto power.
 2. PRODUCE NEWSLETTER CONTENT: If it passes, generate structured content for our investor newsletter.
+
+YOUR EDGE OVER THE INVESTMENT GATE:
+You have Opus-level reasoning + extended thinking. The Investment Gate used Sonnet
+with limited search depth. You should:
+- Go DEEPER on the bear case than the Investment Gate could
+- VERIFY the math to 50%+ with more specific data
+- TEST the Investment Gate's findings — does the catalyst hold up?
+  Does the bear rebuttal actually work?
+- Look for risks the Investment Gate may have MISSED due to search depth
 
 ═══════════════════════════════════════════════════════════════════
 VALUATION REGIME AWARENESS
@@ -194,6 +206,12 @@ Search for valuation metrics, peer comparisons, historical ranges.
 - Construct the specific math: growth + re-rating = target price
 - Where's the downside floor? (Value buyers, strategic acquirer interest)
 
+Phase 5 — SMART MONEY & COMPETITIVE POSITIONING
+Search for institutional ownership changes and competitive dynamics.
+- Recent 13F changes — are institutions accumulating or distributing?
+- Insider buying/selling patterns (beyond 10b5-1 plans)
+- Competitive moat assessment — what stops a competitor from taking share?
+
 ═══════════════════════════════════════════════════════════════════
 OUTPUT — Return ONLY valid JSON
 ═══════════════════════════════════════════════════════════════════
@@ -225,6 +243,8 @@ OUTPUT — Return ONLY valid JSON
 
     "valuation_regime_applied": "OPTIONALITY|FUNDAMENTAL|TRANSITION",
     "regime_assessment": "One sentence on how the regime affects this specific stock's assessment",
+
+    "gate_challenge": "What, if anything, the Investment Gate got wrong or underweighted — or confirm its assessment was accurate",
 
     "fatal_flaw": "Only if NO GO — the specific dealbreaker. Empty string if verdict is BUY.",
     "reconsider_if": "Only if NO GO — what change would flip the verdict. Empty string if BUY."
@@ -333,15 +353,37 @@ Your job is to DEEPEN this analysis, not repeat it. Confirm or challenge these f
 {gate_context}
 
 ## Your Mission
-Conduct thorough deep due diligence following the 4-phase research protocol in your instructions.
+Conduct thorough deep due diligence following the 5-phase research protocol in your instructions.
 
-SEARCH SUGGESTIONS:
-1. "{ticker} earnings results revenue growth {current_year}"
-2. "{ticker} upcoming catalyst conference investor day {current_year}"
-3. "{ticker} short thesis bear case risk concerns"
-4. "{ticker} valuation P/E P/S historical multiple peers"
+REQUIRED SEARCHES (adapt to regime — skip irrelevant ones):
+
+For ALL regimes:
+1. "{ticker} latest news developments {current_year}" → Recent events, sentiment
+2. "{ticker} short thesis bear case risks" → Bear investigation
+3. "{ticker} insider buying selling transactions {current_year}" → Management conviction
+4. "{ticker} institutional ownership 13F changes" → Smart money flows
+
+For FUNDAMENTAL regime, also search:
+5. "{ticker} earnings results revenue growth guidance {current_year}" → Growth trajectory
+6. "{ticker} valuation P/E P/S EV/EBITDA compared to peers" → Valuation context
+7. "{ticker} upcoming earnings catalyst product launch {current_year}" → Catalyst timeline
+
+For OPTIONALITY regime, also search:
+5. "{ticker} milestones technology progress {current_year}" → Milestone velocity
+6. "{ticker} funding partnerships government contracts {current_year}" → Capital inflows
+7. "{ticker} competitors market landscape" → Competitive position
+
+For TRANSITION regime, also search:
+5. "{ticker} revenue first customers orders {current_year}" → Revenue materialisation
+6. "{ticker} valuation concerns expectations" → Market tolerance
+7. "{ticker} competitors commercial traction" → Competitive dynamics
 
 Take your time with extended thinking. This analysis controls whether we invest real capital.
+
+Specifically TEST the Investment Gate's findings:
+- Does the catalyst they identified still hold up with deeper research?
+- Is the math to 50%+ realistic based on the numbers you find?
+- Does the bear rebuttal actually work, or did the Gate underweight a real risk?
 
 Return ONLY the JSON object specified in your instructions, no other text."""
 
@@ -482,6 +524,8 @@ def _parse_dd_result(
 
         valuation_regime=data.get("valuation_regime_applied", valuation_regime),
         regime_assessment=data.get("regime_assessment", ""),
+
+        gate_challenge=data.get("gate_challenge", ""),
 
         fatal_flaw=data.get("fatal_flaw", ""),
         reconsider_if=data.get("reconsider_if", ""),
@@ -710,6 +754,11 @@ def _print_dd_result(result: DeepDDResult) -> None:
         kill_short = result.kill_switch[:62]
         print(f"  │ ✂ {kill_short:<65} │")
 
+    # Gate challenge
+    if result.gate_challenge:
+        gate_short = result.gate_challenge[:62]
+        print(f"  │ 🔍 Gate: {gate_short:<58} │")
+
     # Fatal flaw (if NO GO)
     if result.fatal_flaw:
         print(f"  ├{'─' * 68}┤")
@@ -804,6 +853,9 @@ def _save_dd_report(result: DeepDDResult, theme: str, tier: str, thinking: str) 
         f.write(f"## Kill Switch\n{result.kill_switch}\n\n")
         f.write(f"## Downside Floor\n{result.downside_floor}\n\n")
 
+        if result.gate_challenge:
+            f.write(f"## Gate Challenge\n{result.gate_challenge}\n\n")
+
         if result.fatal_flaw:
             f.write(f"## Fatal Flaw\n{result.fatal_flaw}\n\n")
             f.write(f"## Reconsider If\n{result.reconsider_if}\n\n")
@@ -841,7 +893,7 @@ def main() -> int:
         "price": args.price,
         "beta": 2.0,
         "banker": 65.0,
-        "tier": "TIER1",
+        "tier": "T1",
         "theme": args.theme or "Test Theme",
         "theme_fit": "GOOD FIT",
         "theme_classification": "INVESTABLE",

@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
 """
-Sterling Grid — Weekly Indicator Calculator (EXACT BACKTEST MATCH)
-===================================================================
+Sterling Grid V6 — Weekly Indicator Calculator (EXACT BACKTEST MATCH)
+======================================================================
 Every calculation verified line-by-line against the actual backtest source:
   - src/indicators.py    (HMA, RSI, MACD, Undercurrent)
   - src/v2_signals.py    (entry signal generation + corridor alternation)
   - src/v3_exits.py      (ExD exit + tiered profit lock)
+  - v6/run_phase_b_tiered_sizing.py  (V6 pivot entry, OR-gated, quality tiers)
 
-CRITICAL CORRECTIONS vs earlier draft:
-  1. Undercurrent is NOT a VWAP indicator — it is clip(1.5×(RSI(10)−50), 0, 20)
-  2. MACD cross-up is a SINGLE BAR event, not a 3-bar lookback
-  3. Profit lock tier is based on CURRENT return, not peak return (tiers degrade)
-  4. Scanner's "Banker" (VWAP deviation) ≠ backtest "UC" (normalised RSI). 
-     The scanner needs updating to use this RSI-derived UC.
+V6 CHANGES vs V4:
+  1. Entry: HMA slope rising → HMA PIVOT LOW (V-bottom: HMA[i-2] > HMA[i-1] < HMA[i])
+  2. RSI(14) > 50 gate REMOVED (computed but not filtered on)
+  3. UC condition: uc_rising_above (UC > prev AND UC > 0) → uc_rising (UC > prev only)
+  4. Gate logic: All 5 AND'd → HMA_pivot_low AND (UC_rising OR MACD_cross_up) AND price < $25
+  5. Exit: HMA slope falling → HMA PIVOT HIGH (V-top: HMA[i-2] < HMA[i-1] > HMA[i])
+  6. Quality Tiers: T1 (both gates), T2 (MACD only), T3 (UC only)
+  7. Position Sizing: T1=20%, T2=10%, T3=5% of equity, max 8 concurrent
 
-Position Sizing: Conviction-Tiered (15×6 Recommended)
-  - STRONG BUY conviction 8-10 → 20% of equity (max 2 positions)
-  - STRONG BUY conviction 7    → 15% of equity (max 3 positions)
-  - SPEC BUY conviction 4-6    → 8% of equity  (max 2 positions)
-  - Maximum 6 concurrent positions, minimum 10% cash reserve
-  - Adaptive gear-shift: conservative (10×8) / recommended (15×6) / aggressive (20×5)
+Position Sizing: Quality-Tier Based (Tiered 20/10/5, max 8)
+  - T1 (UC rising + MACD cross-up) → 20% of equity  (highest conviction)
+  - T2 (MACD cross-up only)        → 10% of equity  (timing confirmed)
+  - T3 (UC rising only)            → 5% of equity   (regime confirmed)
+  - Maximum 8 concurrent positions
+  - Adaptive gear-shift: conservative (12/8/3) / recommended (20/10/5) / aggressive (25/15/8)
 
 Usage:
     python sterling_indicators.py TICKER [TICKER2 ...]
@@ -31,14 +34,14 @@ Position check (with entry price):
 Position check (with entry price and known peak):
     python sterling_indicators.py --check MARA:5.50:28.50
 
-Portfolio status (equity + positions as ticker:entry:conviction):
-    python sterling_indicators.py --portfolio 120000 MARA:5.50:9 RKLB:12.00:7
+Portfolio status (equity + positions as ticker:entry:tier):
+    python sterling_indicators.py --portfolio 120000 MARA:5.50:1 RKLB:12.00:2
 
 Position size calculator:
-    python sterling_indicators.py --size 120000 8
+    python sterling_indicators.py --size 120000 T1
 
 Sizing gear override:
-    python sterling_indicators.py --size 200000 5 --gear aggressive
+    python sterling_indicators.py --size 200000 T3 --gear aggressive
 
 Dump full indicator history to CSV:
     python sterling_indicators.py --history MARA
@@ -57,7 +60,7 @@ from datetime import datetime, timedelta
 # ═══════════════════════════════════════════════════════════════
 
 HMA_PERIOD = 21           # Hull Moving Average period (on weekly HL2)
-RSI_PERIOD = 14           # RSI(14) for entry "rsi_above_50" condition
+RSI_PERIOD = 14           # RSI(14) — computed but NOT an entry gate in V6
 MACD_FAST = 12            # MACD fast EMA
 MACD_SLOW = 26            # MACD slow EMA
 MACD_SIGNAL = 9           # MACD signal EMA
@@ -77,31 +80,30 @@ LOCK_TIERS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════
-# POSITION SIZING — Conviction-Tiered (15×6 Recommended Config)
+# POSITION SIZING — Quality-Tier Based (V6 Tiered 20/10/5)
 # ═══════════════════════════════════════════════════════════════
 
-# Base sizing config (recommended starting configuration)
-MAX_CONCURRENT_POSITIONS = 6
-MIN_CASH_RESERVE_PCT = 0.10    # Always keep 10% cash
+MAX_CONCURRENT_POSITIONS = 8
+MIN_TRADE_SIZE = 500.0
 
-# Conviction tiers: (verdict, conviction_range, equity_pct, max_slots)
-CONVICTION_TIERS = {
-    'HIGH':     {'min_conviction': 8, 'max_conviction': 10, 'equity_pct': 0.20, 'max_slots': 2,
-                 'label': 'STRONG BUY (high conviction)'},
-    'STANDARD': {'min_conviction': 7, 'max_conviction': 7,  'equity_pct': 0.15, 'max_slots': 3,
-                 'label': 'STRONG BUY (standard)'},
-    'SPEC':     {'min_conviction': 4, 'max_conviction': 6,  'equity_pct': 0.08, 'max_slots': 2,
-                 'label': 'SPEC BUY'},
+# Quality tier definitions: {tier_int: {pct, label, description}}
+QUALITY_TIERS = {
+    1: {'equity_pct': 0.20, 'label': 'T1', 'description': 'Both gates (UC rising + MACD cross-up)',
+        'backtest_wr': '57%', 'backtest_avg': '+91.0%'},
+    2: {'equity_pct': 0.10, 'label': 'T2', 'description': 'MACD cross-up only (timing confirmed)',
+        'backtest_wr': '83%', 'backtest_avg': '+63.2%'},
+    3: {'equity_pct': 0.05, 'label': 'T3', 'description': 'UC rising only (regime confirmed)',
+        'backtest_wr': '69%', 'backtest_avg': '+75.8%'},
 }
 
-# Gear-shift configurations
+# Gear-shift configurations (scale all tier allocations proportionally)
 SIZING_GEARS = {
-    'conservative': {'base_pct': 0.10, 'max_positions': 8,
-                     'tiers': {'HIGH': 0.12, 'STANDARD': 0.10, 'SPEC': 0.06}},
-    'recommended':  {'base_pct': 0.15, 'max_positions': 6,
-                     'tiers': {'HIGH': 0.20, 'STANDARD': 0.15, 'SPEC': 0.08}},
-    'aggressive':   {'base_pct': 0.20, 'max_positions': 5,
-                     'tiers': {'HIGH': 0.25, 'STANDARD': 0.20, 'SPEC': 0.10}},
+    'conservative': {'max_positions': 10, 'label': 'Conservative (12/8/3)',
+                     'tiers': {1: 0.12, 2: 0.08, 3: 0.03}},
+    'recommended':  {'max_positions': 8,  'label': 'Recommended (20/10/5)',
+                     'tiers': {1: 0.20, 2: 0.10, 3: 0.05}},
+    'aggressive':   {'max_positions': 8,  'label': 'Aggressive (25/15/8)',
+                     'tiers': {1: 0.25, 2: 0.15, 3: 0.08}},
 }
 
 
@@ -154,23 +156,51 @@ def calculate_hma(series: pd.Series, length: int = HMA_PERIOD) -> pd.Series:
     return _wma(diff, sqrt_len)
 
 
-def calculate_hma_slope(weekly_df: pd.DataFrame,
-                        period: int = HMA_PERIOD) -> pd.DataFrame:
+def calculate_hma_pivots(weekly_df: pd.DataFrame,
+                         period: int = HMA_PERIOD) -> pd.DataFrame:
     """
-    HMA slope signals.
-    Source: indicators.py compute_hma_slope() lines 313-320
+    HMA pivot detection — V6 entry/exit signal basis.
+    Source: src/indicators.py compute_hma_pivots()
+    Source: v6/run_phase_b_tiered_sizing.py generate_tiered_signals()
     
-    hma_rising  = hma[i] > hma[i-1]   (bullish entry component)
-    hma_falling = hma[i] < hma[i-1]   (bearish exit component)
+    REPLACES calculate_hma_slope() for entry/exit signal generation.
+    
+    pivot_low[i]  = (HMA[i-2] > HMA[i-1]) AND (HMA[i] > HMA[i-1])
+                    → V-bottom: HMA dipped then recovered (BUY trigger)
+    
+    pivot_high[i] = (HMA[i-2] < HMA[i-1]) AND (HMA[i] < HMA[i-1])
+                    → V-top: HMA peaked then declined (SELL trigger)
+    
+    Edge cases:
+      - First 2 bars: always False (insufficient lookback)
+      - NaN values: treated as False
     """
     hl2 = (weekly_df['high'] + weekly_df['low']) / 2
     hma_vals = calculate_hma(hl2, period)
 
     result = pd.DataFrame(index=weekly_df.index)
     result['hma'] = hma_vals
-    result['hma_prev'] = hma_vals.shift(1)
+
+    # 3-bar pivot detection
+    hma_prev1 = hma_vals.shift(1)   # HMA[i-1]
+    hma_prev2 = hma_vals.shift(2)   # HMA[i-2]
+
+    # Pivot low: V-bottom (dipped then recovered)
+    result['hma_pivot_low'] = (
+        (hma_prev2 > hma_prev1) &  # was falling
+        (hma_vals > hma_prev1)      # now rising
+    ).fillna(False)
+
+    # Pivot high: V-top (peaked then declined)
+    result['hma_pivot_high'] = (
+        (hma_prev2 < hma_prev1) &  # was rising
+        (hma_vals < hma_prev1)      # now falling
+    ).fillna(False)
+
+    # Also compute slope for informational/display purposes
     result['hma_slope_rising'] = (hma_vals > hma_vals.shift(1)).fillna(False)
     result['hma_slope_falling'] = (hma_vals < hma_vals.shift(1)).fillna(False)
+
     return result
 
 
@@ -180,7 +210,9 @@ def calculate_rsi(series: pd.Series, period: int = RSI_PERIOD) -> pd.Series:
     Source: indicators.py pulse() lines 116-123
     
     Uses ewm(alpha=1/period, adjust=False) which is Wilder's smoothing.
-    This is the RSI(14) used for the "rsi_above_50" entry condition.
+    
+    NOTE (V6): RSI(14) is computed for display/reference but is NOT an entry gate.
+    The V6 system removed the RSI > 50 requirement.
     """
     delta = series.diff()
     gain = delta.where(delta > 0, 0.0)
@@ -223,7 +255,7 @@ def calculate_macd(series: pd.Series,
         (macd_line.shift(1) <= signal_line.shift(1))
     ).fillna(False)
 
-    # Also compute hist_pos for reference (used by V1 entry "macd_hist_pos")
+    # Also compute hist_pos for reference
     result['macd_hist_pos'] = (histogram > 0).fillna(False)
 
     return result
@@ -250,24 +282,23 @@ def calculate_undercurrent(weekly_df: pd.DataFrame,
         RSI(10) =  60.0  →  UC = 15.0  (strong bullish)
         RSI(10) >= 63.3  →  UC = 20.0  (capped at ceiling)
     
-    UC entry condition "uc_rising_above" (v2_signals.py lines 65-68):
-        UC > UC.shift(1) AND UC > 0
-        In RSI terms: RSI(10) > 50 AND RSI(10) is increasing
+    V6 UC entry condition "uc_rising" (v2_signals.py _build_uc_mask):
+        UC > UC.shift(1)   — momentum accelerating (no >0 requirement)
     
-    UC exit condition "uc_falling" (v3_exits.py line for ExD):
-        UC < UC.shift(1)
-        In RSI terms: RSI(10) momentum is decreasing
+    V6 UC exit condition "uc_falling" (v3_exits.py ExD):
+        UC < UC.shift(1)   — momentum decelerating
+    
+    V4 DIFFERENCE: V4 used "uc_rising_above" = UC > UC.shift(1) AND UC > 0.
+    V6 drops the UC > 0 requirement (uc_rising only needs UC > prev).
     
     NOTE: This is DIFFERENT from the production scanner's "Banker" indicator,
-    which uses a VWAP deviation formula: ((Close/VWAP) - 1) × 100 + 50.
-    Banker and UC are conceptually related (both measure momentum) but are
-    mathematically different calculations. The scanner should be updated to
-    use this RSI-derived UC for consistency with backtested results.
+    which uses a VWAP deviation formula. Banker and UC are conceptually related
+    but mathematically different. The scanner uses this RSI-derived UC.
     """
     tf_divisor = {"daily": 1.0, "weekly": 5.0, "monthly": 21.0}.get(timeframe, 5.0)
     length = max(2, int(round(target_days / tf_divisor)))  # = 10 for weekly
 
-    # RSI(10) with Wilder's smoothing — separate from the RSI(14) entry condition
+    # RSI(10) with Wilder's smoothing — separate from the RSI(14) display value
     delta = weekly_df['close'].diff()
     gain = delta.where(delta > 0, 0.0)
     loss = (-delta).where(delta < 0, 0.0)
@@ -283,10 +314,13 @@ def calculate_undercurrent(weekly_df: pd.DataFrame,
     result['uc'] = uc
     result['uc_rsi10'] = rsi_uc  # The underlying RSI(10) for debugging
     result['uc_prev'] = uc.shift(1)
+
+    # V6 entry condition: uc_rising — no >0 requirement
     result['uc_rising'] = (uc > uc.shift(1)).fillna(False)
     result['uc_falling'] = (uc < uc.shift(1)).fillna(False)
     result['uc_above_zero'] = (uc > 0).fillna(False)
-    # "uc_rising_above" — exact match to v2_signals.py lines 65-68
+
+    # V4 legacy condition (kept for reference/comparison)
     result['uc_rising_above'] = (
         (uc > uc.shift(1)) & (uc > 0)
     ).fillna(False)
@@ -295,68 +329,106 @@ def calculate_undercurrent(weekly_df: pd.DataFrame,
 
 
 # ═══════════════════════════════════════════════════════════════
-# SIGNAL GENERATION (matching src/v2_signals.py exactly)
+# SIGNAL GENERATION — V6 (matching v6/run_phase_b_tiered_sizing.py)
 # ═══════════════════════════════════════════════════════════════
 
 def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Sterling Grid V2 entry signal.
-    Source: v2_signals.py generate_signals_v2() with V3/V4 config:
-        signal_type = "slope"
-        uc_cond     = "uc_rising_above"
-        rsi_cond    = "rsi_above_50"
+    Sterling Grid V6 entry signal.
+    Source: v6/run_phase_b_tiered_sizing.py generate_tiered_signals()
+    
+    V6 CONFIG:
+        signal_type = "pivot"        (HMA V-shape pivot low)
+        uc_cond     = "uc_rising"    (UC > UC.shift(1), no >0 req)
+        rsi_cond    = "rsi_none"     (RSI not used as gate)
         macd_cond   = "macd_cross_up"
     
-    BUY fires when ALL are true on the SAME weekly bar:
-        1. HMA(21) slope rising — current HMA > previous HMA
-        2. RSI(14) > 50
-        3. MACD(12,26,9) cross up — MACD crosses above signal THIS bar
-        4. UC rising above — UC > UC.shift(1) AND UC > 0
-        5. Price < $25
+    BUY fires when ALL of these are true on the SAME weekly bar:
+        1. HMA(21) pivot low — V-bottom: HMA[i-2] > HMA[i-1] < HMA[i]
+        2. At least ONE confirmation gate:
+           a. UC rising — UC > UC.shift(1)  (OR)
+           b. MACD cross up — single-bar crossover event
+        3. Price < $25
     
-    The backtest also applies corridor alternation (buy-sell-buy-sell
-    enforcement) which prevents consecutive buy signals. This scanner
-    checks one bar at a time so alternation isn't applied here — it's
-    handled by only entering when not already in a position.
+    QUALITY TIER CLASSIFICATION (at signal bar):
+        T1: UC rising AND MACD cross-up   (both gates — highest conviction)
+        T2: MACD cross-up only            (timing confirmed)
+        T3: UC rising only                (regime confirmed)
+    
+    V4→V6 CHANGES:
+        - HMA slope rising → HMA pivot low (3-bar V-shape detection)
+        - RSI(14) > 50 gate REMOVED
+        - UC "rising above" (>prev AND >0) → UC "rising" (>prev only)
+        - All 5 AND'd → pivot AND (UC OR MACD) AND price
+        - Added quality tier classification
     """
-    hma_data = calculate_hma_slope(weekly_df)
-    rsi = calculate_rsi(weekly_df['close'])
+    hma_data = calculate_hma_pivots(weekly_df)
+    rsi = calculate_rsi(weekly_df['close'])       # Computed for display, NOT a gate
     macd_data = calculate_macd(weekly_df['close'])
     uc_data = calculate_undercurrent(weekly_df)
 
     signals = pd.DataFrame(index=weekly_df.index)
     signals['close'] = weekly_df['close']
+
+    # HMA pivot (V6 entry trigger)
     signals['hma'] = hma_data['hma']
-    signals['hma_slope_rising'] = hma_data['hma_slope_rising']
+    signals['hma_pivot_low'] = hma_data['hma_pivot_low']
+    signals['hma_pivot_high'] = hma_data['hma_pivot_high']
+    signals['hma_slope_rising'] = hma_data['hma_slope_rising']     # informational
+
+    # RSI (V6: computed but NOT a gate)
     signals['rsi14'] = rsi
-    signals['rsi_above_50'] = (rsi > 50).fillna(False)
+    signals['rsi_above_50'] = (rsi > 50).fillna(False)             # informational only
+
+    # MACD (confirmation gate)
     signals['macd_line'] = macd_data['macd_line']
     signals['signal_line'] = macd_data['signal_line']
     signals['macd_histogram'] = macd_data['histogram']
     signals['macd_cross_up'] = macd_data['macd_cross_up']
+    signals['macd_hist_positive'] = macd_data['macd_hist_pos']
+
+    # UC (confirmation gate — V6 uses uc_rising, not uc_rising_above)
     signals['uc'] = uc_data['uc']
     signals['uc_rsi10'] = uc_data['uc_rsi10']
-    signals['uc_rising_above'] = uc_data['uc_rising_above']
+    signals['uc_rising'] = uc_data['uc_rising']
+    signals['uc_falling'] = uc_data['uc_falling']
+    signals['uc_rising_above'] = uc_data['uc_rising_above']        # V4 legacy, informational
 
-    # Combined buy — all conditions AND'd (v2_signals.py lines 178-185)
+    # ── V6 Combined buy signal ──────────────────────────────────
+    # HMA pivot low AND (UC rising OR MACD cross-up) AND price < $25
     signals['buy_signal'] = (
-        signals['hma_slope_rising'] &
-        signals['rsi_above_50'] &
-        signals['macd_cross_up'] &         # Single bar, not lookback
-        signals['uc_rising_above'] &
+        signals['hma_pivot_low'] &
+        (signals['uc_rising'] | signals['macd_cross_up']) &
         (signals['close'] < PRICE_CAP)
     )
 
-    # Tier 2 — Watchlist: relaxed criteria, mutually exclusive with buy
-    # MACD histogram > 0 persists for 10-20 weeks during bullish trends,
-    # vs macd_cross_up which fires on exactly 1 bar. This catches stocks
-    # where momentum is positive but the precise inflection hasn't fired.
-    signals['macd_hist_positive'] = (signals['macd_histogram'] > 0).fillna(False)
+    # ── Quality tier classification ─────────────────────────────
+    # T1 = both gates, T2 = MACD only, T3 = UC only
+    signals['quality_tier'] = 0  # 0 = no signal
+    signals.loc[
+        signals['buy_signal'] & signals['uc_rising'] & signals['macd_cross_up'],
+        'quality_tier'
+    ] = 1
+    signals.loc[
+        signals['buy_signal'] & signals['macd_cross_up'] & ~signals['uc_rising'],
+        'quality_tier'
+    ] = 2
+    signals.loc[
+        signals['buy_signal'] & signals['uc_rising'] & ~signals['macd_cross_up'],
+        'quality_tier'
+    ] = 3
+
+    # ── Tier label for display ──────────────────────────────────
+    tier_labels = {0: '', 1: 'T1', 2: 'T2', 3: 'T3'}
+    signals['tier_label'] = signals['quality_tier'].map(tier_labels)
+
+    # ── Watchlist: HMA rising + at least one gate, but no pivot ─
+    # These are stocks in a bullish trend where a pivot hasn't fired yet
     signals['watchlist_signal'] = (
         signals['hma_slope_rising'] &
-        signals['macd_hist_positive'] &
+        (signals['uc_rising'] | signals['macd_hist_positive']) &
         (signals['close'] < PRICE_CAP) &
-        ~signals['buy_signal']             # Exclude Tier 1 buys
+        ~signals['buy_signal']
     )
 
     return signals
@@ -364,30 +436,33 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
 
 def generate_exit_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     """
-    ExD exit signal.
-    Source: v3_exits.py run_compound_exit() lines 162-163
+    V6 ExD exit signal.
+    Source: v3_exits.py run_compound_exit() + V6 spec Section 7.1
     
     ExD fires when BOTH are true on the same weekly bar:
-        1. HMA(21) slope falling (from v2_signals sell = hma_falling)
-        2. UC falling (UC < UC.shift(1))
+        1. HMA(21) PIVOT HIGH — V-top: HMA[i-2] < HMA[i-1] > HMA[i]
+        2. UC falling — UC < UC.shift(1)
     
-    Exact code from v3_exits.py:
-        uc_falling = (uc_series < uc_series.shift(1)).fillna(False)
-        exd_sell = sell_signal & uc_falling
+    V4→V6 CHANGE:
+        - V4 used HMA slope falling (HMA < HMA.shift(1))
+        - V6 uses HMA pivot high (3-bar V-top detection)
+        This is a less sensitive exit trigger — requires a confirmed peak
+        rather than just any downward tick.
     """
-    hma_data = calculate_hma_slope(weekly_df)
+    hma_data = calculate_hma_pivots(weekly_df)
     uc_data = calculate_undercurrent(weekly_df)
 
     signals = pd.DataFrame(index=weekly_df.index)
     signals['close'] = weekly_df['close']
     signals['hma'] = hma_data['hma']
-    signals['hma_slope_falling'] = hma_data['hma_slope_falling']
+    signals['hma_pivot_high'] = hma_data['hma_pivot_high']
+    signals['hma_slope_falling'] = hma_data['hma_slope_falling']   # informational
     signals['uc'] = uc_data['uc']
     signals['uc_falling'] = uc_data['uc_falling']
 
-    # ExD = HMA bearish AND UC falling (same bar)
+    # V6 ExD = HMA pivot high AND UC falling (same bar)
     signals['exd_signal'] = (
-        signals['hma_slope_falling'] &
+        signals['hma_pivot_high'] &
         signals['uc_falling']
     )
 
@@ -421,8 +496,7 @@ def check_profit_lock(entry_price: float,
     If it pulls further to +90%, it loosens again to 25% trail. If it drops
     below +50% current return, the lock deactivates entirely.
     
-    This is intentional: it gives stocks room to recover from pullbacks
-    rather than locking in with an aggressively tight trail.
+    UNCHANGED from V4 — profit lock logic is identical in V6.
     """
     if entry_price <= 0:
         return {'triggered': False}
@@ -466,7 +540,7 @@ def check_profit_lock(entry_price: float,
 # ═══════════════════════════════════════════════════════════════
 
 def scan_ticker(ticker: str, verbose: bool = True) -> dict:
-    """Scan a single ticker for Sterling Grid entry/exit signals."""
+    """Scan a single ticker for Sterling Grid V6 entry/exit signals."""
     df = yf.download(ticker, period="2y", progress=False)
 
     if df.empty or len(df) < 100:
@@ -488,76 +562,105 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
     cur = entry_signals.iloc[-1]
     cur_exit = exit_signals.iloc[-1]
 
+    quality_tier = int(cur['quality_tier']) if pd.notna(cur['quality_tier']) else 0
+    tier_label = cur['tier_label'] if quality_tier > 0 else ''
+
     result = {
         'ticker': ticker,
         'date': str(weekly.index[-1].date()),
         'close': round(float(cur['close']), 2),
         'hma': round(float(cur['hma']), 4) if pd.notna(cur['hma']) else None,
+        # V6 pivot signals
+        'hma_pivot_low': bool(cur['hma_pivot_low']),
+        'hma_pivot_high': bool(cur['hma_pivot_high']),
         'hma_slope_rising': bool(cur['hma_slope_rising']),
+        # RSI (informational — NOT a gate in V6)
         'rsi14': round(float(cur['rsi14']), 1) if pd.notna(cur['rsi14']) else None,
         'rsi_above_50': bool(cur['rsi_above_50']),
+        # MACD (confirmation gate)
         'macd_line': round(float(cur['macd_line']), 4) if pd.notna(cur['macd_line']) else None,
         'signal_line': round(float(cur['signal_line']), 4) if pd.notna(cur['signal_line']) else None,
         'macd_histogram': round(float(cur['macd_histogram']), 4) if pd.notna(cur['macd_histogram']) else None,
         'macd_cross_up': bool(cur['macd_cross_up']),
+        # UC (confirmation gate — V6 uses uc_rising, not uc_rising_above)
         'uc': round(float(cur['uc']), 2) if pd.notna(cur['uc']) else None,
         'uc_rsi10': round(float(cur['uc_rsi10']), 1) if pd.notna(cur['uc_rsi10']) else None,
-        'uc_rising_above': bool(cur['uc_rising_above']),
+        'uc_rising': bool(cur['uc_rising']),
+        # Composite signals
         'buy_signal': bool(cur['buy_signal']),
-        'macd_hist_positive': bool(cur['macd_hist_positive']),
+        'quality_tier': quality_tier,
+        'tier_label': tier_label,
         'watchlist_signal': bool(cur['watchlist_signal']),
         'exd_exit_signal': bool(cur_exit['exd_signal']),
         'price_under_25': float(cur['close']) < PRICE_CAP,
     }
 
     if verbose:
-        print(f"\n{'=' * 62}")
-        print(f"  {ticker} — Weekly Signal Check ({result['date']})")
-        print(f"{'=' * 62}")
-        print(f"  Close: ${result['close']}")
-        print()
-        print(f"  ENTRY CONDITIONS:")
-        print(f"    HMA(21) slope rising:  {'YES' if result['hma_slope_rising'] else 'no ':>3}  HMA={result['hma']}")
-        print(f"    RSI(14) > 50:          {'YES' if result['rsi_above_50'] else 'no ':>3}  RSI={result['rsi14']}")
-        print(f"    MACD cross up (1 bar): {'YES' if result['macd_cross_up'] else 'no ':>3}  MACD={result['macd_line']}, Sig={result['signal_line']}")
-        print(f"    UC rising & > 0:       {'YES' if result['uc_rising_above'] else 'no ':>3}  UC={result['uc']} (RSI10={result['uc_rsi10']})")
-        print(f"    Price < $25:           {'YES' if result['price_under_25'] else 'no ':>3}  ${result['close']}")
-        print()
-
-        if result['buy_signal']:
-            print(f"  >> BUY SIGNAL ACTIVE — Send to LLM gate pipeline <<")
-        elif result['watchlist_signal']:
-            # Tier 2: Show which Tier 1 conditions are still missing
-            tier1_missing = []
-            if not result['rsi_above_50']: tier1_missing.append('RSI>50')
-            if not result['macd_cross_up']: tier1_missing.append('MACD cross-up')
-            if not result['uc_rising_above']: tier1_missing.append('UC rising')
-            waiting_for = ', '.join(tier1_missing) if tier1_missing else 'MACD cross-up'
-            print(f"  >> WATCHLIST (Tier 2) — Momentum setup forming <<")
-            print(f"     Trend bullish, MACD positive — waiting for: {waiting_for}")
-            print(f"     (If MACD crosses above signal next week, this becomes a Tier 1 buy)")
-        else:
-            missing = []
-            if not result['hma_slope_rising']: missing.append('HMA slope')
-            if not result['rsi_above_50']: missing.append('RSI>50')
-            if not result['macd_cross_up']: missing.append('MACD cross')
-            if not result['uc_rising_above']: missing.append('UC rising')
-            if not result['price_under_25']: missing.append('Price<$25')
-            print(f"  -- No buy signal. Missing: {', '.join(missing)} --")
-
-        print()
-        print(f"  EXIT CHECK (for open positions):")
-        print(f"    HMA slope falling:     {'YES' if not result['hma_slope_rising'] else 'no '}")
-        uc_falling = bool(cur_exit['uc_falling']) if pd.notna(cur_exit.get('uc_falling', None)) else False
-        print(f"    UC falling:            {'YES' if uc_falling else 'no '}")
-        print(f"    ExD exit (both):       {'EXIT' if result['exd_exit_signal'] else 'hold'}")
+        _print_scan_result(result, cur_exit)
 
     return result
 
 
+def _print_scan_result(result: dict, cur_exit) -> None:
+    """Pretty-print a scan result for terminal output."""
+    ticker = result['ticker']
+    qt = result['quality_tier']
+    tier_info = QUALITY_TIERS.get(qt, {})
+
+    print(f"\n{'=' * 62}")
+    print(f"  {ticker} — V6 Weekly Signal Check ({result['date']})")
+    print(f"{'=' * 62}")
+    print(f"  Close: ${result['close']}")
+    print()
+
+    # Entry conditions (V6)
+    print(f"  ENTRY CONDITIONS (V6: pivot + OR-gated):")
+    print(f"    HMA(21) pivot low:     {'YES' if result['hma_pivot_low'] else 'no ':>3}  HMA={result['hma']}")
+    print(f"    ── At least ONE gate: ──")
+    print(f"    UC rising:             {'YES' if result['uc_rising'] else 'no ':>3}  UC={result['uc']} (RSI10={result['uc_rsi10']})")
+    print(f"    MACD cross up (1 bar): {'YES' if result['macd_cross_up'] else 'no ':>3}  MACD={result['macd_line']}, Sig={result['signal_line']}")
+    print(f"    ── Always required: ───")
+    print(f"    Price < $25:           {'YES' if result['price_under_25'] else 'no ':>3}  ${result['close']}")
+    print(f"    RSI(14):               {result['rsi14']:.0f}  (informational — not a gate)")
+    print()
+
+    if result['buy_signal']:
+        tier_desc = tier_info.get('description', 'Unknown')
+        tier_pct = tier_info.get('equity_pct', 0) * 100
+        print(f"  >> BUY SIGNAL — {result['tier_label']} ({tier_desc}) <<")
+        print(f"     Sizing: {tier_pct:.0f}% of equity | Execute next week open")
+        print(f"     Send to LLM gate pipeline for final assessment")
+    elif result['watchlist_signal']:
+        missing = []
+        if not result['hma_pivot_low']:
+            missing.append('HMA pivot low')
+        if not result['uc_rising'] and not result['macd_cross_up']:
+            missing.append('UC rising or MACD cross-up')
+        waiting_for = ', '.join(missing) if missing else 'HMA pivot'
+        print(f"  >> WATCHLIST — Bullish trend, waiting for: {waiting_for} <<")
+        print(f"     HMA trending up — watch for V-bottom pivot next week")
+    else:
+        missing = []
+        if not result['hma_pivot_low']:
+            missing.append('HMA pivot')
+        if not result['uc_rising'] and not result['macd_cross_up']:
+            missing.append('UC or MACD gate')
+        if not result['price_under_25']:
+            missing.append('Price<$25')
+        print(f"  -- No buy signal. Missing: {', '.join(missing)} --")
+
+    print()
+    print(f"  EXIT CHECK (for open positions):")
+    hma_pivot_high = bool(cur_exit['hma_pivot_high']) if pd.notna(cur_exit.get('hma_pivot_high', None)) else False
+    uc_falling = bool(cur_exit['uc_falling']) if pd.notna(cur_exit.get('uc_falling', None)) else False
+    print(f"    HMA pivot high:        {'YES' if hma_pivot_high else 'no '}")
+    print(f"    UC falling:            {'YES' if uc_falling else 'no '}")
+    print(f"    ExD exit (both):       {'EXIT' if result['exd_exit_signal'] else 'hold'}")
+
+
 def check_position(ticker: str, entry_price: float,
                    peak_price: float = None) -> dict:
-    """Check an open position for ExD exit + tiered profit lock."""
+    """Check an open position for V6 ExD exit + tiered profit lock."""
     df = yf.download(ticker, period="2y", progress=False)
     if df.empty:
         return {'ticker': ticker, 'error': 'No data'}
@@ -582,7 +685,7 @@ def check_position(ticker: str, entry_price: float,
     if exd and lock.get('triggered', False):
         action = f"EXIT — ExD + Profit lock ({lock['active_tier']})"
     elif exd:
-        action = 'EXIT — ExD (trend reversal confirmed)'
+        action = 'EXIT — ExD (HMA pivot high + UC falling)'
     elif lock.get('triggered', False):
         action = f"EXIT — Profit lock ({lock['active_tier']})"
 
@@ -624,40 +727,51 @@ def dump_history(ticker: str) -> pd.DataFrame:
     history = pd.DataFrame(index=weekly.index)
     history['close'] = weekly['close']
     history['hma'] = entry['hma']
+    # V6 pivot signals
+    history['hma_pivot_low'] = entry['hma_pivot_low']
+    history['hma_pivot_high'] = entry['hma_pivot_high']
     history['hma_slope_rising'] = entry['hma_slope_rising']
+    # RSI (informational)
     history['rsi_14'] = entry['rsi14']
-    history['rsi_above_50'] = entry['rsi_above_50']
+    # MACD
     history['macd'] = entry['macd_line']
     history['macd_signal'] = entry['signal_line']
     history['macd_hist'] = entry['macd_histogram']
     history['macd_cross_up'] = entry['macd_cross_up']
+    # UC
     history['uc'] = entry['uc']
     history['uc_rsi_10'] = entry['uc_rsi10']
-    history['uc_rising_above'] = entry['uc_rising_above']
+    history['uc_rising'] = entry['uc_rising']
+    # Composite
     history['buy_signal'] = entry['buy_signal']
-    history['macd_hist_positive'] = entry['macd_hist_positive']
+    history['quality_tier'] = entry['quality_tier']
+    history['tier_label'] = entry['tier_label']
     history['watchlist_signal'] = entry['watchlist_signal']
     history['exd_exit'] = exit_sig['exd_signal']
 
-    filename = f"{ticker}_weekly_indicators.csv"
+    filename = f"{ticker}_weekly_indicators_v6.csv"
     history.to_csv(filename)
     print(f"  Saved {len(history)} weeks to {filename}")
     return history
 
 
 # ═══════════════════════════════════════════════════════════════
-# PORTFOLIO SIZING — Conviction-Tiered Calculator
+# PORTFOLIO SIZING — Quality-Tier Calculator (V6)
 # ═══════════════════════════════════════════════════════════════
 
-def calculate_position_size(equity: float, conviction: int,
+def calculate_position_size(equity: float, quality_tier: int,
                             gear: str = 'recommended') -> dict:
     """
-    Calculate position size based on portfolio equity, conviction score,
-    and current sizing gear.
+    Calculate position size based on portfolio equity and quality tier.
+    
+    V6 sizing is driven by the quality tier assigned at signal time,
+    not by a downstream conviction score. Conviction scoring from the
+    Investment Gate pipeline can be used to REJECT signals (NO GO) but
+    does not change the tier-based allocation.
 
     Args:
         equity: Current total portfolio equity (cash + positions MTM)
-        conviction: Gate pipeline conviction score (1-10)
+        quality_tier: 1 (T1), 2 (T2), or 3 (T3) from entry signal
         gear: 'conservative', 'recommended', or 'aggressive'
 
     Returns:
@@ -665,88 +779,85 @@ def calculate_position_size(equity: float, conviction: int,
     """
     gear_config = SIZING_GEARS.get(gear, SIZING_GEARS['recommended'])
 
-    if conviction >= 8:
-        tier_key = 'HIGH'
-    elif conviction == 7:
-        tier_key = 'STANDARD'
-    elif conviction >= 4:
-        tier_key = 'SPEC'
-    else:
+    if quality_tier not in (1, 2, 3):
         return {
-            'tier': 'NO GO',
-            'conviction': conviction,
+            'tier': 0,
+            'tier_label': 'INVALID',
             'equity_pct': 0.0,
             'dollar_amount': 0.0,
             'gear': gear,
-            'action': 'DO NOT ENTER — conviction too low',
+            'action': 'INVALID TIER — must be 1, 2, or 3',
         }
 
-    equity_pct = gear_config['tiers'][tier_key]
+    tier_info = QUALITY_TIERS[quality_tier]
+    equity_pct = gear_config['tiers'][quality_tier]
     dollar_amount = equity * equity_pct
-    tier_info = CONVICTION_TIERS[tier_key]
+
+    if dollar_amount < MIN_TRADE_SIZE:
+        return {
+            'tier': quality_tier,
+            'tier_label': tier_info['label'],
+            'equity_pct': equity_pct,
+            'dollar_amount': round(dollar_amount, 2),
+            'gear': gear,
+            'action': f'SKIP — ${dollar_amount:,.0f} below ${MIN_TRADE_SIZE:,.0f} minimum',
+        }
 
     return {
-        'tier': tier_key,
+        'tier': quality_tier,
         'tier_label': tier_info['label'],
-        'conviction': conviction,
+        'description': tier_info['description'],
         'equity_pct': equity_pct,
         'dollar_amount': round(dollar_amount, 2),
         'gear': gear,
         'max_positions': gear_config['max_positions'],
-        'max_tier_slots': tier_info['max_slots'],
-        'action': f"Enter at {equity_pct*100:.0f}% = ${dollar_amount:,.0f}",
+        'action': f"Enter {tier_info['label']} at {equity_pct*100:.0f}% = ${dollar_amount:,.0f}",
     }
 
 
 def show_portfolio_status(equity: float, positions: list,
                           gear: str = 'recommended'):
     """
-    Display current portfolio deployment status with conviction tiers.
+    Display current portfolio deployment status with V6 quality tiers.
 
     Args:
         equity: Current total portfolio equity
-        positions: List of dicts with keys: ticker, entry_price, conviction,
+        positions: List of dicts with keys: ticker, entry_price, quality_tier,
                    current_price (optional), peak_price (optional)
         gear: Current sizing gear
     """
     gear_config = SIZING_GEARS.get(gear, SIZING_GEARS['recommended'])
 
     print(f"\n{'=' * 68}")
-    print(f"  STERLING GRID — PORTFOLIO STATUS")
-    print(f"  Gear: {gear.upper()} | Max positions: {gear_config['max_positions']}")
+    print(f"  STERLING GRID V6 — PORTFOLIO STATUS")
+    print(f"  Gear: {gear_config['label']} | Max positions: {gear_config['max_positions']}")
     print(f"  Portfolio equity: ${equity:,.0f}")
     print(f"{'=' * 68}")
 
     # Count positions by tier
-    tier_counts = {'HIGH': 0, 'STANDARD': 0, 'SPEC': 0}
+    tier_counts = {1: 0, 2: 0, 3: 0}
     total_deployed = 0.0
     total_deployed_pct = 0.0
 
     if positions:
         print(f"\n  OPEN POSITIONS:")
-        print(f"  {'Ticker':<8} {'Tier':<10} {'Entry':>8} {'Current':>8} "
+        print(f"  {'Ticker':<8} {'Tier':<6} {'Entry':>8} {'Current':>8} "
               f"{'Return':>8} {'Size%':>6} {'Size$':>10}")
-        print(f"  {'-'*60}")
+        print(f"  {'-'*62}")
 
         for pos in positions:
-            conv = pos.get('conviction', 7)
-            if conv >= 8:
-                tier_key = 'HIGH'
-            elif conv == 7:
-                tier_key = 'STANDARD'
-            else:
-                tier_key = 'SPEC'
-
-            tier_counts[tier_key] += 1
-            pct = gear_config['tiers'][tier_key]
+            qt = pos.get('quality_tier', 3)
+            tier_counts[qt] = tier_counts.get(qt, 0) + 1
+            pct = gear_config['tiers'].get(qt, 0.05)
             dollar = equity * pct
             total_deployed += dollar
             total_deployed_pct += pct
 
             current = pos.get('current_price', pos['entry_price'])
             ret = ((current - pos['entry_price']) / pos['entry_price']) * 100
+            tier_label = QUALITY_TIERS[qt]['label']
 
-            print(f"  {pos['ticker']:<8} {tier_key:<10} "
+            print(f"  {pos['ticker']:<8} {tier_label:<6} "
                   f"${pos['entry_price']:>7.2f} ${current:>7.2f} "
                   f"{ret:>+7.1f}% {pct*100:>5.0f}% ${dollar:>9,.0f}")
 
@@ -760,30 +871,21 @@ def show_portfolio_status(equity: float, positions: list,
           f"({slots_free} slots available)")
     print(f"    Deployed:  {total_deployed_pct*100:.0f}% (${total_deployed:,.0f})")
     print(f"    Cash:      {cash_pct*100:.0f}% (${cash_dollar:,.0f})")
-    if cash_pct < MIN_CASH_RESERVE_PCT:
-        print(f"    WARNING: Cash below {MIN_CASH_RESERVE_PCT*100:.0f}% minimum reserve!")
 
-    print(f"\n  TIER CAPACITY:")
-    for tier_key, info in CONVICTION_TIERS.items():
-        used = tier_counts[tier_key]
-        cap = info['max_slots']
-        avail = cap - used
-        pct = gear_config['tiers'][tier_key]
-        print(f"    {tier_key:<10} {used}/{cap} used | "
-              f"{'Can add ' + str(avail) if avail > 0 else 'FULL'} | "
-              f"{pct*100:.0f}% = ${equity * pct:,.0f} per position")
+    print(f"\n  TIER CAPACITY (V6 quality-based):")
+    for qt in [1, 2, 3]:
+        info = QUALITY_TIERS[qt]
+        pct = gear_config['tiers'][qt]
+        used = tier_counts.get(qt, 0)
+        print(f"    {info['label']}  {pct*100:>4.0f}% = ${equity * pct:>9,.0f} per position | "
+              f"{used} open | WR={info['backtest_wr']}, Avg={info['backtest_avg']}")
 
     if slots_free > 0:
-        print(f"\n  NEXT POSITION SIZING (if signal fires):")
-        for conv_label, conv_val in [("High conviction (8-10)", 9),
-                                      ("Standard (7)", 7),
-                                      ("Spec buy (4-6)", 5)]:
-            sizing = calculate_position_size(equity, conv_val, gear)
-            if sizing['tier'] != 'NO GO':
-                tier_key = sizing['tier']
-                slots_left = CONVICTION_TIERS[tier_key]['max_slots'] - tier_counts[tier_key]
-                status = f"${sizing['dollar_amount']:,.0f}" if slots_left > 0 else "TIER FULL"
-                print(f"    {conv_label}: {sizing['equity_pct']*100:.0f}% = {status}")
+        print(f"\n  NEXT SIGNAL SIZING:")
+        for qt in [1, 2, 3]:
+            sizing = calculate_position_size(equity, qt, gear)
+            info = QUALITY_TIERS[qt]
+            print(f"    {info['label']} signal → {sizing['equity_pct']*100:.0f}% = ${sizing['dollar_amount']:,.0f}")
 
     print(f"\n{'=' * 68}")
 
@@ -794,11 +896,12 @@ def show_portfolio_status(equity: float, positions: list,
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Sterling Grid — Weekly Indicator Calculator")
-        print("  (Exact match to V1-V4 backtest calculations)")
-        print("  Recommended sizing: 15×6 with conviction tiers")
+        print("Sterling Grid V6 — Weekly Indicator Calculator")
+        print("  Entry: HMA pivot low + (UC rising OR MACD cross-up) + price < $25")
+        print("  Exit:  HMA pivot high + UC falling, OR tiered profit lock")
+        print("  Tiers: T1 (both gates, 20%), T2 (MACD, 10%), T3 (UC, 5%)")
         print()
-        print("Scan for buy + watchlist signals:")
+        print("Scan for buy signals:")
         print("  python sterling_indicators.py MARA RKLB IONQ")
         print("  python sterling_indicators.py MARA RKLB IONQ --exclude-open MARA,RKLB")
         print()
@@ -808,17 +911,18 @@ if __name__ == "__main__":
         print("Check with known peak (ticker:entry:peak):")
         print("  python sterling_indicators.py --check MARA:5.50:28.50")
         print()
-        print("Portfolio status (equity + positions as ticker:entry:conviction):")
-        print("  python sterling_indicators.py --portfolio 120000 MARA:5.50:9 RKLB:12.00:7 IONQ:8.25:5")
+        print("Portfolio status (equity + positions as ticker:entry:tier):")
+        print("  python sterling_indicators.py --portfolio 120000 MARA:5.50:1 RKLB:12.00:2 IONQ:8.25:3")
         print()
-        print("Position size calculator (equity + conviction score):")
-        print("  python sterling_indicators.py --size 120000 8")
+        print("Position size calculator (equity + tier):")
+        print("  python sterling_indicators.py --size 120000 T1")
+        print("  python sterling_indicators.py --size 120000 T2 --gear aggressive")
         print()
         print("Dump full indicator history to CSV:")
         print("  python sterling_indicators.py --history MARA")
         print()
         print("Sizing gears: --gear conservative|recommended|aggressive (default: recommended)")
-        print("Exclude open positions from watchlist: --exclude-open MARA,RKLB,IONQ")
+        print("Exclude open positions from scan: --exclude-open MARA,RKLB,IONQ")
         sys.exit(1)
 
     # Parse optional --gear and --exclude-open flags from anywhere in args
@@ -841,7 +945,7 @@ if __name__ == "__main__":
 
     if filtered_args and filtered_args[0] == '--check':
         print("=" * 68)
-        print("  STERLING GRID — POSITION CHECK")
+        print("  STERLING GRID V6 — POSITION CHECK")
         print("=" * 68)
         for arg in filtered_args[1:]:
             parts = arg.split(':')
@@ -856,8 +960,8 @@ if __name__ == "__main__":
 
     elif filtered_args and filtered_args[0] == '--portfolio':
         if len(filtered_args) < 2:
-            print("Usage: --portfolio EQUITY [TICKER:ENTRY:CONVICTION ...]")
-            print("  Example: --portfolio 120000 MARA:5.50:9 RKLB:12.00:7")
+            print("Usage: --portfolio EQUITY [TICKER:ENTRY:TIER ...]")
+            print("  Example: --portfolio 120000 MARA:5.50:1 RKLB:12.00:2")
             sys.exit(1)
 
         equity = float(filtered_args[1])
@@ -865,11 +969,11 @@ if __name__ == "__main__":
         for arg in filtered_args[2:]:
             parts = arg.split(':')
             if len(parts) < 3:
-                print(f"  Warning: {arg} needs TICKER:ENTRY:CONVICTION format, skipping")
+                print(f"  Warning: {arg} needs TICKER:ENTRY:TIER format, skipping")
                 continue
             ticker = parts[0].upper()
             entry_price = float(parts[1])
-            conviction = int(parts[2])
+            quality_tier = int(parts[2])
 
             # Try to fetch current price
             try:
@@ -883,7 +987,7 @@ if __name__ == "__main__":
             positions.append({
                 'ticker': ticker,
                 'entry_price': entry_price,
-                'conviction': conviction,
+                'quality_tier': quality_tier,
                 'current_price': round(current_price, 2),
             })
 
@@ -891,22 +995,28 @@ if __name__ == "__main__":
 
     elif filtered_args and filtered_args[0] == '--size':
         if len(filtered_args) < 3:
-            print("Usage: --size EQUITY CONVICTION [--gear conservative|recommended|aggressive]")
-            print("  Example: --size 120000 8")
-            print("  Example: --size 200000 5 --gear aggressive")
+            print("Usage: --size EQUITY TIER [--gear conservative|recommended|aggressive]")
+            print("  TIER = T1, T2, T3 (or 1, 2, 3)")
+            print("  Example: --size 120000 T1")
+            print("  Example: --size 200000 T3 --gear aggressive")
             sys.exit(1)
 
         equity = float(filtered_args[1])
-        conviction = int(filtered_args[2])
-        sizing = calculate_position_size(equity, conviction, gear)
+        tier_arg = filtered_args[2].upper().replace('T', '')
+        try:
+            quality_tier = int(tier_arg)
+        except ValueError:
+            print(f"  Invalid tier: {filtered_args[2]} (use T1, T2, T3 or 1, 2, 3)")
+            sys.exit(1)
+
+        sizing = calculate_position_size(equity, quality_tier, gear)
 
         print(f"\n{'=' * 52}")
-        print(f"  POSITION SIZE CALCULATOR")
+        print(f"  V6 POSITION SIZE CALCULATOR")
         print(f"{'=' * 52}")
         print(f"  Portfolio equity:  ${equity:,.0f}")
-        print(f"  Conviction score:  {conviction}/10")
+        print(f"  Quality tier:      {sizing.get('tier_label', '?')} — {sizing.get('description', '?')}")
         print(f"  Sizing gear:       {gear}")
-        print(f"  Tier:              {sizing.get('tier_label', sizing['tier'])}")
         print(f"  Allocation:        {sizing['equity_pct']*100:.0f}% of equity")
         print(f"  Position size:     ${sizing['dollar_amount']:,.0f}")
         print(f"  >> {sizing['action']}")
@@ -918,8 +1028,9 @@ if __name__ == "__main__":
 
     else:
         print("=" * 68)
-        print("  STERLING GRID — WEEKLY SIGNAL SCAN")
-        print(f"  Sizing: {gear} gear (15×6 base)")
+        print("  STERLING GRID V6 — WEEKLY SIGNAL SCAN")
+        print(f"  Entry: HMA pivot + (UC rising OR MACD cross-up) + price < $25")
+        print(f"  Sizing: {gear} gear ({SIZING_GEARS[gear]['label']})")
         print("=" * 68)
 
         buy_signals = []
@@ -927,9 +1038,9 @@ if __name__ == "__main__":
         for ticker in filtered_args:
             result = scan_ticker(ticker.upper())
             if result.get('buy_signal'):
-                label = result['ticker']
+                label = f"{result['ticker']} ({result['tier_label']})"
                 if result['ticker'] in exclude_open:
-                    label += ' (open)'
+                    label += ' [open]'
                 buy_signals.append(label)
             elif result.get('watchlist_signal'):
                 if result['ticker'] not in exclude_open:
@@ -937,16 +1048,16 @@ if __name__ == "__main__":
 
         print(f"\n{'=' * 68}")
         if buy_signals:
-            print(f"  BUY SIGNALS (Tier 1): {', '.join(buy_signals)}")
-            print(f"  -> Send to LLM gate pipeline for conviction scoring")
-            print(f"  -> Then run: --size EQUITY CONVICTION to calculate position size")
+            print(f"  BUY SIGNALS: {', '.join(buy_signals)}")
+            print(f"  -> Send to LLM gate pipeline for final assessment")
+            print(f"  -> Execute confirmed trades next week open")
+            print(f"  -> Sizing: T1=20%, T2=10%, T3=5% of equity")
         else:
             print(f"  No buy signals this week.")
         print()
         if watchlist_signals:
-            print(f"  WATCHLIST (Tier 2): {', '.join(watchlist_signals)}")
-            print(f"  -> Setup forming — monitor weekly for Tier 1 trigger")
-            print(f"  -> Suitable for newsletter coverage / thematic analysis")
+            print(f"  WATCHLIST: {', '.join(watchlist_signals)}")
+            print(f"  -> Bullish trend forming — watch for HMA pivot low next week")
         else:
             print(f"  No watchlist signals.")
         print(f"{'=' * 68}")

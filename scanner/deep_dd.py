@@ -405,7 +405,21 @@ Return ONLY the JSON object specified in your instructions, no other text."""
             if use_web_search:
                 api_params["tools"] = [{"type": "web_search_20250305", "name": "web_search"}]
 
-            response = client.messages.create(**api_params)
+            # P0 FIX: Use streaming to avoid 10-minute timeout on Opus + extended thinking
+            # client.messages.create() times out; stream() keeps connection alive
+            # get_final_message() returns the same Message object as create()
+            print(f"    📡 Streaming Opus response", end="", flush=True)
+            stream_start = time.time()
+            with client.messages.stream(**api_params) as stream:
+                # Print progress dots while streaming (one per event batch)
+                event_count = 0
+                for event in stream:
+                    event_count += 1
+                    if event_count % 20 == 0:  # dot every ~20 events
+                        print(".", end="", flush=True)
+                response = stream.get_final_message()
+            stream_elapsed = time.time() - stream_start
+            print(f" done ({stream_elapsed:.0f}s)")
 
             # Track tokens
             input_tokens = getattr(response.usage, 'input_tokens', 0)

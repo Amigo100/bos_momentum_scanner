@@ -1039,6 +1039,36 @@ happens in the Investment Gate step. Focus on theme fit and company position.
 
 ## 1. THEME FIT (How much does this company benefit from the theme?)
 
+### ⚠️ CRITICAL GUARDRAIL: SECTOR MEMBERSHIP ≠ THEME FIT
+
+**Being in the same SECTOR as a theme is NOT the same as fitting the theme.**
+
+Each theme has a SPECIFIC MECHANISM — the particular catalyst, trend, or transformation
+that makes it investable. Theme fit measures alignment with THAT MECHANISM, not sector
+membership.
+
+**THE TEST:** Read the theme's name, thesis, and key catalysts from Step 1.
+Then ask: "Does this company's business DIRECTLY participate in or benefit from
+the SPECIFIC mechanism described in the thesis?"
+
+Examples of this mistake:
+| Theme | Company Type | Sector Match? | Mechanism Match? | Correct Verdict |
+|-------|-------------|---------------|------------------|-----------------|
+| Healthcare AI Transformation | Rare disease pharma (505b2 pathway) | ✓ Healthcare | ✗ No AI component | WEAK FIT → orphan |
+| Healthcare AI Transformation | AI-powered drug discovery platform | ✓ Healthcare | ✓ Core AI product | STRONG FIT |
+| Healthcare AI Transformation | Surgery center operator | ✓ Healthcare | ✗ No AI adoption | WEAK FIT → orphan |
+| Financial Services Digitization | Traditional regional bank | ✓ Financial | ✗ Not a digitization play | WEAK FIT → orphan |
+| Financial Services Digitization | Digital payments/remittance | ✓ Financial | ✓ Born-digital fintech | STRONG FIT |
+| Power Grid Infrastructure | Residential solar installer | ✓ Energy | ✗ Not grid/nuclear infra | WEAK FIT → orphan |
+| Power Grid Infrastructure | Grid transformer manufacturer | ✓ Energy | ✓ Builds grid equipment | STRONG FIT |
+| Defense Manufacturing | Commercial aerospace parts supplier | ✓ Industrials | ✗ Commercial not defense | WEAK FIT → orphan |
+
+**If a company is in the right sector but does NOT participate in the theme's specific
+mechanism, it MUST score ≤4 (WEAK FIT) regardless of how much revenue it has in
+that sector. A specialty pharma company has 100% "healthcare" revenue, but 0% exposure
+to "Healthcare AI Transformation" if it uses no AI. These companies should be flagged
+as WEAK FIT so the orphan rescue path (Step 2b) can discover their ACTUAL theme.**
+
 **CRITICAL FIRST STEP: Check the theme's VALUATION REGIME from Step 1 data above.**
 The regime determines HOW you measure theme fit.
 
@@ -1085,13 +1115,17 @@ Do NOT loosely associate companies with themes based on narrative or media cover
 For each ticker, you MUST verify:
 
 **For FUNDAMENTAL regime:**
-1. **What % of REVENUE actually comes from this theme?**
-   If <30%, this is WEAK FIT regardless of how the company is perceived.
-2. **Is the company's PRIMARY business model aligned with the theme?**
-   The company's largest revenue segment must be related to the theme.
+1. **What % of REVENUE comes from the theme's SPECIFIC MECHANISM?**
+   Measure revenue tied to the MECHANISM, not the sector. A pharma company has
+   100% healthcare revenue, but 0% "Healthcare AI" revenue if it uses no AI.
+   If <30% of revenue is tied to the specific mechanism, this is WEAK FIT.
+2. **Does the company's PRIMARY business model PARTICIPATE in the mechanism?**
+   The company's business must directly engage with the specific transformation,
+   bottleneck, or trend described in the theme thesis — not just operate in the
+   same industry.
 
 **For OPTIONALITY regime:**
-1. **Is the company's CORE TECHNOLOGY actually about this theme?**
+1. **Is the company's CORE TECHNOLOGY actually about this theme's mechanism?**
    A company that mentions "quantum" in a press release but builds classical
    software is WEAK FIT. A company whose entire product IS quantum computing
    is PURE PLAY regardless of revenue.
@@ -1099,10 +1133,13 @@ For each ticker, you MUST verify:
    Patents, peer-reviewed work, government contracts, or working prototypes —
    not just announcements.
 
-**For ALL regimes — the ETF correlation test still applies:**
-3. **Would this stock move with the theme ETF?**
-   If the relevant theme ETF drops 20%, would this stock drop similarly?
-   If not, the mapping is probably wrong.
+**For ALL regimes — the mechanism alignment test:**
+3. **If the theme's specific catalyst plays out, does this company benefit DIRECTLY?**
+   Example: If "Healthcare AI Transformation" succeeds and every hospital adopts AI,
+   does a rare disease pharma company benefit? No — that pharma company benefits from
+   FDA approvals and drug pricing, which is a DIFFERENT mechanism.
+   If not directly benefiting from the mechanism, WEAK FIT → let orphan rescue find
+   the real theme.
 
 **COMMON MISCLASSIFICATIONS TO AVOID:**
 
@@ -1115,12 +1152,22 @@ For each ticker, you MUST verify:
 | AXON | Defense | Law Enforcement Technology | Revenue is 80%+ from police/first responders, not military |
 | APP | Social Media / Advertising | AI-Powered Ad Tech | Revenue is ad-tech platform with AI optimization, not a social media company |
 
+**SECTOR vs MECHANISM misclassifications (the subtler mistake):**
+
+| Company Type | Theme Available | Sector Match | Mechanism Match | Correct Action |
+|-------------|----------------|--------------|-----------------|----------------|
+| Specialty pharma (505b2) | Healthcare AI Transformation | ✓ | ✗ No AI | WEAK FIT → orphan rescue |
+| Surgery center chain | Healthcare AI Transformation | ✓ | ✗ No AI | WEAK FIT → orphan rescue |
+| Regional bank (traditional) | Financial Services Digitization | ✓ | ✗ Not digital-native | WEAK FIT → orphan rescue |
+| Luxury fashion brand | Consumer Discretionary AI | ✓ | ✗ No AI mechanism | WEAK FIT → orphan rescue |
+
 **When in doubt, check:** Search "[ticker] 10-K revenue breakdown by segment" to find actual numbers.
 For pre-revenue companies, search "[ticker] technology patents core product" instead.
 
 **If a ticker doesn't fit ANY identified theme well (score <5 on all), assign it to the
 closest theme but flag it as WEAK FIT. Do not force-fit a company into a theme it
-doesn't belong to just because it's in a similar sector.**
+doesn't belong to just because it's in a similar sector. The orphan rescue path (Step 2b)
+exists specifically to discover the CORRECT theme for these companies.**
 
 ## 2. COMPANY POSITION (Is this a good stock for the theme?)
 

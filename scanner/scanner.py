@@ -157,6 +157,7 @@ TRAILING_STOP_PCT = float(_CFG_TRAILING_STOP_PCT)  # Used by daily scanner only
 # Entry: HMA pivot low + (UC rising OR MACD cross-up) + Price < $25
 # Exit: ExD (HMA pivot high + UC falling) OR tiered profit lock
 # Tiers: T1 (both gates, 20%), T2 (MACD, 10%), T3 (UC, 5%)
+TIER_ALLOC = {"T1": 20, "T2": 10, "T3": 5}  # % of equity per tier
 
 
 def rel_path(p: Path) -> str:
@@ -304,8 +305,8 @@ class Stock:
         return self.theme_verdict in ["STRONG FIT", "GOOD FIT"]
     
     def is_confirmed(self) -> bool:
-        """Check if confirmed by Investment Gate (PASS or CONSIDER)."""
-        return self.final_decision in ["PASS", "CONSIDER"]
+        """Check if confirmed by Investment Gate (PASS, CONSIDER, or PENDING_DD)."""
+        return self.final_decision in ["PASS", "CONSIDER", "PENDING_DD", "TRADE"]
 
 
 @dataclass
@@ -339,6 +340,46 @@ class ScanStats:
     final_trade: int = 0
     final_consider: int = 0
     final_skip: int = 0
+
+
+@dataclass
+class PipelineCostTracker:
+    """P3: Track timing and estimated costs across the full pipeline."""
+    step_times: dict = field(default_factory=dict)  # step_name -> seconds
+    _current_step: str = ""
+    _step_start: float = 0.0
+    
+    def start(self, step_name: str):
+        """Mark the start of a pipeline step."""
+        self._current_step = step_name
+        self._step_start = time.time()
+    
+    def stop(self):
+        """Mark the end of the current step."""
+        if self._current_step and self._step_start > 0:
+            elapsed = time.time() - self._step_start
+            self.step_times[self._current_step] = self.step_times.get(self._current_step, 0) + elapsed
+            self._current_step = ""
+            self._step_start = 0.0
+    
+    def print_summary(self):
+        """Print pipeline timing summary."""
+        if not self.step_times:
+            return
+        total = sum(self.step_times.values())
+        print(f"\n  " + "═" * 66)
+        print(f"  PIPELINE COST & TIMING SUMMARY")
+        print(f"  " + "─" * 66)
+        for step, secs in self.step_times.items():
+            pct = (secs / total * 100) if total > 0 else 0
+            mins = secs / 60
+            print(f"    {step:<30} {mins:>5.1f}m  ({pct:>4.1f}%)")
+        print(f"  " + "─" * 66)
+        total_mins = total / 60
+        print(f"    {'TOTAL':<30} {total_mins:>5.1f}m")
+        print(f"  " + "─" * 66)
+        print(f"  💡 Individual gate costs shown above in their respective sections")
+        print(f"  " + "═" * 66)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1030,6 +1071,9 @@ def load_open_positions() -> set:
 # MAIN SCANNER
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Module-level pipeline cost tracker (P3)
+_pipeline_timer = PipelineCostTracker()
+
 def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: int = None, top_n: int = None, use_web_search: bool = False, verbose: bool = False) -> Tuple[List[Stock], List[Stock], List[SellSignal], ScanStats, List[Stock], List[dict]]:
     """Run the complete scan pipeline. Returns (confirmed_buys, all_assessed, sell_signals, stats, momentum_rejected, themes_data).
 
@@ -1042,10 +1086,12 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     """
     
     stats = ScanStats()
+    _pipeline_timer.step_times.clear()  # Reset for new scan
     
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 1: Load Tickers
     # ─────────────────────────────────────────────────────────────────────────
+    _pipeline_timer.start("Steps 1-5: Data & Technical")
     print("\n" + "─" * 70)
     print("  STEP 1: Loading Tickers")
     print("─" * 70)
@@ -1292,6 +1338,7 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 6: Thematic Analyzer Gate
     # ─────────────────────────────────────────────────────────────────────────
+    _pipeline_timer.stop()  # Stop Steps 1-5 timing
     themes_data = []  # Initialize for newsletter briefing
 
     if skip_llm:
@@ -1305,7 +1352,9 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         print("  STEP 6: Thematic Analyzer Gate")
         print("─" * 70)
         
+        _pipeline_timer.start("Step 6: Thematic Gate")
         theme_confirmed, themes_context, themes_data = run_thematic_gate(technical_signals, use_web_search=use_web_search)
+        _pipeline_timer.stop()  # Stop thematic timing
         stats.theme_confirmed = len(theme_confirmed)
         
         print(f"\n  THEME GATE RESULTS:")
@@ -1357,12 +1406,14 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         time.sleep(cooldown_seconds)
         
         # Run Investment Gate - regime-aware quality gate
+        _pipeline_timer.start("Step 7: Investment Gate")
         confirmed = run_investment_gate_step(
             theme_confirmed,
             top_n=assess_top_n,
             themes_context=themes_context,
             use_web_search=use_web_search
         )
+        _pipeline_timer.stop()
         
         for s in theme_confirmed:
             if s.final_decision in ["PASS", "TRADE"]:
@@ -1416,37 +1467,86 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
     print("╚" + "═" * 68 + "╝")
     
     if confirmed:
-        # Separate by decision
+        # Separate by decision — P0: PENDING_DD is its own bucket
         trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
+        pending_dd = [s for s in confirmed if s.final_decision == "PENDING_DD"]
         considers = [s for s in confirmed if s.final_decision == "CONSIDER"]
         
-        if trades:
-            print(f"\n  🟢 PASS ({len(trades)}) - Ready for entry:")
+        # P2: Split trades into BUY NOW (STRONG_BUY) vs BUY ON PULLBACK (SPEC_BUY)
+        buy_now = [s for s in trades if s.gate_verdict == "STRONG_BUY"]
+        buy_pullback = [s for s in trades if s.gate_verdict == "SPEC_BUY"]
+        buy_other = [s for s in trades if s.gate_verdict not in ("STRONG_BUY", "SPEC_BUY")]
+        
+        def _print_stock_detail(s, label_override=None):
+            """Print a single stock's full details with tier sizing."""
+            conv = min(s.conviction, 10)
+            stars = "★" * conv + "☆" * (10 - conv)
+            alloc = TIER_ALLOC.get(s.tier, 0)
+            rescued_tag = " [RESCUED]" if "[RESCUED]" in (s.theme_verdict or "") else ""
+            
+            print(f"\n  {s.symbol} | {s.tier} ({alloc}% equity) | ${s.price:.2f}{rescued_tag}")
+            print(f"  Conviction: {stars} ({conv}/10)")
+            if s.gate_verdict:
+                gate_label = label_override or s.gate_verdict.replace("_", " ")
+                print(f"  Gate: {gate_label} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} (info)")
+                print(f"  V6 Entry: Pivot={'✓' if s.hma_pivot_low else '✗'} | UC_rising={'✓' if s.uc_rising else '✗'} | MACD={'✓' if s.macd_cross_up else '✗'}")
+            print(f"  Theme: {s.theme or 'N/A'} ({s.theme_verdict})")
+            if s.gate_catalyst or s.catalyst_summary:
+                print(f"  📅 Catalyst: {s.gate_catalyst or s.catalyst_summary}")
+            if s.red_flag_level:
+                print(f"  🚦 Red Flags: {s.red_flag_level}")
+            if s.bullish_factors:
+                print(f"  ✅ Key Bullish:")
+                for factor in s.bullish_factors[:3]:
+                    print(f"     • {factor}")
+            if s.reasoning:
+                print(f"  📝 Analysis:")
+                _print_wrapped(s.reasoning, indent=5, width=70)
+            if s.action:
+                print(f"  ➡️  Action: {s.action}")
+        
+        # ── BUY NOW section (STRONG_BUY — immediate entry) ──
+        if buy_now:
+            print(f"\n  🟢 BUY NOW ({len(buy_now)}) — Enter Monday open:")
             print("  " + "─" * 66)
+            for s in buy_now:
+                _print_stock_detail(s, "STRONG BUY")
+        
+        # ── BUY ON PULLBACK section (SPEC_BUY — conditional entry) ──
+        if buy_pullback:
+            print(f"\n  🟡 BUY ON PULLBACK ({len(buy_pullback)}) — Wait for entry level:")
+            print("  " + "─" * 66)
+            for s in buy_pullback:
+                _print_stock_detail(s, "SPEC BUY")
+        
+        # ── Other trades (gate_verdict not STRONG/SPEC — shouldn't happen often) ──
+        if buy_other:
+            print(f"\n  🟢 PASS ({len(buy_other)}) - Ready for entry:")
+            print("  " + "─" * 66)
+            for s in buy_other:
+                _print_stock_detail(s)
 
-            for s in trades:
+        # ── P0: PENDING DD section — passed gates but DD failed/skipped ──
+        if pending_dd:
+            print(f"\n  ⚠️  PENDING DD ({len(pending_dd)}) — DO NOT TRADE until DD completes:")
+            print("  " + "─" * 66)
+            print("  These stocks passed technical + thematic + investment gates but")
+            print("  Deep DD failed or was skipped. Re-run with DD before entering.")
+            for s in pending_dd:
+                alloc = TIER_ALLOC.get(s.tier, 0)
                 conv = min(s.conviction, 10)
                 stars = "★" * conv + "☆" * (10 - conv)
-                print(f"\n  {s.symbol} | {s.tier} | ${s.price:.2f}")
-                print(f"  Conviction: {stars} ({conv}/10)")
-                if s.gate_verdict:
-                    print(f"  Gate: {s.gate_verdict} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} (info)")
-                    print(f"  V6 Entry: Pivot={'✓' if s.hma_pivot_low else '✗'} | UC_rising={'✓' if s.uc_rising else '✗'} | MACD={'✓' if s.macd_cross_up else '✗'}")
+                dd_reason = s.dd_verdict if s.dd_verdict else "Not run"
+                print(f"\n  {s.symbol} | {s.tier} ({alloc}% equity) | ${s.price:.2f}")
+                print(f"  Conviction: {stars} ({conv}/10) | DD: {dd_reason}")
+                print(f"  Gate: {s.gate_verdict or 'N/A'}")
                 print(f"  Theme: {s.theme or 'N/A'} ({s.theme_verdict})")
                 if s.gate_catalyst or s.catalyst_summary:
                     print(f"  📅 Catalyst: {s.gate_catalyst or s.catalyst_summary}")
-                if s.red_flag_level:
-                    print(f"  🚦 Red Flags: {s.red_flag_level}")
-                if s.bullish_factors:
-                    print(f"  ✅ Key Bullish:")
-                    for factor in s.bullish_factors[:3]:
-                        print(f"     • {factor}")
-                if s.reasoning:
-                    print(f"  📝 Analysis:")
-                    _print_wrapped(s.reasoning, indent=5, width=70)
                 if s.action:
-                    print(f"  ➡️  Action: {s.action}")
+                    print(f"  ➡️  Action (from gate): {s.action}")
 
+        # ── CONSIDER section ──
         if considers:
             print(f"\n  🟡 CONSIDER ({len(considers)}) - Wait or size down:")
             print("  " + "─" * 66)
@@ -1454,7 +1554,8 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
             for s in considers:
                 conv = min(s.conviction, 10)
                 stars = "★" * conv + "☆" * (10 - conv)
-                print(f"\n  {s.symbol} | {s.tier} | ${s.price:.2f}")
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"\n  {s.symbol} | {s.tier} ({alloc}% equity) | ${s.price:.2f}")
                 print(f"  Conviction: {stars} ({conv}/10)")
                 print(f"  Theme: {s.theme or 'N/A'} ({s.theme_verdict})")
                 if s.catalyst_summary:
@@ -1469,12 +1570,45 @@ def print_final_report(confirmed: List[Stock], sell_signals: List[SellSignal], s
                 if s.action:
                     print(f"  ➡️  Action: {s.action}")
         
+        # ── ACTION SUMMARY with sizing ──
         print("\n  " + "─" * 66)
         print(f"\n  ACTION SUMMARY:")
-        if trades:
-            print(f"    🟢 PASS (enter): {', '.join(s.symbol for s in trades)}")
+        if buy_now:
+            for s in buy_now:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"    🟢 BUY NOW:     {s.symbol:<8} {s.tier} ({alloc}% equity)")
+        if buy_pullback:
+            for s in buy_pullback:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"    🟡 ON PULLBACK: {s.symbol:<8} {s.tier} ({alloc}% equity)")
+        if buy_other:
+            for s in buy_other:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"    🟢 PASS:        {s.symbol:<8} {s.tier} ({alloc}% equity)")
+        if pending_dd:
+            for s in pending_dd:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"    ⚠️  PENDING DD:  {s.symbol:<8} {s.tier} ({alloc}% equity) — re-run DD before trading")
         if considers:
-            print(f"    🟡 CONSIDER (wait/size down): {', '.join(s.symbol for s in considers)}")
+            for s in considers:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                print(f"    🟡 CONSIDER:    {s.symbol:<8} {s.tier} ({alloc}% equity)")
+        if not (buy_now or buy_pullback or buy_other or pending_dd or considers):
+            print("    No actionable signals this week")
+        
+        # Total allocation summary
+        total_alloc = sum(TIER_ALLOC.get(s.tier, 0) for s in buy_now)
+        total_alloc_pullback = sum(TIER_ALLOC.get(s.tier, 0) for s in buy_pullback)
+        total_alloc_pending = sum(TIER_ALLOC.get(s.tier, 0) for s in pending_dd)
+        if total_alloc or total_alloc_pullback or total_alloc_pending:
+            parts = []
+            if total_alloc:
+                parts.append(f"{total_alloc}% immediate")
+            if total_alloc_pullback:
+                parts.append(f"{total_alloc_pullback}% on pullback")
+            if total_alloc_pending:
+                parts.append(f"{total_alloc_pending}% pending DD")
+            print(f"\n    💰 Total equity deployment: {' + '.join(parts)}")
         
     else:
         print("\n  NO CONFIRMED BUY SIGNALS")
@@ -1533,9 +1667,15 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     
     # Separate by decision type
     trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]] if confirmed else []
+    pending_dd = [s for s in confirmed if s.final_decision == "PENDING_DD"] if confirmed else []
     considers = [s for s in confirmed if s.final_decision == "CONSIDER"] if confirmed else []
     technical_only = [s for s in confirmed if s.final_decision == "TECHNICAL_ONLY"] if confirmed else []
     theme_confirmed = [s for s in confirmed if s.final_decision == "THEME_CONFIRMED"] if confirmed else []
+    
+    # P2: Split trades into BUY NOW vs BUY ON PULLBACK
+    buy_now = [s for s in trades if s.gate_verdict == "STRONG_BUY"]
+    buy_pullback = [s for s in trades if s.gate_verdict == "SPEC_BUY"]
+    buy_other = [s for s in trades if s.gate_verdict not in ("STRONG_BUY", "SPEC_BUY")]
     
     lines = []
     
@@ -1556,11 +1696,19 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     lines.append("  EXECUTIVE SUMMARY")
     lines.append("─" * 72)
     
-    total_signals = len(trades) + len(considers) + len(technical_only) + len(theme_confirmed)
+    total_signals = len(trades) + len(pending_dd) + len(considers) + len(technical_only) + len(theme_confirmed)
     if total_signals > 0:
         lines.append(f"  ✅ {total_signals} entry signal(s) identified")
-        if trades:
-            lines.append(f"     • {len(trades)} PASS (GREEN signals) - High conviction, enter Monday open")
+        if buy_now:
+            allocs = [f"{s.symbol} ({s.tier}, {TIER_ALLOC.get(s.tier, 0)}%)" for s in buy_now]
+            lines.append(f"     • {len(buy_now)} BUY NOW: {', '.join(allocs)}")
+        if buy_pullback:
+            allocs = [f"{s.symbol} ({s.tier}, {TIER_ALLOC.get(s.tier, 0)}%)" for s in buy_pullback]
+            lines.append(f"     • {len(buy_pullback)} BUY ON PULLBACK: {', '.join(allocs)}")
+        if buy_other:
+            lines.append(f"     • {len(buy_other)} PASS (GREEN signals)")
+        if pending_dd:
+            lines.append(f"     • ⚠ {len(pending_dd)} PENDING DD - Do NOT trade until DD completes")
         if considers:
             lines.append(f"     • {len(considers)} CONSIDER - Smaller position recommended")
         if theme_confirmed:
@@ -1594,35 +1742,57 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
     # ═══════════════════════════════════════════════════════════════════════════
     # ENTRY SIGNALS
     # ═══════════════════════════════════════════════════════════════════════════
-    if trades or considers or technical_only or theme_confirmed:
+    if trades or pending_dd or considers or technical_only or theme_confirmed:
         lines.append("")
         lines.append("─" * 72)
         lines.append("  ENTRY SIGNALS")
         lines.append("─" * 72)
 
-        # Table header
+        # Table header — P2: added ALLOC% column
         lines.append("")
-        lines.append(f"  {'TIER':<6} {'SYMBOL':<7} {'PRICE':>9} {'UC':>6} {'RSI':>5} {'MACD':>5} {'UC↑':>4} {'THEME':<20}")
-        lines.append("  " + "-" * 68)
+        lines.append(f"  {'TIER':<6} {'%EQ':>4} {'SYMBOL':<7} {'PRICE':>9} {'UC':>6} {'MACD':>5} {'UC↑':>4} {'STATUS':<12} {'THEME':<16}")
+        lines.append("  " + "-" * 72)
 
-        all_entry_signals = trades + considers + technical_only + theme_confirmed
+        all_entry_signals = trades + pending_dd + considers + technical_only + theme_confirmed
         all_entry_signals.sort(key=lambda x: -x.uc)
 
         for s in all_entry_signals:
-            theme_short = (s.theme[:18] + "..") if s.theme and len(s.theme) > 20 else (s.theme or "N/A")
+            theme_short = (s.theme[:14] + "..") if s.theme and len(s.theme) > 16 else (s.theme or "N/A")
             macd_flag = "✓" if s.macd_cross_up else "✗"
             uc_flag = "✓" if s.uc_rising else "✗"
-            lines.append(f"  {s.tier:<6} {s.symbol:<7} ${s.price:>7.2f} {s.uc:>6.1f} {s.rsi14:>5.0f} {macd_flag:>5} {uc_flag:>4} {theme_short:<20}")
+            alloc = TIER_ALLOC.get(s.tier, 0)
+            # Determine status label
+            if s.final_decision == "PENDING_DD":
+                status = "PENDING DD"
+            elif s.gate_verdict == "STRONG_BUY":
+                status = "BUY NOW"
+            elif s.gate_verdict == "SPEC_BUY":
+                status = "PULLBACK"
+            elif s.final_decision in ("PASS", "TRADE"):
+                status = "PASS"
+            elif s.final_decision == "CONSIDER":
+                status = "CONSIDER"
+            else:
+                status = s.final_decision or "PASSED"
+            lines.append(f"  {s.tier:<6} {alloc:>3}% {s.symbol:<7} ${s.price:>7.2f} {s.uc:>6.1f} {macd_flag:>5} {uc_flag:>4} {status:<12} {theme_short:<16}")
 
         # Detailed breakdown for each signal
         lines.append("")
         lines.append("  SIGNAL DETAILS:")
-        lines.append("  " + "-" * 68)
+        lines.append("  " + "-" * 72)
 
         for s in all_entry_signals:
-            decision_label = s.final_decision if s.final_decision else "PASSED"
+            alloc = TIER_ALLOC.get(s.tier, 0)
+            if s.final_decision == "PENDING_DD":
+                decision_label = "PENDING DD — re-run DD before trading"
+            elif s.gate_verdict == "STRONG_BUY":
+                decision_label = "BUY NOW"
+            elif s.gate_verdict == "SPEC_BUY":
+                decision_label = "BUY ON PULLBACK"
+            else:
+                decision_label = s.final_decision if s.final_decision else "PASSED"
             lines.append(f"")
-            lines.append(f"  ■ {s.symbol} ({s.tier}) - {decision_label}")
+            lines.append(f"  ■ {s.symbol} ({s.tier}, {alloc}% equity) - {decision_label}")
             lines.append(f"    Price: ${s.price:.2f} | UC: {s.uc:.1f} | RSI: {s.rsi14:.0f} (info) | MACD: {'cross-up' if s.macd_cross_up else 'no'}")
             lines.append(f"    V6: Pivot={'✓' if s.hma_pivot_low else '✗'} | UC_rising={'✓' if s.uc_rising else '✗'} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d: {s.return_20d:+.1f}%")
             if s.theme:
@@ -1817,112 +1987,126 @@ def generate_newsletter_briefing(
     lines.append("")
     
     if confirmed:
-        # Separate PASS (GREEN signals) and CONSIDER signals
-        # MASTER_TODO_v2: Use PASS internally, "GREEN signal" for marketing
+        # Separate PASS (GREEN signals), PENDING_DD, and CONSIDER signals
         trades = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
+        pending_dd = [s for s in confirmed if s.final_decision == "PENDING_DD"]
         considers = [s for s in confirmed if s.final_decision == "CONSIDER"]
         technical_only = [s for s in confirmed if s.final_decision in ["TECHNICAL_ONLY", "THEME_CONFIRMED"]]
         
-        if trades:
+        # P2: Split trades into BUY NOW vs BUY ON PULLBACK
+        buy_now = [s for s in trades if s.gate_verdict == "STRONG_BUY"]
+        buy_pullback = [s for s in trades if s.gate_verdict == "SPEC_BUY"]
+        buy_other = [s for s in trades if s.gate_verdict not in ("STRONG_BUY", "SPEC_BUY")]
+        
+        def _newsletter_stock_card(s, show_dd=True):
+            """Generate newsletter markdown card for a stock."""
+            card = []
+            alloc = TIER_ALLOC.get(s.tier, 0)
+            card.append(f"#### {s.symbol}")
+            card.append("")
+            card.append(f"| Metric | Value |")
+            card.append(f"|--------|-------|")
+            card.append(f"| **Price** | ${s.price:.2f} |")
+            card.append(f"| **Theme** | {s.theme or 'N/A'} ({s.theme_verdict}) |")
+            card.append(f"| **Tier / Sizing** | {s.tier} — {alloc}% of equity |")
+            card.append(f"| **Beta** | {s.beta:.2f} |")
+            card.append(f"| **UC** | {s.uc:.0f} (rising={'✓' if s.uc_rising else '✗'}) |")
+            card.append(f"| **Conviction** | {'★' * s.conviction}{'☆' * (5 - s.conviction)} |")
+            if s.gate_verdict:
+                card.append(f"| **Gate Verdict** | {s.gate_verdict.replace('_', ' ')} |")
+            if s.catalyst_summary:
+                card.append(f"| **Catalyst** | {s.catalyst_summary} |")
+            if s.red_flag_level:
+                card.append(f"| **Red Flags** | {s.red_flag_level} |")
+            card.append("")
+            
+            if s.bullish_factors:
+                card.append("**Bullish Factors:**")
+                for factor in s.bullish_factors[:3]:
+                    card.append(f"- {factor}")
+                card.append("")
+            
+            if s.risk_factors:
+                card.append("**Risk Factors:**")
+                for risk in s.risk_factors[:3]:
+                    card.append(f"- {risk}")
+                card.append("")
+            
+            if s.reasoning:
+                card.append("**Analysis:**")
+                card.append(f"> {s.reasoning}")
+                card.append("")
+            
+            if s.action:
+                card.append(f"**Recommended Action:** {s.action}")
+                card.append("")
+
+            # Deep DD newsletter content (populated after Opus analysis)
+            if show_dd and s.dd_elevator_pitch:
+                card.append("**The Pitch:**")
+                card.append(f"> {s.dd_elevator_pitch}")
+                card.append("")
+            if show_dd and s.dd_why_now:
+                card.append(f"**Why Now:** {s.dd_why_now}")
+                card.append("")
+            if show_dd and s.dd_the_math:
+                card.append(f"**The Math:** {s.dd_the_math}")
+                card.append("")
+            if show_dd and s.dd_bear_case:
+                card.append(f"**Bear Case:** {s.dd_bear_case}")
+                card.append("")
+            if show_dd and s.dd_risk_to_monitor:
+                card.append(f"**Risk to Monitor:** {s.dd_risk_to_monitor}")
+                card.append("")
+            if s.valuation_regime:
+                card.append(f"**Valuation Regime:** {s.valuation_regime}")
+                card.append("")
+
+            card.append(f"📸 **[CHART: {s.symbol}]** - *Add TradingView screenshot*")
+            card.append("")
+            card.append("---")
+            card.append("")
+            return card
+        
+        # BUY NOW section (STRONG_BUY)
+        if buy_now:
+            lines.append("### 🟢 BUY NOW — Enter Monday Open")
+            lines.append("")
+            for s in buy_now:
+                lines.extend(_newsletter_stock_card(s))
+        
+        # BUY ON PULLBACK section (SPEC_BUY)
+        if buy_pullback:
+            lines.append("### 🟡 BUY ON PULLBACK — Wait for Entry Level")
+            lines.append("")
+            for s in buy_pullback:
+                lines.extend(_newsletter_stock_card(s))
+        
+        # Other PASS trades (fallback)
+        if buy_other:
             lines.append("### 🟢 PASS - Ready for Entry (GREEN Signals)")
             lines.append("")
-            for s in trades:
-                lines.append(f"#### {s.symbol}")
-                lines.append("")
-                lines.append(f"| Metric | Value |")
-                lines.append(f"|--------|-------|")
-                lines.append(f"| **Price** | ${s.price:.2f} |")
-                lines.append(f"| **Theme** | {s.theme or 'N/A'} ({s.theme_verdict}) |")
-                lines.append(f"| **Tier** | {s.tier} (Quality Tier {s.quality_tier}) |")
-                lines.append(f"| **Beta** | {s.beta:.2f} |")
-                lines.append(f"| **UC** | {s.uc:.0f} (rising={'✓' if s.uc_rising else '✗'}) |")
-                lines.append(f"| **Conviction** | {'★' * s.conviction}{'☆' * (5 - s.conviction)} |")
-                if s.catalyst_summary:
-                    lines.append(f"| **Catalyst** | {s.catalyst_summary} |")
-                if s.red_flag_level:
-                    lines.append(f"| **Red Flags** | {s.red_flag_level} |")
-                lines.append("")
-                
-                if s.bullish_factors:
-                    lines.append("**Bullish Factors:**")
-                    for factor in s.bullish_factors[:3]:
-                        lines.append(f"- {factor}")
-                    lines.append("")
-                
-                if s.risk_factors:
-                    lines.append("**Risk Factors:**")
-                    for risk in s.risk_factors[:3]:
-                        lines.append(f"- {risk}")
-                    lines.append("")
-                
-                if s.reasoning:
-                    lines.append("**Analysis:**")
-                    lines.append(f"> {s.reasoning}")
-                    lines.append("")
-                
-                if s.action:
-                    lines.append(f"**Recommended Action:** {s.action}")
-                    lines.append("")
+            for s in buy_other:
+                lines.extend(_newsletter_stock_card(s))
 
-                # Deep DD newsletter content (populated after Opus analysis)
-                if s.dd_elevator_pitch:
-                    lines.append("**The Pitch:**")
-                    lines.append(f"> {s.dd_elevator_pitch}")
-                    lines.append("")
-                if s.dd_why_now:
-                    lines.append(f"**Why Now:** {s.dd_why_now}")
-                    lines.append("")
-                if s.dd_the_math:
-                    lines.append(f"**The Math:** {s.dd_the_math}")
-                    lines.append("")
-                if s.dd_bear_case:
-                    lines.append(f"**Bear Case:** {s.dd_bear_case}")
-                    lines.append("")
-                if s.dd_risk_to_monitor:
-                    lines.append(f"**Risk to Monitor:** {s.dd_risk_to_monitor}")
-                    lines.append("")
-                if s.valuation_regime:
-                    lines.append(f"**Valuation Regime:** {s.valuation_regime}")
-                    lines.append("")
-
-                lines.append(f"📸 **[CHART: {s.symbol}]** - *Add TradingView screenshot*")
-                lines.append("")
-                lines.append("---")
-                lines.append("")
+        # PENDING DD section
+        if pending_dd:
+            lines.append("### ⚠️ PENDING DUE DILIGENCE — Do NOT Trade Yet")
+            lines.append("")
+            lines.append("*These stocks passed technical, thematic, and investment gates but Deep DD failed or was skipped. Re-run scanner with DD enabled before trading.*")
+            lines.append("")
+            for s in pending_dd:
+                alloc = TIER_ALLOC.get(s.tier, 0)
+                lines.append(f"- **{s.symbol}** - ${s.price:.2f} | {s.theme or 'N/A'} | {s.tier} ({alloc}% equity) | Gate: {s.gate_verdict or 'N/A'} | DD: {s.dd_verdict or 'Not run'}")
+            lines.append("")
+            lines.append("---")
+            lines.append("")
 
         if considers:
             lines.append("### 🟡 CONSIDER - Wait or Size Down")
             lines.append("")
             for s in considers:
-                lines.append(f"#### {s.symbol}")
-                lines.append("")
-                lines.append(f"| Metric | Value |")
-                lines.append(f"|--------|-------|")
-                lines.append(f"| **Price** | ${s.price:.2f} |")
-                lines.append(f"| **Theme** | {s.theme or 'N/A'} ({s.theme_verdict}) |")
-                lines.append(f"| **Tier** | {s.tier} |")
-                lines.append(f"| **Conviction** | {'★' * s.conviction}{'☆' * (5 - s.conviction)} |")
-                if s.catalyst_summary:
-                    lines.append(f"| **Catalyst** | {s.catalyst_summary} |")
-                lines.append("")
-                
-                if s.risk_factors:
-                    lines.append("**Concerns:**")
-                    for risk in s.risk_factors[:3]:
-                        lines.append(f"- {risk}")
-                    lines.append("")
-                
-                if s.reasoning:
-                    lines.append("**Analysis:**")
-                    lines.append(f"> {s.reasoning}")
-                    lines.append("")
-                
-                if s.action:
-                    lines.append(f"**Recommended Action:** {s.action}")
-                    lines.append("")
-                
-                lines.append(f"📸 **[CHART: {s.symbol}]** - *Add TradingView screenshot*")
-                lines.append("")
+                lines.extend(_newsletter_stock_card(s, show_dd=False))
                 lines.append("---")
                 lines.append("")
         
@@ -2721,7 +2905,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 'bullish_factors': bullish[:200],  # Truncate for CSV
                 'risk_factors': risks[:200],
                 'reasoning': reasoning[:300],
-                'passed_all_gates': 'YES' if s.final_decision in ['PASS', 'TRADE', 'CONSIDER'] else 'NO'
+                'passed_all_gates': 'PENDING_DD' if s.final_decision == 'PENDING_DD' else ('YES' if s.final_decision in ['PASS', 'TRADE', 'CONSIDER'] else 'NO')
             })
     
     # Note: trade_log.csv removed - analysis_log.csv contains all data with passed_all_gates flag
@@ -2772,12 +2956,15 @@ def send_notification(confirmed: List[Stock], sell_signals: List[SellSignal], st
         # Generate subject line
         if confirmed or sell_signals:
             trades = len([s for s in confirmed if s.final_decision in ["PASS", "TRADE", "TECHNICAL_ONLY", "THEME_CONFIRMED"]]) if confirmed else 0
+            pending_dd = len([s for s in confirmed if s.final_decision == "PENDING_DD"]) if confirmed else 0
             considers = len([s for s in confirmed if s.final_decision == "CONSIDER"]) if confirmed else 0
             exits = len(sell_signals) if sell_signals else 0
 
             parts = []
             if trades:
                 parts.append(f"{trades} Entry")
+            if pending_dd:
+                parts.append(f"{pending_dd} Pending DD")
             if considers:
                 parts.append(f"{considers} Consider")
             if exits:
@@ -2934,11 +3121,13 @@ def main() -> int:
                 from scanner.deep_dd import run_deep_dd_batch, apply_dd_to_stocks
 
                 # Run Deep DD on all gate passes (typically 1-3 stocks)
+                _pipeline_timer.start("Step 7.5: Deep DD")
                 dd_results = run_deep_dd_batch(
                     stocks=pass_stocks,
                     use_web_search=args.web_search,
                     save_reports=args.save_dd
                 )
+                _pipeline_timer.stop()
 
                 # apply_dd_to_stocks maps dd_verdict, dd_conviction, dd_position_size,
                 # dd_analysis (elevator_pitch), dd_key_catalyst (why_now), dd_fatal_flaw
@@ -2968,14 +3157,34 @@ def main() -> int:
                     for stock in dd_fail_stocks:
                         print(f"     {stock.symbol} - NO GO: {stock.dd_fatal_flaw or 'See analysis'}")
 
+                # P0 FIX: Mark any PASS stocks that didn't get a DD verdict
+                # (individual stock errors within a batch that otherwise succeeded)
+                dd_covered = {r.ticker for r in dd_results}
+                for stock in pass_stocks:
+                    if stock.symbol not in dd_covered and not stock.dd_verdict:
+                        stock.dd_verdict = "DD_ERROR"
+                        stock.final_decision = "PENDING_DD"
+                        print(f"     ⚠ {stock.symbol} - DD error, marked PENDING_DD")
+
             except ImportError:
+                _pipeline_timer.stop()
                 print("  deep_dd.py not found - skipping Deep DD")
                 print("     Portfolio will NOT be updated without DD")
+                for stock in pass_stocks:
+                    stock.dd_verdict = "DD_SKIPPED"
+                    stock.final_decision = "PENDING_DD"
             except Exception as e:
+                _pipeline_timer.stop()
                 print(f"  Deep DD error: {e}")
                 import traceback
                 traceback.print_exc()
                 print("     Portfolio will NOT be updated without DD")
+                # P0 FIX: Mark ALL pass stocks as PENDING_DD on batch-level error
+                for stock in pass_stocks:
+                    if not stock.dd_verdict:  # Don't overwrite if some succeeded before error
+                        stock.dd_verdict = "DD_ERROR"
+                        stock.final_decision = "PENDING_DD"
+                print(f"     ⚠ {len([s for s in pass_stocks if s.final_decision == 'PENDING_DD'])} stock(s) marked PENDING_DD")
 
     elif args.no_dd and confirmed:
         # DD skipped - warn user that portfolio won't be updated
@@ -2984,6 +3193,9 @@ def main() -> int:
             print("\n  DD SKIPPED (--no-dd flag)")
             print(f"     {len(pass_stocks)} PASS signal(s) will NOT be added to portfolio")
             print("     Run without --no-dd to perform Deep DD and update portfolio")
+            for stock in pass_stocks:
+                stock.dd_verdict = "DD_SKIPPED"
+                stock.final_decision = "PENDING_DD"
 
     # Print report
     print_final_report(confirmed, sell_signals, stats)
@@ -3072,6 +3284,10 @@ def main() -> int:
             print(f"  ⚠ Error sending email notification: {e}")
     
     duration = time.time() - start_time
+    
+    # P3: Pipeline timing summary
+    _pipeline_timer.print_summary()
+    
     print(f"\n  Completed in {duration:.1f} seconds")
     print("═" * 70 + "\n")
     

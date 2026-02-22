@@ -434,7 +434,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add scanner/output/ portfolio/output/ substack/output/ twitter/output/ 2>/dev/null || true
+          git add --force scanner/output/ portfolio/output/ substack/output/ twitter/output/ 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"

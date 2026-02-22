@@ -1184,6 +1184,26 @@ exists specifically to discover the CORRECT theme for these companies.**
 ### VERDICT RULES
 ### ═══════════════════════════════════════════════════════════════════════════
 
+### ⚠️ ANTI-DUMP-BUCKET CHECK (verify before outputting)
+
+**After mapping all tickers, CHECK YOUR WORK:**
+
+If 3 or more tickers are mapped to the SAME theme, you almost certainly made an error.
+The most common failure mode is lazily dumping all tickers into one theme (often the
+broadest/vaguest theme like "Healthcare Recovery" or "Energy Transition").
+
+**Cross-check each mapping:** Compare the ticker's yfinance SECTOR to the assigned theme.
+If the sector has ZERO relationship to the theme (e.g., a Technology company mapped to
+Healthcare, or a Consumer Cyclical company mapped to Energy), the mapping is WRONG.
+Score that ticker ≤2 on theme fit and mark WEAK FIT — orphan rescue will find its
+real theme.
+
+**The correct behavior for a diverse batch of tickers is:**
+- Each ticker maps to its BEST-FIT theme (often different themes for each ticker)
+- Tickers that fit NO theme well → WEAK FIT (sent to orphan rescue in Step 2b)
+- It is EXTREMELY RARE for all tickers to map to the same theme unless they are
+  genuinely all in the same narrow industry
+
 | Theme Class | Theme Fit | Company Position | Verdict |
 |-------------|-----------|------------------|---------|
 | PRIME | 7+ | Leader/Challenger | **STRONG FIT** |
@@ -1688,6 +1708,29 @@ class ThematicAnalyzer:
                 raise
 
         raise ValueError("No valid JSON object found in response")
+    
+    def _log_failed_response(self, response_text: str, label: str, error_msg: str):
+        """Log a failed API response to disk for debugging.
+        
+        When JSON parsing fails, the raw response is the only clue to what went wrong.
+        Without logging it, the failure mode (truncation? text instead of JSON? refusal?)
+        is invisible and the same bug will recur.
+        """
+        try:
+            log_dir = Path("logs")
+            log_dir.mkdir(exist_ok=True)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filepath = log_dir / f"failed_response_{label}_{timestamp}.txt"
+            with open(filepath, 'w') as f:
+                f.write(f"=== FAILED RESPONSE: {label} ===\n")
+                f.write(f"Error: {error_msg}\n")
+                f.write(f"Response length: {len(response_text)} chars\n")
+                f.write(f"Timestamp: {timestamp}\n")
+                f.write(f"{'=' * 60}\n\n")
+                f.write(response_text)
+            self.logger.info(f"Failed response saved to {filepath}")
+        except Exception as e:
+            self.logger.warning(f"Could not save failed response: {e}")
     
     def _fetch_price_data(self, tickers: List[str]) -> Dict[str, Dict]:
         """Fetch current price and sector data using yfinance with graceful fallback"""
@@ -2589,12 +2632,104 @@ class ThematicAnalyzer:
         # Rate limit cooldown before orphan rescue call
         self.rate_limiter.wait_for_inter_step_cooldown("Step 2b - Orphan Rescue")
         
-        response_text = self._call_api_with_retry(
-            messages, "Step 2b - Orphan Rescue", step="step2b"
-        )
+        # ── P0 FIX: JSON parse retry (batch attempt) ──────────────────────
+        # The orphan rescue is the ONLY safety net when Step 2 rejects everything.
+        # A JSON parse failure here kills ALL signals for the week.
+        # Strategy: retry batch with nudge → fall back to individual rescue.
+        data = None
+        response_text = ""
+        json_retry_max = 2
         
-        # Parse response
-        data = self._extract_json(response_text)
+        for json_attempt in range(json_retry_max + 1):
+            try:
+                if json_attempt == 0:
+                    response_text = self._call_api_with_retry(
+                        messages, "Step 2b - Orphan Rescue", step="step2b"
+                    )
+                else:
+                    # Retry with a nudge message appended to conversation
+                    self.logger.warning(f"JSON retry {json_attempt}/{json_retry_max} for Step 2b")
+                    print(f"    ⚠ JSON parse failed, retrying ({json_attempt}/{json_retry_max})...")
+                    time.sleep(10)  # Brief cooldown between retries
+                    retry_messages = messages + [
+                        {"role": "assistant", "content": response_text},
+                        {"role": "user", "content": (
+                            "Your previous response was not valid JSON. "
+                            "Please respond with ONLY the JSON object specified in the format above. "
+                            "No markdown, no explanation, no code fences — just the raw JSON starting with {"
+                        )}
+                    ]
+                    response_text = self._call_api_with_retry(
+                        retry_messages, f"Step 2b - Orphan Rescue (JSON retry {json_attempt})", step="step2b"
+                    )
+                
+                data = self._extract_json(response_text)
+                
+                # Validate we actually got results (not an empty/malformed object)
+                if data.get("orphan_rescue_results") is not None:
+                    break  # Success — exit retry loop
+                else:
+                    self.logger.warning(f"JSON parsed but missing orphan_rescue_results key")
+                    if json_attempt >= json_retry_max:
+                        data = None
+                
+            except (ValueError, json.JSONDecodeError) as e:
+                # P3 FIX: Log the raw failed response for post-mortem debugging
+                self._log_failed_response(response_text, f"step2b_batch_attempt_{json_attempt}", str(e))
+                
+                if json_attempt >= json_retry_max:
+                    self.logger.warning(f"Batch orphan rescue JSON failed after {json_retry_max + 1} attempts")
+                    data = None  # Will trigger individual fallback below
+        
+        # ── P1 FIX: Individual fallback if batch failed ───────────────────
+        # If the batch call couldn't produce valid JSON, try each ticker one at a time.
+        # A single-stock prompt is simpler and far less likely to produce invalid JSON.
+        if data is None or not data.get("orphan_rescue_results"):
+            self.logger.info("Batch orphan rescue failed — falling back to individual rescue")
+            print(f"\n    ⚠ Batch rescue failed. Trying individual rescue for {len(orphan_tickers)} tickers...")
+            
+            all_individual_results = []
+            for i, ticker in enumerate(orphan_tickers):
+                try:
+                    if i > 0:
+                        time.sleep(8)  # Rate limit spacing between individual calls
+                    
+                    single_prompt = STEP_2B_ORPHAN_PROMPT_TEMPLATE.format(
+                        TODAY=today_str,
+                        YEAR=year_str,
+                        ticker_list=ticker,  # Single ticker — much simpler for the model
+                        existing_themes_summary=existing_themes_summary
+                    )
+                    single_messages = [{"role": "user", "content": single_prompt}]
+                    
+                    single_response = self._call_api_with_retry(
+                        single_messages, f"Step 2b - Individual Rescue ({ticker})", step="step2b"
+                    )
+                    single_data = self._extract_json(single_response)
+                    results = single_data.get("orphan_rescue_results", [])
+                    if results:
+                        all_individual_results.extend(results)
+                        self.logger.info(f"  ✓ {ticker}: rescued individually")
+                        print(f"      ✓ {ticker} rescued individually")
+                    else:
+                        self.logger.info(f"  ✗ {ticker}: no rescue result in response")
+                        print(f"      ✗ {ticker} — no valid theme found")
+                        
+                except Exception as ind_err:
+                    self._log_failed_response(
+                        single_response if 'single_response' in locals() else "N/A",
+                        f"step2b_individual_{ticker}", str(ind_err)
+                    )
+                    self.logger.warning(f"  ✗ {ticker}: individual rescue failed: {ind_err}")
+                    print(f"      ✗ {ticker} — rescue failed: {ind_err}")
+            
+            # Build data dict from individual results
+            if all_individual_results:
+                data = {"orphan_rescue_results": all_individual_results}
+                print(f"    ✓ Individual rescue recovered {len(all_individual_results)}/{len(orphan_tickers)} tickers")
+            else:
+                data = {"orphan_rescue_results": []}
+                print(f"    ✗ Individual rescue could not recover any tickers")
         
         # Convert to TickerAnalysis objects
         rescued_analyses = []

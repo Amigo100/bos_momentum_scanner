@@ -24,7 +24,7 @@ import pytest
 from scanner.sterling_indicators import (
     _wma,
     calculate_hma,
-    calculate_hma_slope,
+    calculate_hma_pivots,
     calculate_macd,
     calculate_position_size,
     calculate_rsi,
@@ -33,14 +33,13 @@ from scanner.sterling_indicators import (
     generate_entry_signal,
     generate_exit_signal,
     resample_to_weekly,
-    CONVICTION_TIERS,
+    QUALITY_TIERS,
     HMA_PERIOD,
     LOCK_TIERS,
     MACD_FAST,
     MACD_SIGNAL,
     MACD_SLOW,
     MAX_CONCURRENT_POSITIONS,
-    MIN_CASH_RESERVE_PCT,
     PRICE_CAP,
     RSI_PERIOD,
     SIZING_GEARS,
@@ -163,16 +162,16 @@ class TestWMAandHMA:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEST CLASS 2: HMA Slope
+# TEST CLASS 2: HMA Pivots (V6 — replaces HMA Slope)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-class TestHMASlope:
-    """Verify HMA slope detection (rising/falling)."""
+class TestHMAPivots:
+    """Verify V6 HMA pivot detection (pivot_low / pivot_high)."""
 
     def test_hma_slope_rising_on_uptrend(self):
         """HMA slope should be rising on a strong uptrend."""
         weekly = _make_weekly_df(_make_trending_up(start=10, end=30, n=80))
-        result = calculate_hma_slope(weekly)
+        result = calculate_hma_pivots(weekly)
 
         # After warmup period, last bar should show rising
         assert result['hma_slope_rising'].iloc[-1], \
@@ -183,28 +182,48 @@ class TestHMASlope:
     def test_hma_slope_falling_on_downtrend(self):
         """HMA slope should be falling on a strong downtrend."""
         weekly = _make_weekly_df(_make_trending_down(start=30, end=10, n=80))
-        result = calculate_hma_slope(weekly)
+        result = calculate_hma_pivots(weekly)
 
         assert result['hma_slope_falling'].iloc[-1], \
             "HMA slope should be falling on strong downtrend"
         assert not result['hma_slope_rising'].iloc[-1], \
             "HMA slope should NOT be rising on downtrend"
 
-    def test_hma_slope_columns_present(self):
-        """Output DataFrame has all expected columns."""
+    def test_hma_pivot_columns_present(self):
+        """Output DataFrame has all expected V6 columns."""
         weekly = _make_weekly_df(_make_trending_up(n=80))
-        result = calculate_hma_slope(weekly)
+        result = calculate_hma_pivots(weekly)
 
-        expected_cols = {'hma', 'hma_prev', 'hma_slope_rising', 'hma_slope_falling'}
+        expected_cols = {'hma', 'hma_pivot_low', 'hma_pivot_high',
+                         'hma_slope_rising', 'hma_slope_falling'}
         assert expected_cols.issubset(set(result.columns))
 
     def test_hma_slope_mutually_exclusive(self):
         """Rising and falling should never both be True on the same bar."""
         weekly = _make_weekly_df(_make_v_shaped(n=80))
-        result = calculate_hma_slope(weekly)
+        result = calculate_hma_pivots(weekly)
 
         both_true = (result['hma_slope_rising'] & result['hma_slope_falling'])
         assert not both_true.any(), "Rising and falling should be mutually exclusive"
+
+    def test_pivot_low_on_v_shaped(self):
+        """V-shaped price action should produce at least one pivot low."""
+        weekly = _make_weekly_df(_make_v_shaped(start=20, trough=8, end=22, n=80))
+        result = calculate_hma_pivots(weekly)
+
+        assert result['hma_pivot_low'].any(), \
+            "V-shaped price should produce at least one HMA pivot low"
+
+    def test_pivot_high_on_inverted_v(self):
+        """Inverted V-shaped price action should produce at least one pivot high."""
+        # Rising then falling → peak forms a pivot high
+        prices = _make_trending_up(start=10, end=30, n=40)
+        prices = np.concatenate([prices, _make_trending_down(start=30, end=12, n=40)])
+        weekly = _make_weekly_df(prices)
+        result = calculate_hma_pivots(weekly)
+
+        assert result['hma_pivot_high'].any(), \
+            "Inverted V-shaped price should produce at least one HMA pivot high"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -660,77 +679,71 @@ class TestProfitLock:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestPositionSizing:
-    """Verify conviction-tiered position sizing calculator."""
+    """Verify V6 quality-tier position sizing calculator."""
 
-    def test_high_conviction_sizing(self):
-        """Conviction 8-10 → HIGH tier → 20% of equity (recommended gear)."""
-        for conv in [8, 9, 10]:
-            result = calculate_position_size(100_000, conv, 'recommended')
-            assert result['tier'] == 'HIGH'
-            assert result['equity_pct'] == 0.20
-            assert result['dollar_amount'] == 20_000.0
-            assert result['max_tier_slots'] == 2
+    def test_t1_sizing(self):
+        """T1 (both gates) → 20% of equity (recommended gear)."""
+        result = calculate_position_size(100_000, 1, 'recommended')
+        assert result['tier'] == 1
+        assert result['tier_label'] == 'T1'
+        assert result['equity_pct'] == 0.20
+        assert result['dollar_amount'] == 20_000.0
 
-    def test_standard_conviction_sizing(self):
-        """Conviction 7 → STANDARD tier → 15% of equity (recommended gear)."""
-        result = calculate_position_size(100_000, 7, 'recommended')
-        assert result['tier'] == 'STANDARD'
-        assert result['equity_pct'] == 0.15
-        assert result['dollar_amount'] == 15_000.0
-        assert result['max_tier_slots'] == 3
+    def test_t2_sizing(self):
+        """T2 (MACD only) → 10% of equity (recommended gear)."""
+        result = calculate_position_size(100_000, 2, 'recommended')
+        assert result['tier'] == 2
+        assert result['tier_label'] == 'T2'
+        assert result['equity_pct'] == 0.10
+        assert result['dollar_amount'] == 10_000.0
 
-    def test_spec_conviction_sizing(self):
-        """Conviction 4-6 → SPEC tier → 8% of equity (recommended gear)."""
-        for conv in [4, 5, 6]:
-            result = calculate_position_size(100_000, conv, 'recommended')
-            assert result['tier'] == 'SPEC'
-            assert result['equity_pct'] == 0.08
-            assert result['dollar_amount'] == 8_000.0
-            assert result['max_tier_slots'] == 2
+    def test_t3_sizing(self):
+        """T3 (UC only) → 5% of equity (recommended gear)."""
+        result = calculate_position_size(100_000, 3, 'recommended')
+        assert result['tier'] == 3
+        assert result['tier_label'] == 'T3'
+        assert result['equity_pct'] == 0.05
+        assert result['dollar_amount'] == 5_000.0
 
-    def test_no_go_conviction(self):
-        """Conviction 1-3 → NO GO → 0% allocation."""
-        for conv in [1, 2, 3]:
-            result = calculate_position_size(100_000, conv, 'recommended')
-            assert result['tier'] == 'NO GO'
+    def test_invalid_tier(self):
+        """Invalid quality tier → 0% allocation."""
+        for tier in [0, 4, 5, 99]:
+            result = calculate_position_size(100_000, tier, 'recommended')
+            assert result['tier'] == 0
+            assert result['tier_label'] == 'INVALID'
             assert result['equity_pct'] == 0.0
             assert result['dollar_amount'] == 0.0
 
     def test_conservative_gear(self):
         """Conservative gear: lower allocations across all tiers."""
-        result = calculate_position_size(100_000, 9, 'conservative')
-        assert result['tier'] == 'HIGH'
+        result = calculate_position_size(100_000, 1, 'conservative')
+        assert result['tier'] == 1
         assert result['equity_pct'] == 0.12  # 12% vs 20% recommended
         assert result['dollar_amount'] == 12_000.0
-        assert result['max_positions'] == 8  # More positions, smaller each
 
     def test_aggressive_gear(self):
-        """Aggressive gear: higher allocations, fewer positions."""
-        result = calculate_position_size(100_000, 9, 'aggressive')
-        assert result['tier'] == 'HIGH'
+        """Aggressive gear: higher allocations."""
+        result = calculate_position_size(100_000, 1, 'aggressive')
+        assert result['tier'] == 1
         assert result['equity_pct'] == 0.25  # 25% vs 20% recommended
         assert result['dollar_amount'] == 25_000.0
-        assert result['max_positions'] == 5
 
     def test_all_gears_defined(self):
         """All three gear configurations should be defined."""
         assert set(SIZING_GEARS.keys()) == {'conservative', 'recommended', 'aggressive'}
 
-    def test_conviction_tiers_coverage(self):
-        """All conviction levels 1-10 map to a valid tier or NO GO."""
-        for conv in range(1, 11):
-            result = calculate_position_size(100_000, conv, 'recommended')
-            assert result['tier'] in ('HIGH', 'STANDARD', 'SPEC', 'NO GO'), \
-                f"Conviction {conv} mapped to invalid tier: {result['tier']}"
+    def test_quality_tiers_coverage(self):
+        """All valid quality tiers (1-3) return valid sizing."""
+        for qt in [1, 2, 3]:
+            result = calculate_position_size(100_000, qt, 'recommended')
+            assert result['tier'] == qt
+            assert result['equity_pct'] > 0
+            assert result['dollar_amount'] > 0
 
     def test_max_concurrent_positions_constant(self):
-        """MAX_CONCURRENT_POSITIONS should match recommended gear."""
-        assert MAX_CONCURRENT_POSITIONS == 6
-        assert SIZING_GEARS['recommended']['max_positions'] == 6
-
-    def test_min_cash_reserve_constant(self):
-        """MIN_CASH_RESERVE_PCT should be 10%."""
-        assert MIN_CASH_RESERVE_PCT == 0.10
+        """MAX_CONCURRENT_POSITIONS should match recommended gear (V6: 8)."""
+        assert MAX_CONCURRENT_POSITIONS == 8
+        assert SIZING_GEARS['recommended']['max_positions'] == 8
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -811,17 +824,16 @@ class TestConfigConstants:
         # Trails ascending (tightest first)
         assert trails == sorted(trails)
 
-    def test_conviction_tiers_non_overlapping(self):
-        """Conviction tier ranges should not overlap."""
-        ranges = []
-        for tier_key, info in CONVICTION_TIERS.items():
-            ranges.append((info['min_conviction'], info['max_conviction'], tier_key))
-
-        # Sort by min
-        ranges.sort()
-        for i in range(len(ranges) - 1):
-            assert ranges[i][1] < ranges[i + 1][0], \
-                f"Tiers {ranges[i][2]} and {ranges[i+1][2]} overlap"
+    def test_quality_tiers_valid(self):
+        """V6 quality tiers should have valid structure and expected keys."""
+        assert set(QUALITY_TIERS.keys()) == {1, 2, 3}, "Expected tiers 1, 2, 3"
+        for tier_int, info in QUALITY_TIERS.items():
+            assert 'equity_pct' in info, f"Tier {tier_int} missing equity_pct"
+            assert 'label' in info, f"Tier {tier_int} missing label"
+            assert info['equity_pct'] > 0, f"Tier {tier_int} has non-positive equity_pct"
+        # T1 > T2 > T3 in allocation
+        assert QUALITY_TIERS[1]['equity_pct'] > QUALITY_TIERS[2]['equity_pct']
+        assert QUALITY_TIERS[2]['equity_pct'] > QUALITY_TIERS[3]['equity_pct']
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

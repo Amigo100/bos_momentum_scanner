@@ -117,10 +117,11 @@ LOCK_TIERS = [
 ]
 
 # ── Position Sizing — Conviction-Tiered (15×6 Recommended Config) ────────────
-MAX_CONCURRENT_POSITIONS = 6
+MAX_CONCURRENT_POSITIONS = 8  # V6: max 8 concurrent positions (backtest-validated)
 MIN_CASH_RESERVE_PCT = 0.10   # Always keep 10% cash
+MIN_TRADE_SIZE = 500.0        # Minimum position dollar amount (V6)
 
-# Conviction tiers: conviction_range → equity_pct, max_slots
+# Legacy conviction tiers (kept for backward compat with existing portfolio/content systems)
 CONVICTION_TIERS = {
     'HIGH':     {'min_conviction': 8, 'max_conviction': 10, 'equity_pct': 0.20, 'max_slots': 2,
                  'label': 'STRONG BUY (high conviction)'},
@@ -130,14 +131,25 @@ CONVICTION_TIERS = {
                  'label': 'SPEC BUY'},
 }
 
-# Gear-shift configurations: conservative/recommended/aggressive
+# V6 Quality tiers: tier_int → equity_pct, label, description (backtest-validated)
+# Used by scanner.py V6 and sterling_indicators.py for quality-tier position sizing.
+QUALITY_TIERS = {
+    1: {'equity_pct': 0.20, 'label': 'T1', 'description': 'Both gates (UC rising + MACD cross-up)',
+        'backtest_wr': '57%', 'backtest_avg': '+91.0%'},
+    2: {'equity_pct': 0.10, 'label': 'T2', 'description': 'MACD cross-up only (timing confirmed)',
+        'backtest_wr': '83%', 'backtest_avg': '+63.2%'},
+    3: {'equity_pct': 0.05, 'label': 'T3', 'description': 'UC rising only (regime confirmed)',
+        'backtest_wr': '69%', 'backtest_avg': '+75.8%'},
+}
+
+# Gear-shift configurations: V6 format with integer tier keys (1=T1, 2=T2, 3=T3)
 SIZING_GEARS = {
-    'conservative': {'base_pct': 0.10, 'max_positions': 8,
-                     'tiers': {'HIGH': 0.12, 'STANDARD': 0.10, 'SPEC': 0.06}},
-    'recommended':  {'base_pct': 0.15, 'max_positions': 6,
-                     'tiers': {'HIGH': 0.20, 'STANDARD': 0.15, 'SPEC': 0.08}},
-    'aggressive':   {'base_pct': 0.20, 'max_positions': 5,
-                     'tiers': {'HIGH': 0.25, 'STANDARD': 0.20, 'SPEC': 0.10}},
+    'conservative': {'max_positions': 10, 'label': 'Conservative (12/8/3)',
+                     'tiers': {1: 0.12, 2: 0.08, 3: 0.03}},
+    'recommended':  {'max_positions': 8,  'label': 'Recommended (20/10/5)',
+                     'tiers': {1: 0.20, 2: 0.10, 3: 0.05}},
+    'aggressive':   {'max_positions': 8,  'label': 'Aggressive (25/15/8)',
+                     'tiers': {1: 0.25, 2: 0.15, 3: 0.08}},
 }
 DEFAULT_SIZING_GEAR = 'recommended'
 

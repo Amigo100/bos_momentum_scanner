@@ -88,5 +88,20 @@
     "duration_seconds": 0,
     "error": null,
     "trigger": "schedule"
+  },
+  {
+    "workflow": "live_tweet",
+    "run_id": 22329521765,
+    "status": "success",
+    "started_at": "2026-02-23T23:55:08Z",
+    "completed_at": "2026-02-23T23:55:08Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule",
+    "account_results": {
+      "account1": 0,
+      "account2": 1,
+      "account3": 0
+    }
   }
 ]

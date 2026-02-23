@@ -8,5 +8,20 @@
     "duration_seconds": 0,
     "error": null,
     "trigger": "workflow_dispatch"
+  },
+  {
+    "workflow": "live_tweet",
+    "run_id": 22308767196,
+    "status": "success",
+    "started_at": "2026-02-23T14:08:36Z",
+    "completed_at": "2026-02-23T14:08:36Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule",
+    "account_results": {
+      "account1": 0,
+      "account2": 1,
+      "account3": 0
+    }
   }
 ]

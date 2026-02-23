@@ -51,7 +51,7 @@ from config.settings import (
 )
 
 # Marketing validation
-from config.marketing_vocabulary import validate_content
+from config.banned_terms import validate_content
 
 # Portfolio data
 from portfolio.manager import PortfolioManager, EquitySnapshot

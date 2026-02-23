@@ -215,45 +215,4 @@ class ContentData:
         return len(self.daily_signals) > 0
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# INTERNAL TERMINOLOGY (for validation step 5)
-# ═══════════════════════════════════════════════════════════════════════════════
-#
-# These internal terms must NEVER appear in public tweets.
-# Imported from config.banned_terms for the actual list; duplicated
-# here as regex patterns for the terminology-specific validation step.
-
-INTERNAL_TERM_PATTERNS: List[str] = [
-    # Legacy indicator terms
-    r"\bHMA\b",
-    r"\bBoS\b",
-    r"\bBOS\b",
-    r"\bBanker\b",
-    r"\btier\s*[123]\b",
-    r"\bTIER[123]\b",
-    r"\bconviction\s*\d+\b",
-    r"\bconviction\s+score\b",
-    r"\bVWAP\b",
-    r"\bgate\s*[1-5]\b",
-    r"\b5-gate\b",
-    r"\b5th\s+gate\b",
-    r"\bgatekeeper\b",
-    r"\bRSI\b",
-    r"\bMACD\b",
-    r"\bKDJ\b",
-    # Sterling Grid terms (never reveal publicly)
-    r"\bUC\b",
-    r"\bundercurrent\b",
-    r"\bExD\b",
-    r"\bprofit\s+lock\b",
-    r"\btiered\s+stop\b",
-    r"\bgear\s+shift\b",
-    r"\bprice\s+cap\b",
-    r"\binvestment\s+gate\b",
-    r"\bdeep\s+dd\b",
-    r"\bSTRONG\s+BUY\b",
-    r"\bSPEC\s+BUY\b",
-    r"\bNO\s+GO\b",
-    r"\bvaluation\s+regime\b",
-    r"\bkill\s+switch\b",
-]
+from config.banned_terms import INTERNAL_TERM_PATTERNS  # noqa: F401

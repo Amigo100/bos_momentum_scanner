@@ -494,6 +494,9 @@ Return ONLY the JSON object, no other text."""
             # Extract text
             text = "".join([b.text for b in response.content if hasattr(b, 'text')])
 
+            # Strip citation tags from web search responses
+            text = re.sub(r'</?antml:cite[^>]*>', '', text)
+
             # Parse JSON
             match = re.search(r'\{[\s\S]*\}', text)
             if match:
@@ -761,6 +764,18 @@ def apply_results_to_stocks(stocks: List[Any], results: List[InvestmentGateResul
             stock.sector_status = r.analyst_trend
         if hasattr(stock, 'upside_potential'):
             stock.upside_potential = "High (50%+)" if r.catalyst_present else "Uncertain"
+
+        # Gate-specific fields (for Deep DD consumption)
+        if hasattr(stock, 'gate_verdict'):
+            stock.gate_verdict = r.verdict.value
+        if hasattr(stock, 'gate_conviction'):
+            stock.gate_conviction = r.conviction
+        if hasattr(stock, 'gate_catalyst'):
+            stock.gate_catalyst = r.catalyst_summary
+        if hasattr(stock, 'gate_bear_case'):
+            stock.gate_bear_case = r.bear_case
+        if hasattr(stock, 'gate_math'):
+            stock.gate_math = r.math_to_50
 
         # DD-era fields (backward compat)
         if hasattr(stock, 'dd_verdict'):

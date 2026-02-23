@@ -63,7 +63,7 @@ from config.banned_terms import (
     check_banned_phrases,
     check_loser_focus,
 )
-from config.marketing_vocabulary import validate_content
+from config.banned_terms import validate_content
 
 try:
     from config import MARKETING_THRESHOLDS
@@ -76,8 +76,8 @@ except ImportError:
 MIN_WIN_THRESHOLD = MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
 BIG_WIN_THRESHOLD = MARKETING_THRESHOLDS.get('big_win_threshold', 25.0)
 
-# Reuse core functions from existing notes generator
-from substack.notes_generator import (
+# Shared note utilities (extracted from legacy notes_generator.py)
+from substack.note_utils import (
     NoteContext,
     build_note_context,
     sanitize_note,
@@ -88,12 +88,17 @@ from substack.notes_generator import (
     get_current_dir,
 )
 
-# Learning content library
-from substack.learning_content_library import (
-    LEARNING_TOPICS,
-    get_random_topic,
-    get_topics_by_category,
-)
+# Learning content library (archived — graceful fallback)
+try:
+    from substack.learning_content_library import (
+        LEARNING_TOPICS,
+        get_random_topic,
+        get_topics_by_category,
+    )
+except ImportError:
+    LEARNING_TOPICS = []
+    get_random_topic = lambda **kwargs: None
+    get_topics_by_category = lambda *args, **kwargs: []
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

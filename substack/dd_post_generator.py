@@ -26,7 +26,7 @@ from typing import Dict, List, Optional, Tuple
 from config import SIGNALS_FILE, get_conviction_text, CURRENCY_SYMBOL
 
 # Marketing validation
-from config.marketing_vocabulary import validate_content
+from config.banned_terms import validate_content
 from config.banned_terms import INTERNAL_TERMINOLOGY_MAP, CRITICAL_BANNED
 
 # Output paths
@@ -69,7 +69,7 @@ COLORS = {
 
 BRANDING = {
     "substack_url": "https://sterlingsignals.substack.com",
-    "tagline": "Proprietary 5-gate screening system",
+    "tagline": "Proprietary screening system",
 }
 
 
@@ -305,7 +305,7 @@ def generate_dd_post(signal: Dict, themes: List[Dict] = None) -> str:
         sections.append(_section_header("Theme Context"))
         sections.append(_card(theme_body))
 
-    # 9. INVESTMENT GATE SUMMARY (bullish/risk factors)
+    # 9. QUALITY ASSESSMENT (bullish/risk factors)
     if bullish_factors or risk_factors:
         gate_body = ""
         if bullish_factors:
@@ -322,7 +322,7 @@ def generate_dd_post(signal: Dict, themes: List[Dict] = None) -> str:
             )
             gate_body += f'<div><strong style="color:{COLORS["amber"]};">Risk Factors</strong><ul style="padding-left:20px;margin:6px 0;">{items}</ul></div>'
 
-        sections.append(_section_header("Investment Gate Summary"))
+        sections.append(_section_header("Quality Assessment"))
         sections.append(_card(gate_body))
 
     # 10. ACTION (teal highlight)

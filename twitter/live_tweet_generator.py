@@ -787,7 +787,7 @@ def decide_tweet_type(
 
     # ── P0: Sell/exit signals (ALWAYS highest priority) ────────────────────
     if not _is_category_over_budget("SELL_SIGNAL", tracker):
-        for sig in signals.get("sell_signals", []) + signals.get("exit_signals", []):
+        for sig in signals.get("sell_signals", []):
             ticker = sig.get("symbol", "").upper()
             if ticker and not recently_tweeted(ticker, recent_tweets, hours=12):
                 if not (tracker and tracker.ticker_at_daily_limit(ticker)):

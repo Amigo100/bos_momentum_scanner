@@ -612,53 +612,10 @@ SIGNAL_TYPES: Dict[str, Dict] = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 10: BANNED_TERMS - Never use these in public content
+# PHASE 10: BANNED_TERMS — Re-exported from config/banned_terms.py (canonical)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-BANNED_TERMS: List[str] = [
-    # Strategy internals (keep secret)
-    'HMA', 'Hull Moving Average', 'HMA Pivot',
-    'Banker indicator', 'Banker >= 55', 'Banker score', 'Banker rising', 'UC rising',
-    '20% trailing stop', '20% stop',
-    'Beta >= 1.5',
-    'Break of Structure', 'BoS', 'BOS',
-    'Tier 1', 'Tier 2', 'Tier 3',
-    'Gatekeeper',
-
-    # Geographic (US-focused audience)
-    'UK ISA', 'ISA account', 'GMT', 'BST', 'UK Time',
-
-    # Branding consistency
-    'PASS signal',      # Use "GREEN signal"
-    'weekly winners',   # Misleading - positions held months
-    'this week we nailed',  # Misleading timeframe
-
-    # Technical indicators we don't want to reveal
-    'RSI', 'MACD', 'KDJ',
-
-    # MASTER_TODO_v2: Internal terms that leaked
-    'Capital Preservation Protocol',
-    'Forensic Audit',
-    'Volatility Expansion Criteria',
-    '5th Gate',               # Say "cleared all gates" instead
-    'Gate 5',                 # Say "cleared all gates" instead
-
-    # Non-branded signal terms - MUST use "GREEN signal"
-    'proprietary entry',      # Use "GREEN signal"
-    'proprietary signal',     # Use "GREEN signal"
-
-    # OLD COLOR SYSTEM (v2.0 - now banned, use GREEN/RED)
-    'TEAL signal', 'TEAL', 'teal',
-    'purple signal', 'purple', 'PURPLE',
-    'VIOLET signal', 'VIOLET', 'violet',
-    '🟣',  # Old purple emoji
-    'AMBER signal', 'AMBER', 'amber',
-
-    # US-specific (wrong audience)
-    'Roth IRA', 'Roth',
-    'PDT', 'PDT rule', 'pattern day trader',
-    '401k', '401(k)',
-]
+from config.banned_terms import ALL_BANNED as BANNED_TERMS  # noqa: F811
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

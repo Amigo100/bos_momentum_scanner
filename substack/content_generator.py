@@ -69,7 +69,7 @@ from config.banned_terms import (
     ALL_BANNED,
     check_banned_phrases,
 )
-from config.marketing_vocabulary import validate_content
+from config.banned_terms import validate_content
 
 try:
     from config.output_paths import (

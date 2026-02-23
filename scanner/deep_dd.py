@@ -61,7 +61,7 @@ REPORTS_DIR.mkdir(exist_ok=True)
 
 MODEL = "claude-opus-4-20250514"
 MAX_OUTPUT_TOKENS = 16000
-THINKING_BUDGET = 10000
+THINKING_BUDGET = 32000
 INTER_STOCK_DELAY = 15.0  # Opus is slower, give it room
 
 
@@ -434,6 +434,9 @@ Return ONLY the JSON object specified in your instructions, no other text."""
                 elif hasattr(block, 'thinking'):
                     thinking_text += block.thinking
 
+            # Strip citation tags from web search responses
+            analysis_text = re.sub(r'</?antml:cite[^>]*>', '', analysis_text)
+
             # Parse JSON from response
             match = re.search(r'\{[\s\S]*\}', analysis_text)
             if match:
@@ -613,11 +616,11 @@ def run_deep_dd_batch(
                 'theme_classification': getattr(stock, 'theme_classification', ''),
                 'valuation_regime': getattr(stock, 'valuation_regime', ''),
                 # Investment Gate results to pass through as context
-                'gate_conviction': getattr(stock, 'conviction', 0),
-                'gate_catalyst': getattr(stock, 'catalyst_summary', ''),
-                'gate_bull_case': getattr(stock, 'dd_analysis', '') or getattr(stock, 'reasoning', ''),
-                'gate_bear_case': '',
-                'gate_math': '',
+                'gate_conviction': getattr(stock, 'gate_conviction', 0) or getattr(stock, 'conviction', 0),
+                'gate_catalyst': getattr(stock, 'gate_catalyst', '') or getattr(stock, 'catalyst_summary', ''),
+                'gate_bull_case': getattr(stock, 'reasoning', ''),
+                'gate_bear_case': getattr(stock, 'gate_bear_case', ''),
+                'gate_math': getattr(stock, 'gate_math', ''),
                 'gate_reasoning': getattr(stock, 'reasoning', ''),
             }
         else:

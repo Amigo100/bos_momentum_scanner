@@ -14,6 +14,8 @@ from config.banned_terms import (  # noqa: F401
     LOSER_PATTERNS,
     ALL_BANNED,
     INTERNAL_TERMINOLOGY_MAP,
+    INTERNAL_TERM_PATTERNS,
+    validate_content,
     check_banned_phrases,
     check_loser_focus,
 )

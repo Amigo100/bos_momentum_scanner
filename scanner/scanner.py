@@ -2678,6 +2678,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             "gate_verdict": s.gate_verdict,
             "gate_conviction": s.gate_conviction,
             "gate_catalyst": s.gate_catalyst,
+            "catalyst_summary": s.gate_catalyst,  # Alias for downstream consumers
             "gate_bear_case": s.gate_bear_case,
             "gate_math": s.gate_math,
             "valuation_regime": s.valuation_regime,

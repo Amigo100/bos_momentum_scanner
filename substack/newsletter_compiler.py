@@ -45,7 +45,7 @@ from config.banned_terms import ALL_BANNED as BANNED_TERMS
 
 # Import marketing vocabulary for validation
 try:
-    from config.marketing_vocabulary import validate_content
+    from config.banned_terms import validate_content
     MARKETING_VOCABULARY_AVAILABLE = True
 except ImportError:
     MARKETING_VOCABULARY_AVAILABLE = False

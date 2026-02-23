@@ -1265,7 +1265,7 @@ class TestDDPostGenerator:
     def test_dd_post_marketing_safety(self, sample_dd_signal):
         """DD post HTML passes marketing vocabulary validation."""
         from substack.dd_post_generator import generate_dd_post
-        from config.marketing_vocabulary import validate_content as _validate_content
+        from config.banned_terms import validate_content as _validate_content
         import re
 
         html = generate_dd_post(sample_dd_signal)
@@ -1345,6 +1345,6 @@ class TestDDPostGenerator:
         html = generate_dd_post(signal)
 
         # Check footer contains approved phrases
-        assert "5-gate screening system" in html
+        assert "screening system" in html
         assert "sterlingsignals.substack.com" in html
         assert "financial advice" in html

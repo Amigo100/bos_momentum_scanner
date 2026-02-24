@@ -35,18 +35,24 @@ from typing import Dict, List, Tuple, Optional
 # Try to import project paths, fall back to defaults
 try:
     from config.output_paths import (
-        SCANNER_OUTPUT, SIGNALS_FILE, TRADES_DIR,
+        SCANNER_OUTPUT, SIGNALS_FILE, SIGNALS_TECH_FILE,
         get_scanner_current_dir, get_scanner_archive_dir,
     )
     CURRENT_DIR = get_scanner_current_dir()
 except ImportError:
-    TRADES_DIR = Path("trades")
     SCANNER_OUTPUT = Path("scanner/output")
     CURRENT_DIR = SCANNER_OUTPUT / "current"
     SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
+    SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
 
-SIGNALS_TECH = CURRENT_DIR / "signals_technical.json"
-DECISIONS_DEFAULT = TRADES_DIR / "current" / "decisions.json"
+    def get_scanner_archive_dir(dt=None):
+        from datetime import datetime as _dt
+        d = dt or _dt.now()
+        iso = d.isocalendar()
+        return SCANNER_OUTPUT / "archive" / f"{iso[0]}-W{iso[1]:02d}"
+
+SIGNALS_TECH = SIGNALS_TECH_FILE
+DECISIONS_DEFAULT = SCANNER_OUTPUT / "decisions.json"
 SIGNALS_OUT = SIGNALS_FILE  # Write to canonical location
 CONTENT_OUT = CURRENT_DIR / "content_schedule.json"
 
@@ -84,11 +90,7 @@ def save_json(data: dict, path: Path) -> bool:
 
 def get_weekly_archive_dir() -> Path:
     """Get the weekly archive directory (scanner/output/archive/YYYY-WNN/)."""
-    now = datetime.now()
-    week_num = now.isocalendar()[1]
-    year = now.year
-    # Use scanner archive for signals, trades for decisions
-    week_dir = TRADES_DIR / f"{year}-W{week_num:02d}"
+    week_dir = get_scanner_archive_dir()
     week_dir.mkdir(parents=True, exist_ok=True)
     return week_dir
 
@@ -312,6 +314,9 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
             "final_decision": "WATCHLIST",
             "tier": tech_data.get("tier", ""),
         })
+
+    # Defensive alias for any consumer reading exit_signals instead of sell_signals
+    merged["exit_signals"] = merged["sell_signals"]
 
     return merged
 

@@ -35,7 +35,7 @@ from typing import Optional
 
 try:
     from config.output_paths import (
-        SCANNER_OUTPUT, SIGNALS_FILE, TRADES_DIR,
+        SCANNER_OUTPUT, SIGNALS_FILE,
         get_scanner_current_dir, get_scanner_archive_dir,
         get_substack_current_dir, get_substack_archive_dir,
         get_week_identifier,
@@ -43,7 +43,6 @@ try:
     CURRENT_DIR = get_scanner_current_dir()
     SUBSTACK_CURRENT = get_substack_current_dir()
 except ImportError:
-    TRADES_DIR = Path("trades")
     SCANNER_OUTPUT = Path("scanner/output")
     CURRENT_DIR = SCANNER_OUTPUT / "current"
     SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
@@ -55,10 +54,13 @@ except ImportError:
         iso = dt.isocalendar()
         return f"{iso.year}-W{iso.week:02d}"
 
+    def get_scanner_archive_dir(dt=None):
+        return SCANNER_OUTPUT / "archive" / get_week_identifier(dt)
+
     def get_substack_archive_dir(dt=None):
         return Path("substack/output/archive") / get_week_identifier(dt)
 
-DECISIONS_DEFAULT = TRADES_DIR / "current" / "decisions.json"
+DECISIONS_DEFAULT = SCANNER_OUTPUT / "decisions.json"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -80,11 +82,8 @@ def load_json(path: Path, required: bool = True) -> dict:
 
 
 def get_weekly_archive_dir() -> Path:
-    """Get trades archive directory for this week."""
-    now = datetime.now()
-    week_num = now.isocalendar()[1]
-    year = now.year
-    week_dir = TRADES_DIR / f"{year}-W{week_num:02d}"
+    """Get scanner archive directory for this week."""
+    week_dir = get_scanner_archive_dir()
     week_dir.mkdir(parents=True, exist_ok=True)
     return week_dir
 
@@ -227,7 +226,7 @@ def step_newsletter(decisions_path: Path, dry_run: bool = False):
     print("  STEP 5: Newsletter Distribution")
     print("─" * 60)
 
-    newsletter_src = decisions_path.parent / "newsletter.html"
+    newsletter_src = SUBSTACK_CURRENT / "newsletter.html"
     if not newsletter_src.exists():
         print(f"  ⚠ No newsletter.html found at {newsletter_src}")
         print("    (Newsletter will be compiled separately)")
@@ -265,8 +264,8 @@ def step_archive(decisions_path: Path, dry_run: bool = False):
         (CURRENT_DIR / "content_schedule.json", "content_schedule.json"),
     ]
 
-    # Newsletter from source
-    newsletter_src = decisions_path.parent / "newsletter.html"
+    # Newsletter from substack output
+    newsletter_src = SUBSTACK_CURRENT / "newsletter.html"
     if newsletter_src.exists():
         files_to_archive.append((newsletter_src, "newsletter.html"))
 
@@ -289,9 +288,9 @@ def step_archive(decisions_path: Path, dry_run: bool = False):
     try:
         substack_archive = get_substack_archive_dir()
         substack_archive.mkdir(parents=True, exist_ok=True)
-        newsletter_src = decisions_path.parent / "newsletter.html"
-        if newsletter_src.exists():
-            shutil.copy2(newsletter_src, substack_archive / "newsletter.html")
+        newsletter_src_arch = SUBSTACK_CURRENT / "newsletter.html"
+        if newsletter_src_arch.exists():
+            shutil.copy2(newsletter_src_arch, substack_archive / "newsletter.html")
             print(f"  ✓ newsletter.html → substack archive")
     except Exception:
         pass

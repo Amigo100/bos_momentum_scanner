@@ -6,7 +6,7 @@ Bridge between Claude.ai chat analysis and downstream automation.
 
 Reads:
   - scanner/output/signals.json       (from scanner, as technical base)
-  - trades/current/decisions.json     (from Claude.ai Prompt 7 export)
+  - scanner/output/current/decisions.json     (from Claude.ai Prompt 7 export)
 
 Produces:
   - scanner/output/signals.json       (merged, same format downstream expects)
@@ -83,7 +83,7 @@ def save_json(data: dict, path: Path) -> bool:
 
 
 def get_weekly_archive_dir() -> Path:
-    """Get the weekly archive directory (trades/YYYY-WNN/)."""
+    """Get the weekly archive directory (scanner/output/archive/YYYY-WNN/)."""
     now = datetime.now()
     week_num = now.isocalendar()[1]
     year = now.year

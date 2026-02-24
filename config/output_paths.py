@@ -44,8 +44,10 @@ TRADES_DIR = BASE_DIR / "trades"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
+SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
 DAILY_SIGNALS_FILE = SCANNER_OUTPUT / "daily_signals.json"
 ANALYSIS_LOG = SCANNER_OUTPUT / "analysis_log.csv"
+SCAN_REPORT = SCANNER_OUTPUT / "scan_report.txt"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

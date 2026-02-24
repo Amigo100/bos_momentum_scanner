@@ -180,7 +180,7 @@ def full_context(sample_themes, sample_buy_signals, sample_winners, sample_stats
                 {"week": "2026-W06", "score": 8.6, "classification": "PRIME"},
             ]
         },
-        chart_manifest={"INOD": "trades/charts/INOD_weekly_20260214.png"},
+        chart_manifest={"INOD": "twitter/output/charts/INOD_weekly_20260214.png"},
         week_number=7,
         pass_count=1,
         scan_stats=sample_stats,

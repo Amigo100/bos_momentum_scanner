@@ -715,9 +715,9 @@ class TestDailyPostingIntegration:
             chart_required=True,
             tickers_mentioned=["$WCC", "$STRL", "$MOD"],
             chart_paths=[
-                "trades/charts/WCC_weekly_20260208.png",
-                "trades/charts/STRL_weekly_20260208.png",
-                "trades/charts/MOD_weekly_20260208.png",
+                "twitter/output/charts/WCC_weekly_20260208.png",
+                "twitter/output/charts/STRL_weekly_20260208.png",
+                "twitter/output/charts/MOD_weekly_20260208.png",
             ],
             metadata={"day": "saturday", "slot": 4},
         )
@@ -729,9 +729,9 @@ class TestDailyPostingIntegration:
         entry = queue_data[0]
 
         assert entry["chart_paths"] == [
-            "trades/charts/WCC_weekly_20260208.png",
-            "trades/charts/STRL_weekly_20260208.png",
-            "trades/charts/MOD_weekly_20260208.png",
+            "twitter/output/charts/WCC_weekly_20260208.png",
+            "twitter/output/charts/STRL_weekly_20260208.png",
+            "twitter/output/charts/MOD_weekly_20260208.png",
         ]
         # Backwards compat: chart_path is first from chart_paths (via get_all_chart_paths)
         # But since chart_path field is None and chart_paths is populated:

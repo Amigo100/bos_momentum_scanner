@@ -137,13 +137,14 @@ Replace internal conviction scores with public-facing language:
 
 **BANNED:** Never use "conviction 8", "conviction score", or any numeric conviction value in public content.
 
-### Entry Price Display Rules
+### Portfolio Transparency Rules
 
-Entry prices can only be shown publicly when:
-- **Closed winners:** Always show entry prices for profitable closed trades
-- **Open positions:** Only show entry prices for positions above **25%** gain
-
-This prevents revealing entries that haven't been validated by performance.
+- Always show ALL positions — winners AND losers
+- Frame losses positively: "Stop hit = system working as designed"
+- When underwater: "Down but managing risk — disciplined exits in place"
+- Show entry prices for all positions (full transparency)
+- Celebrate big wins prominently (25%+, 50%+, 100%+)
+- Never hide or omit negative P&L
 
 ---
 

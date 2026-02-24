@@ -11,13 +11,14 @@ Ref: FINTWIT_STYLE_GUIDE.md section "Banned Phrases"
 Exports:
     CRITICAL_BANNED          — Terms that must NEVER appear in public content
     BANNED_PHRASES           — Low-quality / vague phrases to reject
-    LOSER_PATTERNS           — Regex patterns detecting loser-focused language
     ALL_BANNED               — CRITICAL_BANNED + BANNED_PHRASES combined
     INTERNAL_TERMINOLOGY_MAP — Internal term → public-facing language
+    INTERNAL_TERM_PATTERNS   — Regex patterns for internal terms (validation step 5)
+    validate_content         — Check text for banned terms, returns (bool, violations)
 """
 
 import re
-from typing import List
+from typing import List, Tuple
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CRITICAL_BANNED — Terms that must NEVER appear in any public content
@@ -150,23 +151,6 @@ BANNED_PHRASES: List[str] = [
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LOSER_PATTERNS — Regex patterns that detect loser-focused language
-# ═══════════════════════════════════════════════════════════════════════════════
-
-LOSER_PATTERNS: List[str] = [
-    r'the red\b',
-    r'still bleeding',
-    r'keep losing',
-    r'\bred position',
-    r'stubborn loser',
-    r'watching.*lose',
-    r'debate the exit',
-    r'down.*portfolio',
-    r'biggest loser',
-]
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # ALL_BANNED — Convenience export combining both lists for full validation
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -255,12 +239,96 @@ def check_banned_phrases(text: str) -> List[str]:
     return issues
 
 
-def check_loser_focus(text: str) -> bool:
-    """Detect emphasis on losing positions. Returns True if loser-focused."""
-    for pattern in LOSER_PATTERNS:
-        if re.search(pattern, text, re.IGNORECASE):
-            return True
-    return False
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONTENT VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Short terms that need word-boundary checks to avoid false positives
+_SHORT_TERMS = frozenset(t.lower() for t in [
+    "RSI", "MACD", "KDJ", "BoS", "BOS", "GMT", "BST",
+    "HMA", "PDT", "TEAL", "teal", "UC", "ExD",
+])
+
+
+def validate_content(text: str) -> Tuple[bool, List[str]]:
+    """
+    Check content for banned terms.
+
+    Uses ALL_BANNED (the canonical 121-term list) for maximum coverage.
+
+    Args:
+        text: The content to validate (tweet, newsletter section, etc.)
+
+    Returns:
+        Tuple of (is_valid, list_of_violations)
+        - is_valid: True if no banned terms found
+        - violations: List of banned terms that were found
+    """
+    if not text:
+        return True, []
+
+    violations = []
+    text_lower = text.lower()
+
+    for term in ALL_BANNED:
+        if term.lower() in text_lower:
+            # Short terms need word-boundary check to avoid false positives
+            if term.lower() in _SHORT_TERMS:
+                if re.search(rf'\b{re.escape(term)}\b', text, re.IGNORECASE):
+                    violations.append(term)
+            else:
+                violations.append(term)
+
+    # Remove duplicates while preserving order
+    seen: set = set()
+    unique_violations: List[str] = []
+    for v in violations:
+        if v.lower() not in seen:
+            seen.add(v.lower())
+            unique_violations.append(v)
+
+    return len(unique_violations) == 0, unique_violations
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# INTERNAL TERMINOLOGY PATTERNS (regex, for tweet validation step 5)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+INTERNAL_TERM_PATTERNS: List[str] = [
+    # Legacy indicator terms
+    r"\bHMA\b",
+    r"\bBoS\b",
+    r"\bBOS\b",
+    r"\bBanker\b",
+    r"\btier\s*[123]\b",
+    r"\bTIER[123]\b",
+    r"\bconviction\s*\d+\b",
+    r"\bconviction\s+score\b",
+    r"\bVWAP\b",
+    r"\bgate\s*[1-5]\b",
+    r"\b5-gate\b",
+    r"\b5th\s+gate\b",
+    r"\bgatekeeper\b",
+    r"\bRSI\b",
+    r"\bMACD\b",
+    r"\bKDJ\b",
+    # Sterling Grid terms (never reveal publicly)
+    r"\bUC\b",
+    r"\bundercurrent\b",
+    r"\bExD\b",
+    r"\bprofit\s+lock\b",
+    r"\btiered\s+stop\b",
+    r"\bgear\s+shift\b",
+    r"\bprice\s+cap\b",
+    r"\binvestment\s+gate\b",
+    r"\bdeep\s+dd\b",
+    r"\bSTRONG\s+BUY\b",
+    r"\bSPEC\s+BUY\b",
+    r"\bNO\s+GO\b",
+    r"\bvaluation\s+regime\b",
+    r"\bkill\s+switch\b",
+]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -272,7 +340,6 @@ if __name__ == "__main__":
     print("=" * 50)
     print(f"CRITICAL_BANNED: {len(CRITICAL_BANNED)} terms")
     print(f"BANNED_PHRASES:  {len(BANNED_PHRASES)} phrases")
-    print(f"LOSER_PATTERNS:  {len(LOSER_PATTERNS)} patterns")
     print(f"ALL_BANNED:      {len(ALL_BANNED)} total")
     print(f"TERMINOLOGY_MAP: {len(INTERNAL_TERMINOLOGY_MAP)} mappings")
     print()

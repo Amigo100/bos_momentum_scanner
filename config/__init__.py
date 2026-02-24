@@ -11,9 +11,9 @@ from config.settings import *  # noqa: F401,F403
 from config.banned_terms import (  # noqa: F401
     CRITICAL_BANNED,
     BANNED_PHRASES,
-    LOSER_PATTERNS,
     ALL_BANNED,
     INTERNAL_TERMINOLOGY_MAP,
+    INTERNAL_TERM_PATTERNS,
+    validate_content,
     check_banned_phrases,
-    check_loser_focus,
 )

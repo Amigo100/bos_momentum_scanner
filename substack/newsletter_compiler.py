@@ -37,6 +37,9 @@ from config.output_paths import (
     get_substack_current_dir,
     get_substack_archive_dir,
     get_relative_path,
+    save_to_substack_current_and_archive,
+    get_claude_content_dir,
+    get_week_identifier,
 )
 OUTPUT_PATHS_AVAILABLE = True
 
@@ -45,7 +48,7 @@ from config.banned_terms import ALL_BANNED as BANNED_TERMS
 
 # Import marketing vocabulary for validation
 try:
-    from config.marketing_vocabulary import validate_content
+    from config.banned_terms import validate_content
     MARKETING_VOCABULARY_AVAILABLE = True
 except ImportError:
     MARKETING_VOCABULARY_AVAILABLE = False
@@ -80,12 +83,12 @@ STYLE:
 - Reference SPY/QQQ comparison when outperforming
 - Use "GREEN signal" branding (not "PASS signal")
 
-CRITICAL MARKETING RULES:
-- NEVER mention losing positions or underwater trades
-- NEVER show full portfolio with individual P&L
-- Only showcase wins above 15% threshold
-- If benchmark comparison is negative, focus on methodology instead
-- Celebrate big wins (25%+, 50%+, 100%+) prominently
+TRANSPARENCY RULES:
+- Show ALL positions — winners AND losers — with full transparency
+- Frame losses positively: "Stop hit = system working as designed"
+- When underwater: "Down but managing risk — disciplined exits in place"
+- Celebrate big wins prominently (25%+, 50%+, 100%+)
+- Always show entry prices for all positions
 
 HANDLING ZERO SIGNALS WEEK:
 When there are no PASS/GREEN signals this week:
@@ -182,11 +185,11 @@ For each NO GO:
 - Why waiting
 - What triggers entry
 
-**8. WIN HIGHLIGHTS** (conditional - only if we have winners above 15%)
-- Showcase closed trades with gains above 15%
-- Celebrate big wins (25%+, 50%+, 100%+)
-- DO NOT mention any losing positions or current P&L
-- Focus on the system working, not individual losses
+**8. PORTFOLIO TRANSPARENCY**
+- Show ALL closed trades — winners AND losers
+- Celebrate big wins prominently (25%+, 50%+, 100%+)
+- Frame losses positively: "Stop hit = system working as designed"
+- Show entry prices for all positions
 
 **9. LOOKING AHEAD**
 - Next week's catalysts
@@ -447,12 +450,12 @@ def load_theme_details() -> str:
 
 
 def load_portfolio_status() -> str:
-    """Load WIN HIGHLIGHTS only (no portfolio display per marketing overhaul).
+    """Load all closed trades for transparent portfolio display.
 
-    Per marketing safeguards:
-    - NEVER show losing positions publicly
-    - Only show closed trades with gains above 15%
-    - Focus on wins, not current portfolio status
+    Transparency policy:
+    - Show ALL closed trades — winners and losers
+    - Frame losses positively: stop hit = system working as designed
+    - Always show entry prices
     """
     portfolio_file = PORTFOLIO_FILE
     if not portfolio_file.exists():
@@ -460,15 +463,8 @@ def load_portfolio_status() -> str:
 
     import csv
 
-    # Import threshold from config
-    try:
-        from config import MARKETING_THRESHOLDS
-        min_win = MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
-    except ImportError:
-        min_win = 15.0
-
-    # Find closed trades with positive P&L above threshold
-    winners = []
+    # Load all closed trades (no threshold filter)
+    closed_trades = []
 
     with open(portfolio_file, 'r') as f:
         reader = csv.DictReader(f)
@@ -479,33 +475,36 @@ def load_portfolio_status() -> str:
                     exit_price = float(row.get('exit_price') or 0)
                     if entry > 0 and exit_price > 0:
                         pnl_pct = ((exit_price / entry) - 1) * 100
-                        if pnl_pct >= min_win:
-                            winners.append({
-                                'ticker': row['ticker'],
-                                'pnl_pct': pnl_pct,
-                                'theme': row.get('theme', 'N/A'),
-                                'exit_date': row.get('exit_date', '')
-                            })
+                        closed_trades.append({
+                            'ticker': row['ticker'],
+                            'entry_price': entry,
+                            'exit_price': exit_price,
+                            'pnl_pct': pnl_pct,
+                            'theme': row.get('theme', 'N/A'),
+                            'exit_date': row.get('exit_date', ''),
+                            'status': row.get('status', ''),
+                        })
                 except (ValueError, TypeError):
                     pass
 
-    if not winners:
-        return ""  # No win highlights to show
+    if not closed_trades:
+        return ""
 
-    # Sort by P&L descending and take top 5
-    winners = sorted(winners, key=lambda x: x['pnl_pct'], reverse=True)[:5]
+    # Sort by P&L descending and take recent trades
+    closed_trades = sorted(closed_trades, key=lambda x: x['pnl_pct'], reverse=True)[:8]
 
-    lines = ["### Win Highlights", ""]
-    lines.append("Recent closed trades above 15% gain:")
+    lines = ["### Closed Trades", ""]
+    lines.append("Recent closed positions (full transparency):")
     lines.append("")
-    lines.append("| Ticker | Return | Theme |")
-    lines.append("|--------|--------|-------|")
+    lines.append("| Ticker | Entry | Exit | Return | Theme |")
+    lines.append("|--------|-------|------|--------|-------|")
 
-    for w in winners:
-        lines.append(f"| ${w['ticker']} | +{w['pnl_pct']:.1f}% | {w['theme']} |")
+    for t in closed_trades:
+        pnl_str = f"+{t['pnl_pct']:.1f}%" if t['pnl_pct'] >= 0 else f"{t['pnl_pct']:.1f}%"
+        lines.append(f"| ${t['ticker']} | ${t['entry_price']:.2f} | ${t['exit_price']:.2f} | {pnl_str} | {t['theme']} |")
 
     lines.append("")
-    lines.append("*Our 5-gate system identifies momentum opportunities.*")
+    lines.append("*Wins validate the system. Stops prove risk management works.*")
 
     return "\n".join(lines)
 
@@ -932,11 +931,69 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# FROM-HTML MODE (copy Claude.ai output to standard paths)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def compile_from_html(html_path: str, preview: bool = False) -> Optional[Path]:
+    """Copy a complete HTML newsletter from Claude.ai to standard output paths.
+
+    Reads the HTML file, copies it to:
+    - substack/output/current/newsletter.html
+    - substack/output/archive/YYYY-WXX/newsletter.html
+    - substack/output/claude_content/newsletter_YYYY-WXX.html
+    """
+    html_file = Path(html_path)
+    if not html_file.exists():
+        print(f"  Error: HTML file not found: {html_file}")
+        return None
+
+    print(f"\n{'=' * 60}")
+    print(f"  NEWSLETTER COMPILER - From HTML Mode")
+    print(f"{'=' * 60}")
+    print(f"  Source: {html_file}")
+
+    html_content = html_file.read_text()
+    print(f"  Read {len(html_content):,} characters")
+
+    # Save to current + weekly archive
+    current_path, archive_path = save_to_substack_current_and_archive(
+        html_content, "newsletter.html"
+    )
+    print(f"\n  Newsletter placed:")
+    print(f"     Current: {get_relative_path(current_path)}")
+    print(f"     Archive: {get_relative_path(archive_path)}")
+
+    # Also save to claude_content with week identifier
+    claude_dir = get_claude_content_dir()
+    week_id = get_week_identifier()
+    claude_path = claude_dir / f"newsletter_{week_id}.html"
+    claude_path.write_text(html_content)
+    print(f"     Claude:  {get_relative_path(claude_path)}")
+
+    print(f"\n  Next steps:")
+    print(f"     1. Open {current_path} in browser")
+    print(f"     2. Copy the content (Cmd+A, Cmd+C)")
+    print(f"     3. Paste into Substack editor")
+    print(f"     4. Preview and publish!")
+
+    if preview:
+        print(f"\n  Opening preview in browser...")
+        webbrowser.open(f"file://{current_path.absolute()}")
+
+    print(f"\n{'=' * 60}\n")
+    return current_path
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # MAIN COMPILATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def compile_newsletter(full_mode: bool = False, preview: bool = False) -> Path:
+def compile_newsletter(full_mode: bool = False, preview: bool = False, from_html: str = None) -> Path:
     """Compile the newsletter briefing to HTML."""
+
+    # --from-html mode: copy Claude.ai-produced HTML to output paths
+    if from_html:
+        return compile_from_html(from_html, preview=preview)
 
     print(f"\n{'═' * 60}")
     print(f"  NEWSLETTER COMPILER - Sterling Signals")
@@ -1150,9 +1207,19 @@ def main() -> None:
         action='store_true',
         help='Open HTML in browser for preview'
     )
+    parser.add_argument(
+        '--from-html',
+        type=str,
+        metavar='PATH',
+        help='Copy complete HTML newsletter from Claude.ai to output paths (mutually exclusive with --full)'
+    )
 
     args = parser.parse_args()
-    compile_newsletter(full_mode=args.full, preview=args.preview)
+
+    if args.from_html and args.full:
+        parser.error("--from-html and --full are mutually exclusive")
+
+    compile_newsletter(full_mode=args.full, preview=args.preview, from_html=args.from_html)
 
 
 if __name__ == "__main__":

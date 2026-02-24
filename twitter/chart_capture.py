@@ -374,8 +374,8 @@ def capture_charts_batch(
                         rel_path = files[0].relative_to(BASE_DIR)
                         results[ticker] = str(rel_path)
                     except ValueError:
-                        # If not relative to BASE_DIR, use filename with trades/charts prefix
-                        results[ticker] = f"trades/charts/{files[0].name}"
+                        # If not relative to BASE_DIR, use filename with twitter/output/charts prefix
+                        results[ticker] = f"twitter/output/charts/{files[0].name}"
                 else:
                     logger.warning("No files returned for %s (%s)", ticker, timeframe)
                     results[ticker] = None

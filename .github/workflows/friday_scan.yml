@@ -4,18 +4,8 @@ on:
   # Manual trigger for testing
   workflow_dispatch:
     inputs:
-      skip_llm:
-        description: 'Skip LLM analysis (technical scan only)'
-        required: false
-        default: 'false'
-        type: boolean
-      web_search:
-        description: 'Enable web search in LLM analysis'
-        required: false
-        default: 'true'
-        type: boolean
       top_n:
-        description: 'Limit to top N tickers by beta (0 = no limit)'
+        description: 'Limit to top N tickers by UC (0 = no limit)'
         required: false
         default: '0'
       skip_charts:
@@ -28,8 +18,8 @@ on:
         required: false
         default: 'false'
         type: boolean
-      skip_newsletter:
-        description: 'Skip newsletter compilation'
+      skip_content:
+        description: 'Skip content generation (notes, posts, production guide)'
         required: false
         default: 'false'
         type: boolean
@@ -39,8 +29,7 @@ on:
   schedule:
     - cron: '30 21 * * 5'
 
-env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+# Note: ANTHROPIC_API_KEY only needed by tweet generator step (scanner is pure technical, $0 cost)
 
 # Required for git push
 permissions:
@@ -49,7 +38,7 @@ permissions:
 jobs:
   weekly-scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repository
@@ -70,31 +59,17 @@ jobs:
       # TradingView charts require interactive login (use chart_capture.py locally)
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 1: RUN SCANNER (Technical → Thematic → Gatekeeper → DD)
+      # STEP 1: RUN SCANNER (Pure Technical Signal Detector — $0 cost)
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Run Scanner
         id: scanner
         run: |
           echo "## Scanner Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** Pure Technical (no LLM API calls)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cost:** $0.00" >> $GITHUB_STEP_SUMMARY
 
           SCANNER_ARGS="--archive"
-
-          # Skip LLM if requested
-          if [ "${{ github.event.inputs.skip_llm }}" = "true" ]; then
-            SCANNER_ARGS="$SCANNER_ARGS --no-llm"
-            echo "- **LLM:** Disabled" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **LLM:** Enabled (includes DD)" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Web search
-          if [ "${{ github.event.inputs.web_search }}" = "true" ] && [ "${{ github.event.inputs.skip_llm }}" != "true" ]; then
-            SCANNER_ARGS="$SCANNER_ARGS --web-search"
-            echo "- **Web Search:** Enabled" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Web Search:** Disabled" >> $GITHUB_STEP_SUMMARY
-          fi
 
           # Top N limit
           TOP_N="${{ github.event.inputs.top_n }}"
@@ -211,69 +186,13 @@ jobs:
         env:
           TRADINGVIEW_COOKIES: ${{ secrets.TRADINGVIEW_COOKIES }}
 
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 3: GENERATE MARKET ANALYSIS (Claude + Web Search)
-      # ═══════════════════════════════════════════════════════════════════════════
+      # Steps 3-4 (market analysis + newsletter compilation) removed.
+      # Newsletter is now produced manually in Claude.ai chat.
+      # Use: python -m substack.newsletter_compiler --from-html path/to/newsletter.html
 
-      - name: Generate Market Analysis
-        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
-        run: |
-          if [ -f "substack/market_analyzer.py" ]; then
-            echo "Generating market analysis via Claude + web search..."
-            python -m substack.market_analyzer --save || {
-              echo "Market analysis failed - continuing anyway"
-            }
-          else
-            echo "substack/market_analyzer.py not found, skipping"
-          fi
-        continue-on-error: true
-
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4: COMPILE NEWSLETTER (Full LLM-powered compilation)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Compile Newsletter
-        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
-        run: |
-          if [ -f "substack/newsletter_compiler.py" ]; then
-            echo "Compiling newsletter via LLM..."
-            python -m substack.newsletter_compiler --full || {
-              echo "Newsletter compilation failed - continuing anyway"
-            }
-          else
-            echo "substack/newsletter_compiler.py not found, skipping"
-          fi
-        continue-on-error: true
-
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Generate DD HTML Posts
-        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
-        run: |
-          if [ -f "substack/dd_post_generator.py" ]; then
-            echo "Generating DD HTML posts per buy signal..."
-            python -m substack.dd_post_generator || echo "DD post generation failed (non-critical)"
-          else
-            echo "substack/dd_post_generator.py not found, skipping"
-          fi
-        continue-on-error: true
-
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4.6: GENERATE SUBSTACK CONTENT (Mon/Thu/Sat/Sun posts)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Generate Substack Posts (4-5/week)
-        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
-        run: |
-          if [ -f "substack/content_generator.py" ]; then
-            echo "Generating Substack posts (Sat/Tue/Wed/Thu + optional Fri)..."
-            python -m substack.content_generator --all || echo "Substack posts generation failed (non-critical)"
-          else
-            echo "substack/content_generator.py not found, skipping"
-          fi
-        continue-on-error: true
+      # ARCHIVED: DD HTML Posts and Substack Content Generator steps removed
+      # DD posts and themed content now generated via Claude.ai chat workflow
+      # using sterling_prompt_library.md attached to Claude.ai (Opus 4.6)
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 4.75: GENERATE PORTFOLIO VISUAL DASHBOARD (HTML + PNG)
@@ -291,6 +210,8 @@ jobs:
 
       - name: Generate Tweets (3 accounts × 28 tweets each, unique per account)
         if: ${{ github.event.inputs.skip_tweets != 'true' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "Generating weekly tweets via tweet_generator v2 (3× LLM runs for unique content)..."
           python -m twitter.tweet_generator \
@@ -316,7 +237,7 @@ jobs:
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Content Production Guide
-        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        if: ${{ github.event.inputs.skip_content != 'true' }}
         run: |
           if [ -f "substack/content_production_guide.py" ]; then
             echo "Generating content production guide (adaptive schedule + context doc)..."
@@ -331,7 +252,9 @@ jobs:
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Generate Substack Notes Batch (21 notes/week)
-        if: ${{ github.event.inputs.skip_newsletter != 'true' }}
+        if: ${{ github.event.inputs.skip_content != 'true' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           if [ -f "substack/notes_batch_generator.py" ]; then
             echo "Generating 21 Substack notes (3/day for the week) as HTML..."
@@ -358,6 +281,7 @@ jobs:
           path: |
             scanner/output/current/
             scanner/output/signals.json
+            scanner/output/signals_technical.json
             portfolio/output/portfolio.csv
             portfolio/output/portfolio_google_sheets.csv
             logs/

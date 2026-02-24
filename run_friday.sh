@@ -2,13 +2,15 @@
 #
 # STERLING SIGNALS - FRIDAY PIPELINE ORCHESTRATOR
 # ================================================
-# Runs the complete weekly pipeline locally with full automation:
-#   1. Scanner (Technical → Thematic → Gatekeeper → DD)
+# Runs the complete weekly pipeline locally:
+#   1. Scanner (Pure Technical Signal Detector — $0 cost)
 #   2. Chart Capture (TradingView)
-#   3. Market Analysis (Claude + web search)
-#   4. Newsletter Compilation (Claude)
-#   5. Tweet Generation (Claude)
-#   6. Git commit and push
+#   3. Tweet Generation (Claude — only LLM cost)
+#   4. Content Production Guide + Notes
+#   5. Git commit and push
+#
+# LLM analysis (thematic + investment gate + DD) now runs via Claude.ai chat.
+# Attach sterling_prompt_library.md to Claude.ai after reviewing signals.
 #
 # Usage:
 #   ./run_friday.sh              # Full production run
@@ -16,7 +18,7 @@
 #   ./run_friday.sh --no-push    # Run without pushing to GitHub
 #
 # Prerequisites:
-#   - ANTHROPIC_API_KEY set in environment
+#   - ANTHROPIC_API_KEY set in environment (for tweet generation)
 #   - TradingView logged in (for chart capture)
 #   - Git configured with push access to repo
 #
@@ -136,11 +138,9 @@ echo ""
 
 log_step "Running pre-flight checks..."
 
-# Check required environment variables (skip API key check in test mode)
-if [ "$TEST_MODE" = false ]; then
-    check_env "ANTHROPIC_API_KEY"
-else
-    log_warning "Test mode: Skipping ANTHROPIC_API_KEY check"
+# Check API key (needed for tweet generation, NOT for scanner)
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+    log_warning "ANTHROPIC_API_KEY not set — scanner will work but tweet generation will fail"
 fi
 
 # Check required files
@@ -160,22 +160,19 @@ log_success "Pre-flight checks passed"
 # STEP 1: RUN SCANNER (with DD enabled by default)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-log_header "STEP 1: Running Scanner (Technical → Thematic → Gatekeeper → DD)"
+log_header "STEP 1: Running Scanner (Pure Technical Signal Detector)"
 
 SCANNER_ARGS="--archive"
 
 if [ "$TEST_MODE" = true ]; then
-    SCANNER_ARGS="$SCANNER_ARGS --no-llm --top 20"
-    log_warning "Test mode: Using --no-llm --top 20"
-else
-    # Production: full pipeline with web search and DD
-    SCANNER_ARGS="$SCANNER_ARGS --web-search"
+    SCANNER_ARGS="$SCANNER_ARGS --top 20"
+    log_warning "Test mode: Using --top 20"
 fi
 
 log_step "python3 -m scanner.scanner $SCANNER_ARGS"
 python3 -m scanner.scanner $SCANNER_ARGS
 
-log_success "Scanner complete (DD results applied, portfolio updated)"
+log_success "Scanner complete (signals_technical.json generated — $0 cost)"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 1.5: GENERATE FUNNEL GRAPHIC
@@ -220,79 +217,14 @@ else
     fi
 fi
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 3: GENERATE MARKET ANALYSIS
-# ═══════════════════════════════════════════════════════════════════════════════
+# Steps 3-4 (market analysis + newsletter compilation) removed.
+# Newsletter is now produced manually in Claude.ai chat using the
+# content production guide as context. Use --from-html to import:
+#   python3 -m substack.newsletter_compiler --from-html path/to/newsletter.html
 
-if [ "$SKIP_NEWSLETTER" = true ]; then
-    log_warning "Skipping market analysis (--skip-newsletter)"
-else
-    log_header "STEP 3: Generating Market Analysis (Claude + Web Search)"
-
-    if [ -f "substack/market_analyzer.py" ]; then
-        MARKET_ARGS="--save"
-        if [ "$TEST_MODE" = true ]; then
-            log_warning "Test mode: Skipping market analysis API call"
-        else
-            log_step "python3 -m substack.market_analyzer $MARKET_ARGS"
-            python3 -m substack.market_analyzer $MARKET_ARGS || {
-                log_warning "Market analysis failed - continuing anyway"
-            }
-        fi
-    else
-        log_warning "substack/market_analyzer.py not found, skipping"
-    fi
-fi
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 4: COMPILE NEWSLETTER (Full automated with LLM)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-if [ "$SKIP_NEWSLETTER" = true ]; then
-    log_warning "Skipping newsletter compilation (--skip-newsletter)"
-else
-    log_header "STEP 4: Newsletter Compilation (Market + Briefing + DD → HTML)"
-
-    if [ -f "substack/newsletter_compiler.py" ]; then
-        NEWSLETTER_ARGS=""
-        if [ "$TEST_MODE" = true ]; then
-            # Basic compilation only (no LLM)
-            log_warning "Test mode: Basic compilation only"
-        else
-            # Full automated compilation with LLM
-            NEWSLETTER_ARGS="--full"
-        fi
-
-        log_step "python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS"
-        python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS || {
-            log_warning "Newsletter compilation failed - continuing anyway"
-        }
-    else
-        log_warning "substack/newsletter_compiler.py not found, skipping"
-    fi
-fi
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-log_header "STEP 4.5: Generating DD HTML Posts (per buy signal)"
-
-if [ -f "substack/dd_post_generator.py" ]; then
-    DD_ARGS=""
-    if [ "$TEST_MODE" = true ]; then
-        DD_ARGS="--dry-run"
-        log_warning "Test mode: dry-run only"
-    fi
-
-    log_step "python3 -m substack.dd_post_generator $DD_ARGS"
-    python3 -m substack.dd_post_generator $DD_ARGS || {
-        log_warning "DD post generation failed - continuing anyway"
-    }
-    log_success "DD posts generated"
-else
-    log_warning "substack/dd_post_generator.py not found, skipping"
-fi
+# ARCHIVED: DD HTML posts now generated via Claude.ai chat workflow
+# The scanner no longer runs LLM gates, so DD data is not available here.
+# Use: Attach sterling_prompt_library.md to Claude.ai after reviewing signals.
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 5: GENERATE TWEETS
@@ -407,32 +339,31 @@ fi
 log_header "PIPELINE COMPLETE"
 
 echo "  Generated files:"
-echo "    • substack/output/current/newsletter.html             ← Substack Saturday"
-echo "    • scanner/output/current/newsletter_briefing.md"
-echo "    • scanner/output/signals.json"
+echo "    • scanner/output/signals_technical.json   ← PRIMARY output"
+echo "    • scanner/output/signals.json             ← Transitional (downstream compat)"
 echo "    • substack/output/current/content_production_guide.md ← Attach to Claude.ai"
-echo "    • substack/output/current/substack_posts/"
-echo "        └── dd_*.html                                      ← DD posts per signal"
 echo "    • substack/output/current/substack_notes/"
-echo "        ├── *_1_*.md, *_2_*.md, *_3_*.md                   ← 21 notes (3/day)"
-echo "        ├── tuesday_note.md                                ← Legacy compat"
-echo "        ├── thursday_note.md                               ← Legacy compat"
-echo "        └── notes_manifest.json                            ← Batch tracking"
+echo "        ├── *_1_*.md, *_2_*.md, *_3_*.md     ← 21 notes (3/day)"
+echo "        └── notes_manifest.json               ← Batch tracking"
 [ -d "twitter/output/charts" ] && echo "    • twitter/output/charts/*.png"
 echo ""
-echo "  Archived to: scanner/output/weeks/$(date '+%G-W%V')/"
+echo "  Archived to: scanner/output/archive/$(date '+%G-W%V')/"
 echo ""
 
 if [ "$TEST_MODE" = true ]; then
-    echo -e "${YELLOW}  ⚠ This was a TEST run - no real API calls made${NC}"
+    echo -e "${YELLOW}  ⚠ This was a TEST run - minimal API calls made${NC}"
 else
-    echo "  Pipeline completed with full automation:"
-    echo "    ✅ Scanner ran with DD"
-    echo "    ✅ Market analysis generated via Claude"
-    echo "    ✅ Newsletter compiled with embedded charts"
-    echo "    ✅ Content production guide generated (adaptive schedule for the week)"
+    echo "  Pipeline completed:"
+    echo "    ✅ Scanner ran (pure technical, \$0 cost)"
+    echo "    ✅ Content production guide generated"
     echo "    ✅ 21 Substack notes generated (3/day)"
-    echo "    ✅ 35 tweets generated for the week"
+    echo "    ✅ Tweets generated for the week"
+    echo ""
+    echo "  Next steps (manual via Claude.ai chat):"
+    echo "    1. Review signals_technical.json for buy/sell signals"
+    echo "    2. Open Claude.ai → attach sterling_prompt_library.md"
+    echo "    3. Run thematic analysis + investment gate in chat"
+    echo "    4. Update portfolio with final decisions"
     echo ""
     echo "  Daily content workflow (handbook v5 — 4-category adaptive system):"
     echo "    1. Open content_production_guide.md → check today's category + topic"
@@ -440,14 +371,6 @@ else
     echo "    3. Attach content_production_guide.md to Claude.ai (Opus 4.6 + extended thinking)"
     echo "    4. Paste prompt → get HTML post + 3 HTML notes"
     echo "    5. Paste into Substack"
-    echo ""
-    echo "  Adaptive content calendar (categories assigned by scanner output):"
-    echo "    Sunday:    Performance Review (newsletter) + 3 notes"
-    echo "    Mon-Sat:   Ticker Deep Dive / Theme Rotation / Educational + 3 notes"
-    echo "    Saturday:  Notes only (3 notes, no post)"
-    echo "    Daily:     Tweets auto-post via GitHub Actions"
-    echo ""
-    echo "  Reference: substack/docs/content_prompt_handbook_v5.md"
 fi
 
 echo ""

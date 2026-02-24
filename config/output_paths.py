@@ -44,8 +44,10 @@ TRADES_DIR = BASE_DIR / "trades"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
+SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
 DAILY_SIGNALS_FILE = SCANNER_OUTPUT / "daily_signals.json"
 ANALYSIS_LOG = SCANNER_OUTPUT / "analysis_log.csv"
+SCAN_REPORT = SCANNER_OUTPUT / "scan_report.txt"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -78,6 +80,9 @@ CELEBRATIONS_FILE = TWITTER_OUTPUT / "celebrations.json"
 FAILED_TWEETS_FILE = TWITTER_OUTPUT / "failed_tweets.json"
 WORKFLOW_STATUS_FILE = TWITTER_OUTPUT / "workflow_status.json"
 CHARTS_DIR = TWITTER_OUTPUT / "charts"
+
+# Claude.ai-produced content storage
+CLAUDE_CONTENT_DIR = SUBSTACK_OUTPUT / "claude_content"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -118,6 +123,12 @@ def get_substack_archive_dir(dt: Optional[datetime] = None) -> Path:
     return SUBSTACK_OUTPUT / "archive" / week_id
 
 
+def get_claude_content_dir() -> Path:
+    """Get substack/output/claude_content/ for Claude.ai-produced HTML files."""
+    CLAUDE_CONTENT_DIR.mkdir(parents=True, exist_ok=True)
+    return CLAUDE_CONTENT_DIR
+
+
 # ── Legacy compatibility ──────────────────────────────────────────────────────
 
 def get_current_dir() -> Path:
@@ -156,6 +167,9 @@ def ensure_output_structure() -> Tuple[Path, Path]:
     for d in [substack_current, substack_archive]:
         (d / "substack_notes").mkdir(parents=True, exist_ok=True)
         (d / "substack_posts").mkdir(parents=True, exist_ok=True)
+
+    # Claude.ai content storage
+    CLAUDE_CONTENT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Portfolio output dirs
     PORTFOLIO_OUTPUT.mkdir(parents=True, exist_ok=True)

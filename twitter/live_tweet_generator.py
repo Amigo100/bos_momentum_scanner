@@ -52,7 +52,7 @@ from twitter.models import (
     CHART_REQUIRED_CATEGORIES, INTERNAL_TERM_PATTERNS,
 )
 from config.banned_terms import (
-    ALL_BANNED, CRITICAL_BANNED, check_banned_phrases, check_loser_focus,
+    ALL_BANNED, CRITICAL_BANNED, check_banned_phrases,
 )
 from twitter.live_context_gatherer import is_market_open, is_extended_hours
 
@@ -787,7 +787,7 @@ def decide_tweet_type(
 
     # ── P0: Sell/exit signals (ALWAYS highest priority) ────────────────────
     if not _is_category_over_budget("SELL_SIGNAL", tracker):
-        for sig in signals.get("sell_signals", []) + signals.get("exit_signals", []):
+        for sig in signals.get("sell_signals", []):
             ticker = sig.get("symbol", "").upper()
             if ticker and not recently_tweeted(ticker, recent_tweets, hours=12):
                 if not (tracker and tracker.ticker_at_daily_limit(ticker)):
@@ -1499,8 +1499,6 @@ def validate_tweet(
     negative_pcts = re.findall(r'(?<!\d)-\d+\.?\d*%', text)
     if negative_pcts:
         failures.append(f"step4_winners_only: negative percentage(s) {negative_pcts}")
-    if check_loser_focus(text):
-        failures.append("step4_winners_only: loser-focused language detected")
 
     # Step 5: Internal terminology check
     for pattern in INTERNAL_TERM_PATTERNS:

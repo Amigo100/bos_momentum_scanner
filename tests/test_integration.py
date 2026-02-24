@@ -53,9 +53,7 @@ from config.banned_terms import (
     ALL_BANNED,
     CRITICAL_BANNED,
     BANNED_PHRASES,
-    LOSER_PATTERNS,
     check_banned_phrases,
-    check_loser_focus,
 )
 from twitter.poster import (
     DAILY_SLOTS,
@@ -717,9 +715,9 @@ class TestDailyPostingIntegration:
             chart_required=True,
             tickers_mentioned=["$WCC", "$STRL", "$MOD"],
             chart_paths=[
-                "trades/charts/WCC_weekly_20260208.png",
-                "trades/charts/STRL_weekly_20260208.png",
-                "trades/charts/MOD_weekly_20260208.png",
+                "twitter/output/charts/WCC_weekly_20260208.png",
+                "twitter/output/charts/STRL_weekly_20260208.png",
+                "twitter/output/charts/MOD_weekly_20260208.png",
             ],
             metadata={"day": "saturday", "slot": 4},
         )
@@ -731,9 +729,9 @@ class TestDailyPostingIntegration:
         entry = queue_data[0]
 
         assert entry["chart_paths"] == [
-            "trades/charts/WCC_weekly_20260208.png",
-            "trades/charts/STRL_weekly_20260208.png",
-            "trades/charts/MOD_weekly_20260208.png",
+            "twitter/output/charts/WCC_weekly_20260208.png",
+            "twitter/output/charts/STRL_weekly_20260208.png",
+            "twitter/output/charts/MOD_weekly_20260208.png",
         ]
         # Backwards compat: chart_path is first from chart_paths (via get_all_chart_paths)
         # But since chart_path field is None and chart_paths is populated:
@@ -1265,7 +1263,7 @@ class TestDDPostGenerator:
     def test_dd_post_marketing_safety(self, sample_dd_signal):
         """DD post HTML passes marketing vocabulary validation."""
         from substack.dd_post_generator import generate_dd_post
-        from config.marketing_vocabulary import validate_content as _validate_content
+        from config.banned_terms import validate_content as _validate_content
         import re
 
         html = generate_dd_post(sample_dd_signal)
@@ -1345,6 +1343,6 @@ class TestDDPostGenerator:
         html = generate_dd_post(signal)
 
         # Check footer contains approved phrases
-        assert "5-gate screening system" in html
+        assert "screening system" in html
         assert "sterlingsignals.substack.com" in html
         assert "financial advice" in html

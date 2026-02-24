@@ -267,7 +267,7 @@ def validate_before_posting(tweet: Dict) -> tuple:
 
     # 5. Full marketing vocabulary check (secondary defense)
     try:
-        from config.marketing_vocabulary import validate_content
+        from config.banned_terms import validate_content
         mv_valid, mv_violations = validate_content(text)
         if not mv_valid:
             return (False, f"BLOCKED: Marketing vocabulary violation: {mv_violations[0]}")

@@ -488,7 +488,6 @@ CARD_ACCENT_RED = "#ff4444"   # Loss/bearish accent
 # Performance thresholds for content generation
 MARKETING_THRESHOLDS: Dict[str, float] = {
     # Win Highlighting
-    'min_win_to_highlight': 15.0,       # Minimum % gain to include in top_performers
     'big_win_threshold': 25.0,           # Trigger standalone self_quote tweet
     'home_run_threshold': 50.0,          # Celebration post, pin candidate
     'hall_of_fame_threshold': 100.0,     # Thread-worthy, reference repeatedly
@@ -612,53 +611,10 @@ SIGNAL_TYPES: Dict[str, Dict] = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 10: BANNED_TERMS - Never use these in public content
+# PHASE 10: BANNED_TERMS — Re-exported from config/banned_terms.py (canonical)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-BANNED_TERMS: List[str] = [
-    # Strategy internals (keep secret)
-    'HMA', 'Hull Moving Average', 'HMA Pivot',
-    'Banker indicator', 'Banker >= 55', 'Banker score', 'Banker rising', 'UC rising',
-    '20% trailing stop', '20% stop',
-    'Beta >= 1.5',
-    'Break of Structure', 'BoS', 'BOS',
-    'Tier 1', 'Tier 2', 'Tier 3',
-    'Gatekeeper',
-
-    # Geographic (US-focused audience)
-    'UK ISA', 'ISA account', 'GMT', 'BST', 'UK Time',
-
-    # Branding consistency
-    'PASS signal',      # Use "GREEN signal"
-    'weekly winners',   # Misleading - positions held months
-    'this week we nailed',  # Misleading timeframe
-
-    # Technical indicators we don't want to reveal
-    'RSI', 'MACD', 'KDJ',
-
-    # MASTER_TODO_v2: Internal terms that leaked
-    'Capital Preservation Protocol',
-    'Forensic Audit',
-    'Volatility Expansion Criteria',
-    '5th Gate',               # Say "cleared all gates" instead
-    'Gate 5',                 # Say "cleared all gates" instead
-
-    # Non-branded signal terms - MUST use "GREEN signal"
-    'proprietary entry',      # Use "GREEN signal"
-    'proprietary signal',     # Use "GREEN signal"
-
-    # OLD COLOR SYSTEM (v2.0 - now banned, use GREEN/RED)
-    'TEAL signal', 'TEAL', 'teal',
-    'purple signal', 'purple', 'PURPLE',
-    'VIOLET signal', 'VIOLET', 'violet',
-    '🟣',  # Old purple emoji
-    'AMBER signal', 'AMBER', 'amber',
-
-    # US-specific (wrong audience)
-    'Roth IRA', 'Roth',
-    'PDT', 'PDT rule', 'pattern day trader',
-    '401k', '401(k)',
-]
+from config.banned_terms import ALL_BANNED as BANNED_TERMS  # noqa: F811
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -937,28 +893,16 @@ def get_conviction_text(score: int) -> str:
 def can_show_entry_price(position: dict) -> bool:
     """Check if entry price can be shown publicly for a position.
 
-    Entry prices are shown for:
-    - Closed winning positions
-    - Open positions with gains above threshold (25%)
+    Portfolio transparency: always show entry prices for all positions.
+    Full transparency builds trust — show winners AND losers.
 
     Args:
-        position: Position dict with 'status', 'pnl_pct' keys
+        position: Position dict (kept for backward compatibility)
 
     Returns:
-        True if entry price can be shown publicly
+        Always True — full portfolio transparency
     """
-    status = position.get('status', 'OPEN')
-    pnl_pct = position.get('pnl_pct', 0)
-
-    # Closed winners - always show
-    if status == 'CLOSED' and pnl_pct > 0:
-        return ENTRY_PRICE_RULES['show_for_closed_winners']
-
-    # Open positions above threshold
-    if status == 'OPEN' and pnl_pct >= ENTRY_PRICE_RULES['threshold_pct']:
-        return ENTRY_PRICE_RULES['show_for_open_above_threshold']
-
-    return False
+    return True
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -62,14 +62,13 @@ from config import (
     PORTFOLIO_FILE,
     EQUITY_CURVE_FILE,
     get_conviction_text,
-    can_show_entry_price,
 )
 from config.banned_terms import (
     INTERNAL_TERMINOLOGY_MAP,
     ALL_BANNED,
     check_banned_phrases,
 )
-from config.marketing_vocabulary import validate_content
+from config.banned_terms import validate_content
 
 try:
     from config.output_paths import (
@@ -212,13 +211,13 @@ def load_market_analysis() -> str:
 
 
 def load_portfolio_winners() -> List[Dict]:
-    """Load open positions with positive P&L for showcase."""
+    """Load all open positions for transparent showcase."""
     portfolio_path = PORTFOLIO_FILE
     if not portfolio_path.exists():
         return []
 
     import csv
-    winners = []
+    positions = []
     with open(portfolio_path) as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -229,21 +228,20 @@ def load_portfolio_winners() -> List[Dict]:
                 highest = float(row.get("highest_close", 0))
                 if entry > 0 and highest > 0:
                     pnl_pct = ((highest - entry) / entry) * 100
-                    if pnl_pct >= MIN_WIN_THRESHOLD:
-                        winners.append({
-                            "ticker": row.get("ticker", ""),
-                            "entry_price": entry,
-                            "highest_close": highest,
-                            "pnl_pct": round(pnl_pct, 1),
-                            "theme": row.get("theme", ""),
-                            "entry_date": row.get("entry_date", ""),
-                            "show_entry": pnl_pct >= BIG_WIN_THRESHOLD,
-                        })
+                    positions.append({
+                        "ticker": row.get("ticker", ""),
+                        "entry_price": entry,
+                        "highest_close": highest,
+                        "pnl_pct": round(pnl_pct, 1),
+                        "theme": row.get("theme", ""),
+                        "entry_date": row.get("entry_date", ""),
+                        "show_entry": True,
+                    })
             except (ValueError, TypeError):
                 continue
 
-    winners.sort(key=lambda w: w["pnl_pct"], reverse=True)
-    return winners
+    positions.sort(key=lambda w: w["pnl_pct"], reverse=True)
+    return positions
 
 
 def load_equity_curve() -> Dict:
@@ -515,31 +513,15 @@ def sanitize_text(text: str) -> str:
 
 
 def scrub_llm_output(text: str) -> str:
-    """Post-LLM scrub to remove content the LLM should not have generated.
+    """Post-LLM scrub for content cleanup.
 
-    Even with strong system prompts, LLMs sometimes include negative P&L,
-    banned phrases, or STOPPED mentions. This function strips them as a
-    last line of defence before validation.
+    Transparency mode: negative P&L and STOPPED mentions are allowed
+    (shown with positive framing). Only clean up formatting issues.
     """
     if not text:
         return text
 
-    # Strip sentences containing negative P&L (e.g., "-12.3%")
-    # Replace whole sentences that contain a negative percentage
-    text = re.sub(
-        r'[^.!?\n]*-\d+\.?\d*%[^.!?\n]*[.!?]?',
-        '',
-        text,
-    )
-
-    # Remove STOPPED mentions (whole sentences)
-    text = re.sub(
-        r'[^.!?\n]*\bSTOPPED\b[^.!?\n]*[.!?]?',
-        '',
-        text,
-    )
-
-    # Clean up any double blank lines left by removals
+    # Clean up any triple+ blank lines
     text = re.sub(r'\n{3,}', '\n\n', text)
 
     return text.strip()
@@ -554,14 +536,7 @@ def validate_post_content(text: str) -> Tuple[bool, List[str]]:
     if violations:
         issues.extend(violations)
 
-    # Check for negative P&L mentions
-    neg_pnl = re.findall(r'-\d+\.?\d*%', text)
-    if neg_pnl:
-        issues.append(f"Negative P&L found: {neg_pnl}")
-
-    # Check for STOPPED mentions
-    if re.search(r'\bSTOPPED\b', text):
-        issues.append("STOPPED position mentioned")
+    # Negative P&L and STOPPED mentions are allowed (transparency policy)
 
     # Validate via marketing vocabulary
     is_valid, term_issues = validate_content(text)
@@ -659,9 +634,7 @@ def build_winners_table_html(winners: List[Dict]) -> str:
         ticker = w["ticker"]
         pnl = w["pnl_pct"]
         theme = w.get("theme", "")
-        entry_str = ""
-        if w.get("show_entry"):
-            entry_str = f" (${w['entry_price']:.2f} entry)"
+        entry_str = f" (${w['entry_price']:.2f} entry)"
         html += f'<tr><td style="padding: 10px; border: 1px solid #ddd; font-weight: 700;">${ticker}{entry_str}</td>'
         html += f'<td style="padding: 10px; border: 1px solid #ddd;">{theme}</td>'
         html += f'<td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: #16a34a; font-weight: 700;">+{pnl:.1f}%</td></tr>\n'
@@ -717,14 +690,13 @@ CRITICAL MARKETING RULES — FOLLOW EXACTLY:
    - Conviction: "Extremely Bullish" (high), "Bullish" (medium), "Watching" (low) — NEVER numbers
 
 4. ENTRY PRICE RULES:
-   - Only show entry prices for closed winners or open positions with 25%+ gains
-   - For positions under 25% gain, show P&L percentage only (no entry price)
+   - Always show entry prices for all positions (full transparency)
 
-5. WINNER-ONLY POLICY:
-   - NEVER mention losing positions, negative P&L, or underwater trades
-   - NEVER show a number with a minus sign followed by a percent (e.g., -5.2%)
-   - If portfolio is down, focus on methodology and patience instead
-   - Only showcase positions with 15%+ gains
+5. TRANSPARENCY POLICY:
+   - Show ALL positions — winners AND losers
+   - Frame losses positively: "Stop hit = system working as designed"
+   - When underwater: "Down but managing risk — disciplined exits in place"
+   - Celebrate big wins prominently (25%+, 50%+, 100%+)
 
 6. FORMATTING:
    - Use markdown headers (##, ###) for sections
@@ -779,19 +751,17 @@ def _format_signals_for_prompt(signals: List[Dict]) -> str:
 
 
 def _format_winners_for_prompt(winners: List[Dict]) -> str:
-    """Format winners for inclusion in LLM prompts."""
+    """Format positions for inclusion in LLM prompts (full transparency)."""
     if not winners:
-        return "No positions currently above the 15% highlight threshold."
+        return "No open positions currently."
 
     lines = []
     for w in winners[:6]:
         ticker = w["ticker"]
         pnl = w["pnl_pct"]
         theme = w.get("theme", "")
-        if w.get("show_entry"):
-            lines.append(f"- ${ticker}: ${w['entry_price']:.2f} entry, +{pnl:.1f}% ({theme})")
-        else:
-            lines.append(f"- ${ticker}: +{pnl:.1f}% ({theme})")
+        pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+        lines.append(f"- ${ticker}: ${w['entry_price']:.2f} entry, {pnl_str} ({theme})")
 
     return "\n".join(lines)
 
@@ -1057,8 +1027,8 @@ Write an 800-1200 word post. Structure:
 5. What we're watching — themes and setups for next week
 6. Footer — subscribe CTA
 
-CRITICAL: Only mention winning positions. NEVER show losses, negative P&L, or stopped positions.
-Focus on the system's discipline and the power of letting winners run.
+Show ALL positions transparently. Frame any losses positively: "Stop hit = system working as designed."
+Focus on the system's discipline and the power of risk management.
 End with: **Track our portfolio performance live:** {SUBSTACK_URL}"""
 
 
@@ -1076,18 +1046,16 @@ def build_stock_deep_dive_prompt(ctx: ContentContext) -> str:
         pnl = stock["pnl_pct"]
         theme = stock.get("theme", "")
         entry_price = stock.get("entry_price", 0)
-        show_entry = stock.get("show_entry", False)
     elif ctx.buy_signals:
         s = ctx.buy_signals[0]
         ticker = s.get("symbol", "???")
         pnl = 0
         theme = s.get("theme", "")
         entry_price = 0
-        show_entry = False
     else:
         return build_portfolio_spotlight_prompt(ctx)  # Fallback
 
-    entry_str = f"Entry: ${entry_price:.2f} (shown because gain exceeds 25%)" if show_entry else "Entry price withheld (under 25% gain threshold)."
+    entry_str = f"Entry: ${entry_price:.2f}" if entry_price > 0 else "Entry price not available."
 
     return f"""Write a detailed Stock Deep Dive Substack post — editorial style, similar to an analyst initiation.
 
@@ -1190,7 +1158,7 @@ Write an 800-1000 word post. Structure:
 7. **Looking Ahead** — What themes and catalysts we're watching next
 
 TONE: Confident, data-first. Let the numbers speak. Use phrases like "The system diagnosed..."
-CRITICAL: ONLY showcase winners. No losses, no negative numbers, no stopped positions.
+Show ALL positions transparently. Frame any losses positively: "Stop hit = system working as designed."
 
 End with: **Track our portfolio performance — subscribe:** {SUBSTACK_URL}"""
 
@@ -1617,7 +1585,7 @@ def main() -> None:
     ctx = build_content_context(signals_path)
 
     print(f"    Signals: {ctx.pass_count} GREEN, {len(ctx.themes)} themes")
-    print(f"    Winners: {len(ctx.historical_winners)} positions above {MIN_WIN_THRESHOLD}%")
+    print(f"    Positions: {len(ctx.historical_winners)} open positions loaded")
     print(f"    Market analysis: {'available' if ctx.market_analysis else 'not available'}")
     print(f"    Equity curve: {'available' if ctx.portfolio_stats else 'not available'}")
 

@@ -111,6 +111,7 @@ try:
         ensure_output_structure,
         get_relative_path,
         SIGNALS_FILE,
+        SIGNALS_TECH_FILE,
         ANALYSIS_LOG,
         SCANNER_OUTPUT,
         PORTFOLIO_FILE,
@@ -120,6 +121,7 @@ except ImportError:
     OUTPUT_PATHS_AVAILABLE = False
     _FALLBACK_OUTPUT = Path(__file__).resolve().parent / "output"
     SIGNALS_FILE = _FALLBACK_OUTPUT / "signals.json"
+    SIGNALS_TECH_FILE = _FALLBACK_OUTPUT / "signals_technical.json"
     ANALYSIS_LOG = _FALLBACK_OUTPUT / "analysis_log.csv"
     SCANNER_OUTPUT = _FALLBACK_OUTPUT
     PORTFOLIO_FILE = Path(__file__).resolve().parent.parent / "portfolio" / "output" / "portfolio.csv"
@@ -574,297 +576,14 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
 
 def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tuple[List[Stock], str, List[dict]]:
     """Run thematic analyzer on signals. Returns stocks that pass theme gate, themes context, and themes data.
-    
-    The ThematicAnalyzer now prints comprehensive output directly to the terminal.
-    This function coordinates the analysis and maps results back to Stock objects.
-    
-    Returns:
-        Tuple of (confirmed_stocks, themes_context_string, themes_data_list)
+
+    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
+    This function now passes all signals through without LLM analysis.
     """
-    
-    if not signals:
-        return [], "", []
-    
-    try:
-        from scanner.thematic_analyzer import ThematicAnalyzer, Config
-        
-        print(f"\n  Initializing Thematic Analyzer...")
-        if use_web_search:
-            print(f"  ⚠️  Web search ENABLED - this adds ~$1-2 to run cost")
-        else:
-            print(f"  💰 Web search DISABLED (default) - using model knowledge only")
-        
-        config = Config()
-        config.conservative_rate_limiting = True
-        config.use_web_search = use_web_search  # Pass through web search setting
-        
-        # The analyzer prints comprehensive output for themes and tickers
-        analyzer = ThematicAnalyzer(config=config, verbose=True)
-        
-        # Step 1: Identify themes (analyzer prints full comprehensive details)
-        themes = analyzer.run_step_1()
-        
-        if not themes:
-            print(f"  ⚠ No themes identified - passing all signals through")
-            for s in signals:
-                s.theme_verdict = "SKIPPED"
-            return signals, "", []
-        
-        # Build themes context string for momentum assessor
-        themes_context_lines = ["CURRENT HOT INVESTMENT THEMES (from prior thematic analysis):"]
-        themes_context_lines.append("Use these themes - do NOT guess or invent different themes.\n")
-        
-        # Also build themes_data for newsletter briefing
-        themes_data = []
-        
-        for t in themes:
-            classification = getattr(t, 'classification', 'INVESTABLE')
-            theme_type = getattr(t, 'theme_type', 'TREND')
-            themes_context_lines.append(f"  #{t.rank} {t.name}")
-            themes_context_lines.append(f"     Classification: {classification} | Type: {theme_type} | Score: {t.composite_score:.1f}/10")
-            if t.thesis_summary:
-                thesis_short = t.thesis_summary[:200] + "..." if len(t.thesis_summary) > 200 else t.thesis_summary
-                themes_context_lines.append(f"     Thesis: {thesis_short}")
-            themes_context_lines.append("")
-            
-            # Add to themes_data for newsletter
-            themes_data.append({
-                'name': t.name,
-                'rank': t.rank,
-                'classification': classification,
-                'theme_type': theme_type,
-                'composite_score': t.composite_score,
-                'thesis_summary': getattr(t, 'thesis_summary', ''),
-                'key_catalysts': getattr(t, 'key_catalysts', []),
-                'momentum_score': getattr(t, 'momentum_score', 0),
-                'catalyst_score': getattr(t, 'catalyst_score', 0),
-                'valuation_regime': getattr(t, 'valuation_regime', ''),
-            })
-        
-        themes_context = "\n".join(themes_context_lines)
-        
-        # Step 2: Analyze tickers (analyzer prints full comprehensive details)
-        ticker_list = [s.symbol for s in signals]
-        analyses = analyzer.run_step_2(ticker_list)
-        
-        # Map results back to Stock objects
-        analysis_map = {a.ticker: a for a in analyses}
-        
-        confirmed = []
-        rejected = []
-        orphan_candidates = []  # Tickers that didn't fit top themes — candidates for rescue
-        
-        for stock in signals:
-            if stock.symbol in analysis_map:
-                a = analysis_map[stock.symbol]
-                stock.theme = a.primary_theme or ""
-                stock.theme_score = a.theme_score or 0.0
-                stock.pure_play_score = a.pure_play_score
-                stock.theme_verdict = a.verdict
-                stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
-
-                # Look up valuation_regime from the Theme that matches this stock's theme
-                for t in themes:
-                    if t.name == stock.theme:
-                        stock.valuation_regime = getattr(t, 'valuation_regime', '')
-                        break
-
-                # Check if passes gate
-                if hasattr(a, 'passes_maturity_gate') and callable(a.passes_maturity_gate):
-                    if a.passes_maturity_gate():
-                        confirmed.append(stock)
-                    else:
-                        # Candidate for orphan rescue — didn't fit top themes
-                        orphan_candidates.append(stock)
-                        rejected.append(stock)
-                elif a.passes_gate():
-                    confirmed.append(stock)
-                else:
-                    # Candidate for orphan rescue — didn't fit top themes
-                    orphan_candidates.append(stock)
-                    rejected.append(stock)
-            else:
-                stock.theme_verdict = "NOT ANALYZED"
-                orphan_candidates.append(stock)
-                rejected.append(stock)
-        
-        # ─────────────────────────────────────────────────────────────────
-        # Step 2b: ORPHAN RESCUE — Bottom-up theme discovery
-        # For tickers that got WEAK/MODERATE FIT, check if they belong to
-        # a different high-quality theme missed by the top-5 scan.
-        # ─────────────────────────────────────────────────────────────────
-        rescued_stocks = []
-        if orphan_candidates:
-            orphan_tickers = [s.symbol for s in orphan_candidates]
-            try:
-                rescued_analyses = analyzer.run_step_2b_orphan_rescue(orphan_tickers)
-                rescued_map = {a.ticker: a for a in rescued_analyses if a.passes_gate()}
-                
-                for stock in orphan_candidates:
-                    if stock.symbol in rescued_map:
-                        a = rescued_map[stock.symbol]
-                        # Update stock with rescued theme data
-                        stock.theme = a.primary_theme or ""
-                        stock.theme_score = a.theme_score or 0.0
-                        stock.pure_play_score = a.pure_play_score
-                        stock.theme_verdict = a.verdict + " [RESCUED]"
-                        stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
-                        stock.valuation_regime = getattr(a, 'valuation_regime', '')
-                        
-                        # Move from rejected → confirmed
-                        if stock in rejected:
-                            rejected.remove(stock)
-                        confirmed.append(stock)
-                        rescued_stocks.append(stock)
-            except Exception as e:
-                print(f"  ⚠ Orphan rescue error (non-fatal): {e}")
-                # Continue without rescue — original rejected list stands
-        
-        # Brief summary (detailed output already shown by analyzer)
-        print(f"\n  {'═' * 70}")
-        print(f"  THEMATIC GATE COMPLETE")
-        print(f"  {'═' * 70}")
-        print(f"    ✅ Passing to next stage: {len(confirmed)} stocks")
-        if rescued_stocks:
-            print(f"       (of which {len(rescued_stocks)} rescued via orphan path: {', '.join(s.symbol for s in rescued_stocks)})")
-        print(f"    ❌ Filtered out: {len(rejected)} stocks")
-        print(f"  {'─' * 70}")
-        
-        return confirmed, themes_context, themes_data
-        
-    except ImportError:
-        print(f"  ⚠ thematic_analyzer.py not found - skipping theme gate")
-        for s in signals:
-            s.theme_verdict = "SKIPPED"
-        return signals, "", []
-    except RuntimeError as e:
-        if "BILLING_ERROR" in str(e):
-            print(f"\n  ❌ API BILLING ERROR DETECTED")
-            print(f"     Your Anthropic API credit balance is too low.")
-            print(f"     Please add credits at: https://console.anthropic.com/settings/billing")
-            print(f"\n  ⏹️  Stopping pipeline to avoid wasted time.")
-            print(f"\n  💡 TIP: Run with --no-llm to use technical signals only (FREE)")
-            return [], "", []  # Return empty to stop pipeline
-        raise
-    except Exception as e:
-        error_str = str(e).lower()
-        # Check for billing errors in generic exceptions too
-        if "credit balance" in error_str or "billing" in error_str:
-            print(f"\n  ❌ API BILLING ERROR DETECTED")
-            print(f"     Your Anthropic API credit balance is too low.")
-            print(f"     Please add credits at: https://console.anthropic.com/settings/billing")
-            print(f"\n  ⏹️  Stopping pipeline to avoid wasted time.")
-            print(f"\n  💡 TIP: Run with --no-llm to use technical signals only (FREE)")
-            return [], "", []  # Return empty to stop pipeline
-
-        import traceback
-        error_detail = traceback.format_exc()
-        print(f"  ⚠ Theme analysis error: {e}")
-        print(error_detail)
-
-        # Log error to file for remote diagnosis
-        try:
-            from pathlib import Path
-            error_log = Path("logs/thematic_error.log")
-            error_log.parent.mkdir(exist_ok=True)
-            from datetime import datetime
-            with open(error_log, "a") as f:
-                f.write(f"\n{'='*60}\n")
-                f.write(f"Thematic Analyzer Error: {datetime.now().isoformat()}\n")
-                f.write(f"Error: {e}\n")
-                f.write(error_detail)
-        except Exception:
-            pass
-
-        # Retry once with fresh analyzer instance
-        print(f"\n  🔄 Retrying thematic analysis with fresh instance...")
-        try:
-            config2 = Config()
-            config2.conservative_rate_limiting = True
-            config2.use_web_search = use_web_search
-            analyzer2 = ThematicAnalyzer(config=config2, verbose=True)
-            themes2 = analyzer2.run_step_1()
-            if themes2:
-                print(f"  ✅ Retry succeeded - {len(themes2)} themes identified")
-                # Rebuild themes context and data
-                themes_context_lines = ["CURRENT HOT INVESTMENT THEMES (from prior thematic analysis):"]
-                themes_context_lines.append("Use these themes - do NOT guess or invent different themes.\n")
-                themes_data = []
-                for t in themes2:
-                    classification = getattr(t, 'classification', 'INVESTABLE')
-                    theme_type = getattr(t, 'theme_type', 'TREND')
-                    themes_context_lines.append(f"  #{t.rank} {t.name}")
-                    themes_context_lines.append(f"     Classification: {classification} | Type: {theme_type} | Score: {t.composite_score:.1f}/10")
-                    if t.thesis_summary:
-                        thesis_short = t.thesis_summary[:200] + "..." if len(t.thesis_summary) > 200 else t.thesis_summary
-                        themes_context_lines.append(f"     Thesis: {thesis_short}")
-                    themes_context_lines.append("")
-                    themes_data.append({
-                        'name': t.name, 'rank': t.rank, 'classification': classification,
-                        'theme_type': theme_type, 'composite_score': t.composite_score,
-                        'thesis_summary': getattr(t, 'thesis_summary', ''),
-                        'key_catalysts': getattr(t, 'key_catalysts', []),
-                        'momentum_score': getattr(t, 'momentum_score', 0),
-                        'catalyst_score': getattr(t, 'catalyst_score', 0),
-                    })
-                themes_context = "\n".join(themes_context_lines)
-                # Run step 2
-                ticker_list = [s.symbol for s in signals]
-                analyses = analyzer2.run_step_2(ticker_list)
-                analysis_map = {a.ticker: a for a in analyses}
-                confirmed = []
-                rejected = []
-                orphan_candidates2 = []
-                for stock in signals:
-                    if stock.symbol in analysis_map:
-                        a = analysis_map[stock.symbol]
-                        stock.theme = a.primary_theme or ""
-                        stock.theme_score = a.theme_score or 0.0
-                        stock.pure_play_score = a.pure_play_score
-                        stock.theme_verdict = a.verdict
-                        if hasattr(a, 'passes_maturity_gate') and callable(a.passes_maturity_gate):
-                            if a.passes_maturity_gate():
-                                confirmed.append(stock)
-                            else:
-                                orphan_candidates2.append(stock)
-                                rejected.append(stock)
-                        elif a.passes_gate():
-                            confirmed.append(stock)
-                        else:
-                            orphan_candidates2.append(stock)
-                            rejected.append(stock)
-                    else:
-                        stock.theme_verdict = "NOT ANALYZED"
-                        orphan_candidates2.append(stock)
-                        rejected.append(stock)
-                # Orphan rescue on retry path
-                if orphan_candidates2:
-                    try:
-                        orphan_tickers2 = [s.symbol for s in orphan_candidates2]
-                        rescued2 = analyzer2.run_step_2b_orphan_rescue(orphan_tickers2)
-                        rescued_map2 = {a.ticker: a for a in rescued2 if a.passes_gate()}
-                        for stock in orphan_candidates2:
-                            if stock.symbol in rescued_map2:
-                                a = rescued_map2[stock.symbol]
-                                stock.theme = a.primary_theme or ""
-                                stock.theme_score = a.theme_score or 0.0
-                                stock.pure_play_score = a.pure_play_score
-                                stock.theme_verdict = a.verdict + " [RESCUED]"
-                                stock.theme_classification = getattr(a, 'theme_classification', 'INVESTABLE')
-                                stock.valuation_regime = getattr(a, 'valuation_regime', '')
-                                if stock in rejected:
-                                    rejected.remove(stock)
-                                confirmed.append(stock)
-                    except Exception:
-                        pass  # Continue without rescue on retry
-                return confirmed, themes_context, themes_data
-        except Exception as e2:
-            print(f"  ⚠ Retry also failed: {e2}")
-
-        # Both attempts failed - pass stocks through with ERROR verdict
-        for s in signals:
-            s.theme_verdict = "ERROR"
-        return signals, "", []
+    # All stocks pass through — thematic analysis is now done in Claude.ai chat
+    for s in signals:
+        s.theme_verdict = "PENDING_CHAT"
+    return signals, "", []
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -872,92 +591,16 @@ def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tup
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def run_investment_gate_step(signals: List[Stock], top_n: int = None, themes_context: str = "", use_web_search: bool = False, save_reports: bool = False) -> List[Stock]:
-    """Run Investment Gate analysis for final STRONG_BUY/SPEC_BUY/NO_GO decision.
+    """Run Investment Gate analysis for final decision.
 
-    Regime-aware quality gate that adapts analysis to valuation context:
-    - OPTIONALITY: Milestone-based (pre-revenue, narrative-driven)
-    - FUNDAMENTAL: Revenue/earnings-based (established companies)
-    - TRANSITION: Shifting from milestone to revenue (highest risk)
-
-    Args:
-        signals: List of stocks that passed theme gate
-        top_n: If set, only assess top N stocks by Banker score
-        themes_context: Pre-identified themes from thematic analyzer
-        use_web_search: If True, use web search for current data (recommended for production)
-        save_reports: If True, save individual assessment reports
-
-    Returns:
-        List of stocks that PASS the gate (STRONG_BUY or SPEC_BUY)
+    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
+    This function now marks all signals as PENDING_CHAT for manual review.
     """
-
-    if not signals:
-        return []
-
-    # If top_n specified, only assess highest conviction candidates
-    if top_n and len(signals) > top_n:
-        signals = sorted(signals, key=lambda s: -s.uc)[:top_n]
-        print(f"\n  Assessing top {top_n} candidates by UC (accumulation strength)")
-
-    try:
-        from scanner.investment_gate import (
-            run_investment_gate_batch, create_client, apply_results_to_stocks
-        )
-
-        client = create_client()
-
-        # run_investment_gate_batch handles printing and per-stock display
-        results = run_investment_gate_batch(
-            client=client,
-            stocks=signals,
-            themes_context=themes_context,
-            use_web_search=use_web_search,
-            delay_between=8.0 if use_web_search else 3.0,
-            save_reports=save_reports
-        )
-
-        # apply_results_to_stocks maps all fields back to Stock objects
-        # (final_decision, conviction, catalyst_summary, red_flag_level, etc.)
-        pass_stocks, fail_stocks = apply_results_to_stocks(signals, results)
-
-        # Mark stocks not in pass/fail as ERROR
-        passed_tickers = {s.symbol for s in pass_stocks}
-        failed_tickers = {s.symbol for s in fail_stocks}
-        for s in signals:
-            if s.symbol not in passed_tickers and s.symbol not in failed_tickers:
-                if not s.final_decision:
-                    s.final_decision = "ERROR"
-                    s.reasoning = "Investment Gate analysis failed"
-
-        # Return PASS + CONSIDER (is_confirmed checks for both)
-        confirmed = [s for s in signals if s.is_confirmed()]
-        return confirmed
-
-    except ImportError as e:
-        print(f"  investment_gate.py not found - falling back to basic assessment")
-        print(f"     Error: {e}")
-        for s in signals:
-            s.final_decision = "SKIPPED"
-        return signals
-
-    except RuntimeError as e:
-        if "BILLING_ERROR" in str(e):
-            print(f"\n  API BILLING ERROR DETECTED")
-            print(f"     Your Anthropic API credit balance is too low.")
-            print(f"     Please add credits at: https://console.anthropic.com/settings/billing")
-            print(f"\n  Stopping Investment Gate analysis.")
-        else:
-            print(f"  Investment Gate error: {e}")
-        for s in signals:
-            s.final_decision = "NOT_ASSESSED"
-        return []
-
-    except Exception as e:
-        print(f"  Investment Gate error: {e}")
-        import traceback
-        traceback.print_exc()
-        for s in signals:
-            s.final_decision = "ERROR"
-        return signals
+    # All stocks pass through — investment gate is now done in Claude.ai chat
+    for s in signals:
+        s.final_decision = "PENDING_CHAT"
+        s.conviction = 0
+    return signals
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1074,15 +717,14 @@ def load_open_positions() -> set:
 # Module-level pipeline cost tracker (P3)
 _pipeline_timer = PipelineCostTracker()
 
-def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: int = None, top_n: int = None, use_web_search: bool = False, verbose: bool = False) -> Tuple[List[Stock], List[Stock], List[SellSignal], ScanStats, List[Stock], List[dict]]:
-    """Run the complete scan pipeline. Returns (confirmed_buys, all_assessed, sell_signals, stats, momentum_rejected, themes_data).
+def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[Stock], List[SellSignal], ScanStats, List[Stock], List[dict]]:
+    """Run the complete scan pipeline (pure technical — no LLM gates).
+
+    Returns (confirmed_buys, all_assessed, sell_signals, stats, momentum_rejected, themes_data).
 
     Args:
-        skip_llm: Skip ALL LLM gates (technical only)
-        skip_momentum: Skip momentum assessor but keep theme analysis
+        top_n: Only scan top N stocks by beta (0 = all)
         verbose: Show detailed diagnostic output (10 items vs 3)
-        assess_top_n: Only run momentum assessor on top N stocks
-        top_n: Only scan top N stocks by beta
     """
     
     stats = ScanStats()
@@ -1336,99 +978,25 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
         return [], [], sell_signals, stats, momentum_rejected, []
     
     # ─────────────────────────────────────────────────────────────────────────
-    # STEP 6: Thematic Analyzer Gate
+    # STEP 6: Technical signals ready (LLM gates archived → Claude.ai chat)
     # ─────────────────────────────────────────────────────────────────────────
     _pipeline_timer.stop()  # Stop Steps 1-5 timing
-    themes_data = []  # Initialize for newsletter briefing
+    themes_data = []
 
-    if skip_llm:
-        print(f"\n  Steps 6-7: SKIPPED (--no-llm)")
-        theme_confirmed = technical_signals
-        themes_context = ""
-        for s in theme_confirmed:
-            s.theme_verdict = "SKIPPED"
-    else:
-        print("\n" + "─" * 70)
-        print("  STEP 6: Thematic Analyzer Gate")
-        print("─" * 70)
-        
-        _pipeline_timer.start("Step 6: Thematic Gate")
-        theme_confirmed, themes_context, themes_data = run_thematic_gate(technical_signals, use_web_search=use_web_search)
-        _pipeline_timer.stop()  # Stop thematic timing
-        stats.theme_confirmed = len(theme_confirmed)
-        
-        print(f"\n  THEME GATE RESULTS:")
-        print(f"  ────────────────────────────────────")
-        print(f"  Technical signals:         {len(technical_signals):>5}")
-        print(f"  Theme confirmed:           {len(theme_confirmed):>5}")
-        
-        if len(technical_signals) > 0:
-            rate = len(theme_confirmed) / len(technical_signals) * 100
-            print(f"  Confirmation rate:         {rate:>4.1f}%")
-    
-    if not theme_confirmed:
-        print("\n  No signals passed theme gate")
-        sell_signals = check_sell_signals(stocks)
-        return [], [], sell_signals, stats, momentum_rejected, themes_data
-    
-    # ─────────────────────────────────────────────────────────────────────────
-    # STEP 7: Momentum Assessor Final Decision
-    # ─────────────────────────────────────────────────────────────────────────
-    if skip_llm or skip_momentum:
-        # Set decisions (step header already shown if skip_llm)
-        confirmed = theme_confirmed
-        for s in confirmed:
-            if skip_llm:
-                s.final_decision = "TECHNICAL_ONLY"
-            else:
-                s.final_decision = "THEME_CONFIRMED"
+    # All technical signals pass through — thematic + investment gate now in Claude.ai chat
+    confirmed = technical_signals
+    for s in confirmed:
+        s.final_decision = "TECHNICAL_ONLY"
+        s.theme_verdict = "PENDING_CHAT"
 
-        # Only show step 7 header if we ran step 6 (skip_momentum but not skip_llm)
-        if skip_momentum and not skip_llm:
-            print(f"\n  Step 7: SKIPPED (--no-momentum)")
-
-        # Show candidates summary
-        print(f"\n  📊 ENTRY CANDIDATES: {len(confirmed)} passed filters")
-        sorted_confirmed = sorted(confirmed, key=lambda x: -x.uc)
-        for s in sorted_confirmed[:5]:
-            held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"     {s.symbol:<6} | {s.tier} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d={s.return_20d:+.1f}%{held_flag}")
-        if len(sorted_confirmed) > 5:
-            print(f"     ... and {len(sorted_confirmed) - 5} more")
-    else:
-        print("\n" + "─" * 70)
-        print("  STEP 7: Investment Gate - Regime-Aware Quality Gate")
-        print("─" * 70)
-        
-        # Cooldown after thematic analyzer to avoid rate limits
-        cooldown_seconds = 30 if use_web_search else 15
-        print(f"\n  Rate limit cooldown: waiting {cooldown_seconds}s before Investment Gate...")
-        time.sleep(cooldown_seconds)
-        
-        # Run Investment Gate - regime-aware quality gate
-        _pipeline_timer.start("Step 7: Investment Gate")
-        confirmed = run_investment_gate_step(
-            theme_confirmed,
-            top_n=assess_top_n,
-            themes_context=themes_context,
-            use_web_search=use_web_search
-        )
-        _pipeline_timer.stop()
-        
-        for s in theme_confirmed:
-            if s.final_decision in ["PASS", "TRADE"]:
-                stats.final_trade += 1
-            elif s.final_decision == "CONSIDER":
-                stats.final_consider += 1
-            elif s.final_decision != "NOT_ASSESSED":
-                stats.final_skip += 1
-        
-        print(f"\n  FINAL DECISION RESULTS:")
-        print(f"  ────────────────────────────────────")
-        print(f"  Theme confirmed:           {len(theme_confirmed):>5}")
-        print(f"  PASS (GREEN signals):      {stats.final_trade:>5}")
-        print(f"  CONSIDER:                  {stats.final_consider:>5}")
-        print(f"  SKIP:                      {stats.final_skip:>5}")
+    # Show candidates summary
+    print(f"\n  📊 ENTRY CANDIDATES: {len(confirmed)} passed technical filters")
+    sorted_confirmed = sorted(confirmed, key=lambda x: -x.uc)
+    for s in sorted_confirmed[:5]:
+        held_flag = " [HELD]" if s.symbol in open_positions else ""
+        print(f"     {s.symbol:<6} | {s.tier} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d={s.return_20d:+.1f}%{held_flag}")
+    if len(sorted_confirmed) > 5:
+        print(f"     ... and {len(sorted_confirmed) - 5} more")
     
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 8: Check Sell Signals (ExD compound exit OR tiered profit lock)
@@ -1451,8 +1019,8 @@ def run_scan(skip_llm: bool = False, skip_momentum: bool = False, assess_top_n: 
     # This ensures only DD-PASS signals get added to portfolio
     # ─────────────────────────────────────────────────────────────────────────
     
-    # Return: confirmed (PASS/CONSIDER), all_assessed (theme_confirmed), sell_signals, stats, momentum_rejected
-    return confirmed, theme_confirmed, sell_signals, stats, momentum_rejected, themes_data
+    # Return: confirmed (technical signals), all_assessed (same as confirmed), sell_signals, stats, momentum_rejected, themes_data
+    return confirmed, confirmed, sell_signals, stats, momentum_rejected, themes_data
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1884,29 +1452,28 @@ def generate_report(confirmed: List[Stock], all_assessed: List[Stock],
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def generate_newsletter_briefing(
-    confirmed: List[Stock], 
-    sell_signals: List[SellSignal], 
+    confirmed: List[Stock],
+    sell_signals: List[SellSignal],
     themes_data: List[dict] = None,
     stats: ScanStats = None
 ) -> str:
+    """Generate a markdown document for the weekly newsletter.
+
+    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
+    Newsletter content is now produced in Claude.ai using the content production guide.
     """
-    Generate a markdown document for the weekly newsletter.
-    
-    This document is designed to be:
-    1. Pasted into Claude for due diligence analysis
-    2. Used as a template for the Substack newsletter
-    
-    Args:
-        confirmed: List of stocks that passed all gates
-        sell_signals: List of sell signals for open positions
-        themes_data: List of theme dictionaries from thematic analyzer
-        stats: Scan statistics
-    
-    Returns:
-        Markdown formatted string
-    """
+    return "# Newsletter briefing generation moved to Claude.ai chat workflow\n"
+
+
+def _generate_newsletter_briefing_ARCHIVED(
+    confirmed: List[Stock],
+    sell_signals: List[SellSignal],
+    themes_data: List[dict] = None,
+    stats: ScanStats = None
+) -> str:
+    """ARCHIVED: Original newsletter briefing generator. Kept for reference only."""
     from datetime import datetime
-    
+
     date_str = datetime.now().strftime("%Y-%m-%d")
     week_ending = datetime.now().strftime("%B %d, %Y")
     
@@ -2390,245 +1957,21 @@ def save_newsletter_briefing(
     current_dir: Path = None,
     week_dir: Path = None
 ):
-    """Save the newsletter briefing to a markdown file."""
+    """Save the newsletter briefing to a markdown file.
 
-    date_str = datetime.now().strftime("%Y%m%d")
-
-    # Use provided dirs or get them
-    if current_dir is None or week_dir is None:
-        current_dir, week_dir = ensure_output_structure()
-
-    # Helper for relative paths
-    def rel_path(p: Path) -> str:
-        return get_relative_path(p) if OUTPUT_PATHS_AVAILABLE else str(p)
-
-    briefing = generate_newsletter_briefing(confirmed, sell_signals, themes_data, stats)
-
-    # Save to current/ and weekly archive
-    briefing_current = current_dir / "newsletter_briefing.md"
-    briefing_archive = week_dir / "newsletter_briefing.md"
-    with open(briefing_current, 'w') as f:
-        f.write(briefing)
-    with open(briefing_archive, 'w') as f:
-        f.write(briefing)
-
-    print(f"\n  📰 Newsletter briefing:")
-    print(f"     • {rel_path(briefing_current)} (current week)")
-    print(f"     • {rel_path(briefing_archive)} (archived)")
-
-    return briefing_current
+    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
+    """
+    # No-op — newsletter briefing is now produced in Claude.ai chat
+    return None
 
 
 def print_newsletter_prompts(briefing_file: Path = None):
-    """Print the market context and newsletter compilation prompts for easy copy/paste."""
-    
-    from datetime import timedelta
-    
-    today = datetime.now()
-    
-    # Find Friday of this week
-    days_since_friday = (today.weekday() - 4) % 7
-    if days_since_friday == 0 and today.weekday() != 4:
-        days_since_friday = 7
-    friday = today - timedelta(days=days_since_friday)
-    
-    print("\n")
-    print("╔" + "═" * 78 + "╗")
-    print("║" + " NEWSLETTER GENERATION PROMPTS ".center(78) + "║")
-    print("╚" + "═" * 78 + "╝")
-    print("")
-    print("  Use these prompts in Claude web interface to generate your weekly newsletter.")
-    print("  Copy each prompt, paste into a new Claude conversation, and save the output.")
-    print("")
-    
-    # ═══════════════════════════════════════════════════════════════════════════
-    # PROMPT 1: MARKET CONTEXT
-    # ═══════════════════════════════════════════════════════════════════════════
-    print("─" * 80)
-    print("  [PROMPT 1] MARKET CONTEXT GENERATION")
-    print("─" * 80)
-    print("  Run this FIRST to generate the market analysis section.")
-    print("  Save the output for use in Prompt 2.")
-    print("─" * 80)
-    print("")
-    print(">>> COPY FROM HERE >>>")
-    print("")
-    
-    market_prompt = f'''# MARKET CONTEXT GENERATION
+    """Print newsletter generation prompts.
 
-You are writing the market analysis section for a weekly investment newsletter focused on US momentum/growth stocks. The newsletter is aimed at US active investors and swing traders seeking systematic momentum opportunities.
-
-**Today's Date:** {today.strftime("%B %d, %Y")}
-**Week Ending:** {friday.strftime("%B %d, %Y")}
-
-## YOUR TASK
-
-Search for and synthesize the following into a cohesive 3-4 paragraph market summary:
-
-### Required Data Points (Search for each):
-1. **Index Performance This Week:**
-   - S&P 500 weekly change (% and points)
-   - NASDAQ Composite weekly change
-   - Russell 2000 weekly change (small caps sentiment)
-
-2. **Key Events This Week:**
-   - Federal Reserve announcements or commentary
-   - Major economic data releases (jobs, CPI, retail sales, etc.)
-   - Significant earnings reports from bellwether companies
-
-3. **Sector Rotation:**
-   - Which sectors led this week?
-   - Which sectors lagged?
-   - Any notable rotation patterns?
-
-4. **Volatility & Sentiment:**
-   - VIX level and weekly change
-   - General market sentiment (risk-on/risk-off)
-
-5. **Looking Ahead:**
-   - Key events next week (Fed meetings, major earnings, economic data)
-   - Any looming risks or catalysts
-
-## OUTPUT FORMAT
-
-Write in this structure (markdown):
-
-## 📊 Market Context
-
-[Opening paragraph: Overall market performance this week - what happened and why]
-
-[Second paragraph: Sector dynamics - what's leading, what's lagging, any rotation]
-
-[Third paragraph: Key events that moved markets - Fed, data, earnings]
-
-[Fourth paragraph: Looking ahead - what to watch next week, setup for momentum stocks]
-
-## STYLE GUIDELINES
-- Professional but accessible tone
-- Specific numbers (e.g., "S&P 500 rose 1.2% to 4,850")
-- Connect macro to momentum stock implications
-- US investor perspective (mention DXY/dollar index only if significant macro impact)
-- No disclaimers (those come later)
-
-Generate the market context section now.'''
-    
-    print(market_prompt)
-    print("")
-    print("<<< COPY TO HERE <<<")
-    print("")
-    
-    # ═══════════════════════════════════════════════════════════════════════════
-    # PROMPT 2: NEWSLETTER COMPILATION
-    # ═══════════════════════════════════════════════════════════════════════════
-    print("─" * 80)
-    print("  [PROMPT 2] NEWSLETTER COMPILATION")
-    print("─" * 80)
-    print("  Run this AFTER you have:")
-    print("    1. Market context (from Prompt 1)")
-    print("    2. Scanner briefing (trades/latest_newsletter_briefing.md)")
-    print("    3. DD outputs for each PASS signal (from core/deep_dd.py)")
-    print("")
-    if briefing_file:
-        print(f"  📄 Your briefing file: {briefing_file}")
-    print("─" * 80)
-    print("")
-    print(">>> COPY FROM HERE >>>")
-    print("")
-    
-    compile_prompt = '''# WEEKLY NEWSLETTER COMPILATION
-
-You are the editor compiling the final weekly edition of "BoS Momentum Scanner" - a Substack newsletter for momentum stock investors. You have all the raw materials below and need to produce a polished, publication-ready newsletter.
-
-## NEWSLETTER IDENTITY
-- **Name:** BoS Momentum Scanner Weekly
-- **Audience:** US active investors and swing traders seeking systematic momentum opportunities
-- **Frequency:** Weekly (published Saturday/Sunday)
-- **Tone:** Professional, data-driven, actionable
-- **Platform:** Substack
-
----
-
-## RAW INPUTS
-
-### 1. MARKET CONTEXT
-
-[PASTE YOUR MARKET CONTEXT OUTPUT HERE]
-
-### 2. SCANNER BRIEFING (Themes & Signals)
-
-[PASTE CONTENTS OF trades/latest_newsletter_briefing.md HERE]
-
-### 3. DUE DILIGENCE OUTPUTS
-
-[PASTE ALL YOUR DD OUTPUTS HERE - one after another]
-
----
-
-## YOUR TASK
-
-Compile these inputs into a polished Substack newsletter with the following structure:
-
-### REQUIRED SECTIONS
-
-**1. TITLE & HOOK**
-- Compelling title that captures this week's key theme/signal
-- One-line subtitle/hook
-
-**2. MARKET CONTEXT**
-- Use the market context provided
-- Light editing for flow only
-
-**3. THIS WEEK'S THEMES**
-- Extract PRIME and INVESTABLE themes from scanner briefing
-- Brief explanation of why each theme is hot NOW
-
-**4. NEW SIGNALS**
-For each stock that passed all gates (🟢 PASS):
-- **Ticker & Company** (header)
-- **The Setup** (2-3 sentences from scanner data)
-- **Why Now** (key catalyst from DD)
-- **The Math** (path to 50%+ from DD)
-- **Risk to Monitor** (main concern)
-- **Action:** Entry price, position sizing
-- **[CHART: TICKER]** placeholder for screenshot
-
-**5. WATCHLIST** (if any 🟡 CONSIDER signals)
-- Stocks worth watching and why waiting
-
-**6. PORTFOLIO UPDATE**
-- Open positions with current P&L
-- Any exit signals
-
-**7. LOOKING AHEAD**
-- What to watch next week
-- Upcoming catalysts
-
-**8. FOOTER**
-- Standard disclaimer
-- Next scan date
-
----
-
-## FORMATTING RULES
-- Use markdown (headers, bold, tables, bullets)
-- Chart placeholders: `[CHART: TICKER]`
-- Keep it scannable - busy readers get gist from headers
-- Specific numbers always (price, %, dates)
-
-## LENGTH TARGET
-- 1,500-2,500 words
-- 8-12 minute read
-
----
-
-Generate the complete newsletter in markdown format, ready to paste into Substack.'''
-    
-    print(compile_prompt)
-    print("")
-    print("<<< COPY TO HERE <<<")
-    print("")
-    print("═" * 80)
-    print("")
+    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
+    """
+    # No-op — newsletter prompts now live in sterling_prompt_library.md
+    pass
 
 
 def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals: List[SellSignal], stats: ScanStats, momentum_rejected: List[Stock] = None, themes_data: List[dict] = None, archive: bool = False):
@@ -2678,6 +2021,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             "gate_verdict": s.gate_verdict,
             "gate_conviction": s.gate_conviction,
             "gate_catalyst": s.gate_catalyst,
+            "catalyst_summary": s.gate_catalyst,  # Alias for downstream consumers
             "gate_bear_case": s.gate_bear_case,
             "gate_math": s.gate_math,
             "valuation_regime": s.valuation_regime,
@@ -2803,7 +2147,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "signal_date": h.entry_date,
                 "theme": h.theme,
             }
-            for h in historical if h.pnl_pct >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
+            for h in historical
         ]
 
         all_big_wins = find_big_wins()
@@ -2836,25 +2180,74 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             for w in all_big_wins if w.pnl_pct >= home_run_threshold
         ]
 
-        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} winners, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
+        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} positions, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
 
     except ImportError:
         print("  ⚠️ signal_tracker not available - historical wins not populated")
     except Exception as e:
         print(f"  ⚠️ Error loading historical wins: {e}")
 
-    # Save signals JSON to current/ and weekly archive
+    # ── Primary output: signals_technical.json (LLM fields zeroed) ──
+    # Zero out all LLM fields for the technical-only output
+    for sig_list_key in ["buy_signals", "pass_signals", "consider_signals"]:
+        for sig in signals_data.get(sig_list_key, []):
+            sig["theme"] = ""
+            sig["theme_score"] = 0.0
+            sig["pure_play_score"] = 0
+            sig["theme_verdict"] = "PENDING_CHAT"
+            sig["theme_classification"] = ""
+            sig["final_decision"] = "TECHNICAL_ONLY"
+            sig["conviction"] = 0
+            sig["gate_verdict"] = ""
+            sig["gate_conviction"] = 0
+            sig["gate_catalyst"] = ""
+            sig["catalyst_summary"] = ""
+            sig["gate_bear_case"] = ""
+            sig["gate_math"] = ""
+            sig["valuation_regime"] = ""
+            sig["sector_status"] = ""
+            sig["upside_potential"] = ""
+            sig["bullish_factors"] = []
+            sig["risk_factors"] = []
+            sig["reasoning"] = ""
+            sig["dd_verdict"] = ""
+            sig["dd_conviction"] = 0
+            sig["dd_position_size"] = ""
+            sig["dd_key_catalyst"] = ""
+            sig["dd_fatal_flaw"] = ""
+            sig["dd_elevator_pitch"] = ""
+            sig["dd_why_now"] = ""
+            sig["dd_the_math"] = ""
+            sig["dd_bear_case"] = ""
+            sig["dd_risk_to_monitor"] = ""
+            sig["dd_action"] = ""
+
+    # Update entry criteria to reflect pure technical
+    signals_data["entry_criteria"] = f"Sterling Grid V6: HMA pivot↓ + (UC rising OR MACD cross-up) + Price<${PRICE_CAP:.0f} (technical only — LLM gates in Claude.ai chat)"
+
     signals_json = json.dumps(signals_data, indent=2)
-    signals_current = current_dir / "signals.json"
-    signals_archive = week_dir / "signals.json"
+
+    # Write signals_technical.json (new primary output)
+    signals_tech_file = SIGNALS_TECH_FILE
+    with open(signals_tech_file, 'w') as f:
+        f.write(signals_json)
+
+    # Save to current/ and weekly archive
+    signals_current = current_dir / "signals_technical.json"
+    signals_archive = week_dir / "signals_technical.json"
     with open(signals_current, 'w') as f:
         f.write(signals_json)
     with open(signals_archive, 'w') as f:
         f.write(signals_json)
 
-    # Also save to canonical scanner output location
+    # ── Dual-write: signals.json (transitional — keeps tweet generator + downstream working) ──
     signals_file = SIGNALS_FILE
     with open(signals_file, 'w') as f:
+        f.write(signals_json)
+    # Also to current/ and archive for full compat
+    with open(current_dir / "signals.json", 'w') as f:
+        f.write(signals_json)
+    with open(week_dir / "signals.json", 'w') as f:
         f.write(signals_json)
     
     # ═══════════════════════════════════════════════════════════════════════════
@@ -2924,21 +2317,19 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     with open(report_archive, 'w') as f:
         f.write(report)
 
-    # (Legacy root copies removed — use trades/current/report.txt)
+    # (Legacy root copies removed — use scanner/output/current/report.txt)
 
     print(f"\n  📁 Results saved:")
+    print(f"     • {rel_path(signals_tech_file)} (PRIMARY — signals_technical.json)")
+    print(f"     • {rel_path(signals_file)} (transitional — signals.json)")
     print(f"     • {rel_path(signals_current)} (current week)")
     print(f"     • {rel_path(signals_archive)} (archived)")
-    print(f"     • {rel_path(signals_file)} (legacy)")
     print(f"     • {rel_path(analysis_log)}")
     print(f"     • {rel_path(report_current)} (current week)")
     if archive:
         print(f"     • {rel_path(report_archive)} (dated archive)")
 
-    # ═══════════════════════════════════════════════════════════════════════════
-    # GENERATE NEWSLETTER BRIEFING
-    # ═══════════════════════════════════════════════════════════════════════════
-    save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=archive, current_dir=current_dir, week_dir=week_dir)
+    # ARCHIVED: Newsletter briefing generation removed — now in Claude.ai chat workflow
 
     return report  # Return report for email use
 
@@ -3009,23 +2400,21 @@ SCAN STATS:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="BoS Momentum Scanner - Weekly Timeframe")
-    parser.add_argument("--no-llm", action="store_true", help="Skip ALL LLM gates (technical signals only)")
-    parser.add_argument("--no-momentum", action="store_true", help="Skip Investment Gate (keep theme analysis) - faster but less thorough")
-    parser.add_argument("--assess-top", type=int, metavar="N", help="Only run Investment Gate on top N stocks by UC (accumulation strength)")
-    parser.add_argument("--no-email", action="store_true", help="Skip email notification")
-    parser.add_argument("--no-prompts", action="store_true", help="Skip printing DD and newsletter prompts at the end")
-    # Keep --no-dd-prompts as alias for backwards compatibility
-    parser.add_argument("--no-dd-prompts", action="store_true", dest="no_prompts", help=argparse.SUPPRESS)
-    parser.add_argument("--no-grok-prompts", action="store_true", help=argparse.SUPPRESS)  # Legacy flag, grok prompts removed
-    parser.add_argument("--top", type=int, help="Only scan top N stocks by beta")
-    parser.add_argument("--web-search", action="store_true", help="Enable web search for Thematic Analyzer AND Investment Gate. Recommended for production scans.")
+    parser = argparse.ArgumentParser(description="BoS Momentum Scanner - Pure Technical Signal Detector (Weekly)")
+    parser.add_argument("--top", type=int, help="Only scan top N stocks by UC")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed diagnostic output (10 items per category instead of 3)")
     parser.add_argument("--archive", action="store_true", help="Save dated archive files in addition to latest_* files")
-    # Deep DD options (runs by default on Investment Gate passes)
-    parser.add_argument("--no-dd", action="store_true", help="Skip Deep DD (NOT recommended - portfolio won't be updated)")
-    parser.add_argument("--save-dd", action="store_true", help="Save Deep DD reports to reports/ directory")
-    # Keep legacy flags for backwards compatibility (now no-ops)
+    parser.add_argument("--no-email", action="store_true", help="Skip email notification")
+    # Legacy flags — silently accepted for backwards compat but ignored
+    parser.add_argument("--no-llm", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--no-momentum", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--assess-top", type=int, metavar="N", help=argparse.SUPPRESS)
+    parser.add_argument("--web-search", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--no-dd", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--save-dd", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--no-prompts", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--no-dd-prompts", action="store_true", dest="no_prompts", help=argparse.SUPPRESS)
+    parser.add_argument("--no-grok-prompts", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--full-dd", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--dd-top", type=int, metavar="N", help=argparse.SUPPRESS)
     parser.add_argument("--dd", action="store_true", help=argparse.SUPPRESS)
@@ -3046,37 +2435,11 @@ def main() -> int:
     else:
         print("\n  ENTRY (V6): Pivot + Confirmation Gate Screening (Structural + Timing/Accumulation + Price)")
         print("  EXIT:  Capital Preservation Protocol (first exit — whichever fires first)")
-    
-    # Show pipeline based on options
-    if args.no_llm:
-        print("\n  Pipeline: Technical signals only (ALL LLM gates skipped)")
-        print("  Cost: $0.00 (free)")
-    elif args.no_momentum:
-        print("\n  Pipeline: Technical → Thematic Analyzer (Investment Gate skipped)")
-        web_cost = " + web search" if args.web_search else ""
-        print(f"  Cost: ~$0.15/run{web_cost}")
-    elif args.assess_top:
-        print(f"\n  Pipeline: Technical → Thematic → Investment Gate (top {args.assess_top} only)")
-        if args.web_search:
-            print(f"  Cost: ~${0.15 + (args.assess_top * 0.20):.2f}/run (with web search)")
-        else:
-            print(f"  Cost: ~${0.15 + (args.assess_top * 0.03):.2f}/run (no web search - testing)")
-    else:
-        print("\n  Pipeline: Technical → Thematic → Investment Gate (thorough)")
-        if args.web_search:
-            print("  Cost: ~$1-3/run (web search enabled)")
-        else:
-            print("  Cost: ~$0.30-0.50/run (no web search - testing)")
-        print("  Schedule: Run WEEKLY (signals only change on Friday close)")
-    
-    if args.web_search:
-        print("\n  🌐 Web search ENABLED:")
-        print("     • Thematic: Current theme momentum")
-        print("     • Investment Gate: 5 searches per stock (red flags, catalysts, return math)")
-    else:
-        print("\n  💰 Web search DISABLED (testing mode):")
-        print("     • Using model knowledge only - data may be outdated")
-        print("     • Use --web-search for production scans")
+
+    print("\n  Pipeline: Pure Technical Signal Detector (no LLM API calls)")
+    print("  Cost: $0.00 (free)")
+    print("  Schedule: Run WEEKLY (signals only change on Friday close)")
+    print("  Next: Review signals_technical.json → Claude.ai chat for thematic + investment analysis")
     
     # Portfolio status
     if PORTFOLIO_MANAGER_AVAILABLE:
@@ -3092,127 +2455,24 @@ def main() -> int:
     
     start_time = time.time()
     
-    # Run scan
+    # Run scan (pure technical — no LLM API calls)
     confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data = run_scan(
-        skip_llm=args.no_llm,
-        skip_momentum=args.no_momentum,
-        assess_top_n=args.assess_top,
         top_n=args.top,
-        use_web_search=args.web_search,
         verbose=args.verbose
     )
 
-    # Step 7.5: Deep Due Diligence (Opus + Extended Thinking)
-    # DD is required for portfolio updates - only DD-PASS signals get added
-    dd_results = []
-    dd_pass_stocks = []
-    dd_fail_stocks = []
-
-    if not args.no_dd and confirmed and not args.no_llm:
-        pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
-        if pass_stocks:
-            print("\n" + "─" * 70)
-            print("  STEP 7.5: DEEP DUE DILIGENCE (Opus + Extended Thinking)")
-            print("─" * 70)
-            print("  Deep DD is REQUIRED before adding to portfolio")
-            print("     Only STRONG BUY / SPEC BUY verdicts will be added")
-
-            try:
-                from scanner.deep_dd import run_deep_dd_batch, apply_dd_to_stocks
-
-                # Run Deep DD on all gate passes (typically 1-3 stocks)
-                _pipeline_timer.start("Step 7.5: Deep DD")
-                dd_results = run_deep_dd_batch(
-                    stocks=pass_stocks,
-                    use_web_search=args.web_search,
-                    save_reports=args.save_dd
-                )
-                _pipeline_timer.stop()
-
-                # apply_dd_to_stocks maps dd_verdict, dd_conviction, dd_position_size,
-                # dd_analysis (elevator_pitch), dd_key_catalyst (why_now), dd_fatal_flaw
-                dd_pass_stocks, dd_fail_stocks = apply_dd_to_stocks(confirmed, dd_results)
-
-                # Map additional Deep DD newsletter fields to Stock objects
-                dd_lookup = {r.ticker: r for r in dd_results}
-                for stock in confirmed:
-                    if stock.symbol in dd_lookup:
-                        r = dd_lookup[stock.symbol]
-                        stock.dd_elevator_pitch = r.elevator_pitch
-                        stock.dd_why_now = r.why_now
-                        stock.dd_the_math = r.the_math
-                        stock.dd_bear_case = r.bear_case
-                        stock.dd_risk_to_monitor = r.risk_to_monitor
-                        stock.dd_action = r.action_recommendation
-
-                # Add only DD-PASS stocks to portfolio
-                if dd_pass_stocks:
-                    print(f"\n  Adding {len(dd_pass_stocks)} DD-PASS signal(s) to portfolio...")
-                    for stock in dd_pass_stocks:
-                        add_to_open_positions(stock)
-                        print(f"     {stock.symbol} - {stock.dd_verdict} ({stock.dd_conviction}/10)")
-
-                if dd_fail_stocks:
-                    print(f"\n  {len(dd_fail_stocks)} signal(s) FAILED DD (not added to portfolio):")
-                    for stock in dd_fail_stocks:
-                        print(f"     {stock.symbol} - NO GO: {stock.dd_fatal_flaw or 'See analysis'}")
-
-                # P0 FIX: Mark any PASS stocks that didn't get a DD verdict
-                # (individual stock errors within a batch that otherwise succeeded)
-                dd_covered = {r.ticker for r in dd_results}
-                for stock in pass_stocks:
-                    if stock.symbol not in dd_covered and not stock.dd_verdict:
-                        stock.dd_verdict = "DD_ERROR"
-                        stock.final_decision = "PENDING_DD"
-                        print(f"     ⚠ {stock.symbol} - DD error, marked PENDING_DD")
-
-            except ImportError:
-                _pipeline_timer.stop()
-                print("  deep_dd.py not found - skipping Deep DD")
-                print("     Portfolio will NOT be updated without DD")
-                for stock in pass_stocks:
-                    stock.dd_verdict = "DD_SKIPPED"
-                    stock.final_decision = "PENDING_DD"
-            except Exception as e:
-                _pipeline_timer.stop()
-                print(f"  Deep DD error: {e}")
-                import traceback
-                traceback.print_exc()
-                print("     Portfolio will NOT be updated without DD")
-                # P0 FIX: Mark ALL pass stocks as PENDING_DD on batch-level error
-                for stock in pass_stocks:
-                    if not stock.dd_verdict:  # Don't overwrite if some succeeded before error
-                        stock.dd_verdict = "DD_ERROR"
-                        stock.final_decision = "PENDING_DD"
-                print(f"     ⚠ {len([s for s in pass_stocks if s.final_decision == 'PENDING_DD'])} stock(s) marked PENDING_DD")
-
-    elif args.no_dd and confirmed:
-        # DD skipped - warn user that portfolio won't be updated
-        pass_stocks = [s for s in confirmed if s.final_decision in ["PASS", "TRADE"]]
-        if pass_stocks:
-            print("\n  DD SKIPPED (--no-dd flag)")
-            print(f"     {len(pass_stocks)} PASS signal(s) will NOT be added to portfolio")
-            print("     Run without --no-dd to perform Deep DD and update portfolio")
-            for stock in pass_stocks:
-                stock.dd_verdict = "DD_SKIPPED"
-                stock.final_decision = "PENDING_DD"
+    # ARCHIVED: Deep DD block removed — DD now runs via Claude.ai chat workflow
+    # Portfolio updates happen manually after reviewing signals_technical.json
+    # and running thematic + investment analysis in Claude.ai chat
 
     # Print report
     print_final_report(confirmed, sell_signals, stats)
     
-    # DD is handled earlier in pipeline via core/deep_dd.run_deep_dd_batch()
-    # (Legacy manual DD prompt generation has been removed)
-    
     # Save results and generate report (save if any stocks were assessed OR sell signals OR momentum filtered)
     report = None
-    briefing_file = None
     try:
         if all_assessed or sell_signals or momentum_rejected:
             report = save_results(confirmed, all_assessed, sell_signals, stats, momentum_rejected, themes_data, archive=args.archive)
-            briefing_file = get_current_dir() / "newsletter_briefing.md"
-        else:
-            # Still generate newsletter briefing for weeks with no signals
-            briefing_file = save_newsletter_briefing(confirmed, sell_signals, themes_data, stats, archive=args.archive)
     except Exception as e:
         print(f"  ⚠ Error saving results: {e}")
         import traceback
@@ -3264,14 +2524,16 @@ def main() -> int:
         except Exception as e:
             print(f"  ⚠ Portfolio summary error: {e}")
     
-    # Print newsletter generation prompts (market context + compilation)
-    if not args.no_prompts:
-        try:
-            print_newsletter_prompts(briefing_file)
-        except Exception as e:
-            print(f"  ⚠ Error printing newsletter prompts: {e}")
+    # ARCHIVED: Newsletter prompts removed — now in Claude.ai chat workflow
 
-    # (Grok prompts generation removed — replaced by tweet_generator v2)
+    # Next steps guidance
+    print("\n" + "─" * 70)
+    print("  NEXT STEPS")
+    print("─" * 70)
+    print("  1. Review signals_technical.json for buy/sell signals")
+    print("  2. Open Claude.ai → attach sterling_prompt_library.md")
+    print("  3. Run thematic analysis + investment gate in chat")
+    print("  4. Update portfolio with final decisions")
 
     # Send email with the formatted report
     if not args.no_email:

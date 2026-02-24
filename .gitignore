@@ -43,16 +43,8 @@ data/themes_cache.json
 # Reports directory (generated, can be large)
 reports/
 
-# Portfolio data (contains entry prices - user-specific)
-trades/portfolio.csv
-trades/portfolio_google_sheets.csv
-
-# Portfolio backups (managed by utils/backup_cleanup.py)
-trades/portfolio_backups/
-trades/daily_portfolio_backups/
-
-# Daily portfolio (separate from weekly - user-specific)
-trades/daily_portfolio.csv
+# Legacy trades/ directory (replaced by section-specific output dirs)
+trades/
 
 # Section output directories (generated data, not source code)
 portfolio/output/

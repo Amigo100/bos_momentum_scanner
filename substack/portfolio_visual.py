@@ -14,9 +14,9 @@ Features:
     - All self-contained (inline CSS, no external deps)
 
 Outputs:
-    - trades/current/portfolio_visual.html  (+ weekly archive)
-    - trades/charts/portfolio_dashboard.png          (1400x900, X/Twitter)
-    - trades/charts/portfolio_dashboard_substack.png  (1000x700, Substack)
+    - substack/output/current/portfolio_visual.html  (+ weekly archive)
+    - twitter/output/charts/portfolio_dashboard.png          (1400x900, X/Twitter)
+    - twitter/output/charts/portfolio_dashboard_substack.png  (1000x700, Substack)
 
 Usage:
     python -m content.portfolio_visual              # Full: HTML + PNG
@@ -659,7 +659,7 @@ def _validate_dashboard(html: str) -> bool:
 
 
 def save_dashboard(html: str) -> Tuple[Path, Optional[Path]]:
-    """Save HTML to trades/current/ and weekly archive.
+    """Save HTML to substack/output/current/ and weekly archive.
 
     Uses output_paths.save_to_current_and_archive() for dual-write.
 
@@ -692,7 +692,7 @@ def capture_dashboard_screenshot(
 
     Args:
         html_path: Path to the saved HTML file.
-        output_dir: Output directory (default: trades/charts/).
+        output_dir: Output directory (default: twitter/output/charts/).
 
     Returns:
         List of saved PNG paths. Empty list if Playwright unavailable.

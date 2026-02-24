@@ -12,7 +12,7 @@ Usage:
     python market_analyzer.py --output PATH      # Custom output path
 
 Output:
-    trades/market_analysis.md    # Latest market analysis
+    scanner/output/current/market_analysis.md    # Latest market analysis
 """
 
 import os

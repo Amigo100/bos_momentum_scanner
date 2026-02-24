@@ -744,7 +744,7 @@ Based on the audit documents, these categories of files should be reviewed:
 
 | Location | Issue | Action |
 |----------|-------|--------|
-| `trades/portfolio_backups/` | 31+ files, no retention | Add 30-day retention script |
+| `portfolio/output/portfolio_backups/` | 31+ files, no retention | Add 30-day retention script |
 
 ## 6.2 Code Quality Improvements
 

@@ -10,7 +10,7 @@
 
 The portfolio system is managed by `core/portfolio_manager.py` (1,282 lines). It tracks all trades from entry to exit, calculates P&L, and exports data for Google Sheets.
 
-**Source of truth:** `trades/portfolio.csv`
+**Source of truth:** `portfolio/output/portfolio.csv`
 
 ---
 
@@ -327,13 +327,13 @@ python -m core.portfolio_manager --migrate       # One-time: migrate legacy file
 ## 8. Files Read/Written
 
 ### Read
-- `trades/portfolio.csv` - Trade history
+- `portfolio/output/portfolio.csv` - Trade history
 - yfinance API - Current prices, SPY data
 
 ### Written
-- `trades/portfolio.csv` - Updated trades (atomic write)
-- `trades/portfolio_google_sheets.csv` - Export with calculated fields
-- `trades/portfolio_backups/portfolio_YYYYMMDD_HHMMSS.csv` - Timestamped backups (max 30)
+- `portfolio/output/portfolio.csv` - Updated trades (atomic write)
+- `portfolio/output/portfolio_google_sheets.csv` - Export with calculated fields
+- `portfolio/output/portfolio_backups/portfolio_YYYYMMDD_HHMMSS.csv` - Timestamped backups (max 30)
 
 ---
 

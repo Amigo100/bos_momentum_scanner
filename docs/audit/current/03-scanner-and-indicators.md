@@ -374,7 +374,7 @@ Only STRONG BUY and SPEC BUY are added to portfolio.
 ```
 Action:    add_to_open_positions(stock)
 Records:   ticker, entry_date, entry_price, theme, tier, conviction
-File:      trades/portfolio.csv (atomic write)
+File:      portfolio/output/portfolio.csv (atomic write)
 ```
 
 ---

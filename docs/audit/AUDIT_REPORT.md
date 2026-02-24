@@ -188,8 +188,8 @@ else:
 
 | File Pattern | Issue | Severity |
 |--------------|-------|----------|
-| `trades/grok_prompts/*.md` | Contains `BoS Up`, `Tier: TIER1` | 🟡 MEDIUM |
-| `trades/*/newsletter_briefing.md` | Contains `Tier TIER1`, `Weekly BoS Up` | 🟡 MEDIUM |
+| `twitter/output/grok_prompts/*.md` | Contains `BoS Up`, `Tier: TIER1` | 🟡 MEDIUM |
+| `scanner/output/current/newsletter_briefing.md` | Contains `Tier TIER1`, `Weekly BoS Up` | 🟡 MEDIUM |
 
 **Fix:** Update `grok_prompts_generator.py` to use approved vocabulary in output.
 
@@ -259,7 +259,7 @@ Per MARKETING_GUIDE.md Section 2.10:
 grep -rn "UK ISA\|UK investor\|Barclays ISA\|ISA account" --include="*.py" --include="*.md" --include="*.yml"
 
 # Check for banned technical terms in output files
-grep -rn "HMA Pivot\|Banker >=\|20% trailing\|Weekly BoS" trades/
+grep -rn "HMA Pivot\|Banker >=\|20% trailing\|Weekly BoS" scanner/output/
 
 # Check for UK timezone references
 grep -rn "UK Time\|UK time\|07:00\|19:00" --include="*.py" --include="*.md"

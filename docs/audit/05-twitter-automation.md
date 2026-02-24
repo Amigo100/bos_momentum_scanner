@@ -236,7 +236,7 @@ sterlingsignals.substack.com
     {"number": 1, "text": "1/5 [Opening hook]", "image_path": null},
     {"number": 2, "text": "2/5 [Explanation]"},
     {"number": 3, "text": "3/5 [Data point]"},
-    {"number": 4, "text": "4/5 [Example]", "image_path": "trades/charts/..."},
+    {"number": 4, "text": "4/5 [Example]", "image_path": "twitter/output/charts/..."},
     {"number": 5, "text": "5/5 [CTA]"}
   ]
 }

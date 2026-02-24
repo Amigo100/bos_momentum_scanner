@@ -9,7 +9,7 @@ when positions hit milestones (25%, 50%, 100%).
 This module enables the self-quote threading system where milestone
 celebrations can reference the original GREEN signal announcement.
 
-Data stored in: trades/tweet_tracking.json
+Data stored in: twitter/output/tweet_tracking.json
 
 Usage:
     # Register a new signal tweet

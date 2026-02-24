@@ -214,7 +214,7 @@ Show the `content_queue.json` structure for the week:
     "scheduled_date": "2026-01-25",
     "category": "weekly_wins",
     "text": "...",
-    "image_path": "trades/charts/weekly_wins_20260125.png",
+    "image_path": "twitter/output/charts/weekly_wins_20260125.png",
     "safeguards_passed": ["enough_winners", "spy_outperformance"],
     "status": "pending"
   },

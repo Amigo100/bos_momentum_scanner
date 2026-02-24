@@ -110,7 +110,6 @@ try:
         get_scanner_archive_dir as get_week_dir,
         ensure_output_structure,
         get_relative_path,
-        SIGNALS_FILE,
         SIGNALS_TECH_FILE,
         ANALYSIS_LOG,
         SCANNER_OUTPUT,
@@ -120,7 +119,6 @@ try:
 except ImportError:
     OUTPUT_PATHS_AVAILABLE = False
     _FALLBACK_OUTPUT = Path(__file__).resolve().parent / "output"
-    SIGNALS_FILE = _FALLBACK_OUTPUT / "signals.json"
     SIGNALS_TECH_FILE = _FALLBACK_OUTPUT / "signals_technical.json"
     ANALYSIS_LOG = _FALLBACK_OUTPUT / "analysis_log.csv"
     SCANNER_OUTPUT = _FALLBACK_OUTPUT
@@ -568,39 +566,6 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
         print(f"  ⚠ {len(failed_downloads)} ticker(s) failed to download")
 
     return stocks
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# THEMATIC ANALYZER GATE
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def run_thematic_gate(signals: List[Stock], use_web_search: bool = False) -> Tuple[List[Stock], str, List[dict]]:
-    """Run thematic analyzer on signals. Returns stocks that pass theme gate, themes context, and themes data.
-
-    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
-    This function now passes all signals through without LLM analysis.
-    """
-    # All stocks pass through — thematic analysis is now done in Claude.ai chat
-    for s in signals:
-        s.theme_verdict = "PENDING_CHAT"
-    return signals, "", []
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# INVESTMENT GATE - REGIME-AWARE QUALITY GATE
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def run_investment_gate_step(signals: List[Stock], top_n: int = None, themes_context: str = "", use_web_search: bool = False, save_reports: bool = False) -> List[Stock]:
-    """Run Investment Gate analysis for final decision.
-
-    ARCHIVED: Moved to Claude.ai chat workflow (see sterling_prompt_library.md)
-    This function now marks all signals as PENDING_CHAT for manual review.
-    """
-    # All stocks pass through — investment gate is now done in Claude.ai chat
-    for s in signals:
-        s.final_decision = "PENDING_CHAT"
-        s.conviction = 0
-    return signals
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -2240,16 +2205,9 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
     with open(signals_archive, 'w') as f:
         f.write(signals_json)
 
-    # ── Dual-write: signals.json (transitional — keeps tweet generator + downstream working) ──
-    signals_file = SIGNALS_FILE
-    with open(signals_file, 'w') as f:
-        f.write(signals_json)
-    # Also to current/ and archive for full compat
-    with open(current_dir / "signals.json", 'w') as f:
-        f.write(signals_json)
-    with open(week_dir / "signals.json", 'w') as f:
-        f.write(signals_json)
-    
+    # NOTE: signals.json is produced by merge_decisions.py (Saturday workflow),
+    # NOT by scanner.py. Scanner only writes signals_technical.json.
+
     # ═══════════════════════════════════════════════════════════════════════════
     # COMPREHENSIVE ANALYSIS LOG - ALL assessed stocks for back-analysis
     # ═══════════════════════════════════════════════════════════════════════════

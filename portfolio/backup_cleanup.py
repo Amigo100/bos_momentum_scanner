@@ -4,7 +4,7 @@ BACKUP CLEANUP UTILITY
 ======================
 
 Deduplicates portfolio backups: keeps only the newest file per ISO calendar week.
-Applies to both trades/portfolio_backups/ and trades/daily_portfolio_backups/.
+Applies to both portfolio/output/portfolio_backups/ and portfolio/output/daily_portfolio_backups/.
 
 This prevents duplicate backups from re-runs while preserving one snapshot per week
 for historical reference.

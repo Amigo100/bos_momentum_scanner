@@ -22,11 +22,11 @@ Usage:
     python chart_capture.py --tickers AAPL,NVDA,PLTR --headless --skip-wait
 
     # From signals file
-    python chart_capture.py --tickers-from trades/signals.json --include-portfolio
+    python chart_capture.py --tickers-from scanner/output/signals.json --include-portfolio
 
 Output:
-    trades/charts/{TICKER}_{timeframe}_{date}.png (1400x900 for X cards)
-    trades/charts/{TICKER}_{timeframe}_{date}_substack.png (1000x700 for Substack)
+    twitter/output/charts/{TICKER}_{timeframe}_{date}.png (1400x900 for X cards)
+    twitter/output/charts/{TICKER}_{timeframe}_{date}_substack.png (1000x700 for Substack)
 """
 
 import logging
@@ -705,7 +705,7 @@ def main() -> None:
     if not tickers:
         print("ERROR: Specify --ticker, --tickers, or --tickers-from")
         print("Example: python chart_capture.py --tickers AAPL,NVDA,PLTR")
-        print("         python chart_capture.py --tickers-from trades/signals.json --include-portfolio")
+        print("         python chart_capture.py --tickers-from scanner/output/signals.json --include-portfolio")
         sys.exit(1)
     
     if not tickers:

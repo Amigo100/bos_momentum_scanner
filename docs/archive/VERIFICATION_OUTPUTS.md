@@ -810,7 +810,7 @@ $ python scanner.py --no-llm --top 20
 
 ### 2. No TRADE signal type
 ```bash
-$ grep -c "TRADE" trades/signals.json
+$ grep -c "TRADE" scanner/output/signals.json
 0
 ✅ PASS - No TRADE signal type found
 ```
@@ -866,7 +866,7 @@ $ grep -E "weekly_wins|PASS signal|weekly winners" VERIFICATION_OUTPUTS.md
 
 ### 6. Celebrations.json exists
 ```bash
-$ cat trades/celebrations.json | head -10
+$ cat twitter/output/celebrations.json | head -10
 {
   "_comment": "Tracks which milestones have been celebrated...",
   ...

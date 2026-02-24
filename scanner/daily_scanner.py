@@ -11,7 +11,7 @@ Differences from weekly scanner:
   - HMA / BoS computed on daily bars (no weekly resample)
   - NO thematic analysis, NO gatekeeper, NO due diligence
   - Max 5 new signals per day (ranked by Banker score)
-  - Separate portfolio: trades/daily_portfolio.csv
+  - Separate portfolio: portfolio/output/daily_portfolio.csv
   - Sell signals trigger notifications via distribution.notifications
 
 Usage:

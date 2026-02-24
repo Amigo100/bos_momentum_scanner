@@ -7,7 +7,7 @@ and chart embedding. Converts to HTML for Substack.
 
 Usage:
     python newsletter_compiler.py              # Generate HTML from latest briefing
-    python newsletter_compiler.py --full       # Full automated pipeline (market + compile)
+    python newsletter_compiler.py --from-html PATH  # Copy Claude.ai HTML to output paths
     python newsletter_compiler.py --preview    # Open in browser for preview
 """
 
@@ -21,11 +21,6 @@ import webbrowser
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Optional
-
-try:
-    import anthropic
-except ImportError:
-    anthropic = None
 
 # Import output path helpers
 from config.output_paths import (
@@ -64,188 +59,6 @@ except ImportError:
 # Sterling Signals branding
 SUBSTACK_URL = "https://sterlingsignals.substack.com"
 NEWSLETTER_NAME = "Sterling Signals"
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# LLM NEWSLETTER COMPILATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-COMPILATION_SYSTEM = """You are the editor of Sterling Signals, a weekly momentum trading newsletter on Substack for US active investors and swing traders.
-
-Your job is to compile a polished, publication-ready newsletter from the raw inputs provided.
-
-STYLE:
-- Professional but accessible
-- Data-driven with specific numbers
-- Confident without being arrogant
-- Educational - explain WHY, not just WHAT
-- US investor perspective
-- Reference SPY/QQQ comparison when outperforming
-- Use "GREEN signal" branding (not "PASS signal")
-
-TRANSPARENCY RULES:
-- Show ALL positions — winners AND losers — with full transparency
-- Frame losses positively: "Stop hit = system working as designed"
-- When underwater: "Down but managing risk — disciplined exits in place"
-- Celebrate big wins prominently (25%+, 50%+, 100%+)
-- Always show entry prices for all positions
-
-HANDLING ZERO SIGNALS WEEK:
-When there are no PASS/GREEN signals this week:
-- This is NORMAL and shows the system's selectivity - NOT a failure
-- Focus the newsletter on themes, market analysis, and watchlist stocks
-- Skip the "NEW TRADES THIS WEEK" section entirely
-- Use subject line: "Week ${WEEK_NUM}: No New Signals | ${THEME_HOOK}"
-- Emphasize: "Sometimes the best trade is no trade"
-- Highlight watchlist/CONSIDER stocks that almost made it
-- Explain what would need to change for them to become GREEN signals
-
-SUBJECT LINE FORMULA:
-Week ${WEEK_NUM}: ${NEW_SIGNALS} GREEN Signals | ${HOOK_PHRASE}
-Example: "Week 4: 3 GREEN Signals | Why Power Grid is 2026's Winning Theme"
-Focus on new signals and hot themes, not P&L.
-
-FORMAT:
-- Use markdown formatting
-- Keep it scannable with headers and bullets
-- Use tables for data comparison
-- Target 1,500-2,500 words
-- 8-12 minute read time
-- Show ALL GREEN signals (not limited to 1)"""
-
-COMPILATION_PROMPT = '''Compile the weekly Sterling Signals newsletter from these inputs:
-
-## MARKET CONTEXT
-{market_context}
-
-## SCANNER BRIEFING (Themes & Signals)
-{scanner_briefing}
-
-## THEME DETAILS (Sub-Scores)
-{theme_details}
-
-## DUE DILIGENCE RESULTS
-{dd_results}
-
-## WIN HIGHLIGHTS (only show if we have winners above 15%)
-{portfolio_status}
-
-## PERFORMANCE VS BENCHMARK
-{benchmark_comparison}
-
----
-
-## REQUIRED SECTIONS
-
-**1. TITLE & HOOK**
-- Compelling title capturing this week's key theme
-- Subtitle/hook in one line
-
-**2. MARKET CONTEXT**
-- Use the market context provided (light editing only)
-
-**3. HOT THEMES THIS WEEK** 🔥
-- PRIME and INVESTABLE themes with scores
-- Why each theme is hot NOW
-- Key stocks benefiting
-
-**4. COLD THEMES** ❄️
-- SELECTIVE and AVOID themes
-- Why these are cooling off
-
-**5. NEW TRADES THIS WEEK** 🎯
-(SKIP THIS SECTION if no PASS signals - see below for themes-only format)
-For each DD-PASS signal, include ALL available DD fields:
-- Ticker & company name
-- DD Verdict (GREEN signal / GREEN signal speculative)
-- **The Pitch:** elevator pitch for why this stock (from dd_elevator_pitch)
-- **Why Now:** catalyst timing and urgency (from dd_why_now)
-- **The Math:** path to 50%+ return with specific numbers (from dd_the_math)
-- **Bear Case:** the bear thesis AND why it's wrong (from dd_bear_case)
-- **Risk to Monitor:** the single biggest risk to watch (from dd_risk_to_monitor)
-- **Action:** entry recommendation (from dd_action)
-- Entry price, position size, conviction
-- [CHART: TICKER] placeholder
-
-**5-ALT. NO NEW SIGNALS THIS WEEK** 🎯
-(USE THIS SECTION ONLY if there are zero PASS signals)
-- Explain this shows the system's selectivity
-- "Sometimes the best trade is no trade"
-- Highlight what the system filtered out and why
-- Focus on patience and discipline
-
-**6. SIGNALS THAT FAILED DD** ⚠️
-For each NO GO:
-- Ticker and why it failed
-- Fatal flaw identified
-- What would change our mind
-
-**7. WATCHLIST** (CONSIDER signals)
-- Stocks worth watching
-- Why waiting
-- What triggers entry
-
-**8. PORTFOLIO TRANSPARENCY**
-- Show ALL closed trades — winners AND losers
-- Celebrate big wins prominently (25%+, 50%+, 100%+)
-- Frame losses positively: "Stop hit = system working as designed"
-- Show entry prices for all positions
-
-**9. LOOKING AHEAD**
-- Next week's catalysts
-- Key events to watch
-
-**10. FOOTER**
-- Disclaimer
-- Next scan date: Friday after market close
-- Subscribe link
-
----
-
-Generate the complete newsletter in markdown, ready for Substack.'''
-
-
-def compile_newsletter_llm(
-    market_context: str,
-    scanner_briefing: str,
-    dd_results: str,
-    portfolio_status: str,
-    benchmark_comparison: str = "",
-    theme_details: str = ""
-) -> str:
-    """Use Claude to compile the full newsletter."""
-    if anthropic is None:
-        return None
-
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("  ⚠️ ANTHROPIC_API_KEY not set - skipping LLM compilation")
-        return None
-
-    client = anthropic.Anthropic(api_key=api_key)
-
-    prompt = COMPILATION_PROMPT.format(
-        market_context=market_context or "[No market context available]",
-        scanner_briefing=scanner_briefing or "[No scanner briefing available]",
-        theme_details=theme_details or "[No theme sub-score data available]",
-        dd_results=dd_results or "[No DD results available]",
-        portfolio_status=portfolio_status or "[No portfolio data available]",
-        benchmark_comparison=benchmark_comparison or "[No benchmark data available]"
-    )
-
-    try:
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=6000,
-            system=COMPILATION_SYSTEM,
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        return response.content[0].text
-
-    except Exception as e:
-        print(f"  ⚠️ LLM compilation error: {e}")
-        return None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -988,8 +801,13 @@ def compile_from_html(html_path: str, preview: bool = False) -> Optional[Path]:
 # MAIN COMPILATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def compile_newsletter(full_mode: bool = False, preview: bool = False, from_html: str = None) -> Path:
-    """Compile the newsletter briefing to HTML."""
+def compile_newsletter(preview: bool = False, from_html: str = None) -> Path:
+    """Compile the newsletter briefing to HTML.
+
+    Two modes:
+    - --from-html: Copy Claude.ai-produced HTML to output paths (primary workflow)
+    - Default: Convert scanner briefing markdown to HTML (fallback)
+    """
 
     # --from-html mode: copy Claude.ai-produced HTML to output paths
     if from_html:
@@ -1002,109 +820,20 @@ def compile_newsletter(full_mode: bool = False, preview: bool = False, from_html
     chart_manifest = load_chart_manifest()
     print(f"  📊 Charts available: {len(chart_manifest)}")
 
-    if full_mode:
-        # Full automated pipeline
-        print("\n  🔄 Running full automated compilation...")
+    # Simple mode - convert briefing markdown to HTML
+    briefing_path = get_scanner_current_dir() / "newsletter_briefing.md"
 
-        # Step 1: Generate market analysis
-        print("\n  Step 1: Market Analysis")
-        market_analysis = load_market_analysis()
-        if not market_analysis:
-            print("    Generating market context via Claude...")
-            try:
-                from substack.market_analyzer import run_market_analysis, save_market_analysis
-                result = run_market_analysis()
-                if result.success():
-                    save_market_analysis(result.analysis)
-                    market_analysis = result.analysis
-                    print(f"    ✅ Generated (cost: ${result.cost:.3f})")
-                else:
-                    print(f"    ⚠️ Failed: {result.error}")
-            except ImportError:
-                print("    ⚠️ market_analyzer.py not found")
-        else:
-            print("    ✅ Loaded from file")
+    if not briefing_path.exists():
+        print(f"  ❌ Briefing not found: {briefing_path}")
+        print("     Run the scanner first: python -m scanner.scanner --web-search")
+        return None
 
-        # Step 2: Load scanner briefing
-        print("\n  Step 2: Scanner Briefing")
-        scanner_briefing = load_scanner_briefing()
-        if scanner_briefing:
-            print("    ✅ Loaded from file")
-        else:
-            print("    ⚠️ No briefing found - run scanner first")
+    print(f"  📄 Reading briefing: {briefing_path}")
 
-        # Step 3: Load DD results
-        print("\n  Step 3: Due Diligence Results")
-        dd_results, pass_count = load_dd_results()
-        if pass_count == 0:
-            print("    ℹ️ No PASS signals this week - generating themes-only newsletter")
-        elif dd_results and dd_results != "[DD not yet run]":
-            print(f"    ✅ Loaded from signals.json ({pass_count} PASS signals)")
-        else:
-            print("    ⚠️ No DD results - run scanner with --web-search")
+    with open(briefing_path, 'r') as f:
+        md_content = f.read()
 
-        # Step 4: Load portfolio status
-        print("\n  Step 4: Portfolio Status")
-        portfolio_status = load_portfolio_status()
-        if portfolio_status:
-            print("    ✅ Loaded from portfolio.csv")
-        else:
-            print("    ⚠️ No portfolio data")
-
-        # Step 4b: Generate benchmark comparison
-        print("\n  Step 4b: Benchmark Comparison (Portfolio vs SPY/QQQ)")
-        benchmark_comparison = generate_benchmark_comparison()
-        if benchmark_comparison:
-            print("    ✅ Generated SPY + NASDAQ comparison")
-        else:
-            print("    ⚠️ No benchmark data")
-
-        # Step 4c: Load theme sub-scores
-        print("\n  Step 4c: Theme Sub-Scores")
-        theme_details = load_theme_details()
-        if theme_details:
-            print("    ✅ Loaded theme sub-scores from signals.json")
-        else:
-            print("    ⚠️ No theme data available")
-
-        # Step 5: LLM compilation
-        print("\n  Step 5: LLM Newsletter Compilation")
-        compiled_newsletter = compile_newsletter_llm(
-            market_analysis,
-            scanner_briefing,
-            dd_results,
-            portfolio_status,
-            benchmark_comparison,
-            theme_details
-        )
-
-        if compiled_newsletter:
-            print("    ✅ Newsletter compiled via Claude")
-            print("    🔍 Checking LLM output for negative P&L leakage...")
-            md_content = compiled_newsletter
-        else:
-            print("    ⚠️ LLM compilation failed - using raw briefing")
-            md_content = scanner_briefing
-
-    else:
-        # Simple mode - just convert briefing to HTML
-        if OUTPUT_PATHS_AVAILABLE:
-            briefing_path = get_scanner_current_dir() / "newsletter_briefing.md"
-        else:
-            briefing_path = get_scanner_current_dir() / "newsletter_briefing.md"
-
-        if not briefing_path.exists():
-            print(f"  ❌ Briefing not found: {briefing_path}")
-            print("     Run the scanner first: python -m core.scanner --web-search")
-            return None
-
-        print(f"  📄 Reading briefing: {briefing_path}")
-
-        with open(briefing_path, 'r') as f:
-            md_content = f.read()
-
-    # Check for negative P&L — in --full mode this checks LLM output (should be clean);
-    # in simple mode this checks the raw briefing (will contain P&L as expected)
+    # Check for negative P&L in the briefing content
     import re as _re
     negative_pnl_matches = _re.findall(r'-\d+\.?\d*%', md_content)
     stopped_mentions = _re.findall(r'\bSTOPPED\b', md_content)
@@ -1198,11 +927,6 @@ def main() -> None:
         description="Compile newsletter briefing to HTML for Substack"
     )
     parser.add_argument(
-        '--full', '-f',
-        action='store_true',
-        help='Full automated pipeline (market analysis + LLM compilation)'
-    )
-    parser.add_argument(
         '--preview', '-p',
         action='store_true',
         help='Open HTML in browser for preview'
@@ -1211,15 +935,12 @@ def main() -> None:
         '--from-html',
         type=str,
         metavar='PATH',
-        help='Copy complete HTML newsletter from Claude.ai to output paths (mutually exclusive with --full)'
+        help='Copy complete HTML newsletter from Claude.ai to output paths'
     )
 
     args = parser.parse_args()
 
-    if args.from_html and args.full:
-        parser.error("--from-html and --full are mutually exclusive")
-
-    compile_newsletter(full_mode=args.full, preview=args.preview, from_html=args.from_html)
+    compile_newsletter(preview=args.preview, from_html=args.from_html)
 
 
 if __name__ == "__main__":

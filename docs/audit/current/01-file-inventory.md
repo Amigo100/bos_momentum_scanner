@@ -389,15 +389,15 @@ All cross-package imports use `try/except ImportError` with fallback defaults:
 | File | Read By | Purpose |
 |------|---------|---------|
 | `complete_tickers.txt` | scanner.py | Ticker universe |
-| `trades/portfolio.csv` | portfolio_manager.py | Trade history |
-| `trades/signals.json` | reaction_generator, tweet_generator, chart_capture | Scan results |
-| `trades/content_queue.json` | twitter_poster.py, daily_post.yml | Tweet queue (main) |
-| `trades/content_queue_account2.json` | twitter_poster.py | Tweet queue (account 2) |
-| `trades/content_queue_account3.json` | twitter_poster.py | Tweet queue (account 3) |
-| `trades/tweet_tracking.json` | self_quote_tracker.py | Milestone tracking |
-| `trades/charts/chart_manifest.json` | reaction_generator.py | Chart paths |
-| `trades/market_analysis.md` | newsletter_compiler.py | Market context |
-| `trades/latest_newsletter_briefing.md` | newsletter_compiler.py, grok_prompts_generator.py | Briefing data |
+| `portfolio/output/portfolio.csv` | portfolio_manager.py | Trade history |
+| `scanner/output/signals.json` | reaction_generator, tweet_generator, chart_capture | Scan results |
+| `twitter/output/content_queue.json` | twitter_poster.py, daily_post.yml | Tweet queue (main) |
+| `twitter/output/content_queue_account2.json` | twitter_poster.py | Tweet queue (account 2) |
+| `twitter/output/content_queue_account3.json` | twitter_poster.py | Tweet queue (account 3) |
+| `twitter/output/tweet_tracking.json` | self_quote_tracker.py | Milestone tracking |
+| `twitter/output/charts/chart_manifest.json` | reaction_generator.py | Chart paths |
+| `scanner/output/current/market_analysis.md` | newsletter_compiler.py | Market context |
+| `scanner/output/current/newsletter_briefing.md` | newsletter_compiler.py, grok_prompts_generator.py | Briefing data |
 | `personas/*.yaml` | reaction_generator.py | Persona definitions |
 | `examples/tweet_examples.json` | reaction_generator.py | Few-shot examples |
 | `email_config.json` | email_notifier.py | SMTP credentials |
@@ -407,26 +407,26 @@ All cross-package imports use `try/except ImportError` with fallback defaults:
 
 | File | Written By | Purpose |
 |------|-----------|---------|
-| `trades/portfolio.csv` | portfolio_manager.py | Trade updates (atomic write) |
-| `trades/portfolio_google_sheets.csv` | portfolio_manager.py | Export with calculated fields |
-| `trades/portfolio_backups/*.csv` | portfolio_manager.py | Timestamped backups |
-| `trades/signals.json` | scanner.py | Scan results |
-| `trades/analysis_log.csv` | scanner.py | Historical scan log (appended) |
-| `trades/latest_report.txt` | scanner.py | Human-readable summary |
-| `trades/latest_newsletter_briefing.md` | scanner.py | Newsletter data |
-| `trades/market_analysis.md` | market_analyzer.py | Market context |
-| `trades/latest_newsletter.html` | newsletter_compiler.py | Compiled newsletter |
-| `trades/content_queue.json` | reaction_generator.py | Generated tweets (main) |
-| `trades/content_queue_account2.json` | reaction_generator.py | Generated tweets (account 2) |
-| `trades/content_queue_account3.json` | reaction_generator.py | Generated tweets (account 3) |
-| `trades/generation_report.json` | reaction_generator.py | Generation statistics |
-| `trades/tweet_tracking.json` | twitter_poster.py, self_quote_tracker.py | Tweet IDs for quoting |
-| `trades/charts/*.png` | chart_capture.py | TradingView screenshots |
-| `trades/charts/chart_manifest.json` | chart_capture.py | Chart path index |
-| `trades/graphics/*.png` | funnel_graphic.py | Pipeline funnel image |
-| `trades/current/*` | scanner.py, various | Current week outputs |
-| `trades/weeks/YYYY-WXX/*` | scanner.py, various | Weekly archives |
-| `trades/grok_prompts/*.md` | scanner.py | Grok/X prompt files |
+| `portfolio/output/portfolio.csv` | portfolio_manager.py | Trade updates (atomic write) |
+| `portfolio/output/portfolio_google_sheets.csv` | portfolio_manager.py | Export with calculated fields |
+| `portfolio/output/portfolio_backups/*.csv` | portfolio_manager.py | Timestamped backups |
+| `scanner/output/signals.json` | scanner.py | Scan results |
+| `scanner/output/analysis_log.csv` | scanner.py | Historical scan log (appended) |
+| `scanner/output/current/report.txt` | scanner.py | Human-readable summary |
+| `scanner/output/current/newsletter_briefing.md` | scanner.py | Newsletter data |
+| `scanner/output/current/market_analysis.md` | market_analyzer.py | Market context |
+| `substack/output/current/newsletter.html` | newsletter_compiler.py | Compiled newsletter |
+| `twitter/output/content_queue.json` | reaction_generator.py | Generated tweets (main) |
+| `twitter/output/content_queue_account2.json` | reaction_generator.py | Generated tweets (account 2) |
+| `twitter/output/content_queue_account3.json` | reaction_generator.py | Generated tweets (account 3) |
+| `twitter/output/generation_report.json` | reaction_generator.py | Generation statistics |
+| `twitter/output/tweet_tracking.json` | twitter_poster.py, self_quote_tracker.py | Tweet IDs for quoting |
+| `twitter/output/charts/*.png` | chart_capture.py | TradingView screenshots |
+| `twitter/output/charts/chart_manifest.json` | chart_capture.py | Chart path index |
+| `twitter/output/charts/*.png` | funnel_graphic.py | Pipeline funnel image |
+| `scanner/output/current/` | scanner.py, various | Current week outputs |
+| `scanner/output/archive/YYYY-WXX/*` | scanner.py, various | Weekly archives |
+| `twitter/output/grok_prompts/*.md` | scanner.py | Grok/X prompt files |
 | `logs/*.log` | thematic_analyzer.py | Debug logs |
 
 ---

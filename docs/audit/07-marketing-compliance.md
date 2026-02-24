@@ -354,7 +354,7 @@ get_winners_for_showcase(threshold=25.0, max=5)
 | Home Run | 50% | 🚀 | HOME RUN |
 | Hall of Fame | 100% | 🏆 | HALL OF FAME |
 
-Celebrations tracked in `trades/celebrations.json` to avoid duplicate posts. Keys: `25_pct_celebrated`, `50_pct_celebrated`, `100_pct_celebrated`.
+Celebrations tracked in `twitter/output/celebrations.json` to avoid duplicate posts. Keys: `25_pct_celebrated`, `50_pct_celebrated`, `100_pct_celebrated`.
 
 ### 5.3 Win Categories (`config.py:738-766`)
 

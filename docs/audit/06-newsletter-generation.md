@@ -47,14 +47,14 @@ The newsletter is assembled from multiple data sources into a single publication
 **Stage 1: Scanner Briefing** (scanner.py:1797-2230)
 - Raw data compilation from scan results
 - Generated automatically by `generate_newsletter_briefing()`
-- Output: `trades/current/newsletter_briefing.md`
+- Output: `scanner/output/current/newsletter_briefing.md`
 - Contains all data tables, charts placeholders, P&L figures
 
 **Stage 2: LLM Compilation** (newsletter_compiler.py:192-230)
 - Claude Sonnet 4 receives briefing + market analysis + DD results + portfolio status + benchmark
 - Produces publication-ready markdown with marketing language applied
 - Model: `claude-sonnet-4-20250514`, max_tokens: 6000
-- Output: `trades/current/newsletter.html` (via markdown-to-HTML conversion)
+- Output: `substack/output/current/newsletter.html` (via markdown-to-HTML conversion)
 
 ### 1.3 Subject Line Formula (newsletter_compiler.py:92-94)
 
@@ -82,12 +82,12 @@ Example: "Week 4: 3 TEAL Signals | Why Power Grid is 2026's Winning Theme"
 - Looking-ahead catalysts
 
 **Output format:** 4-paragraph markdown with `## Market Context` header
-**Saved to:** `trades/market_analysis.md` or `trades/current/market_analysis.md`
+**Saved to:** `scanner/output/current/market_analysis.md` or `scanner/output/current/market_analysis.md`
 
 **Loading in compiler** (newsletter_compiler.py:237-258):
 ```
-Primary: trades/current/market_analysis.md
-Fallback: trades/market_analysis.md
+Primary: scanner/output/current/market_analysis.md
+Fallback: scanner/output/current/market_analysis.md
 ```
 
 ### 2.2 Hot Themes (scanner.py:1851-1892)
@@ -220,7 +220,7 @@ Fallback: trades/market_analysis.md
 4. Wait for indicators to load (7-point error detection, lines 417-472)
 5. Hide indicator names via JavaScript injection
 6. Screenshot chart element (4-selector fallback chain, lines 166-187)
-7. Save PNG to `trades/charts/`
+7. Save PNG to `twitter/output/charts/`
 
 ### 3.2 Chart Sizes
 
@@ -235,7 +235,7 @@ Fallback: trades/market_analysis.md
 
 Determined by CLI arguments in `run_local_friday.sh`:
 ```bash
-python chart_capture.py --tickers-from trades/signals.json --include-portfolio
+python chart_capture.py --tickers-from scanner/output/signals.json --include-portfolio
 ```
 
 This captures:
@@ -254,16 +254,16 @@ This captures:
 **First run:** Interactive mode (browser visible).
 **Subsequent runs:** `--headless --skip-wait` (no browser window).
 
-### 3.5 Chart Manifest (trades/charts/chart_manifest.json)
+### 3.5 Chart Manifest (twitter/output/charts/chart_manifest.json)
 
 ```json
 {
   "captured_at": "2026-01-24T18:05:24.356074",
   "charts": {
-    "EOSE": "trades/charts/EOSE_20260124.png",
-    "RMBS": "trades/charts/RMBS_20260124.png",
+    "EOSE": "twitter/output/charts/EOSE_20260124.png",
+    "RMBS": "twitter/output/charts/RMBS_20260124.png",
     "funnel_graphic": {
-      "path": "trades/charts/funnel_20260127.png",
+      "path": "twitter/output/charts/funnel_20260127.png",
       "generated": "2026-01-27T11:37:38.092385",
       "data": {"universe": 885, "final": 3}
     }
@@ -282,7 +282,7 @@ This captures:
 1. Regex finds `[CHART: TICKER]` patterns (lines 646-648)
 2. Looks up ticker in chart_manifest.json
 3. If found: reads PNG, encodes to base64, embeds as `<img src="data:image/png;base64,..."/>`
-4. If not in manifest: searches `trades/charts/{TICKER}_*.png` directly
+4. If not in manifest: searches `twitter/output/charts/{TICKER}_*.png` directly
 5. If no file found: renders placeholder box with "Chart image will be added here"
 
 **Missing chart reporting** (lines 925-934):
@@ -330,7 +330,7 @@ FRIDAY
               ├─ Step 3: market_analyzer.py --save
               │    └─ Generate: market_analysis.md (Claude + web search)
               │
-              ├─ Step 4: newsletter_compiler.py --full
+              ├─ Step 4: newsletter_compiler.py --from-html
               │    ├─ Load: market_analysis + briefing + DD + portfolio
               │    ├─ LLM compile via Claude Sonnet 4
               │    ├─ Convert markdown → HTML with chart embedding
@@ -365,7 +365,7 @@ FRIDAY
               │    ├─ Screenshot charts (1400x900 + 1000x700)
               │    └─ Save chart_manifest.json
               │
-              └─ git add trades/charts/ && git commit && git push
+              └─ git add twitter/output/charts/ && git commit && git push
 
 
 SATURDAY
@@ -373,7 +373,7 @@ SATURDAY
 
 Morning    [MANUAL - ~10 minutes]
               │
-              ├─ Open trades/current/newsletter.html in browser
+              ├─ Open substack/output/current/newsletter.html in browser
               ├─ Copy rendered content to Substack editor
               ├─ Add TradingView chart screenshots at [CHART:] placeholders
               ├─ Preview formatting
@@ -404,7 +404,7 @@ TUESDAY
               Daily tweet posting continues (5 slots)
               │
               └─ [MANUAL - ~2 minutes]
-                   ├─ Open trades/current/substack_notes/tuesday_note.md
+                   ├─ Open substack/output/current/substack_notes/tuesday_note.md
                    ├─ Copy to Substack Notes editor
                    └─ Publish "Portfolio Pulse" note
 
@@ -421,7 +421,7 @@ THURSDAY
               Daily tweet posting continues (5 slots)
               │
               └─ [MANUAL - ~2 minutes]
-                   ├─ Open trades/current/substack_notes/thursday_note.md
+                   ├─ Open substack/output/current/substack_notes/thursday_note.md
                    ├─ Copy to Substack Notes editor
                    └─ Publish "Trade Spotlight" note
 
@@ -473,7 +473,7 @@ There is **no automated Substack publishing**. The system generates publication-
 ### 5.2 Draft Creation Process
 
 **Newsletter (Saturday):**
-1. `newsletter_compiler.py --full` generates `trades/current/newsletter.html`
+1. `newsletter_compiler.py --from-html` generates `substack/output/current/newsletter.html`
 2. HTML includes inline CSS, tables, chart embeds (base64)
 3. User opens HTML in browser, copies rendered content
 4. Pastes into Substack rich text editor
@@ -481,7 +481,7 @@ There is **no automated Substack publishing**. The system generates publication-
 6. Publishes
 
 **Substack Notes (Tuesday/Thursday):**
-1. Pre-generated markdown files in `trades/current/substack_notes/`
+1. Pre-generated markdown files in `substack/output/current/substack_notes/`
 2. User copies markdown content
 3. Pastes into Substack Notes editor
 4. Publishes
@@ -622,10 +622,10 @@ This is a warning-level check. It does not block publication.
 ### 7.3 Output Paths
 
 ```
-trades/current/substack_notes/tuesday_note.md
-trades/current/substack_notes/thursday_note.md
-trades/weeks/YYYY-WXX/substack_notes/tuesday_note.md
-trades/weeks/YYYY-WXX/substack_notes/thursday_note.md
+substack/output/current/substack_notes/tuesday_note.md
+substack/output/current/substack_notes/thursday_note.md
+scanner/output/archive/YYYY-WXX/substack_notes/tuesday_note.md
+scanner/output/archive/YYYY-WXX/substack_notes/thursday_note.md
 ```
 
 ### 7.4 Marketing Safeguards in Notes
@@ -662,7 +662,7 @@ Used consistently across all Substack content:
 ### 8.3 Output Path
 
 ```
-trades/substack_posts/
+substack/output/current/substack_posts/
 ├── monday_market_analysis_YYYYMMDD.md
 ├── thursday_theme_spotlight_YYYYMMDD.md
 ├── saturday_weekly_signals_YYYYMMDD.md
@@ -711,7 +711,7 @@ Tuesday and Thursday notes are generated Friday evening but published Tuesday/Th
 
 ### C-6: No Version Control for Published Content (LOW)
 
-Published newsletter content (what actually appears on Substack) is not tracked. Only the generated HTML is archived in `trades/weeks/`. If the user modifies content during manual Substack publishing, the modification is not captured.
+Published newsletter content (what actually appears on Substack) is not tracked. Only the generated HTML is archived in `scanner/output/archive/`. If the user modifies content during manual Substack publishing, the modification is not captured.
 
 ### C-7: HTML Conversion is Custom (Not Standard Library) (LOW)
 
@@ -730,35 +730,33 @@ DD fields are accessed by specific key names (`dd_verdict`, `dd_conviction`, etc
 ## Appendix: File Output Map
 
 ```
-trades/
+scanner/output/
+├── signals.json                    ← scanner.py
 ├── current/
 │   ├── newsletter_briefing.md      ← scanner.py (Stage 1)
-│   ├── newsletter.html             ← newsletter_compiler.py (Stage 2)
-│   ├── signals.json                ← scanner.py
 │   ├── market_analysis.md          ← market_analyzer.py
+│   └── report.txt                  ← scanner.py
+├── archive/
+│   └── 2026-WXX/                   ← Archived copies
+
+substack/output/
+├── current/
+│   ├── newsletter.html             ← newsletter_compiler.py (Stage 2)
 │   ├── substack_notes/
 │   │   ├── tuesday_note.md         ← substack_notes_generator.py
 │   │   └── thursday_note.md        ← substack_notes_generator.py
-│   └── charts/
-│       └── chart_manifest.json     ← chart_capture.py
-│
-├── weeks/
-│   └── 2026-WXX/                   ← Archived copies of all above
-│
-├── substack_posts/
-│   ├── monday_market_analysis_YYYYMMDD.md    ← substack_content_generator.py
-│   ├── thursday_theme_spotlight_YYYYMMDD.md
-│   ├── saturday_weekly_signals_YYYYMMDD.md
-│   └── sunday_deep_dive_YYYYMMDD.md
-│
+│   └── substack_posts/
+│       ├── monday_market_analysis_YYYYMMDD.md  ← content_generator.py
+│       └── ...
+
+twitter/output/
 ├── charts/
-│   ├── {TICKER}_{YYYYMMDD}.png              ← chart_capture.py (X size)
-│   ├── {TICKER}_{YYYYMMDD}_substack.png     ← chart_capture.py (Substack size)
+│   ├── {TICKER}_{YYYYMMDD}.png     ← chart_capture.py
 │   └── chart_manifest.json
-│
-├── market_analysis.md              ← Legacy location
-├── latest_newsletter_briefing.md   ← Legacy symlink
-├── latest_newsletter.html          ← Legacy copy
+├── content_queue.json              ← tweet_generator.py
+└── ...
+
+portfolio/output/
 └── portfolio.csv                   ← Source of truth
 ```
 

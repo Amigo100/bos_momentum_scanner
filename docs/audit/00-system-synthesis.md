@@ -182,12 +182,12 @@ yfinance ──▶ scanner.py ──▶ signals.json
 | Scenario | Recovery Steps |
 |----------|---------------|
 | **Friday scan failed** | 1. Check GitHub Actions logs. 2. Fix issue. 3. Trigger `friday_scan.yml` via `workflow_dispatch`. |
-| **Portfolio CSV corrupt** | 1. `cp trades/portfolio_backups/portfolio_LATEST.csv trades/portfolio.csv`. 2. Verify with `python portfolio_manager.py --report`. |
+| **Portfolio CSV corrupt** | 1. `cp portfolio/output/portfolio_backups/portfolio_LATEST.csv portfolio/output/portfolio.csv`. 2. Verify with `python portfolio_manager.py --report`. |
 | **Daily tweet missed** | No retry mechanism. Slot is lost. Consider adding retry logic or queue rollover. |
-| **Newsletter not generated** | 1. Re-run `python newsletter_compiler.py --full`. 2. Manual publish to Substack. |
+| **Newsletter not generated** | 1. Re-run `python newsletter_compiler.py --from-html`. 2. Manual publish to Substack. |
 | **Content queue empty** | 1. Re-run `python tweet_generator.py`. 2. Upload artifact manually or commit to repo. |
 | **API key compromised** | 1. Rotate key in Anthropic console. 2. Update GitHub secret `ANTHROPIC_API_KEY`. 3. Update local env. |
-| **All GitHub Actions fail** | Run locally: `python scanner.py --web-search && python tweet_generator.py && python newsletter_compiler.py --full` |
+| **All GitHub Actions fail** | Run locally: `python scanner.py --web-search && python tweet_generator.py && python newsletter_compiler.py --from-html` |
 
 ---
 

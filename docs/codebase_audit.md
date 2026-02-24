@@ -216,10 +216,10 @@
 
 ### Untracked Files:
 - `LIVE_TWEET_SYSTEM_AUDIT.md`
-- `trades/current/content_production_guide.md`
-- `trades/current/substack_notes/` — 10 note files + manifest
-- `trades/current/substack_posts/`
-- `trades/weeks/2026-W08/`
+- `substack/output/current/content_production_guide.md`
+- `substack/output/current/substack_notes/` — 10 note files + manifest
+- `substack/output/current/substack_posts/`
+- `scanner/output/archive/2026-W08/`
 
 ---
 
@@ -436,13 +436,13 @@ LAYER 4 — Pipeline Entry Points (depend on everything)
 | **sterling_indicators.py** | None (self-contained constants) | scanner.py, portfolio/manager.py, tests | None | {ticker}_indicator_history.csv (CLI only) | yfinance (CLI only) |
 | **daily_scanner.py** | scanner.scanner, legacy_indicators, config | None (standalone entry) | complete_tickers.txt, daily_portfolio.csv, portfolio.csv | daily_portfolio.csv, daily_signals.json, daily_portfolio_backups/ | yfinance |
 | **legacy_indicators.py** | config (BANKER_CENTER, VWAP_PERIOD, HMA_PERIOD) | daily_scanner.py | None | None | None |
-| **due_diligence.py** | None | None (standalone CLI) | trades/analysis_log.csv (legacy path!) | reports/dd_{ticker}_{ts}.md | anthropic (Opus + web search) |
+| **due_diligence.py** | None | None (standalone CLI) | scanner/output/analysis_log.csv (legacy path!) | reports/dd_{ticker}_{ts}.md | anthropic (Opus + web search) |
 
 ### 10.3 Per-File Detail: portfolio/
 
 | File | Project Imports | Imported By | Reads | Writes | APIs |
 |------|----------------|-------------|-------|--------|------|
-| **manager.py** | config, scanner.sterling_indicators (check_profit_lock) | scanner.py, portfolio_visual, newsletter_compiler, notes_generator, signal_tracker, tweet_generator, live_tweet_generator, winner_showcase | portfolio.csv, equity_curve.csv, trades/open_positions.csv (migration) | portfolio.csv, portfolio_google_sheets.csv, equity_curve.csv, portfolio_backups/ | yfinance (SPY, QQQ, batch) |
+| **manager.py** | config, scanner.sterling_indicators (check_profit_lock) | scanner.py, portfolio_visual, newsletter_compiler, notes_generator, signal_tracker, tweet_generator, live_tweet_generator, winner_showcase | portfolio.csv, equity_curve.csv, portfolio/output/portfolio.csv (migration) | portfolio.csv, portfolio_google_sheets.csv, equity_curve.csv, portfolio_backups/ | yfinance (SPY, QQQ, batch) |
 | **backup_cleanup.py** | config | None (standalone CLI) | portfolio_backups/ (dir listing) | Deletes old backup files | None |
 
 ### 10.4 Per-File Detail: substack/

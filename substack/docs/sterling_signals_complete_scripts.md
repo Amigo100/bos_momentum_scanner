@@ -33,37 +33,37 @@
 │          └── Email (SMTP) + WhatsApp (Twilio) scan summary alerts        │
 │                                                                          │
 │  Step 3: content/funnel_graphic.py                                       │
-│          └── trades/charts/funnel_graphic.png (1200×675px)               │
+│          └── twitter/output/charts/funnel_graphic.png (1200×675px)        │
 │                                                                          │
 │  Step 4: content/chart_capture.py --tickers-from signals.json            │
-│          └── trades/charts/*.png (1400×900 X + 1000×700 Substack)        │
+│          └── twitter/output/charts/*.png (1400×900 X + 1000×700 Substack)│
 │                                                                          │
 │  Step 5: content/market_analyzer.py --save                               │
-│          └── trades/current/market_analysis.md (Claude + web search)     │
+│          └── scanner/output/current/market_analysis.md (Claude + web search)│
 │                                                                          │
 │  Step 5.5: content/content_production_guide.py                           │
-│            └── trades/current/content_production_guide.md                │
+│            └── substack/output/current/content_production_guide.md       │
 │                (DATA + SCHEDULE context doc — no prompts)                │
 │                                                                          │
-│  Step 6: content/newsletter_compiler.py --full                           │
-│          └── trades/current/newsletter.html                              │
+│  Step 6: content/newsletter_compiler.py --from-html                      │
+│          └── substack/output/current/newsletter.html                     │
 │                                                                          │
 │  Step 7: content/dd_post_generator.py                                    │
-│          └── trades/current/substack_posts/dd_TICKER.html (per signal)  │
+│          └── substack/output/current/substack_posts/dd_TICKER.html (per signal)│
 │                                                                          │
 │  Step 8: content/substack_content_generator.py --all                    │
-│          └── trades/current/substack_posts/*.html (4-5 posts/week)       │
+│          └── substack/output/current/substack_posts/*.html (4-5 posts/week)│
 │                                                                          │
 │  Step 9: content/portfolio_visual.py                                     │
-│          └── trades/current/portfolio_visual.html                        │
+│          └── substack/output/current/portfolio_visual.html               │
 │                                                                          │
 │  Step 10: content/tweet_generator.py --signals --portfolio --account all │
-│           └── trades/content_queue*.json (3 accounts, slots 2-5)         │
+│           └── twitter/output/content_queue*.json (3 accounts, slots 2-5) │
 │                                                                          │
 │  Step 11: content/substack_notes_batch_generator.py                     │
-│           └── trades/current/substack_notes/*.md (21 notes, 3/day)      │
+│           └── substack/output/current/substack_notes/*.md (21 notes, 3/day)│
 │                                                                          │
-│  Step 12: git add trades/ && git commit && git push                      │
+│  Step 12: git add scanner/ portfolio/ substack/ twitter/ && git commit && git push│
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 
@@ -86,12 +86,12 @@ Cost: ~$2-4 total (scanner $1-3 + content $0.50-1.00)
 │  Step 2: distribution/notifications.py (sell alerts only)                │
 │                                                                          │
 │  Step 3: content/chart_capture.py --daily                                │
-│          └── trades/charts/*.png (daily timeframe)                       │
+│          └── twitter/output/charts/*.png (daily timeframe)               │
 │                                                                          │
 │  Step 4: content/tweet_generator.py --daily --account all                │
-│          └── trades/daily_content_queue*.json (3 accounts, slots 1/6/7) │
+│          └── twitter/output/daily_content_queue*.json (3 accounts, slots 1/6/7)│
 │                                                                          │
-│  Step 5: git add trades/ && git commit && git push                       │
+│  Step 5: git add scanner/ portfolio/ twitter/ && git commit && git push  │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 
@@ -109,7 +109,7 @@ Cost: ~$0.10-0.30 per run
 │  Step 1: content/live_context_gatherer.py                                │
 │          ├── Queries xAI Grok via Responses API                          │
 │          ├── Tools: X Search + Web Search                                │
-│          └── OUTPUT: trades/live_context.json                            │
+│          └── OUTPUT: twitter/output/live_context.json                    │
 │                  ├── market_snapshot (SPY/QQQ, VIX, breadth)            │
 │                  ├── portfolio_movers (current prices, alerts)           │
 │                  ├── theme_activity (trending sectors)                   │
@@ -120,7 +120,7 @@ Cost: ~$0.10-0.30 per run
 │          ├── P0-P10 priority decision system                             │
 │          ├── 3-variant generation per account                            │
 │          ├── 14-step validation + repair loop                            │
-│          └── OUTPUT: trades/live_content_queue.json                      │
+│          └── OUTPUT: twitter/output/live_content_queue.json              │
 │                                                                          │
 │  Step 3: distribution/twitter_poster.py --live-queue                    │
 │          ├── Account 1 → variant_1 of each slot                         │
@@ -242,7 +242,7 @@ WEEKLY_NOTES_SCHEDULE:
   Friday:    MARKET_REACTION (08:30), SYSTEM_PROOF (12:30), PORTFOLIO_PULSE (17:30)
 
 System prompt: Medical-investor voice, 150-300 words, no markdown headers, no bullet lists, flowing paragraphs, sparse emoji, end with "Not financial advice. Informational only."
-Output: trades/current/substack_notes/*.md (21 files) + notes_manifest.json
+Output: substack/output/current/substack_notes/*.md (21 files) + notes_manifest.json
 
 ---
 
@@ -271,7 +271,7 @@ Schedule builder logic:
   3. Weekly Schedule — day→category→topic→handbook reference
   4. How to Use — brief instructions
 
-Output: trades/current/content_production_guide.md (~17,000 chars)
+Output: substack/output/current/content_production_guide.md (~17,000 chars)
 Companion: docs/content_prompt_handbook_v5.md (permanent, prompts live here)
 
 ---
@@ -302,7 +302,7 @@ Newsletter structure (8-12 min read):
   9. Looking ahead (catalysts)
   10. Footer + disclaimer
 
-Output: trades/current/newsletter.html + weekly archive copy
+Output: substack/output/current/newsletter.html + weekly archive copy
 
 ---
 
@@ -317,7 +317,7 @@ Sections rendered:
 
 Safety: sanitizes via INTERNAL_TERMINOLOGY_MAP (70+ mappings)
 Optional: Playwright PNG screenshots (Substack + Twitter sizes)
-Output: trades/current/substack_posts/dd_TICKER.html
+Output: substack/output/current/substack_posts/dd_TICKER.html
 
 ---
 
@@ -525,17 +525,22 @@ an additional validation layer.
 
 Key paths:
   BASE_DIR = project root
-  TRADES_DIR = trades/
-  CURRENT_DIR = trades/current/
-  CHARTS_DIR = trades/charts/
-  SUBSTACK_POSTS_DIR = trades/current/substack_posts/
-  SUBSTACK_NOTES_DIR = trades/current/substack_notes/
-  WEEKS_DIR = trades/weeks/
+  SCANNER_OUTPUT = scanner/output/
+  PORTFOLIO_OUTPUT = portfolio/output/
+  SUBSTACK_OUTPUT = substack/output/
+  TWITTER_OUTPUT = twitter/output/
+  SCANNER_CURRENT = scanner/output/current/
+  SUBSTACK_CURRENT = substack/output/current/
+  CHARTS_DIR = twitter/output/charts/
+  SUBSTACK_POSTS_DIR = substack/output/current/substack_posts/
+  SUBSTACK_NOTES_DIR = substack/output/current/substack_notes/
+  SCANNER_ARCHIVE = scanner/output/archive/
+  SUBSTACK_ARCHIVE = substack/output/archive/
 
 Key functions:
   ensure_output_structure() → creates all dirs
-  get_current_dir() → trades/current/
-  get_week_dir(date) → trades/weeks/YYYY-WXX/
+  get_current_dir() → scanner/output/current/
+  get_week_dir(date) → scanner/output/archive/YYYY-WXX/
   get_relative_path(abs_path) → path relative to BASE_DIR
   save_to_current_and_archive(content, filename, subdir) → dual-writes
   list_weekly_archives() → sorted list of week dirs
@@ -560,9 +565,9 @@ TWEET_CATEGORIES (18 categories):
   DIP_OPPORTUNITY, THEME_MOMENTUM, MARKET_OPEN, MARKET_CLOSE
 
 ACCOUNT_QUEUES (3 accounts):
-  main → content_queue.json
-  account2 → content_queue_account2.json
-  account3 → content_queue_account3.json
+  main → twitter/output/content_queue.json
+  account2 → twitter/output/content_queue_account2.json
+  account3 → twitter/output/content_queue_account3.json
 
 WEEKLY_SLOTS = [2, 3, 4, 5] (slots 1/6/7 reserved for daily queue)
 
@@ -626,7 +631,7 @@ System prompt: Senior analyst voice, specific numbers, connect macro to momentum
   5. Upcoming catalysts (next 2 weeks)
 
 Output format: 3-4 paragraph market context section
-Output: trades/current/market_analysis.md
+Output: scanner/output/current/market_analysis.md
 
 ---
 
@@ -667,10 +672,10 @@ Key reused functions (imported by substack_notes_batch_generator.py):
   repair_note(text, failures, client) → repaired note
   save_note(content, filename, output_dir) → Path
   ensure_output_dirs() → creates substack_notes/ dirs
-  get_current_dir() → trades/current/
+  get_current_dir() → substack/output/current/
 
-Output (legacy): trades/current/substack_notes/tuesday_note.md,
-                  trades/current/substack_notes/thursday_note.md
+Output (legacy): substack/output/current/substack_notes/tuesday_note.md,
+                  substack/output/current/substack_notes/thursday_note.md
 
 ---
 
@@ -868,8 +873,8 @@ capture_dashboard_screenshot(html_path) → Playwright PNG:
   - 1000×700 (Substack embed)
 
 save_dashboard(html_content) → dual-write:
-  - trades/current/portfolio_visual.html
-  - trades/weeks/YYYY-WXX/portfolio_visual.html
+  - substack/output/current/portfolio_visual.html
+  - substack/output/archive/YYYY-WXX/portfolio_visual.html
 
 _validate_dashboard(html) → runs through marketing_vocabulary validator
 
@@ -1054,8 +1059,8 @@ TradeStatus enum: OPEN, CLOSED, STOPPED
 
 Date normalization: _normalize_date() handles YYYY-MM-DD and DD/MM/YYYY formats
 
-Portfolio file: trades/portfolio.csv (single source of truth)
-Backup: trades/portfolio_backups/ (max 30, deduped to 1 per calendar week)
+Portfolio file: portfolio/output/portfolio.csv (single source of truth)
+Backup: portfolio/output/portfolio_backups/ (max 30, deduped to 1 per calendar week)
 
 Key PortfolioManager methods:
   add_trade(stock) → adds PASS/CONSIDER signals from scanner
@@ -1097,19 +1102,19 @@ python3 -m core.scanner --archive [--web-search | --no-llm --top 20]
 python3 -m content.funnel_graphic
 
 # STEP 2: Chart Capture (skippable with --skip-charts)
-python3 -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless
+python3 -m content.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --headless
 
 # STEP 3: Market Analysis (skippable with --skip-newsletter)
 python3 -m content.market_analyzer --save
 
 # STEP 4: Newsletter (skippable with --skip-newsletter)
-python3 -m content.newsletter_compiler --full
+python3 -m content.newsletter_compiler --from-html
 
 # STEP 4.5: DD HTML Posts
 python3 -m content.dd_post_generator
 
 # STEP 5: Tweets
-python3 -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv --output trades/
+python3 -m content.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv --output twitter/output/
 
 # STEP 5.5: Content Production Guide
 python3 -m content.content_production_guide
@@ -1119,7 +1124,7 @@ python3 -m content.substack_notes_batch_generator
 # Fallback: python3 -m content.substack_notes_generator
 
 # STEP 6: Git commit + push (skippable with --no-push)
-git add trades/
+git add scanner/ portfolio/ substack/ twitter/
 git commit -m "Weekly scan results YYYY-MM-DD"
 git push
 
@@ -1157,14 +1162,14 @@ Manual inputs:
 
   Step 3: Chart Capture (Funnel + TradingView)
     python -m content.funnel_graphic
-    python -m content.chart_capture --tickers-from trades/signals.json --headless
+    python -m content.chart_capture --tickers-from scanner/output/signals.json --headless
     Requires: TRADINGVIEW_COOKIES (optional, falls back to skip)
 
   Step 4: Generate Market Analysis
     python -m content.market_analyzer --save
 
   Step 4.5: Compile Newsletter
-    python -m content.newsletter_compiler --full
+    python -m content.newsletter_compiler --from-html
 
   Step 4.6: Generate Substack Posts
     python -m content.substack_content_generator --all
@@ -1173,7 +1178,7 @@ Manual inputs:
     python -m content.portfolio_visual
 
   Step 5: Generate Tweets
-    python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv --account all
+    python -m content.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv --account all
 
   Step 5.5: Generate Content Production Guide
     python -m content.content_production_guide
@@ -1185,14 +1190,14 @@ Manual inputs:
     python -m content.dd_post_generator
 
   Artifacts uploaded:
-    scan-results (30 days): trades/signals.json, portfolio.csv, newsletter_briefing.md, report.txt
-    substack-notes (7 days): trades/current/substack_notes/
-    substack-posts (30 days): trades/current/substack_posts/
-    content-queue (14 days): trades/content_queue*.json
-    charts (30 days): trades/charts/
+    scan-results (30 days): scanner/output/signals.json, portfolio/output/portfolio.csv, scanner/output/current/newsletter_briefing.md, scanner/output/current/report.txt
+    substack-notes (7 days): substack/output/current/substack_notes/
+    substack-posts (30 days): substack/output/current/substack_posts/
+    content-queue (14 days): twitter/output/content_queue*.json
+    charts (30 days): twitter/output/charts/
 
   Step 6 (Git commit):
-    git add trades/ content/ docs/
+    git add scanner/ portfolio/ substack/ twitter/
     git commit -m "Weekly scan results YYYY-MM-DD"
     git push
 
@@ -1222,20 +1227,20 @@ Manual inputs:
   Deep DD:                     claude-opus-4-20250514 (extended thinking)
 
 ## Critical File Paths
-  trades/signals.json                         — weekly scanner output (source of truth)
-  trades/portfolio.csv                        — all positions (OPEN/CLOSED/STOPPED)
-  trades/content_queue.json                   — main account weekly tweets (slots 2-5)
-  trades/daily_content_queue.json             — main account daily tweets (slots 1/6/7)
-  trades/live_content_queue.json              — live tweets (all accounts)
-  trades/live_context.json                    — Grok market context
-  trades/celebrations.json                    — milestone celebration tracking
-  trades/failed_tweets.json                   — validation failure log
-  trades/current/newsletter.html              — Sunday newsletter
-  trades/current/market_analysis.md           — market context
-  trades/current/content_production_guide.md  — weekly context doc for Claude.ai
-  trades/current/substack_notes/*.md          — 21 notes (3/day)
-  trades/current/substack_posts/*.html        — 4-5 Substack posts
-  trades/charts/chart_manifest.json           — all captured chart paths
+  scanner/output/signals.json                         — weekly scanner output (source of truth)
+  portfolio/output/portfolio.csv                      — all positions (OPEN/CLOSED/STOPPED)
+  twitter/output/content_queue.json                   — main account weekly tweets (slots 2-5)
+  twitter/output/daily_content_queue.json             — main account daily tweets (slots 1/6/7)
+  twitter/output/live_content_queue.json              — live tweets (all accounts)
+  twitter/output/live_context.json                    — Grok market context
+  twitter/output/celebrations.json                    — milestone celebration tracking
+  twitter/output/failed_tweets.json                   — validation failure log
+  substack/output/current/newsletter.html             — Sunday newsletter
+  scanner/output/current/market_analysis.md           — market context
+  substack/output/current/content_production_guide.md — weekly context doc for Claude.ai
+  substack/output/current/substack_notes/*.md         — 21 notes (3/day)
+  substack/output/current/substack_posts/*.html       — 4-5 Substack posts
+  twitter/output/charts/chart_manifest.json           — all captured chart paths
   docs/content_prompt_handbook_v5.md             — permanent prompt reference
 
 ## Cost Summary

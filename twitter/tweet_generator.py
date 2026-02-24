@@ -12,12 +12,12 @@ Ref: FINTWIT_STYLE_GUIDE.md
 Usage:
     from twitter.tweet_generator import generate_weekly_content, generate_daily_content
 
-    summary = generate_weekly_content("trades/signals.json", "trades/portfolio.csv")
-    daily  = generate_daily_content("trades/daily_signals.json", "trades/daily_portfolio.csv")
+    summary = generate_weekly_content("scanner/output/signals.json", "portfolio/output/portfolio.csv")
+    daily  = generate_daily_content("scanner/output/daily_signals.json", "portfolio/output/daily_portfolio.csv")
 
 CLI:
-    python -m content.tweet_generator --signals trades/signals.json --portfolio trades/portfolio.csv
-    python -m content.tweet_generator --daily --signals trades/daily_signals.json
+    python -m twitter.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv
+    python -m twitter.tweet_generator --daily --signals scanner/output/daily_signals.json
 """
 
 import argparse
@@ -1767,7 +1767,7 @@ def generate_weekly_content(
         signals_path: Path to signals.json
         portfolio_path: Path to portfolio.csv
         market_data: Optional market context dict
-        output_dir: Output directory (default: trades/)
+        output_dir: Output directory (default: twitter/output/)
         account_id: Which account to generate for ("main", "account2", "account3")
 
     Returns:
@@ -1953,7 +1953,7 @@ def generate_daily_content(
     Args:
         daily_signals_path: Path to daily_signals.json
         daily_portfolio_path: Path to daily_portfolio.csv
-        output_dir: Output directory (default: trades/)
+        output_dir: Output directory (default: twitter/output/)
         account_id: Which account to generate for ("main", "account2", "account3")
 
     Returns:

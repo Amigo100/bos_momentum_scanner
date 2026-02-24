@@ -61,16 +61,16 @@ Update `.env` with new keys after rotation.
 
 | File | Location | Reason |
 |------|----------|--------|
-| `newsletter_briefing_old.md` | `trades/weeks/2026-W04/` | Old version backup |
-| `report_old.txt` | `trades/weeks/2026-W04/` | Old version backup |
+| `newsletter_briefing_old.md` | `scanner/output/archive/2026-W04/` | Old version backup |
+| `report_old.txt` | `scanner/output/archive/2026-W04/` | Old version backup |
 | `generate_example_graphics.py` | Root | Never called, demo only |
 
 ### Commands
 
 ```bash
 # Delete old version files
-rm -f trades/weeks/2026-W04/newsletter_briefing_old.md
-rm -f trades/weeks/2026-W04/report_old.txt
+rm -f scanner/output/archive/2026-W04/newsletter_briefing_old.md
+rm -f scanner/output/archive/2026-W04/report_old.txt
 
 # Delete unused demo script
 rm -f generate_example_graphics.py
@@ -301,8 +301,8 @@ grep -q "^\.env$" .gitignore || echo ".env" >> .gitignore
 
 # P1: Delete Duplicates
 echo "[P1] Removing duplicate/old files..."
-rm -f trades/weeks/2026-W04/newsletter_briefing_old.md
-rm -f trades/weeks/2026-W04/report_old.txt
+rm -f scanner/output/archive/2026-W04/newsletter_briefing_old.md
+rm -f scanner/output/archive/2026-W04/report_old.txt
 rm -f generate_example_graphics.py
 
 # P2: Archive Orphaned Files

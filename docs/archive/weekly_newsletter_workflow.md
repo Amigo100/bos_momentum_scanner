@@ -12,7 +12,7 @@ FRIDAY EVENING (After Market Close)
 ├── Run: python scanner.py --web-search
 │
 │   Scanner automatically outputs:
-│   ├── trades/latest_newsletter_briefing.md (scanner briefing)
+│   ├── scanner/output/current/newsletter_briefing.md (scanner briefing)
 │   ├── DD prompts for each PASS signal (copy from terminal)
 │   ├── PROMPT 1: Market context generation (copy from terminal)
 │   └── PROMPT 2: Newsletter compilation (copy from terminal)
@@ -37,8 +37,8 @@ python scanner.py --web-search
 # This generates files AND prints prompts to terminal:
 #
 # FILES:
-#   trades/latest_newsletter_briefing.md  <- Scanner briefing
-#   trades/latest_report.txt              <- Detailed technical report
+#   scanner/output/current/newsletter_briefing.md  <- Scanner briefing
+#   scanner/output/current/report.txt              <- Detailed technical report
 #
 # TERMINAL OUTPUT (copy these prompts):
 #   [1] DD prompts for each PASS signal
@@ -84,7 +84,7 @@ Copy **PROMPT 2** from the scanner terminal output.
 
 Then fill in the three sections:
 1. **Market Context** - Paste output from Step 2
-2. **Scanner Briefing** - Paste contents of `trades/latest_newsletter_briefing.md`
+2. **Scanner Briefing** - Paste contents of `scanner/output/current/newsletter_briefing.md`
 3. **DD Outputs** - Paste all DD outputs from Step 3
 
 The prompt will generate a complete, publication-ready newsletter.
@@ -128,9 +128,9 @@ python scanner.py --no-llm
 
 | File | Purpose |
 |------|---------|
-| `trades/latest_newsletter_briefing.md` | Scanner output for newsletter |
-| `trades/latest_report.txt` | Detailed technical report |
-| `trades/open_positions.csv` | Current positions |
+| `scanner/output/current/newsletter_briefing.md` | Scanner output for newsletter |
+| `scanner/output/current/report.txt` | Detailed technical report |
+| `portfolio/output/portfolio.csv` | Current positions |
 
 ---
 

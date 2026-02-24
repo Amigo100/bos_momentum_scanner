@@ -254,7 +254,7 @@ friday_scan.yml
 ├─► substack_content_generator.py
 │   ├─► config.py
 │   ├─► marketing_vocabulary.py
-│   └─► [writes] trades/substack_posts/
+│   └─► [writes] substack/output/current/substack_posts/
 │
 ├─► tweet_generator.py
 │   ├─► config.py
@@ -288,7 +288,7 @@ daily_post.yml
 │   ├─► config.py
 │   ├─► output_paths.py
 │   ├─► [reads] content_queue.json
-│   ├─► [reads] trades/charts/*.png
+│   ├─► [reads] twitter/output/charts/*.png
 │   ├─► [writes] content_queue.json (updates posted status)
 │   └─► X/Twitter API
 │
@@ -305,7 +305,7 @@ run_local_friday.sh
     ├─► config.py
     ├─► playwright (browser automation)
     ├─► [reads] signals.json
-    └─► [writes] trades/charts/*.png
+    └─► [writes] twitter/output/charts/*.png
 ```
 
 ---
@@ -396,8 +396,8 @@ References to non-existent files:
 
 | File A | File B | Similarity | Action |
 |--------|--------|------------|--------|
-| `trades/weeks/2026-W04/newsletter_briefing_old.md` | `newsletter_briefing.md` | Old version | DELETE |
-| `trades/weeks/2026-W04/report_old.txt` | `report.txt` | Old version | DELETE |
+| `scanner/output/archive/2026-W04/newsletter_briefing_old.md` | `newsletter_briefing.md` | Old version | DELETE |
+| `scanner/output/archive/2026-W04/report_old.txt` | `report.txt` | Old version | DELETE |
 
 ### Similar Purpose Files (Not Duplicates)
 
@@ -468,8 +468,8 @@ git push
 
 ```bash
 # Old version files in archives
-rm trades/weeks/2026-W04/newsletter_briefing_old.md
-rm trades/weeks/2026-W04/report_old.txt
+rm scanner/output/archive/2026-W04/newsletter_briefing_old.md
+rm scanner/output/archive/2026-W04/report_old.txt
 ```
 
 ### Phase 3: Archive Orphaned Utility Files
@@ -512,9 +512,9 @@ rm generate_example_graphics.py
 | `tweet_generator.py` | content_queue.json, tweets_*.json |
 | `newsletter_compiler.py` | newsletter.html |
 | `twitter_poster.py` | Updates content_queue.json (posted status) |
-| `chart_capture.py` | trades/charts/*.png, chart_manifest.json |
+| `chart_capture.py` | twitter/output/charts/*.png, chart_manifest.json |
 | `substack_notes_generator.py` | tuesday_note.md, thursday_note.md |
-| `substack_content_generator.py` | trades/substack_posts/*.md |
+| `substack_content_generator.py` | substack/output/current/substack_posts/*.md |
 | `grok_prompts_generator.py` | grok_prompts/*.md |
 | `market_analyzer.py` | market_analysis.md |
 | `portfolio_manager.py` | portfolio_backups/*.csv |
@@ -526,7 +526,7 @@ rm generate_example_graphics.py
 |----------|-------|
 | `scanner.py` | complete_tickers.txt, portfolio.csv |
 | `tweet_generator.py` | signals.json, portfolio.csv |
-| `twitter_poster.py` | content_queue.json, trades/charts/*.png |
+| `twitter_poster.py` | content_queue.json, twitter/output/charts/*.png |
 | `newsletter_compiler.py` | signals.json, market_analysis.md |
 | `substack_notes_generator.py` | signals.json, portfolio.csv |
 | `signal_tracker.py` | portfolio.csv, celebrations.json |

@@ -725,17 +725,22 @@ TIMEFRAME_DISCLAIMERS = {
 Created by `ensure_output_structure()` (lines 87-122):
 
 ```
-trades/
+scanner/output/
   current/                      # Latest week outputs
-    substack_notes/
-    charts/
-    tweets/
-  weeks/
+  archive/
     YYYY-WXX/                   # ISO week archive
-      substack_notes/
-      charts/
-      tweets/
+
+portfolio/output/
   portfolio_backups/
+
+substack/output/
+  current/
+    substack_notes/
+    substack_posts/
+
+twitter/output/
+  charts/
+  content_queue*.json
 ```
 
 ### 6.2 Helper Functions
@@ -743,8 +748,8 @@ trades/
 | Function | Signature | Line | Purpose |
 |----------|-----------|------|---------|
 | `get_week_identifier` | `(dt: Optional[datetime] = None) -> str` | 44 | Returns `"YYYY-WXX"` ISO week string |
-| `get_current_dir` | `() -> Path` | 60 | Returns `trades/current/` |
-| `get_week_dir` | `(dt: Optional[datetime] = None) -> Path` | 73 | Returns `trades/weeks/YYYY-WXX/` |
+| `get_current_dir` | `() -> Path` | 60 | Returns `scanner/output/current/` |
+| `get_week_dir` | `(dt: Optional[datetime] = None) -> Path` | 73 | Returns `scanner/output/archive/YYYY-WXX/` |
 | `ensure_output_structure` | `() -> Tuple[Path, Path]` | 87 | Creates all dirs, returns `(current_dir, week_dir)` |
 | `get_output_paths` | `() -> Dict[str, Path]` | 125 | Returns dict with keys: `trades`, `current`, `week`, `backups` |
 | `save_to_current_and_archive` | `(content: str, filename: str) -> Tuple[Path, Path]` | 144 | Writes to both `current/` and `weeks/` |
@@ -755,11 +760,11 @@ trades/
 
 ### 6.3 Weekly Archive Pattern
 
-Each Friday scan saves outputs to both `trades/current/` and `trades/weeks/YYYY-WXX/`. The `save_to_current_and_archive()` function (line 144) handles this dual-write pattern. `current/` always contains the latest outputs for scripts that do not need to specify a date. `weeks/` provides historical access.
+Each Friday scan saves outputs to both `scanner/output/current/` and `scanner/output/archive/YYYY-WXX/`. The `save_to_current_and_archive()` function (line 144) handles this dual-write pattern. `current/` always contains the latest outputs for scripts that do not need to specify a date. `weeks/` provides historical access.
 
 Legacy symlinks (line 194) maintain backwards compatibility:
 
-| Old Path (trades/) | New Path (trades/current/) |
+| Old Path (legacy trades/) | New Path (section output/) |
 |--------------------|---------------------------|
 | `latest_report.txt` | `report.txt` |
 | `latest_newsletter_briefing.md` | `newsletter_briefing.md` |
@@ -1193,8 +1198,8 @@ All helper functions defined in `config/output_paths.py`:
 | Function | Signature | Line | Returns |
 |----------|-----------|------|---------|
 | `get_week_identifier` | `(dt: Optional[datetime]) -> str` | 44 | `"YYYY-WXX"` string |
-| `get_current_dir` | `() -> Path` | 60 | `trades/current/` |
-| `get_week_dir` | `(dt: Optional[datetime]) -> Path` | 73 | `trades/weeks/YYYY-WXX/` |
+| `get_current_dir` | `() -> Path` | 60 | `scanner/output/current/` |
+| `get_week_dir` | `(dt: Optional[datetime]) -> Path` | 73 | `scanner/output/archive/YYYY-WXX/` |
 | `ensure_output_structure` | `() -> Tuple[Path, Path]` | 87 | `(current_dir, week_dir)` |
 | `get_output_paths` | `() -> Dict[str, Path]` | 125 | Dict with `trades`, `current`, `week`, `backups` |
 | `save_to_current_and_archive` | `(content: str, filename: str) -> Tuple[Path, Path]` | 144 | `(current_path, archive_path)` |

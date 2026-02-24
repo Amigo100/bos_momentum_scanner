@@ -57,7 +57,7 @@ Below are the detailed specifications for each content type.
 | **Data sources** | `signals.json`, `portfolio.csv`, `market_analysis.md`, `newsletter_briefing.md` |
 | **Cadence** | Weekly, every Saturday |
 | **Visual elements** | Theme cards with progress bars, funnel graphic, winners table, benchmark stat grid (NAV, return, alpha vs SPY, alpha vs NASDAQ, max drawdown), equity curve |
-| **Module** | `python -m substack.newsletter_compiler --full` |
+| **Module** | `python -m substack.newsletter_compiler --from-html` |
 
 **Structure:**
 
@@ -607,7 +607,7 @@ python -m substack.dd_post_generator --dry-run           # Preview to stdout
 
 **Newsletter:**
 ```bash
-python -m substack.newsletter_compiler --full            # Full compilation with LLM
+python -m substack.newsletter_compiler --from-html       # Convert Claude.ai HTML to newsletter
 ```
 
 **Market analysis:**

@@ -160,7 +160,7 @@ NEW_BANNED_TERMS = [
 ### Task 1.2.1: Create Substack Posts Directory
 **Priority:** HIGH | **Effort:** 0.25 hrs | **Dependencies:** None
 
-- [ ] Create directory: `trades/substack_posts/`
+- [ ] Create directory: `substack/output/current/substack_posts/`
 - [ ] Add `.gitkeep` file to preserve empty directory
 - [ ] Update `.gitignore` if needed (keep HTML files tracked or ignored based on preference)
 
@@ -545,7 +545,7 @@ SIGNAL_DETAIL_TEMPLATE = """
 
       - name: Commit Substack Content
         run: |
-          git add trades/substack_posts/
+          git add substack/output/current/substack_posts/
           git commit -m "Add weekly Substack content" || true
 ```
 
@@ -1018,8 +1018,8 @@ SIGNAL_DETAIL_TEMPLATE = """
 | Twitter poster | `src/twitter_poster.py` |
 | Friday workflow | `.github/workflows/friday_scan.yml` |
 | Daily workflow | `.github/workflows/daily_post.yml` |
-| Substack output | `trades/substack_posts/` |
-| Quote tracker data | `trades/self_quote_tracker.json` |
+| Substack output | `substack/output/current/substack_posts/` |
+| Quote tracker data | `twitter/output/tweet_tracking.json` |
 
 ---
 

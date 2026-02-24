@@ -11,7 +11,7 @@ Usage:
     python -m content.dd_post_generator --signals path/to/signals.json
     python -m content.dd_post_generator --dry-run                 # Preview to stdout
 
-Output: trades/current/substack_posts/dd_TICKER.html (+ weekly archive)
+Output: substack/output/current/substack_posts/dd_TICKER.html (+ weekly archive)
 """
 
 import argparse
@@ -378,7 +378,7 @@ def load_signals(signals_path: Optional[Path] = None) -> Dict:
         with open(signals_path, "r") as f:
             return json.load(f)
 
-    # Try current/ folder first, then root trades/
+    # Try current/ folder first, then root scanner/output/
     if OUTPUT_PATHS_AVAILABLE:
         current = get_scanner_current_dir() / "signals.json"
         if current.exists():

@@ -27,17 +27,17 @@ The portfolio uses **CSV files** as its primary persistence layer. There is no d
 
 | File | Purpose | Location |
 |------|---------|----------|
-| `trades/portfolio.csv` | **Source of truth** - all trades (open + closed) | Line 64 of `portfolio_manager.py` |
-| `trades/portfolio_google_sheets.csv` | Export with calculated fields | Line 65 |
-| `trades/portfolio_backups/` | Timestamped backup copies | Line 66-67 |
-| `trades/signals.json` | Weekly scan results (PASS + CONSIDER + sell signals) | `scanner.py` |
-| `trades/celebrations.json` | Big win milestone tracking | `signal_tracker.py` |
+| `portfolio/output/portfolio.csv` | **Source of truth** - all trades (open + closed) | Line 64 of `portfolio_manager.py` |
+| `portfolio/output/portfolio_google_sheets.csv` | Export with calculated fields | Line 65 |
+| `portfolio/output/portfolio_backups/` | Timestamped backup copies | Line 66-67 |
+| `scanner/output/signals.json` | Weekly scan results (PASS + CONSIDER + sell signals) | `scanner.py` |
+| `twitter/output/celebrations.json` | Big win milestone tracking | `signal_tracker.py` |
 
 **Legacy files (deprecated):**
 | File | Purpose | Status |
 |------|---------|--------|
-| `trades/open_positions.csv` | Old separate open positions file | Replaced by unified `portfolio.csv` |
-| `trades/trade_log.csv` | Old signal history | Not auto-imported |
+| `portfolio/output/portfolio.csv` | Old separate open positions file | Replaced by unified `portfolio.csv` |
+| `portfolio/output/portfolio.csv` | Old signal history | Not auto-imported |
 
 ### 1.2 Trade Schema (portfolio.csv)
 
@@ -215,7 +215,7 @@ Retrieval methods:
 - `pm.get_open_positions()` → filters by status == "OPEN" (line 362-364)
 - Google Sheets export includes all trades (open + closed)
 
-**Backup copies** in `trades/portfolio_backups/` provide point-in-time snapshots but are not used for archival queries.
+**Backup copies** in `portfolio/output/portfolio_backups/` provide point-in-time snapshots but are not used for archival queries.
 
 ---
 
@@ -275,7 +275,7 @@ Universe (~1,800 tickers)
 
 ### 3.4 Celebrations Tracking
 
-**File:** `trades/celebrations.json`
+**File:** `twitter/output/celebrations.json`
 
 **Schema:**
 ```json
@@ -420,10 +420,10 @@ if self.portfolio_file.exists():
 ```
 
 - **Frequency:** Every save operation (add, exit, price update, export)
-- **Location:** `trades/portfolio_backups/`
+- **Location:** `portfolio/output/portfolio_backups/`
 - **Naming:** `portfolio_YYYYMMDD_HHMMSS.csv`
 - **Retention:** No automatic cleanup — backups accumulate indefinitely
-- **Recovery:** Manual copy: `cp trades/portfolio_backups/portfolio_XXXX.csv trades/portfolio.csv`
+- **Recovery:** Manual copy: `cp portfolio/output/portfolio_backups/portfolio_XXXX.csv portfolio/output/portfolio.csv`
 
 ### 5.4 Type Safety
 
@@ -468,7 +468,7 @@ flowchart TD
 
     subgraph "Exports (weekly)"
         H --> L[portfolio_google_sheets.csv]
-        H --> M[trades/portfolio_backups/]
+        H --> M[portfolio/output/portfolio_backups/]
         W --> N[tweet_generator.py<br/>watchlist tweets]
     end
 
@@ -580,7 +580,7 @@ The CSV has no concurrent access protection. If `daily_post.yml` and a manual `-
 
 CONSIDER (watchlist) signals exist only in `signals.json`, which is overwritten weekly. There is no historical record of which tickers were on the watchlist in previous weeks.
 
-**Recommendation:** Archive `signals.json` weekly (already partially done via `trades/weeks/` directory).
+**Recommendation:** Archive `signals.json` weekly (already partially done via `scanner/output/archive/` directory).
 
 ### C5: Legacy Fallback Path Still Active (LOW)
 

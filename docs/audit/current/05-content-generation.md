@@ -222,7 +222,7 @@ def generate_day_tweets(
 
 #### Content Loading
 
-- `load_chart_manifest()` (line 417): Scans `trades/charts/` and `trades/graphics/` for PNG files, maps ticker to most recent file path
+- `load_chart_manifest()` (line 417): Scans `twitter/output/charts/` and `twitter/output/charts/` for PNG files, maps ticker to most recent file path
 - `build_theme_ticker_map(scanner_data)` (line 436): Builds `theme_name -> [{ticker, price, status, theme_score}]` from signals.json. Status values: `SIGNAL`, `WATCHLIST`, `IN_THEME`
 - `create_market_context(scanner_data, portfolio_data)` (line 759): Master context builder. Fetches live prices via `fetch_current_prices()` from `core.portfolio_manager`, recalculates P&L, detects content phase, loads scan stats
 - `detect_content_phase(positions, winners) -> str` (line 404): Returns `"EARLY"` (no positions), `"BUILDING"` (green positions), or `"ESTABLISHED"` (25%+ winners)
@@ -265,9 +265,9 @@ Loser patterns (lines 616-620): 9 regex patterns detecting emphasis on losing po
 #### Output Saving
 
 Saves per account:
-- `trades/content_queue.json` (main)
-- `trades/content_queue_account2.json`
-- `trades/content_queue_account3.json`
+- `twitter/output/content_queue.json` (main)
+- `twitter/output/content_queue_account2.json`
+- `twitter/output/content_queue_account3.json`
 
 Tweet dict format:
 
@@ -781,9 +781,9 @@ Key instructions:
 
 | Function | Line | Purpose |
 |----------|------|---------|
-| `load_market_analysis()` | ~243 | Loads `trades/current/market_analysis.md` or `trades/market_analysis.md` |
-| `load_scanner_briefing()` | ~267 | Loads `trades/current/newsletter_briefing.md` or `trades/latest_newsletter_briefing.md` |
-| `load_dd_results()` | ~285 | Extracts DD sections from `trades/signals.json`, returns `(str, int)` count |
+| `load_market_analysis()` | ~243 | Loads `scanner/output/current/market_analysis.md` or `scanner/output/current/market_analysis.md` |
+| `load_scanner_briefing()` | ~267 | Loads `scanner/output/current/newsletter_briefing.md` or `scanner/output/current/newsletter_briefing.md` |
+| `load_dd_results()` | ~285 | Extracts DD sections from `scanner/output/signals.json`, returns `(str, int)` count |
 | `load_portfolio_status()` | ~334 | WIN HIGHLIGHTS only from portfolio (no losses per marketing rules) |
 | `calculate_portfolio_ytd_return()` | ~401 | Calculates from portfolio.csv via yfinance |
 | `generate_benchmark_comparison()` | ~445 | Portfolio vs SPY markdown comparison |
@@ -793,7 +793,7 @@ Key instructions:
 **Simple mode** (default, `compile_newsletter()`):
 1. Load scanner briefing markdown
 2. Convert directly to HTML via `markdown_to_html()`
-3. Save to `trades/current/newsletter.html`
+3. Save to `substack/output/current/newsletter.html`
 
 **Full mode** (`compile_newsletter(full_mode=True)`):
 1. Load market analysis (or generate via `market_analyzer.py`)
@@ -803,7 +803,7 @@ Key instructions:
 5. Generate benchmark comparison
 6. Call `compile_newsletter_llm()` -- single Claude API call to compile all inputs into a cohesive newsletter
 7. Convert compiled markdown to HTML
-8. Save to `trades/current/newsletter.html` and weekly archive
+8. Save to `substack/output/current/newsletter.html` and weekly archive
 
 `compile_newsletter_llm()` (line 198): Sends market_context, scanner_briefing, dd_results, portfolio_status, and benchmark_comparison as structured user message to Claude with `COMPILATION_SYSTEM` prompt.
 
@@ -819,12 +819,12 @@ Key instructions:
 
 ### 6.4 Chart Embedding
 
-Charts from `trades/charts/chart_manifest.json` are embedded during HTML conversion. The manifest maps ticker symbols to file paths:
+Charts from `twitter/output/charts/chart_manifest.json` are embedded during HTML conversion. The manifest maps ticker symbols to file paths:
 
 ```json
 {
-    "NVDA": "trades/charts/NVDA_20260206.png",
-    "RCAT": "trades/charts/RCAT_20260206.png"
+    "NVDA": "twitter/output/charts/NVDA_20260206.png",
+    "RCAT": "twitter/output/charts/RCAT_20260206.png"
 }
 ```
 
@@ -847,7 +847,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent   # line 35
 TRADES_DIR = BASE_DIR / "trades"                     # line 36
 ```
 
-Output directories: `trades/current/substack_notes/` and `trades/weeks/YYYY-WXX/substack_notes/`
+Output directories: `substack/output/current/substack_notes/` and `scanner/output/archive/YYYY-WXX/substack_notes/`
 
 #### Tuesday Note -- "Portfolio Pulse" (line ~198)
 
@@ -870,9 +870,9 @@ Output directories: `trades/current/substack_notes/` and `trades/weeks/YYYY-WXX/
 Both notes use `validate_content()` from `config.marketing_vocabulary` to enforce banned terms compliance.
 
 **Output files:**
-- `trades/current/substack_notes/tuesday_note.md`
-- `trades/current/substack_notes/thursday_note.md`
-- Archived to `trades/weeks/YYYY-WXX/substack_notes/`
+- `substack/output/current/substack_notes/tuesday_note.md`
+- `substack/output/current/substack_notes/thursday_note.md`
+- Archived to `scanner/output/archive/YYYY-WXX/substack_notes/`
 
 ### 7.2 substack_content_generator.py (Mon/Thu/Sat/Sun) -- 528 lines
 
@@ -902,12 +902,12 @@ from config.marketing_vocabulary import validate_content, APPROVED_VOCABULARY
 
 #### Key Functions
 
-- `load_signals() -> Dict` (line 47): Loads `trades/signals.json`
+- `load_signals() -> Dict` (line 47): Loads `scanner/output/signals.json`
 - `load_portfolio() -> List[Dict]` (line 55): Delegates to `core.portfolio_manager.load_portfolio(status_filter="OPEN")`
 - `load_themes() -> List[Dict]` (line 64): Extracts themes from signals
 - `format_winner_line(position, show_entry) -> str` (line 70): Formats `$TICKER: $XX.XX -> $XX.XX (+XX.X%)` respecting `can_show_entry_price()` rules
 
-**Output:** `trades/substack_posts/{day}_post.md`
+**Output:** `substack/output/current/substack_posts/{day}_post.md`
 
 ---
 
@@ -1024,15 +1024,15 @@ This compensates for the fact that prompts are generated once on Friday but used
 
 | File | Description |
 |------|-------------|
-| `trades/grok_prompts/grok_prompts_{YYYYMMDD}.md` | Dated archive of all 21 prompts |
-| `trades/grok_prompts/latest_grok_prompts.md` | Symlink/copy of latest prompts |
-| `trades/grok_prompts/monday_prompts.md` | Monday's 3 prompts |
-| `trades/grok_prompts/tuesday_prompts.md` | Tuesday's 3 prompts |
-| `trades/grok_prompts/wednesday_prompts.md` | Wednesday's 3 prompts |
-| `trades/grok_prompts/thursday_prompts.md` | Thursday's 3 prompts |
-| `trades/grok_prompts/friday_prompts.md` | Friday's 3 prompts |
-| `trades/grok_prompts/saturday_prompts.md` | Saturday's 3 prompts |
-| `trades/grok_prompts/sunday_prompts.md` | Sunday's 3 prompts |
+| `twitter/output/grok_prompts/grok_prompts_{YYYYMMDD}.md` | Dated archive of all 21 prompts |
+| `twitter/output/grok_prompts/latest_grok_prompts.md` | Symlink/copy of latest prompts |
+| `twitter/output/grok_prompts/monday_prompts.md` | Monday's 3 prompts |
+| `twitter/output/grok_prompts/tuesday_prompts.md` | Tuesday's 3 prompts |
+| `twitter/output/grok_prompts/wednesday_prompts.md` | Wednesday's 3 prompts |
+| `twitter/output/grok_prompts/thursday_prompts.md` | Thursday's 3 prompts |
+| `twitter/output/grok_prompts/friday_prompts.md` | Friday's 3 prompts |
+| `twitter/output/grok_prompts/saturday_prompts.md` | Saturday's 3 prompts |
+| `twitter/output/grok_prompts/sunday_prompts.md` | Sunday's 3 prompts |
 
 ---
 
@@ -1082,7 +1082,7 @@ CHART_SIZE_SUBSTACK = (1000, 700)    # Substack embed size          # line 71
 4. Wait for chart and indicators to load
 5. Inject `HIDE_UI_ELEMENTS_JS` to declutter
 6. Take screenshot at `CHART_SIZE_X` and `CHART_SIZE_SUBSTACK`
-7. Save to `trades/charts/{TICKER}_{date}.png` and `{TICKER}_{date}_substack.png`
+7. Save to `twitter/output/charts/{TICKER}_{date}.png` and `{TICKER}_{date}_substack.png`
 8. Update `chart_manifest.json`
 
 **Authentication note:** First run must be non-headless to log into TradingView. Subsequent runs use saved session. CI cannot capture charts (no GUI for login).
@@ -1126,7 +1126,7 @@ The funnel visualises the 5-gate filtering:
 
 Uses PIL/Pillow for rendering. Falls back gracefully if PIL is not installed (`PIL_AVAILABLE` flag, line 37).
 
-**Output:** `trades/charts/funnel_graphic.png`, automatically added to `chart_manifest.json`.
+**Output:** `twitter/output/charts/funnel_graphic.png`, automatically added to `chart_manifest.json`.
 
 ---
 
@@ -1167,7 +1167,7 @@ class MarketAnalysisResult:
 
 #### Key Function
 
-`analyze_market(save=False) -> str` (line ~80): Makes single Claude API call with web search enabled. Returns markdown analysis. If `save=True`, writes to `trades/current/market_analysis.md` and `trades/market_analysis.md` (legacy).
+`analyze_market(save=False) -> str` (line ~80): Makes single Claude API call with web search enabled. Returns markdown analysis. If `save=True`, writes to `scanner/output/current/market_analysis.md` and `scanner/output/current/market_analysis.md` (legacy).
 
 ### 10.2 editorial_board.py -- 266 lines
 
@@ -1249,27 +1249,27 @@ Additional functions:
 
 | Generator | Output File(s) | Format | Destination |
 |-----------|---------------|--------|-------------|
-| reaction_generator.py | `content_queue.json` | JSON | `trades/` |
-| reaction_generator.py | `content_queue_account2.json` | JSON | `trades/` |
-| reaction_generator.py | `content_queue_account3.json` | JSON | `trades/` |
-| reaction_generator.py | Tweets archive | JSON | `trades/current/tweets/`, `trades/weeks/YYYY-WXX/tweets/` |
-| tweet_generator.py | `tweets_{date}.json` | JSON | `trades/tweets/` |
-| tweet_generator.py | `content_queue.json` | JSON | `trades/tweets/` |
-| newsletter_compiler.py | `newsletter.html` | HTML | `trades/current/` |
-| newsletter_compiler.py | `newsletter.html` (archive) | HTML | `trades/weeks/YYYY-WXX/` |
-| newsletter_compiler.py | `latest_newsletter.html` | HTML | `trades/` (legacy) |
-| substack_notes_generator.py | `tuesday_note.md` | Markdown | `trades/current/substack_notes/` |
-| substack_notes_generator.py | `thursday_note.md` | Markdown | `trades/current/substack_notes/` |
-| substack_notes_generator.py | Notes (archive) | Markdown | `trades/weeks/YYYY-WXX/substack_notes/` |
-| substack_content_generator.py | `{day}_post.md` | Markdown | `trades/substack_posts/` |
-| grok_prompts_generator.py | `grok_prompts_{YYYYMMDD}.md` | Markdown | `trades/grok_prompts/` |
-| grok_prompts_generator.py | `latest_grok_prompts.md` | Markdown | `trades/grok_prompts/` |
-| grok_prompts_generator.py | `{day}_prompts.md` (x7) | Markdown | `trades/grok_prompts/` |
-| market_analyzer.py | `market_analysis.md` | Markdown | `trades/current/`, `trades/` (legacy) |
-| chart_capture.py | `{TICKER}_{date}.png` | PNG | `trades/charts/` |
-| chart_capture.py | `{TICKER}_{date}_substack.png` | PNG | `trades/charts/` |
-| chart_capture.py | `chart_manifest.json` | JSON | `trades/charts/` |
-| funnel_graphic.py | `funnel_graphic.png` | PNG | `trades/charts/` |
+| reaction_generator.py | `content_queue.json` | JSON | `twitter/output/` |
+| reaction_generator.py | `content_queue_account2.json` | JSON | `twitter/output/` |
+| reaction_generator.py | `content_queue_account3.json` | JSON | `twitter/output/` |
+| reaction_generator.py | Tweets archive | JSON | `twitter/output/`, `scanner/output/archive/YYYY-WXX/tweets/` |
+| tweet_generator.py | `tweets_{date}.json` | JSON | `twitter/output/` |
+| tweet_generator.py | `content_queue.json` | JSON | `twitter/output/` |
+| newsletter_compiler.py | `newsletter.html` | HTML | `scanner/output/current/` |
+| newsletter_compiler.py | `newsletter.html` (archive) | HTML | `scanner/output/archive/YYYY-WXX/` |
+| newsletter_compiler.py | `latest_newsletter.html` | HTML | `substack/output/current/` |
+| substack_notes_generator.py | `tuesday_note.md` | Markdown | `substack/output/current/substack_notes/` |
+| substack_notes_generator.py | `thursday_note.md` | Markdown | `substack/output/current/substack_notes/` |
+| substack_notes_generator.py | Notes (archive) | Markdown | `scanner/output/archive/YYYY-WXX/substack_notes/` |
+| substack_content_generator.py | `{day}_post.md` | Markdown | `substack/output/current/substack_posts/` |
+| grok_prompts_generator.py | `grok_prompts_{YYYYMMDD}.md` | Markdown | `twitter/output/grok_prompts/` |
+| grok_prompts_generator.py | `latest_grok_prompts.md` | Markdown | `twitter/output/grok_prompts/` |
+| grok_prompts_generator.py | `{day}_prompts.md` (x7) | Markdown | `twitter/output/grok_prompts/` |
+| market_analyzer.py | `market_analysis.md` | Markdown | `scanner/output/current/` |
+| chart_capture.py | `{TICKER}_{date}.png` | PNG | `twitter/output/charts/` |
+| chart_capture.py | `{TICKER}_{date}_substack.png` | PNG | `twitter/output/charts/` |
+| chart_capture.py | `chart_manifest.json` | JSON | `twitter/output/charts/` |
+| funnel_graphic.py | `funnel_graphic.png` | PNG | `twitter/output/charts/` |
 | morning_briefing.py | (in-memory only) | str | Consumed by editorial_board.py |
 | editorial_board.py | (in-memory only) | dict | Consumed by reaction_generator.py |
 | winner_showcase_generator.py | (stdout or in-memory) | str/JSON | Consumed by tweet generators |

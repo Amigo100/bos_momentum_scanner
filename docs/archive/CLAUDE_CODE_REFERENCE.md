@@ -24,7 +24,7 @@
 [Act]  "Create dd_automator.py that:
        - Takes PASS signals from gatekeeper
        - Uses Claude API with web search to generate Deal Memos
-       - Saves to trades/due_diligence/{TICKER}_DD.md
+       - Saves to scanner/output/due_diligence/{TICKER}_DD.md
        - Has a --skip-dd flag for cost-conscious runs"
 
 [Act]  "Integrate dd_automator.py into scanner.py main() function"
@@ -38,7 +38,7 @@
 [Act]  "Create market_analyzer.py that:
        - Uses Claude API with web search
        - Generates market analysis (VIX, sector performance, macro)
-       - Saves to trades/market_analysis_{date}.md
+       - Saves to scanner/output/current/market_analysis_{date}.md
        - Can run standalone or as part of pipeline"
 ```
 
@@ -64,7 +64,7 @@
        - Uses my TradingView Chrome profile for session
        - Loads my saved chart layout with indicators
        - Captures charts at 1200x630 for X cards
-       - Saves to trades/charts/{TICKER}_{date}.png"
+       - Saves to twitter/output/charts/{TICKER}_{date}.png"
 ```
 
 ### Session 5: X Posting

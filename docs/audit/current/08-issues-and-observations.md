@@ -90,7 +90,7 @@ and the subprocess path need updating.
 - **File:** `/utils/run_full_pipeline.py` line 60
 - **Severity:** Critical -- reads from nonexistent path
 - **Description:** Reads from `data/signals.json` but the scanner outputs to
-  `trades/signals.json`. The `data/` directory does not exist in the current project
+  `scanner/output/signals.json`. The `data/` directory does not exist in the current project
   structure.
 
 ```python
@@ -133,34 +133,34 @@ incorrect output.
 ### HIGH-1: Content queue path inconsistency across verification scripts
 
 - **Files:**
-  - `/utils/verify_tweets.py` lines 10-12 -- reads from `trades/content_queue*.json`
-  - `/utils/verify_reaction_tweets.py` lines 15-17 -- reads from `trades/tweets/content_queue*.json`
-  - `/distribution/twitter_poster.py` line 59 -- reads from `trades/content_queue.json`
-  - `/content/reaction_generator.py` -- writes to both `trades/` and `trades/current/tweets/`
+  - `/utils/verify_tweets.py` lines 10-12 -- reads from `twitter/output/content_queue*.json`
+  - `/utils/verify_reaction_tweets.py` lines 15-17 -- reads from `twitter/output/content_queue*.json`
+  - `/distribution/twitter_poster.py` line 59 -- reads from `twitter/output/content_queue.json`
+  - `/content/reaction_generator.py` -- writes to `twitter/output/`
 - **Severity:** High -- verification scripts may check stale or wrong files
 - **Description:** The three systems use different paths for the same content queue:
 
 ```python
 # verify_tweets.py (lines 10-12)
 QUEUES = [
-    ("main", "content_queue.json"),        # reads trades/content_queue.json
+    ("main", "content_queue.json"),        # reads twitter/output/content_queue.json
     ("account2", "content_queue_account2.json"),
     ("account3", "content_queue_account3.json"),
 ]
 
 # verify_reaction_tweets.py (lines 15-17)
 QUEUE_FILES = {
-    'main': 'trades/tweets/content_queue.json',          # reads trades/tweets/
-    'account2': 'trades/tweets/content_queue_account2.json',
-    'account3': 'trades/tweets/content_queue_account3.json',
+    'main': 'twitter/output/content_queue.json',          # reads twitter/output/
+    'account2': 'twitter/output/content_queue_account2.json',
+    'account3': 'twitter/output/content_queue_account3.json',
 }
 
 # twitter_poster.py (line 59)
-QUEUE_FILE = TRADES_DIR / "content_queue.json"           # reads trades/
+QUEUE_FILE = TRADES_DIR / "content_queue.json"           # reads twitter/output/
 ```
 
-If `reaction_generator.py` writes to `trades/tweets/` but `twitter_poster.py` reads from
-`trades/`, posts could use stale data or fail to find the queue.
+If `reaction_generator.py` writes to `twitter/output/` but `twitter_poster.py` reads from
+`twitter/output/`, posts could use stale data or fail to find the queue.
 
 ---
 
@@ -398,14 +398,14 @@ All confirmed orphaned except `due_diligence_prompts.py` which is still imported
 
 ### MED-12: Dual output pattern creates redundant file I/O
 
-- **Description:** Many modules write output to both the new `trades/current/` structure
+- **Description:** Many modules write output to both the new `scanner/output/current/` structure
   and legacy root-level paths:
 
 | New path | Legacy path |
 |----------|-------------|
-| `trades/current/newsletter.html` | `trades/latest_newsletter.html` |
-| `trades/current/newsletter_briefing.md` | `trades/latest_newsletter_briefing.md` |
-| `trades/current/signals.json` | `trades/signals.json` |
+| `substack/output/current/newsletter.html` | `substack/output/current/newsletter.html` |
+| `scanner/output/current/newsletter_briefing.md` | `scanner/output/current/newsletter_briefing.md` |
+| `scanner/output/signals.json` | `scanner/output/signals.json` |
 
 This doubles file I/O and creates a risk of inconsistency if one write succeeds and the
 other fails. The legacy paths should eventually be deprecated.
@@ -582,10 +582,10 @@ Many modules write to both the new directory structure and legacy locations for 
 compatibility:
 
 ```
-trades/current/newsletter.html       + trades/latest_newsletter.html
-trades/current/newsletter_briefing.md + trades/latest_newsletter_briefing.md
-trades/current/signals.json           + trades/signals.json
-trades/current/tweets/                + trades/content_queue.json
+substack/output/current/newsletter.html       + substack/output/current/newsletter.html
+scanner/output/current/newsletter_briefing.md + scanner/output/current/newsletter_briefing.md
+scanner/output/signals.json           + scanner/output/signals.json
+twitter/output/                + twitter/output/content_queue.json
 ```
 
 This pattern:

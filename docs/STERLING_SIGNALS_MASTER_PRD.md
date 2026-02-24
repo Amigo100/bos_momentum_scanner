@@ -435,7 +435,7 @@ Function `apply_dd_to_stocks()` maps DD results to Stock dataclass fields (`dd_v
 
 ### B9.1 signals.json
 
-**File:** `trades/current/signals.json` (current week) + `trades/weeks/YYYY-WNN/signals.json` (archive)
+**File:** `scanner/output/signals.json` (current week) + `scanner/output/archive/YYYY-WNN/signals.json` (archive)
 
 **Key sections:**
 
@@ -459,7 +459,7 @@ Function `apply_dd_to_stocks()` maps DD results to Stock dataclass fields (`dd_v
 
 ### B9.2 newsletter_briefing.md
 
-**File:** `trades/current/newsletter_briefing.md` (current) + `trades/weeks/YYYY-WNN/newsletter_briefing.md` (archive)
+**File:** `scanner/output/current/newsletter_briefing.md` (current) + `scanner/output/archive/YYYY-WNN/newsletter_briefing.md` (archive)
 
 **Sections:** Market Context (placeholder), Hot Themes This Week, Signal Candidates (PASS and CONSIDER), Portfolio Update, Compounding Equity, Due Diligence placeholders.
 
@@ -478,7 +478,7 @@ Triggers on: new PASS signals, new CONSIDER signals, exit signals (ExD or profit
 
 ### B9.4 Google Sheets Export
 
-**File:** `trades/portfolio_google_sheets.csv`
+**File:** `portfolio/output/portfolio_google_sheets.csv`
 
 Adds `GOOGLEFINANCE` formulas for live current_price, pnl_pct, pnl_usd, stop_level, distance_to_stop with conditional formatting for stop alerts.
 
@@ -494,7 +494,7 @@ Lightweight daily scanner for intraday BoS signals. **Completely separate from w
 - HMA/BoS computed on DAILY bars (no weekly resample)
 - NO thematic analysis, NO Investment Gate, NO Deep DD
 - Max 5 new signals per day (ranked by Banker score)
-- Separate portfolio: `trades/daily_portfolio.csv`
+- Separate portfolio: `portfolio/output/daily_portfolio.csv`
 - Uses LEGACY indicators from `core/legacy_indicators.py` (HMA Pivot BoS + Banker)
 
 **Legacy indicators (preserved for daily scanner only):**
@@ -771,8 +771,8 @@ Single source of truth for all generators. Populated once by data_loader.py:
 ### C16.4 Output Paths
 
 Every generated file is dual-written:
-- **Current:** `trades/current/substack_posts/[filename].html` — always the latest version
-- **Archive:** `trades/weeks/YYYY-WNN/substack_posts/[filename].html` — permanent weekly record
+- **Current:** `substack/output/current/substack_posts/[filename].html` — always the latest version
+- **Archive:** `scanner/output/archive/YYYY-WNN/substack_posts/[filename].html` — permanent weekly record
 
 ---
 
@@ -851,7 +851,7 @@ EVERY 2–3 HOURS (via GitHub Actions cron — 5 weekday slots + 2 weekend)
 │ Step 1: GATHER CONTEXT (Grok 4 Fast via xAI Responses API) │
 │   Inputs:  portfolio.csv, signals.json, tracked themes     │
 │   Queries: X Search + Web Search                           │
-│   Output:  trades/live_context.json                        │
+│   Output:  twitter/output/live_context.json                        │
 └──────────────────────────┬─────────────────────────────────┘
                            │
                            ▼
@@ -860,14 +860,14 @@ EVERY 2–3 HOURS (via GitHub Actions cron — 5 weekday slots + 2 weekend)
 │   Decides category + assigns different tickers per account │
 │   Produces: 3 account variants                            │
 │   Validates: 14-step pipeline per variant                 │
-│   Output:  Appends to trades/live_content_queue.json      │
+│   Output:  Appends to twitter/output/live_content_queue.json      │
 └──────────────────────────┬─────────────────────────────────┘
                            │
                            ▼
 ┌──────────────────────────────────────────────────────────┐
 │ Step 3: GENERATE CHARTS (Chart-IMG REST API)              │
 │   1200×675 TradingView chart PNGs                         │
-│   Output: trades/charts/live_{TICKER}_{timestamp}.png     │
+│   Output: twitter/output/charts/live_{TICKER}_{timestamp}.png     │
 └──────────────────────────┬─────────────────────────────────┘
                            │
                            ▼
@@ -902,7 +902,7 @@ The gatherer assesses:
 5. **News events:** Earnings, macro data, policy announcements
 6. **Tweet opportunities:** Based on all above, what kind of tweet should we post?
 
-Output: `trades/live_context.json` with `gathered_at` timestamp.
+Output: `twitter/output/live_context.json` with `gathered_at` timestamp.
 
 **Staleness threshold:** If >4 hours old, generator flags `context_stale: true` and avoids MARKET_REACTION tweets.
 
@@ -918,7 +918,7 @@ Single API call:
 4. Generates 3 variants (one per persona)
 5. Outputs structured JSON: text, category, primary_ticker, chart_recommended, account
 
-Each variant passes 14-step validation. Invalid tweets regenerated up to 2 times. Valid tweets appended to `trades/live_content_queue.json` with status `"pending"`.
+Each variant passes 14-step validation. Invalid tweets regenerated up to 2 times. Valid tweets appended to `twitter/output/live_content_queue.json` with status `"pending"`.
 
 ### Step 3: Chart Generation (`content/chart_generator.py`)
 
@@ -926,7 +926,7 @@ Each variant passes 14-step validation. Invalid tweets regenerated up to 2 times
 **Resolution:** 1200×675 pixels (16:9, Twitter-optimal)
 **Default interval:** 1W (weekly chart)
 
-Finds pending items with `chart_recommended: true` and `chart_path: null`, generates PNGs, saves to `trades/charts/`. **Chart failures never block posting.**
+Finds pending items with `chart_recommended: true` and `chart_path: null`, generates PNGs, saves to `twitter/output/charts/`. **Chart failures never block posting.**
 
 ### Step 4: Tweet Posting (`distribution/twitter_poster.py`)
 
@@ -1158,7 +1158,7 @@ The `_prepare_slot_data()` function should:
 - **API:** chart-img.com v2 Advanced Chart (Pro, $7/month)
 - **Resolution:** 1200×675 px (16:9, Twitter-optimal)
 - **Default interval:** 1W — override to 1D or 4H per ticker
-- **Format:** PNG, saved to `trades/charts/`
+- **Format:** PNG, saved to `twitter/output/charts/`
 - **Failure:** Text-only fallback. Charts never block posting.
 
 ---
@@ -1351,7 +1351,7 @@ Choosing to highlight a +16% winner while omitting a −5% loser is editorial cu
 2. **Valuation regime awareness** — OPTIONALITY/FUNDAMENTAL/TRANSITION. Analysis MUST adapt to regime.
 3. **Theme classification veto** — Capital Health ≤ 3 → cap at SELECTIVE.
 4. **Position sizing conviction tiers** — 8–10 → 20% (max 2), 7 → 15% (max 3), 4–6 → 8% (max 2). Max 6 concurrent, 10% cash minimum.
-5. **Output file paths** — Current: `trades/current/`, Archive: `trades/weeks/YYYY-WNN/`, Portfolio: `trades/portfolio.csv`, Equity curve: `trades/equity_curve.csv`, Sheets: `trades/portfolio_google_sheets.csv`
+5. **Output file paths** — Current: `scanner/output/current/`, Archive: `scanner/output/archive/YYYY-WNN/`, Portfolio: `portfolio/output/portfolio.csv`, Equity curve: `portfolio/output/equity_curve.csv`, Sheets: `portfolio/output/portfolio_google_sheets.csv`
 
 ### 🟢 SAFE TO CHANGE (with testing)
 
@@ -1378,11 +1378,11 @@ Choosing to highlight a +16% winner while omitting a −5% loser is editorial cu
 | | `core/investment_gate.py` | Gate 2: Regime-aware quality assessment |
 | | `core/deep_dd.py` | Gate 3: Opus deep analysis + newsletter content |
 | Portfolio | `core/portfolio_manager.py` | Unified trade tracking + equity curve |
-| | `trades/portfolio.csv` | Master portfolio file |
-| | `trades/equity_curve.csv` | Compounding NAV over time |
-| | `trades/portfolio_google_sheets.csv` | Export with live formulas |
+| | `portfolio/output/portfolio.csv` | Master portfolio file |
+| | `portfolio/output/equity_curve.csv` | Compounding NAV over time |
+| | `portfolio/output/portfolio_google_sheets.csv` | Export with live formulas |
 | Daily scanner | `core/daily_scanner.py` | Separate daily pipeline |
-| | `trades/daily_portfolio.csv` | Daily positions (separate from weekly) |
+| | `portfolio/output/daily_portfolio.csv` | Daily positions (separate from weekly) |
 
 ### Substack Content System
 
@@ -1409,10 +1409,10 @@ Choosing to highlight a +16% winner while omitting a −5% loser is editorial cu
 | `content/chart_generator.py` | Chart-IMG API → chart PNGs |
 | `distribution/twitter_poster.py` | Tweepy → post to X |
 | `.github/workflows/live_tweet.yml` | GitHub Actions cron workflow |
-| `trades/live_content_queue.json` | Tweet queue (runtime) |
-| `trades/live_context.json` | Grok context (runtime) |
-| `trades/charts/` | Chart PNGs (runtime) |
-| `trades/live_cost_log.json` | API cost tracking (runtime) |
+| `twitter/output/live_content_queue.json` | Tweet queue (runtime) |
+| `twitter/output/live_context.json` | Grok context (runtime) |
+| `twitter/output/charts/` | Chart PNGs (runtime) |
+| `twitter/output/live_cost_log.json` | API cost tracking (runtime) |
 
 ### Configuration
 
@@ -1514,7 +1514,7 @@ nuclear, semiconductors, reshoring
 - Monthly estimate: ~$16.50 ($9.50 API + $7 Chart-IMG)
 - Daily limit: $1.00 (generation halts if exceeded)
 - Monthly alert: $30.00
-- Cost logged to: `trades/live_cost_log.json`
+- Cost logged to: `twitter/output/live_cost_log.json`
 
 ---
 
@@ -1613,7 +1613,7 @@ Run with `--no-llm` to verify technical screening without API cost. Check signal
 
 1. **Context fresh?** `gathered_at` within 4 hours
 2. **Queue has pending items?** Fresh items, varied categories, all 3 accounts
-3. **Charts generating?** Recent PNGs > 20KB in `trades/charts/`
+3. **Charts generating?** Recent PNGs > 20KB in `twitter/output/charts/`
 4. **Tweets posting?** Recent `posted_at` timestamps, verify on X
 5. **No banned terms?** Run checker against queue
 6. **Category variety?** At least 6 categories represented
@@ -1728,13 +1728,13 @@ Run with `--no-llm` to verify technical screening without API cost. Check signal
 
 ### Scanner → Substack
 
-**Input:** `trades/current/signals.json`
+**Input:** `scanner/output/signals.json`
 **Consumers:** `substack_content_generator.py`, `newsletter_compiler.py`, `dd_post_generator.py`
 **Key fields:** `pass_signals`, `themes`, `sell_signals`, DD fields (`dd_elevator_pitch`, `dd_why_now`, `dd_the_math`, `dd_bear_case`)
 
 ### Scanner → Tweet System
 
-**Input:** `trades/current/signals.json`
+**Input:** `scanner/output/signals.json`
 **Consumer:** `content/live_tweet_generator.py`
 **Key fields:** `pass_signals`, `themes`, `assessed_signals`, `consider_signals`
 

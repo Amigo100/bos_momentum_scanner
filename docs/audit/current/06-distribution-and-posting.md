@@ -30,14 +30,14 @@ The distribution layer handles all outbound content: posting tweets to three X/T
 
 | File | Read by | Written by |
 |------|---------|------------|
-| `trades/content_queue.json` | twitter_poster | reaction_generator, twitter_poster |
-| `trades/content_queue_account2.json` | twitter_poster | reaction_generator, twitter_poster |
-| `trades/content_queue_account3.json` | twitter_poster | reaction_generator, twitter_poster |
-| `trades/portfolio.csv` | signal_tracker | scanner, portfolio_manager |
-| `trades/celebrations.json` | signal_tracker | signal_tracker |
-| `trades/tweet_tracking.json` | self_quote_tracker, twitter_poster | self_quote_tracker, twitter_poster |
-| `trades/charts/chart_manifest.json` | twitter_poster | chart_capture |
-| `trades/charts/*.png` | twitter_poster | chart_capture |
+| `twitter/output/content_queue.json` | twitter_poster | reaction_generator, twitter_poster |
+| `twitter/output/content_queue_account2.json` | twitter_poster | reaction_generator, twitter_poster |
+| `twitter/output/content_queue_account3.json` | twitter_poster | reaction_generator, twitter_poster |
+| `portfolio/output/portfolio.csv` | signal_tracker | scanner, portfolio_manager |
+| `twitter/output/celebrations.json` | signal_tracker | signal_tracker |
+| `twitter/output/tweet_tracking.json` | self_quote_tracker, twitter_poster | self_quote_tracker, twitter_poster |
+| `twitter/output/charts/chart_manifest.json` | twitter_poster | chart_capture |
+| `twitter/output/charts/*.png` | twitter_poster | chart_capture |
 | `email_config.json` | email_notifier | email_notifier (setup wizard) |
 
 ---
@@ -94,7 +94,7 @@ If any credential is missing for an account, the function returns `(None, None)`
 
 ### 2.2 Content Queue System
 
-Each account has its own JSON queue file in `trades/`. The queue path is resolved by `get_queue_path()` (lines 235-249):
+Each account has its own JSON queue file in `twitter/output/`. The queue path is resolved by `get_queue_path()` (lines 235-249):
 
 ```python
 def get_queue_path(account_key: str = 'main') -> Path:
@@ -365,7 +365,7 @@ class BigWin:                       # Lines 58-71
     celebration_type: str           # "big_win", "home_run", "hall_of_fame"
 ```
 
-**Tracking file:** `trades/celebrations.json`
+**Tracking file:** `twitter/output/celebrations.json`
 
 Format:
 ```json
@@ -536,7 +536,7 @@ Returns list of dicts with: `ticker`, `pnl_pct`, `threshold`, `milestone_key`, `
 
 ### 4.3 Data Format
 
-**Tracking file:** `trades/tweet_tracking.json`
+**Tracking file:** `twitter/output/tweet_tracking.json`
 
 ```json
 {
@@ -678,14 +678,14 @@ Note: The Friday scan workflow (lines 365-391) passes `EMAIL_PASSWORD`, `EMAIL_S
 |------|------|---------|----------|
 | 1 | Run Scanner | `python -m core.scanner --archive [--web-search] [--no-llm] [--top N]` | Yes |
 | 2a | Generate Funnel Graphic | `python -m content.funnel_graphic` | No (continue-on-error) |
-| 2b | Capture TradingView Charts | `python -m content.chart_capture --tickers-from trades/signals.json --include-portfolio --headless --use-cookies` | No (continue-on-error) |
+| 2b | Capture TradingView Charts | `python -m content.chart_capture --tickers-from scanner/output/signals.json --include-portfolio --headless --use-cookies` | No (continue-on-error) |
 | 3 | Generate Market Analysis | `python -m content.market_analyzer --save` | No (continue-on-error) |
-| 4 | Compile Newsletter | `python -m content.newsletter_compiler --full` | No (continue-on-error) |
+| 4 | Compile Newsletter | `python -m content.newsletter_compiler --from-html` | No (continue-on-error) |
 | 4.5 | Generate Substack Content | `python -m content.substack_content_generator --all` | No (continue-on-error) |
-| 5 | Generate Tweets | `python -m content.reaction_generator --scanner-file trades/signals.json --output trades/` | Yes |
+| 5 | Generate Tweets | `python -m content.reaction_generator --scanner-file scanner/output/signals.json --output twitter/output/` | Yes |
 | 5.5 | Generate Substack Notes | `python -m content.substack_notes_generator` | No (continue-on-error) |
 | 6 | Upload artifacts | `actions/upload-artifact@v4` | Yes |
-| 7 | Commit and push | `git add trades/ && git commit && git push` | Yes |
+| 7 | Commit and push | `git add scanner/output/ portfolio/output/ substack/output/ twitter/output/ && git commit && git push` | Yes |
 | 8 | Generate summary | Write to `$GITHUB_STEP_SUMMARY` | Always |
 | 9 | Notify on failure | `python -m distribution.email_notifier` | On failure only |
 
@@ -693,11 +693,11 @@ Note: The Friday scan workflow (lines 365-391) passes `EMAIL_PASSWORD`, `EMAIL_S
 
 | Artifact Name | Contents | Retention |
 |--------------|----------|-----------|
-| `scan-results-{run_id}` | `trades/current/`, signals, portfolio, report | 30 days |
-| `substack-notes-{run_id}` | `trades/current/substack_notes/` | 7 days |
-| `substack-posts-{run_id}` | `trades/substack_posts/` | 30 days |
+| `scan-results-{run_id}` | `scanner/output/current/`, signals, portfolio, report | 30 days |
+| `substack-notes-{run_id}` | `substack/output/current/substack_notes/` | 7 days |
+| `substack-posts-{run_id}` | `substack/output/current/substack_posts/` | 30 days |
 | `content-queue` | 3 content_queue JSON files | 14 days |
-| `charts-{run_id}` | `trades/charts/` | 30 days |
+| `charts-{run_id}` | `twitter/output/charts/` | 30 days |
 
 The `content-queue` artifact (without run_id suffix) is the critical handoff to `daily_post.yml`. It uses a fixed name so the daily workflow can download the latest version.
 
@@ -731,7 +731,7 @@ X3_API_KEY, X3_API_SECRET, X3_ACCESS_TOKEN, X3_ACCESS_SECRET
 | 1 | Checkout + Python setup | Python 3.11 with pip cache |
 | 2 | Determine slot | UTC hour-based ranges (lines 77-101) |
 | 3 | Download content-queue artifact | `actions/download-artifact@v4`, continue-on-error |
-| 4 | Check queue exists | Verify `trades/content_queue.json` exists |
+| 4 | Check queue exists | Verify `twitter/output/content_queue.json` exists |
 | 5 | Fail if no queue | Exit 1 with diagnostic message (GAP 29 fix) |
 | 6 | Post to all accounts | Staggered: main, 10min wait, account2, 10min wait, account3 |
 | 7 | Check milestone quotes | Python inline script calling `get_unquoted_milestones()` and `get_uncelebrated_wins()` |
@@ -776,22 +776,22 @@ friday_scan.yml                          daily_post.yml
 
 The `content-queue` artifact serves as the primary handoff mechanism. It uses a fixed name (no run_id suffix) so each workflow run overwrites the previous artifact. The `download-artifact` step in `daily_post.yml` has `continue-on-error: true` (line 108) because the artifact may not exist yet if `friday_scan.yml` has never run.
 
-If the artifact download fails, the workflow checks if `trades/content_queue.json` exists in the repo itself (committed by a previous Friday scan). If neither source provides a queue, the workflow fails with a diagnostic message (lines 122-134).
+If the artifact download fails, the workflow checks if `twitter/output/content_queue.json` exists in the repo itself (committed by a previous Friday scan). If neither source provides a queue, the workflow fails with a diagnostic message (lines 122-134).
 
 ### 6.4 Git Commit Strategy
 
 **Friday scan** (lines 297-311):
-- Commits all files in `trades/` directory.
+- Commits all files in section output directories.
 - Commit message: `"Weekly scan results YYYY-MM-DD"`.
 - Straightforward `git push` (no rebase needed since this runs once per week).
 
 **Daily posting** (lines 182-202):
 - Commits only queue files and tracking file:
   ```
-  trades/content_queue.json
-  trades/content_queue_account2.json
-  trades/content_queue_account3.json
-  trades/tweet_tracking.json
+  twitter/output/content_queue.json
+  twitter/output/content_queue_account2.json
+  twitter/output/content_queue_account3.json
+  twitter/output/tweet_tracking.json
   ```
 - Commit message: `"Update content queue after posting"`.
 - Uses `git pull --rebase` before push to handle race conditions (GAP 33 fix, line 195).
@@ -804,10 +804,10 @@ If the artifact download fails, the workflow checks if `trades/content_queue.jso
 
 | Day | Time (ET) | Trigger | Action | Files Affected |
 |-----|-----------|---------|--------|---------------|
-| **Friday** | 16:30 | `friday_scan.yml` cron | Full scanner pipeline | All `trades/` output files |
+| **Friday** | 16:30 | `friday_scan.yml` cron | Full scanner pipeline | All section output files |
 | **Friday** | 16:30+ | (same run) | Generate tweets | `content_queue*.json` |
-| **Friday** | 16:30+ | (same run) | Generate newsletter | `trades/current/newsletter.html` |
-| **Friday** | 16:30+ | (same run) | Generate Substack notes | `trades/current/substack_notes/` |
+| **Friday** | 16:30+ | (same run) | Generate newsletter | `substack/output/current/newsletter.html` |
+| **Friday** | 16:30+ | (same run) | Generate Substack notes | `substack/output/current/substack_notes/` |
 | **Friday** | 16:30+ | (same run) | Upload artifacts | GitHub artifact storage |
 | **Saturday** | 08:00 | `daily_post.yml` Slot 1 | Post pre-market tweet (all 3 accounts) | Queue files updated |
 | **Saturday** | 10:00 | `daily_post.yml` Slot 2 | Post morning tweet | Queue files updated |
@@ -829,14 +829,14 @@ Each `daily_post.yml` run posts 1 tweet per account per slot (3 tweets total per
 
 | File | Read By | Purpose |
 |------|---------|---------|
-| `trades/content_queue.json` | `twitter_poster.py` | Main account tweet queue |
-| `trades/content_queue_account2.json` | `twitter_poster.py` | Account 2 tweet queue |
-| `trades/content_queue_account3.json` | `twitter_poster.py` | Account 3 tweet queue |
-| `trades/portfolio.csv` | `signal_tracker.py` (via portfolio_manager) | Position data for P&L |
-| `trades/celebrations.json` | `signal_tracker.py` | Celebration tracking state |
-| `trades/tweet_tracking.json` | `self_quote_tracker.py`, `twitter_poster.py` | Signal tweet ID tracking |
-| `trades/charts/chart_manifest.json` | `twitter_poster.py` (via upload_media) | Chart file lookup |
-| `trades/charts/*.png` | `twitter_poster.py` | Chart images for media upload |
+| `twitter/output/content_queue.json` | `twitter_poster.py` | Main account tweet queue |
+| `twitter/output/content_queue_account2.json` | `twitter_poster.py` | Account 2 tweet queue |
+| `twitter/output/content_queue_account3.json` | `twitter_poster.py` | Account 3 tweet queue |
+| `portfolio/output/portfolio.csv` | `signal_tracker.py` (via portfolio_manager) | Position data for P&L |
+| `twitter/output/celebrations.json` | `signal_tracker.py` | Celebration tracking state |
+| `twitter/output/tweet_tracking.json` | `self_quote_tracker.py`, `twitter_poster.py` | Signal tweet ID tracking |
+| `twitter/output/charts/chart_manifest.json` | `twitter_poster.py` (via upload_media) | Chart file lookup |
+| `twitter/output/charts/*.png` | `twitter_poster.py` | Chart images for media upload |
 | `email_config.json` | `email_notifier.py` | SMTP credentials and recipients |
 | `config/settings.py` | All modules (via `from config import ...`) | Thresholds, accounts, schedules |
 | `config/marketing_vocabulary.py` | `twitter_poster.py` | Banned terms validation |
@@ -845,11 +845,11 @@ Each `daily_post.yml` run posts 1 tweet per account per slot (3 tweets total per
 
 | File | Written By | Trigger |
 |------|------------|---------|
-| `trades/content_queue.json` | `twitter_poster.py` | After each post (status update) |
-| `trades/content_queue_account2.json` | `twitter_poster.py` | After each post (status update) |
-| `trades/content_queue_account3.json` | `twitter_poster.py` | After each post (status update) |
-| `trades/celebrations.json` | `signal_tracker.py` | On celebration milestone |
-| `trades/tweet_tracking.json` | `self_quote_tracker.py` | On signal registration or milestone quote |
+| `twitter/output/content_queue.json` | `twitter_poster.py` | After each post (status update) |
+| `twitter/output/content_queue_account2.json` | `twitter_poster.py` | After each post (status update) |
+| `twitter/output/content_queue_account3.json` | `twitter_poster.py` | After each post (status update) |
+| `twitter/output/celebrations.json` | `signal_tracker.py` | On celebration milestone |
+| `twitter/output/tweet_tracking.json` | `self_quote_tracker.py` | On signal registration or milestone quote |
 | `email_config.json` | `email_notifier.py` | On setup wizard completion |
 
 ### External API Calls

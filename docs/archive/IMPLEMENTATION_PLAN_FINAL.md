@@ -64,7 +64,7 @@
       - Uses Playwright with persistent Chrome profile
       - Loads TradingView with your saved layout (BoS/Banker indicators)
       - Captures charts at 1200x630 (X card size) and 800x500 (Substack)
-      - Saves to trades/charts/{TICKER}_{date}.png
+      - Saves to twitter/output/charts/{TICKER}_{date}.png
       - Takes list of tickers as input
       - Has --headless flag for production runs
 ```
@@ -82,7 +82,7 @@
       - Calls Claude API with web search enabled
       - Uses existing DD prompt templates from due_diligence_prompts.py
       - Generates Deal Memo for each ticker
-      - Saves to trades/due_diligence/{TICKER}_DD_{date}.md
+      - Saves to scanner/output/due_diligence/{TICKER}_DD_{date}.md
       - Returns summary dict for newsletter compilation
       - Has --skip-dd flag for cost-conscious testing
 ```
@@ -96,7 +96,7 @@
       - Calls Claude API with web search
       - Analyzes: VIX, sector performance, macro headlines, Fed/rates
       - Generates 300-500 word market summary
-      - Saves to trades/market_analysis_{date}.md
+      - Saves to scanner/output/current/market_analysis_{date}.md
       - Returns content for newsletter compilation
 ```
 
@@ -159,7 +159,7 @@
         open positions, sell signals
       - Generates HTML formatted for Substack
       - Includes [CHART: TICKER] placeholders or embedded base64 images
-      - Outputs to trades/newsletter_{date}.html
+      - Outputs to substack/output/current/newsletter_{date}.html
 ```
 
 ### Session 8: Substack Publisher
@@ -192,8 +192,8 @@
 ```
 [Act] Create run_friday.sh that runs in sequence:
       1. python scanner.py --web-search --archive
-      2. python chart_capture.py --tickers-from trades/latest_signals.json
-      3. python dd_automator.py --signals trades/latest_signals.json
+      2. python chart_capture.py --tickers-from scanner/output/signals.json
+      3. python dd_automator.py --signals scanner/output/signals.json
       4. python market_analyzer.py
       5. python newsletter_compiler.py
       6. python tweet_generator.py

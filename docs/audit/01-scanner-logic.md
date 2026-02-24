@@ -688,31 +688,34 @@ These values exist only inside calculation functions and should arguably be conf
 ### 7.1 Output Directory Structure
 
 ```
-trades/
-+-- current/                          # This week's outputs
-|   +-- signals.json                  # Complete scan results
+scanner/output/
++-- signals.json                      # Complete scan results
++-- analysis_log.csv                  # Append-only history
++-- current/
+|   +-- report.txt                    # Human-readable summary
 |   +-- newsletter_briefing.md        # For Substack
-|   +-- newsletter.html               # Compiled newsletter
-|   +-- tweets/
-|   |   +-- content_queue.json        # Main account
-|   |   +-- content_queue_account2.json
-|   |   +-- content_queue_account3.json
-|   |   +-- tweets_YYYYMMDD.json
-|   +-- substack_notes/
-|       +-- tuesday_note.md
-|       +-- thursday_note.md
-+-- weeks/
-|   +-- 2026-WNN/                     # Archived weekly data
-+-- charts/
-|   +-- chart_manifest.json
-|   +-- TICKER_YYYYMMDD.png
+|   +-- market_analysis.md            # Market context
++-- archive/
+    +-- 2026-WNN/                     # Archived weekly data
+
+portfolio/output/
 +-- portfolio.csv                     # Source of truth
 +-- portfolio_google_sheets.csv       # With calculated fields
 +-- portfolio_backups/
-+-- signals.json                      # (legacy location)
-+-- content_queue.json                # (legacy location)
-+-- analysis_log.csv                  # Append-only history
-+-- latest_report.txt                 # Human-readable summary
+
+substack/output/current/
++-- newsletter.html                   # Compiled newsletter
++-- substack_notes/
+    +-- tuesday_note.md
+    +-- thursday_note.md
+
+twitter/output/
++-- content_queue.json                # Main account
++-- content_queue_account2.json
++-- content_queue_account3.json
++-- charts/
+    +-- chart_manifest.json
+    +-- TICKER_YYYYMMDD.png
 ```
 
 ### 7.2 Key Output Schemas
@@ -789,7 +792,7 @@ A BUY signal fires when the **lower** step line changes (new pivot LOW detected)
 `config.py` (root) and `src/common/config.py` both exist. `scanner.py` also defines its own constants inline. Three potential sources of truth for the same parameters.
 
 **R2. Legacy Output Paths**
-Outputs are written to `current/`, `weeks/`, AND legacy root paths (`trades/signals.json`, `trades/content_queue.json`, `trades/latest_report.txt`). The legacy paths are maintained "for backwards compatibility" but add maintenance burden and disk usage.
+Outputs are written to `current/`, `weeks/`, AND legacy root paths (`scanner/output/signals.json`, `twitter/output/content_queue.json`, `scanner/output/current/report.txt`). The legacy paths are maintained "for backwards compatibility" but add maintenance burden and disk usage.
 
 **R3. Two Portfolio Implementations**
 `check_sell_signals()` has two code paths: one using `portfolio_manager.py` (preferred) and one legacy CSV path. The legacy path should be removed once migration is confirmed complete.

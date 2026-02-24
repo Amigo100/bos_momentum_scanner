@@ -22,7 +22,7 @@ The funnel shows the 5-Gate Filtering System:
 
 Integration:
     - Used by tweet_generator.py for funnel_graphic content type
-    - Charts saved to trades/charts/funnel_graphic.png
+    - Charts saved to twitter/output/charts/funnel_graphic.png
     - Automatically updates chart_manifest.json
 """
 
@@ -340,7 +340,7 @@ def generate_funnel_graphic(
 
     Args:
         data: Dict with keys: universe, volatility, institutional, theme, final, timestamp
-        output_path: Output file path (default: trades/charts/funnel_graphic.png)
+        output_path: Output file path (default: twitter/output/charts/funnel_graphic.png)
         theme: Color theme ('dark' or 'light')
 
     Returns:

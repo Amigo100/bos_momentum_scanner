@@ -393,14 +393,32 @@ SLOT_TIMES_ET: Dict[int, str] = {
     5: "18:00"
 }
 
-# Slot timing in UTC (for GitHub Actions cron - assuming EST, not EDT)
-SLOT_TIMES_UTC: Dict[int, str] = {
-    1: "13:00",   # 08:00 ET = 13:00 UTC (EST)
-    2: "15:00",   # 10:00 ET = 15:00 UTC (EST)
-    3: "17:30",   # 12:30 ET = 17:30 UTC (EST)
-    4: "20:30",   # 15:30 ET = 20:30 UTC (EST)
-    5: "23:00"    # 18:00 ET = 23:00 UTC (EST)
-}
+def get_slot_times_utc() -> Dict[int, str]:
+    """Convert ET slot times to UTC, accounting for EST/EDT automatically.
+
+    Uses ZoneInfo to determine current UTC offset for America/New_York.
+    EST (Nov-Mar): UTC-5  |  EDT (Mar-Nov): UTC-4
+    """
+    from datetime import datetime
+    try:
+        from zoneinfo import ZoneInfo
+    except ImportError:
+        from backports.zoneinfo import ZoneInfo
+
+    et_tz = ZoneInfo("America/New_York")
+    now_et = datetime.now(et_tz)
+    utc_offset_hours = now_et.utcoffset().total_seconds() / 3600  # -5 or -4
+
+    result = {}
+    for slot, et_time in SLOT_TIMES_ET.items():
+        hour, minute = map(int, et_time.split(":"))
+        utc_hour = int(hour - utc_offset_hours) % 24
+        result[slot] = f"{utc_hour:02d}:{minute:02d}"
+    return result
+
+
+# Slot timing in UTC — dynamically computed from ET times + current timezone
+SLOT_TIMES_UTC: Dict[int, str] = get_slot_times_utc()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

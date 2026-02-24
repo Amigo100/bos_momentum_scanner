@@ -7,7 +7,7 @@
 #   scanner/output/    - signals.json, analysis_log.csv, current/, archive/
 #   twitter/output/    - tweet queues, charts, tracking, workflow_status
 #   substack/output/   - newsletter, posts, notes
-#   trades/            - legacy fallback (used if section dirs missing)
+#   (trades/ directory removed — all data now in section-specific dirs above)
 
 set -e
 

@@ -2804,7 +2804,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
                 "signal_date": h.entry_date,
                 "theme": h.theme,
             }
-            for h in historical if h.pnl_pct >= MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
+            for h in historical
         ]
 
         all_big_wins = find_big_wins()
@@ -2837,7 +2837,7 @@ def save_results(confirmed: List[Stock], all_assessed: List[Stock], sell_signals
             for w in all_big_wins if w.pnl_pct >= home_run_threshold
         ]
 
-        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} winners, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
+        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} positions, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
 
     except ImportError:
         print("  ⚠️ signal_tracker not available - historical wins not populated")

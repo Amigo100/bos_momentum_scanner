@@ -62,9 +62,7 @@ from config import (
 from config.banned_terms import (
     ALL_BANNED,
     CRITICAL_BANNED,
-    LOSER_PATTERNS,
     check_banned_phrases,
-    check_loser_focus,
 )
 from twitter.models import (
     Tweet,
@@ -1408,10 +1406,6 @@ def _validate_tweet(
     negative_pcts = re.findall(r'-\d+\.?\d*%', tweet.text)
     if negative_pcts:
         failures.append(f"step4_winners_only: negative percentage(s) found: {negative_pcts}")
-
-    # Check loser-focused language
-    if check_loser_focus(tweet.text):
-        failures.append("step4_winners_only: loser-focused language detected")
 
     # ── Step 4b: Portfolio status fabrication check ──────────────────────
     if tweet.category == "EDUCATIONAL" and source_data.get("portfolio_stats"):

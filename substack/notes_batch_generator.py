@@ -55,13 +55,11 @@ from config import (
     BRANDING,
     MODEL_NOTES,
     get_conviction_text,
-    can_show_entry_price,
 )
 from config.banned_terms import (
     ALL_BANNED,
     CRITICAL_BANNED,
     check_banned_phrases,
-    check_loser_focus,
 )
 from config.banned_terms import validate_content
 
@@ -267,9 +265,9 @@ MARKETING RULES (CRITICAL):
 - NEVER use: HMA, RSI, MACD, KDJ, Banker, UC, Undercurrent, BoS, ExD, profit lock, tiered stop, Gatekeeper, Investment Gate, conviction 1-10, Tier 1/2/3, Roth IRA, PDT.
 - System: "proprietary screening system" or "our screening system".
 - Conviction: "Extremely Bullish" / "Bullish" / "Watching" — NEVER numbers.
-- NEVER mention losing positions or negative P&L.
-- Only show entry prices for closed winners or positions with 25%+ gain.
-- Only highlight positions with 15%+ gains.
+- Show ALL positions transparently — winners AND losers.
+- Frame losses positively: "Stop hit = system working as designed."
+- Always show entry prices for full transparency.
 
 Always end with: "Not financial advice. Informational only."
 """
@@ -439,16 +437,16 @@ def build_portfolio_pulse_prompt(ctx: NoteContext, dedup: DedupTracker) -> str:
         if dedup.can_use_ticker(ticker) and ticker not in dedup.last_day_tickers:
             available_winners.append(w)
 
-    winners_text = "No positions above 15% gain currently."
+    winners_text = "No open positions currently."
     if available_winners:
         lines = []
         for w in available_winners[:4]:
-            entry_info = ""
-            if can_show_entry_price(w):
-                entry_info = f" (entry ${w['entry_price']:.2f})"
+            entry_info = f" (entry ${w['entry_price']:.2f})"
             theme = w.get('theme', '')
             theme_info = f" — {theme}" if theme else ""
-            lines.append(f"${w['ticker']} at +{w['pnl_pct']:.1f}%{theme_info}{entry_info}")
+            pnl = w.get('pnl_pct', 0)
+            pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+            lines.append(f"${w['ticker']} at {pnl_str}{theme_info}{entry_info}")
             dedup.record_ticker(w['ticker'])
             dedup.last_day_tickers.append(w['ticker'])
         winners_text = "\n".join(lines)
@@ -463,12 +461,12 @@ SPY 5-day: {ctx.spy_5d_pct:+.1f}%  |  QQQ 5-day: {ctx.qqq_5d_pct:+.1f}%
 PORTFOLIO:
 Open positions: {ctx.open_count}
 
-WINNERS (15%+ gains — the ONLY positions you may mention):
+POSITIONS (all open — full transparency):
 {winners_text}
 
 INSTRUCTIONS:
-1. Lead with a winner receipt or alpha number. Make it concrete — the number IS the hook.
-2. Weave 1-3 winners into flowing prose. Frame as system validation: "The screening system diagnosed this early."
+1. Lead with the portfolio's strongest result. Make it concrete — the number IS the hook.
+2. Weave positions into flowing prose. Show winners as system validation; frame any losses positively: "Stop hit = system working as designed."
 3. Compare to SPY/QQQ if we are outperforming — show the alpha gap.
 4. Keep it clinical and confident, not boastful. "The data was clear. We followed protocol."
 5. End with this engagement question (rephrase naturally): "{hook}"
@@ -768,10 +766,10 @@ def template_portfolio_pulse(ctx: NoteContext, dedup: DedupTracker) -> str:
 
     if ctx.winners:
         w = ctx.winners[0]
-        entry_info = ""
-        if can_show_entry_price(w):
-            entry_info = f" from a ${w['entry_price']:.2f} entry"
-        lines.append(f"${w['ticker']} is running at +{w['pnl_pct']:.1f}%{entry_info}. Our screening system diagnosed this setup early and the thesis is playing out.")
+        entry_info = f" from a ${w['entry_price']:.2f} entry"
+        pnl = w.get('pnl_pct', 0)
+        pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+        lines.append(f"${w['ticker']} is at {pnl_str}{entry_info}. Our screening system diagnosed this setup early and the thesis is playing out.")
         lines.append("")
         if len(ctx.winners) > 1:
             w2 = ctx.winners[1]

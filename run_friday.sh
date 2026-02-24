@@ -220,57 +220,10 @@ else
     fi
 fi
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 3: GENERATE MARKET ANALYSIS
-# ═══════════════════════════════════════════════════════════════════════════════
-
-if [ "$SKIP_NEWSLETTER" = true ]; then
-    log_warning "Skipping market analysis (--skip-newsletter)"
-else
-    log_header "STEP 3: Generating Market Analysis (Claude + Web Search)"
-
-    if [ -f "substack/market_analyzer.py" ]; then
-        MARKET_ARGS="--save"
-        if [ "$TEST_MODE" = true ]; then
-            log_warning "Test mode: Skipping market analysis API call"
-        else
-            log_step "python3 -m substack.market_analyzer $MARKET_ARGS"
-            python3 -m substack.market_analyzer $MARKET_ARGS || {
-                log_warning "Market analysis failed - continuing anyway"
-            }
-        fi
-    else
-        log_warning "substack/market_analyzer.py not found, skipping"
-    fi
-fi
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 4: COMPILE NEWSLETTER (Full automated with LLM)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-if [ "$SKIP_NEWSLETTER" = true ]; then
-    log_warning "Skipping newsletter compilation (--skip-newsletter)"
-else
-    log_header "STEP 4: Newsletter Compilation (Market + Briefing + DD → HTML)"
-
-    if [ -f "substack/newsletter_compiler.py" ]; then
-        NEWSLETTER_ARGS=""
-        if [ "$TEST_MODE" = true ]; then
-            # Basic compilation only (no LLM)
-            log_warning "Test mode: Basic compilation only"
-        else
-            # Full automated compilation with LLM
-            NEWSLETTER_ARGS="--full"
-        fi
-
-        log_step "python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS"
-        python3 -m substack.newsletter_compiler $NEWSLETTER_ARGS || {
-            log_warning "Newsletter compilation failed - continuing anyway"
-        }
-    else
-        log_warning "substack/newsletter_compiler.py not found, skipping"
-    fi
-fi
+# Steps 3-4 (market analysis + newsletter compilation) removed.
+# Newsletter is now produced manually in Claude.ai chat using the
+# content production guide as context. Use --from-html to import:
+#   python3 -m substack.newsletter_compiler --from-html path/to/newsletter.html
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)
@@ -407,7 +360,6 @@ fi
 log_header "PIPELINE COMPLETE"
 
 echo "  Generated files:"
-echo "    • substack/output/current/newsletter.html             ← Substack Saturday"
 echo "    • scanner/output/current/newsletter_briefing.md"
 echo "    • scanner/output/signals.json"
 echo "    • substack/output/current/content_production_guide.md ← Attach to Claude.ai"

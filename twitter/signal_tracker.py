@@ -621,7 +621,7 @@ def has_enough_wins(positions: List[Dict] = None, min_winners: int = None, min_p
     if min_winners is None:
         min_winners = int(MARKETING_THRESHOLDS.get('min_winners_for_top_performers', 2))
     if min_pnl is None:
-        min_pnl = MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
+        min_pnl = 0.0  # Transparency: count any positive P&L as a winner
 
     if positions is None:
         positions = get_open_positions()
@@ -760,26 +760,16 @@ def get_winners_for_showcase(
     """
     Get winning positions for public showcase with entry prices.
 
-    Only includes positions above threshold where entry price display is allowed.
-    Entry prices shown for positions above 25% gain.
+    Full transparency: always shows entry prices for all qualifying positions.
 
     Args:
         threshold: Minimum P&L percentage for inclusion
-        include_entry_price: Whether to include entry prices for qualifying positions
+        include_entry_price: Whether to include entry prices
         max_positions: Maximum number of positions to return
 
     Returns:
-        List of winner dicts with entry price display rules applied
+        List of winner dicts with entry prices always included
     """
-    # Import here to avoid circular import
-    try:
-        from config import can_show_entry_price, ENTRY_PRICE_RULES
-    except ImportError:
-        # Fallback if config not available
-        def can_show_entry_price(pos):
-            return pos.get('pnl_pct', 0) >= 25.0
-        ENTRY_PRICE_RULES = {'threshold_pct': 25.0}
-
     positions = filter_public_positions(get_open_positions())
 
     winners = []
@@ -787,9 +777,6 @@ def get_winners_for_showcase(
         pnl = pos.get('pnl_pct', 0)
         if pnl < threshold:
             continue
-
-        # Check if entry price can be shown
-        can_show = can_show_entry_price(pos)
 
         # Calculate days held
         entry_date = pos.get('entry_date', '')
@@ -803,13 +790,13 @@ def get_winners_for_showcase(
 
         winner = {
             'ticker': pos.get('ticker', 'UNKNOWN'),
-            'entry_price': pos.get('entry_price') if can_show and include_entry_price else None,
+            'entry_price': pos.get('entry_price') if include_entry_price else None,
             'current_price': pos.get('current_price', pos.get('entry_price', 0)),
             'pnl_pct': pnl,
             'days_held': days_held,
             'theme': pos.get('theme', ''),
             'conviction': pos.get('conviction', 3),
-            'show_entry': can_show and include_entry_price,
+            'show_entry': include_entry_price,
         }
         winners.append(winner)
 

@@ -488,7 +488,6 @@ CARD_ACCENT_RED = "#ff4444"   # Loss/bearish accent
 # Performance thresholds for content generation
 MARKETING_THRESHOLDS: Dict[str, float] = {
     # Win Highlighting
-    'min_win_to_highlight': 15.0,       # Minimum % gain to include in top_performers
     'big_win_threshold': 25.0,           # Trigger standalone self_quote tweet
     'home_run_threshold': 50.0,          # Celebration post, pin candidate
     'hall_of_fame_threshold': 100.0,     # Thread-worthy, reference repeatedly
@@ -894,28 +893,16 @@ def get_conviction_text(score: int) -> str:
 def can_show_entry_price(position: dict) -> bool:
     """Check if entry price can be shown publicly for a position.
 
-    Entry prices are shown for:
-    - Closed winning positions
-    - Open positions with gains above threshold (25%)
+    Portfolio transparency: always show entry prices for all positions.
+    Full transparency builds trust — show winners AND losers.
 
     Args:
-        position: Position dict with 'status', 'pnl_pct' keys
+        position: Position dict (kept for backward compatibility)
 
     Returns:
-        True if entry price can be shown publicly
+        Always True — full portfolio transparency
     """
-    status = position.get('status', 'OPEN')
-    pnl_pct = position.get('pnl_pct', 0)
-
-    # Closed winners - always show
-    if status == 'CLOSED' and pnl_pct > 0:
-        return ENTRY_PRICE_RULES['show_for_closed_winners']
-
-    # Open positions above threshold
-    if status == 'OPEN' and pnl_pct >= ENTRY_PRICE_RULES['threshold_pct']:
-        return ENTRY_PRICE_RULES['show_for_open_above_threshold']
-
-    return False
+    return True
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

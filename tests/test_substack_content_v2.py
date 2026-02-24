@@ -127,7 +127,7 @@ def sample_buy_signals():
 def sample_winners():
     """Sample portfolio winners for testing."""
     return [
-        {"ticker": "STRL", "entry_price": 362.53, "highest_close": 437.77, "pnl_pct": 20.8, "theme": "AI Cooling", "entry_date": "2026-01-15", "show_entry": False},
+        {"ticker": "STRL", "entry_price": 362.53, "highest_close": 437.77, "pnl_pct": 20.8, "theme": "AI Cooling", "entry_date": "2026-01-15", "show_entry": True},
         {"ticker": "VNET", "entry_price": 10.40, "highest_close": 13.80, "pnl_pct": 32.7, "theme": "Data Centers", "entry_date": "2026-01-10", "show_entry": True},
     ]
 
@@ -461,17 +461,15 @@ class TestBannedTermSafety:
         assert is_valid
         assert len(issues) == 0
 
-    def test_validate_catches_negative_pnl(self):
-        """validate_post_content should flag negative P&L."""
+    def test_validate_allows_negative_pnl(self):
+        """validate_post_content should allow negative P&L (transparency)."""
         is_valid, issues = validate_post_content("Position is currently at -5.2% P&L.")
-        assert not is_valid
-        assert any("Negative P&L" in i for i in issues)
+        assert is_valid
 
-    def test_validate_catches_stopped_mention(self):
-        """validate_post_content should flag STOPPED mentions."""
+    def test_validate_allows_stopped_mention(self):
+        """validate_post_content should allow STOPPED mentions (transparency)."""
         is_valid, issues = validate_post_content("Position STOPPED out at $15.00.")
-        assert not is_valid
-        assert any("STOPPED" in i for i in issues)
+        assert is_valid
 
     def test_all_prompt_builders_exist(self):
         """All expected post types should have prompt builders."""
@@ -546,13 +544,12 @@ class TestVisualInjection:
         assert "+20.8%" in html
         assert "+32.7%" in html
 
-    def test_winners_table_shows_entry_when_qualified(self, sample_winners):
-        """Winners with show_entry=True should display entry price."""
+    def test_winners_table_shows_entry_for_all(self, sample_winners):
+        """All positions should display entry price (full transparency)."""
         html = build_winners_table_html(sample_winners)
-        # VNET has show_entry=True
-        assert "$10.40 entry" in html
-        # STRL has show_entry=False
-        assert "$362.53 entry" not in html
+        # Both positions show entry (transparency)
+        assert "$10.40" in html
+        assert "$362.53" in html
 
     def test_winners_table_empty(self):
         """Winners table should return empty string for no winners."""
@@ -561,7 +558,7 @@ class TestVisualInjection:
     def test_winners_table_max_8_winners(self):
         """Winners table should show at most 8 positions."""
         winners = [
-            {"ticker": f"TEST{i}", "pnl_pct": 20.0 + i, "theme": "Test", "show_entry": False}
+            {"ticker": f"TEST{i}", "pnl_pct": 20.0 + i, "theme": "Test", "entry_price": 10.0 + i, "show_entry": True}
             for i in range(10)
         ]
         html = build_winners_table_html(winners)
@@ -637,16 +634,17 @@ class TestPromptFormatting:
         assert "$VNET" in result
         assert "+32.7%" in result
 
-    def test_format_winners_shows_entry_when_qualified(self, sample_winners):
-        """Winners with show_entry should include entry price."""
+    def test_format_winners_shows_entry_for_all(self, sample_winners):
+        """All positions should include entry price (full transparency)."""
         result = _format_winners_for_prompt(sample_winners)
-        # VNET has show_entry=True
-        assert "$10.40 entry" in result
+        # Both positions show entry (transparency)
+        assert "$10.40" in result
+        assert "$362.53" in result
 
     def test_format_winners_empty(self):
         """Empty winners should return descriptive message."""
         result = _format_winners_for_prompt([])
-        assert "No positions" in result
+        assert "No open positions" in result
 
     def test_format_assessed_for_prompt(self):
         """Assessed signals should show why they failed."""
@@ -936,19 +934,18 @@ class TestTextSanitization:
 class TestLLMOutputScrub:
     """Test post-LLM output scrubbing."""
 
-    def test_scrub_removes_negative_pnl_sentences(self):
-        """Sentences with negative P&L should be stripped."""
+    def test_scrub_preserves_negative_pnl(self):
+        """Negative P&L should be preserved (transparency)."""
         text = "Portfolio is up. SPY declined -12.3% last quarter. Our system held strong."
         result = scrub_llm_output(text)
-        assert "-12.3%" not in result
+        assert "-12.3%" in result
         assert "Portfolio is up" in result
-        assert "Our system held strong" in result
 
-    def test_scrub_removes_stopped_mentions(self):
-        """STOPPED position sentences should be stripped."""
+    def test_scrub_preserves_stopped_mentions(self):
+        """STOPPED mentions should be preserved (transparency)."""
         text = "Winners are running. SMCI was STOPPED at $36. We focus on what works."
         result = scrub_llm_output(text)
-        assert "STOPPED" not in result
+        assert "STOPPED" in result
         assert "Winners are running" in result
 
     def test_scrub_preserves_positive_pnl(self):
@@ -968,12 +965,12 @@ class TestLLMOutputScrub:
         result = scrub_llm_output(text)
         assert "\n\n\n" not in result
 
-    def test_scrub_multiple_negatives(self):
-        """Multiple negative P&L mentions should all be removed."""
+    def test_scrub_preserves_multiple_negatives(self):
+        """Multiple negative P&L mentions should be preserved (transparency)."""
         text = "A lost -3.2%. B fell -7.5%. C gained +20.0%."
         result = scrub_llm_output(text)
-        assert "-3.2%" not in result
-        assert "-7.5%" not in result
+        assert "-3.2%" in result
+        assert "-7.5%" in result
         assert "+20.0%" in result
 
 
@@ -1004,17 +1001,15 @@ class TestContentValidation:
         is_valid, _ = validate_post_content("Conviction score of 8/10.")
         assert not is_valid
 
-    def test_negative_pnl_detected(self):
-        """Negative P&L percentages should be detected."""
+    def test_negative_pnl_allowed(self):
+        """Negative P&L should pass validation (transparency)."""
         is_valid, issues = validate_post_content("This position is at -12.5% from entry.")
-        assert not is_valid
-        assert any("Negative P&L" in i for i in issues)
+        assert is_valid
 
-    def test_stopped_position_detected(self):
-        """STOPPED position mentions should be detected."""
+    def test_stopped_position_allowed(self):
+        """STOPPED position mentions should pass validation (transparency)."""
         is_valid, issues = validate_post_content("SMCI was STOPPED at $36.00.")
-        assert not is_valid
-        assert any("STOPPED" in i for i in issues)
+        assert is_valid
 
     def test_positive_pnl_passes(self):
         """Positive P&L should pass validation."""

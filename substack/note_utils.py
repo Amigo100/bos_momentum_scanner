@@ -42,7 +42,7 @@ from config.output_paths import (
     get_substack_current_dir,
     get_substack_archive_dir,
 )
-from config.banned_terms import check_banned_phrases, check_loser_focus, validate_content
+from config.banned_terms import check_banned_phrases, validate_content
 
 try:
     from config import MARKETING_THRESHOLDS
@@ -85,9 +85,9 @@ MARKETING RULES (CRITICAL):
 - NEVER use: HMA, RSI, MACD, KDJ, Banker, UC, Undercurrent, BoS, ExD, profit lock, tiered stop, Gatekeeper, Investment Gate, conviction 1-10, Tier 1/2/3, Roth IRA, PDT.
 - System: "proprietary screening system" or "our screening system".
 - Conviction: "Extremely Bullish" / "Bullish" / "Watching" — NEVER numbers.
-- NEVER mention losing positions or negative P&L.
-- Only show entry prices for closed winners or positions with 25%+ gain.
-- Only highlight positions with 15%+ gains.
+- Show ALL positions transparently — winners AND losers.
+- Frame losses positively: "Stop hit = system working as designed."
+- Always show entry prices for full transparency.
 
 Always end with: "Not financial advice. Informational only."
 """
@@ -297,9 +297,9 @@ def build_note_context() -> NoteContext:
     # Portfolio stats
     stats = calculate_portfolio_stats(portfolio, prices)
 
-    # Filter winners by threshold
+    # Show all positions (full transparency)
     all_positions = stats.get('positions', [])
-    winners = [p for p in all_positions if p.get('pnl_pct', 0) >= MIN_WIN_THRESHOLD]
+    winners = all_positions
     big_winners = [p for p in all_positions if p.get('pnl_pct', 0) >= BIG_WIN_THRESHOLD]
 
     # Signals
@@ -327,7 +327,7 @@ def build_note_context() -> NoteContext:
         scan_stats=scan_stats,
     )
 
-    print(f"    Winners (15%+): {len(winners)}  |  Big winners (25%+): {len(big_winners)}")
+    print(f"    Positions: {len(winners)}  |  Big winners (25%+): {len(big_winners)}")
     print(f"    GREEN signals: {len(pass_signals)}  |  Themes: {len(themes)}")
 
     return ctx
@@ -349,22 +349,15 @@ def validate_note(content: str) -> Tuple[bool, List[str]]:
     if not is_valid_marketing:
         issues.extend([f"Marketing: {v}" for v in marketing_violations])
 
-    # Layer 2: Banned phrases + loser focus
+    # Layer 2: Banned phrases
     banned_found = check_banned_phrases(content)
     if banned_found:
         issues.extend([f"Banned phrase: {p}" for p in banned_found])
-
-    if check_loser_focus(content):
-        issues.append("Content appears focused on losing positions")
 
     # Layer 3: Custom structural checks
     # No markdown headers
     if re.search(r'^#{1,3}\s', content, re.MULTILINE):
         issues.append("Contains markdown headers (# or ##)")
-
-    # No negative percentages (losers)
-    if re.search(r'-\d+\.?\d*%', content):
-        issues.append("Contains negative percentage (potential loser mention)")
 
     # No numeric conviction scores
     if re.search(r'conviction\s+\d+', content, re.IGNORECASE):
@@ -431,7 +424,7 @@ RULES REMINDER:
 - NO markdown headers (no #, ##)
 - NO bullet point lists (no •, -, *)
 - 150-300 words, flowing paragraphs only
-- NEVER mention losing positions or negative P&L
+- Show all positions transparently; frame losses positively
 - NEVER use banned terms: HMA, RSI, MACD, KDJ, Banker, UC, Undercurrent, BoS, ExD, profit lock, tiered stop, Gatekeeper, Investment Gate, conviction scores
 - Must end with: "Not financial advice. Informational only."
 - Use "GREEN signal" for buys, "our screening system" for the system

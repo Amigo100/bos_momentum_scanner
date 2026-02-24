@@ -53,9 +53,7 @@ from config.banned_terms import (
     ALL_BANNED,
     CRITICAL_BANNED,
     BANNED_PHRASES,
-    LOSER_PATTERNS,
     check_banned_phrases,
-    check_loser_focus,
 )
 from twitter.poster import (
     DAILY_SLOTS,

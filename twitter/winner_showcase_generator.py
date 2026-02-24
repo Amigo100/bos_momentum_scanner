@@ -3,8 +3,8 @@
 WINNER SHOWCASE GENERATOR
 =========================
 
-Generates winner showcase content with entry price display rules.
-Only shows entry prices for positions above the 25% threshold.
+Generates winner showcase content with full transparency.
+Always shows entry prices for all positions (no threshold gating).
 
 This module handles the formatting and generation of winner-focused
 content for tweets and other public-facing displays.
@@ -26,8 +26,6 @@ from config import (
     SIGNAL_COLORS,
     get_signal_emoji,
     get_conviction_text,
-    can_show_entry_price,
-    ENTRY_PRICE_RULES,
     MARKETING_THRESHOLDS,
     BRANDING,
 )
@@ -48,9 +46,9 @@ def get_winners_for_showcase(
     max_positions: int = 5
 ) -> List[Dict]:
     """
-    Get winning positions for public showcase with optional entry prices.
+    Get winning positions for public showcase with entry prices.
 
-    Only includes positions above threshold where entry price display is allowed.
+    Includes positions above threshold with full entry price transparency.
 
     Args:
         threshold: Minimum P&L percentage for inclusion (default 25%)
@@ -72,18 +70,15 @@ def get_winners_for_showcase(
         if pnl < threshold:
             continue
 
-        # Check if we can show entry price for this position
-        can_show = can_show_entry_price(pos)
-
         winner = {
             'ticker': pos.get('ticker', 'UNKNOWN'),
-            'entry_price': pos.get('entry_price', 0) if can_show else None,
+            'entry_price': pos.get('entry_price', 0) if include_entry_price else None,
             'current_price': pos.get('current_price', 0),
             'pnl_pct': pnl,
             'days_held': calculate_days_held(pos.get('entry_date', '')),
             'theme': pos.get('theme', ''),
             'conviction': pos.get('conviction', 3),
-            'show_entry': can_show and include_entry_price,
+            'show_entry': include_entry_price,
         }
         winners.append(winner)
 

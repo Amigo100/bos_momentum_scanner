@@ -38,12 +38,7 @@ from typing import Dict, List, Optional, Tuple
 
 # ─── Project imports ──────────────────────────────────────────────────────────
 
-from config import BASE_DIR, PORTFOLIO_FILE, BRANDING, get_conviction_text, can_show_entry_price
-
-try:
-    from config import MARKETING_THRESHOLDS
-except ImportError:
-    MARKETING_THRESHOLDS = {'min_win_to_highlight': 15.0, 'big_win_threshold': 25.0}
+from config import BASE_DIR, PORTFOLIO_FILE, BRANDING, get_conviction_text
 
 from config.banned_terms import CRITICAL_BANNED, BANNED_PHRASES, INTERNAL_TERMINOLOGY_MAP
 
@@ -52,6 +47,10 @@ try:
         get_substack_current_dir,
         get_substack_archive_dir,
         ensure_output_structure,
+        SCANNER_OUTPUT,
+        SUBSTACK_OUTPUT,
+        CLAUDE_CONTENT_DIR,
+        list_weekly_archives,
     )
     OUTPUT_PATHS_AVAILABLE = True
 except ImportError:
@@ -64,6 +63,7 @@ from substack.content_generator import (
     PostSpec,
     TEMPLATE_MAP,
     load_portfolio_winners,
+    load_historical_themes,
     _format_themes_for_prompt,
     _format_signals_for_prompt,
     _format_winners_for_prompt,
@@ -76,8 +76,6 @@ from substack.content_generator import (
 # on-demand each day using the Daily Notes prompt from the handbook
 
 SUBSTACK_URL = BRANDING.get("substack_url", "https://sterlingsignals.substack.com")
-MIN_WIN_THRESHOLD = MARKETING_THRESHOLDS.get('min_win_to_highlight', 15.0)
-BIG_WIN_THRESHOLD = MARKETING_THRESHOLDS.get('big_win_threshold', 25.0)
 
 
 # =============================================================================
@@ -131,33 +129,38 @@ CATEGORY_HANDBOOK_PROMPTS = {
 # =============================================================================
 
 def load_full_portfolio() -> List[Dict]:
-    """Load ALL open positions from portfolio.csv (not just winners)."""
+    """Load ALL open positions with full metrics from PortfolioManager."""
+    from portfolio.manager import PortfolioManager
+
     portfolio_path = PORTFOLIO_FILE
     if not portfolio_path.exists():
         return []
 
+    pm = PortfolioManager()
+    try:
+        pm.update_prices()
+    except Exception as e:
+        print(f"  Warning: Could not fetch live prices: {e}")
+        # Proceed with stale data — metrics still calculated from highest_close
+
     positions = []
-    with open(portfolio_path) as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row.get("status", "").upper() != "OPEN":
-                continue
-            try:
-                entry = float(row.get("entry_price", 0))
-                highest = float(row.get("highest_close", 0))
-                pnl = ((highest - entry) / entry * 100) if entry > 0 else 0
-                positions.append({
-                    "ticker": row.get("ticker", ""),
-                    "entry_date": row.get("entry_date", ""),
-                    "entry_price": round(entry, 2),
-                    "highest_close": round(highest, 2),
-                    "pnl_pct": round(pnl, 1),
-                    "theme": row.get("theme", ""),
-                    "show_entry": pnl >= BIG_WIN_THRESHOLD,
-                    "is_winner": pnl >= MIN_WIN_THRESHOLD,
-                })
-            except (ValueError, TypeError):
-                continue
+    for t in pm.get_open_positions():
+        positions.append({
+            "ticker": t.ticker,
+            "entry_date": t.entry_date,
+            "entry_price": round(t.entry_price, 2),
+            "current_price": round(t.current_price, 2) if t.current_price > 0 else round(t.highest_close, 2),
+            "highest_close": round(t.highest_close, 2),
+            "pnl_pct": round(t.pnl_pct, 1),
+            "theme": t.theme,
+            "tier": t.tier,
+            "conviction": t.conviction,
+            "days_held": t.days_held,
+            "stop_level": round(t.stop_level, 2),
+            "distance_to_stop_pct": round(t.distance_to_stop_pct, 1),
+            "stop_alert": t.stop_alert,
+            "signal_type": t.signal_type,
+        })
 
     return sorted(positions, key=lambda x: x["pnl_pct"], reverse=True)
 
@@ -207,9 +210,9 @@ def build_weekly_schedule(
             "reason": f"New GREEN signal — ${ticker} at ${price:.2f} ({theme})",
         })
 
-    # Top portfolio winners → ticker dives
-    winners = [p for p in portfolio if p["is_winner"]]
-    for w in winners[:3]:
+    # Top portfolio performers → ticker dives
+    top_performers = [p for p in portfolio if p["pnl_pct"] >= 15.0]
+    for w in top_performers[:3]:
         # Don't duplicate if already in signals
         if not any(t["ticker"] == w["ticker"] for t in ticker_dive_topics):
             theme_str = w['theme'] if w['theme'] else "Growth"
@@ -449,9 +452,11 @@ def generate_weekly_data(ctx: ContentContext, portfolio: List[Dict]) -> str:
 
     # Portfolio stats
     total = len(portfolio)
-    winners = [p for p in portfolio if p["is_winner"]]
-    big_winners = [p for p in portfolio if p["show_entry"]]
     avg_pnl = sum(p["pnl_pct"] for p in portfolio) / max(total, 1) if portfolio else 0
+    avg_days = sum(p.get("days_held", 0) for p in portfolio) / max(total, 1) if portfolio else 0
+    profit_locked = [p for p in portfolio if p.get("stop_level", 0) > 0]
+    near_stop = [p for p in portfolio if p.get("stop_alert", False)]
+    big_winners = [p for p in portfolio if p["pnl_pct"] >= 25.0]
 
     output = f"""
 ---
@@ -476,17 +481,41 @@ def generate_weekly_data(ctx: ContentContext, portfolio: List[Dict]) -> str:
 
 ### Portfolio Overview ({total} open positions)
 """
-    # Show all positions
     if portfolio:
-        output += "| Ticker | P&L | Theme | Entry Date | Show Entry? |\n"
-        output += "|--------|-----|-------|------------|-------------|\n"
+        output += "| Ticker | Current | Entry | P&L | Days Held | Theme | Stop Level | Stop Dist | Alert |\n"
+        output += "|--------|---------|-------|-----|-----------|-------|------------|-----------|-------|\n"
         for p in portfolio:
-            entry_str = f"${p['entry_price']:.2f}" if p["show_entry"] else "Hidden (<25%)"
-            marker = " ⭐" if p["is_winner"] else ""
-            output += f"| ${p['ticker']}{marker} | +{p['pnl_pct']:.1f}% | {p['theme']} | {p['entry_date']} | {entry_str} |\n"
-        output += f"\n- Winners (15%+): {len(winners)} positions\n"
-        output += f"- Big winners (25%+, entry shown): {len(big_winners)} positions\n"
-        output += f"- Average P&L: {avg_pnl:+.1f}%\n"
+            current = f"${p.get('current_price', 0):.2f}"
+            entry = f"${p['entry_price']:.2f}"
+            pnl = f"{p['pnl_pct']:+.1f}%"
+            days = str(p.get("days_held", 0))
+            stop = f"${p['stop_level']:.2f}" if p.get("stop_level", 0) > 0 else "ExD only"
+            stop_dist = f"{p['distance_to_stop_pct']:.1f}%" if p.get("stop_level", 0) > 0 else "—"
+            alert = "ALERT" if p.get("stop_alert") else ""
+            output += f"| ${p['ticker']} | {current} | {entry} | {pnl} | {days} | {p['theme']} | {stop} | {stop_dist} | {alert} |\n"
+
+        output += f"\n**Position Detail** (for newsletter narrative):\n"
+        for p in portfolio:
+            current = p.get("current_price", 0) or p.get("highest_close", 0)
+            ticker = p["ticker"]
+            pnl = p["pnl_pct"]
+            days = p.get("days_held", 0)
+            theme = p["theme"]
+            if pnl >= 0:
+                if p.get("stop_level", 0) > 0:
+                    narrative = f"Stop at ${p['stop_level']:.2f} ({p['distance_to_stop_pct']:.1f}% cushion). System working — letting winners run."
+                else:
+                    narrative = "Below profit lock threshold — ExD exit only. Building position."
+            else:
+                narrative = "Down but managing risk — disciplined exits in place."
+
+            output += f"- ${ticker}: Entry ${p['entry_price']:.2f}, now ${current:.2f} ({pnl:+.1f}%), held {days} days. {theme}.\n"
+            output += f"  {narrative}\n"
+
+        output += f"\n**Summary:**\n"
+        output += f"- Total open: {total} | Average P&L: {avg_pnl:+.1f}% | Average hold: {avg_days:.0f} days\n"
+        output += f"- Positions with profit lock: {len(profit_locked)} | Near-stop alerts (<5%): {len(near_stop)}\n"
+        output += f"- Big winners (25%+): {len(big_winners)} positions\n"
     else:
         output += "No open positions.\n"
 
@@ -505,6 +534,125 @@ def generate_weekly_data(ctx: ContentContext, portfolio: List[Dict]) -> str:
     # Market analysis
     if ctx.market_analysis:
         output += f"\n### Market Analysis (from Friday scanner)\n{ctx.market_analysis[:2000]}\n"
+
+    return output
+
+
+# =============================================================================
+# SECTION 2B: CONTENT HISTORY (for continuity)
+# =============================================================================
+
+def generate_content_history() -> str:
+    """Generate content history from archives + Claude content + theme persistence."""
+    if not OUTPUT_PATHS_AVAILABLE:
+        return "\n---\n\n### Content History\nArchive not available.\n"
+
+    output = "\n---\n\n### Content History (Last 4 Weeks)\n\n"
+
+    # Scan substack archives for published content
+    try:
+        substack_archives = list_weekly_archives("substack")
+    except Exception:
+        substack_archives = []
+
+    recent_weeks = sorted(substack_archives)[-4:] if substack_archives else []
+
+    for week_id in recent_weeks:
+        week_dir = SUBSTACK_OUTPUT / "archive" / week_id
+        if not week_dir.exists():
+            continue
+
+        output += f"**{week_id}**:\n"
+
+        # Check for newsletter
+        newsletter = week_dir / "newsletter.html"
+        if newsletter.exists():
+            # Try to extract title from HTML
+            try:
+                content = newsletter.read_text()[:500]
+                import re
+                title_match = re.search(r'<title>([^<]+)</title>', content)
+                if not title_match:
+                    title_match = re.search(r'<h1[^>]*>([^<]+)</h1>', content)
+                title = title_match.group(1).strip() if title_match else "Newsletter"
+                output += f"- Newsletter: \"{title}\"\n"
+            except Exception:
+                output += f"- Newsletter: published\n"
+        else:
+            output += "- Newsletter: not found\n"
+
+        # Check for posts
+        posts_dir = week_dir / "substack_posts"
+        if posts_dir.exists():
+            posts = sorted(posts_dir.glob("*.html"))
+            if posts:
+                post_names = [p.stem for p in posts]
+                output += f"- Posts: {', '.join(post_names)}\n"
+
+        # Check for notes
+        notes_dir = week_dir / "substack_notes"
+        if notes_dir.exists():
+            notes = sorted(list(notes_dir.glob("*.html")) + list(notes_dir.glob("*.md")))
+            if notes:
+                output += f"- Notes: {len(notes)} published\n"
+
+        # Check scanner archive for themes that week
+        scanner_signals = SCANNER_OUTPUT / "archive" / week_id / "signals.json"
+        if scanner_signals.exists():
+            try:
+                with open(scanner_signals) as f:
+                    data = json.load(f)
+                themes = data.get("themes", [])
+                theme_strs = []
+                for t in themes:
+                    name = t.get("name", "")
+                    classification = t.get("classification", "")
+                    if name and classification in ("PRIME", "INVESTABLE"):
+                        theme_strs.append(f"{name} ({classification})")
+                if theme_strs:
+                    output += f"- Themes: {', '.join(theme_strs)}\n"
+            except Exception:
+                pass
+
+        output += "\n"
+
+    # Claude.ai-produced content
+    if CLAUDE_CONTENT_DIR.exists():
+        claude_files = sorted(CLAUDE_CONTENT_DIR.glob("*.html"))
+        if claude_files:
+            output += "**Claude.ai Content Archive:**\n"
+            for f in claude_files[-10:]:  # Last 10 files
+                output += f"- {f.name}\n"
+            output += "\n"
+
+    # Theme persistence table (4-week trend)
+    theme_history = load_historical_themes()
+    if theme_history:
+        output += "### Theme Persistence (4-week trend)\n\n"
+        output += "| Theme | " + " | ".join(recent_weeks[-4:]) + " | Trend |\n"
+        output += "|-------|" + "|".join(["---"] * min(len(recent_weeks), 4)) + "|-------|\n"
+
+        for theme_name, entries in sorted(theme_history.items()):
+            weeks_map = {e["week"]: e.get("classification", "") for e in entries}
+            row = f"| {theme_name} "
+            for wk in recent_weeks[-4:]:
+                cls = weeks_map.get(wk, "—")
+                row += f"| {cls} "
+            # Determine trend
+            scores = [e.get("score", 0) for e in entries]
+            if len(scores) >= 2:
+                if scores[-1] > scores[0]:
+                    trend = "Building"
+                elif scores[-1] < scores[0]:
+                    trend = "Fading"
+                else:
+                    trend = "Stable"
+            else:
+                trend = "New"
+            row += f"| {trend} |\n"
+            output += row
+
+        output += "\n"
 
     return output
 
@@ -648,6 +796,7 @@ def main():
     sections = []
     sections.append(generate_system_context())
     sections.append(generate_weekly_data(ctx, portfolio))
+    sections.append(generate_content_history())
     sections.append(generate_weekly_schedule(schedule))
     sections.append(generate_prompt_reference())
 

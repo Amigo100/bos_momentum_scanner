@@ -211,39 +211,9 @@ jobs:
         env:
           TRADINGVIEW_COOKIES: ${{ secrets.TRADINGVIEW_COOKIES }}
 
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 3: GENERATE MARKET ANALYSIS (Claude + Web Search)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Generate Market Analysis
-        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
-        run: |
-          if [ -f "substack/market_analyzer.py" ]; then
-            echo "Generating market analysis via Claude + web search..."
-            python -m substack.market_analyzer --save || {
-              echo "Market analysis failed - continuing anyway"
-            }
-          else
-            echo "substack/market_analyzer.py not found, skipping"
-          fi
-        continue-on-error: true
-
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 4: COMPILE NEWSLETTER (Full LLM-powered compilation)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Compile Newsletter
-        if: ${{ github.event.inputs.skip_newsletter != 'true' && github.event.inputs.skip_llm != 'true' }}
-        run: |
-          if [ -f "substack/newsletter_compiler.py" ]; then
-            echo "Compiling newsletter via LLM..."
-            python -m substack.newsletter_compiler --full || {
-              echo "Newsletter compilation failed - continuing anyway"
-            }
-          else
-            echo "substack/newsletter_compiler.py not found, skipping"
-          fi
-        continue-on-error: true
+      # Steps 3-4 (market analysis + newsletter compilation) removed.
+      # Newsletter is now produced manually in Claude.ai chat.
+      # Use: python -m substack.newsletter_compiler --from-html path/to/newsletter.html
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 4.5: GENERATE DD HTML POSTS (per buy signal for Substack)

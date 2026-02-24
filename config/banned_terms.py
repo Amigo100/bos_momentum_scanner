@@ -11,7 +11,6 @@ Ref: FINTWIT_STYLE_GUIDE.md section "Banned Phrases"
 Exports:
     CRITICAL_BANNED          — Terms that must NEVER appear in public content
     BANNED_PHRASES           — Low-quality / vague phrases to reject
-    LOSER_PATTERNS           — Regex patterns detecting loser-focused language
     ALL_BANNED               — CRITICAL_BANNED + BANNED_PHRASES combined
     INTERNAL_TERMINOLOGY_MAP — Internal term → public-facing language
     INTERNAL_TERM_PATTERNS   — Regex patterns for internal terms (validation step 5)
@@ -152,23 +151,6 @@ BANNED_PHRASES: List[str] = [
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LOSER_PATTERNS — Regex patterns that detect loser-focused language
-# ═══════════════════════════════════════════════════════════════════════════════
-
-LOSER_PATTERNS: List[str] = [
-    r'the red\b',
-    r'still bleeding',
-    r'keep losing',
-    r'\bred position',
-    r'stubborn loser',
-    r'watching.*lose',
-    r'debate the exit',
-    r'down.*portfolio',
-    r'biggest loser',
-]
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # ALL_BANNED — Convenience export combining both lists for full validation
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -256,13 +238,6 @@ def check_banned_phrases(text: str) -> List[str]:
             issues.append(f"FAIL: banned phrase '{phrase}'")
     return issues
 
-
-def check_loser_focus(text: str) -> bool:
-    """Detect emphasis on losing positions. Returns True if loser-focused."""
-    for pattern in LOSER_PATTERNS:
-        if re.search(pattern, text, re.IGNORECASE):
-            return True
-    return False
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -365,7 +340,6 @@ if __name__ == "__main__":
     print("=" * 50)
     print(f"CRITICAL_BANNED: {len(CRITICAL_BANNED)} terms")
     print(f"BANNED_PHRASES:  {len(BANNED_PHRASES)} phrases")
-    print(f"LOSER_PATTERNS:  {len(LOSER_PATTERNS)} patterns")
     print(f"ALL_BANNED:      {len(ALL_BANNED)} total")
     print(f"TERMINOLOGY_MAP: {len(INTERNAL_TERMINOLOGY_MAP)} mappings")
     print()

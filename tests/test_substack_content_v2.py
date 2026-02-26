@@ -1,34 +1,29 @@
-"""Tests for Substack Content Generator v2 — LLM-powered posts.
+"""Tests for Substack content utilities (content_utils.py).
 
 Tests cover:
   - ContentContext data loading and building
-  - Content calendar decision logic (signals vs no-signals)
-  - Banned term safety in system prompts and visual templates
+  - Banned term safety in visual templates
   - Visual element injection (funnel, theme scores, winners table)
-  - CLI backward compatibility aliases
-  - No-LLM fallback mode
-
-All external APIs (Anthropic) and file I/O are mocked.
+  - Prompt formatting helpers
+  - Text sanitization (internal → public terminology)
+  - LLM output scrubbing
+  - Content validation pipeline
 """
 
-import csv
 import json
-import os
 import tempfile
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
 import pytest
 
 # ── Module imports ────────────────────────────────────────────────────────────
 
-from substack.content_generator import (
+# Shared utilities (from content_utils)
+from substack.content_utils import (
     ContentContext,
     PostSpec,
     build_content_context,
-    determine_content_calendar,
     sanitize_text,
     scrub_llm_output,
     validate_post_content,
@@ -36,21 +31,14 @@ from substack.content_generator import (
     build_theme_scores_html,
     build_winners_table_html,
     inject_visual_elements,
-    generate_post_fallback,
-    generate_all_posts,
     _format_themes_for_prompt,
     _format_signals_for_prompt,
     _format_winners_for_prompt,
     _format_assessed_for_prompt,
     _format_equity_stats,
     _format_theme_history,
-    build_weekly_recap_prompt,
-    build_theme_deep_dive_prompt,
-    build_dd_deep_dive_prompt,
-    build_portfolio_spotlight_prompt,
-    SYSTEM_PROMPT,
-    PROMPT_BUILDERS,
 )
+
 from config.banned_terms import (
     ALL_BANNED,
     CRITICAL_BANNED,
@@ -260,8 +248,8 @@ class TestContentContext:
         """build_content_context should handle missing files gracefully."""
         # Point to a non-existent signals file
         fake_path = tmpdir / "nonexistent_signals.json"
-        with patch("substack.content_generator.SIGNALS_FILE", tmpdir / "signals.json"):
-            with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
+        with patch("substack.content_utils.SIGNALS_FILE", tmpdir / "signals.json"):
+            with patch("substack.content_utils.OUTPUT_PATHS_AVAILABLE", False):
                 ctx = build_content_context(fake_path)
                 assert ctx.signals == {}
                 assert ctx.pass_count == 0
@@ -276,11 +264,11 @@ class TestContentContext:
         signals_path = tmpdir / "signals.json"
         signals_path.write_text(json.dumps(signals))
 
-        with patch("substack.content_generator.SIGNALS_FILE", tmpdir / "signals.json"):
-            with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
-                with patch("substack.content_generator.load_portfolio_winners", return_value=[]):
-                    with patch("substack.content_generator.load_equity_curve", return_value={}):
-                        with patch("substack.content_generator.load_chart_manifest", return_value={}):
+        with patch("substack.content_utils.SIGNALS_FILE", tmpdir / "signals.json"):
+            with patch("substack.content_utils.OUTPUT_PATHS_AVAILABLE", False):
+                with patch("substack.content_utils.load_portfolio_winners", return_value=[]):
+                    with patch("substack.content_utils.load_equity_curve", return_value={}):
+                        with patch("substack.content_utils.load_chart_manifest", return_value={}):
                             ctx = build_content_context(signals_path)
                             assert ctx.pass_count == 1
                             assert len(ctx.themes) == 1
@@ -288,134 +276,11 @@ class TestContentContext:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEST CONTENT CALENDAR
-# ═══════════════════════════════════════════════════════════════════════════════
-
-class TestContentCalendar:
-    """Test content calendar decision logic."""
-
-    def test_calendar_with_signals_returns_4_posts(self, full_context):
-        """When signals exist, should return 4 posts (recap, dd, theme, stock dive)."""
-        calendar = determine_content_calendar(full_context)
-        assert len(calendar) >= 4
-        types = [p.post_type for p in calendar]
-        assert "WEEKLY_RECAP" in types
-        assert "THEME_DEEP_DIVE" in types
-        assert "DD_DEEP_DIVE" in types
-        assert "STOCK_DEEP_DIVE" in types
-
-    def test_calendar_without_signals_returns_4_posts(self, no_signals_context):
-        """When no signals, should return 4 posts (recap, theme, portfolio/stock, portfolio)."""
-        calendar = determine_content_calendar(no_signals_context)
-        assert len(calendar) >= 3
-        types = [p.post_type for p in calendar]
-        assert "WEEKLY_RECAP" in types
-        assert "THEME_DEEP_DIVE" in types
-        # Should have PORTFOLIO_SPOTLIGHT or PORTFOLIO_SHOWCASE or STOCK_DEEP_DIVE or EDUCATIONAL
-        non_recap_types = [t for t in types if t not in ("WEEKLY_RECAP", "THEME_DEEP_DIVE")]
-        assert len(non_recap_types) >= 1
-
-    def test_calendar_no_dd_without_signals(self, no_signals_context):
-        """When no signals, DD_DEEP_DIVE should not be generated."""
-        calendar = determine_content_calendar(no_signals_context)
-        types = [p.post_type for p in calendar]
-        assert "DD_DEEP_DIVE" not in types
-
-    def test_calendar_no_portfolio_with_signals(self, full_context):
-        """When signals exist, PORTFOLIO_SPOTLIGHT should not be generated."""
-        calendar = determine_content_calendar(full_context)
-        types = [p.post_type for p in calendar]
-        assert "PORTFOLIO_SPOTLIGHT" not in types
-
-    def test_calendar_post_spec_titles(self, full_context):
-        """Post titles should include week number and context."""
-        calendar = determine_content_calendar(full_context)
-        recap = [p for p in calendar if p.post_type == "WEEKLY_RECAP"][0]
-        assert "Week 7" in recap.title
-        assert "GREEN Signal" in recap.title
-
-    def test_calendar_no_signals_title(self, no_signals_context):
-        """No-signals week should have appropriate recap title."""
-        calendar = determine_content_calendar(no_signals_context)
-        recap = [p for p in calendar if p.post_type == "WEEKLY_RECAP"][0]
-        assert "Week 7" in recap.title
-        assert "Passed" in recap.title
-
-    def test_calendar_publish_days(self, full_context):
-        """Posts should be assigned to correct publish days."""
-        calendar = determine_content_calendar(full_context)
-        days = {p.post_type: p.publish_day for p in calendar}
-        assert days["WEEKLY_RECAP"] == "Saturday"
-        assert days["THEME_DEEP_DIVE"] == "Wednesday"
-
-    def test_calendar_filenames_are_html(self, full_context):
-        """All post filenames should end in .html."""
-        calendar = determine_content_calendar(full_context)
-        for post in calendar:
-            assert post.filename.endswith(".html"), f"{post.filename} doesn't end with .html"
-
-    def test_calendar_dd_filename_includes_ticker(self, full_context):
-        """DD post filename should include the ticker symbol."""
-        calendar = determine_content_calendar(full_context)
-        dd = [p for p in calendar if p.post_type == "DD_DEEP_DIVE"]
-        assert len(dd) == 1
-        assert "INOD" in dd[0].filename
-
-    def test_calendar_with_multiple_signals(self, full_context):
-        """Calendar should use first buy signal for DD post."""
-        full_context.buy_signals.append({"symbol": "RCAT", "final_decision": "PASS", "price": 13.0})
-        full_context.pass_count = 2
-        calendar = determine_content_calendar(full_context)
-        dd = [p for p in calendar if p.post_type == "DD_DEEP_DIVE"]
-        assert "INOD" in dd[0].filename  # First signal
-
-    def test_calendar_empty_themes(self):
-        """Calendar should handle empty themes gracefully."""
-        ctx = ContentContext(week_number=7, pass_count=0)
-        calendar = determine_content_calendar(ctx)
-        theme_post = [p for p in calendar if p.post_type == "THEME_DEEP_DIVE"][0]
-        assert "Market Themes" in theme_post.title
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # TEST BANNED TERM SAFETY
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestBannedTermSafety:
-    """Verify system prompts and templates don't contain banned terms."""
-
-    def test_system_prompt_no_banned_terms(self):
-        """SYSTEM_PROMPT should not contain any CRITICAL_BANNED terms as instructed content."""
-        # The system prompt LISTS banned terms to tell the LLM not to use them.
-        # That's intentional. But it should not use them in its own instructional text
-        # outside the "BANNED TERMS" section.
-        # We check the parts outside the banned terms list.
-        lines = SYSTEM_PROMPT.split("\n")
-        in_banned_section = False
-        non_banned_lines = []
-        for line in lines:
-            if "BANNED TERMS" in line:
-                in_banned_section = True
-            elif line.strip().startswith(("3.", "4.", "5.", "6.", "7.", "8.")):
-                in_banned_section = False
-            if not in_banned_section:
-                non_banned_lines.append(line)
-
-        non_banned_text = "\n".join(non_banned_lines)
-        # Should use "GREEN signal" not "TEAL signal" in instructional text
-        assert "TEAL signal" not in non_banned_text.replace("TEAL", "").replace("\"TEAL\"", "")
-
-    def test_system_prompt_mentions_green_signal(self):
-        """System prompt should use GREEN signal branding."""
-        assert "GREEN signal" in SYSTEM_PROMPT
-
-    def test_system_prompt_lists_banned_terms(self):
-        """System prompt should include a banned terms section."""
-        assert "BANNED TERMS" in SYSTEM_PROMPT
-        # Key banned terms should be mentioned
-        assert "HMA" in SYSTEM_PROMPT
-        assert "Banker" in SYSTEM_PROMPT
-        assert "BoS" in SYSTEM_PROMPT
+    """Verify templates and utilities don't contain banned terms."""
 
     def test_funnel_html_uses_green_signals(self, sample_stats):
         """Scan funnel HTML should say GREEN Signals, not TEAL."""
@@ -470,19 +335,6 @@ class TestBannedTermSafety:
         """validate_post_content should allow STOPPED mentions (transparency)."""
         is_valid, issues = validate_post_content("Position STOPPED out at $15.00.")
         assert is_valid
-
-    def test_all_prompt_builders_exist(self):
-        """All expected post types should have prompt builders."""
-        expected = ["WEEKLY_RECAP", "THEME_DEEP_DIVE", "DD_DEEP_DIVE", "PORTFOLIO_SPOTLIGHT"]
-        for pt in expected:
-            assert pt in PROMPT_BUILDERS, f"Missing prompt builder for {pt}"
-
-    def test_prompt_builders_return_strings(self, full_context):
-        """All prompt builders should return non-empty strings."""
-        for post_type, builder in PROMPT_BUILDERS.items():
-            result = builder(full_context)
-            assert isinstance(result, str), f"{post_type} builder returned {type(result)}"
-            assert len(result) > 100, f"{post_type} builder returned too-short prompt ({len(result)} chars)"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -695,196 +547,6 @@ class TestPromptFormatting:
         result = _format_theme_history("New Theme", {})
         assert "First appearance" in result
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TEST POST-SPECIFIC PROMPTS
-# ═══════════════════════════════════════════════════════════════════════════════
-
-class TestPostPrompts:
-    """Test individual post prompt builders."""
-
-    def test_weekly_recap_prompt_includes_data(self, full_context):
-        """Weekly recap prompt should include key data sections."""
-        prompt = build_weekly_recap_prompt(full_context)
-        assert "MARKET CONTEXT" in prompt
-        assert "SCAN RESULTS" in prompt
-        assert "THEMES THIS WEEK" in prompt
-        assert "NEW SIGNALS" in prompt
-        assert "[SCAN_FUNNEL]" in prompt
-        assert "1200-1500 word" in prompt
-
-    def test_weekly_recap_prompt_includes_winners(self, full_context):
-        """Weekly recap prompt should include winner highlights."""
-        prompt = build_weekly_recap_prompt(full_context)
-        assert "WIN HIGHLIGHTS" in prompt
-        assert "[WINNERS_TABLE]" in prompt
-
-    def test_theme_deep_dive_prompt(self, full_context):
-        """Theme deep dive should focus on the #1 theme."""
-        prompt = build_theme_deep_dive_prompt(full_context)
-        assert "AI Power Infrastructure" in prompt
-        assert "PRIME" in prompt
-        assert "[THEME_SCORES]" in prompt
-        assert "800-1200 word" in prompt
-
-    def test_theme_deep_dive_no_themes(self):
-        """Theme deep dive should handle no themes gracefully."""
-        ctx = ContentContext()
-        prompt = build_theme_deep_dive_prompt(ctx)
-        assert isinstance(prompt, str)
-        assert len(prompt) > 10
-
-    def test_dd_deep_dive_prompt(self, full_context):
-        """DD deep dive should include full DD fields."""
-        prompt = build_dd_deep_dive_prompt(full_context)
-        assert "$INOD" in prompt
-        assert "THE PITCH" in prompt
-        assert "WHY NOW" in prompt
-        assert "THE MATH" in prompt
-        assert "BEAR CASE" in prompt
-        assert "[CHART: INOD]" in prompt
-
-    def test_dd_deep_dive_falls_back_to_portfolio(self, no_signals_context):
-        """DD deep dive with no signals should fall back to portfolio."""
-        prompt = build_dd_deep_dive_prompt(no_signals_context)
-        assert "PORTFOLIO PERFORMANCE" in prompt
-
-    def test_portfolio_spotlight_prompt(self, full_context):
-        """Portfolio spotlight should include performance and winners."""
-        prompt = build_portfolio_spotlight_prompt(full_context)
-        assert "PORTFOLIO PERFORMANCE" in prompt
-        assert "BENCHMARK" in prompt
-        assert "TOP WINNERS" in prompt
-        assert "[WINNERS_TABLE]" in prompt
-        assert "800-1200 word" in prompt
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TEST NO-LLM FALLBACK
-# ═══════════════════════════════════════════════════════════════════════════════
-
-class TestNoLLMFallback:
-    """Test data-only fallback mode without LLM."""
-
-    def test_fallback_weekly_recap(self, full_context):
-        """Fallback weekly recap should include key data elements."""
-        spec = PostSpec("WEEKLY_RECAP", "Week 7 Test", "Saturday", "test.html")
-        md = generate_post_fallback(spec, full_context)
-        assert "Week 7 Test" in md
-        assert "[SCAN_FUNNEL]" in md
-        assert "GREEN signal" in md
-
-    def test_fallback_theme_deep_dive(self, full_context):
-        """Fallback theme deep dive should show theme data."""
-        spec = PostSpec("THEME_DEEP_DIVE", "Theme Test", "Tuesday", "test.html")
-        md = generate_post_fallback(spec, full_context)
-        assert "AI Power Infrastructure" in md
-        assert "PRIME" in md
-        assert "[THEME_SCORES]" in md
-
-    def test_fallback_portfolio_spotlight(self, full_context):
-        """Fallback portfolio spotlight should show stats."""
-        spec = PostSpec("PORTFOLIO_SPOTLIGHT", "Portfolio Test", "Thursday", "test.html")
-        md = generate_post_fallback(spec, full_context)
-        assert "[WINNERS_TABLE]" in md
-        assert "Performance" in md
-
-    def test_fallback_dd_deep_dive(self, full_context):
-        """Fallback DD deep dive should show signal data."""
-        spec = PostSpec("DD_DEEP_DIVE", "DD Test", "Thursday", "test.html")
-        md = generate_post_fallback(spec, full_context)
-        assert "$INOD" in md
-
-    def test_fallback_always_has_subscribe_link(self, full_context):
-        """All fallback posts should include subscribe link."""
-        for post_type in ["WEEKLY_RECAP", "THEME_DEEP_DIVE", "PORTFOLIO_SPOTLIGHT"]:
-            spec = PostSpec(post_type, "Test", "Saturday", "test.html")
-            md = generate_post_fallback(spec, full_context)
-            assert "Subscribe" in md or "sterlingsignals.substack.com" in md
-
-    def test_fallback_includes_disclaimer(self, full_context):
-        """All fallback posts should include financial disclaimer."""
-        spec = PostSpec("WEEKLY_RECAP", "Test", "Saturday", "test.html")
-        md = generate_post_fallback(spec, full_context)
-        assert "financial advice" in md.lower() or "informational purposes" in md.lower()
-
-    def test_generate_all_posts_no_llm_mode(self, full_context):
-        """generate_all_posts with no_llm=True should produce posts without API calls."""
-        with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
-            with patch("substack.content_generator.get_substack_current_dir", return_value=Path(tempfile.mkdtemp())):
-                with patch("substack.content_generator.HTML_AVAILABLE", False):
-                    results = generate_all_posts(full_context, no_llm=True)
-                    assert len(results) >= 4  # v3 expanded calendar: 4-5 posts
-                    for r in results:
-                        assert r["status"] == "generated"
-                        assert r["cost"] == 0.0
-
-    def test_generate_all_posts_dry_run(self, full_context):
-        """generate_all_posts with dry_run=True should not write files."""
-        results = generate_all_posts(full_context, dry_run=True)
-        assert len(results) >= 4  # v3 expanded calendar: 4-5 posts
-        for r in results:
-            assert r["status"] == "dry_run"
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TEST CLI BACKWARD COMPATIBILITY
-# ═══════════════════════════════════════════════════════════════════════════════
-
-class TestCLIBackwardCompat:
-    """Test CLI argument backward compatibility."""
-
-    def test_old_monday_maps_to_market(self):
-        """--monday should map to the --market flag."""
-        import argparse
-        from substack.content_generator import main
-        # Verify the parser setup by checking argument definitions
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--market", action="store_true")
-        parser.add_argument("--monday", dest="market", action="store_true")
-        args = parser.parse_args(["--monday"])
-        assert args.market is True
-
-    def test_old_saturday_maps_to_market(self):
-        """--saturday should map to the --market flag."""
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--market", action="store_true")
-        parser.add_argument("--saturday", dest="market", action="store_true")
-        args = parser.parse_args(["--saturday"])
-        assert args.market is True
-
-    def test_old_thursday_maps_to_theme(self):
-        """--thursday should map to the --theme flag."""
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--theme", action="store_true")
-        parser.add_argument("--thursday", dest="theme", action="store_true")
-        args = parser.parse_args(["--thursday"])
-        assert args.theme is True
-
-    def test_old_sunday_maps_to_dd(self):
-        """--sunday should map to the --dd flag."""
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--dd", action="store_true")
-        parser.add_argument("--sunday", dest="dd", action="store_true")
-        args = parser.parse_args(["--sunday"])
-        assert args.dd is True
-
-    def test_post_type_filtering(self, full_context):
-        """Specific post types should be filterable."""
-        with patch("substack.content_generator.OUTPUT_PATHS_AVAILABLE", False):
-            with patch("substack.content_generator.get_substack_current_dir", return_value=Path(tempfile.mkdtemp())):
-                with patch("substack.content_generator.HTML_AVAILABLE", False):
-                    results = generate_all_posts(full_context, post_types=["WEEKLY_RECAP"], no_llm=True)
-                    assert len(results) == 1
-                    assert results[0]["post_type"] == "WEEKLY_RECAP"
-
-    def test_empty_post_type_filter(self, full_context):
-        """Empty post type filter should return no results."""
-        results = generate_all_posts(full_context, post_types=["NONEXISTENT"])
-        assert len(results) == 0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

@@ -70,33 +70,11 @@
 Cost: ~$2-4 total (scanner $1-3 + content $0.50-1.00)
 ```
 
-## DAILY PIPELINE (Mon-Fri, 4:35 PM ET)
+## DAILY PIPELINE
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                   DAILY PIPELINE — 5 Steps                               │
-│              GitHub Actions (daily_scan.yml), Mon-Fri                    │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  Step 1: core/daily_scanner.py                                           │
-│          ├── Daily HMA Pivot BUY + Beta ≥1.5 + Banker Rising             │
-│          ├── Max 5 signals/day, dedup vs weekly portfolio                │
-│          └── OUTPUT: daily_signals.json, daily_portfolio.csv             │
-│                                                                          │
-│  Step 2: distribution/notifications.py (sell alerts only)                │
-│                                                                          │
-│  Step 3: content/chart_capture.py --daily                                │
-│          └── twitter/output/charts/*.png (daily timeframe)               │
-│                                                                          │
-│  Step 4: content/tweet_generator.py --daily --account all                │
-│          └── twitter/output/daily_content_queue*.json (3 accounts, slots 1/6/7)│
-│                                                                          │
-│  Step 5: git add scanner/ portfolio/ twitter/ && git commit && git push  │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-
-Cost: ~$0.10-0.30 per run
-```
+> **Removed in V6.** The daily scanner pipeline (`daily_scanner.py`, `daily_scan.yml`) was
+> deleted as part of the Sterling Grid V6 consolidation. The system now uses a weekly-only
+> scan with Saturday workflow for decisions and content generation.
 
 ## LIVE TWEET PIPELINE (5-10x/day, market hours)
 

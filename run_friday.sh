@@ -6,8 +6,7 @@
 #   1. Scanner (Pure Technical Signal Detector — $0 cost)
 #   2. Chart Capture (TradingView)
 #   3. Tweet Generation (Claude — only LLM cost)
-#   4. Content Production Guide + Notes
-#   5. Git commit and push
+#   4. Git commit and push
 #
 # LLM analysis (thematic + investment gate + DD) now runs via Claude.ai chat.
 # Attach sterling_prompt_library.md to Claude.ai after reviewing signals.
@@ -238,63 +237,8 @@ log_step "python3 -m twitter.tweet_generator $TWEET_ARGS"
 python3 -m twitter.tweet_generator $TWEET_ARGS
 log_success "Tweet generation complete (tweet_generator v2)"
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 5.5: GENERATE CONTENT PRODUCTION GUIDE
-# ═══════════════════════════════════════════════════════════════════════════════
-
-log_header "STEP 5.5: Generating Content Production Guide"
-
-if [ -f "substack/content_production_guide.py" ]; then
-    GUIDE_ARGS=""
-    if [ "$TEST_MODE" = true ]; then
-        GUIDE_ARGS="--dry-run"
-        log_warning "Test mode: dry-run only"
-    fi
-
-    log_step "python3 -m substack.content_production_guide $GUIDE_ARGS"
-    python3 -m substack.content_production_guide $GUIDE_ARGS || {
-        log_warning "Content production guide generation failed - continuing anyway"
-    }
-    log_success "Content production guide generated"
-    log_warning "Generate posts on-demand: attach guide to Claude.ai (Opus 4.6)"
-else
-    log_warning "substack/content_production_guide.py not found, skipping"
-fi
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# STEP 5.6: GENERATE SUBSTACK NOTES BATCH (21 notes for the week)
-# ═══════════════════════════════════════════════════════════════════════════════
-
-log_header "STEP 5.6: Generating Substack Notes Batch (21 notes for the week)"
-
-if [ -f "substack/notes_batch_generator.py" ]; then
-    NOTES_ARGS=""
-    if [ "$TEST_MODE" = true ]; then
-        NOTES_ARGS="--no-llm"
-        log_warning "Test mode: Using --no-llm for notes"
-    fi
-
-    log_step "python3 -m substack.notes_batch_generator $NOTES_ARGS"
-    python3 -m substack.notes_batch_generator $NOTES_ARGS || {
-        log_warning "Notes batch generation failed - continuing anyway"
-        # Fallback to legacy 2-note generator
-        log_step "Falling back to legacy notes generator..."
-        if [ -f "substack/notes_generator.py" ]; then
-            python3 -m substack.notes_generator || {
-                log_warning "Legacy notes generation also failed"
-            }
-        fi
-    }
-    log_success "Substack notes batch generated"
-else
-    # Fallback to legacy 2-note generator
-    log_warning "Batch generator not found, using legacy 2-note generator"
-    if [ -f "substack/notes_generator.py" ]; then
-        log_step "python3 -m substack.notes_generator"
-        python3 -m substack.notes_generator
-        log_success "Legacy substack notes generated"
-    fi
-fi
+# Content production guide and notes batch generation removed.
+# Now handled by daily_content.yml running daily at 07:00 ET.
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 6: GIT COMMIT AND PUSH
@@ -341,10 +285,6 @@ log_header "PIPELINE COMPLETE"
 echo "  Generated files:"
 echo "    • scanner/output/signals_technical.json   ← PRIMARY output"
 echo "    • scanner/output/signals.json             ← Transitional (downstream compat)"
-echo "    • substack/output/current/content_production_guide.md ← Attach to Claude.ai"
-echo "    • substack/output/current/substack_notes/"
-echo "        ├── *_1_*.md, *_2_*.md, *_3_*.md     ← 21 notes (3/day)"
-echo "        └── notes_manifest.json               ← Batch tracking"
 [ -d "twitter/output/charts" ] && echo "    • twitter/output/charts/*.png"
 echo ""
 echo "  Archived to: scanner/output/archive/$(date '+%G-W%V')/"
@@ -355,8 +295,6 @@ if [ "$TEST_MODE" = true ]; then
 else
     echo "  Pipeline completed:"
     echo "    ✅ Scanner ran (pure technical, \$0 cost)"
-    echo "    ✅ Content production guide generated"
-    echo "    ✅ 21 Substack notes generated (3/day)"
     echo "    ✅ Tweets generated for the week"
     echo ""
     echo "  Next steps (manual via Claude.ai chat):"
@@ -365,12 +303,9 @@ else
     echo "    3. Run thematic analysis + investment gate in chat"
     echo "    4. Update portfolio with final decisions"
     echo ""
-    echo "  Daily content workflow (handbook v5 — 4-category adaptive system):"
-    echo "    1. Open content_production_guide.md → check today's category + topic"
-    echo "    2. Open content_prompt_handbook_v5.md → copy the matching category prompt"
-    echo "    3. Attach content_production_guide.md to Claude.ai (Opus 4.6 + extended thinking)"
-    echo "    4. Paste prompt → get HTML post + 3 HTML notes"
-    echo "    5. Paste into Substack"
+    echo "  Daily content (runs automatically via daily_content.yml at 07:00 ET):"
+    echo "    • Daily context doc + notes generated each morning"
+    echo "    • Posts created via Claude.ai chat using daily_context.md"
 fi
 
 echo ""

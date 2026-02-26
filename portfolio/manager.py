@@ -40,7 +40,7 @@ import re
 import sys
 import csv
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import List, Dict, Optional, Tuple
@@ -64,7 +64,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 try:
     from config import (
         PORTFOLIO_FILE, SHEETS_EXPORT_FILE, PORTFOLIO_BACKUP_DIR,
-        DAILY_PORTFOLIO_BACKUP_DIR, EQUITY_CURVE_FILE,
+        EQUITY_CURVE_FILE,
         TRAILING_STOP_PCT, STOP_WARNING_PCT,
         DEFAULT_POSITION_SHARES, MAX_PORTFOLIO_BACKUPS,
         STARTING_CAPITAL_PER_POSITION, CURRENCY_SYMBOL,
@@ -77,7 +77,6 @@ except ImportError:
     PORTFOLIO_FILE = _PORTFOLIO_OUTPUT / "portfolio.csv"
     SHEETS_EXPORT_FILE = _PORTFOLIO_OUTPUT / "portfolio_google_sheets.csv"
     PORTFOLIO_BACKUP_DIR = _PORTFOLIO_OUTPUT / "portfolio_backups"
-    DAILY_PORTFOLIO_BACKUP_DIR = _PORTFOLIO_OUTPUT / "daily_portfolio_backups"
     EQUITY_CURVE_FILE = _PORTFOLIO_OUTPUT / "equity_curve.csv"
     TRAILING_STOP_PCT = 20.0
     STOP_WARNING_PCT = 5.0
@@ -641,6 +640,7 @@ class PortfolioManager:
         self.spy_data: pd.DataFrame = None
         self.qqq_data: pd.DataFrame = None
         self.equity_tracker = EquityTracker()
+        self._prices_updated_at: Optional[str] = None
         self._load()
     
     def _load(self) -> None:
@@ -861,7 +861,8 @@ class PortfolioManager:
                         pass
             except Exception as e:
                 print(f"  ⚠ Error fetching prices: {e}")
-        
+
+        self._prices_updated_at = datetime.now(timezone.utc).isoformat()
         self._save()
         return alerts
     
@@ -1176,11 +1177,13 @@ class PortfolioManager:
     # ───────────────────────────────────────────────────────────────────────────
 
     def export_for_google_sheets(self, output_file: Optional[Path] = None) -> Path:
-        """
-        Export portfolio in a format optimized for Google Sheets.
-        
-        Creates a CSV that when imported to Google Sheets, can have 
+        """Export portfolio in a format optimized for Google Sheets.
+
+        Creates a CSV that when imported to Google Sheets, can have
         GOOGLEFINANCE formulas added for live price tracking.
+
+        For auto-import (refreshed daily by the pipeline), use in Google Sheets:
+            =IMPORTDATA("https://raw.githubusercontent.com/[repo]/main/portfolio/output/portfolio_google_sheets.csv")
         """
         output_file = output_file or SHEETS_EXPORT_FILE
         
@@ -1619,6 +1622,253 @@ def get_spy_ytd_return() -> float:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SNAPSHOT HELPERS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _trade_to_dict(trade: Trade) -> dict:
+    """Convert Trade to JSON-serializable dict."""
+    d = {
+        "ticker": trade.ticker,
+        "entry_date": trade.entry_date,
+        "entry_price": trade.entry_price,
+        "current_price": trade.current_price,
+        "highest_close": trade.highest_close,
+        "pnl_pct": round(trade.pnl_pct, 2),
+        "pnl_usd": round(trade.pnl_usd, 2),
+        "days_held": trade.days_held,
+        "theme": trade.theme,
+        "conviction": trade.conviction,
+        "stop_level": trade.stop_level,
+        "distance_to_stop_pct": round(trade.distance_to_stop_pct, 2),
+        "stop_alert": trade.stop_alert,
+    }
+    if trade.status != "OPEN":
+        d["status"] = trade.status
+        d["exit_date"] = trade.exit_date
+        d["exit_price"] = trade.exit_price
+    return d
+
+
+def _group_by_theme(open_positions: List[Trade]) -> dict:
+    """Group open positions by theme with aggregate stats."""
+    themes: Dict[str, dict] = {}
+    for t in open_positions:
+        name = t.theme or "Uncategorized"
+        if name not in themes:
+            themes[name] = {"count": 0, "tickers": [], "avg_pnl_pct": 0.0, "total_pnl_pct": 0.0}
+        themes[name]["count"] += 1
+        themes[name]["tickers"].append(t.ticker)
+        themes[name]["total_pnl_pct"] += t.pnl_pct
+    for name, info in themes.items():
+        info["avg_pnl_pct"] = round(info["total_pnl_pct"] / info["count"], 2) if info["count"] else 0.0
+        del info["total_pnl_pct"]
+    return themes
+
+
+def _get_recent_exits(closed_trades: List[Trade], days: int = 14) -> list:
+    """Get trades closed in last N days."""
+    cutoff = datetime.now() - timedelta(days=days)
+    recent = []
+    for t in closed_trades:
+        if not t.exit_date:
+            continue
+        try:
+            exit_dt = datetime.strptime(t.exit_date, "%Y-%m-%d")
+            if exit_dt >= cutoff:
+                d = _trade_to_dict(t)
+                d["exit_reason"] = t.notes
+                recent.append(d)
+        except ValueError:
+            continue
+    return recent
+
+
+def _save_json_atomic(data: dict, path: Path) -> None:
+    """Write JSON to path using atomic temp-file + rename pattern."""
+    import tempfile
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode='w', dir=str(path.parent),
+            suffix='.json', delete=False, encoding='utf-8'
+        ) as f:
+            json.dump(data, f, indent=2)
+            temp_path = f.name
+        os.replace(temp_path, str(path))
+    except Exception:
+        if 'temp_path' in locals() and Path(temp_path).exists():
+            Path(temp_path).unlink()
+        raise
+
+
+def _compute_daily_movers(open_positions: List[Trade], live_prices: Dict[str, float]) -> list:
+    """Compute top daily movers by comparing current price to previous close.
+
+    Uses a single batch yf.download(period='2d') call to get previous close
+    for all open tickers, then compares to current price.
+    """
+    tickers = [t.ticker for t in open_positions if t.ticker in live_prices]
+    if not tickers:
+        return []
+
+    prev_close: Dict[str, float] = {}
+    try:
+        data = yf.download(tickers, period="2d", progress=False)
+        if data.empty:
+            return []
+        if len(tickers) == 1:
+            if len(data) >= 2:
+                prev_close[tickers[0]] = float(data['Close'].iloc[-2])
+        else:
+            for ticker in tickers:
+                try:
+                    col = data['Close'][ticker]
+                    if len(col.dropna()) >= 2:
+                        prev_close[ticker] = float(col.dropna().iloc[-2])
+                except (KeyError, IndexError):
+                    continue
+    except Exception:
+        return []
+
+    movers = []
+    for ticker in tickers:
+        if ticker not in prev_close or ticker not in live_prices:
+            continue
+        prev = prev_close[ticker]
+        curr = live_prices[ticker]
+        if prev > 0:
+            change_pct = round(((curr / prev) - 1) * 100, 2)
+            movers.append({"ticker": ticker, "current_price": curr, "prev_close": prev, "change_pct": change_pct})
+
+    movers.sort(key=lambda m: abs(m["change_pct"]), reverse=True)
+    return movers[:5]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SNAPSHOT & DAILY REFRESH
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def generate_portfolio_snapshot(pm: PortfolioManager, equity_snapshot: Optional[EquitySnapshot],
+                                live_prices: Dict[str, float]) -> dict:
+    """Generate comprehensive portfolio snapshot as JSON-serializable dict.
+
+    Args:
+        pm: PortfolioManager with prices already updated.
+        equity_snapshot: Latest EquitySnapshot (or None for empty portfolio).
+        live_prices: Dict of ticker->price from fetch_current_prices().
+
+    Returns:
+        Snapshot dict written to PORTFOLIO_SNAPSHOT_FILE and substack/output/current/.
+    """
+    from config.output_paths import PORTFOLIO_SNAPSHOT_FILE, get_substack_current_dir
+    try:
+        from config import PORTFOLIO_SNAPSHOT_CLOSED_TRADES_LIMIT
+    except ImportError:
+        PORTFOLIO_SNAPSHOT_CLOSED_TRADES_LIMIT = 20
+
+    open_positions = pm.get_open_positions()
+    closed_trades = pm.get_closed_trades()
+    perf = pm.get_performance_summary()
+    max_dd = pm.equity_tracker.get_max_drawdown()
+
+    # Build equity section
+    equity = {}
+    if equity_snapshot:
+        equity = {
+            "nav": equity_snapshot.nav,
+            "cash": equity_snapshot.cash,
+            "invested": equity_snapshot.invested,
+            "total_deployed": equity_snapshot.total_deployed,
+            "total_return_pct": equity_snapshot.total_return_pct,
+            "spy_return_pct": equity_snapshot.spy_return_pct,
+            "alpha_pct": equity_snapshot.alpha_pct,
+            "qqq_return_pct": equity_snapshot.qqq_return_pct,
+            "alpha_vs_qqq_pct": equity_snapshot.alpha_vs_qqq_pct,
+            "max_drawdown_pct": max_dd,
+        }
+
+    # Serialize positions
+    open_dicts = [_trade_to_dict(t) for t in open_positions]
+    closed_dicts = [_trade_to_dict(t) for t in closed_trades[-PORTFOLIO_SNAPSHOT_CLOSED_TRADES_LIMIT:]]
+
+    # Filtered lists
+    winners = [d for d in open_dicts if d["pnl_pct"] > 0]
+    winners.sort(key=lambda d: d["pnl_pct"], reverse=True)
+    big_wins = [d for d in winners if d["pnl_pct"] >= 25]
+    home_runs = [d for d in winners if d["pnl_pct"] >= 50]
+
+    snapshot = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "prices_updated_at": pm._prices_updated_at,
+        "summary": {
+            "open_positions": len(open_positions),
+            "closed_trades": len(closed_trades),
+            "win_rate": round(perf.get("win_rate", 0), 1),
+            "avg_winner": round(perf.get("avg_winner", 0), 1),
+            "avg_loser": round(perf.get("avg_loser", 0), 1),
+            "unrealized_pnl_pct": round(perf.get("unrealized_pnl_pct", 0), 2),
+        },
+        "equity": equity,
+        "open_positions": open_dicts,
+        "closed_trades": closed_dicts,
+        "winners": winners,
+        "big_wins": big_wins,
+        "home_runs": home_runs,
+        "recent_exits": _get_recent_exits(closed_trades),
+        "movers_today": _compute_daily_movers(open_positions, live_prices),
+        "themes": _group_by_theme(open_positions),
+        "benchmarks": perf.get("periods", {}),
+    }
+
+    # Save to canonical location
+    _save_json_atomic(snapshot, PORTFOLIO_SNAPSHOT_FILE)
+
+    # Copy to substack/output/current/ for daily_context_builder consumer
+    substack_copy = get_substack_current_dir() / "portfolio_snapshot.json"
+    _save_json_atomic(snapshot, substack_copy)
+
+    return snapshot
+
+
+def refresh_daily_prices() -> dict:
+    """Refresh portfolio prices and generate comprehensive snapshot.
+
+    Top-level orchestrator called by daily_content_pipeline.py and CLI --refresh.
+    Updates prices in portfolio.csv, refreshes equity curve, generates snapshot JSON,
+    and re-exports Google Sheets CSV.
+
+    Returns:
+        Snapshot dict (same as generate_portfolio_snapshot output).
+    """
+    pm = PortfolioManager()
+    open_symbols = pm.get_open_symbols()
+
+    if not open_symbols:
+        snapshot = generate_portfolio_snapshot(pm, None, {})
+        return snapshot
+
+    # Update prices in portfolio.csv
+    pm.update_prices()
+
+    # Fetch live prices dict for snapshot
+    prices = fetch_current_prices(list(open_symbols))
+
+    # Update equity curve with today's NAV
+    equity_snapshot = pm.update_equity_curve()
+
+    # Generate comprehensive snapshot
+    snapshot = generate_portfolio_snapshot(pm, equity_snapshot, prices)
+
+    # Refresh Google Sheets export
+    try:
+        pm.export_for_google_sheets()
+    except Exception as e:
+        print(f"  ⚠ Google Sheets export failed: {e}")
+
+    return snapshot
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1632,6 +1882,7 @@ def main() -> int:
     parser.add_argument("--report", action="store_true", help="Print portfolio summary")
     parser.add_argument("--equity", action="store_true", help="Show compounding equity summary")
     parser.add_argument("--setup", action="store_true", help="Print Google Sheets setup instructions")
+    parser.add_argument("--refresh", action="store_true", help="Refresh daily prices and generate snapshot")
     parser.add_argument("--add", type=str, metavar="TICKER", help="Add a new trade")
     parser.add_argument("--price", type=float, help="Entry price for --add")
     parser.add_argument("--theme", type=str, default="", help="Theme for --add")
@@ -1640,8 +1891,17 @@ def main() -> int:
     
     args = parser.parse_args()
     
+    if args.refresh:
+        print("\n  Refreshing daily prices and generating snapshot...")
+        result = refresh_daily_prices()
+        summary = result.get("summary", {})
+        print(f"\n  Open: {summary.get('open_positions', 0)} | "
+              f"Win Rate: {summary.get('win_rate', 0):.0f}% | "
+              f"NAV: {result.get('equity', {}).get('nav', 'N/A')}")
+        return 0
+
     pm = PortfolioManager()
-    
+
     if args.migrate:
         print("\n  Migrating to unified portfolio format...")
         pm.migrate_from_old_format()

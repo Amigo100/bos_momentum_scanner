@@ -1,0 +1,111 @@
+name: Daily Content Pipeline
+
+on:
+  schedule:
+    # 07:00 ET (12:00 UTC during EST, 11:00 UTC during EDT)
+    - cron: '0 12 * * 0-6'   # EST: 07:00 ET
+    - cron: '0 11 * * 0-6'   # EDT: 07:00 ET
+  workflow_dispatch:
+    inputs:
+      day_override:
+        description: 'Override day (e.g., wednesday)'
+        required: false
+      dry_run:
+        description: 'Dry run (no LLM calls, no email)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  daily-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # TIMEZONE DEDUP — skip the wrong cron trigger (EST vs EDT)
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Timezone dedup
+        id: tz_check
+        run: |
+          HOUR=$(date -u +%H)
+          MONTH=$(date +%m)
+          # EDT is roughly March-October
+          if [ "$MONTH" -ge 3 ] && [ "$MONTH" -le 10 ]; then
+            EXPECTED=11
+          else
+            EXPECTED=12
+          fi
+          if [ "$HOUR" != "$EXPECTED" ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "Skipping duplicate cron trigger (hour=$HOUR, expected=$EXPECTED)"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Running pipeline (hour=$HOUR, expected=$EXPECTED)"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # RUN DAILY CONTENT PIPELINE
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Run daily content pipeline
+        if: steps.tz_check.outputs.skip != 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.day_override }}" ]; then
+            ARGS="$ARGS --day ${{ github.event.inputs.day_override }}"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run --skip-email"
+          fi
+          echo "Running: python -m substack.daily_content_pipeline $ARGS"
+          python -m substack.daily_content_pipeline $ARGS
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # COMMIT AND PUSH OUTPUTS
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Commit outputs
+        if: steps.tz_check.outputs.skip != 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add substack/output/ scanner/output/current/market_analysis.md portfolio/output/portfolio.csv portfolio/output/portfolio_snapshot.json portfolio/output/equity_curve.csv portfolio/output/portfolio_google_sheets.csv 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto: daily content $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            # Pull with rebase before push to avoid race conditions
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed - attempting merge"
+              git rebase --abort 2>/dev/null || true
+              git pull origin ${{ github.ref_name }}
+            }
+            git push
+            echo "Daily content committed and pushed"
+          fi

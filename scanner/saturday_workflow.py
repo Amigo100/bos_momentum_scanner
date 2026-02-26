@@ -9,7 +9,7 @@ Steps:
   1. merge_decisions.py → signals.json
   2. Portfolio manager → add/exit positions, update prices
   3. market_analyzer.py → market_analysis.md (if missing)
-  4. content_production_guide.py → weekly schedule + context doc
+  4. daily_context_builder.py → daily context document
   5. Place newsletter.html in output directories (if exists)
   6. Archive everything to weekly folder
   7. Print summary
@@ -35,7 +35,7 @@ from typing import Optional
 
 try:
     from config.output_paths import (
-        SCANNER_OUTPUT, SIGNALS_FILE,
+        SCANNER_OUTPUT, SIGNALS_FILE, SIGNALS_TECH_FILE,
         get_scanner_current_dir, get_scanner_archive_dir,
         get_substack_current_dir, get_substack_archive_dir,
         get_week_identifier,
@@ -46,6 +46,7 @@ except ImportError:
     SCANNER_OUTPUT = Path("scanner/output")
     CURRENT_DIR = SCANNER_OUTPUT / "current"
     SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
+    SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
     SUBSTACK_CURRENT = Path("substack/output/current")
 
     def get_week_identifier(dt=None):
@@ -89,6 +90,40 @@ def get_weekly_archive_dir() -> Path:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PREFLIGHT VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def preflight_check(decisions_path: Path) -> bool:
+    """Validate inputs before running workflow."""
+    ok = True
+
+    # Check decisions.json exists
+    if not decisions_path.exists():
+        print(f"  ✗ decisions.json not found: {decisions_path}")
+        print(f"    Run Claude.ai analysis and save Prompt 7 output here")
+        ok = False
+
+    # Check signals_technical.json exists (warning only, not fatal)
+    if not SIGNALS_TECH_FILE.exists():
+        alt = CURRENT_DIR / "signals_technical.json"
+        if not alt.exists():
+            print(f"  ⚠ signals_technical.json not found — merge will use decisions-only mode")
+
+    # Check decisions.json is valid JSON with scan_date
+    if decisions_path.exists():
+        try:
+            with open(decisions_path) as f:
+                data = json.load(f)
+            if not data.get("scan_date"):
+                print(f"  ⚠ decisions.json missing scan_date")
+        except json.JSONDecodeError as e:
+            print(f"  ✗ decisions.json is not valid JSON: {e}")
+            ok = False
+
+    return ok
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # WORKFLOW STEPS
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -98,10 +133,14 @@ def step_merge(decisions_path: Path, dry_run: bool = False) -> Optional[dict]:
     print("  STEP 1: Merge Decisions → signals.json")
     print("─" * 60)
 
-    # Load tech data (existing signals.json as base, or empty)
-    tech = load_json(SIGNALS_FILE, required=False)
+    # Load tech data from signals_technical.json (BUG-1 fix: was reading merged signals.json)
+    tech = load_json(SIGNALS_TECH_FILE, required=False)
     if not tech:
-        print("  ⚠ No existing signals.json — decisions-only mode")
+        # Fallback: try current/ directory
+        tech_alt = CURRENT_DIR / "signals_technical.json"
+        tech = load_json(tech_alt, required=False)
+    if not tech:
+        print("  ⚠ No signals_technical.json found — decisions-only mode")
         tech = {"buy_signals": [], "sell_signals": [], "stats": {}}
     else:
         n = len(tech.get("buy_signals", []))
@@ -194,9 +233,9 @@ def step_market_analysis(dry_run: bool = False, skip: bool = False):
 
 
 def step_content_guide(dry_run: bool = False, skip: bool = False):
-    """Step 4: Generate content production guide."""
+    """Step 4: Generate daily context document."""
     print("─" * 60)
-    print("  STEP 4: Content Production Guide")
+    print("  STEP 4: Daily Context Builder")
     print("─" * 60)
 
     if skip:
@@ -205,18 +244,18 @@ def step_content_guide(dry_run: bool = False, skip: bool = False):
         return
 
     if dry_run:
-        print("  [DRY RUN] Would generate content_production_guide.md")
+        print("  [DRY RUN] Would generate daily_context.md")
         print()
         return
 
     try:
-        import substack.content_production_guide as cpg
-        cpg.main()
-        print("  ✓ content_production_guide.md generated")
+        from substack.daily_context_builder import main as dcb_main
+        dcb_main()
+        print("  ✓ daily_context.md generated")
     except ImportError:
-        print("  ⚠ content_production_guide not available")
+        print("  ⚠ daily_context_builder not available")
     except Exception as e:
-        print(f"  ⚠ Content production guide failed: {e}")
+        print(f"  ⚠ Daily context builder failed: {e}")
     print()
 
 
@@ -226,10 +265,19 @@ def step_newsletter(decisions_path: Path, dry_run: bool = False):
     print("  STEP 5: Newsletter Distribution")
     print("─" * 60)
 
-    newsletter_src = SUBSTACK_CURRENT / "newsletter.html"
+    # BUG-5 fix: Look for newsletter alongside decisions.json first,
+    # then fall back to scanner output root
+    newsletter_src = decisions_path.parent / "newsletter.html"
     if not newsletter_src.exists():
-        print(f"  ⚠ No newsletter.html found at {newsletter_src}")
-        print("    (Newsletter will be compiled separately)")
+        newsletter_src = SCANNER_OUTPUT / "newsletter.html"
+    if not newsletter_src.exists():
+        # Check if it's already in the target location
+        if (SUBSTACK_CURRENT / "newsletter.html").exists():
+            print(f"  ✓ newsletter.html already in {SUBSTACK_CURRENT}")
+            print()
+            return
+        print(f"  ⚠ No newsletter.html found")
+        print(f"    Save Prompt 4 output as newsletter.html alongside decisions.json")
         print()
         return
 
@@ -243,6 +291,8 @@ def step_newsletter(decisions_path: Path, dry_run: bool = False):
         return
 
     for target in targets:
+        if target.resolve() == newsletter_src.resolve():
+            continue  # Skip self-copy
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(newsletter_src, target)
         print(f"  ✓ Copied to {target}")
@@ -329,11 +379,22 @@ def step_summary(decisions: dict, dry_run: bool = False):
 
     print("  NEXT STEPS:")
     print("  ─────────────────────────────────────────")
-    print("  1. Open substack/output/current/content_production_guide.md")
-    print("  2. Publish newsletter to Substack (copy HTML)")
-    print("  3. Add TradingView charts at [CHART: TICKER] placeholders")
-    print("  4. Post Saturday tweets (slots 2-5 from content_queue)")
-    print("  5. Post 3 Substack notes for today")
+    step = 1
+
+    newsletter_exists = (SUBSTACK_CURRENT / "newsletter.html").exists()
+    if newsletter_exists:
+        print(f"  {step}. Publish newsletter to Substack")
+        step += 1
+    else:
+        print(f"  {step}. Generate newsletter in Claude.ai (Prompt 4) and re-run workflow")
+        step += 1
+
+    guide_exists = (SUBSTACK_CURRENT / "daily_context.md").exists()
+    if guide_exists:
+        print(f"  {step}. Attach daily_context.md to Claude.ai for daily posts")
+        step += 1
+
+    print(f"  {step}. Post 3 Substack notes for today")
     print("  ─────────────────────────────────────────")
     print()
 
@@ -351,10 +412,16 @@ def main():
     parser.add_argument("--skip-market", action="store_true",
         help="Skip market_analyzer.py API call")
     parser.add_argument("--skip-guide", action="store_true",
-        help="Skip content_production_guide.py")
+        help="Skip daily_context_builder.py")
     parser.add_argument("--decisions", type=Path, default=DECISIONS_DEFAULT,
         help=f"Path to decisions.json (default: {DECISIONS_DEFAULT})")
+    parser.add_argument("--decisions-dir", type=Path, default=None,
+        help="Directory containing decisions.json and newsletter.html")
     args = parser.parse_args()
+
+    # Resolve decisions path from --decisions-dir if provided
+    if args.decisions_dir:
+        args.decisions = args.decisions_dir / "decisions.json"
 
     print()
     print("  ╔══════════════════════════════════════════════════╗")
@@ -366,6 +433,12 @@ def main():
     if args.dry_run:
         print("  🔍 DRY RUN MODE — no files will be written")
         print()
+
+    # Preflight validation
+    if not preflight_check(args.decisions):
+        print("\n  ✗ Preflight check failed. Fix the issues above and re-run.")
+        return 1
+    print()
 
     # Step 1: Merge decisions → signals.json
     decisions = step_merge(args.decisions, dry_run=args.dry_run)

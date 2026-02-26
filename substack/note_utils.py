@@ -271,8 +271,14 @@ def calculate_portfolio_stats(portfolio: List[Dict], prices: Dict[str, float]) -
     }
 
 
-def build_note_context() -> NoteContext:
-    """Build aggregated context for note generation."""
+def build_note_context(live_data: Optional[Dict] = None) -> NoteContext:
+    """Build aggregated context for note generation.
+
+    Args:
+        live_data: Optional dict with pre-fetched live market data.
+                   Keys: spy_change_pct, qqq_change_pct.
+                   When provided, skips yfinance fetch for index performance.
+    """
     print("  Loading data...")
 
     portfolio = load_portfolio()
@@ -286,10 +292,15 @@ def build_note_context() -> NoteContext:
     prices = get_live_prices(open_tickers)
     print(f"    Got prices for {len(prices)} tickers")
 
-    # Index performance
-    print("  Fetching index performance...")
-    spy_pct, qqq_pct = get_index_performance()
-    print(f"    SPY 5d: {spy_pct:+.1f}%  |  QQQ 5d: {qqq_pct:+.1f}%")
+    # Index performance — use live_data if provided
+    if live_data:
+        spy_pct = live_data.get("spy_change_pct", 0.0)
+        qqq_pct = live_data.get("qqq_change_pct", 0.0)
+        print(f"    SPY 5d: {spy_pct:+.1f}%  |  QQQ 5d: {qqq_pct:+.1f}% (from live_data)")
+    else:
+        print("  Fetching index performance...")
+        spy_pct, qqq_pct = get_index_performance()
+        print(f"    SPY 5d: {spy_pct:+.1f}%  |  QQQ 5d: {qqq_pct:+.1f}%")
 
     # Market analysis excerpt
     market_excerpt = load_market_analysis()

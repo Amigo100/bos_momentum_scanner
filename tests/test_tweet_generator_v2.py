@@ -313,8 +313,6 @@ class TestCategoryRequiredElements:
             ("PERFORMANCE", "What a week for the portfolio. Winners everywhere!", True),
             # SELL_SIGNAL needs $TICKER + invalidation framing
             ("SELL_SIGNAL", "We got stopped out today. Losses happen.", True),
-            # DAILY_SIGNAL needs $TICKER + price
-            ("DAILY_SIGNAL", "New daily buy signal detected in the tech sector!", True),
             # TECHNICAL_ANALYSIS needs $TICKER + level
             ("TECHNICAL_ANALYSIS", "Key levels being watched across the board.", True),
         ]
@@ -391,7 +389,7 @@ class TestChartFlagSetCorrectly:
 
     def test_chart_flag_set_correctly(self):
         # Categories that REQUIRE charts
-        required = {"SCANNER_RESULT", "DAILY_SIGNAL", "SELL_SIGNAL", "PERFORMANCE",
+        required = {"SCANNER_RESULT", "SELL_SIGNAL", "PERFORMANCE",
                      "RECEIPT", "SIGNAL_ALERT"}
 
         # Categories that do NOT require charts

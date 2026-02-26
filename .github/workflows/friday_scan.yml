@@ -19,7 +19,7 @@ on:
         default: 'false'
         type: boolean
       skip_content:
-        description: 'Skip content generation (notes, posts, production guide)'
+        description: 'Skip content generation (reserved for future use)'
         required: false
         default: 'false'
         type: boolean
@@ -232,43 +232,8 @@ jobs:
             fi
           done
 
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 5.25: GENERATE CONTENT PRODUCTION GUIDE (weekly schedule + context)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Generate Content Production Guide
-        if: ${{ github.event.inputs.skip_content != 'true' }}
-        run: |
-          if [ -f "substack/content_production_guide.py" ]; then
-            echo "Generating content production guide (adaptive schedule + context doc)..."
-            python -m substack.content_production_guide || echo "Content production guide generation failed (non-critical)"
-          else
-            echo "substack/content_production_guide.py not found, skipping"
-          fi
-        continue-on-error: true
-
-      # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 5.5: GENERATE SUBSTACK NOTES BATCH (21 notes for the week)
-      # ═══════════════════════════════════════════════════════════════════════════
-
-      - name: Generate Substack Notes Batch (21 notes/week)
-        if: ${{ github.event.inputs.skip_content != 'true' }}
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          if [ -f "substack/notes_batch_generator.py" ]; then
-            echo "Generating 21 Substack notes (3/day for the week) as HTML..."
-            python -m substack.notes_batch_generator --html || {
-              echo "Batch generator failed, falling back to legacy 2-note generator..."
-              python -m substack.notes_generator || echo "Legacy notes also failed (non-critical)"
-            }
-          elif [ -f "substack/notes_generator.py" ]; then
-            echo "Batch generator not found, using legacy 2-note generator..."
-            python -m substack.notes_generator
-          else
-            echo "No notes generator found, skipping"
-          fi
-        continue-on-error: true
+      # Content production guide and notes batch generation removed.
+      # Now handled by daily_content.yml running daily at 07:00 ET.
 
       # ═══════════════════════════════════════════════════════════════════════════
       # STEP 6: SAVE ARTIFACTS

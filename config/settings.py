@@ -26,9 +26,9 @@ TICKERS_FILE = BASE_DIR / "scanner" / "complete_tickers.txt"
 # Section output roots (canonical definitions in config/output_paths.py)
 from config.output_paths import (
     SCANNER_OUTPUT, PORTFOLIO_OUTPUT, SUBSTACK_OUTPUT, TWITTER_OUTPUT,
-    SIGNALS_FILE, DAILY_SIGNALS_FILE, ANALYSIS_LOG,
-    PORTFOLIO_FILE, DAILY_PORTFOLIO_FILE, SHEETS_EXPORT_FILE, EQUITY_CURVE_FILE,
-    PORTFOLIO_BACKUP_DIR, DAILY_PORTFOLIO_BACKUP_DIR,
+    SIGNALS_FILE, ANALYSIS_LOG,
+    PORTFOLIO_FILE, SHEETS_EXPORT_FILE, EQUITY_CURVE_FILE,
+    PORTFOLIO_BACKUP_DIR,
     LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
     CHARTS_DIR, FAILED_TWEETS_FILE, WORKFLOW_STATUS_FILE,
     CONTENT_QUEUE_FILE, DAILY_QUEUE_FILE,
@@ -83,43 +83,32 @@ KILLED_CATEGORIES: List[str] = [
 # TRADING PARAMETERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# ── Legacy parameters (used by daily_scanner ONLY) ──────────────────────────
-TRAILING_STOP_PCT = 20.0      # 20% trailing stop — daily scanner only
-STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop — daily scanner only
-BETA_THRESHOLD = 1.5          # Minimum beta — daily scanner only
-BANKER_CENTER = 50            # Neutral point (at VWAP) — daily scanner only
-BANKER_SCALE_FACTOR = 5       # How quickly banker moves from center — daily scanner only
-VWAP_PERIOD = 20              # Days for VWAP calculation — daily scanner only
+# ── Legacy parameters (used by portfolio manager) ─────────────────────────────
+TRAILING_STOP_PCT = 20.0      # 20% trailing stop
+STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop
 
-# ── Sterling Grid Indicator Parameters (V1-V4 backtest-validated) ────────────
-# These are the PRODUCTION parameters for the weekly scanner pipeline.
-# Source: sterling_indicators.py (exact match to backtest)
-HMA_PERIOD = 21               # Hull Moving Average period (on weekly HL2)
-PRICE_CAP = 25.0              # Maximum entry price for buy signals
-RSI_PERIOD = 14               # RSI(14) for entry "rsi_above_50" condition
-MACD_FAST = 12                # MACD fast EMA
-MACD_SLOW = 26                # MACD slow EMA
-MACD_SIGNAL_PERIOD = 9        # MACD signal EMA
+# ── Sterling Grid Indicator Parameters (canonical source: sterling_indicators.py) ──
+# Re-exported from the backtest-verified indicator module so downstream modules
+# can continue using `from config import PRICE_CAP` etc.
+from scanner.sterling_indicators import (  # noqa: E402
+    HMA_PERIOD,
+    RSI_PERIOD,
+    MACD_FAST,
+    MACD_SLOW,
+    MACD_SIGNAL as MACD_SIGNAL_PERIOD,  # config uses MACD_SIGNAL_PERIOD alias
+    PRICE_CAP,
+    UC_TARGET_DAYS,
+    UC_SENSITIVITY,
+    UC_TIMEFRAME,
+    LOCK_TIERS,
+    MAX_CONCURRENT_POSITIONS,
+    MIN_TRADE_SIZE,
+    QUALITY_TIERS,
+    SIZING_GEARS,
+)
 
-# Undercurrent parameters — UC = clip(1.5 × (RSI(10) − 50), 0, 20)
-# NOT a VWAP indicator. RSI(10)-based momentum oscillator.
-UC_TARGET_DAYS = 50           # Target days for internal RSI calculation
-UC_SENSITIVITY = 1.5          # Scaling factor applied to (RSI - 50)
-UC_TIMEFRAME = "weekly"       # Divisor = 5.0 → RSI length = round(50/5) = 10
-
-# Tiered profit lock — exit when current close <= lock_level
-# CRITICAL: Tier determined by CURRENT return, not peak. Tiers can degrade.
-# (threshold_as_fraction, trail_pct_from_peak)
-LOCK_TIERS = [
-    (2.00, 0.15),   # current_return >= +200% → 15% trail from peak
-    (1.00, 0.20),   # current_return >= +100% → 20% trail from peak
-    (0.50, 0.25),   # current_return >= +50%  → 25% trail from peak
-]
-
-# ── Position Sizing — Conviction-Tiered (15×6 Recommended Config) ────────────
-MAX_CONCURRENT_POSITIONS = 8  # V6: max 8 concurrent positions (backtest-validated)
+# ── Position Sizing — Additional Config ───────────────────────────────────────
 MIN_CASH_RESERVE_PCT = 0.10   # Always keep 10% cash
-MIN_TRADE_SIZE = 500.0        # Minimum position dollar amount (V6)
 
 # Legacy conviction tiers (kept for backward compat with existing portfolio/content systems)
 CONVICTION_TIERS = {
@@ -131,37 +120,14 @@ CONVICTION_TIERS = {
                  'label': 'SPEC BUY'},
 }
 
-# V6 Quality tiers: tier_int → equity_pct, label, description (backtest-validated)
-# Used by scanner.py V6 and sterling_indicators.py for quality-tier position sizing.
-QUALITY_TIERS = {
-    1: {'equity_pct': 0.20, 'label': 'T1', 'description': 'Both gates (UC rising + MACD cross-up)',
-        'backtest_wr': '57%', 'backtest_avg': '+91.0%'},
-    2: {'equity_pct': 0.10, 'label': 'T2', 'description': 'MACD cross-up only (timing confirmed)',
-        'backtest_wr': '83%', 'backtest_avg': '+63.2%'},
-    3: {'equity_pct': 0.05, 'label': 'T3', 'description': 'UC rising only (regime confirmed)',
-        'backtest_wr': '69%', 'backtest_avg': '+75.8%'},
-}
-
-# Gear-shift configurations: V6 format with integer tier keys (1=T1, 2=T2, 3=T3)
-SIZING_GEARS = {
-    'conservative': {'max_positions': 10, 'label': 'Conservative (12/8/3)',
-                     'tiers': {1: 0.12, 2: 0.08, 3: 0.03}},
-    'recommended':  {'max_positions': 8,  'label': 'Recommended (20/10/5)',
-                     'tiers': {1: 0.20, 2: 0.10, 3: 0.05}},
-    'aggressive':   {'max_positions': 8,  'label': 'Aggressive (25/15/8)',
-                     'tiers': {1: 0.25, 2: 0.15, 3: 0.08}},
-}
+# QUALITY_TIERS, SIZING_GEARS imported from scanner.sterling_indicators above
 DEFAULT_SIZING_GEAR = 'recommended'
-
-# Daily scanner parameters (Phase 3)
-DAILY_SIGNAL_MAX = 5               # Max new buy signals per daily scan
-DAILY_DEDUP_LOOKBACK_DAYS = 5      # Skip tickers signalled within last N trading days
-DAILY_DOWNLOAD_PERIOD = "6mo"      # yfinance period for daily bars (90d+ for HMA)
-DAILY_MIN_BARS = 60                # Minimum daily bars for valid indicator calculation
 
 # Portfolio tracking
 DEFAULT_POSITION_SHARES = 100  # Assumed shares per position for notional P&L
 MAX_PORTFOLIO_BACKUPS = 30     # Keep last N portfolio backups
+PORTFOLIO_PRICE_STALENESS_HOURS = 8       # Re-fetch prices if older than this
+PORTFOLIO_SNAPSHOT_CLOSED_TRADES_LIMIT = 20  # Max closed trades in snapshot
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # COMPOUNDING PORTFOLIO SETTINGS
@@ -1310,8 +1276,6 @@ def main() -> None:
     print("=" * 60)
     print(f"\nTrading Parameters:")
     print(f"  Trailing Stop:   {TRAILING_STOP_PCT}%")
-    print(f"  Stop Warning:    {STOP_WARNING_PCT}%")
-    print(f"  Beta Threshold:  {BETA_THRESHOLD}")
     print(f"\nLLM Models:")
     print(f"  Sonnet: {MODEL_SONNET}")
     print(f"  Opus:   {MODEL_OPUS}")

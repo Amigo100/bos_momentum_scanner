@@ -4,7 +4,7 @@ BACKUP CLEANUP UTILITY
 ======================
 
 Deduplicates portfolio backups: keeps only the newest file per ISO calendar week.
-Applies to both portfolio/output/portfolio_backups/ and portfolio/output/daily_portfolio_backups/.
+Applies to portfolio/output/portfolio_backups/.
 
 This prevents duplicate backups from re-runs while preserving one snapshot per week
 for historical reference.
@@ -25,15 +25,13 @@ from typing import Dict, List, Tuple
 
 # Import config for paths
 try:
-    from config import PORTFOLIO_BACKUP_DIR, DAILY_PORTFOLIO_BACKUP_DIR
+    from config import PORTFOLIO_BACKUP_DIR
 except ImportError:
     _BASE_DIR = Path(__file__).resolve().parent.parent
     PORTFOLIO_BACKUP_DIR = _BASE_DIR / "portfolio" / "output" / "portfolio_backups"
-    DAILY_PORTFOLIO_BACKUP_DIR = _BASE_DIR / "portfolio" / "output" / "daily_portfolio_backups"
 
 BACKUP_DIRS = {
     'weekly': PORTFOLIO_BACKUP_DIR,
-    'daily': DAILY_PORTFOLIO_BACKUP_DIR,
 }
 
 # Pattern: portfolio_YYYYMMDD_HHMMSS.csv or daily_portfolio_YYYYMMDD_HHMMSS.csv

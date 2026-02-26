@@ -45,7 +45,6 @@ TRADES_DIR = BASE_DIR / "trades"
 
 SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
 SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
-DAILY_SIGNALS_FILE = SCANNER_OUTPUT / "daily_signals.json"
 ANALYSIS_LOG = SCANNER_OUTPUT / "analysis_log.csv"
 SCAN_REPORT = SCANNER_OUTPUT / "scan_report.txt"
 
@@ -55,11 +54,12 @@ SCAN_REPORT = SCANNER_OUTPUT / "scan_report.txt"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 PORTFOLIO_FILE = PORTFOLIO_OUTPUT / "portfolio.csv"
-DAILY_PORTFOLIO_FILE = PORTFOLIO_OUTPUT / "daily_portfolio.csv"
 SHEETS_EXPORT_FILE = PORTFOLIO_OUTPUT / "portfolio_google_sheets.csv"
 EQUITY_CURVE_FILE = PORTFOLIO_OUTPUT / "equity_curve.csv"
 PORTFOLIO_BACKUP_DIR = PORTFOLIO_OUTPUT / "portfolio_backups"
-DAILY_PORTFOLIO_BACKUP_DIR = PORTFOLIO_OUTPUT / "daily_portfolio_backups"
+PORTFOLIO_SNAPSHOT_FILE = PORTFOLIO_OUTPUT / "portfolio_snapshot.json"
+PORTFOLIO_DASHBOARD_FILE = SUBSTACK_OUTPUT / "current" / "portfolio_dashboard.html"
+PORTFOLIO_SUMMARY_PNG = SUBSTACK_OUTPUT / "current" / "portfolio_summary.png"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -174,7 +174,6 @@ def ensure_output_structure() -> Tuple[Path, Path]:
     # Portfolio output dirs
     PORTFOLIO_OUTPUT.mkdir(parents=True, exist_ok=True)
     PORTFOLIO_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    DAILY_PORTFOLIO_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
 
     # Twitter output dirs
     TWITTER_OUTPUT.mkdir(parents=True, exist_ok=True)

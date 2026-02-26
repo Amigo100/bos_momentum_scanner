@@ -245,7 +245,7 @@ class _MockMessages:
         ordered_categories = [
             "SCANNER_RESULT", "THEME_ANALYSIS", "TECHNICAL_ANALYSIS",
             "MARKET_COMMENTARY", "NEWSLETTER_CTA", "SELL_SIGNAL",
-            "DAILY_SIGNAL", "PERFORMANCE", "WATCHLIST",
+            "PERFORMANCE", "WATCHLIST",
             "EDUCATIONAL", "ENGAGEMENT",
         ]
         for cat in ordered_categories:

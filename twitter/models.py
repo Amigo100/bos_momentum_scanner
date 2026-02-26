@@ -21,11 +21,6 @@ TWEET_CATEGORIES: Dict[str, Dict] = {
         "chart_required": True,
         "min_elements": ["$TICKER", "entry price", "thesis"],
     },
-    "DAILY_SIGNAL": {
-        "source": "Daily scan BoS buy signals",
-        "chart_required": True,
-        "min_elements": ["$TICKER", "price"],
-    },
     "THEME_ANALYSIS": {
         "source": "Thematic groupings from scan",
         "chart_required": False,   # Recommended but not required
@@ -174,11 +169,6 @@ class ContentData:
     holdings: List[Dict] = field(default_factory=list)       # >= 0% gain, < 10%
     sell_signals: List[Dict] = field(default_factory=list)
 
-    # Daily scan data (optional)
-    daily_signals: List[Dict] = field(default_factory=list)
-    daily_sells: List[Dict] = field(default_factory=list)
-    daily_winners: List[Dict] = field(default_factory=list)
-
     # Market context (optional)
     market_data: Optional[Dict] = None
 
@@ -209,10 +199,6 @@ class ContentData:
     @property
     def has_themes(self) -> bool:
         return len(self.themes) > 0
-
-    @property
-    def has_daily_signals(self) -> bool:
-        return len(self.daily_signals) > 0
 
 
 from config.banned_terms import INTERNAL_TERM_PATTERNS  # noqa: F401

@@ -10,14 +10,12 @@ Ref: STERLING_SIGNALS_PRD_v2.md section 3
 Ref: FINTWIT_STYLE_GUIDE.md
 
 Usage:
-    from twitter.tweet_generator import generate_weekly_content, generate_daily_content
+    from twitter.tweet_generator import generate_weekly_content
 
     summary = generate_weekly_content("scanner/output/signals.json", "portfolio/output/portfolio.csv")
-    daily  = generate_daily_content("scanner/output/daily_signals.json", "portfolio/output/daily_portfolio.csv")
 
 CLI:
     python -m twitter.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv
-    python -m twitter.tweet_generator --daily --signals scanner/output/daily_signals.json
 """
 
 import argparse
@@ -101,18 +99,12 @@ ACCOUNT_QUEUES = {
     "account3": "content_queue_account3.json",
 }
 
-DAILY_ACCOUNT_QUEUES = {
-    "main": "daily_content_queue.json",
-    "account2": "daily_content_queue_account2.json",
-    "account3": "daily_content_queue_account3.json",
-}
-
 # Weekly slots (1-5) per day
 WEEKLY_SLOTS = [2, 3, 4, 5]
 
 # Categories where every $TICKER must come from source data (not flexible)
 DATA_DEPENDENT_CATEGORIES = {
-    "SCANNER_RESULT", "SELL_SIGNAL", "DAILY_SIGNAL",
+    "SCANNER_RESULT", "SELL_SIGNAL",
     "PERFORMANCE", "TECHNICAL_ANALYSIS", "WATCHLIST",
 }
 
@@ -193,7 +185,6 @@ EMBEDDED_STYLE_GUIDE = """
 | Category | Chart? | Must Include |
 |----------|--------|-------------|
 | SCANNER_RESULT | YES | $TICKER + entry price + thesis |
-| DAILY_SIGNAL | YES | $TICKER + price + context |
 | THEME_ANALYSIS | Rec. | Theme name + $TICKER(s) + prices |
 | PERFORMANCE | YES | $TICKER + entry → current + %gain |
 | WATCHLIST | Opt. | $TICKER(s) + prices + trigger |
@@ -985,13 +976,6 @@ def _build_user_prompt(
             "Genuine and conversational, not salesy. End with NFA."
         )
 
-    elif category == "DAILY_SIGNAL" and "daily_signals" in slot_data:
-        for ds in slot_data["daily_signals"][:3]:
-            prompt_parts.append(
-                f"  ${ds.get('symbol', '??')} at ${ds.get('price', 0):.2f}"
-                f" | Daily buy signal | Theme: {ds.get('theme', 'N/A')}"
-            )
-
     elif category == "TECHNICAL_ANALYSIS" and "tickers" in slot_data:
         for t in slot_data["tickers"][:2]:
             prompt_parts.append(
@@ -1138,13 +1122,6 @@ def _prepare_slot_data(category: str, data: ContentData, used_indices: Dict) -> 
         if not data.consider_signals:
             return None  # No consider signals for watchlist
         slot_data["consider"] = data.consider_signals[:3]
-
-    elif category == "DAILY_SIGNAL":
-        idx = used_indices.get("daily_signals", 0)
-        if idx >= len(data.daily_signals):
-            return None  # No more daily signals
-        slot_data["daily_signals"] = data.daily_signals[idx:idx + 2]
-        used_indices["daily_signals"] = idx + 1
 
     elif category == "TECHNICAL_ANALYSIS":
         # Combine all open positions for TA (winners + notable + holdings)
@@ -1931,189 +1908,6 @@ def generate_weekly_content(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# MAIN ENTRY: DAILY CONTENT
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def generate_daily_content(
-    daily_signals_path: str,
-    daily_portfolio_path: str,
-    output_dir: Optional[str] = None,
-    account_id: str = "main",
-) -> Dict:
-    """
-    Generate daily tweets for new daily scan signals, sell signals, and winners.
-
-    - Up to 5 DAILY_SIGNAL tweets (one per signal)
-    - SELL_SIGNAL tweets for any daily exits
-    - PERFORMANCE tweets for daily winners >= 25%
-
-    When called 3× with different account_id values, the LLM naturally varies
-    output for differentiation between accounts.
-
-    Args:
-        daily_signals_path: Path to daily_signals.json
-        daily_portfolio_path: Path to daily_portfolio.csv
-        output_dir: Output directory (default: twitter/output/)
-        account_id: Which account to generate for ("main", "account2", "account3")
-
-    Returns:
-        Summary dict: {total_tweets, by_category, failed_count, chart_required_count}
-    """
-    if anthropic is None:
-        logger.error("anthropic package not installed")
-        return {"total_tweets": 0, "error": "anthropic not installed"}
-
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        logger.error("ANTHROPIC_API_KEY not set")
-        return {"total_tweets": 0, "error": "ANTHROPIC_API_KEY not set"}
-
-    client = anthropic.Anthropic(api_key=api_key)
-    cost_tracker = CostTracker()
-    style_guide = _load_style_guide()
-
-    logger.info("=== Generating daily content for account: %s ===", account_id)
-
-    # Load daily signals
-    daily_signals_raw = _load_signals(daily_signals_path)
-    daily_buy_signals = daily_signals_raw.get("buy_signals", [])[:5]
-    daily_sell_signals = daily_signals_raw.get("sell_signals", [])
-
-    # Load daily portfolio for winners
-    daily_positions = _load_portfolio(daily_portfolio_path)
-    big_win = MARKETING_THRESHOLDS.get("big_win_threshold", 25.0)
-    daily_winners = []
-    for pos in daily_positions:
-        if pos.get("status", "").upper() != "OPEN":
-            continue
-        entry = float(pos.get("entry_price", 0) or 0)
-        current = float(pos.get("current_price", 0) or 0)
-        if entry > 0 and current > 0:
-            pnl = ((current / entry) - 1) * 100
-            if pnl >= big_win:
-                pos["pnl_pct"] = pnl
-                daily_winners.append(pos)
-
-    # Build content data for daily context
-    data = ContentData(
-        daily_signals=daily_buy_signals,
-        daily_sells=daily_sell_signals,
-        daily_winners=daily_winners,
-        scan_date=datetime.now().strftime("%Y-%m-%d"),
-        newsletter_url=NEWSLETTER_URL,
-    )
-
-    valid_tweets: List[Tweet] = []
-    failed_count = 0
-    by_category: Dict[str, int] = {}
-    used_indices: Dict[str, int] = {}
-
-    # Generate DAILY_SIGNAL tweets (one per signal, max 5)
-    for i, sig in enumerate(daily_buy_signals):
-        slot = SlotAssignment(
-            day=datetime.now().strftime("%A").lower(),
-            slot=5,  # Daily signals go to slot 5 (17:00 ET)
-            category="DAILY_SIGNAL",
-            data_key="daily_signals",
-        )
-        slot_data = {"daily_signals": [sig]}
-
-        tweet = _generate_tweet("DAILY_SIGNAL", slot_data, slot, style_guide, client, cost_tracker)
-        result = _validate_tweet(tweet, slot_data)
-
-        attempts = 0
-        while not result.passed and attempts < MAX_REPAIR_ATTEMPTS:
-            tweet = _repair_tweet(tweet, result.failures, slot_data, style_guide, client, cost_tracker)
-            result = _validate_tweet(tweet, slot_data)
-            attempts += 1
-
-        if result.passed:
-            valid_tweets.append(tweet)
-            by_category["DAILY_SIGNAL"] = by_category.get("DAILY_SIGNAL", 0) + 1
-        else:
-            _log_failed_tweet(tweet, result.failures, Path(output_dir) if output_dir else None)
-            failed_count += 1
-
-    # Generate SELL_SIGNAL tweets
-    for ss in daily_sell_signals:
-        slot = SlotAssignment(
-            day=datetime.now().strftime("%A").lower(),
-            slot=5,
-            category="SELL_SIGNAL",
-            data_key="sell_signals",
-        )
-        slot_data = {"sell_signals": [ss]}
-
-        tweet = _generate_tweet("SELL_SIGNAL", slot_data, slot, style_guide, client, cost_tracker)
-        result = _validate_tweet(tweet, slot_data)
-
-        attempts = 0
-        while not result.passed and attempts < MAX_REPAIR_ATTEMPTS:
-            tweet = _repair_tweet(tweet, result.failures, slot_data, style_guide, client, cost_tracker)
-            result = _validate_tweet(tweet, slot_data)
-            attempts += 1
-
-        if result.passed:
-            valid_tweets.append(tweet)
-            by_category["SELL_SIGNAL"] = by_category.get("SELL_SIGNAL", 0) + 1
-        else:
-            _log_failed_tweet(tweet, result.failures, Path(output_dir) if output_dir else None)
-            failed_count += 1
-
-    # Generate PERFORMANCE tweets for daily winners >= 25%
-    for w in daily_winners:
-        slot = SlotAssignment(
-            day=datetime.now().strftime("%A").lower(),
-            slot=1,  # Morning slot for receipts
-            category="PERFORMANCE",
-            data_key="winners",
-        )
-        slot_data = {"winners": [w]}
-
-        tweet = _generate_tweet("PERFORMANCE", slot_data, slot, style_guide, client, cost_tracker)
-        result = _validate_tweet(tweet, slot_data)
-
-        attempts = 0
-        while not result.passed and attempts < MAX_REPAIR_ATTEMPTS:
-            tweet = _repair_tweet(tweet, result.failures, slot_data, style_guide, client, cost_tracker)
-            result = _validate_tweet(tweet, slot_data)
-            attempts += 1
-
-        if result.passed:
-            valid_tweets.append(tweet)
-            by_category["PERFORMANCE"] = by_category.get("PERFORMANCE", 0) + 1
-        else:
-            _log_failed_tweet(tweet, result.failures, Path(output_dir) if output_dir else None)
-            failed_count += 1
-
-    # Attach chart paths from manifest
-    charts_attached = _attach_chart_paths(valid_tweets)
-
-    # Write daily queue for this account only
-    out = Path(output_dir) if output_dir else TWITTER_OUTPUT
-    daily_account_queue = {account_id: DAILY_ACCOUNT_QUEUES[account_id]}
-    _write_queues(valid_tweets, daily_account_queue, out, data.scan_date)
-
-    chart_required_count = sum(1 for t in valid_tweets if t.chart_required)
-    chart_attached_count = sum(1 for t in valid_tweets if t.chart_path or t.chart_paths)
-
-    logger.info(
-        "Daily generation complete: %d tweets, %d failed, %d charts attached",
-        len(valid_tweets), failed_count, chart_attached_count,
-    )
-    logger.info("Cost: %s", cost_tracker.summary())
-
-    return {
-        "total_tweets": len(valid_tweets),
-        "by_category": by_category,
-        "failed_count": failed_count,
-        "chart_required_count": chart_required_count,
-        "chart_attached_count": chart_attached_count,
-        "cost": cost_tracker.summary(),
-    }
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # UTILITY HELPERS (backwards-compat with v1 imports in tests)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -2148,19 +1942,15 @@ def main() -> None:
     )
     parser.add_argument(
         "--signals", default=str(SIGNALS_FILE),
-        help="Path to signals.json (weekly) or daily_signals.json",
+        help="Path to signals.json",
     )
     parser.add_argument(
         "--portfolio", default=str(PORTFOLIO_FILE),
-        help="Path to portfolio.csv or daily_portfolio.csv",
+        help="Path to portfolio.csv",
     )
     parser.add_argument(
         "--output", default=str(TWITTER_OUTPUT),
         help="Output directory for queue files",
-    )
-    parser.add_argument(
-        "--daily", action="store_true",
-        help="Generate daily content instead of weekly",
     )
     parser.add_argument(
         "--account", default="all",
@@ -2188,20 +1978,12 @@ def main() -> None:
         print(f"  Generating for account: {acct}")
         print(f"{'─' * 60}")
 
-        if args.daily:
-            result = generate_daily_content(
-                daily_signals_path=args.signals,
-                daily_portfolio_path=args.portfolio,
-                output_dir=args.output,
-                account_id=acct,
-            )
-        else:
-            result = generate_weekly_content(
-                signals_path=args.signals,
-                portfolio_path=args.portfolio,
-                output_dir=args.output,
-                account_id=acct,
-            )
+        result = generate_weekly_content(
+            signals_path=args.signals,
+            portfolio_path=args.portfolio,
+            output_dir=args.output,
+            account_id=acct,
+        )
         all_results.append({"account": acct, **result})
 
     # Print summary

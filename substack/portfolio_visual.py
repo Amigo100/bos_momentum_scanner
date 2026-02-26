@@ -25,11 +25,14 @@ Usage:
 """
 
 import argparse
+import csv
+import json
 import logging
 import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Dict, List, Optional, Tuple
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -39,6 +42,10 @@ from typing import Dict, List, Optional, Tuple
 # Base paths
 from config.output_paths import (
     CHARTS_DIR,
+    EQUITY_CURVE_FILE,
+    PORTFOLIO_DASHBOARD_FILE,
+    PORTFOLIO_SNAPSHOT_FILE,
+    PORTFOLIO_SUMMARY_PNG,
     save_to_substack_current_and_archive,
     ensure_output_structure,
 )
@@ -183,6 +190,111 @@ def _load_dashboard_data() -> Dict:
         "equity_snapshots": equity_snapshots,
         "max_drawdown": max_drawdown,
         "date_str": datetime.now().strftime("%B %d, %Y"),
+        "total_open": len(open_positions),
+    }
+
+
+def _load_snapshot_data(snapshot_path: Path) -> Dict:
+    """Load dashboard data from portfolio_snapshot.json (no PortfolioManager calls).
+
+    Transforms the JSON snapshot into the same dict format that
+    generate_dashboard_html() expects, using SimpleNamespace objects
+    as lightweight stand-ins for Trade/EquitySnapshot dataclasses.
+
+    Args:
+        snapshot_path: Path to portfolio_snapshot.json
+
+    Returns:
+        Dict compatible with generate_dashboard_html()
+    """
+    snapshot = json.loads(snapshot_path.read_text())
+    equity = snapshot.get("equity", {})
+    summary = snapshot.get("summary", {})
+
+    # Build position-like objects for generate_dashboard_html()
+    open_positions = []
+    for p in snapshot.get("open_positions", []):
+        obj = SimpleNamespace(
+            ticker=p.get("ticker", ""),
+            entry_price=p.get("entry_price", 0.0),
+            current_price=p.get("current_price", 0.0),
+            pnl_pct=p.get("pnl_pct", 0.0),
+            pnl_usd=p.get("pnl_usd", 0.0),
+            days_held=p.get("days_held", 0),
+            theme=p.get("theme", ""),
+            distance_to_stop_pct=p.get("distance_to_stop_pct", 0.0),
+            status="OPEN",
+            notes="",
+            exit_date="",
+        )
+        open_positions.append(obj)
+    open_positions.sort(key=lambda t: t.pnl_pct, reverse=True)
+
+    # Build exit-like objects
+    recent_exits = []
+    for e in snapshot.get("recent_exits", []):
+        obj = SimpleNamespace(
+            ticker=e.get("ticker", ""),
+            exit_date=e.get("exit_date", ""),
+            pnl_pct=e.get("pnl_pct", 0.0),
+            status=e.get("status", "CLOSED"),
+            notes=e.get("exit_reason", ""),
+        )
+        recent_exits.append(obj)
+
+    # Compounding summary (mapped from equity key)
+    compounding = {
+        "current_nav": equity.get("nav", 0),
+        "total_return_pct": equity.get("total_return_pct", 0),
+        "alpha_pct": equity.get("alpha_pct", 0),
+        "alpha_vs_qqq_pct": equity.get("alpha_vs_qqq_pct", 0),
+        "currency": CURRENCY_SYMBOL,
+        "inception_date": "",
+    }
+
+    # Performance summary (mapped from summary key)
+    performance = {
+        "win_rate": summary.get("win_rate", 0),
+        "avg_winner": summary.get("avg_winner", 0),
+        "avg_loser": summary.get("avg_loser", 0),
+    }
+
+    # Equity snapshots from equity_curve.csv
+    equity_snapshots = []
+    if EQUITY_CURVE_FILE.exists():
+        try:
+            with open(EQUITY_CURVE_FILE) as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    snap = SimpleNamespace(
+                        date=row.get("date", ""),
+                        total_return_pct=float(row.get("total_return_pct", 0)),
+                        spy_return_pct=float(row.get("spy_return_pct", 0)),
+                        qqq_return_pct=float(row.get("qqq_return_pct", 0)),
+                    )
+                    equity_snapshots.append(snap)
+        except Exception as e:
+            logger.warning("Could not load equity curve CSV: %s", e)
+
+    # Max drawdown
+    max_drawdown = equity.get("max_drawdown_pct", 0.0)
+
+    # Timestamp from snapshot
+    generated_at = snapshot.get("generated_at", "")
+    try:
+        dt = datetime.fromisoformat(generated_at)
+        date_str = dt.strftime("%B %d, %Y")
+    except (ValueError, TypeError):
+        date_str = datetime.now().strftime("%B %d, %Y")
+
+    return {
+        "open_positions": open_positions,
+        "recent_exits": recent_exits,
+        "compounding": compounding,
+        "performance": performance,
+        "equity_snapshots": equity_snapshots,
+        "max_drawdown": max_drawdown,
+        "date_str": date_str,
         "total_open": len(open_positions),
     }
 
@@ -739,6 +851,163 @@ def capture_dashboard_screenshot(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# DAILY DASHBOARD (from snapshot JSON — no PortfolioManager calls)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def _render_summary_card(data: Dict) -> Path:
+    """Generate an 800x450 portfolio summary PNG card for tweet attachments.
+
+    Uses matplotlib to render a dark-themed card with NAV, alpha, win rate,
+    open positions count, and top 3 performers with progress bars.
+
+    Args:
+        data: Dict from _load_snapshot_data() or _load_dashboard_data()
+
+    Returns:
+        Path to saved PNG file.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import FancyBboxPatch
+
+    from config.settings import (
+        CARD_BG_COLOR,
+        CARD_TEXT_COLOR,
+        CARD_ACCENT_GREEN,
+        CARD_ACCENT_RED,
+    )
+
+    compounding = data.get("compounding", {})
+    performance = data.get("performance", {})
+    open_positions = data.get("open_positions", [])
+    total_open = data.get("total_open", 0)
+
+    nav = compounding.get("current_nav", 0)
+    alpha = compounding.get("alpha_pct", 0)
+    win_rate = performance.get("win_rate", 0)
+    currency = compounding.get("currency", "$")
+
+    fig, ax = plt.subplots(figsize=(8, 4.5), dpi=100)
+    fig.patch.set_facecolor(CARD_BG_COLOR)
+    ax.set_facecolor(CARD_BG_COLOR)
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100)
+    ax.axis("off")
+
+    # Title
+    ax.text(50, 92, "STERLING SIGNALS PORTFOLIO", fontsize=16, fontweight="bold",
+            color=CARD_TEXT_COLOR, ha="center", va="top", fontfamily="monospace")
+
+    # Divider line
+    ax.plot([10, 90], [86, 86], color="#444466", linewidth=1)
+
+    # Stats row
+    stats = [
+        (f"{currency}{nav:,.0f}" if nav else "—", "NAV"),
+        (f"{alpha:+.1f}%" if alpha else "—", "Alpha vs S&P"),
+        (f"{win_rate:.0f}%" if win_rate > 0 else "N/A", "Win Rate"),
+        (str(total_open), "Positions"),
+    ]
+    for i, (value, label) in enumerate(stats):
+        x = 15 + i * 22
+        value_color = CARD_TEXT_COLOR
+        if "Alpha" in label and alpha != 0:
+            value_color = CARD_ACCENT_GREEN if alpha >= 0 else CARD_ACCENT_RED
+        ax.text(x, 78, value, fontsize=13, fontweight="bold", color=value_color,
+                ha="center", va="top", fontfamily="monospace")
+        ax.text(x, 71, label, fontsize=7, color="#8888aa",
+                ha="center", va="top", fontfamily="monospace")
+
+    # Top performers section
+    ax.text(12, 60, "TOP PERFORMERS", fontsize=9, fontweight="bold",
+            color="#8888aa", va="top", fontfamily="monospace")
+
+    winners = [p for p in open_positions if p.pnl_pct > 0]
+    winners.sort(key=lambda p: p.pnl_pct, reverse=True)
+    top3 = winners[:3]
+
+    if top3:
+        max_pnl = max(p.pnl_pct for p in top3) if top3 else 1
+        bar_max = max(max_pnl, 1)
+
+        for i, pos in enumerate(top3):
+            y = 52 - i * 12
+            # Ticker
+            ax.text(12, y, f"${pos.ticker}", fontsize=10, fontweight="bold",
+                    color=CARD_ACCENT_GREEN, va="top", fontfamily="monospace")
+            # P&L
+            ax.text(30, y, f"+{pos.pnl_pct:.1f}%", fontsize=10, fontweight="bold",
+                    color=CARD_ACCENT_GREEN, va="top", fontfamily="monospace")
+            # Progress bar
+            bar_width = min((pos.pnl_pct / bar_max) * 40, 40)
+            bar = FancyBboxPatch((45, y - 3), bar_width, 5, boxstyle="round,pad=0.5",
+                                facecolor=CARD_ACCENT_GREEN, alpha=0.6, edgecolor="none")
+            ax.add_patch(bar)
+            # Theme (truncated)
+            theme_str = pos.theme[:15] if pos.theme else ""
+            ax.text(88, y, theme_str, fontsize=7, color="#8888aa",
+                    va="top", ha="right", fontfamily="monospace")
+    else:
+        ax.text(50, 45, "No winners yet — patience is edge", fontsize=9,
+                color="#8888aa", ha="center", va="top", fontfamily="monospace")
+
+    # Footer
+    ax.plot([10, 90], [14, 14], color="#444466", linewidth=0.5)
+    ax.text(50, 8, "sterlingsignals.substack.com", fontsize=8,
+            color="#666688", ha="center", va="top", fontfamily="monospace")
+
+    # Save (exact 800x450 — avoid bbox_inches="tight" which crops)
+    png_path = PORTFOLIO_SUMMARY_PNG
+    png_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(png_path, facecolor=CARD_BG_COLOR, dpi=100)
+    plt.close(fig)
+
+    return png_path
+
+
+def generate_daily_dashboard(snapshot_path: Optional[Path] = None) -> dict:
+    """Generate daily portfolio dashboard from JSON snapshot.
+
+    Reads from portfolio_snapshot.json (no PortfolioManager calls).
+    Produces two outputs:
+      - portfolio_dashboard.html — standalone HTML dashboard
+      - portfolio_summary.png — 800x450 matplotlib card for tweets
+
+    Args:
+        snapshot_path: Override path to snapshot JSON (default: PORTFOLIO_SNAPSHOT_FILE)
+
+    Returns:
+        Dict with keys: html_path, png_path
+    """
+    if snapshot_path is None:
+        snapshot_path = PORTFOLIO_SNAPSHOT_FILE
+
+    if not snapshot_path.exists():
+        raise FileNotFoundError(f"Snapshot not found: {snapshot_path}")
+
+    # Load data from snapshot JSON
+    data = _load_snapshot_data(snapshot_path)
+
+    # Generate HTML dashboard (reuse existing generate_dashboard_html)
+    html = generate_dashboard_html(data)
+    _validate_dashboard(html)
+
+    # Save HTML
+    html_path = PORTFOLIO_DASHBOARD_FILE
+    html_path.parent.mkdir(parents=True, exist_ok=True)
+    html_path.write_text(html)
+    print(f"  Dashboard HTML: {html_path}")
+
+    # Generate summary PNG
+    png_path = _render_summary_card(data)
+    print(f"  Summary PNG:    {png_path}")
+
+    return {"html_path": html_path, "png_path": png_path}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CLI ENTRY POINT
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -747,6 +1016,11 @@ def main() -> int:
     """Generate visual portfolio dashboard (HTML + optional PNG)."""
     parser = argparse.ArgumentParser(
         description="Generate visual portfolio dashboard (HTML + PNG)"
+    )
+    parser.add_argument(
+        "--daily",
+        action="store_true",
+        help="Generate daily dashboard from portfolio_snapshot.json",
     )
     parser.add_argument(
         "--html-only",
@@ -767,6 +1041,22 @@ def main() -> int:
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+    # ── Daily mode (from snapshot JSON) ───────────────────────────────────
+    if args.daily:
+        print()
+        print("=" * 60)
+        print("  DAILY PORTFOLIO DASHBOARD")
+        print("=" * 60)
+        try:
+            result = generate_daily_dashboard()
+            print(f"\n  Done.")
+            print("=" * 60)
+            return 0
+        except Exception as e:
+            print(f"\n  ERROR: {e}")
+            logger.error("Daily dashboard failed: %s", e)
+            return 1
 
     print()
     print("=" * 60)

@@ -109,10 +109,13 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
     """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Build ticker lookup from technical signals
+    # Build ticker lookup from ALL technical signal arrays (BUG-4 fix)
     tech_lookup: Dict[str, dict] = {}
-    for sig in tech.get("buy_signals", []):
-        tech_lookup[sig.get("symbol", "")] = sig
+    for key in ("buy_signals", "pass_signals", "consider_signals"):
+        for sig in tech.get(key, []):
+            sym = sig.get("symbol", "")
+            if sym and sym not in tech_lookup:  # first match wins
+                tech_lookup[sym] = sig
 
     # Start with technical base structure
     merged = {
@@ -123,6 +126,10 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
         "exit_criteria": tech.get("exit_criteria",
             "ExD compound exit + tiered profit lock"),
         "stats": tech.get("stats", {}),
+
+        # Market context (from Claude.ai decisions)
+        "market_context_summary": decisions.get("market_context_summary", ""),
+        "market_regime": decisions.get("market_regime", ""),
 
         # These are the arrays downstream systems read
         "themes": [],
@@ -162,9 +169,14 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
         })
 
     # ── Map new positions → pass_signals / consider_signals ─────────────────
+    unmatched_tickers = []  # Track tickers missing from technical data
+
     for pos in decisions.get("new_positions", []):
         symbol = pos.get("symbol", "")
         tech_data = tech_lookup.get(symbol, {})
+
+        if not tech_data:
+            unmatched_tickers.append(symbol)
 
         # Determine final_decision from verdict
         verdict = pos.get("verdict", pos.get("dd_verdict", ""))
@@ -193,6 +205,7 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
 
         signal = {
             # ── Technical data (from scanner) ──
+            # BUG-2 fix: All defaults are False/0 — never fabricate confirmation
             "symbol": symbol,
             "price": pos.get("price", tech_data.get("price", 0)),
             "tier": pos.get("tier", tech_data.get("tier", "")),
@@ -202,10 +215,10 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
             "uc_rising": tech_data.get("uc_rising", False),
             "rsi14": tech_data.get("rsi14", 0),
             "macd_cross_up": tech_data.get("macd_cross_up", False),
-            "hma_pivot_low": tech_data.get("hma_pivot_low", True),
+            "hma_pivot_low": tech_data.get("hma_pivot_low", False),
             "hma_pivot_high": tech_data.get("hma_pivot_high", False),
             "hma_slope_rising": tech_data.get("hma_slope_rising", False),
-            "buy_signal": tech_data.get("buy_signal", True),
+            "buy_signal": tech_data.get("buy_signal", False),
             "exd_signal": tech_data.get("exd_signal", False),
             "return_20d": tech_data.get("return_20d", 0),
             # Legacy compat keys
@@ -259,6 +272,11 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
             "catalyst_summary": pos.get("catalyst_summary", pos.get("dd_key_catalyst", "")),
         }
 
+        # Derive position_size_pct from tier if not explicitly set
+        if signal["position_size_pct"] == 0 and signal.get("tier"):
+            tier_pcts = {"T1": 0.20, "T2": 0.10, "T3": 0.05}
+            signal["position_size_pct"] = tier_pcts.get(signal["tier"], 0.10)
+
         if final_decision == "PASS":
             merged["pass_signals"].append(signal)
         else:
@@ -266,6 +284,12 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
 
         # buy_signals is the legacy union of both
         merged["buy_signals"].append(signal)
+
+    # ── Warn about unmatched tickers ──────────────────────────────────────
+    if unmatched_tickers:
+        print(f"  ⚠ {len(unmatched_tickers)} ticker(s) in decisions.json not found in "
+              f"signals_technical.json: {', '.join(unmatched_tickers)}")
+        print(f"    Technical fields will be empty for these tickers")
 
     # ── Map sell signals ────────────────────────────────────────────────────
     # Start with scanner's sell signals (ExD, trailing stops)
@@ -351,7 +375,7 @@ def build_content_schedule(decisions: dict) -> dict:
             {"symbol": p.get("symbol", ""), "theme": p.get("theme", "")}
             for p in decisions.get("new_positions", [])
         ],
-        "has_newsletter": (CURRENT_DIR / "newsletter.html").exists(),
+        "has_newsletter": (DECISIONS_DEFAULT.parent / "newsletter.html").exists(),
     }
 
 
@@ -454,6 +478,20 @@ def validate_decisions(decisions: dict) -> List[str]:
         if field not in decisions:
             warnings.append(f"Missing required field: {field}")
 
+    # Validate scan_date format
+    scan_date = decisions.get("scan_date", "")
+    if scan_date:
+        try:
+            datetime.strptime(scan_date, "%Y-%m-%d")
+        except ValueError:
+            warnings.append(f"scan_date '{scan_date}' is not YYYY-MM-DD format")
+
+    # Validate market_regime
+    valid_regimes = {"risk_on", "risk_off", "selective"}
+    regime = decisions.get("market_regime", "")
+    if regime and regime not in valid_regimes:
+        warnings.append(f"market_regime '{regime}' not in {valid_regimes}")
+
     # Validate new positions
     for i, pos in enumerate(decisions.get("new_positions", [])):
         prefix = f"new_positions[{i}] ({pos.get('symbol', '?')})"
@@ -465,6 +503,32 @@ def validate_decisions(decisions: dict) -> List[str]:
             warnings.append(f"{prefix}: missing dd_elevator_pitch (newsletter needs this)")
         if pos.get("conviction", 0) == 0 and pos.get("dd_conviction", 0) == 0:
             warnings.append(f"{prefix}: conviction is 0")
+        if pos.get("tier", "") not in ("T1", "T2", "T3"):
+            warnings.append(f"{prefix}: tier '{pos.get('tier')}' not in T1/T2/T3")
+        if pos.get("price", 0) <= 0:
+            warnings.append(f"{prefix}: price is {pos.get('price', 0)}")
+
+    # Validate themes have names
+    for i, theme in enumerate(decisions.get("themes_this_week", [])):
+        if not theme.get("name"):
+            warnings.append(f"themes_this_week[{i}]: missing name")
+
+    # Validate exits have required fields
+    for i, ex in enumerate(decisions.get("exits", [])):
+        prefix = f"exits[{i}] ({ex.get('symbol', '?')})"
+        if not ex.get("symbol"):
+            warnings.append(f"{prefix}: missing symbol")
+        if ex.get("exit_price", 0) <= 0:
+            warnings.append(f"{prefix}: exit_price is {ex.get('exit_price', 0)}")
+
+    # Validate theme sub-scores are numeric
+    for i, theme in enumerate(decisions.get("themes_this_week", [])):
+        prefix = f"themes_this_week[{i}]"
+        for score_field in ["composite_score", "catalyst_score", "momentum_score",
+                            "crowding_score", "runway_score"]:
+            val = theme.get(score_field)
+            if val is not None and not isinstance(val, (int, float)):
+                warnings.append(f"{prefix}: {score_field} is {type(val).__name__}, expected number")
 
     return warnings
 

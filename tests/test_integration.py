@@ -44,7 +44,6 @@ from twitter.tweet_generator import (
     _build_content_data,
     _write_queues,
     ACCOUNT_QUEUES,
-    DAILY_ACCOUNT_QUEUES,
     MAX_TWEET_CHARS,
     WEEKLY_DAYS,
     WEEKLY_SLOTS,
@@ -233,30 +232,6 @@ def sample_portfolio_rows():
             "notes": "", "current_price": "38.00",
         },
     ]
-
-
-@pytest.fixture
-def sample_daily_signals():
-    """Minimal daily_signals.json content."""
-    return {
-        "timestamp": "2026-02-06 16:45:00",
-        "timeframe": "DAILY",
-        "buy_signals": [
-            {"symbol": "AMD", "price": 165.30, "beta": 1.8, "banker_score": 68.0},
-            {"symbol": "MRVL", "price": 89.50, "beta": 2.0, "banker_score": 62.0},
-        ],
-        "sell_signals": [
-            {
-                "symbol": "PLTR",
-                "price": 42.00,
-                "reason": "Trailing Stop",
-                "entry_price": 55.00,
-                "highest_close": 58.00,
-                "pnl_pct": -23.6,
-                "stop_level": 46.40,
-            },
-        ],
-    }
 
 
 def _write_signals_json(signals: Dict, path: Path) -> Path:
@@ -454,158 +429,7 @@ class TestFridayPipelineIntegration:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEST CLASS 2: DAILY PIPELINE INTEGRATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-class TestDailyPipelineIntegration:
-    """Integration tests for the daily scan → tweet → notification pipeline."""
-
-    def test_full_daily_flow(self, tmpdir, sample_daily_signals):
-        """daily_signals.json → ContentData → validation → daily queue.
-
-        Verifies:
-          - Daily signals load into ContentData correctly
-          - Daily tweets can be validated
-          - Daily queues are written (separate from weekly)
-        """
-        # Write daily signals
-        signals_path = tmpdir / "daily_signals.json"
-        signals_path.write_text(json.dumps(sample_daily_signals, indent=2))
-
-        signals = json.loads(signals_path.read_text())
-        buy_signals = signals.get("buy_signals", [])[:5]  # Max 5
-        sell_signals = signals.get("sell_signals", [])
-
-        assert len(buy_signals) == 2
-        assert len(sell_signals) == 1
-
-        # Build daily content data
-        data = ContentData(
-            daily_signals=buy_signals,
-            daily_sells=sell_signals,
-            scan_date="2026-02-06",
-        )
-        assert data.has_daily_signals
-
-        # Simulate daily tweet generation + validation
-        daily_tweets = []
-        for sig in buy_signals:
-            ticker = sig["symbol"]
-            price = sig["price"]
-            tweet = Tweet(
-                text=f"${{ticker}} at ${price:.2f} — momentum confirmed on the daily. NFA",
-                category="DAILY_SIGNAL",
-                chart_required=True,
-                tickers_mentioned=[ticker],
-                metadata={"day": "thursday", "slot": 6},
-            )
-            # Fix string formatting (Tweet was created with literal f-string chars)
-            tweet = Tweet(
-                text=f"${ticker} at ${price:.2f} — momentum confirmed on the daily. NFA",
-                category="DAILY_SIGNAL",
-                chart_required=True,
-                chart_path=f"charts/{ticker}_daily_20260206.png",
-                tickers_mentioned=[ticker],
-                metadata={"day": "thursday", "slot": 6},
-            )
-            result = _validate_tweet(tweet, {"daily_signals": [sig]})
-            assert result.passed, f"Daily tweet for {ticker} failed: {result.failures}"
-            daily_tweets.append(tweet)
-
-        assert len(daily_tweets) == 2
-
-        # Write daily queues
-        _write_queues(daily_tweets, DAILY_ACCOUNT_QUEUES, tmpdir, "2026-02-06")
-
-        # Verify daily queue files (separate from weekly)
-        for account, queue_file in DAILY_ACCOUNT_QUEUES.items():
-            path = tmpdir / queue_file
-            assert path.exists(), f"Daily queue missing for {account}"
-            queue = json.loads(path.read_text())
-            assert len(queue) == 2
-
-    def test_daily_dedup_against_weekly(self, tmpdir, sample_signals, sample_daily_signals):
-        """Daily signals appearing in weekly portfolio are still valid separately.
-
-        Verifies that:
-          - Tickers can exist in both weekly and daily queues
-          - Content queues are separate files
-          - No cross-contamination between weekly and daily queue paths
-        """
-        # Write weekly queue
-        weekly_tweets = [{
-            "id": "saturday_1_0",
-            "text": "$NVDA at $145.50 — momentum confirmed. NFA",
-            "category": "SCANNER_RESULT",
-            "status": "pending",
-        }]
-        _write_content_queue(weekly_tweets, tmpdir, "content_queue.json")
-
-        # Write daily queue with a different ticker
-        daily_tweets = [{
-            "id": "thursday_6_0",
-            "text": "$AMD at $165.30 — daily momentum confirmed. NFA",
-            "category": "DAILY_SIGNAL",
-            "status": "pending",
-        }]
-        _write_content_queue(daily_tweets, tmpdir, "daily_content_queue.json")
-
-        # Both should coexist
-        weekly_path = tmpdir / "content_queue.json"
-        daily_path = tmpdir / "daily_content_queue.json"
-
-        assert weekly_path.exists()
-        assert daily_path.exists()
-
-        weekly_data = json.loads(weekly_path.read_text())
-        daily_data = json.loads(daily_path.read_text())
-
-        assert len(weekly_data) == 1
-        assert len(daily_data) == 1
-        assert weekly_data[0]["text"] != daily_data[0]["text"]
-
-    def test_daily_sell_notification_flow(self, sample_daily_signals):
-        """Daily sell signals trigger notifications with correct parameters.
-
-        Verifies:
-          - Each sell signal generates a notification call
-          - Parameters map correctly from signal dict to notification function
-          - Both channels (email, whatsapp) are invoked
-        """
-        sell_signals = sample_daily_signals.get("sell_signals", [])
-        assert len(sell_signals) == 1
-
-        sig = sell_signals[0]
-
-        with patch("utils.notifications._send_email") as mock_email, \
-             patch("utils.notifications._send_whatsapp") as mock_whatsapp:
-
-            mock_email.return_value = True
-            mock_whatsapp.return_value = True
-
-            from utils.notifications import send_sell_notification
-
-            result = send_sell_notification(
-                ticker=sig["symbol"],
-                signal_type=sig["reason"],
-                entry_price=float(sig["entry_price"]),
-                current_price=float(sig["price"]),
-                highest_close=float(sig["highest_close"]),
-                stop_level=float(sig["stop_level"]),
-                pnl_pct=float(sig["pnl_pct"]),
-                theme="Tech",
-                timeframe="daily",
-                entry_date="2026-01-15",
-            )
-
-            # Verify both channels were attempted
-            assert isinstance(result, dict)
-            assert "email" in result
-            assert "whatsapp" in result
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# TEST CLASS 3: DAILY POSTING INTEGRATION
+# TEST CLASS 2: DAILY POSTING INTEGRATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestDailyPostingIntegration:
@@ -982,7 +806,7 @@ class TestContentValidationIntegration:
     def test_chart_flag_consistency(self):
         """chart_required flag must match category expectations.
 
-        SCANNER_RESULT, DAILY_SIGNAL, PERFORMANCE, TECHNICAL_ANALYSIS, SELL_SIGNAL
+        SCANNER_RESULT, PERFORMANCE, TECHNICAL_ANALYSIS, SELL_SIGNAL
         all require charts. Other categories don't.
         """
         for category in VALID_CATEGORIES:
@@ -1061,11 +885,9 @@ class TestCrossCuttingSmoke:
         assert DAILY_SLOTS & WEEKLY_SLOTS == set(), "No slot should be in both daily and weekly"
 
     def test_account_queues_have_three_entries(self):
-        """Both ACCOUNT_QUEUES and DAILY_ACCOUNT_QUEUES have exactly 3 accounts."""
+        """ACCOUNT_QUEUES has exactly 3 accounts."""
         assert len(ACCOUNT_QUEUES) == 3
-        assert len(DAILY_ACCOUNT_QUEUES) == 3
         assert set(ACCOUNT_QUEUES.keys()) == {"main", "account2", "account3"}
-        assert set(DAILY_ACCOUNT_QUEUES.keys()) == {"main", "account2", "account3"}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

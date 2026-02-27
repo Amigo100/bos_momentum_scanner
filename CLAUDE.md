@@ -153,7 +153,7 @@ Replace internal conviction scores with public-facing language:
 | Day | Automated | Manual |
 |-----|-----------|--------|
 | **Friday 4:15 PM ET** | Full weekly scan, DD, tweets, newsletter via GitHub Actions | - |
-| **Saturday** | Tweet posting (7 slots/day) | Copy newsletter to Substack, add charts; post 3 notes |
+| **Saturday 21:00 UTC** | `saturday_workflow.yml` → merge decisions + portfolio + archive; tweet posting (7 slots/day) | Save decisions.json from Claude.ai; copy newsletter to Substack, add charts; post 3 notes |
 | **Sunday** | Tweet posting (5 slots — weekly only) | Performance Review post + 3 notes |
 | **Monday-Friday** | Tweet posting (7 slots/day), daily content pipeline (07:00 ET) | 1 Substack post (adaptive category) + 3 notes |
 | **Daily 07:00 ET** | `daily_content.yml` → market analysis + daily context + notes | - |
@@ -430,6 +430,7 @@ twitter/output/
 | `.github/workflows/friday_scan.yml` | Friday automated scan + tweet generation |
 | `.github/workflows/daily_content.yml` | Daily content pipeline (07:00 ET): market analysis + context + notes + email |
 | `.github/workflows/live_tweet.yml` | Live tweet system (market hours, ~12 runs/day) |
+| `.github/workflows/saturday_workflow.yml` | Saturday workflow: merge decisions + portfolio + archive (21:00 UTC Sat + manual) |
 | `requirements.txt` | Python dependencies |
 
 ---

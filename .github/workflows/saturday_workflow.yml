@@ -1,0 +1,138 @@
+name: Saturday Workflow
+
+on:
+  schedule:
+    # Saturday 21:00 UTC (fixed time, no EST/EDT dual-cron needed)
+    - cron: '0 21 * * 6'
+
+  workflow_dispatch:
+    inputs:
+      skip_market:
+        description: 'Skip market analyzer LLM call'
+        required: false
+        type: boolean
+        default: false
+      skip_guide:
+        description: 'Skip daily context builder'
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Dry run — preview without writing files'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  saturday-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # CHECK DECISIONS.JSON EXISTS
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Check decisions.json exists
+        id: decisions_check
+        run: |
+          if [ -f "scanner/output/decisions.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✓ decisions.json found"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠ decisions.json not found — skipping workflow"
+            echo "  Push decisions.json to scanner/output/ before running"
+          fi
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # RUN SATURDAY WORKFLOW
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Run Saturday workflow
+        if: steps.decisions_check.outputs.exists == 'true'
+        id: workflow
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.skip_market }}" = "true" ]; then
+            ARGS="$ARGS --skip-market"
+          fi
+          if [ "${{ github.event.inputs.skip_guide }}" = "true" ]; then
+            ARGS="$ARGS --skip-guide"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          echo "Running: python -m scanner.saturday_workflow $ARGS"
+          python -m scanner.saturday_workflow $ARGS
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # COMMIT AND PUSH OUTPUTS
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Commit outputs
+        if: steps.decisions_check.outputs.exists == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add scanner/output/ substack/output/ portfolio/output/ 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto: saturday workflow $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            # Pull with rebase before push to avoid race conditions
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed — attempting merge"
+              git rebase --abort 2>/dev/null || true
+              git pull origin ${{ github.ref_name }}
+            }
+            git push
+            echo "Saturday workflow outputs committed and pushed"
+          fi
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # JOB SUMMARY
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Workflow summary
+        if: always()
+        run: |
+          echo "## Saturday Workflow" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Setting | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Trigger** | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **decisions.json** | ${{ steps.decisions_check.outputs.exists }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Skip Market** | ${{ github.event.inputs.skip_market || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Skip Guide** | ${{ github.event.inputs.skip_guide || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Dry Run** | ${{ github.event.inputs.dry_run || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Time (UTC)** | $(date -u +%Y-%m-%dT%H:%M:%SZ) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.decisions_check.outputs.exists }}" != "true" ]; then
+            echo "> ⚠ **Skipped:** \`decisions.json\` not found in \`scanner/output/\`." >> $GITHUB_STEP_SUMMARY
+            echo "> Push your Claude.ai decisions before triggering this workflow." >> $GITHUB_STEP_SUMMARY
+          fi

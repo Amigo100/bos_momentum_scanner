@@ -88,14 +88,13 @@ STOP_WARNING_PCT = 5.0        # Warn when within 5% of stop
 
 # ── Sterling Grid Indicator Parameters (canonical source: sterling_indicators.py) ──
 # Re-exported from the backtest-verified indicator module so downstream modules
-# can continue using `from config import PRICE_CAP` etc.
+# can continue using `from config import HMA_PERIOD` etc.
 from scanner.sterling_indicators import (  # noqa: E402
     HMA_PERIOD,
     RSI_PERIOD,
     MACD_FAST,
     MACD_SLOW,
     MACD_SIGNAL as MACD_SIGNAL_PERIOD,  # config uses MACD_SIGNAL_PERIOD alias
-    PRICE_CAP,
     UC_TARGET_DAYS,
     UC_SENSITIVITY,
     UC_TIMEFRAME,

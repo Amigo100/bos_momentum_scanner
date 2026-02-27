@@ -64,7 +64,7 @@ RSI_PERIOD = 14           # RSI(14) — computed but NOT an entry gate in V6
 MACD_FAST = 12            # MACD fast EMA
 MACD_SLOW = 26            # MACD slow EMA
 MACD_SIGNAL = 9           # MACD signal EMA
-PRICE_CAP = 25.0          # Maximum entry price
+# PRICE_CAP removed — no longer filtering by price
 
 # Undercurrent parameters (from indicators.py undercurrent() defaults)
 UC_TARGET_DAYS = 50       # Target days for internal RSI calculation
@@ -395,11 +395,10 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     signals['uc_rising_above'] = uc_data['uc_rising_above']        # V4 legacy, informational
 
     # ── V6 Combined buy signal ──────────────────────────────────
-    # HMA pivot low AND (UC rising OR MACD cross-up) AND price < $25
+    # HMA pivot low AND (UC rising OR MACD cross-up)
     signals['buy_signal'] = (
         signals['hma_pivot_low'] &
-        (signals['uc_rising'] | signals['macd_cross_up']) &
-        (signals['close'] < PRICE_CAP)
+        (signals['uc_rising'] | signals['macd_cross_up'])
     )
 
     # ── Quality tier classification ─────────────────────────────
@@ -427,7 +426,6 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     signals['watchlist_signal'] = (
         signals['hma_slope_rising'] &
         (signals['uc_rising'] | signals['macd_hist_positive']) &
-        (signals['close'] < PRICE_CAP) &
         ~signals['buy_signal']
     )
 
@@ -592,7 +590,7 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
         'tier_label': tier_label,
         'watchlist_signal': bool(cur['watchlist_signal']),
         'exd_exit_signal': bool(cur_exit['exd_signal']),
-        'price_under_25': float(cur['close']) < PRICE_CAP,
+        'price_under_25': True,  # Legacy field — price cap removed
     }
 
     if verbose:

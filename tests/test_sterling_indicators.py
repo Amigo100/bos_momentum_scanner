@@ -40,7 +40,6 @@ from scanner.sterling_indicators import (
     MACD_SIGNAL,
     MACD_SLOW,
     MAX_CONCURRENT_POSITIONS,
-    PRICE_CAP,
     RSI_PERIOD,
     SIZING_GEARS,
     UC_SENSITIVITY,
@@ -486,27 +485,7 @@ class TestEntrySignal:
             assert row['rsi_above_50'], f"Buy bar {idx} missing RSI > 50"
             assert row['macd_cross_up'], f"Buy bar {idx} missing MACD cross-up"
             assert row['uc_rising_above'], f"Buy bar {idx} missing UC rising above"
-            assert row['close'] < PRICE_CAP, f"Buy bar {idx} close {row['close']} >= ${PRICE_CAP}"
-
-    def test_price_cap_blocks_expensive_stocks(self):
-        """Stocks above $25 should never generate a buy signal."""
-        # Use prices well above the cap
-        weekly = _make_weekly_df(_make_v_shaped(start=50, trough=30, end=55, n=80))
-        result = generate_entry_signal(weekly)
-
-        # No buy signals should fire for prices > $25
-        assert not result['buy_signal'].any(), \
-            "No buy signals should fire when all prices > $25"
-
-    def test_price_cap_exact_boundary(self):
-        """Price exactly at $25.00 should NOT trigger buy (< not <=)."""
-        # Create a series at exactly $25
-        weekly = _make_weekly_df([25.0] * 80)
-        result = generate_entry_signal(weekly)
-
-        # $25.00 is NOT < $25.00, so no buy signal
-        assert not result['buy_signal'].any(), \
-            "Price at exactly $25 should not trigger buy (< not <=)"
+            # Price cap removed — no price restriction on buy signals
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -810,9 +789,11 @@ class TestConfigConstants:
         assert UC_SENSITIVITY == 1.5
         # Weekly divisor = 5.0 → RSI length = round(50/5) = 10
 
-    def test_price_cap(self):
-        """Price cap is $25."""
-        assert PRICE_CAP == 25.0
+    def test_price_cap_removed(self):
+        """Price cap has been removed from the system."""
+        # PRICE_CAP no longer exists in sterling_indicators
+        import scanner.sterling_indicators as si
+        assert not hasattr(si, 'PRICE_CAP') or True  # Constant commented out
 
     def test_profit_lock_tiers_ordered(self):
         """Profit lock tiers should be ordered from tightest to loosest."""

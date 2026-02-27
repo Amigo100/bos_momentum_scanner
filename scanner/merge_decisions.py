@@ -104,7 +104,7 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
     Merge scanner technical data with Claude.ai chat decisions.
 
     Produces signals.json in the EXACT format that downstream systems
-    (content_generator, tweet_generator, newsletter_compiler, live_tweet_generator)
+    (newsletter_compiler, live_tweet_generator)
     already consume.
     """
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

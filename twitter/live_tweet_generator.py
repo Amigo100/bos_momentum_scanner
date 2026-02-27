@@ -49,7 +49,8 @@ except ImportError:
 
 from twitter.models import (
     Tweet, ValidationResult, VALID_CATEGORIES,
-    CHART_REQUIRED_CATEGORIES, INTERNAL_TERM_PATTERNS,
+    CHART_REQUIRED_CATEGORIES, EXTERNAL_TICKER_CATEGORIES,
+    INTERNAL_TERM_PATTERNS,
 )
 from config.banned_terms import (
     ALL_BANNED, CRITICAL_BANNED, check_banned_phrases,
@@ -76,7 +77,7 @@ try:
         MAX_TWEETS_PER_DAY, MAX_SAME_TICKER_PER_DAY,
         MIN_HOURS_BETWEEN_SAME_TICKER, CONTEXT_STALENESS_HOURS,
         MODEL_LIVE_TWEET, WEEKEND_MAX_TWEETS, WEEKEND_CATEGORIES as _WEEKEND_CATS,
-        PERSONAS, get_persona,
+        PERSONAS, get_persona, PERSONA_AFFINITY,
     )
     MODEL = MODEL_LIVE_TWEET
     WEEKEND_CATEGORIES = set(_WEEKEND_CATS)  # Config stores List, local needs Set
@@ -96,28 +97,35 @@ except ImportError:
     MAX_SAME_TICKER_PER_DAY = 3
     MIN_HOURS_BETWEEN_SAME_TICKER = 3
     CONTEXT_STALENESS_HOURS = 4
-    WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT"}
+    WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "RECEIPT", "SIGNAL_ALERT", "SUBSTACK_TEASER", "THEME_LIST"}
+    PERSONA_AFFINITY = {
+        "variant_1": {"primary": set(), "secondary": set(), "avoids": set()},
+        "variant_2": {"primary": set(), "secondary": set(), "avoids": set()},
+        "variant_3": {"primary": set(), "secondary": set(), "avoids": set()},
+    }
 STYLE_GUIDE_PATH = Path(__file__).resolve().parent.parent / "FINTWIT_STYLE_GUIDE.md"
 
 MAX_TOKENS = 1500
 MAX_TWEET_CHARS = 280
 MAX_REPAIR_ATTEMPTS = 2
 
-# Live system valid categories (subset of VALID_CATEGORIES)
+# Live system valid categories (matches VALID_CATEGORIES from models.py)
 LIVE_VALID_CATEGORIES = {
-    "MARKET_REACTION", "RECEIPT", "SIGNAL_ALERT", "DIP_OPPORTUNITY",
-    "THEME_MOMENTUM", "ENGAGEMENT", "EDUCATIONAL", "NEWSLETTER_CTA",
-    "SELL_SIGNAL", "TECHNICAL_ANALYSIS", "WATCHLIST",
+    "SELL_SIGNAL", "SIGNAL_ALERT", "RECEIPT", "MARKET_COMMENTARY",
+    "THEME_CATALYST", "THEME_LIST", "TRENDING_TAKE",
+    "TECHNICAL_ANALYSIS", "EDUCATIONAL", "SUBSTACK_TEASER", "ENGAGEMENT",
 }
 
 # ── Category-specific few-shot examples for live tweet prompting ──────────────
-# Adapted from batch system + FINTWIT_STYLE_GUIDE.md. Injected into build_user_prompt().
+# Injected into build_user_prompt(). Aligned with 11-category taxonomy.
 LIVE_CATEGORY_EXAMPLES: Dict[str, str] = {
     "SIGNAL_ALERT": (
         '1) "Friday scan done. $INOD at $61.54 and $RCAT at $13.25 cleared all gates. '
         'Institutional Accumulation Divergence confirmed. Full breakdown in the newsletter."\n'
         '2) "1,800 stocks. 5 gates. 2 survivors this week. '
-        "Quality over quantity — that's the whole point.\""
+        "Quality over quantity — that's the whole point.\"\n"
+        '3) "On my radar: $IONQ at $42.15. Theme alignment is there. '
+        'Waiting for momentum confirmation. NFA."'
     ),
     "SELL_SIGNAL": (
         '1) "$SMCI setup invalidated below $36. Win more than you lose. Moving on."\n'
@@ -130,30 +138,43 @@ LIVE_CATEGORY_EXAMPLES: Dict[str, str] = {
         '$STRL +47%\\n$MOD +32%\\n$FIX +28%\\n\\n'
         'Meanwhile... S&P 500 +1.2%"'
     ),
+    "MARKET_COMMENTARY": (
+        '1) "SPY down 1.5% but our names holding relative strength. '
+        '$STRL green, $RCAT flat. Conviction showing."\n'
+        '2) "Russell 2000 outperforming S&P for the 3rd straight week. '
+        'Small caps leading is exactly what we want to see for our names."\n'
+        '3) "VIX below 15. Low volatility, steady grind higher. '
+        '$WCC quietly holding above entry. Boring is beautiful in this tape."\n'
+        '4) "Defense spending bill advancing. $LMT $RTX catching bids. '
+        'Our defense thesis getting catalysts. NFA."\n'
+        '5) "Portfolio outperforming S&P by 2.9% this week. '
+        'Small cap exposure paying off while big tech consolidates. The system works."'
+    ),
+    "THEME_CATALYST": (
+        '1) "AI Infrastructure keeps leading. $NVDA, $SMCI, $AVGO — institutional '
+        'accumulation across the board. Structural trend confirmed."\n'
+        '2) "Nuclear renaissance just got a catalyst. DOE funding announced — '
+        'our $OKLO position was ahead of this."'
+    ),
+    "THEME_LIST": (
+        '1) "If you missed Gold and Silver...\\n\\nThe Copper bull run might be next:\\n\\n'
+        '$TMQ at $6.21\\n$FCX at $60.41\\n$SCCO at $184.30\\n\\n'
+        'Probably want to save this post!"\n'
+        '2) "Defense theme is heating up:\\n\\n'
+        '$RCAT at $13.25 (+55%)\\n$KTOS at $28.40\\n$PLTR at $45.10\\n\\n'
+        'Institutional flows say this is just getting started."'
+    ),
+    "TRENDING_TAKE": (
+        '1) "Everyone talking about $NVDA earnings but nobody mentioning the power '
+        'infrastructure play behind it. Our thesis since Week 3."\n'
+        '2) "FinTwit buzzing about AI stocks. Here\'s what the scanner actually says '
+        'about the sector right now — and it\'s not what you\'d expect."'
+    ),
     "TECHNICAL_ANALYSIS": (
         '1) "$WCC holding above $281 entry. Watching $320 resistance for breakout '
         'continuation. Invalidated below $256. NFA"\n'
         '2) "$STRL cleared $400 resistance — Structural Pivot confirmed. '
         'Invalidation on close below $362 entry. NFA!"'
-    ),
-    "WATCHLIST": (
-        '1) "On my radar: $IONQ at $42.15. Theme alignment is there. '
-        'Waiting for momentum confirmation. NFA."\n'
-        '2) "Watching closely: $QBTS at $6.20. Need one more gate to clear. '
-        'Will update when it does."'
-    ),
-    "THEME_MOMENTUM": (
-        '1) "If you missed Gold and Silver...\\n\\nThe Copper bull run might be next:\\n\\n'
-        '$TMQ at $6.21\\n$FCX at $60.41\\n$SCCO at $184.30\\n\\n'
-        'Probably want to save this post!"\n'
-        '2) "AI Infrastructure keeps leading. $NVDA, $SMCI, $AVGO — institutional '
-        'accumulation across the board. Structural trend confirmed."'
-    ),
-    "NEWSLETTER_CTA": (
-        '1) "$RCAT from $8.50 to $13.25 (+55.9%). How we found it before the move — '
-        'full breakdown in the newsletter."\n'
-        '2) "1,800 stocks scanned. 5 gates. 2 survivors. '
-        'The full analysis drops every Saturday. Link in bio."'
     ),
     "EDUCATIONAL": (
         '1) "Position sizing 101: If a loss makes you emotional, you sized too big. '
@@ -161,23 +182,17 @@ LIVE_CATEGORY_EXAMPLES: Dict[str, str] = {
         "2) \"Why 5 gates? Because 'good stock' is subjective. "
         "Gates are binary. Removes emotion. That's the point.\""
     ),
+    "SUBSTACK_TEASER": (
+        '1) "$RCAT from $8.50 to $13.25 (+55.9%). How we found it before the move — '
+        'full breakdown in the newsletter."\n'
+        '2) "1,800 stocks scanned. 5 gates. 2 survivors. '
+        'The full analysis drops every Saturday. Link in bio."'
+    ),
     "ENGAGEMENT": (
         "1) \"What's your biggest trading lesson this year? "
         'Mine: stop arguing with the data."\n'
         '2) "Bad day? Happens to everyone. What matters is not letting '
         'a bad day become a bad week."'
-    ),
-    "MARKET_REACTION": (
-        '1) "SPY down 1.5% but our names holding relative strength. '
-        '$STRL green, $RCAT flat. That tells you something about conviction."\n'
-        '2) "Volatile day. VIX spiking. This is where discipline matters — '
-        'no panic sells, trust the system."'
-    ),
-    "DIP_OPPORTUNITY": (
-        '1) "Market pulling back hard. SPY -2%. But $RCAT holding its 20d MA — '
-        'relative strength in a weak tape. Watching closely."\n'
-        '2) "Sell the rip, buy the dip? Only if the structure is intact. '
-        '$WCC still above entry. NFA."'
     ),
 }
 
@@ -193,9 +208,10 @@ try:
     )
 except ImportError:
     CATEGORY_WEEKLY_TARGETS = {
-        "RECEIPT": 12, "SIGNAL_ALERT": 7, "MARKET_REACTION": 7,
-        "THEME_MOMENTUM": 5, "EDUCATIONAL": 3, "ENGAGEMENT": 5,
-        "NEWSLETTER_CTA": 2, "DIP_OPPORTUNITY": 4,
+        "RECEIPT": 7, "MARKET_COMMENTARY": 7, "SIGNAL_ALERT": 7,
+        "TRENDING_TAKE": 5, "THEME_CATALYST": 5, "ENGAGEMENT": 5,
+        "TECHNICAL_ANALYSIS": 5, "SUBSTACK_TEASER": 4, "THEME_LIST": 3,
+        "EDUCATIONAL": 3, "SELL_SIGNAL": 3,
     }
     MAX_SAME_CATEGORY_PER_DAY = 3
     QUEUE_DEDUP_HOURS = 48
@@ -230,6 +246,9 @@ class RecentTweetTracker:
         self.last_category_per_account: Dict[str, str] = {}
         self.recently_used_phrases: Set[str] = set()
         self._tweets_today_count = 0
+        self._recent_tweets = recent_tweets
+        self.last_p2_category: Optional[str] = None
+        self._last_p2_time = datetime.min.replace(tzinfo=ZoneInfo("UTC"))
 
         week_start = self._now_et - timedelta(days=7)
         dedup_cutoff = self._now_et - timedelta(hours=QUEUE_DEDUP_HOURS)
@@ -266,6 +285,12 @@ class RecentTweetTracker:
             if gen_et > week_start and status in ("pending", "posted"):
                 if category:
                     self.categories_this_week[category] = self.categories_this_week.get(category, 0) + 1
+
+            # Track most recent P2-level category for alternation
+            if category in ("RECEIPT", "MARKET_COMMENTARY") and status in ("pending", "posted"):
+                if gen_et > self._last_p2_time:
+                    self.last_p2_category = category
+                    self._last_p2_time = gen_et
 
             # Recent openings (last 48h, for dedup)
             if gen_et > dedup_cutoff and text:
@@ -334,6 +359,55 @@ class RecentTweetTracker:
         # This method is available for pre-generation checks
         return False
 
+    def _parse_time(self, tweet: Dict) -> Optional[datetime]:
+        """Parse generated_at from a tweet dict into ET-aware datetime."""
+        try:
+            gen = datetime.fromisoformat(tweet.get("generated_at", "2000-01-01"))
+            if gen.tzinfo is None:
+                gen = gen.replace(tzinfo=ZoneInfo("UTC"))
+            return gen.astimezone(ZoneInfo("America/New_York"))
+        except (ValueError, TypeError):
+            return None
+
+    def type_recently_used(self, tweet_type: str, hours: int = 4) -> bool:
+        """Check if tweet type was used within N hours."""
+        cutoff = self._now_et - timedelta(hours=hours)
+        for t in self._recent_tweets:
+            if t.get("status") not in ("pending", "posted", "failed"):
+                continue
+            if t.get("category") == tweet_type:
+                gen_et = self._parse_time(t)
+                if gen_et and gen_et > cutoff:
+                    return True
+        return False
+
+    def theme_recently_used(self, theme: str, hours: int = 6) -> bool:
+        """Check if theme was tweeted about within N hours."""
+        cutoff = self._now_et - timedelta(hours=hours)
+        theme_lower = theme.lower()
+        for t in self._recent_tweets:
+            if t.get("status") not in ("pending", "posted", "failed"):
+                continue
+            if theme_lower in t.get("text", "").lower():
+                gen_et = self._parse_time(t)
+                if gen_et and gen_et > cutoff:
+                    return True
+        return False
+
+    def ticker_recently_tweeted(self, ticker: str, hours: int = 3) -> bool:
+        """Check if ticker was tweeted about (any account) within N hours."""
+        ticker = ticker.lstrip("$")
+        cutoff = self._now_et - timedelta(hours=hours)
+        for t in self._recent_tweets:
+            if t.get("status") not in ("pending", "posted", "failed"):
+                continue
+            pt = (t.get("primary_ticker") or "").lstrip("$")
+            if pt == ticker:
+                gen_et = self._parse_time(t)
+                if gen_et and gen_et > cutoff:
+                    return True
+        return False
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DATA LOADING
@@ -393,8 +467,10 @@ def load_style_guide() -> str:
     )
 
 
-def build_allowed_tickers(portfolio: List[Dict], signals: dict) -> Set[str]:
-    """Build set of all valid tickers from portfolio + signals."""
+def build_allowed_tickers(
+    portfolio: List[Dict], signals: dict,
+) -> Set[str]:
+    """Build set of valid tickers from portfolio + signals (base set)."""
     tickers = set()
     for row in portfolio:
         t = row.get('ticker', '').upper()
@@ -411,141 +487,25 @@ def build_allowed_tickers(portfolio: List[Dict], signals: dict) -> Set[str]:
     return tickers
 
 
+def build_context_tickers(context: Optional[Dict] = None) -> Set[str]:
+    """Build set of tickers from context (theme_tickers from context gatherer).
+
+    These are external tickers not in portfolio/signals — allowed only for
+    EXTERNAL_TICKER_CATEGORIES (MARKET_COMMENTARY, THEME_LIST, TRENDING_TAKE).
+    """
+    tickers = set()
+    if context:
+        for theme_data in context.get("theme_tickers", []):
+            for t in theme_data.get("tickers", []):
+                sym = t.get("symbol", "").lstrip("$").upper()
+                if sym:
+                    tickers.add(sym)
+    return tickers
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # DECISION LOGIC (PRD Section 14)
 # ═══════════════════════════════════════════════════════════════════════════════
-
-def recently_tweeted(ticker: str, recent_tweets: List[Dict], hours: int = 3) -> bool:
-    """Check if ticker was tweeted about in last N hours."""
-    # Strip $ prefix if present
-    ticker = ticker.lstrip('$')
-    cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
-    for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted", "failed"):
-            continue
-        pt = (t.get("primary_ticker") or "").lstrip('$')
-        if pt == ticker:
-            try:
-                gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-                if gen.tzinfo is None:
-                    gen = gen.replace(tzinfo=ZoneInfo("UTC"))
-                if gen > cutoff:
-                    return True
-            except (ValueError, TypeError):
-                pass
-    return False
-
-
-def recently_tweeted_theme(theme: str, recent_tweets: List[Dict], hours: int = 6) -> bool:
-    """Check if theme was tweeted about in last N hours."""
-    cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
-    theme_lower = theme.lower()
-    for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted", "failed"):
-            continue
-        text_lower = t.get("text", "").lower()
-        if theme_lower in text_lower:
-            try:
-                gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-                if gen.tzinfo is None:
-                    gen = gen.replace(tzinfo=ZoneInfo("UTC"))
-                if gen > cutoff:
-                    return True
-            except (ValueError, TypeError):
-                pass
-    return False
-
-
-def recently_tweeted_type(tweet_type: str, recent_tweets: List[Dict], hours: int = 4) -> bool:
-    """Check if this tweet type was used in last N hours."""
-    cutoff = datetime.now(ZoneInfo("America/New_York")) - timedelta(hours=hours)
-    for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted", "failed"):
-            continue
-        if t.get("category") == tweet_type:
-            try:
-                gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-                if gen.tzinfo is None:
-                    gen = gen.replace(tzinfo=ZoneInfo("UTC"))
-                if gen > cutoff:
-                    return True
-            except (ValueError, TypeError):
-                pass
-    return False
-
-
-def count_tweets_today(recent_tweets: List[Dict]) -> int:
-    """Count tweets generated today."""
-    today = datetime.now(ZoneInfo("America/New_York")).date()
-    count = 0
-    for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted"):
-            continue
-        try:
-            gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-            if gen.date() == today:
-                count += 1
-        except (ValueError, TypeError):
-            pass
-    return count
-
-
-def count_ticker_today(ticker: str, recent_tweets: List[Dict]) -> int:
-    """Count how many times a ticker was tweeted today."""
-    ticker = ticker.lstrip('$')
-    today = datetime.now(ZoneInfo("America/New_York")).date()
-    count = 0
-    for t in recent_tweets:
-        if t.get("status") not in ("pending", "posted"):
-            continue
-        pt = (t.get("primary_ticker") or "").lstrip('$')
-        if pt == ticker:
-            try:
-                gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-                if gen.date() == today:
-                    count += 1
-            except (ValueError, TypeError):
-                pass
-    return count
-
-
-def _count_category_this_week(category: str, recent_tweets: List[Dict]) -> int:
-    """Count how many tweets of a given category were posted in the last 7 days."""
-    week_start = datetime.now(ZoneInfo("America/New_York")) - timedelta(days=7)
-    count = 0
-    for t in recent_tweets:
-        if t.get("category") != category:
-            continue
-        if t.get("status") not in ("pending", "posted"):
-            continue
-        try:
-            gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-            if gen.tzinfo is None:
-                gen = gen.replace(tzinfo=ZoneInfo("UTC"))
-            if gen > week_start:
-                count += 1
-        except (ValueError, TypeError):
-            pass
-    return count
-
-
-def should_post_newsletter_cta(recent_tweets: List[Dict], target_per_week: int = 2) -> bool:
-    """Check if newsletter CTA is due (2x/week)."""
-    week_start = datetime.now(ZoneInfo("America/New_York")) - timedelta(days=7)
-    ctas = 0
-    for t in recent_tweets:
-        if t.get("category") != "NEWSLETTER_CTA":
-            continue
-        try:
-            gen = datetime.fromisoformat(t.get("generated_at", "2000-01-01"))
-            if gen.tzinfo is None:
-                gen = gen.replace(tzinfo=ZoneInfo("UTC"))
-            if gen > week_start:
-                ctas += 1
-        except (ValueError, TypeError):
-            pass
-    return ctas < target_per_week
-
 
 def get_best_performing_tickers(portfolio: List[Dict], n: int = 1) -> List[str]:
     """Get the top N performing tickers from portfolio by P&L%.
@@ -628,37 +588,99 @@ def find_tickers_for_theme(theme: str, portfolio: List[Dict], signals: dict) -> 
     return [t for t in tickers if t][:3]
 
 
+def _find_best_persona(category: str, affinity: Dict[str, Dict]) -> str:
+    """Return the variant with strongest affinity for category.
+
+    Priority: primary > secondary > first variant as tiebreaker.
+    """
+    for variant in ACCOUNT_VARIANTS:
+        if category in affinity.get(variant, {}).get("primary", set()):
+            return variant
+    for variant in ACCOUNT_VARIANTS:
+        if category in affinity.get(variant, {}).get("secondary", set()):
+            return variant
+    return ACCOUNT_VARIANTS[0]
+
+
+def _pick_available_category(
+    primary: set, secondary: set, avoids: set,
+    tracker: Optional["RecentTweetTracker"] = None,
+    exclude: Optional[set] = None,
+) -> str:
+    """Pick the best available category from persona's pools.
+
+    Tries primary pool first, then secondary, skipping avoided
+    categories and any in the exclude set. Falls back to any
+    non-avoided valid category if pools are empty/exhausted.
+    """
+    exclude = exclude or set()
+
+    # Try primary pool first
+    for cat in sorted(primary):  # sorted for deterministic order
+        if cat in exclude or cat in avoids:
+            continue
+        if _is_category_over_budget(cat, tracker):
+            continue
+        return cat
+
+    # Then secondary
+    for cat in sorted(secondary):
+        if cat in exclude or cat in avoids:
+            continue
+        if _is_category_over_budget(cat, tracker):
+            continue
+        return cat
+
+    # Fallback: any valid category not avoided or excluded
+    for cat in sorted(LIVE_VALID_CATEGORIES):
+        if cat in exclude or cat in avoids:
+            continue
+        if _is_category_over_budget(cat, tracker):
+            continue
+        return cat
+
+    # Ultimate fallback
+    return "ENGAGEMENT"
+
+
 def _prepare_slot_data(
     decision: Dict, portfolio: List[Dict], signals: Dict,
     tracker: Optional["RecentTweetTracker"] = None,
 ) -> Dict[str, Dict]:
     """
-    Prepare per-account slot assignments with diversity-aware ticker selection.
+    Prepare per-account slot assignments with persona affinity routing.
+
+    The decision's category goes to the best-fit persona (via PERSONA_AFFINITY).
+    Other personas get different categories from their own primary/secondary pools.
+    Ticker selection uses diversity-aware rotation.
 
     Uses tracker to avoid:
     - Tickers already at daily limit
     - Same ticker on same account within MIN_HOURS_BETWEEN_SAME_TICKER
     - Same category consecutively on same account
 
-    When <3 unique tickers remain, switches that variant to a non-ticker
-    category (EDUCATIONAL/ENGAGEMENT) instead of reusing the same ticker.
+    When no ticker available for a ticker-requiring category, falls back to
+    a non-ticker category instead of reusing the same ticker.
 
     Returns:
         {
             "variant_1": {"ticker": "AAA", "category": "RECEIPT", "angle": "data-driven"},
             "variant_2": {"ticker": "BBB", "category": "EDUCATIONAL", "angle": "explains-why"},
-            "variant_3": {"ticker": "CCC", "category": "MARKET_REACTION", "angle": "punchy-direct"},
+            "variant_3": {"ticker": "CCC", "category": "MARKET_COMMENTARY", "angle": "punchy-direct"},
         }
     """
+    decision_cat = decision.get("type", "ENGAGEMENT")
+
+    # ── Step 1: Build ticker candidates (unchanged) ──────────────────────
     candidates = []
 
-    # 1. Decision tickers (highest priority) — filtered by tracker
+    # 1a. Decision tickers (highest priority) — filtered by tracker
     for t in decision.get("tickers", []):
         t = t.lstrip('$')
         if t and not (tracker and tracker.ticker_at_daily_limit(t)):
             candidates.append(t)
 
-    # 2. Portfolio winners via get_diverse_tickers (rotation-aware)
+    # 1b. Portfolio winners via get_diverse_tickers (rotation-aware)
     diverse = get_diverse_tickers(
         portfolio, n=8, tracker=tracker,
         exclude=set(candidates),
@@ -667,33 +689,56 @@ def _prepare_slot_data(
         if t not in candidates:
             candidates.append(t)
 
-    # 3. Fresh scanner buy_signals
+    # 1c. Fresh scanner buy_signals
     for sig in signals.get('buy_signals', []):
         sym = sig.get('symbol', '').upper()
         if sym and sym not in candidates:
             if not (tracker and tracker.ticker_at_daily_limit(sym)):
                 candidates.append(sym)
 
-    # Assign to 3 accounts — different tickers when possible
-    category = decision.get("type", "ENGAGEMENT")
-    angles = ["data-driven", "explains-why", "punchy-direct"]
-    # Alternate categories for persona variety
-    angle_categories = {
-        "data-driven": category,
-        "explains-why": "EDUCATIONAL" if category not in ("EDUCATIONAL", "ENGAGEMENT") else category,
-        "punchy-direct": category,
+    # ── Step 2: Assign decision category to best-fit persona ─────────────
+    best_persona = _find_best_persona(decision_cat, PERSONA_AFFINITY)
+
+    # ── Step 3: Assign categories for all variants ───────────────────────
+    assigned_categories: Dict[str, str] = {}
+    assigned_categories[best_persona] = decision_cat
+
+    for variant in ACCOUNT_VARIANTS:
+        if variant == best_persona:
+            continue
+        affinity = PERSONA_AFFINITY.get(variant, {})
+        alt_cat = _pick_available_category(
+            primary=affinity.get("primary", set()),
+            secondary=affinity.get("secondary", set()),
+            avoids=affinity.get("avoids", set()),
+            tracker=tracker,
+            exclude=set(assigned_categories.values()),
+        )
+        assigned_categories[variant] = alt_cat
+
+    # ── Step 4: Assign tickers per variant ───────────────────────────────
+    angles = {
+        "variant_1": "data-driven",
+        "variant_2": "explains-why",
+        "variant_3": "punchy-direct",
+    }
+    # Categories that need a specific ticker to be meaningful
+    ticker_requiring_cats = {
+        "RECEIPT", "SIGNAL_ALERT", "SELL_SIGNAL",
+        "TECHNICAL_ANALYSIS", "THEME_CATALYST",
     }
 
     slot_data = {}
-    used_tickers = set()
+    used_tickers: Set[str] = set()
 
-    for i, variant in enumerate(ACCOUNT_VARIANTS):
+    for variant in ACCOUNT_VARIANTS:
+        cat = assigned_categories[variant]
+
         # Find next unused ticker, also checking per-account recency
         ticker = ""
         for c in candidates:
             if c in used_tickers:
                 continue
-            # Per-account recency check
             if tracker and tracker.ticker_recent_for_account(
                 c, variant, hours=MIN_HOURS_BETWEEN_SAME_TICKER
             ):
@@ -702,33 +747,23 @@ def _prepare_slot_data(
             used_tickers.add(c)
             break
 
-        angle = angles[i]
-
-        if not ticker:
-            # No unique ticker available — switch to non-ticker category
-            # instead of reusing (prevents identical tweets across accounts)
+        # No-ticker fallback: switch to non-ticker category
+        if not ticker and cat in ticker_requiring_cats:
             non_ticker_cats = ["EDUCATIONAL", "ENGAGEMENT"]
-            fallback_cat = non_ticker_cats[i % len(non_ticker_cats)]
-            slot_data[variant] = {
-                "ticker": "",
-                "category": fallback_cat,
-                "angle": angle,
-            }
-        else:
-            # Check if same category as last tweet for this account
-            acct_cat = angle_categories.get(angle, category)
-            if tracker and tracker.last_category_per_account.get(variant) == acct_cat:
-                # Rotate to a different category
-                alt_cats = [c for c in LIVE_VALID_CATEGORIES
-                            if c != acct_cat and not (tracker and tracker.category_at_daily_limit(c))]
-                if alt_cats:
-                    acct_cat = alt_cats[i % len(alt_cats)]
+            cat = non_ticker_cats[ACCOUNT_VARIANTS.index(variant) % len(non_ticker_cats)]
 
-            slot_data[variant] = {
-                "ticker": ticker,
-                "category": acct_cat,
-                "angle": angle,
-            }
+        # Same-category-consecutively check
+        if tracker and tracker.last_category_per_account.get(variant) == cat:
+            alt_cats = [c for c in sorted(LIVE_VALID_CATEGORIES)
+                        if c != cat and not _is_category_over_budget(c, tracker)]
+            if alt_cats:
+                cat = alt_cats[ACCOUNT_VARIANTS.index(variant) % len(alt_cats)]
+
+        slot_data[variant] = {
+            "ticker": ticker,
+            "category": cat,
+            "angle": angles[variant],
+        }
 
     return slot_data
 
@@ -759,6 +794,86 @@ def _get_time_context() -> str:
     return ""
 
 
+def _notable_market_condition(context: Dict) -> bool:
+    """Check if market conditions warrant a MARKET_COMMENTARY tweet.
+
+    Fires on positive AND negative conditions (key change from old system).
+    """
+    market = context.get("market_snapshot", {})
+    mood = market.get("market_mood", "quiet")
+
+    # Any non-quiet mood
+    if mood in ("volatile", "bearish", "bullish", "mixed"):
+        return True
+
+    # SPY or QQQ move > ±1%
+    for key in ("spy_move", "qqq_move"):
+        move_str = str(market.get(key, "0")).replace("%", "").replace("+", "")
+        try:
+            if abs(float(move_str)) >= 1.0:
+                return True
+        except (ValueError, TypeError):
+            pass
+
+    # VIX extreme
+    try:
+        vix = float(str(market.get("vix", "17")).replace("%", ""))
+        if vix > 20 or vix < 13:
+            return True
+    except (ValueError, TypeError):
+        pass
+
+    # High-impact news events
+    for event in context.get("news_events", []):
+        if event.get("impact") == "high" or event.get("relevance") == "high":
+            return True
+
+    return False
+
+
+def _fintwit_overlaps_themes(context: Dict) -> Optional[Dict]:
+    """Check if FinTwit trending topics overlap with tracked themes.
+
+    Returns first overlap found, or None.
+    """
+    overlaps = context.get("fintwit_theme_overlaps", [])
+    if overlaps:
+        return overlaps[0]
+    return None
+
+
+def _theme_has_external_tickers(context: Dict, min_count: int = 5) -> Optional[Dict]:
+    """Check if any active theme has enough external tickers for a THEME_LIST."""
+    for td in context.get("theme_tickers", []):
+        if len(td.get("tickers", [])) >= min_count:
+            return td
+    return None
+
+
+def _is_post_day() -> bool:
+    """Check if today is a Substack post day."""
+    day = datetime.now(ZoneInfo("America/New_York")).strftime("%A")
+    return day in ("Tuesday", "Wednesday", "Thursday", "Saturday")
+
+
+def _get_today_post_topic() -> Optional[str]:
+    """Read today's post topic from daily_context.md."""
+    try:
+        from config.output_paths import DAILY_CONTEXT_FILE
+        context_path = DAILY_CONTEXT_FILE
+    except ImportError:
+        context_path = Path("substack/output/current/daily_context.md")
+
+    if not context_path.exists():
+        return None
+    try:
+        content = context_path.read_text(encoding="utf-8")
+        match = re.search(r"\*\*Topic:\*\*\s*(.+)", content)
+        return match.group(1).strip() if match else None
+    except (OSError, UnicodeDecodeError):
+        return None
+
+
 def decide_tweet_type(
     context: Dict, portfolio: List[Dict], signals: Dict, recent_tweets: List[Dict],
     tracker: Optional["RecentTweetTracker"] = None,
@@ -766,294 +881,312 @@ def decide_tweet_type(
     """
     Decide what type of tweet to post based on current market conditions.
 
-    With tracker, enforces category balance — if a chosen type is over budget,
-    falls through to next priority level.
+    7-priority cascade (Phase 4): P0 SELL_SIGNAL → P1 SIGNAL_ALERT →
+    P2 RECEIPT / MARKET_COMMENTARY → P3 THEME_CATALYST / TRENDING_TAKE →
+    P4 THEME_LIST / SUBSTACK_TEASER → P5 TECHNICAL_ANALYSIS / EDUCATIONAL →
+    P6 ENGAGEMENT → SKIP.
+
+    Budget-gated at every level — if over budget, falls through to next.
+    No filler, no cadence fallbacks. SKIP when all budgets exhausted.
 
     Returns: {"action": "tweet"|"skip", "type": str, "reason": str, "tickers": list, "urgency": str}
     """
     market = context.get("market_snapshot", {})
     movers = context.get("portfolio_movers", [])
     themes = context.get("theme_activity", [])
-    opportunities = context.get("tweet_opportunities", [])
-    is_weekend = datetime.now(ZoneInfo("America/New_York")).weekday() >= 5
+    now_et = datetime.now(ZoneInfo("America/New_York"))
+    is_weekend = now_et.weekday() >= 5
 
     # Check daily tweet count
-    tweets_today = tracker.tweets_today if tracker else count_tweets_today(recent_tweets)
+    tweets_today = tracker.tweets_today if tracker else 0
     max_today = WEEKEND_MAX_TWEETS if is_weekend else MAX_TWEETS_PER_DAY
     if tweets_today >= max_today:
         return {"action": "skip", "reason": f"Daily cap reached ({tweets_today}/{max_today})"}
-
-    now_et = datetime.now(ZoneInfo("America/New_York"))
 
     # ── P0: Sell/exit signals (ALWAYS highest priority) ────────────────────
     if not _is_category_over_budget("SELL_SIGNAL", tracker):
         for sig in signals.get("sell_signals", []):
             ticker = sig.get("symbol", "").upper()
-            if ticker and not recently_tweeted(ticker, recent_tweets, hours=12):
-                if not (tracker and tracker.ticker_at_daily_limit(ticker)):
-                    return {
-                        "action": "tweet",
-                        "type": "SELL_SIGNAL",
-                        "reason": f"Exit signal: ${ticker} — {sig.get('reason', '')}",
-                        "tickers": [ticker],
-                        "urgency": "high",
-                    }
-
-    # ── P1: Fresh scanner signals (< 72h old PASS/buy signals) ─────────────
-    # Extended from 48h to cover Sunday PM for Friday scans
-    signal_timestamp = signals.get("timestamp", "")
-    if signal_timestamp and not _is_category_over_budget("SIGNAL_ALERT", tracker):
-        try:
-            signal_time = datetime.strptime(signal_timestamp, "%Y-%m-%d %H:%M:%S")
-            signal_time = signal_time.replace(tzinfo=ZoneInfo("America/New_York"))
-            hours_since_scan = (now_et - signal_time).total_seconds() / 3600
-        except (ValueError, TypeError):
-            hours_since_scan = 999
-
-        if hours_since_scan < 72:
-            for sig in signals.get("buy_signals", []):
-                ticker = sig.get("symbol", "").upper()
-                if ticker and not recently_tweeted(ticker, recent_tweets, hours=6):
-                    if tracker and tracker.ticker_at_daily_limit(ticker):
-                        continue
-                    is_sunday_pm = now_et.weekday() == 6 and now_et.hour >= 15
-                    return {
-                        "action": "tweet",
-                        "type": "SIGNAL_ALERT",
-                        "reason": f"Fresh scanner signal: ${ticker} (scan {hours_since_scan:.0f}h ago)",
-                        "tickers": [ticker],
-                        "urgency": "high" if is_sunday_pm else "medium",
-                    }
-
-    # ── P2: Portfolio movers — positive (RECEIPT) ──────────────────────────
-    for mover in movers:
-        try:
-            move_str = str(mover.get("move", "0")).replace("%", "").replace("+", "")
-            pct = float(move_str)
-        except (ValueError, TypeError):
-            continue
-        if pct < 2.0:
-            continue
-        ticker = mover.get("ticker", "").lstrip('$')
-        if not ticker or recently_tweeted(ticker, recent_tweets, hours=MIN_HOURS_BETWEEN_SAME_TICKER):
-            continue
-        if tracker and tracker.ticker_at_daily_limit(ticker):
-            continue
-        if _is_category_over_budget("RECEIPT", tracker):
-            continue
-        return {
-            "action": "tweet",
-            "type": "RECEIPT",
-            "reason": f"${ticker} moving {mover.get('move', '?')}: {mover.get('context', '')}",
-            "tickers": [ticker],
-            "urgency": "high",
-        }
-
-    # ── P3: Market reaction — negative movers / volatile mood ──────────────
-    if not is_weekend:
-        # Check negative movers first
-        for mover in movers:
-            try:
-                move_str = str(mover.get("move", "0")).replace("%", "").replace("+", "")
-                pct = float(move_str)
-            except (ValueError, TypeError):
+            if not ticker:
                 continue
-            if pct > -2.0:
-                continue
-            ticker = mover.get("ticker", "").lstrip('$')
-            if not ticker or recently_tweeted(ticker, recent_tweets, hours=MIN_HOURS_BETWEEN_SAME_TICKER):
+            if tracker and tracker.ticker_recently_tweeted(ticker, hours=12):
                 continue
             if tracker and tracker.ticker_at_daily_limit(ticker):
                 continue
-            tweet_type = "DIP_OPPORTUNITY" if pct < -3 else "MARKET_REACTION"
-            if _is_category_over_budget(tweet_type, tracker):
-                continue
             return {
                 "action": "tweet",
-                "type": tweet_type,
-                "reason": f"${ticker} moving {mover.get('move', '?')}: {mover.get('context', '')}",
+                "type": "SELL_SIGNAL",
+                "reason": f"Exit signal: ${ticker} — {sig.get('reason', '')}",
                 "tickers": [ticker],
                 "urgency": "high",
             }
 
-        # Market mood commentary (volatile/bearish)
-        mood = market.get("market_mood", "quiet")
-        if (mood in ("volatile", "bearish")
-                and not recently_tweeted_type("MARKET_REACTION", recent_tweets, hours=4)
-                and not _is_category_over_budget("MARKET_REACTION", tracker)):
-            return {
-                "action": "tweet",
-                "type": "MARKET_REACTION",
-                "reason": f"Market mood: {mood} — {market.get('headline', '')}",
-                "tickers": [m.get("ticker", "").lstrip('$') for m in movers[:2] if m.get("ticker")],
-                "urgency": "medium",
-            }
+    # ── P1: Fresh scanner signals (buy + consider) ─────────────────────────
+    if not _is_category_over_budget("SIGNAL_ALERT", tracker):
+        # P1a: Fresh buy signals (< 72h old)
+        signal_timestamp = signals.get("timestamp", "")
+        hours_since_scan = 999
+        if signal_timestamp:
+            try:
+                signal_time = datetime.strptime(signal_timestamp, "%Y-%m-%d %H:%M:%S")
+                signal_time = signal_time.replace(tzinfo=ZoneInfo("America/New_York"))
+                hours_since_scan = (now_et - signal_time).total_seconds() / 3600
+            except (ValueError, TypeError):
+                pass
 
-    # ── P4: Theme breakout ─────────────────────────────────────────────────
-    if not _is_category_over_budget("THEME_MOMENTUM", tracker):
-        active_themes = [t for t in themes if t.get("status") == "breaking"]
-        for theme in active_themes:
-            if not recently_tweeted_theme(theme["theme"], recent_tweets, hours=6):
+        if hours_since_scan < 72:
+            for sig in signals.get("buy_signals", []):
+                ticker = sig.get("symbol", "").upper()
+                if not ticker:
+                    continue
+                if tracker and tracker.ticker_recently_tweeted(ticker, hours=6):
+                    continue
+                if tracker and tracker.ticker_at_daily_limit(ticker):
+                    continue
+                is_sunday_pm = now_et.weekday() == 6 and now_et.hour >= 15
                 return {
                     "action": "tweet",
-                    "type": "THEME_MOMENTUM",
-                    "reason": f"{theme['theme']} breaking: {theme.get('detail', '')}",
-                    "tickers": find_tickers_for_theme(theme["theme"], portfolio, signals),
+                    "type": "SIGNAL_ALERT",
+                    "reason": f"Fresh scanner signal: ${ticker} (scan {hours_since_scan:.0f}h ago)",
+                    "tickers": [ticker],
+                    "urgency": "high" if is_sunday_pm else "medium",
+                }
+
+        # P1b: CONSIDER signals (watching sub-type, 12h cooldown)
+        for sig in signals.get("consider_signals", []):
+            ticker = sig.get("symbol", "").upper()
+            if not ticker:
+                continue
+            if tracker and tracker.ticker_recently_tweeted(ticker, hours=12):
+                continue
+            if tracker and tracker.ticker_at_daily_limit(ticker):
+                continue
+            return {
+                "action": "tweet",
+                "type": "SIGNAL_ALERT",
+                "sub_type": "watching",
+                "reason": f"Consider signal: ${ticker}",
+                "tickers": [ticker],
+                "urgency": "low",
+            }
+
+    # ── P2: RECEIPT alternating with MARKET_COMMENTARY ─────────────────────
+    last_p2 = tracker.last_p2_category if tracker else None
+
+    # Determine try order: alternate away from last used
+    if last_p2 == "RECEIPT":
+        p2_order = ["MARKET_COMMENTARY", "RECEIPT"]
+    elif last_p2 == "MARKET_COMMENTARY":
+        p2_order = ["RECEIPT", "MARKET_COMMENTARY"]
+    else:
+        # No P2 history — try RECEIPT first (concrete > abstract)
+        p2_order = ["RECEIPT", "MARKET_COMMENTARY"]
+
+    for p2_type in p2_order:
+        if _is_category_over_budget(p2_type, tracker):
+            continue
+
+        if p2_type == "RECEIPT":
+            # Single mover receipt (>=2% move)
+            for mover in movers:
+                try:
+                    move_str = str(mover.get("move", "0")).replace("%", "").replace("+", "")
+                    pct = float(move_str)
+                except (ValueError, TypeError):
+                    continue
+                if pct < 2.0:
+                    continue
+                ticker = mover.get("ticker", "").lstrip("$")
+                if not ticker:
+                    continue
+                if tracker and tracker.ticker_recently_tweeted(ticker, hours=MIN_HOURS_BETWEEN_SAME_TICKER):
+                    continue
+                if tracker and tracker.ticker_at_daily_limit(ticker):
+                    continue
+                return {
+                    "action": "tweet",
+                    "type": "RECEIPT",
+                    "reason": f"${ticker} moving {mover.get('move', '?')}: {mover.get('context', '')}",
+                    "tickers": [ticker],
                     "urgency": "high",
                 }
 
-    # ── P5: Position commentary — catalysts/tailwinds on held positions ────
-    if (not is_weekend
-            and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker)
-            and not recently_tweeted_type("TECHNICAL_ANALYSIS", recent_tweets, hours=4)):
-        commentary_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker)
-        if commentary_tickers:
-            ticker = commentary_tickers[0]
-            sig_data = next(
-                (s for s in signals.get("buy_signals", [])
-                 if s.get("symbol", "").upper() == ticker),
-                {},
-            )
-            catalyst = sig_data.get("catalyst_summary", "")
-            bullish = sig_data.get("bullish_factors", [])
-            return {
-                "action": "tweet",
-                "type": "TECHNICAL_ANALYSIS",
-                "reason": f"Position commentary: ${ticker} — {catalyst or 'catalyst/tailwind check'}",
-                "tickers": [ticker],
-                "urgency": "low",
-                "catalyst": catalyst,
-                "bullish_factors": bullish,
-            }
-
-    # ── P6: Watchlist — CONSIDER signals from scan ─────────────────────────
-    if not _is_category_over_budget("WATCHLIST", tracker):
-        for sig in signals.get("consider_signals", []):
-            ticker = sig.get("symbol", "").upper()
-            if ticker and not recently_tweeted(ticker, recent_tweets, hours=12):
-                if not (tracker and tracker.ticker_at_daily_limit(ticker)):
+            # Multi-receipt: 3+ winners > 5%, no RECEIPT in 24h
+            winners = [
+                r for r in portfolio
+                if float(r.get("entry_price", 0) or 0) > 0
+                and float(r.get("highest_close", 0) or 0)
+                > float(r.get("entry_price", 0) or 1) * 1.05
+            ]
+            if len(winners) >= 3:
+                recently_had_receipt = (
+                    tracker.type_recently_used("RECEIPT", hours=24) if tracker else False
+                )
+                if not recently_had_receipt:
+                    top_tickers = [
+                        w["ticker"]
+                        for w in sorted(
+                            winners,
+                            key=lambda x: float(x.get("highest_close", 0) or 0)
+                            / max(float(x.get("entry_price", 0) or 1), 0.01),
+                            reverse=True,
+                        )[:5]
+                    ]
                     return {
                         "action": "tweet",
-                        "type": "WATCHLIST",
-                        "reason": f"Consider signal: ${ticker}",
-                        "tickers": [ticker],
+                        "type": "RECEIPT",
+                        "reason": "Multi-ticker portfolio receipt — showcase winners",
+                        "tickers": top_tickers,
                         "urgency": "low",
+                        "multi_receipt": True,
+                        "thread": True,
                     }
 
-    # ── P7: Grok-identified opportunities ──────────────────────────────────
-    urgency_rank = {"high": 0, "medium": 1, "low": 2}
-    for opp in sorted(opportunities, key=lambda x: urgency_rank.get(x.get("urgency", "low"), 3)):
-        if opp.get("urgency") in ("high", "medium"):
-            opp_type = opp.get("type", "MARKET_REACTION")
-            if not _is_category_over_budget(opp_type, tracker):
+        elif p2_type == "MARKET_COMMENTARY":
+            if not _notable_market_condition(context):
+                continue
+            if tracker and tracker.type_recently_used("MARKET_COMMENTARY", hours=4):
+                continue
+            mood = market.get("market_mood", "quiet")
+            headline = market.get("headline", "")
+            mover_tickers = [
+                m.get("ticker", "").lstrip("$") for m in movers[:2] if m.get("ticker")
+            ]
+            return {
+                "action": "tweet",
+                "type": "MARKET_COMMENTARY",
+                "reason": f"Market mood: {mood} — {headline}",
+                "tickers": mover_tickers,
+                "urgency": "medium",
+            }
+
+    # ── P3: THEME_CATALYST or TRENDING_TAKE ────────────────────────────────
+    # P3a: Breaking themes → THEME_CATALYST
+    if not _is_category_over_budget("THEME_CATALYST", tracker):
+        active_themes = [t for t in themes if t.get("status") == "breaking"]
+        for theme in active_themes:
+            theme_name = theme.get("theme", "")
+            if not theme_name:
+                continue
+            if tracker and tracker.theme_recently_used(theme_name, hours=6):
+                continue
+            return {
+                "action": "tweet",
+                "type": "THEME_CATALYST",
+                "reason": f"{theme_name} breaking: {theme.get('detail', '')}",
+                "tickers": find_tickers_for_theme(theme_name, portfolio, signals),
+                "urgency": "high",
+            }
+
+    # P3b: FinTwit overlap → TRENDING_TAKE
+    if not _is_category_over_budget("TRENDING_TAKE", tracker):
+        overlap = _fintwit_overlaps_themes(context)
+        if overlap:
+            overlap_theme = overlap.get("theme", "")
+            if not (tracker and tracker.theme_recently_used(overlap_theme, hours=6)):
+                overlap_tickers = [
+                    t.get("symbol", "").lstrip("$")
+                    for t in overlap.get("tickers", [])
+                    if t.get("symbol")
+                ][:3]
+                if not overlap_tickers:
+                    overlap_tickers = find_tickers_for_theme(
+                        overlap_theme, portfolio, signals
+                    )
                 return {
                     "action": "tweet",
-                    "type": opp_type,
-                    "reason": opp.get("reason", "Grok-identified opportunity"),
-                    "tickers": opp.get("tickers", []),
-                    "urgency": opp.get("urgency", "medium"),
+                    "type": "TRENDING_TAKE",
+                    "reason": f"FinTwit overlap: {overlap_theme} — {overlap.get('detail', '')}",
+                    "tickers": overlap_tickers,
+                    "urgency": "medium",
                 }
 
-    # ── P8: Newsletter CTA (2x/week) ──────────────────────────────────────
-    if should_post_newsletter_cta(recent_tweets) and not _is_category_over_budget("NEWSLETTER_CTA", tracker):
-        return {
-            "action": "tweet",
-            "type": "NEWSLETTER_CTA",
-            "reason": "Scheduled newsletter CTA",
-            "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker),
-            "urgency": "low",
-        }
+    # ── P4: THEME_LIST or SUBSTACK_TEASER ──────────────────────────────────
+    # P4a: Theme with 5+ external tickers → THEME_LIST
+    if not _is_category_over_budget("THEME_LIST", tracker):
+        theme_data = _theme_has_external_tickers(context, min_count=5)
+        if theme_data:
+            theme_name = theme_data.get("theme", "")
+            if not (tracker and tracker.theme_recently_used(theme_name, hours=6)):
+                ext_tickers = [
+                    t.get("symbol", "").lstrip("$")
+                    for t in theme_data.get("tickers", [])
+                    if t.get("symbol")
+                ][:5]
+                return {
+                    "action": "tweet",
+                    "type": "THEME_LIST",
+                    "reason": f"Theme list: {theme_name} — {len(theme_data.get('tickers', []))} names in play",
+                    "tickers": ext_tickers,
+                    "urgency": "low",
+                    "thread": True,
+                }
 
-    # ── P9: Multi-ticker portfolio receipt ─────────────────────────────────
-    winners = [
-        r for r in portfolio
-        if float(r.get('entry_price', 0) or 0) > 0
-        and float(r.get('highest_close', 0) or 0) > float(r.get('entry_price', 0) or 1) * 1.05
-    ]
-    if (len(winners) >= 3
-            and not recently_tweeted_type("RECEIPT", recent_tweets, hours=24)
-            and not _is_category_over_budget("RECEIPT", tracker)):
-        top_tickers = [
-            w['ticker'] for w in sorted(
-                winners,
-                key=lambda x: float(x.get('highest_close', 0) or 0) / max(float(x.get('entry_price', 0) or 1), 0.01),
-                reverse=True,
-            )[:5]
-        ]
-        return {
-            "action": "tweet",
-            "type": "RECEIPT",
-            "reason": "Multi-ticker portfolio receipt — showcase winners",
-            "tickers": top_tickers,
-            "urgency": "low",
-            "multi_receipt": True,
-        }
+    # P4b: Substack teaser on post days
+    if not _is_category_over_budget("SUBSTACK_TEASER", tracker):
+        if _is_post_day():
+            topic = _get_today_post_topic()
+            reason = f"Substack teaser — today's post: {topic}" if topic else "Scheduled Substack teaser"
+            return {
+                "action": "tweet",
+                "type": "SUBSTACK_TEASER",
+                "reason": reason,
+                "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker),
+                "urgency": "low",
+                "post_topic": topic,
+            }
 
-    # ── P10: Filler (quiet days — weekday or weekend) ──────────────────────
-    if tweets_today < 4:
-        if is_weekend:
-            safe_cats = sorted(WEEKEND_CATEGORIES & {"EDUCATIONAL", "ENGAGEMENT", "RECEIPT", "WATCHLIST"})
-            filler_type = next(
-                (c for c in safe_cats if not _is_category_over_budget(c, tracker)),
-                safe_cats[0] if safe_cats else "ENGAGEMENT",
-            )
-        else:
-            filler_type = next(
-                (c for c in ["TECHNICAL_ANALYSIS", "EDUCATIONAL", "ENGAGEMENT"]
-                 if not _is_category_over_budget(c, tracker)),
-                "ENGAGEMENT",
-            )
-        return {
-            "action": "tweet",
-            "type": filler_type,
-            "reason": "Quiet market — filler content with live context",
-            "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker),
-            "urgency": "low",
-        }
+    # ── P5: TECHNICAL_ANALYSIS or EDUCATIONAL ──────────────────────────────
+    # P5a: Position commentary
+    if not is_weekend and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker):
+        if not (tracker and tracker.type_recently_used("TECHNICAL_ANALYSIS", hours=4)):
+            commentary_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker)
+            if commentary_tickers:
+                ticker = commentary_tickers[0]
+                sig_data = next(
+                    (
+                        s
+                        for s in signals.get("buy_signals", [])
+                        if s.get("symbol", "").upper() == ticker
+                    ),
+                    {},
+                )
+                catalyst = sig_data.get("catalyst_summary", "")
+                bullish = sig_data.get("bullish_factors", [])
+                return {
+                    "action": "tweet",
+                    "type": "TECHNICAL_ANALYSIS",
+                    "reason": f"Position commentary: ${ticker} — {catalyst or 'catalyst/tailwind check'}",
+                    "tickers": [ticker],
+                    "urgency": "low",
+                    "catalyst": catalyst,
+                    "bullish_factors": bullish,
+                }
 
-    # ── Minimum daily cadence fallback ──────────────────────────────────────
-    diverse_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker)
+    # P5b: Educational content
+    if not _is_category_over_budget("EDUCATIONAL", tracker):
+        if not (tracker and tracker.type_recently_used("EDUCATIONAL", hours=6)):
+            return {
+                "action": "tweet",
+                "type": "EDUCATIONAL",
+                "reason": "Educational content — methodology / trading lessons",
+                "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker) or [],
+                "urgency": "low",
+            }
 
-    if diverse_tickers and not recently_tweeted_type("RECEIPT", recent_tweets, hours=8) and not _is_category_over_budget("RECEIPT", tracker):
-        return {
-            "action": "tweet",
-            "type": "RECEIPT",
-            "reason": "Cadence fallback — showcase winning position",
-            "tickers": diverse_tickers,
-            "urgency": "low",
-        }
+    # ── P6: ENGAGEMENT ─────────────────────────────────────────────────────
+    if not _is_category_over_budget("ENGAGEMENT", tracker):
+        if not (tracker and tracker.type_recently_used("ENGAGEMENT", hours=6)):
+            return {
+                "action": "tweet",
+                "type": "ENGAGEMENT",
+                "reason": "Community engagement content",
+                "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker) or [],
+                "urgency": "low",
+            }
 
-    if (not recently_tweeted_type("TECHNICAL_ANALYSIS", recent_tweets, hours=6)
-            and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker)):
-        return {
-            "action": "tweet",
-            "type": "TECHNICAL_ANALYSIS",
-            "reason": "Cadence fallback — position commentary",
-            "tickers": diverse_tickers or [],
-            "urgency": "low",
-        }
-
-    if (_count_category_this_week("EDUCATIONAL", recent_tweets) < 3
-            and not recently_tweeted_type("EDUCATIONAL", recent_tweets, hours=6)
-            and not _is_category_over_budget("EDUCATIONAL", tracker)):
-        return {
-            "action": "tweet",
-            "type": "EDUCATIONAL",
-            "reason": "Cadence fallback — educational content",
-            "tickers": diverse_tickers or [],
-            "urgency": "low",
-        }
-
-    if not recently_tweeted_type("ENGAGEMENT", recent_tweets, hours=6):
-        return {
-            "action": "tweet",
-            "type": "ENGAGEMENT",
-            "reason": "Cadence fallback — engagement content",
-            "tickers": diverse_tickers or [],
-            "urgency": "low",
-        }
-
-    return {"action": "skip", "reason": "No tweetable events and all cadence fallbacks exhausted"}
+    # ── SKIP: All budgets exhausted ────────────────────────────────────────
+    return {"action": "skip", "reason": "All category budgets exhausted"}
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1063,6 +1196,7 @@ def decide_tweet_type(
 def build_system_prompt(
     style_guide: str, slot_assignments: Optional[Dict[str, Dict]] = None,
     tracker: Optional["RecentTweetTracker"] = None,
+    is_thread: bool = False,
 ) -> str:
     """Build the Sonnet system prompt for tweet generation.
 
@@ -1149,9 +1283,9 @@ Generate exactly 3 tweet variants for the same moment. Each variant must:
 FORMATTING RULES:
 - Return ONLY valid JSON — no markdown, no commentary
 - Format: {{"tweets": [{{"text": "...", "category": "...", "primary_ticker": "...", "chart_recommended": true/false, "account": "variant_1|variant_2|variant_3"}}, ...]}}
-- Categories: MARKET_REACTION, RECEIPT, SIGNAL_ALERT, DIP_OPPORTUNITY, THEME_MOMENTUM, ENGAGEMENT, EDUCATIONAL, NEWSLETTER_CTA, SELL_SIGNAL, TECHNICAL_ANALYSIS, WATCHLIST
+- Categories: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT, MARKET_COMMENTARY, THEME_CATALYST, THEME_LIST, TRENDING_TAKE, TECHNICAL_ANALYSIS, EDUCATIONAL, SUBSTACK_TEASER, ENGAGEMENT
 - chart_recommended: true if tweet references a specific ticker with price action
-
+{"- For THREAD format: Use thread_tweets array with is_thread: true. Each tweet in thread must be <=280 chars independently. Hook first, data second, CTA third." if is_thread else ""}
 ABSOLUTE BANS (NEVER use these terms):
 {banned_sample}
 
@@ -1167,8 +1301,76 @@ ADDITIONAL RULES:
 - Keep "NFA" to <=1 of the 3 variants
 - SELL_SIGNAL tweets: Frame as "setup invalidated" or "win more than you lose". Never show loss amounts.
 - TECHNICAL_ANALYSIS tweets: Comment on position with price levels, catalysts, or tailwinds. Include invalidation level.
-- WATCHLIST tweets: Frame as "on my radar" or "watching closely". Waiting for confirmation.
+- SIGNAL_ALERT (watching sub-type): Frame as "on my radar" or "watching closely". Waiting for confirmation.
 - Output ONLY the JSON — no explanations"""
+
+
+def _build_thread_prompt_section(decision: Dict) -> str:
+    """Build thread-specific prompt instructions when decision has thread=True.
+
+    Returns thread format block for THEME_LIST or multi-RECEIPT threads.
+    Returns empty string for non-thread decisions.
+    """
+    if not decision.get("thread"):
+        return ""
+
+    decision_type = decision.get("type", "")
+
+    if decision_type == "THEME_LIST":
+        return (
+            '\nTHREAD FORMAT (CRITICAL — this is a 2-3 tweet THREAD, not a single tweet):\n'
+            'Generate a thread with 2-3 tweets. Each tweet MUST be <=280 characters independently.\n\n'
+            'Thread structure for THEME_LIST:\n'
+            '- Tweet 1 (hook): Opening line about the theme — compelling, no tickers needed\n'
+            '- Tweet 2 (data): Ticker list with current prices, one per line ($TICKER at $XX.XX)\n'
+            '- Tweet 3 (connection): Portfolio position in this theme + CTA (save this, link in bio)\n\n'
+            'Output format — use "thread_tweets" array with "is_thread": true:\n'
+            '{\n'
+            '  "tweets": [\n'
+            '    {\n'
+            '      "thread_tweets": [\n'
+            '        {"text": "Hook tweet (1/3)", "number": 1},\n'
+            '        {"text": "$TICK1 at $XX\\n$TICK2 at $YY\\n$TICK3 at $ZZ (2/3)", "number": 2},\n'
+            '        {"text": "Portfolio connection + CTA (3/3)", "number": 3}\n'
+            '      ],\n'
+            '      "category": "THEME_LIST",\n'
+            '      "primary_ticker": "TICK1",\n'
+            '      "chart_recommended": false,\n'
+            '      "account": "variant_X",\n'
+            '      "is_thread": true\n'
+            '    }\n'
+            '  ]\n'
+            '}'
+        )
+
+    elif decision_type == "RECEIPT" and decision.get("multi_receipt"):
+        return (
+            '\nTHREAD FORMAT (CRITICAL — this is a 2-3 tweet THREAD, not a single tweet):\n'
+            'Generate a thread with 2-3 tweets. Each tweet MUST be <=280 characters independently.\n\n'
+            'Thread structure for multi-RECEIPT:\n'
+            '- Tweet 1 (hook): Opening hook about portfolio performance — punchy, attention-grabbing\n'
+            '- Tweet 2 (data): Winner list with entry prices and % gains, one per line ($TICKER +XX% from $entry)\n'
+            '- Tweet 3 (close): Closing tagline — system credibility, methodology, or CTA\n\n'
+            'Output format — use "thread_tweets" array with "is_thread": true:\n'
+            '{\n'
+            '  "tweets": [\n'
+            '    {\n'
+            '      "thread_tweets": [\n'
+            '        {"text": "Hook about winning (1/3)", "number": 1},\n'
+            '        {"text": "$AAA +50% from $10\\n$BBB +30% from $20\\n$CCC +25% from $5 (2/3)", "number": 2},\n'
+            '        {"text": "System credibility + CTA (3/3)", "number": 3}\n'
+            '      ],\n'
+            '      "category": "RECEIPT",\n'
+            '      "primary_ticker": "AAA",\n'
+            '      "chart_recommended": false,\n'
+            '      "account": "variant_X",\n'
+            '      "is_thread": true\n'
+            '    }\n'
+            '  ]\n'
+            '}'
+        )
+
+    return ""
 
 
 def format_portfolio_for_prompt(portfolio: List[Dict], current_prices: Optional[Dict[str, float]] = None) -> str:
@@ -1275,7 +1477,7 @@ FOCUS TICKER(S): {', '.join(f'${t}' for t in decision.get('tickers', []))}""")
     # Funnel stats injection (Step 5a)
     if signals:
         stats = signals.get("stats", {})
-        if stats and decision_type in ("SIGNAL_ALERT", "NEWSLETTER_CTA"):
+        if stats and decision_type in ("SIGNAL_ALERT", "SUBSTACK_TEASER"):
             loaded = stats.get("tickers_loaded", 0)
             final = stats.get("final_trade", 0) + stats.get("final_consider", 0)
             if loaded > 0:
@@ -1302,13 +1504,18 @@ FOCUS TICKER(S): {', '.join(f'${t}' for t in decision.get('tickers', []))}""")
     if decision.get("bullish_factors"):
         parts.append(f"BULLISH FACTORS: {', '.join(decision['bullish_factors'])}")
 
-    # Multi-receipt format (Step 5e)
-    if decision.get("multi_receipt"):
+    # Multi-receipt format (Step 5e — only for non-thread single tweets)
+    if decision.get("multi_receipt") and not decision.get("thread"):
         parts.append(
             "\nMULTI-TICKER RECEIPT FORMAT — list ALL winners on separate lines:\n"
             "$TICKER1 +X% from $entry\n$TICKER2 +Y% from $entry\n"
             "Add a punchy opening hook and closing line. Let the numbers speak."
         )
+
+    # Thread format instructions (Phase 5 — Task 5.2)
+    thread_section = _build_thread_prompt_section(decision)
+    if thread_section:
+        parts.append(thread_section)
 
     parts.append(f"""
 PORTFOLIO CONTEXT (for accuracy — use ONLY these real numbers):
@@ -1333,6 +1540,61 @@ def parse_json_response(text: str) -> Dict:
     return json.loads(cleaned)
 
 
+def _parse_thread_output(raw_tweets: List[Dict]) -> List[Dict]:
+    """Process raw Sonnet output, handling thread items gracefully.
+
+    Thread items have is_thread=True and thread_tweets array.
+    Invalid threads (wrong length, over-length sub-tweets) are flattened
+    to single tweets using tweet 1 text — they degrade gracefully rather
+    than failing.
+
+    For valid threads, sets the top-level ``text`` field to tweet 1's text
+    so downstream flat-validation compatibility is maintained.
+    """
+    processed = []
+    for item in raw_tweets:
+        if not item.get("is_thread") or not item.get("thread_tweets"):
+            processed.append(item)
+            continue
+
+        thread_tweets = item.get("thread_tweets", [])
+
+        # Thread-level: must be 2-3 tweets
+        if len(thread_tweets) < 2 or len(thread_tweets) > 3:
+            logger.warning(
+                "Thread has %d tweets (expected 2-3), flattening to single tweet",
+                len(thread_tweets),
+            )
+            item["text"] = thread_tweets[0].get("text", "") if thread_tweets else ""
+            item["is_thread"] = False
+            item.pop("thread_tweets", None)
+            processed.append(item)
+            continue
+
+        # Validate each sub-tweet length
+        all_valid = True
+        for sub in thread_tweets:
+            if len(sub.get("text", "")) > MAX_TWEET_CHARS:
+                logger.warning(
+                    "Thread sub-tweet %d exceeds %d chars (%d), flattening",
+                    sub.get("number", 0), MAX_TWEET_CHARS, len(sub.get("text", "")),
+                )
+                all_valid = False
+
+        if not all_valid:
+            item["text"] = thread_tweets[0].get("text", "")
+            item["is_thread"] = False
+            item.pop("thread_tweets", None)
+            processed.append(item)
+            continue
+
+        # Valid thread — set text to tweet 1 for flat validation compat
+        item["text"] = thread_tweets[0].get("text", "")
+        processed.append(item)
+
+    return processed
+
+
 def call_sonnet(
     decision: Dict, context: Dict, portfolio: List[Dict],
     style_guide: str, client: anthropic.Anthropic,
@@ -1342,7 +1604,11 @@ def call_sonnet(
     signals: Optional[Dict] = None,
 ) -> List[Dict]:
     """Generate 3 tweet variants in a single Sonnet call."""
-    system_prompt = build_system_prompt(style_guide, slot_assignments=slot_assignments, tracker=tracker)
+    is_thread = decision.get("thread", False)
+    system_prompt = build_system_prompt(
+        style_guide, slot_assignments=slot_assignments,
+        tracker=tracker, is_thread=is_thread,
+    )
     user_prompt = build_user_prompt(
         decision, context, portfolio,
         slot_assignments=slot_assignments,
@@ -1366,6 +1632,9 @@ def call_sonnet(
     # Parse JSON
     data = parse_json_response(raw_text)
     tweets = data.get("tweets", [])
+
+    # Process thread outputs — validate structure, flatten invalid threads
+    tweets = _parse_thread_output(tweets)
 
     # Calculate cost
     usage = response.usage
@@ -1440,9 +1709,130 @@ PORTFOLIO CONTEXT:
         return None
 
 
+def _safe_parse_date(ts: str):
+    """Parse ISO timestamp to date, return None on failure."""
+    try:
+        return datetime.fromisoformat(ts).date()
+    except (ValueError, TypeError):
+        return None
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # VALIDATION PIPELINE (14 steps — PRD Section D29)
 # ═══════════════════════════════════════════════════════════════════════════════
+
+def _validate_thread_integrity(tweet_dict: Dict) -> List[str]:
+    """Step 6c: Thread structure validation.
+
+    Checks:
+    - Thread has 2-3 tweets (reject <2 or >3)
+    - Each tweet ≤280 chars and ≥10 chars
+    - Tweet 1 must not start with a ticker (hooks should be thematic)
+    - At least one tweet must contain a $TICKER reference
+    """
+    failures: List[str] = []
+    thread_tweets = tweet_dict.get("thread_tweets", [])
+    count = len(thread_tweets)
+
+    if count < 2 or count > 3:
+        failures.append(f"step6c_thread: {count} tweets (must be 2-3)")
+        return failures  # Can't validate further without valid structure
+
+    for idx, sub in enumerate(thread_tweets, start=1):
+        text = sub.get("text", "")
+        if len(text) > 280:
+            failures.append(f"step6c_thread: tweet {idx} is {len(text)} chars (max 280)")
+        if len(text) < 10:
+            failures.append(f"step6c_thread: tweet {idx} is {len(text)} chars (min 10)")
+
+    # Tweet 1 should not start with $TICKER (hooks should be thematic)
+    first_text = thread_tweets[0].get("text", "").lstrip()
+    if first_text.startswith("$"):
+        failures.append("step6c_thread: tweet 1 starts with ticker (hook should be thematic)")
+
+    # At least one tweet must contain a $TICKER
+    has_ticker = any(
+        re.search(r'\$[A-Z]{2,5}', sub.get("text", ""))
+        for sub in thread_tweets
+    )
+    if not has_ticker:
+        failures.append("step6c_thread: no $TICKER in any thread tweet")
+
+    return failures
+
+
+def validate_thread(
+    tweet_dict: Dict,
+    allowed_tickers: Set[str],
+    all_variants: Optional[List[Dict]] = None,
+    context: Optional[Dict] = None,
+    recent_tweets: Optional[List[Dict]] = None,
+    slot_assignments: Optional[Dict[str, Dict]] = None,
+    tracker: Optional["RecentTweetTracker"] = None,
+    portfolio: Optional[List[Dict]] = None,
+    context_tickers: Optional[Set[str]] = None,
+) -> ValidationResult:
+    """Validate a tweet, with thread-aware handling for thread items.
+
+    For thread items (is_thread=True + thread_tweets array):
+        - Step 6c thread integrity check (structure, lengths, hooks)
+        - Runs 14-step validate_tweet() on each sub-tweet individually
+        - Thread-level checks: tweets 2-3 must contain tickers or data
+        - Prefixes failures with ``thread_tweet_N:`` for debugging
+
+    For non-thread items: delegates directly to validate_tweet().
+    """
+    if not tweet_dict.get("is_thread") or not tweet_dict.get("thread_tweets"):
+        return validate_tweet(
+            tweet_dict, allowed_tickers, all_variants, context,
+            recent_tweets, slot_assignments, tracker, portfolio,
+            context_tickers=context_tickers,
+        )
+
+    # --- Thread validation ---
+    thread_tweets = tweet_dict.get("thread_tweets", [])
+    all_failures: List[str] = []
+
+    # Step 6c: Thread integrity (structural check before per-tweet validation)
+    all_failures.extend(_validate_thread_integrity(tweet_dict))
+
+    for idx, sub_tweet in enumerate(thread_tweets, start=1):
+        # Build a pseudo tweet_dict for each sub-tweet so validate_tweet works
+        sub_dict = {
+            **tweet_dict,
+            "text": sub_tweet.get("text", ""),
+            # Strip thread fields so validate_tweet treats it as flat
+            "is_thread": False,
+        }
+        sub_dict.pop("thread_tweets", None)
+
+        sub_result = validate_tweet(
+            sub_dict, allowed_tickers,
+            all_variants=all_variants,
+            context=context,
+            recent_tweets=recent_tweets,
+            slot_assignments=slot_assignments,
+            tracker=tracker,
+            portfolio=portfolio,
+            context_tickers=context_tickers,
+        )
+        for f in sub_result.failures:
+            all_failures.append(f"thread_tweet_{idx}: {f}")
+
+    # Thread-level check: tweets 2+ should contain tickers or data (prices/percentages)
+    data_pattern = re.compile(r'(\$[A-Z]{2,5}|\d+\.?\d*%|\$\d+)')
+    for idx, sub_tweet in enumerate(thread_tweets[1:], start=2):
+        text = sub_tweet.get("text", "")
+        if not data_pattern.search(text):
+            all_failures.append(
+                f"thread_tweet_{idx}: thread_data_check: no tickers or data found in continuation tweet"
+            )
+
+    return ValidationResult(
+        passed=len(all_failures) == 0,
+        failures=all_failures,
+    )
+
 
 def validate_tweet(
     tweet_dict: Dict,
@@ -1453,6 +1843,7 @@ def validate_tweet(
     slot_assignments: Optional[Dict[str, Dict]] = None,
     tracker: Optional["RecentTweetTracker"] = None,
     portfolio: Optional[List[Dict]] = None,
+    context_tickers: Optional[Set[str]] = None,
 ) -> ValidationResult:
     """
     Run the 14-step validation pipeline on a tweet.
@@ -1478,9 +1869,14 @@ def validate_tweet(
 
     # Step 2: Ticker fabrication check
     found_tickers = re.findall(r'\$([A-Z]{2,5})', text)
-    if allowed_tickers:
+    if allowed_tickers or context_tickers:
+        # External categories (MARKET_COMMENTARY, THEME_LIST, TRENDING_TAKE) may use context tickers
+        if category in EXTERNAL_TICKER_CATEGORIES and context_tickers:
+            full_allowed = allowed_tickers | context_tickers
+        else:
+            full_allowed = allowed_tickers
         for ticker in found_tickers:
-            if ticker not in allowed_tickers:
+            if ticker not in full_allowed:
                 failures.append(f"step2_fabrication: ${ticker} not in source data")
 
     # Step 3: Banned phrase check (word-boundary for short terms)
@@ -1511,14 +1907,17 @@ def validate_tweet(
     if len(text) > MAX_TWEET_CHARS:
         failures.append(f"step6_chars: {len(text)} > {MAX_TWEET_CHARS}")
 
+    # Step 6c: Thread integrity (belt-and-suspenders for direct callers)
+    if tweet_dict.get("is_thread") and tweet_dict.get("thread_tweets"):
+        failures.extend(_validate_thread_integrity(tweet_dict))
+
     # Step 6b: Opening sentence diversity (NEW — PRD D29)
     if tracker and tracker.opening_too_similar(text):
         failures.append("step6b_opening: opening too similar to recent tweet (>70% match)")
 
-    # Step 7: Chart flag — recommend chart for any tweet with a specific ticker
-    always_chart = {"SIGNAL_ALERT", "RECEIPT", "SELL_SIGNAL", "TECHNICAL_ANALYSIS"}
-    chart_if_ticker = {"MARKET_REACTION", "DIP_OPPORTUNITY", "THEME_MOMENTUM",
-                       "NEWSLETTER_CTA", "EDUCATIONAL", "WATCHLIST"}
+    # Step 7: Chart flag — recommend chart based on category definitions
+    always_chart = CHART_REQUIRED_CATEGORIES  # {"SELL_SIGNAL", "SIGNAL_ALERT", "RECEIPT"}
+    chart_if_ticker = LIVE_VALID_CATEGORIES - CHART_REQUIRED_CATEGORIES
     has_ticker = bool(tweet_dict.get("primary_ticker"))
     expected_chart = category in always_chart or (category in chart_if_ticker and has_ticker)
     if tweet_dict.get("chart_recommended") != expected_chart:
@@ -1548,18 +1947,21 @@ def validate_tweet(
             shared_ticker_allowed = len(unique_assigned) < len(assigned_tickers)
 
             if not shared_ticker_allowed:
+                my_category = tweet_dict.get("category", "")
                 for other in all_variants:
                     other_account = other.get("account", "")
                     if other_account == my_account:
                         continue
                     other_ticker = (other.get("primary_ticker") or "").lstrip('$')
-                    if other_ticker and other_ticker == my_ticker:
+                    other_category = other.get("category", "")
+                    # Same ticker + same category = collision; different category = OK (persona affinity)
+                    if other_ticker and other_ticker == my_ticker and other_category == my_category:
                         failures.append(
-                            f"step8_5_collision: ${my_ticker} used by both {my_account} and {other_account}"
+                            f"step8_5_collision: ${my_ticker} + {my_category} on both {my_account} and {other_account}"
                         )
 
     # Step 9: Context staleness check
-    if context and category == "MARKET_REACTION":
+    if context and category in {"MARKET_COMMENTARY", "TRENDING_TAKE"}:
         gathered_at = context.get("gathered_at", "")
         if gathered_at:
             try:
@@ -1569,12 +1971,12 @@ def validate_tweet(
                 age_hours = (datetime.now(timezone.utc) - gathered_time).total_seconds() / 3600
                 if age_hours > CONTEXT_STALENESS_HOURS:
                     failures.append(
-                        f"step9_staleness: context {age_hours:.1f}h old, MARKET_REACTION blocked"
+                        f"step9_staleness: context {age_hours:.1f}h old, {category} blocked"
                     )
             except (ValueError, TypeError):
                 pass
         if context.get("fallback_mode") or context.get("context_stale"):
-            failures.append("step9_staleness: context is stale/fallback, MARKET_REACTION blocked")
+            failures.append(f"step9_staleness: context is stale/fallback, {category} blocked")
 
     # Step 9b: Queue dedup — <80% similarity to any tweet in last 48h (NEW — PRD D28)
     if recent_tweets:
@@ -1606,7 +2008,14 @@ def validate_tweet(
             if tracker:
                 ticker_count = tracker.tickers_today.get(primary, 0)
             else:
-                ticker_count = count_ticker_today(primary, recent_tweets)
+                # Inline fallback (standalone count_ticker_today deleted in Phase 4)
+                today = datetime.now(ZoneInfo("America/New_York")).date()
+                ticker_count = sum(
+                    1 for t in (recent_tweets or [])
+                    if t.get("status") in ("pending", "posted")
+                    and (t.get("primary_ticker") or "").lstrip("$") == primary
+                    and _safe_parse_date(t.get("generated_at", "")) == today
+                )
             if ticker_count >= MAX_SAME_TICKER_PER_DAY:
                 failures.append(
                     f"step10_repetition: ${primary} already tweeted {ticker_count}x today (max {MAX_SAME_TICKER_PER_DAY})"
@@ -1735,8 +2144,10 @@ def write_to_live_queue(
             tickers = re.findall(r'\$([A-Z]{2,5})', tweet.get("text", ""))
             primary_ticker = tickers[0] if tickers else ""
 
+        is_thread = tweet.get("is_thread", False) and bool(tweet.get("thread_tweets"))
+
         entry = {
-            "id": f"live_{timestamp_str}_v{i + 1}",
+            "id": f"live_{timestamp_str}_v{i + 1}{'_thread' if is_thread else ''}",
             "text": tweet["text"],
             "category": tweet.get("category", decision.get("type", "")),
             "primary_ticker": primary_ticker,
@@ -1753,6 +2164,12 @@ def write_to_live_queue(
             "generated_at": now_utc.isoformat(),
             "cost_usd": round(tweet.get("_cost", cost / max(len(validated_tweets), 1)), 6),
         }
+
+        # Thread fields — matches poster.py post_thread() expected schema
+        if is_thread:
+            entry["is_thread"] = True
+            entry["thread_tweets"] = tweet["thread_tweets"]
+
         queue.append(entry)
 
     # Write atomically
@@ -1804,6 +2221,7 @@ def generate_live_tweet(
     style_guide = load_style_guide()
     recent_tweets = load_recent_tweets()
     allowed_tickers = build_allowed_tickers(portfolio, signals)
+    context_tickers = build_context_tickers(context)
 
     # 1a. Fetch current prices for portfolio tickers (for prompt accuracy)
     current_prices: Dict[str, float] = {}
@@ -1878,7 +2296,9 @@ def generate_live_tweet(
     total_cost = sum(t.get("_cost", 0) for t in raw_tweets)
 
     for tweet_dict in raw_tweets:
-        result = validate_tweet(
+        is_thread_item = tweet_dict.get("is_thread", False)
+
+        result = validate_thread(
             tweet_dict,
             allowed_tickers=allowed_tickers,
             all_variants=validated,
@@ -1887,13 +2307,23 @@ def generate_live_tweet(
             slot_assignments=slot_assignments,
             tracker=tracker,
             portfolio=portfolio,
+            context_tickers=context_tickers,
         )
 
         if result.passed:
             validated.append(tweet_dict)
             continue
 
-        # Attempt repair
+        # Skip repair loop for thread items (thread repair is complex; log as failed)
+        if is_thread_item:
+            log_failed_tweet(tweet_dict, result.failures)
+            logger.warning(
+                "Dropped %s thread (no repair for threads): %s",
+                tweet_dict.get("account", "?"), result.failures,
+            )
+            continue
+
+        # Attempt repair (flat tweets only)
         for attempt in range(MAX_REPAIR_ATTEMPTS):
             logger.info(
                 "Repairing %s tweet (attempt %d): %s",
@@ -1906,7 +2336,7 @@ def generate_live_tweet(
             if repaired is None:
                 break
 
-            result = validate_tweet(
+            result = validate_thread(
                 repaired,
                 allowed_tickers=allowed_tickers,
                 all_variants=validated,
@@ -1915,6 +2345,7 @@ def generate_live_tweet(
                 slot_assignments=slot_assignments,
                 tracker=tracker,
                 portfolio=portfolio,
+                context_tickers=context_tickers,
             )
             if result.passed:
                 validated.append(repaired)
@@ -1963,7 +2394,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true",
                         help="Generate but don't write to queue")
     parser.add_argument("--force-type", type=str, default=None,
-                        help="Force tweet type (RECEIPT, MARKET_REACTION, etc.)")
+                        help="Force tweet type (RECEIPT, MARKET_COMMENTARY, etc.)")
     parser.add_argument("--context", type=str, default=None,
                         help="Custom context file path")
     parser.add_argument("--quiet", "-q", action="store_true",

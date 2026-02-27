@@ -596,7 +596,7 @@ def calculate_fair_spy_comparison(positions: List[Dict] = None) -> Dict:
 
 
 # =============================================================================
-# SAFEGUARD FUNCTIONS (used by tweet_generator.py)
+# SAFEGUARD FUNCTIONS (used by poster.py + live_tweet_generator.py)
 # =============================================================================
 
 def should_post_beat_spy() -> bool:

@@ -31,7 +31,6 @@ from config.output_paths import (
     PORTFOLIO_BACKUP_DIR,
     LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
     CHARTS_DIR, FAILED_TWEETS_FILE, WORKFLOW_STATUS_FILE,
-    CONTENT_QUEUE_FILE, DAILY_QUEUE_FILE,
     TWEET_TRACKING_FILE, CELEBRATIONS_FILE,
 )
 
@@ -137,9 +136,6 @@ STARTING_CAPITAL_PER_POSITION = 5000.0  # £5,000 per position
 CURRENCY_SYMBOL = "£"
 # EQUITY_CURVE_FILE imported from config.output_paths (full Path to portfolio/output/equity_curve.csv)
 
-# Content staleness
-TWEET_STALENESS_DAYS = 3       # Skip tweets more than N days past scheduled date
-
 # Universe size (for funnel graphic default)
 DEFAULT_UNIVERSE_SIZE = 1817   # Approximate total ticker count
 
@@ -204,19 +200,16 @@ COST_WEB_SEARCH = 0.01  # Per search
 TWITTER_ACCOUNTS: Dict[str, Dict] = {
     'main': {
         'env_prefix': 'X1',
-        'queue_file': 'content_queue.json',
         'offset_minutes': 0,
         'variation_style': 'original',
     },
     'account2': {
         'env_prefix': 'X2',
-        'queue_file': 'content_queue_account2.json',
         'offset_minutes': 10,
         'variation_style': 'conversational',
     },
     'account3': {
         'env_prefix': 'X3',
-        'queue_file': 'content_queue_account3.json',
         'offset_minutes': 20,
         'variation_style': 'data_driven',
     },
@@ -224,7 +217,7 @@ TWITTER_ACCOUNTS: Dict[str, Dict] = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ACCOUNT PERSONAS - Distinct voices for multi-account content
+# ACCOUNT PERSONAS - Voice/tone definitions for multi-account content
 # ═══════════════════════════════════════════════════════════════════════════════
 
 PERSONAS: Dict[str, Dict] = {
@@ -275,6 +268,32 @@ PERSONAS: Dict[str, Dict] = {
             "Momentum is real.",
             "Let's see how this plays out.",
         ],
+    },
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERSONA CATEGORY AFFINITY — Controls which categories each persona prefers
+# Each persona has primary (strongest), secondary, and avoids (never assigned).
+# Used by _prepare_slot_data() to route the decision category to the best persona
+# and assign different categories to the remaining personas.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+PERSONA_AFFINITY: Dict[str, Dict] = {
+    "variant_1": {  # Alex — The System (Analyst)
+        "primary": {"SIGNAL_ALERT", "RECEIPT", "SELL_SIGNAL", "TECHNICAL_ANALYSIS"},
+        "secondary": {"THEME_CATALYST", "MARKET_COMMENTARY"},
+        "avoids": {"ENGAGEMENT", "EDUCATIONAL"},
+    },
+    "variant_2": {  # Rozalia — The Mentor (Teacher)
+        "primary": {"EDUCATIONAL", "THEME_LIST", "SUBSTACK_TEASER", "THEME_CATALYST"},
+        "secondary": {"MARKET_COMMENTARY", "RECEIPT"},
+        "avoids": {"SELL_SIGNAL"},
+    },
+    "variant_3": {  # James — The Trader (Practitioner)
+        "primary": {"MARKET_COMMENTARY", "TRENDING_TAKE", "RECEIPT", "ENGAGEMENT"},
+        "secondary": {"TECHNICAL_ANALYSIS", "THEME_CATALYST"},
+        "avoids": {"EDUCATIONAL"},
     },
 }
 
@@ -1197,22 +1216,22 @@ COST_LOG_FILE = LIVE_COST_LOG_FILE  # Alias for backward compat
 # Content controls
 MAX_TWEETS_PER_DAY = 12                   # Hard cap across all accounts
 MAX_SAME_TICKER_PER_DAY = 3              # Max tweets about same ticker per day
-CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_REACTION
+CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_COMMENTARY
 MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
 # Diversity controls (ported from batch system — prevents repetitive tweets)
 CATEGORY_WEEKLY_TARGETS: Dict[str, int] = {
-    "RECEIPT": 12,           # ~25% of ~50 tweets/week
-    "SIGNAL_ALERT": 7,       # ~15%
-    "MARKET_REACTION": 7,    # ~15%
-    "THEME_MOMENTUM": 5,     # ~10%
-    "EDUCATIONAL": 3,        # max 3/week (PRD D28)
-    "ENGAGEMENT": 5,         # ~10%
-    "NEWSLETTER_CTA": 2,     # 2/week
-    "DIP_OPPORTUNITY": 4,    # ~8%
-    "SELL_SIGNAL": 3,        # exit signals — always high priority
-    "TECHNICAL_ANALYSIS": 5, # position commentary with catalysts
-    "WATCHLIST": 3,          # CONSIDER/CAUTION signals
+    "RECEIPT": 7,              # 16% of ~45 tweets/week (down from 12)
+    "MARKET_COMMENTARY": 7,    # 16% — any-mood market context (was MARKET_REACTION)
+    "SIGNAL_ALERT": 7,         # 16% — now includes CONSIDER sub-type
+    "TRENDING_TAKE": 5,        # 11% — new: FinTwit overlap content
+    "THEME_CATALYST": 5,       # 11% — renamed from THEME_MOMENTUM
+    "ENGAGEMENT": 5,           # 11%
+    "TECHNICAL_ANALYSIS": 5,   # 11%
+    "SUBSTACK_TEASER": 4,      # 9% — replaces NEWSLETTER_CTA (was 2)
+    "THEME_LIST": 3,           # 7% — new: thread-only format
+    "EDUCATIONAL": 3,          # 7%
+    "SELL_SIGNAL": 3,          # 7% — exit signals
 }
 MAX_SAME_CATEGORY_PER_DAY = 3            # No more than 3 of same category per day
 QUEUE_DEDUP_HOURS = 48                   # Similarity window for dedup
@@ -1228,17 +1247,11 @@ CHART_IMG_INTERVAL = "1W"                 # Default weekly
 
 # LIVE_QUEUE_FILE imported from config.output_paths
 
-# Tracked themes for Grok context gathering
-TRACKED_THEMES: List[str] = [
-    "copper", "infrastructure", "defense", "AI", "data centers",
-    "rare earth", "quantum computing", "space", "crypto mining",
-    "nuclear", "semiconductors", "reshoring",
-]
-
 # Weekend behavior
 WEEKEND_MAX_TWEETS = 4
 WEEKEND_CATEGORIES: List[str] = [
-    "EDUCATIONAL", "ENGAGEMENT", "NEWSLETTER_CTA", "RECEIPT", "SIGNAL_ALERT", "WATCHLIST",
+    "EDUCATIONAL", "ENGAGEMENT", "RECEIPT", "SIGNAL_ALERT",
+    "SUBSTACK_TEASER", "THEME_LIST",
 ]
 
 # Exchange mapping for chart-img.com (ticker → exchange prefix)

@@ -4,7 +4,7 @@ CHART GENERATOR - chart-img.com REST API Integration
 =====================================================
 
 Generates TradingView chart images via the chart-img.com API.
-CI-compatible (no browser required, unlike chart_capture.py).
+CI-compatible (no browser required).
 
 Called by live_tweet.yml workflow between tweet generation and posting.
 Reads live_content_queue.json, generates charts for items with

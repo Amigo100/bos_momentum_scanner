@@ -109,20 +109,20 @@ Even with marketing language, NEVER hide losses:
 
 ---
 
-### Signal Color System (Marketing Upgrade)
+### Signal Color System
 
 Sterling Signals uses a color-coded signal system for public-facing content:
 
 | Color | Emoji | Meaning | Internal Status | Public Name |
 |-------|-------|---------|-----------------|-------------|
-| **TEAL** | 🟢 | BUY | PASS | TEAL Signal |
-| **VIOLET** | 🟣 | EXIT | STOPPED | Exit Alert |
-| **AMBER** | 🟠 | WATCH | CONSIDER | On Our Radar |
+| **GREEN** | 🟢 | BUY | PASS | GREEN Signal |
+| **RED** | 🔴 | EXIT | STOPPED | Exit Alert |
+| **CONSIDER** | 🟡 | WATCH | CONSIDER | On Our Radar |
 
 **Usage in tweets:**
-- Start buy signals with: `🟢 TEAL Signal: $TICKER`
-- Start exit alerts with: `🟣 VIOLET Alert: $TICKER`
-- Start watchlist with: `🟠 AMBER Watchlist`
+- Start buy signals with: `🟢 GREEN Signal: $TICKER`
+- Start exit alerts with: `🔴 Exit Alert: $TICKER`
+- Start watchlist with: `🟡 On Our Radar`
 
 ### Conviction Language
 
@@ -220,8 +220,9 @@ python -m scanner.saturday_workflow --decisions-dir ~/path/to/dir  # Custom deci
 
 ### Content Generation
 ```bash
-python -m twitter.tweet_generator --signals scanner/output/signals.json --portfolio portfolio/output/portfolio.csv --account all  # Weekly tweets
-python -m twitter.tweet_generator --daily --signals scanner/output/daily_signals.json --account all                               # Daily tweets
+python -m twitter.live_tweet_generator                       # Live tweet generation (full run)
+python -m twitter.live_tweet_generator --dry-run             # Preview without writing queue
+python -m twitter.live_tweet_generator --force-type RECEIPT  # Force specific category
 python -m substack.newsletter_compiler --from-html   # Convert Claude.ai HTML to publication-ready newsletter
 python -m substack.dd_post_generator                 # Generate DD HTML posts per buy signal
 python -m substack.dd_post_generator --ticker NVDA   # DD post for specific ticker
@@ -376,21 +377,18 @@ twitter/output/
 #### `twitter/` — Twitter/X Content System
 | File | Purpose |
 |------|---------|
-| `twitter/tweet_generator.py` | **v2** — Unified voice tweet generation (weekly + daily) |
-| `twitter/live_tweet_generator.py` | Live tweet generation (market hours) |
-| `twitter/live_context_gatherer.py` | Market context gathering for live tweets |
-| `twitter/poster.py` | X/Twitter posting (7-slot system, dual queues) |
-| `twitter/models.py` | Shared data classes: Tweet, ContentData, SlotAssignment, ValidationResult |
-| `twitter/chart_capture.py` | TradingView chart screenshots (weekly + daily timeframes) |
-| `twitter/chart_generator.py` | Chart generation via chart-img API |
+| `twitter/live_tweet_generator.py` | Live tweet generation (11 categories, 7-priority cascade, 3-account persona affinity, thread support) |
+| `twitter/live_context_gatherer.py` | Grok-powered market context (theme_tickers, fintwit_overlaps, market_snapshot) |
+| `twitter/poster.py` | X/Twitter posting (live queue, thread support, 3-account routing) |
+| `twitter/models.py` | Category taxonomy, Tweet/ValidationResult dataclasses, CHART_REQUIRED/EXTERNAL/THREAD constants |
+| `twitter/chart_generator.py` | Chart generation via chart-img.com REST API (CI-compatible) |
 | `twitter/funnel_graphic.py` | Funnel visualization |
 | `twitter/winner_showcase_generator.py` | Winner showcase with entry prices |
-| `twitter/signal_tracker.py` | Win tracking |
+| `twitter/signal_tracker.py` | Win tracking + signal performance analysis |
 | `twitter/self_quote_tracker.py` | Track tweets for milestone quoting |
 | `twitter/health_check.py` | Live tweet system health monitoring |
 | `twitter/cost_tracker.py` | API cost tracking with daily kill switch |
-| `twitter/verify_tweets.py` | Verify tweet generator output |
-| `twitter/tradingview_login.py` | TradingView browser login |
+| `twitter/tradingview_login.py` | TradingView browser login (companion for local chart workflow) |
 
 #### `config/` — Shared Configuration
 | File | Purpose |
@@ -416,16 +414,14 @@ twitter/output/
 #### `tests/` — Test Suite
 | File | Purpose |
 |------|---------|
+| `tests/test_live_tweet_system.py` | Live tweet system tests (314 tests — Phases 1-6: decision, validation, persona, threads) |
 | `tests/test_sterling_indicators.py` | Sterling Grid indicator unit tests (63 tests) |
-| `tests/test_integration.py` | Cross-module integration tests (34 tests) — includes QQQ benchmark + DD post generator |
-
-| `tests/test_tweet_generator_v2.py` | Tweet generator v2 unit tests (24 tests) |
-| `tests/test_tweet_gen_audit_fixes.py` | Tweet generator audit fix tests |
-| `tests/test_tweet_gen_integration.py` | Tweet generator integration tests |
+| `tests/test_integration.py` | Cross-module integration tests — includes QQQ benchmark + DD post generator |
+| `tests/test_saturday_workflow.py` | Saturday workflow orchestration tests |
+| `tests/test_scheduling.py` | Scheduling and cron tests |
 | `tests/test_edge_cases.py` | Edge case tests |
 | `tests/test_safeguards.py` | Safety guard tests |
 | `tests/test_substack_content_v2.py` | Substack content generator tests |
-| `tests/test_live_tweet.py` | Live tweet system tests |
 
 #### Root-Level & Workflow Files
 | File | Purpose |
@@ -433,8 +429,7 @@ twitter/output/
 | `run_friday.sh` | Full Friday pipeline orchestration |
 | `.github/workflows/friday_scan.yml` | Friday automated scan + tweet generation |
 | `.github/workflows/daily_content.yml` | Daily content pipeline (07:00 ET): market analysis + context + notes + email |
-| `.github/workflows/daily_post.yml` | 7-slot daily tweet posting (14 cron triggers) |
-| `.github/workflows/live_tweet.yml` | Live tweet system (market hours) |
+| `.github/workflows/live_tweet.yml` | Live tweet system (market hours, ~12 runs/day) |
 | `requirements.txt` | Python dependencies |
 
 ---
@@ -1150,29 +1145,36 @@ Creates plist at `~/Library/LaunchAgents/com.bos.scanner.plist`:
 
 ### X/Twitter Auto-Posting (IMPLEMENTED)
 
-**Status:** Fully operational via GitHub Actions
+**Status:** Fully operational via GitHub Actions (`live_tweet.yml`)
 
 **Components:**
-- `twitter/tweet_generator.py` - Unified voice tweet generation (weekly + daily)
-- `twitter/output/content_queue.json` - Tweet queue with posting status
-- `.github/workflows/daily_post.yml` - Posts 7 tweets daily (dual queue system)
+- `twitter/live_tweet_generator.py` — Context-aware tweet generation (11 categories, 7-priority cascade, 3-account persona affinity)
+- `twitter/live_context_gatherer.py` — Grok-powered market context (theme_tickers, fintwit_overlaps, market_snapshot)
+- `twitter/poster.py` — Live queue posting with thread support
+- `twitter/chart_generator.py` — chart-img.com REST API charts (CI-compatible)
+- `twitter/output/live_content_queue.json` — Live tweet queue
+- `.github/workflows/live_tweet.yml` — Market-hours automation (~12 runs/day)
 
 **Configuration (GitHub Secrets):**
 ```
-TWITTER_API_KEY
-TWITTER_API_SECRET
-TWITTER_ACCESS_TOKEN
-TWITTER_ACCESS_SECRET
+X1_API_KEY, X1_API_SECRET, X1_ACCESS_TOKEN, X1_ACCESS_SECRET      # Account 1 (Alex)
+X2_API_KEY, X2_API_SECRET, X2_ACCESS_TOKEN, X2_ACCESS_SECRET      # Account 2 (Rozalia)
+X3_API_KEY, X3_API_SECRET, X3_ACCESS_TOKEN, X3_ACCESS_SECRET      # Account 3 (James)
+XAI_API_KEY                                                        # Grok context gathering
+CHARTIMG_API_KEY                                                   # Chart generation
 ```
 
-**Schedule (Eastern Time):**
-| Slot | Time (ET) | Content Type |
-|------|-----------|--------------|
-| 1 | 08:00 | Pre-market / Beat SPY / Roth IRA hooks |
-| 2 | 10:00 | Theme analysis / Buy signal |
-| 3 | 12:30 | Position update with chart |
-| 4 | 15:30 | **Power Hour reaction** (CRITICAL) |
-| 5 | 18:00 | Engagement / Lessons |
+**3-Account Persona Model:**
+| Account | Persona | Primary Categories |
+|---------|---------|-------------------|
+| variant_1 (Alex) | The System / Analyst | RECEIPT, SIGNAL_ALERT, SELL_SIGNAL, TECHNICAL_ANALYSIS |
+| variant_2 (Rozalia) | The Mentor / Teacher | EDUCATIONAL, THEME_LIST, SUBSTACK_TEASER, THEME_CATALYST |
+| variant_3 (James) | The Trader / Practitioner | MARKET_COMMENTARY, TRENDING_TAKE, RECEIPT, ENGAGEMENT |
+
+**11 Category Taxonomy:**
+Signal: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT | Market: MARKET_COMMENTARY, THEME_CATALYST, THEME_LIST, TRENDING_TAKE | Position: TECHNICAL_ANALYSIS | Content: EDUCATIONAL, SUBSTACK_TEASER, ENGAGEMENT
+
+**Thread Support:** THEME_LIST (always thread), RECEIPT (multi-winner threads)
 
 ---
 
@@ -1242,122 +1244,26 @@ def publish_via_email(newsletter_content, subject):
 
 ---
 
-### TradingView Chart Integration (IMPLEMENTED)
+### Chart Generation (IMPLEMENTED)
 
-**Status:** Operational via `chart_capture.py`
+**Status:** Operational via `chart_generator.py` (chart-img.com REST API)
 
 **Components:**
-- `chart_capture.py` - Playwright-based TradingView screenshot capture
-- `twitter/output/charts/` - Output directory for chart images
-- `twitter/output/charts/chart_manifest.json` - Tracks captured charts with paths
-
-**Configuration:**
-- Layout ID: `rxC5j0SK` (saved with custom indicators)
-- X/Twitter size: 1200x800 pixels
-- Indicator names hidden via JavaScript injection
+- `twitter/chart_generator.py` — REST API chart generation (CI-compatible, no browser required)
+- `twitter/output/charts/` — Output directory for chart images
+- `twitter/output/charts/chart_manifest.json` — Tracks captured charts with paths
 
 **Usage:**
 ```bash
-# Capture specific tickers
-python -m twitter.chart_capture --tickers AAPL,NVDA
-
-# Capture from signals file
-python -m twitter.chart_capture --tickers-from scanner/output/signals.json
-
-# Headless mode (for CI)
-python -m twitter.chart_capture --tickers AAPL --headless
+python -m twitter.chart_generator                    # Process live queue (charts for chart_recommended=True items)
+python -m twitter.chart_generator --ticker AAPL      # Single chart
 ```
 
 **Integration:**
-- Position update tweets include `image_path` field
-- `distribution/twitter_poster.py` uploads chart via Twitter API v1.1
-- Attaches media_id to tweet via Twitter API v2
-
-**Note:** Requires local run with TradingView login (not fully CI-compatible)
-
-**Implementation Options:**
-
-| Option | Feasibility | Quality | Notes |
-|--------|-------------|---------|-------|
-| **Selenium/Playwright** | High | High | Browser automation, uses user's indicators |
-| **TradingView Snapshot API** | Low | High | Requires partnership |
-| **Pine Script Webhooks** | Medium | Medium | Alert-based, limited |
-| **mplfinance (Python)** | High | Medium | No custom indicators |
-
-**Recommended Implementation (Playwright):**
-
-```python
-# content/chart_capture.py
-
-from playwright.sync_api import sync_playwright
-
-def capture_tradingview_chart(ticker: str, output_path: str):
-    """
-    Capture TradingView chart with user's indicators.
-
-    Prerequisites:
-    - TradingView account logged in (saved browser profile)
-    - Custom indicators saved to chart template
-    """
-    with sync_playwright() as p:
-        browser = p.chromium.launch_persistent_context(
-            user_data_dir="~/.tradingview_profile",
-            headless=True
-        )
-        page = browser.new_page()
-
-        # Navigate to chart
-        page.goto(f"https://www.tradingview.com/chart/?symbol={ticker}")
-        page.wait_for_load_state("networkidle")
-
-        # Wait for indicators to load
-        page.wait_for_timeout(5000)
-
-        # Capture screenshot
-        chart_element = page.locator(".chart-container")
-        chart_element.screenshot(path=output_path)
-
-        browser.close()
-
-def generate_all_charts(tickers: List[str]):
-    """Generate charts for all positions and signals."""
-    output_dir = TRADES_DIR / "charts"
-    output_dir.mkdir(exist_ok=True)
-
-    for ticker in tickers:
-        output_path = output_dir / f"{ticker}_{datetime.now():%Y%m%d}.png"
-        capture_tradingview_chart(ticker, output_path)
-        print(f"  Chart saved: {output_path}")
-```
-
-**Integration with Scanner:**
-
-```python
-# In core/scanner.py, after generating outputs
-
-if not args.no_charts:
-    from content.chart_capture import generate_all_charts
-
-    # Get tickers needing charts
-    chart_tickers = []
-    chart_tickers.extend([s.symbol for s in confirmed if s.final_decision == "TRADE"])
-    chart_tickers.extend([t.ticker for t in pm.get_open_positions()])
-
-    generate_all_charts(chart_tickers)
-```
-
-**Chart Embedding:**
-
-```python
-# In content/grok_prompts_generator.py
-def create_position_update_prompt(position, data):
-    chart_path = TRADES_DIR / "charts" / f"{position['ticker']}_latest.png"
-
-    prompt = GrokPrompt(
-        # ... existing fields ...
-        visual_suggestion=f"Attach: {chart_path}" if chart_path.exists() else "Screenshot from TradingView"
-    )
-```
+- Items with `chart_recommended=True` in live queue get charts generated automatically
+- Chart paths written to `chart_path` in live queue entries
+- `twitter/poster.py` uploads charts via Twitter API v1.1 media endpoint, attaches to tweet via v2
+- Categories with required charts: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT (from `CHART_REQUIRED_CATEGORIES`)
 
 ---
 
@@ -1937,6 +1843,17 @@ Solution:
 ---
 
 ## D. Changelog
+
+### 2026-02-27 (Tweet Subsystem Overhaul — Phases 1-7 Complete)
+
+- **Deleted modules** — `twitter/tweet_generator.py` (batch system), `twitter/chart_capture.py` (Playwright-based), `twitter/verify_tweets.py`; 3 associated test files (`test_tweet_generator_v2.py`, `test_tweet_gen_audit_fixes.py`, `test_tweet_gen_integration.py`); `daily_post.yml` workflow
+- **Live tweet system** — `twitter/live_tweet_generator.py` (2,458 lines): 11-category taxonomy, 7-priority decision cascade, 14-step validation pipeline, 3-account persona affinity, thread support (THEME_LIST, multi-RECEIPT)
+- **Context gatherer overhaul** — `twitter/live_context_gatherer.py`: Grok-powered market context with theme_tickers, fintwit_overlaps, portfolio_movers; removed tweet_opportunities
+- **poster.py --live-queue fix** — Added missing argparse flag (workflow passed it but parser rejected)
+- **Signal colors updated** — TEAL/VIOLET/AMBER → GREEN/RED/CONSIDER across CLAUDE.md to match `config/settings.py` `SIGNAL_COLORS`
+- **CLAUDE.md overhauled** — Source files table (3 deleted + descriptions updated), tests table (3 deleted + 3 added), X/Twitter posting section (batch→live system), chart section (Playwright→chart-img API), workflow table (daily_post.yml removed)
+- **Stale reference cleanup** — Updated 5 source files referencing deleted `tweet_generator.py`/`chart_capture.py` modules
+- **Test suite** — 314 tests passing across 8 test files
 
 ### 2026-02-26 (Substack Phase 6 — Delete Old Modules + Daily Content Pipeline)
 

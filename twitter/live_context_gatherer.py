@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 try:
     from config import (
         PORTFOLIO_FILE, SIGNALS_FILE, LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE,
-        TRACKED_THEMES, CONTEXT_STALENESS_HOURS,
+        CONTEXT_STALENESS_HOURS,
         MODEL_CONTEXT, XAI_BASE_URL,
     )
     MODEL = MODEL_CONTEXT
@@ -65,11 +65,32 @@ except ImportError:
     MODEL = "grok-4-fast-non-reasoning"
     XAI_BASE_URL = "https://api.x.ai/v1"
     CONTEXT_STALENESS_HOURS = 4
-    TRACKED_THEMES = [
-        "copper", "infrastructure", "defense", "AI", "data centers",
-        "rare earth", "quantum computing", "space", "crypto mining",
-        "nuclear", "semiconductors", "reshoring",
-    ]
+
+# Base themes that are always tracked (structural macro themes, not scanner-specific)
+BASE_THEMES = ["copper", "infrastructure", "defense", "AI", "semiconductors", "nuclear"]
+
+
+def load_tracked_themes() -> List[str]:
+    """Load themes from scanner output + base themes.
+
+    Scanner themes are refreshed weekly (Friday scan). Between scans,
+    the theme list is stable. Base themes are always included.
+    """
+    scanner_themes = []
+    if SIGNALS_FILE.exists():
+        try:
+            with open(SIGNALS_FILE, 'r') as f:
+                signals = json.load(f)
+            for theme in signals.get("themes", []):
+                name = theme.get("name", "")
+                if name:
+                    scanner_themes.append(name.lower())
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+    # Merge: scanner themes first (priority), then base themes
+    all_themes = list(dict.fromkeys(scanner_themes + BASE_THEMES))
+    return all_themes[:15]  # Cap to keep Grok prompt focused
 MAX_RETRIES = 2
 API_TIMEOUT = 30
 
@@ -147,6 +168,53 @@ def load_recent_tweets() -> List[Dict]:
         return []
 
 
+def _build_portfolio_context() -> tuple:
+    """Load portfolio positions, preferring snapshot over CSV.
+
+    Returns (positions_list, formatted_context_string).
+    positions_list is list of dicts with at least 'ticker' and 'entry_price' keys.
+    """
+    # Try snapshot first (richer data: current_price, pnl_pct, stop_distance)
+    snapshot_path = Path(__file__).resolve().parent.parent / "portfolio" / "output" / "portfolio_snapshot.json"
+    if snapshot_path.exists():
+        try:
+            snapshot = json.loads(snapshot_path.read_text())
+            positions = snapshot.get("open_positions", [])
+
+            lines = []
+            for pos in positions:
+                ticker = pos.get("ticker", "")
+                entry = pos.get("entry_price", 0)
+                current = pos.get("current_price", 0)
+                pnl = pos.get("pnl_pct", 0)
+                lines.append(
+                    f"${ticker}: entry ${entry:.2f}, current ${current:.2f} ({pnl:+.1f}%)"
+                )
+
+            # Add summary stats if available
+            eq = snapshot.get("equity", {})
+            if eq:
+                lines.append(f"\nPortfolio alpha vs S&P: {eq.get('alpha_pct', 0):+.1f}%")
+                win_rate = snapshot.get("summary", {}).get("win_rate", 0)
+                if win_rate:
+                    lines.append(f"Win rate: {win_rate:.0f}%")
+
+            # Convert to list-of-dicts format for compatibility with existing code
+            compat_positions = [
+                {"ticker": p.get("ticker", ""), "entry_price": str(p.get("entry_price", ""))}
+                for p in positions
+            ]
+            context_str = "\n".join(lines) if lines else "No open positions"
+            return compat_positions, context_str
+        except (json.JSONDecodeError, KeyError, OSError):
+            pass
+
+    # Fallback: CSV loading (existing behavior)
+    positions = load_open_positions()
+    lines = [f"${r.get('ticker', '')}: entry ${r.get('entry_price', 'N/A')}" for r in positions]
+    return positions, ("\n".join(lines) if lines else "No open positions")
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # PROMPTS
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -159,6 +227,8 @@ You have access to X Search and Web Search. Use them to find:
 3. Price action on these specific tickers: {portfolio_tickers}
 4. What FinTwit is discussing (trending stock topics on X)
 5. Any macro events (Fed, earnings, tariffs, geopolitics)
+6. For each ACTIVE or BREAKING theme, find 5-8 publicly traded companies relevant to this theme. Include their ticker symbol and approximate current price. These do NOT need to be in our portfolio — they are market context tickers for theme analysis.
+7. Check if any FinTwit trending topics overlap with our tracked themes. If so, note which theme matches and whether we have positions in it.
 
 Return ONLY valid JSON in this exact format — no markdown, no commentary:
 {{
@@ -166,6 +236,7 @@ Return ONLY valid JSON in this exact format — no markdown, no commentary:
   "market_snapshot": {{
     "spy_move": "+0.3%",
     "qqq_move": "-0.1%",
+    "iwm_move": "+0.8%",
     "vix": "18.5",
     "market_mood": "mixed|bullish|bearish|volatile|quiet",
     "headline": "one-sentence summary of today's market"
@@ -176,30 +247,66 @@ Return ONLY valid JSON in this exact format — no markdown, no commentary:
   "theme_activity": [
     {{"theme": "copper", "status": "active|quiet|breaking", "detail": "copper futures up 1.2% on China stimulus"}}
   ],
+  "theme_tickers": [
+    {{"theme": "copper", "tickers": [
+      {{"symbol": "$FCX", "price": "$60.41", "context": "Largest US copper miner"}},
+      {{"symbol": "$SCCO", "price": "$184.30", "context": "Southern Copper"}}
+    ]}}
+  ],
   "fintwit_trending": ["topic1", "topic2", "topic3"],
+  "fintwit_theme_overlaps": [
+    {{"trending_topic": "copper breakout", "matching_theme": "copper", "our_positions": ["$WCC"], "context": "FinTwit buzzing about copper futures hitting 52-week high"}}
+  ],
   "news_events": [
     {{"event": "Fed minutes released", "impact": "hawkish tone, rates higher for longer", "relevance": "high|medium|low"}}
-  ],
-  "tweet_opportunities": [
-    {{
-      "type": "MARKET_REACTION|RECEIPT|SIGNAL_ALERT|DIP_OPPORTUNITY|THEME_MOMENTUM|ENGAGEMENT",
-      "reason": "why this is tweetable right now",
-      "tickers": ["$WCC"],
-      "urgency": "high|medium|low"
-    }}
   ]
 }}"""
 
 
-def build_context_query(positions: List[Dict], signals: Dict, recent_tweets: List[Dict]) -> str:
-    """Build the user message for Grok with current portfolio/signals context."""
+def _get_substack_topic() -> str:
+    """Get today's Substack post topic from daily_context.md if available."""
+    context_path = Path(__file__).resolve().parent.parent / "substack" / "output" / "current" / "daily_context.md"
+    if not context_path.exists():
+        return ""
+    try:
+        content = context_path.read_text()
+        topic_match = re.search(r"\*\*Topic:\*\*\s*(.+)", content)
+        category_match = re.search(r"\*\*Category:\*\*\s*(.+)", content)
+        if topic_match:
+            topic = topic_match.group(1).strip()
+            category = category_match.group(1).strip() if category_match else ""
+            label = f"{category} — {topic}" if category else topic
+            return (
+                f"\nToday's Substack post: \"{label}\"\n"
+                "Look for market context that connects to this topic for potential teaser tweets."
+            )
+    except (OSError, UnicodeDecodeError):
+        pass
+    return ""
 
-    # Format open positions
-    open_lines = []
-    for row in positions:
-        ticker = row.get('ticker', '')
-        entry = row.get('entry_price', 'N/A')
-        open_lines.append(f"${ticker}: entry ${entry}")
+
+def build_context_query(
+    positions: List[Dict],
+    signals: Dict,
+    recent_tweets: List[Dict],
+    portfolio_context: str = "",
+) -> str:
+    """Build the user message for Grok with current portfolio/signals context.
+
+    Args:
+        positions: List of position dicts (used if portfolio_context not provided).
+        signals: Scanner signals dict.
+        recent_tweets: Recent tweets for dedup.
+        portfolio_context: Pre-formatted portfolio string from _build_portfolio_context().
+    """
+    # Portfolio section — use pre-formatted context if available, else build from positions
+    if not portfolio_context:
+        open_lines = []
+        for row in positions:
+            ticker = row.get('ticker', '')
+            entry = row.get('entry_price', 'N/A')
+            open_lines.append(f"${ticker}: entry ${entry}")
+        portfolio_context = chr(10).join(open_lines) if open_lines else 'No open positions'
 
     # Extract signals (use actual field names from signals.json)
     buy_signals = signals.get('buy_signals', [])
@@ -212,16 +319,18 @@ def build_context_query(positions: List[Dict], signals: Dict, recent_tweets: Lis
     posted = [t for t in recent_tweets if t.get('status') in ('pending', 'posted')]
     recent_topics = [t.get('primary_ticker', '') for t in posted[-5:] if t.get('primary_ticker')]
 
+    substack_topic = _get_substack_topic()
+
     return f"""Current portfolio positions:
-{chr(10).join(open_lines) if open_lines else 'No open positions'}
+{portfolio_context}
 
 Recent scanner signals (PASS): {pass_tickers or 'None'}
 Recent scanner signals (CONSIDER): {consider_tickers or 'None'}
 
-Themes we track: {', '.join(TRACKED_THEMES)}
+Themes we track: {', '.join(load_tracked_themes())}
 
 Topics we've tweeted about in last 3 hours (AVOID repeating): {', '.join(recent_topics) or 'None'}
-
+{substack_topic}
 What's happening in markets right now that's relevant to our portfolio and themes?
 Focus on actionable observations, not generic commentary."""
 
@@ -278,15 +387,17 @@ def build_fallback_context(positions: List[Dict]) -> Dict:
         "market_snapshot": {
             "spy_move": "N/A",
             "qqq_move": "N/A",
+            "iwm_move": "N/A",
             "vix": "N/A",
             "market_mood": "unknown",
             "headline": "Market data unavailable — using portfolio context only"
         },
         "portfolio_movers": portfolio_movers,
         "theme_activity": [],
+        "theme_tickers": [],
         "fintwit_trending": [],
+        "fintwit_theme_overlaps": [],
         "news_events": [],
-        "tweet_opportunities": [],
         "fallback_mode": True,
     }
 
@@ -316,17 +427,18 @@ def gather_live_context() -> ContextResult:
         return result
 
     # Load data for prompt
-    positions = load_open_positions()
+    positions, portfolio_context = _build_portfolio_context()
     signals = load_signals()
     recent_tweets = load_recent_tweets()
 
     # Build prompts
     portfolio_tickers = ', '.join(f"${r.get('ticker', '')}" for r in positions)
+    themes = load_tracked_themes()
     system_prompt = CONTEXT_SYSTEM_PROMPT.format(
-        themes_list=', '.join(TRACKED_THEMES),
+        themes_list=', '.join(themes),
         portfolio_tickers=portfolio_tickers or 'None'
     )
-    user_prompt = build_context_query(positions, signals, recent_tweets)
+    user_prompt = build_context_query(positions, signals, recent_tweets, portfolio_context)
 
     # Construct Responses API request
     api_url = f"{XAI_BASE_URL}/responses"
@@ -388,6 +500,14 @@ def gather_live_context() -> ContextResult:
 
             # Parse JSON
             context_data = parse_json_response(raw_text)
+
+            # Normalize new fields with safe defaults
+            context_data.setdefault("theme_tickers", [])
+            context_data.setdefault("fintwit_theme_overlaps", [])
+            context_data.get("market_snapshot", {}).setdefault("iwm_move", "N/A")
+
+            # Remove legacy field if Grok still returns it
+            context_data.pop("tweet_opportunities", None)
 
             # Estimate cost
             usage = data.get("usage", {})
@@ -494,6 +614,7 @@ def main() -> int:
         snapshot = result.context_data.get('market_snapshot', {})
         print(f"\n  SPY: {snapshot.get('spy_move', 'N/A')} | "
               f"QQQ: {snapshot.get('qqq_move', 'N/A')} | "
+              f"IWM: {snapshot.get('iwm_move', 'N/A')} | "
               f"VIX: {snapshot.get('vix', 'N/A')}")
         print(f"  Mood: {snapshot.get('market_mood', 'unknown')}")
         print(f"  Headline: {snapshot.get('headline', 'N/A')}")
@@ -504,11 +625,16 @@ def main() -> int:
             for m in movers[:5]:
                 print(f"    {m.get('ticker', '?')}: {m.get('move', '?')} — {m.get('context', '')}")
 
-        opps = result.context_data.get('tweet_opportunities', [])
-        if opps:
-            print(f"\n  Tweet opportunities: {len(opps)}")
-            for o in opps[:3]:
-                print(f"    [{o.get('urgency', '?')}] {o.get('type', '?')}: {o.get('reason', '')}")
+        theme_tickers = result.context_data.get('theme_tickers', [])
+        if theme_tickers:
+            total = sum(len(td.get('tickers', [])) for td in theme_tickers)
+            print(f"\n  Theme tickers: {total} across {len(theme_tickers)} themes")
+
+        overlaps = result.context_data.get('fintwit_theme_overlaps', [])
+        if overlaps:
+            print(f"\n  FinTwit theme overlaps: {len(overlaps)}")
+            for o in overlaps[:3]:
+                print(f"    {o.get('trending_topic', '?')} → {o.get('matching_theme', '?')}")
 
     if args.dry_run:
         if not args.quiet:

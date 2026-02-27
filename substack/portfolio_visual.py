@@ -94,7 +94,7 @@ COLORS = {
     "header_bg": "#0F172A",
 }
 
-# Screenshot dimensions (matching chart_capture.py conventions)
+# Screenshot dimensions (matching chart_generator.py conventions)
 DASHBOARD_SIZE_X = (1400, 900)
 DASHBOARD_SIZE_SUBSTACK = (1000, 700)
 

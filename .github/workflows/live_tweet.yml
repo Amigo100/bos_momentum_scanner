@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       force_type:
-        description: 'Force tweet type (RECEIPT, MARKET_REACTION, THEME_MOMENTUM, etc.)'
+        description: 'Force tweet type (RECEIPT, MARKET_COMMENTARY, THEME_CATALYST, etc.)'
         required: false
         type: string
       dry_run:

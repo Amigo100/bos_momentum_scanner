@@ -24,7 +24,7 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from twitter.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from twitter.tweet_generator import validate_tweet_length
+from twitter.models import validate_tweet_length
 
 
 class TestExactlyAtThreshold:

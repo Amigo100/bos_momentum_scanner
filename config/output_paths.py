@@ -66,12 +66,6 @@ PORTFOLIO_SUMMARY_PNG = SUBSTACK_OUTPUT / "current" / "portfolio_summary.png"
 # TWITTER OUTPUT PATHS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-CONTENT_QUEUE_FILE = TWITTER_OUTPUT / "content_queue.json"
-CONTENT_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "content_queue_account2.json"
-CONTENT_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "content_queue_account3.json"
-DAILY_QUEUE_FILE = TWITTER_OUTPUT / "daily_content_queue.json"
-DAILY_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "daily_content_queue_account2.json"
-DAILY_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "daily_content_queue_account3.json"
 LIVE_QUEUE_FILE = TWITTER_OUTPUT / "live_content_queue.json"
 LIVE_CONTEXT_FILE = TWITTER_OUTPUT / "live_context.json"
 LIVE_COST_LOG_FILE = TWITTER_OUTPUT / "live_cost_log.json"

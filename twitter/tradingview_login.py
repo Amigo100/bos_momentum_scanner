@@ -4,13 +4,13 @@ TRADINGVIEW LOGIN HELPER
 ========================
 
 Opens a Playwright browser window for you to log in to TradingView.
-After logging in, the session is saved for chart_capture.py to use.
+After logging in, the session is saved for chart_generator.py to use.
 
 Usage:
     python tradingview_login.py
 
 After login:
-    python chart_capture.py --ticker GLXY --headless --skip-wait
+    python -m twitter.chart_generator --ticker GLXY
 """
 
 import os
@@ -82,7 +82,7 @@ def login_to_tradingview():
         browser_context.close()
 
     print("\n  ✅ Session saved!")
-    print("  💡 Now run: python chart_capture.py --ticker GLXY --headless --skip-wait")
+    print("  💡 Now run: python -m twitter.chart_generator --ticker GLXY")
     print("\n" + "═" * 60 + "\n")
 
 

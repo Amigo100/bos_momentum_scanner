@@ -21,7 +21,7 @@ The funnel shows the 5-Gate Filtering System:
     5. Forensic Audit: Final PASS signals
 
 Integration:
-    - Used by tweet_generator.py for funnel_graphic content type
+    - Used by live_tweet_generator.py for funnel_graphic content type
     - Charts saved to twitter/output/charts/funnel_graphic.png
     - Automatically updates chart_manifest.json
 """

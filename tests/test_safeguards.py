@@ -22,7 +22,7 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from twitter.signal_tracker import filter_public_positions, has_enough_wins, should_post_beat_spy
-from twitter.tweet_generator import validate_tweet_length, get_tweet_char_count
+from twitter.models import validate_tweet_length, get_tweet_char_count
 from config import get_highlight_threshold
 
 

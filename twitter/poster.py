@@ -3,19 +3,19 @@
 TWITTER POSTER - Automated X Posting with Media
 ================================================
 
-Posts scheduled tweets to X with chart images attached.
-Reads from content_queue.json, posts next pending tweet, updates status.
+Posts live tweets/threads to X with chart images attached.
+Reads from live_content_queue.json, posts next pending item, updates status.
 
 Usage:
-    python twitter_poster.py              # Post next pending tweet
-    python twitter_poster.py --dry-run    # Show what would be posted
-    python twitter_poster.py --force      # Post regardless of schedule
+    python -m twitter.poster --dry-run          # Show what would be posted
+    python -m twitter.poster --account main     # Post for main account
+    python -m twitter.poster --account all      # Post for all accounts
+    python -m twitter.poster --verify           # Check credentials
 
 Environment Variables Required:
-    X_API_KEY
-    X_API_SECRET  
-    X_ACCESS_TOKEN
-    X_ACCESS_SECRET
+    X1_API_KEY, X1_API_SECRET, X1_ACCESS_TOKEN, X1_ACCESS_SECRET  (main)
+    X2_API_KEY, X2_API_SECRET, X2_ACCESS_TOKEN, X2_ACCESS_SECRET  (account2)
+    X3_API_KEY, X3_API_SECRET, X3_ACCESS_TOKEN, X3_ACCESS_SECRET  (account3)
 """
 
 import os
@@ -44,12 +44,6 @@ except ImportError:
     sys.exit(1)
 
 
-# Import staleness config
-try:
-    from config import TWEET_STALENESS_DAYS
-except ImportError:
-    TWEET_STALENESS_DAYS = 3
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -58,67 +52,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Import queue file paths from config
 try:
-    from config import (
-        CONTENT_QUEUE_FILE, DAILY_QUEUE_FILE, LIVE_QUEUE_FILE, TWITTER_OUTPUT,
-    )
-    from config.output_paths import (
-        CONTENT_QUEUE_ACCOUNT2_FILE, CONTENT_QUEUE_ACCOUNT3_FILE,
-        DAILY_QUEUE_ACCOUNT2_FILE, DAILY_QUEUE_ACCOUNT3_FILE,
-    )
-    QUEUE_FILE = CONTENT_QUEUE_FILE
+    from config import LIVE_QUEUE_FILE, TWITTER_OUTPUT
 except ImportError:
     TWITTER_OUTPUT = BASE_DIR / "twitter" / "output"
-    QUEUE_FILE = TWITTER_OUTPUT / "content_queue.json"
-    CONTENT_QUEUE_FILE = QUEUE_FILE
-    CONTENT_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "content_queue_account2.json"
-    CONTENT_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "content_queue_account3.json"
-    DAILY_QUEUE_FILE = TWITTER_OUTPUT / "daily_content_queue.json"
-    DAILY_QUEUE_ACCOUNT2_FILE = TWITTER_OUTPUT / "daily_content_queue_account2.json"
-    DAILY_QUEUE_ACCOUNT3_FILE = TWITTER_OUTPUT / "daily_content_queue_account3.json"
     LIVE_QUEUE_FILE = TWITTER_OUTPUT / "live_content_queue.json"
-
-# 7-slot system (Eastern Time)
-# Slots 1, 6, 7 pull from the DAILY queue (fresh intraday content)
-# Slots 2-5 pull from the WEEKLY queue (generated on Friday)
-SLOT_TIMES = {
-    1: "07:30",  # Pre-market (daily)
-    2: "10:00",  # Morning (weekly — 30min after open)
-    3: "12:30",  # Midday (weekly)
-    4: "15:30",  # Power Hour (weekly — CRITICAL)
-    5: "18:00",  # After-hours (weekly)
-    6: "17:00",  # Late afternoon (daily)
-    7: "18:30",  # Evening (daily)
-}
-
-# Map slot → queue source
-DAILY_SLOTS = {1, 6, 7}     # Pull from daily_content_queue.json
-WEEKLY_SLOTS = {2, 3, 4, 5}  # Pull from content_queue.json
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# DEDUPLICATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-def is_duplicate_content(tweet_text: str, queue: List[Dict]) -> bool:
-    """
-    Check if this exact tweet text was already posted.
-
-    Prevents posting duplicate tweets if the generator runs multiple times.
-
-    Args:
-        tweet_text: The text of the tweet to check
-        queue: The content queue list
-
-    Returns:
-        True if a tweet with this exact text was already posted
-    """
-    normalized_text = tweet_text.strip()
-    for item in queue:
-        if item.get('status') == 'posted':
-            posted_text = item.get('text', '').strip()
-            if posted_text == normalized_text:
-                return True
-    return False
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -358,60 +295,6 @@ def verify_credentials(account_key: str = 'main') -> tuple:
         return False, f"auth failed: {err}"
 
 
-def get_queue_path(account_key: str = 'main') -> Path:
-    """Get the content queue file path for a given account.
-
-    Args:
-        account_key: Account identifier ('main', 'account2', 'account3').
-
-    Returns:
-        Path to the account's content_queue JSON file.
-    """
-    try:
-        from config import TWITTER_ACCOUNTS
-        account = TWITTER_ACCOUNTS.get(account_key, TWITTER_ACCOUNTS['main'])
-        return TWITTER_OUTPUT / account['queue_file']
-    except (ImportError, KeyError):
-        return QUEUE_FILE
-
-
-def get_daily_queue_path(account_key: str = 'main') -> Path:
-    """Get the DAILY content queue file path for a given account.
-
-    Daily queues hold intraday content generated by the daily scanner.
-
-    Args:
-        account_key: Account identifier ('main', 'account2', 'account3').
-
-    Returns:
-        Path to the account's daily_content_queue JSON file.
-    """
-    daily_paths = {
-        'main': DAILY_QUEUE_FILE,
-        'account2': DAILY_QUEUE_ACCOUNT2_FILE,
-        'account3': DAILY_QUEUE_ACCOUNT3_FILE,
-    }
-    return daily_paths.get(account_key, DAILY_QUEUE_FILE)
-
-
-def get_queue_for_slot(slot: int, account_key: str = 'main') -> Path:
-    """Select the correct queue file (weekly vs daily) based on slot number.
-
-    Slots 1, 6, 7 → daily queue (fresh intraday content)
-    Slots 2-5     → weekly queue (Friday-generated content)
-
-    Args:
-        slot: Slot number (1-7)
-        account_key: Account identifier
-
-    Returns:
-        Path to the appropriate queue file
-    """
-    if slot in DAILY_SLOTS:
-        return get_daily_queue_path(account_key)
-    return get_queue_path(account_key)
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # QUEUE MANAGEMENT
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -461,99 +344,6 @@ def save_queue(queue: list[Dict], queue_file: Path) -> None:
             os.remove(temp_path)
         print(f"ERROR: Failed to save queue: {e}")
         raise
-
-
-def get_current_slot() -> int:
-    """Determine current time slot based on Eastern Time (ET).
-
-    Uses timezone-aware datetime to correctly handle both local and CI environments.
-
-    7-slot system:
-        Slot 1: 07:00 - 09:30   (daily — pre-market)
-        Slot 2: 09:30 - 12:00   (weekly — morning)
-        Slot 3: 12:00 - 14:30   (weekly — midday)
-        Slot 4: 14:30 - 16:30   (weekly — power hour)
-        Slot 5: 16:30 - 17:15   (weekly — after-hours)
-        Slot 6: 17:15 - 18:15   (daily — late afternoon)
-        Slot 7: 18:15 - 20:00   (daily — evening)
-    """
-    et = ZoneInfo("America/New_York")
-    now = datetime.now(et)
-    current_time = now.hour * 60 + now.minute
-
-    if current_time < 9 * 60 + 30:      # < 09:30
-        return 1
-    elif current_time < 12 * 60:         # < 12:00
-        return 2
-    elif current_time < 14 * 60 + 30:    # < 14:30
-        return 3
-    elif current_time < 16 * 60 + 30:    # < 16:30
-        return 4
-    elif current_time < 17 * 60 + 15:    # < 17:15
-        return 5
-    elif current_time < 18 * 60 + 15:    # < 18:15
-        return 6
-    elif current_time < 20 * 60:         # < 20:00
-        return 7
-    else:
-        return 0  # Outside posting hours
-    
-
-def find_next_content(queue: list[Dict], force: bool = False, target_slot: Optional[int] = None) -> Optional[Dict]:
-    """Find the next content item (tweet or thread) to post based on schedule and slot.
-
-    Args:
-        queue: List of content dictionaries (tweets or threads)
-        force: If True, post first pending regardless of schedule
-        target_slot: If specified, only consider items for this slot (1-7)
-
-    Returns:
-        Next pending content item (single tweet or thread), or None if nothing due
-    """
-    # Use Eastern Time for date comparison to match schedule
-    et = ZoneInfo("America/New_York")
-    today = datetime.now(et).strftime("%Y-%m-%d")
-    current_slot = get_current_slot()
-
-    for tweet in queue:
-        if tweet.get("status") != "pending":
-            continue
-
-        scheduled_date = tweet.get("scheduled_date", "")
-        slot = tweet.get("slot", 0)
-
-        # Filter by target slot if specified
-        if target_slot is not None and slot != target_slot:
-            continue
-
-        # If forcing, post first pending tweet (that matches slot filter)
-        if force:
-            return tweet
-
-        # Check if this tweet is due
-        if scheduled_date <= today:
-            # Skip stale tweets (> 3 days past scheduled date)
-            if scheduled_date < today:
-                try:
-                    sched_dt = datetime.strptime(scheduled_date, "%Y-%m-%d")
-                    today_dt = datetime.strptime(today, "%Y-%m-%d")
-                    days_overdue = (today_dt - sched_dt).days
-                    if days_overdue > TWEET_STALENESS_DAYS:
-                        tweet['status'] = 'expired'
-                        tweet['skip_reason'] = f'Stale: {days_overdue} days past scheduled date'
-                        continue
-                except ValueError:
-                    pass  # Unparseable date — let it through
-
-            # If it's today, check slot
-            if scheduled_date == today:
-                if slot <= current_slot:
-                    return tweet
-            else:
-                # Past due (within 3-day window) - post it
-                return tweet
-
-    return None
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -870,111 +660,44 @@ def post_thread(client_v2, api_v1, thread_item: Dict, dry_run: bool = False) -> 
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def post_for_account(account_key: str, args, target_slot) -> int:
-    """Post content for a single account.
-
-    Selects the correct queue (weekly vs daily) based on slot:
-      - Slots 1, 6, 7 → daily_content_queue*.json
-      - Slots 2-5      → content_queue*.json
-
-    If --queue is given explicitly, that overrides the automatic selection.
+def post_for_account(account_key: str, args) -> int:
+    """Post content for a single account from the live queue.
 
     Args:
         account_key: Account identifier ('main', 'account2', 'account3').
         args: Parsed CLI arguments.
-        target_slot: Target slot number or None for 'all'.
 
     Returns:
         0 on success, 1 on failure.
     """
-    # ── LIVE QUEUE MODE (Phase 5 — live tweet system) ──────────────────────
-    if getattr(args, 'live_queue', False):
-        queue_file = LIVE_QUEUE_FILE
-        print(f"\n  📂 [{account_key}] Live Queue: {queue_file}")
-
-        if not queue_file.exists():
-            print(f"  ⚠ [{account_key}] Live queue not found: {queue_file}")
-            return 0
-
-        queue = load_queue(queue_file)
-
-        pending = [t for t in queue if t.get("status") == "pending"]
-        posted = [t for t in queue if t.get("status") == "posted"]
-        print(f"  📊 [{account_key}] Status: {len(posted)} posted, {len(pending)} pending")
-
-        content_item = find_next_live_content(queue, account_key)
-
-        if not content_item:
-            print(f"\n  ℹ️  [{account_key}] No pending live content")
-            return 0
-
-        # Similarity duplicate check (fuzzy, 24h window)
-        tweet_text = content_item.get('text', '')
-        is_dup, dup_reason = check_similarity_duplicate(tweet_text, queue)
-        if is_dup:
-            print(f"\n  ⚠️  [{account_key}] SIMILAR DUPLICATE: {dup_reason}")
-            content_item['status'] = 'skipped'
-            content_item['skip_reason'] = dup_reason
-            if not args.dry_run:
-                save_queue(queue, queue_file)
-            return 0
-
-        # Initialize clients
-        if args.dry_run:
-            client_v2, api_v1 = None, None
-        else:
-            client_v2, api_v1 = get_clients(account_key)
-            if client_v2 is None:
-                print(f"  ⚠ [{account_key}] No credentials, skipping")
-                return 0
-
-        print(f"\n  📝 [{account_key}] LIVE TWEET")
-        success = post_tweet(client_v2, api_v1, content_item, dry_run=args.dry_run)
-
-        if not args.dry_run:
-            save_queue(queue, queue_file)
-            print(f"\n  💾 [{account_key}] Live queue updated: {queue_file}")
-
-        return 0 if success else 1
-
-    # ── EXISTING QUEUE MODE (weekly/daily — unchanged) ─────────────────────
-    # If a specific queue was given on CLI, use it
-    if args.queue:
-        queue_file = Path(args.queue)
-    elif target_slot is not None:
-        # Select queue based on which slot we are targeting
-        queue_file = get_queue_for_slot(target_slot, account_key)
-    else:
-        # 'all' mode — determine from current time slot
-        current = get_current_slot()
-        if current == 0:
-            # Outside posting hours — fall back to weekly queue
-            queue_file = get_queue_path(account_key)
-        else:
-            queue_file = get_queue_for_slot(current, account_key)
-
-    source_label = "daily" if queue_file.name.startswith("daily_") else "weekly"
-    print(f"\n  📂 [{account_key}] Queue ({source_label}): {queue_file}")
+    queue_file = LIVE_QUEUE_FILE
+    print(f"\n  📂 [{account_key}] Live Queue: {queue_file}")
 
     if not queue_file.exists():
-        print(f"  ⚠ [{account_key}] Queue file not found, skipping")
+        print(f"  ⚠ [{account_key}] Live queue not found: {queue_file}")
         return 0
 
     queue = load_queue(queue_file)
 
     pending = [t for t in queue if t.get("status") == "pending"]
     posted = [t for t in queue if t.get("status") == "posted"]
-    threads = [t for t in queue if t.get("is_thread", False)]
-
     print(f"  📊 [{account_key}] Status: {len(posted)} posted, {len(pending)} pending")
-    if threads:
-        thread_pending = [t for t in threads if t.get("status") == "pending"]
-        print(f"  🧵 [{account_key}] Threads: {len(thread_pending)} pending of {len(threads)} total")
 
-    content_item = find_next_content(queue, force=args.force, target_slot=target_slot)
+    content_item = find_next_live_content(queue, account_key)
 
     if not content_item:
-        print(f"\n  ℹ️  [{account_key}] No content due right now")
+        print(f"\n  ℹ️  [{account_key}] No pending live content")
+        return 0
+
+    # Similarity duplicate check (fuzzy, 24h window)
+    tweet_text = content_item.get('text', '')
+    is_dup, dup_reason = check_similarity_duplicate(tweet_text, queue)
+    if is_dup:
+        print(f"\n  ⚠️  [{account_key}] SIMILAR DUPLICATE: {dup_reason}")
+        content_item['status'] = 'skipped'
+        content_item['skip_reason'] = dup_reason
+        if not args.dry_run:
+            save_queue(queue, queue_file)
         return 0
 
     # Initialize clients
@@ -986,44 +709,31 @@ def post_for_account(account_key: str, args, target_slot) -> int:
             print(f"  ⚠ [{account_key}] No credentials, skipping")
             return 0
 
-    # Duplicate check
-    tweet_text = content_item.get('text', '')
-    if is_duplicate_content(tweet_text, queue):
-        print(f"\n  ⚠️  [{account_key}] DUPLICATE DETECTED - skipping")
-        content_item['status'] = 'skipped'
-        content_item['skip_reason'] = 'duplicate_content'
-        if not args.dry_run:
-            save_queue(queue, queue_file)
-        return 0
-
-    # Post
-    if content_item.get('is_thread', False):
-        print(f"\n  🧵 [{account_key}] Detected: THREAD")
+    # Route to thread or single tweet posting
+    if content_item.get("is_thread", False):
+        print(f"  🧵 [{account_key}] LIVE THREAD ({len(content_item.get('thread_tweets', []))} tweets)")
         success = post_thread(client_v2, api_v1, content_item, dry_run=args.dry_run)
     else:
-        print(f"\n  📝 [{account_key}] Detected: SINGLE TWEET")
+        print(f"  📝 [{account_key}] LIVE TWEET")
         success = post_tweet(client_v2, api_v1, content_item, dry_run=args.dry_run)
 
     if not args.dry_run:
         save_queue(queue, queue_file)
-        print(f"\n  💾 [{account_key}] Queue updated: {queue_file}")
+        print(f"\n  💾 [{account_key}] Live queue updated: {queue_file}")
 
     return 0 if success else 1
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Post scheduled tweets/threads to X")
+    parser = argparse.ArgumentParser(description="Post live tweets/threads to X")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be posted")
     parser.add_argument("--force", action="store_true", help="Post next pending regardless of schedule")
-    parser.add_argument("--queue", type=str, help="Path to content queue JSON")
-    parser.add_argument("--slot", type=str, default="all",
-                        help="Which slot to post (1-7 or 'all'). Slots 1/6/7=daily, 2-5=weekly")
     parser.add_argument("--account", type=str, default="main",
                         help="Account to post to (main, account2, account3, or all)")
-    parser.add_argument("--live-queue", action="store_true",
-                        help="Post from live content queue only (live tweet system)")
     parser.add_argument("--verify", action="store_true",
                         help="Verify Twitter credentials for all accounts (no posting)")
+    parser.add_argument("--live-queue", action="store_true",
+                        help="Use live content queue (default behavior, kept for workflow compat)")
     args = parser.parse_args()
 
     print("\n" + "═" * 60)
@@ -1055,8 +765,6 @@ def main() -> int:
         print()
         return 0 if all_ok else 1
 
-    target_slot = None if args.slot == "all" else int(args.slot) if args.slot.isdigit() else None
-
     if args.account == "all":
         # Post to all accounts sequentially with staggered delays
         try:
@@ -1069,7 +777,7 @@ def main() -> int:
         for i, account_key in enumerate(accounts):
             print(f"\n{'─' * 60}")
             print(f"  === Account: {account_key} ===")
-            ret = post_for_account(account_key, args, target_slot)
+            ret = post_for_account(account_key, args)
             if ret != 0:
                 result = ret
 
@@ -1091,7 +799,7 @@ def main() -> int:
         return result
     else:
         # Single account mode
-        result = post_for_account(args.account, args, target_slot)
+        result = post_for_account(args.account, args)
         print("\n" + "═" * 60)
         return result
 

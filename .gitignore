@@ -48,9 +48,16 @@ trades/
 
 # Section output directories (generated data, not source code)
 portfolio/output/
-scanner/output/
-substack/output/
+scanner/output/*
+substack/output/*
 twitter/output/
+
+# Exceptions: files needed by Saturday workflow (GitHub Actions)
+!scanner/output/decisions.json
+!scanner/output/signal_history_rows.csv
+!substack/output/current/
+substack/output/current/*
+!substack/output/current/newsletter.html
 
 # Dashboard bundled data (generated at build time)
 dashboard/data/

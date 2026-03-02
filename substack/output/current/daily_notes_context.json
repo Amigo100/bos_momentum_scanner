@@ -1,7 +1,7 @@
 {
   "day": "monday",
   "date": "2026-03-02",
-  "generated_at": "2026-03-02T11:31:14.768679Z",
+  "generated_at": "2026-03-02T15:28:11.483240Z",
   "note_schedule": [
     {
       "slot": 1,
@@ -20,37 +20,37 @@
     }
   ],
   "live_data": {
-    "spy_price": 685.99,
-    "spy_change_pct": -0.48,
-    "qqq_price": 607.29,
-    "qqq_change_pct": -0.32,
-    "vix": 23.3
+    "spy_price": 683.6,
+    "spy_change_pct": -0.35,
+    "qqq_price": 604.71,
+    "qqq_change_pct": -0.42,
+    "vix": 21.2
   },
   "portfolio": {
     "open_count": 3,
     "win_rate": 0.0,
-    "total_pnl_pct": 2.3,
+    "total_pnl_pct": -0.5,
     "top_performer": {
       "symbol": "NGNE",
-      "pnl_pct": 14.6,
+      "pnl_pct": 2.5,
       "entry": 20.5,
-      "current": 23.49
+      "current": 21.01
     },
     "positions": [
       {
         "symbol": "NGNE",
-        "pnl_pct": 14.6,
+        "pnl_pct": 2.5,
         "theme": "Rare disease gene therapy \u2014 Rett syndrome"
       },
       {
-        "symbol": "RELY",
-        "pnl_pct": -2.6,
-        "theme": "Cross-Border Digital Payments & Remittances"
+        "symbol": "ETON",
+        "pnl_pct": -0.9,
+        "theme": "Healthcare Contrarian Recovery"
       },
       {
-        "symbol": "ETON",
-        "pnl_pct": -5.2,
-        "theme": "Healthcare Contrarian Recovery"
+        "symbol": "RELY",
+        "pnl_pct": -3.1,
+        "theme": "Cross-Border Digital Payments & Remittances"
       }
     ]
   },
@@ -64,7 +64,7 @@
         "composite": 6.8
       },
       {
-        "name": "China Consumer Recovery",
+        "name": "Biotech \u2014 Protein Degradation",
         "status": "SELECTIVE",
         "composite": 4.5
       }

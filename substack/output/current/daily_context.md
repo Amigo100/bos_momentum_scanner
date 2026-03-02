@@ -98,7 +98,7 @@ Output 3 notes clearly labelled [NOTE 1], [NOTE 2], [NOTE 3]. Each as self-conta
 ---
 
 ## MARKET CONTEXT
-**Live data (11:31 ET):** SPY $685.99 (-0.48%) | QQQ $607.29 (-0.32%) | VIX 23.3
+**Live data (15:28 ET):** SPY $683.60 (-0.35%) | QQQ $604.71 (-0.42%) | VIX 21.2
 
 Major indices posted a volatile week ending February 27th, with the S&P 500, NASDAQ, and Russell 2000 all declining 0.50-0.80%. Weakness was widespread, with the NASDAQ closing 0.9% lower, the S&P 500 down 0.4%, and the small-cap Russell 2000 falling 1.9% on Friday alone. Markets digested mounting concerns over AI disruption, geopolitical tensions with Iran, and stronger-than-expected producer price data suggesting sticky inflation. The VIX spiked 6.6% to close at 19.86, signaling heightened uncertainty as investors moved into risk-off mode.
 
@@ -124,7 +124,7 @@ Next week brings NVIDIA's highly anticipated Q4 2026 earnings on Tuesday, Februa
 No assessed signals available.
 
 ## PORTFOLIO SNAPSHOT
-Open: 3 positions | Avg P&L: +2.3% | Big winners (25%+): 0
+Open: 3 positions | Avg P&L: -0.5% | Big winners (25%+): 0
 
 - Portfolio Return: +2.2%
 - S&P 500 Return: +0.5%
@@ -137,32 +137,34 @@ Open: 3 positions | Avg P&L: +2.3% | Big winners (25%+): 0
 
 | Metric | Return |
 |--------|--------|
-| **Portfolio (Compounding)** | +2.2% |
-| **S&P 500** | +0.5% |
-| **Alpha vs S&P 500** | +1.7% |
-| **NASDAQ (QQQ)** | +1.0% |
-| **Alpha vs NASDAQ** | +1.3% |
+| **Portfolio (Compounding)** | -0.5% |
+| **S&P 500** | +0.2% |
+| **Alpha vs S&P 500** | -0.7% |
+| **NASDAQ (QQQ)** | +0.6% |
+| **Alpha vs NASDAQ** | -1.1% |
 | **Since** | 2026-02-22 |
 
-*Outperforming the S&P 500 by 1.7pp and NASDAQ by 1.3pp since inception.*
+*Underperforming SPY by 0.7pp since inception. Staying disciplined.*
 
 
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $NGNE | $23.49 | $20.50 | +14.6% | 1 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $16.70 | $17.15 | -2.6% | 8 | Cross-Border Digital Payments & Remittances | ExD |
-| $ETON | $16.99 | $17.93 | -5.2% | 8 | Healthcare Contrarian Recovery | ExD |
+| $NGNE | $21.01 | $20.50 | +2.5% | 1 | Rare disease gene therapy — Rett syndrome | ExD |
+| $ETON | $17.77 | $17.93 | -0.9% | 8 | Healthcare Contrarian Recovery | ExD |
+| $RELY | $16.61 | $17.15 | -3.1% | 8 | Cross-Border Digital Payments & Remittances | ExD |
 
 ### Showcase-Ready Winners
 - $NGNE: $20.50 entry, +14.6% (Rare disease gene therapy — Rett syndrome)
+- $ETON: $17.93 entry, +2.9% (Healthcare Contrarian Recovery)
+- $RELY: $17.15 entry, +0.0% (Cross-Border Digital Payments & Remittances)
 
 ## THEME SUMMARY
 
-- **Rare Disease Gene Therapy** (SELECTIVE, 6.8/10): Gene therapy for rare neurological disease is entering registrational stage with multiple FDA de-risking signals (BTD wave, accelerated approval precedents). However, the sector remains binary — individual asset success/failure drives returns, not sector-wide momentum. Commercial viability unproven at scale.
+- **Rare Disease Gene Therapy** (SELECTIVE, 6.8/10): Gene therapy for rare neurological disease entering registrational stage with multiple FDA de-risking signals. However, sector remains binary — individual asset success/failure drives returns, not sector-wide momentum. Not a secular wave. Broader gene therapy sector in multi-year bear market since Bluebird Bio commercial struggles and AAV deaths.
   Catalysts: NGNE Embolden data mid-2026; TSHA REVEAL Part A update H1 2026; FDA Plausible Mechanism Framework finalization
-- **China Consumer Recovery** (SELECTIVE, 4.5/10): Chinese consumer spending shows early signs of recovery, but US-China tariff escalation and regulatory uncertainty make US-listed China equities risky. Theme is too early and lacks defined catalyst timeline.
-  Catalysts: China stimulus package; Tariff de-escalation; Consumer spending data improvement
+- **Biotech — Protein Degradation** (SELECTIVE, 4.5/10): TPD companies face dual challenge of proving efficacy in competitive oncology landscape while BMS holds first-mover advantage. Small players like CCCC have warrant overhang and long timelines. Not a theme with current momentum.
+  Catalysts: CCCC Phase 1 expansion data; BMS mezigdomide label expansion
 
 ### Theme Trends (last 4 weeks)
 
@@ -174,9 +176,18 @@ Open: 3 positions | Avg P&L: +2.3% | Big winners (25%+): 0
 
 ### Recent Content (anti-repetition)
 
-**2026-W09:**
+**2026-W08:**
+- Post: dd_ETON
+- Post: dd_NPB
+- Post: dd_RELY
+- Post: friday_quick_take
+- Post: saturday_weekly_recap
+- Post: thursday_portfolio_spotlight
+- Post: tuesday_dd_ETON
+- Post: wednesday_theme_deep_dive
+- Notes: 23 published
 
-**2026-W10:**
+**2026-W09:**
 
 
 ## TODAY'S NOTES
@@ -193,4 +204,4 @@ Open: 3 positions | Avg P&L: +2.3% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-02 11:31:14 | Week 10*
+*Generated: 2026-03-02 15:28:11 | Week 10*

@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-02-27T21:15:43.985983+00:00",
-  "prices_updated_at": "2026-02-27T21:15:43.300446+00:00",
+  "generated_at": "2026-03-02T11:30:28.418323+00:00",
+  "prices_updated_at": "2026-03-02T11:30:27.446607+00:00",
   "summary": {
-    "open_positions": 2,
+    "open_positions": 3,
     "closed_trades": 0,
     "win_rate": 0,
     "avg_winner": 0,
     "avg_loser": 0,
-    "unrealized_pnl_pct": -3.96
+    "unrealized_pnl_pct": 2.88
   },
   "equity": {
-    "nav": 9606.67,
+    "nav": 15335.94,
     "cash": 0.0,
-    "invested": 9606.67,
-    "total_deployed": 10000.0,
-    "total_return_pct": -3.93,
+    "invested": 15335.94,
+    "total_deployed": 15000.0,
+    "total_return_pct": 2.24,
     "spy_return_pct": 0.53,
-    "alpha_pct": -4.46,
+    "alpha_pct": 1.71,
     "qqq_return_pct": 0.98,
-    "alpha_vs_qqq_pct": -4.91,
+    "alpha_vs_qqq_pct": 1.26,
     "max_drawdown_pct": -3.93
   },
   "open_positions": [
@@ -30,7 +30,7 @@
       "highest_close": 18.45,
       "pnl_pct": -5.24,
       "pnl_usd": -94.0,
-      "days_held": 5,
+      "days_held": 8,
       "theme": "Healthcare Contrarian Recovery",
       "conviction": 8,
       "stop_level": 0.0,
@@ -45,20 +45,57 @@
       "highest_close": 17.15,
       "pnl_pct": -2.62,
       "pnl_usd": -45.0,
-      "days_held": 5,
+      "days_held": 8,
       "theme": "Cross-Border Digital Payments & Remittances",
       "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "NGNE",
+      "entry_date": "2026-03-01",
+      "entry_price": 20.5,
+      "current_price": 23.489999771118164,
+      "highest_close": 23.49,
+      "pnl_pct": 14.59,
+      "pnl_usd": 299.0,
+      "days_held": 1,
+      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "conviction": 6,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
     }
   ],
   "closed_trades": [],
-  "winners": [],
+  "winners": [
+    {
+      "ticker": "NGNE",
+      "entry_date": "2026-03-01",
+      "entry_price": 20.5,
+      "current_price": 23.489999771118164,
+      "highest_close": 23.49,
+      "pnl_pct": 14.59,
+      "pnl_usd": 299.0,
+      "days_held": 1,
+      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "conviction": 6,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    }
+  ],
   "big_wins": [],
   "home_runs": [],
   "recent_exits": [],
   "movers_today": [
+    {
+      "ticker": "NGNE",
+      "current_price": 23.49,
+      "prev_close": 19.68000030517578,
+      "change_pct": 19.36
+    },
     {
       "ticker": "ETON",
       "current_price": 16.99,
@@ -86,6 +123,13 @@
         "RELY"
       ],
       "avg_pnl_pct": -2.62
+    },
+    "Rare disease gene therapy \u2014 Rett syndrome": {
+      "count": 1,
+      "tickers": [
+        "NGNE"
+      ],
+      "avg_pnl_pct": 14.59
     }
   },
   "benchmarks": {
@@ -121,8 +165,8 @@
     },
     "1y": {
       "portfolio": 0.0,
-      "spy": 24.938304871313967,
-      "alpha": -24.938304871313967,
+      "spy": 24.938290982874435,
+      "alpha": -24.938290982874435,
       "trades": 0
     }
   }

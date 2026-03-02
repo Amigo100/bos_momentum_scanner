@@ -1,93 +1,79 @@
 {
-  "day": "tuesday",
-  "date": "2026-02-26",
-  "generated_at": "2026-02-26T19:47:07.432114Z",
+  "day": "monday",
+  "date": "2026-03-02",
+  "generated_at": "2026-03-02T11:31:14.768679Z",
   "note_schedule": [
     {
       "slot": 1,
-      "type": "SIGNAL_ALERT",
+      "type": "MARKET_REACTION",
       "time": "08:30 ET"
     },
     {
       "slot": 2,
-      "type": "THEME_MOMENTUM",
+      "type": "SYSTEM_PROOF",
       "time": "12:30 ET"
     },
     {
       "slot": 3,
-      "type": "ENGAGEMENT_HOOK",
+      "type": "PORTFOLIO_PULSE",
       "time": "17:00 ET"
     }
   ],
   "live_data": {
-    "spy_price": 687.75,
-    "spy_change_pct": -0.78,
-    "qqq_price": 607.54,
-    "qqq_change_pct": -1.44,
-    "vix": 20.0
+    "spy_price": 685.99,
+    "spy_change_pct": -0.48,
+    "qqq_price": 607.29,
+    "qqq_change_pct": -0.32,
+    "vix": 23.3
   },
   "portfolio": {
-    "open_count": 2,
+    "open_count": 3,
     "win_rate": 0.0,
-    "total_pnl_pct": -3.5,
+    "total_pnl_pct": 2.3,
     "top_performer": {
-      "symbol": "RELY",
-      "pnl_pct": -2.2,
-      "entry": 17.15,
-      "current": 16.78
+      "symbol": "NGNE",
+      "pnl_pct": 14.6,
+      "entry": 20.5,
+      "current": 23.49
     },
     "positions": [
       {
+        "symbol": "NGNE",
+        "pnl_pct": 14.6,
+        "theme": "Rare disease gene therapy \u2014 Rett syndrome"
+      },
+      {
         "symbol": "RELY",
-        "pnl_pct": -2.2,
+        "pnl_pct": -2.6,
         "theme": "Cross-Border Digital Payments & Remittances"
       },
       {
         "symbol": "ETON",
-        "pnl_pct": -4.8,
+        "pnl_pct": -5.2,
         "theme": "Healthcare Contrarian Recovery"
       }
     ]
   },
   "signals": {
-    "new_this_week": [
-      "ETON",
-      "RELY",
-      "NPB"
-    ],
-    "pass_count": 3,
+    "new_this_week": [],
+    "pass_count": 0,
     "themes": [
       {
-        "name": "Grid Infrastructure Modernization",
-        "status": "PRIME",
-        "composite": 8.1
-      },
-      {
-        "name": "Defense Industrial Base Modernization",
-        "status": "PRIME",
-        "composite": 7.5
-      },
-      {
-        "name": "Industrial AI Infrastructure",
-        "status": "INVESTABLE",
-        "composite": 7.2
-      },
-      {
-        "name": "Healthcare Contrarian Recovery",
-        "status": "INVESTABLE",
+        "name": "Rare Disease Gene Therapy",
+        "status": "SELECTIVE",
         "composite": 6.8
       },
       {
-        "name": "Energy Infrastructure Transition",
+        "name": "China Consumer Recovery",
         "status": "SELECTIVE",
-        "composite": 5.7
+        "composite": 4.5
       }
     ]
   },
   "scanner_stats": {
-    "universe_size": 885,
-    "technical_pass": 5,
-    "theme_pass": 4,
-    "green_signals": 3
+    "universe_size": 1279,
+    "technical_pass": 16,
+    "theme_pass": 0,
+    "green_signals": 0
   }
 }

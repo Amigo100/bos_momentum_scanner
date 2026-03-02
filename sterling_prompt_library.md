@@ -2229,6 +2229,12 @@ Only flag material events. Don't list routine items.
 > This produces the structured JSON that your Saturday workflow reads to update the
 > portfolio, generate signals.json, and build the weekly Substack schedule.
 >
+> **CRITICAL:** This prompt must run AFTER Prompt 4 (and Prompt 3B if triggered).
+> The Saturday workflow treats every stock in `new_positions` as a confirmed buy and
+> adds it to the portfolio automatically — there is no second check. If Prompt 4
+> removed a stock, it MUST NOT appear in `new_positions`. The reconciliation step
+> at the top of this prompt enforces this, but you should also verify the output.
+>
 > **Note:** The Substack content schedule is generated AUTOMATICALLY by
 > `content_production_guide.py` from your repo data (portfolio, themes, signals).
 > You do NOT generate it in chat — the repo has full history context that chat lacks.
@@ -2236,6 +2242,39 @@ Only flag material events. Don't list routine items.
 
 ```
 We've finalized our analysis. Now produce the structured decisions.json export.
+
+═══════════════════════════════════════════════════════════════════
+MANDATORY: PROMPT 4 RECONCILIATION (do this BEFORE generating JSON)
+═══════════════════════════════════════════════════════════════════
+
+Before writing any JSON, review the Prompt 4 (Portfolio Review Gate) output from
+this session. Build two explicit lists:
+
+APPROVED FOR DEPLOYMENT (go into "new_positions"):
+- Only stocks that Prompt 4 APPROVED or APPROVED WITH ADJUSTMENTS
+- If Prompt 4 adjusted sizing (e.g., reduced from T2 to T3), use the ADJUSTED
+  values, not the original Prompt 3 values
+- If a stock went through Prompt 3B (off-system exception) and was APPROVED or
+  CONDITIONAL, include it with off_system_exception: true
+- If Prompt 4 was not run (should never happen), STOP and flag this
+
+REJECTED / REMOVED (go into "no_go"):
+- Stocks removed by Prompt 4 → stage_rejected: "review_gate"
+- Stocks denied by Prompt 3B → stage_rejected: "exception_denied"
+- Stocks filtered at thematic (Prompt 1) → stage_rejected: "thematic"
+- Stocks filtered at gate (Prompt 2) → stage_rejected: "gate"
+- Stocks filtered at DD (Prompt 3) → stage_rejected: "dd"
+
+State both lists explicitly before generating JSON. Example:
+"APPROVED: TICK1 (T2, conviction 8), TICK2 (T3, conviction 7, off-system exception)
+ REJECTED: TICK3 (removed by Prompt 4 — system drift), TICK4 (filtered at gate —
+ dilution DQ), TICK5 (3B exception denied — failed checks 1 and 2)"
+
+If a stock appears in review_gate.stocks_removed, it MUST NOT appear in
+new_positions. This is the rule that prevents the NGNE bug — a stock rejected
+by the CRO must never flow through to the Saturday workflow as a confirmed buy.
+
+═══════════════════════════════════════════════════════════════════
 
 Generate ONLY valid JSON (no markdown fences, no commentary). I'll paste this directly
 into my repo as scanner/output/decisions.json.
@@ -2380,9 +2419,11 @@ into my repo as scanner/output/decisions.json.
     {
       "symbol": "TICKER",
       "verdict": "NO GO",
-      "stage_rejected": "thematic|gate|dd",
+      "stage_rejected": "thematic|gate|dd|review_gate|exception_denied",
       "rejection_reason": "Specific reason",
-      "reconsider_if": "What would flip the verdict"
+      "reconsider_if": "What would flip the verdict",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": "Only populated if stage_rejected is review_gate — the CRO's specific rationale"
     }
   ],
 
@@ -2430,18 +2471,28 @@ into my repo as scanner/output/decisions.json.
 }
 
 CRITICAL RULES:
+- ⚠️ MOST IMPORTANT: The new_positions array must ONLY contain stocks from your
+  APPROVED FOR DEPLOYMENT list (the reconciliation above). If a stock was removed
+  by Prompt 4 or denied by Prompt 3B, it goes in no_go — NEVER in new_positions.
+  The Saturday workflow reads new_positions and adds them to the portfolio automatically.
+  A stock in new_positions = a confirmed buy. There is no second check downstream.
 - Every field must be populated — use empty string "" not null for missing text fields
 - conviction and dd_conviction are integers 1-10
 - position_size_pct is a decimal (0.20 = 20%)
+- If Prompt 4 ADJUSTED a stock (e.g., reduced tier, lowered conviction), use the
+  ADJUSTED values in new_positions, not the pre-Prompt 4 values from DD
 - retrospective captures Prompt R's calibration notes from recent portfolio outcomes.
   If first session, use empty arrays and "First session — no prior data" for notes.
 - market_context captures Prompt 0's market regime and capital flow analysis.
   established_waves and emerging_shifts should be clearly separated.
 - batch_assessment is required — captures the theme clustering and quality assessment
 - review_gate is required — captures the Prompt 4 portfolio review gate output.
-  stocks_adjusted and stocks_removed should reflect any changes made during review.
-  The new_positions array should ONLY contain stocks that survived the review gate
-  (i.e., APPROVED or APPROVED WITH ADJUSTMENTS — not REMOVED stocks).
+  stocks_adjusted and stocks_removed must be complete and accurate. Cross-check:
+  every stock in stocks_removed must appear in no_go with stage_rejected: "review_gate".
+  Every stock in stocks_approved must appear in new_positions (and nowhere else).
+- no_go.stage_rejected must accurately reflect WHERE the stock was filtered:
+  "thematic" (Prompt 1), "gate" (Prompt 2), "dd" (Prompt 3), "review_gate" (Prompt 4),
+  or "exception_denied" (Prompt 3B). The stage matters for retrospective calibration.
 - entry_timing_verdict captures Phase D of Prompt 2 (CLEAN/ELEVATED/CHASING/POOR_TIMING)
 - exceptional_override is true ONLY if all 4 override criteria were met in Step D2
 - system_fit must match the assessment from Prompt 1 (STRONG/MODERATE/POOR)
@@ -2453,13 +2504,13 @@ CRITICAL RULES:
   your analysis. These feed the content production guide and newsletter theme tables.
   Composite = rough average of the four, but weight catalyst/momentum higher for PRIME themes.
 - Include ALL stocks we analyzed, not just passes — no_go captures rejections with
-  stage_rejected showing WHERE they were filtered (thematic, gate, dd, or review_gate)
+  stage_rejected showing WHERE they were filtered
 - themes_this_week includes every theme we identified, even for rejected stocks
 - Off-system exception fields: set off_system_exception to true only for stocks that
   went through Prompt 3B. off_system_verdict captures the 3B result. For non-exception
   stocks, set off_system_exception to false and off_system_verdict to "N/A".
   off_system_expected_return and off_system_12mo_target are the probability-weighted
-  values from Part B Step 2.
+  values from Part C Step 2.
 - Do NOT include content_angles or newsletter — those are handled by repo automation
 
 After generating the JSON, also output SIGNAL HISTORY ROWS for this session.

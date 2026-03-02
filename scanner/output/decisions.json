@@ -2,7 +2,7 @@
   "scan_date": "2026-03-01",
   "scan_week_ending": "2026-03-01",
   "market_regime": "selective",
-  "market_context_summary": "S&P 500 near all-time highs but breadth narrowing. Small caps (IWM) underperforming large caps over 3 months. Fed holding rates, tariff uncertainty and geopolitical risks (Iran/Gulf) creating selective risk appetite — favoring quality over speculation in 6-18 month timeframe.",
+  "market_context_summary": "S&P 500 near all-time highs but breadth narrowing with small caps underperforming. Fed holding rates amid tariff uncertainty and geopolitical risks (Iran/Gulf). Strongest capital flows into defense, AI infrastructure, and financials — none of which produced scanner signals this session.",
 
   "retrospective": {
     "open_positions_total": 0,
@@ -14,231 +14,202 @@
     "notable_filter_validations": [],
     "calibration_notes": [
       "First session — no prior data. Establishing baseline calibration.",
-      "Scanner batch was 100% biotech/healthcare — zero theme diversity. System needs broader sector signal sourcing."
+      "Scanner batch was 100% biotech/healthcare — zero theme diversity. System needs broader sector signal sourcing.",
+      "Sector concentration warning was raised during batch processing but NOT acted upon — process failure to correct in future sessions."
     ]
   },
 
   "market_context": {
     "regime": "selective",
-    "regime_outlook_months": "Selective for 6-18 months: elevated valuations in large cap, policy uncertainty (tariffs, FDA staffing changes), but rate path supportive",
+    "regime_outlook_months": "Selective for 6-18 months: elevated large-cap valuations, policy uncertainty (tariffs, FDA staffing), rate path supportive but not stimulative",
     "economic_trajectory": "stable",
     "fed_rate_path": "holding",
     "earnings_cycle": "stable",
     "small_cap_environment": "headwind",
     "small_cap_3m_trend": "IWM underperforming SPY by ~3-5% over 3 months through Feb 2026",
-    "sectors_accelerating": ["AI infrastructure — capex cycle continuing", "Defense — geopolitical spending + reshoring", "Gene therapy — FDA accelerated approval tailwinds + new Plausible Mechanism Framework"],
+    "sectors_accelerating": ["Defense/aerospace — $1T+ budget, Golden Dome, NATO 3%+ GDP targets", "AI infrastructure — hyperscaler capex $360B/yr continuing", "Financial sector renaissance — deregulation, yield curve normalization"],
     "sectors_decelerating": ["Traditional pharma — GLP-1 rotation fading", "Consumer discretionary — tariff headwinds", "Real estate — rates holding higher for longer"],
-    "established_waves": ["AI infrastructure buildout — datacenter, chips, power", "Defense spending — NATO 3%+ GDP targets", "GLP-1/obesity — mature wave, consolidating"],
-    "emerging_shifts": ["Gene therapy regulatory acceleration — FDA Plausible Mechanism Framework Feb 23 2026, BTD/RMAT wave in rare disease", "Reshoring manufacturing — tariff-driven but pre-consensus on beneficiaries"],
-    "deployment_implication": "Given 6-18 month holds, capital deployment is cautious because small-cap environment is unfavorable, scanner batch had zero alignment with established waves, and the only surviving signal is a binary biotech bet"
+    "established_waves": ["Defense/aerospace — consensus, multi-month $1T+ budget trend", "AI infrastructure buildout — datacenter, chips, power capex cycle", "Financial sector — deregulation + yield curve", "Small-cap broad rotation — partial, rate-path dependent"],
+    "emerging_shifts": ["BYOP data center power — pre-consensus, structural driver from AI power demand", "Attritable autonomous defense — pre-consensus, DOD budget shifting to unmanned systems", "Domestic manufacturing reshoring — tariff-driven but pre-consensus on beneficiaries", "Gene therapy regulatory acceleration — FDA Plausible Mechanism Framework Feb 23 2026"],
+    "deployment_implication": "Given 6-18 month holds, capital deployment is cautious — zero positions deployed this session. Scanner batch had zero alignment with established waves. Only surviving signal (NGNE) requires price consolidation to entry zone before deployment."
   },
 
   "batch_assessment": {
     "theme_clustering": "detected",
-    "theme_clustering_detail": "3 of 16 tickers in rare disease biotech/gene therapy theme; 11 tickers across dispersed micro-themes filtered at Phase 1",
-    "wave_alignment": "0 tickers align with established waves from market context — all scanner signals were off-system relative to defense/AI/reshoring themes",
+    "theme_clustering_detail": "3 of 16 tickers in rare disease biotech/gene therapy theme (NGNE, LRMR, CCCC); 11 tickers across dispersed micro-themes filtered at Phase 1; 2 borderline parked",
+    "wave_alignment": "0 tickers align with established waves from market context — zero overlap with defense, AI infrastructure, financials, or reshoring themes",
     "sector_concentration": "100% Healthcare/Biotech in advancing tickers",
     "sector_concentration_warning": true,
     "batch_quality": "WEAK",
-    "batch_quality_rationale": "16 signals yielded only 1 actionable position (NGNE) and 1 watchlist add (LRMR) — high filter rate reflects poor batch alignment with investable themes and unfavorable small-cap environment"
+    "batch_quality_rationale": "16 signals yielded zero deployable positions — NGNE approved conditionally but entry price not met, LRMR removed by CRO, all others filtered. Scanner entirely disconnected from identified macro capital flows."
   },
 
   "review_gate": {
-    "session_quality": "ADEQUATE",
-    "session_quality_rationale": "Rigorous filtering reduced 16 signals to 1 actionable position; CRO correctly identified system drift and downgraded allocation, but the surviving position has genuine asymmetric setup",
-    "stocks_approved": ["NGNE"],
+    "session_quality": "WEAK",
+    "session_quality_rationale": "Zero theme alignment with identified waves; 100% sector and opportunity-type concentration; zero positions deployed — NGNE conditionally approved but current price above entry zone",
+    "stocks_approved": [],
     "stocks_adjusted": [
       {
         "symbol": "NGNE",
-        "adjustment": "Reduced from T2 to T3, conviction 7/10 to 6/10, entry narrowed to $19.50-$21.00 only",
-        "reason": "System drift — isolated biotech binary with zero theme alignment to identified waves. Patient death overhang. 52% dilution in 12 months."
+        "adjustment": "Conditionally approved by CRO at 6/10, T3, but entry zone $19.50-$21.00 NOT met at current ~$24. Moved to watchlist pending price consolidation.",
+        "reason": "System drift — isolated biotech binary with zero theme alignment. Post-BTD gap (+26%) puts current price firmly above acceptable entry. CRO mandated entry at or below pre-gap price only."
       }
     ],
     "stocks_removed": [
       {
+        "symbol": "LRMR",
+        "reason": "System drift + unprecedented surrogate endpoint risk (skin FXN never accepted by FDA) + 100% correlation with NGNE creating zero diversification + 88% recent surge = chasing",
+        "moved_to": "watchlist"
+      },
+      {
         "symbol": "CCCC",
-        "reason": "Conviction inflation not justified — China consumer recovery thesis lacks near-term catalyst, macro headwinds from tariffs",
+        "reason": "Already reduced to 4/10 watchlist during DD — BMS competitive juggernaut, warrant overhang, 53% recent run, timeline extends beyond hold period. CRO confirmed.",
         "moved_to": "watchlist"
       }
     ],
     "conviction_inflation_detected": false,
-    "bear_case_quality": "RIGOROUS",
-    "portfolio_construction_notes": "100% biotech concentration if NGNE deployed. Single binary bet, no diversification. CRO mandated T3 sizing to limit damage if thesis fails.",
+    "bear_case_quality": "ADEQUATE",
+    "portfolio_construction_notes": "Zero positions deployed. CRO rated portfolio construction FAIL: zero theme alignment, zero diversification by opportunity type. NGNE conditionally approved but entry price not met — watchlisted. Preserve capital for theme-aligned opportunities.",
     "market_alignment": "swimming_against_current"
   },
 
-  "new_positions": [
-    {
-      "symbol": "NGNE",
-      "action": "BUY",
-      "verdict": "SPEC BUY",
-      "conviction": 6,
-      "tier": "T3",
-      "quality_tier": 2,
-      "price": 20.50,
-      "stop_price": 14.50,
-      "position_size": "REDUCED",
-      "position_size_pct": 0.05,
-
-      "theme": "Rare disease gene therapy — Rett syndrome",
-      "theme_score": 6.8,
-      "theme_classification": "SELECTIVE",
-      "theme_verdict": "GOOD FIT",
-      "system_fit": "POOR",
-      "system_fit_reason": "Isolated biotech binary with zero alignment to established waves (defense, AI, reshoring) — flagged as DRIFT by CRO",
-      "opportunity_type": "BINARY_CATALYST",
-      "valuation_regime": "OPTIONALITY",
-
-      "gate_verdict": "SPEC_BUY",
-      "gate_conviction": 7,
-      "catalyst_summary": "Embolden registrational trial enrollment completion Q2 2026, interim data mid-2026, FDA BTD granted Feb 27 2026",
-      "red_flag_level": "MINOR",
-      "dilution_check": "CAUTION",
-      "dilution_detail": "52% share dilution in 12 months from $200M private placement Q4 2024. No warrants or convertible notes identified. Future raise likely before commercialization.",
-      "gate_bear_case": "Patient death at high dose creates permanent competitive handicap vs TSHA's clean safety record; Astellas walked away from TSHA suggesting pharma skepticism on Rett gene therapy commercial opportunity; Pfizer withdrew approved gene therapy Beqvez due to zero uptake",
-      "gate_bear_classification": "PARTIALLY_DISMANTLED",
-      "gate_math": "At $20 entry, EV is only ~$23M for BTD+RMAT+PRIME registrational asset. Positive Embolden data → $35-40 (analyst median ex-Canaccord) = +75-100%. Acquisition premium scenario → $38-50 = +90-150%.",
-      "entry_timing_verdict": "ELEVATED",
-      "entry_timing_detail": "Stock gapped +21% on Feb 27 BTD announcement. CRO entry zone $19.50-$21.00 requires post-gap consolidation. Current ~$20 is at low end of acceptable range.",
-      "exceptional_override": false,
-      "exceptional_override_criteria": "",
-
-      "dd_verdict": "SPEC BUY",
-      "dd_conviction": 6,
-      "dd_conviction_change": "DECREASED",
-      "dd_conviction_change_reason": "CRO downgraded from 7/10 to 6/10 based on: zero wave alignment (DRIFT flag), patient death bear case only partially dismantled, 52% dilution more aggressive than DD highlighted, Pfizer Beqvez withdrawal as negative gene therapy commercialization precedent",
-      "dd_elevator_pitch": "NGNE trades at ~$23M enterprise value for a BTD+RMAT+PRIME-designated registrational-stage Rett syndrome gene therapy with $265M cash. Three specialist biotech funds (Samsara, Casdin, Baker Bros) accumulated aggressively AFTER the patient death. Embolden data mid-2026 is the binary catalyst with 55-65% success probability and 50-100% upside on positive read.",
-      "dd_why_now": "FDA granted Breakthrough Therapy Designation Feb 27 2026. Embolden enrollment completing Q2 2026. Data readout mid-2026. Two new analyst initiations in 30 days (Canaccord $200, LifeSci $50).",
-      "dd_the_math": "Entry ~$20.50 (net cash floor ~$18/share = 12% downside to floor). Positive Embolden data → $35-50 range (70-145% upside). Acquisition scenario → $38-50 (85-145% upside). Probability-weighted: 60% × $42 + 40% × $16 = $31.60 = +54% expected value.",
-      "dd_bear_case": "Embolden registrational trial fails to replicate Phase 1/2 efficacy in broader population (ages ≥3 vs 4-10 in Phase 1/2). TSHA's REVEAL trial produces superior data with clean safety, capturing majority market share. Another AAV-related death (NGNE or industry-wide) creates class-wide regulatory headwinds. Gene therapy commercialization challenges (Pfizer Beqvez zero-uptake precedent) limit peak revenue below $300M.",
-      "dd_risk_to_monitor": "Embolden enrollment pace and any safety signals from dosing — any SAE or treatment-related adverse event would be catastrophic for a company with a prior patient death",
-      "dd_action": "Enter at ~$19.50-$21.00 on post-BTD consolidation. T3 reduced position (5% max). Hard stop at $14.50 (21% below net cash floor — accounts for continued burn). Hold through Embolden data mid-2026.",
-      "dd_hold_thesis": "Expected hold 4-8 months. Key milestones: Embolden enrollment completion Q2 2026, Q4 2025 earnings March 23 2026, interim/full Embolden data mid-2026, TSHA REVEAL Part A update H1 2026.",
-      "dd_key_catalyst": "Embolden registrational trial data readout mid-2026",
-      "dd_fatal_flaw": "",
-
-      "variant_perception": "Market prices NGNE at ~$23M EV — essentially valuing it as dead money above cash. But three top-tier biotech specialist funds (Samsara, Casdin, Baker Bros) all accumulated AFTER the patient death, and FDA granted BTD after reviewing safety data. The patient death narrative has overshadowed the low-dose safety profile and the TSHA valuation gap.",
-      "key_assumption": "The low-dose NGN-401 safety profile demonstrated in Phase 1/2 replicates in the Embolden registrational trial with no treatment-related SAEs",
-      "kill_switch": "Any treatment-related serious adverse event in Embolden trial, or FDA clinical hold on NGN-401",
-      "downside_floor": "Net cash ~$18/share provides hard floor — value buyers and acquirers would step in at or above cash value for a BTD-designated asset",
-
-      "off_system_exception": true,
-      "off_system_verdict": "CONDITIONAL",
-      "off_system_exception_score": 6,
-      "off_system_reason": "CRO flagged NGNE as DRIFT: isolated biotech binary with zero theme alignment to identified waves (defense, AI infrastructure, financials, reshoring). Approved conditionally with T3 sizing, narrowed entry zone, and reduced conviction.",
-      "off_system_expected_return": 54,
-      "off_system_12mo_target": 31.60,
-      "off_system_checks_passed": "5/7",
-      "off_system_failed_checks": "Wave alignment (zero theme overlap with established or emerging waves), Sector diversity (100% biotech concentration in surviving positions)",
-      "off_system_monitoring_cadence": "weekly"
-    }
-  ],
+  "new_positions": [],
 
   "no_go": [
     {
-      "symbol": "CCCC",
-      "verdict": "NO GO",
-      "stage_rejected": "review_gate",
-      "rejection_reason": "Conviction inflation — China consumer recovery thesis lacks near-term catalyst, tariff headwinds intensifying. DD conviction 4/10 confirmed watchlist only. CRO removed.",
-      "reconsider_if": "China stimulus package with measurable consumer impact, tariff de-escalation, or stock pulls back below $5 with intact fundamentals"
-    },
-    {
       "symbol": "LRMR",
       "verdict": "NO GO",
+      "stage_rejected": "review_gate",
+      "rejection_reason": "CRO removed: system drift + unprecedented surrogate endpoint risk (skin FXN has zero FDA precedent) + 100% correlation with NGNE creating zero diversification + 88% recent surge = chasing territory",
+      "reconsider_if": "Pullback to $3.80-$4.20, FDA precedent accepting novel surrogate in any rare disease, or if NGNE position is NOT entered freeing biotech allocation",
+      "prompt4_removal": true,
+      "prompt4_removal_reason": "System drift + unprecedented endpoint risk + portfolio overconcentration. Adding a second correlated biotech binary provides zero diversification. Novel surrogate endpoint has literally zero FDA precedent. 88% surge puts entry firmly in chasing territory."
+    },
+    {
+      "symbol": "CCCC",
+      "verdict": "NO GO",
       "stage_rejected": "dd",
-      "rejection_reason": "Spec Buy at 6/10 conviction but CRO approved — entry condition not met. Requires pullback to $2.50-$3.00 range. Currently above entry zone.",
-      "reconsider_if": "Stock pulls back to $2.50-$3.00 entry zone with thesis intact"
+      "rejection_reason": "Reduced to 4/10 watchlist during DD — BMS competitive juggernaut with mezigdomide, warrant overhang, 53% recent run, timeline extends beyond hold period. CRO confirmed.",
+      "reconsider_if": "Pullback to $2.20-$2.40, BMS competitive timeline clarity, warrant expiration",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "ATLX",
       "verdict": "NO GO",
       "stage_rejected": "gate",
-      "rejection_reason": "Conviction 4/10 at gate level — moved to watchlist. Insufficient catalyst clarity for position sizing.",
-      "reconsider_if": "Clear near-term catalyst emerges with defined timeline"
+      "rejection_reason": "Gated at 6.60/50 INVESTABLE, conviction 4/10 — insufficient catalyst clarity for position sizing",
+      "reconsider_if": "Clear near-term catalyst with institutional interest, lithium recovery triggers",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "MBOT",
+      "verdict": "NO GO",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Borderline at Phase 1 — gated at 6.20/50 INVESTABLE, parked as borderline, not advanced to DD",
+      "reconsider_if": "Specific catalyst emerges with institutional accumulation signal",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "ARTV",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen — insufficient catalyst strength and demand signal",
-      "reconsider_if": "Meaningful catalyst with institutional interest"
+      "reconsider_if": "Meaningful catalyst with institutional interest",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "IKT",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen — insufficient catalyst strength",
-      "reconsider_if": "Clinical data readout with clear inflection"
+      "reconsider_if": "Clinical data readout with clear inflection",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "RCKT",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — borderline but parked",
-      "reconsider_if": "Pipeline catalyst with institutional accumulation signal"
+      "rejection_reason": "Failed Phase 1 thematic screen — gene therapy platform but no near-term differentiating catalyst",
+      "reconsider_if": "Pipeline catalyst with institutional accumulation signal",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "SEPN",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Fundamental improvement with sector tailwind"
+      "reconsider_if": "Fundamental improvement with sector tailwind",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "ASIC",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Theme alignment with established wave"
+      "reconsider_if": "Theme alignment with established wave (AI infrastructure, semiconductor cycle)",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "CNTA",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Clinical or regulatory catalyst"
+      "reconsider_if": "Clinical or regulatory catalyst",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "CRSP",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen — gene editing leader but crowded, limited asymmetry at current valuation",
-      "reconsider_if": "Meaningful pullback creating entry or new indication data"
+      "reconsider_if": "Meaningful pullback creating entry or new indication data",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "LWLG",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Commercial traction or partnership announcement"
+      "reconsider_if": "Commercial traction or partnership announcement",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "VAC",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Travel sector re-acceleration"
+      "reconsider_if": "Travel sector re-acceleration with macro support",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "OSIS",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Security/defense spending catalyst"
+      "reconsider_if": "Security/defense spending catalyst aligning with established defense wave",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     },
     {
       "symbol": "SGMO",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
       "rejection_reason": "Failed Phase 1 thematic screen — gene therapy platform but no near-term catalyst",
-      "reconsider_if": "Partnership deal or clinical data with defined timeline"
-    },
-    {
-      "symbol": "MBOT",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Borderline at Phase 1 — parked, not advanced to gate",
-      "reconsider_if": "Specific catalyst emerges"
+      "reconsider_if": "Partnership deal or clinical data with defined timeline",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
     }
   ],
 
@@ -246,24 +217,31 @@
 
   "watchlist": [
     {
+      "symbol": "NGNE",
+      "theme": "Rare disease gene therapy — Rett syndrome",
+      "status": "CRO conditionally approved at 6/10 T3, but entry zone $19.50-$21.00 NOT met at current ~$24 post-BTD gap. Off-system exception (DRIFT). DD verdict was SPEC BUY 7/10 before CRO adjusted to 6/10. The Rett Syndrome Trade We're Not Taking (Yet).",
+      "trigger_to_buy": "Price consolidates to $19.50-$21.00 entry zone (at or below pre-BTD gap price of $19.64). Do NOT chase above $21.00. Also monitor: Embolden enrollment completion Q2 2026, any safety signals.",
+      "price_at_scan": 24.50
+    },
+    {
       "symbol": "LRMR",
-      "theme": "Rare disease biotech — immunology",
-      "status": "Near miss — DD conviction 6/10 Spec Buy approved by CRO, but current price above entry zone",
-      "trigger_to_buy": "Pullback to $2.50-$3.00 range with thesis intact",
-      "price_at_scan": 3.50
+      "theme": "Rare disease biotech — Friedreich's ataxia",
+      "status": "CRO removed from deployment — unprecedented surrogate endpoint risk (skin FXN), 88% recent surge, 100% correlation with NGNE. DD verdict was 6/10 SPEC BUY before CRO removal.",
+      "trigger_to_buy": "Pullback to $3.80-$4.20, FDA precedent accepting novel surrogate in any rare disease, clarity from FDA on BLA review expectations, or if NGNE is NOT entered freeing biotech allocation",
+      "price_at_scan": 5.29
     },
     {
       "symbol": "CCCC",
-      "theme": "China consumer recovery",
-      "status": "Removed by CRO — conviction 4/10, tariff headwinds, no near-term catalyst",
-      "trigger_to_buy": "China stimulus package, tariff de-escalation, pullback below $5",
-      "price_at_scan": 7.00
+      "theme": "Biotech — protein degradation (multiple myeloma)",
+      "status": "Reduced to 4/10 watchlist during DD — BMS competitive juggernaut with mezigdomide, warrant overhang, 53% recent run, long timeline",
+      "trigger_to_buy": "Pullback to $2.20-$2.40, BMS competitive timeline clarity, warrant expiration",
+      "price_at_scan": 3.50
     },
     {
       "symbol": "ATLX",
-      "theme": "Biotech — specialty pharma",
-      "status": "Gate filtered at 4/10 — insufficient catalyst clarity",
-      "trigger_to_buy": "Clear near-term catalyst with institutional interest",
+      "theme": "Biotech — specialty pharma (lithium)",
+      "status": "Gate filtered at 4/10 — insufficient catalyst clarity for position sizing",
+      "trigger_to_buy": "Lithium market recovery triggers, clear near-term catalyst with institutional interest",
       "price_at_scan": 12.00
     }
   ],
@@ -279,28 +257,28 @@
       "momentum_score": 6.5,
       "crowding_score": 7.5,
       "runway_score": 5.0,
-      "one_liner": "FDA accelerated approval tailwinds (BTD, RMAT, new Plausible Mechanism Framework) de-risking rare disease gene therapy, but commercialization challenges (Pfizer Beqvez withdrawal) cap upside",
-      "thesis_summary": "Gene therapy for rare neurological disease is entering registrational stage with multiple FDA de-risking signals (BTD wave, accelerated approval precedents). However, the sector remains binary — individual asset success/failure drives returns, not sector-wide momentum. Commercial viability unproven at scale.",
-      "why_now": "FDA BTD designation wave in gene therapy (NGNE Feb 2026, UniQure AMT-130 Apr 2025). FDA Plausible Mechanism Framework draft guidance Feb 23 2026 signals regulatory willingness to accelerate individualized therapies. Embolden and REVEAL trials reading out mid-2026.",
-      "key_catalysts": ["NGNE Embolden data mid-2026", "TSHA REVEAL Part A update H1 2026", "FDA Plausible Mechanism Framework finalization", "Gene therapy M&A activity (Novartis, Lilly actively acquiring)"],
-      "primary_risks": ["AAV safety class risk (Sarepta/Rocket deaths in 2025)", "Gene therapy commercialization failure (Pfizer Beqvez zero-uptake precedent)", "Regulatory uncertainty from FDA leadership changes"],
-      "tickers": ["NGNE", "LRMR", "SGMO", "CRSP"]
+      "one_liner": "FDA accelerated approval tailwinds (BTD, RMAT, Plausible Mechanism Framework) de-risking rare disease gene therapy, but multi-year sector bear market and commercialization failures cap upside",
+      "thesis_summary": "Gene therapy for rare neurological disease entering registrational stage with multiple FDA de-risking signals. However, sector remains binary — individual asset success/failure drives returns, not sector-wide momentum. Not a secular wave. Broader gene therapy sector in multi-year bear market since Bluebird Bio commercial struggles and AAV deaths.",
+      "why_now": "FDA BTD designation wave (NGNE Feb 2026). FDA Plausible Mechanism Framework Feb 23 2026. Embolden and REVEAL trials reading out mid-2026.",
+      "key_catalysts": ["NGNE Embolden data mid-2026", "TSHA REVEAL Part A update H1 2026", "FDA Plausible Mechanism Framework finalization", "Gene therapy M&A activity (Novartis, Lilly actively acquiring AAV assets)"],
+      "primary_risks": ["AAV safety class risk (multiple deaths across industry)", "Gene therapy commercialization failure (Pfizer Beqvez zero-uptake withdrawal)", "Regulatory uncertainty from FDA leadership changes", "Multi-year gene therapy bear market headwind"],
+      "tickers": ["NGNE", "LRMR", "SGMO", "CRSP", "RCKT"]
     },
     {
-      "name": "China Consumer Recovery",
+      "name": "Biotech — Protein Degradation",
       "classification": "SELECTIVE",
-      "lifecycle_stage": "EMERGENCE",
-      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "valuation_regime": "OPTIONALITY",
       "composite_score": 4.5,
-      "catalyst_score": 3.5,
+      "catalyst_score": 5.0,
       "momentum_score": 4.0,
-      "crowding_score": 6.0,
-      "runway_score": 4.5,
-      "one_liner": "China consumer spending recovery thesis is pre-consensus but lacks near-term catalyst, with tariff escalation creating headwinds for US-listed China plays",
-      "thesis_summary": "Chinese consumer spending shows early signs of recovery, but US-China tariff escalation and regulatory uncertainty make US-listed China equities risky. Theme is too early and lacks defined catalyst timeline.",
-      "why_now": "Potential China stimulus measures, but timing uncertain. Tariff headwinds intensifying under Trump 2.0.",
-      "key_catalysts": ["China stimulus package", "Tariff de-escalation", "Consumer spending data improvement"],
-      "primary_risks": ["Tariff escalation", "Regulatory risk for US-listed Chinese companies", "Consumer confidence weakness"],
+      "crowding_score": 5.0,
+      "runway_score": 4.0,
+      "one_liner": "Targeted protein degradation promising but competitive dynamics dominated by BMS/Celgene with approved mezigdomide",
+      "thesis_summary": "TPD companies face dual challenge of proving efficacy in competitive oncology landscape while BMS holds first-mover advantage. Small players like CCCC have warrant overhang and long timelines. Not a theme with current momentum.",
+      "why_now": "BMS competitive timeline becoming clearer. Phase 1/2 data readouts in 2026-2027 for next-gen degraders.",
+      "key_catalysts": ["CCCC Phase 1 expansion data", "BMS mezigdomide label expansion"],
+      "primary_risks": ["BMS competitive juggernaut", "Warrant overhang on smaller players", "Long development timelines"],
       "tickers": ["CCCC"]
     }
   ]

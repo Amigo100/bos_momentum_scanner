@@ -55,9 +55,23 @@ twitter/output/
 # Exceptions: files needed by Saturday workflow (GitHub Actions)
 !scanner/output/decisions.json
 !scanner/output/signal_history_rows.csv
+!scanner/output/signals.json
+!scanner/output/signals_technical.json
+!scanner/output/current/
+scanner/output/current/*
+!scanner/output/current/market_analysis.md
+!scanner/output/current/report.txt
+!scanner/output/current/newsletter_briefing.md
+!scanner/output/current/signals.json
+!scanner/output/current/signals_technical.json
 !substack/output/current/
 substack/output/current/*
 !substack/output/current/newsletter.html
+!substack/output/current/daily_context.md
+!substack/output/current/content_schedule.json
+!substack/output/current/daily_notes_context.json
+!substack/output/current/portfolio_visual.html
+!substack/output/current/portfolio_snapshot.json
 
 # Dashboard bundled data (generated at build time)
 dashboard/data/

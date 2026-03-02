@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-02-27T21:15:43.985983+00:00",
+  "prices_updated_at": "2026-02-27T21:15:43.300446+00:00",
+  "summary": {
+    "open_positions": 2,
+    "closed_trades": 0,
+    "win_rate": 0,
+    "avg_winner": 0,
+    "avg_loser": 0,
+    "unrealized_pnl_pct": -3.96
+  },
+  "equity": {
+    "nav": 9606.67,
+    "cash": 0.0,
+    "invested": 9606.67,
+    "total_deployed": 10000.0,
+    "total_return_pct": -3.93,
+    "spy_return_pct": 0.53,
+    "alpha_pct": -4.46,
+    "qqq_return_pct": 0.98,
+    "alpha_vs_qqq_pct": -4.91,
+    "max_drawdown_pct": -3.93
+  },
+  "open_positions": [
+    {
+      "ticker": "ETON",
+      "entry_date": "2026-02-22",
+      "entry_price": 17.93,
+      "current_price": 16.989999771118164,
+      "highest_close": 18.45,
+      "pnl_pct": -5.24,
+      "pnl_usd": -94.0,
+      "days_held": 5,
+      "theme": "Healthcare Contrarian Recovery",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "RELY",
+      "entry_date": "2026-02-22",
+      "entry_price": 17.15,
+      "current_price": 16.700000762939453,
+      "highest_close": 17.15,
+      "pnl_pct": -2.62,
+      "pnl_usd": -45.0,
+      "days_held": 5,
+      "theme": "Cross-Border Digital Payments & Remittances",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    }
+  ],
+  "closed_trades": [],
+  "winners": [],
+  "big_wins": [],
+  "home_runs": [],
+  "recent_exits": [],
+  "movers_today": [
+    {
+      "ticker": "ETON",
+      "current_price": 16.99,
+      "prev_close": 17.25,
+      "change_pct": -1.51
+    },
+    {
+      "ticker": "RELY",
+      "current_price": 16.7,
+      "prev_close": 16.84000015258789,
+      "change_pct": -0.83
+    }
+  ],
+  "themes": {
+    "Healthcare Contrarian Recovery": {
+      "count": 1,
+      "tickers": [
+        "ETON"
+      ],
+      "avg_pnl_pct": -5.24
+    },
+    "Cross-Border Digital Payments & Remittances": {
+      "count": 1,
+      "tickers": [
+        "RELY"
+      ],
+      "avg_pnl_pct": -2.62
+    }
+  },
+  "benchmarks": {
+    "7d": {
+      "portfolio": 0.0,
+      "spy": -0.04371152174348358,
+      "alpha": 0.04371152174348358,
+      "trades": 0
+    },
+    "30d": {
+      "portfolio": 0.0,
+      "spy": -0.6330023770080073,
+      "alpha": 0.6330023770080073,
+      "trades": 0
+    },
+    "90d": {
+      "portfolio": 0.0,
+      "spy": 3.5561915937794453,
+      "alpha": -3.5561915937794453,
+      "trades": 0
+    },
+    "180d": {
+      "portfolio": 0.0,
+      "spy": 14.73835686305096,
+      "alpha": -14.73835686305096,
+      "trades": 0
+    },
+    "ytd": {
+      "portfolio": 0.0,
+      "spy": 0.4127826741166407,
+      "alpha": -0.4127826741166407,
+      "trades": 0
+    },
+    "1y": {
+      "portfolio": 0.0,
+      "spy": 24.938304871313967,
+      "alpha": -24.938304871313967,
+      "trades": 0
+    }
+  }
+}

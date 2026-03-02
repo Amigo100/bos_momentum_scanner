@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-02-17T16:00:00Z",
+  "market_snapshot": {
+    "spy_move": "-0.74%",
+    "qqq_move": "-1.11%",
+    "vix": "21.98",
+    "market_mood": "bearish",
+    "headline": "US stocks decline amid rising geopolitical tensions and tariff uncertainties, with Nasdaq hit hardest by tech sector weakness."
+  },
+  "portfolio_movers": [
+    {
+      "ticker": "$APLD",
+      "move": "-2.46%",
+      "price": "$35.28",
+      "context": "pullback in AI data center stocks amid broader tech selloff"
+    },
+    {
+      "ticker": "$NVDA",
+      "move": "-1.2%",
+      "price": "$185.00",
+      "context": "SoftBank exits position, adding pressure on AI chip leaders"
+    },
+    {
+      "ticker": "$AMD",
+      "move": "-0.8%",
+      "price": "$208.00",
+      "context": "semiconductor sector dips on market volatility"
+    },
+    {
+      "ticker": "$WCC",
+      "move": "+1.5%",
+      "price": "$285.50",
+      "context": "copper demand surge from AI infrastructure boosts mining equipment play"
+    },
+    {
+      "ticker": "$MOD",
+      "move": "+0.9%",
+      "price": "$186.30",
+      "context": "defense spending tailwinds amid geopolitical risks"
+    }
+  ],
+  "theme_activity": [
+    {
+      "theme": "copper",
+      "status": "breaking",
+      "detail": "AI data centers and defense spending projected to drive 50% demand growth by 2040, exacerbating supply shortages"
+    },
+    {
+      "theme": "AI",
+      "status": "active",
+      "detail": "Bitcoin miners pivoting to AI infrastructure with $65B in contracts, boosting data center plays"
+    },
+    {
+      "theme": "data centers",
+      "status": "active",
+      "detail": "Hyperscale facilities require up to 50,000 tons of copper each, fueling commodity crunch"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Geopolitical tensions in Iran and Venezuela increase military spending, supporting sector momentum"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "quiet",
+      "detail": "New DWDM laser sources for AI infrastructure debut, but sector faces tariff risks"
+    }
+  ],
+  "fintwit_trending": [
+    "AI data centers",
+    "copper shortage",
+    "NVDA SoftBank exit",
+    "tariff impacts",
+    "crypto to AI pivot"
+  ],
+  "news_events": [
+    {
+      "event": "Supreme Court delays ruling on Trump tariffs",
+      "impact": "heightens uncertainty for global trade and inflation",
+      "relevance": "high"
+    },
+    {
+      "event": "Geopolitical tensions rise in Iran and Venezuela",
+      "impact": "risk-off sentiment pressures equities and boosts defense themes",
+      "relevance": "high"
+    },
+    {
+      "event": "Fed minutes release upcoming",
+      "impact": "focus on inflation and rate path amid tariff pressures",
+      "relevance": "medium"
+    }
+  ],
+  "tweet_opportunities": [
+    {
+      "type": "THEME_MOMENTUM",
+      "reason": "Copper shortage breaking news ties directly to AI and infrastructure portfolio themes, actionable for $WCC and related plays",
+      "tickers": [
+        "$WCC"
+      ],
+      "urgency": "high"
+    },
+    {
+      "type": "MARKET_REACTION",
+      "reason": "Tech pullback creates dip buy opportunity in AI/semiconductor holdings like $APLD and $NVDA amid pivot news",
+      "tickers": [
+        "$APLD",
+        "$NVDA"
+      ],
+      "urgency": "medium"
+    },
+    {
+      "type": "DIP_OPPORTUNITY",
+      "reason": "Defense stocks resilient in risk-off environment; highlight $MOD strength on geopolitics",
+      "tickers": [
+        "$MOD"
+      ],
+      "urgency": "medium"
+    }
+  ],
+  "gathered_at": "2026-02-17T16:03:38.644354+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
+}

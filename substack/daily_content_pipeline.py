@@ -308,12 +308,19 @@ def send_daily_email(day: str, results: Dict) -> bool:
 
     # Note: current email_notifier.send_email takes (subject, body).
     # Attachments are listed in the body text for the user to find in the repo.
-    success = send_email(subject=subject, body=body)
+    try:
+        success = send_email(subject=subject, body=body)
+    except RuntimeError as e:
+        print(f"  ⚠ Email not configured: {e}")
+        return False
+    except Exception as e:
+        print(f"  ⚠ Email send error: {e}")
+        return False
 
     if success:
         print(f"  ✓ Email sent: {subject}")
     else:
-        print(f"  ⚠ Email send failed")
+        print(f"  ⚠ Email send failed (returned False)")
 
     return success
 

@@ -50,7 +50,13 @@ trades/
 portfolio/output/
 scanner/output/*
 substack/output/*
-twitter/output/
+twitter/output/*
+
+# Exceptions: live tweet system files needed across CI runs
+!twitter/output/live_content_queue.json
+!twitter/output/live_context.json
+!twitter/output/live_cost_log.json
+!twitter/output/workflow_status.json
 
 # Exceptions: files needed by Saturday workflow (GitHub Actions)
 !scanner/output/decisions.json
@@ -68,7 +74,6 @@ scanner/output/current/*
 substack/output/current/*
 !substack/output/current/newsletter.html
 !substack/output/current/daily_context.md
-!substack/output/current/content_schedule.json
 !substack/output/current/daily_notes_context.json
 !substack/output/current/portfolio_visual.html
 !substack/output/current/portfolio_snapshot.json

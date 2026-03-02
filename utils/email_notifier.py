@@ -15,6 +15,7 @@ Usage:
 
 import getpass
 import json
+import os
 import smtplib
 import sys
 from email.mime.multipart import MIMEMultipart
@@ -36,7 +37,35 @@ CONFIG_FILE = Path(__file__).resolve().parent.parent / "email_config.json"
 
 
 def load_config() -> Optional[Dict]:
-    """Load email configuration from config file."""
+    """Load email configuration, preferring env vars over config file.
+
+    In CI (GitHub Actions), env vars are set from secrets.
+    Locally, falls back to email_config.json created by the setup wizard.
+    """
+    # Try environment variables first (for CI / GitHub Actions)
+    smtp_server = os.environ.get("SMTP_SERVER")
+    email_sender = os.environ.get("EMAIL_SENDER")
+    email_password = os.environ.get("EMAIL_PASSWORD")
+
+    if smtp_server and email_sender and email_password:
+        # Determine recipients: NOTIFICATION_EMAIL or EMAIL_RECIPIENTS or sender
+        notification_email = os.environ.get("NOTIFICATION_EMAIL")
+        if notification_email:
+            recipients = [e.strip() for e in notification_email.split(",")]
+        else:
+            recipients_str = os.environ.get("EMAIL_RECIPIENTS", email_sender)
+            recipients = [e.strip() for e in recipients_str.split(",")]
+
+        return {
+            "smtp_server": smtp_server,
+            "smtp_port": int(os.environ.get("SMTP_PORT", "587")),
+            "from_email": email_sender,
+            "username": os.environ.get("SMTP_USERNAME", email_sender),
+            "password": email_password,
+            "recipients": recipients,
+        }
+
+    # Fall back to config file (local development)
     if not CONFIG_FILE.exists():
         return None
     with open(CONFIG_FILE, 'r') as f:

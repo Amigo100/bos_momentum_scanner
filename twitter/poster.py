@@ -687,7 +687,7 @@ def post_for_account(account_key: str, args) -> int:
 
     if not content_item:
         print(f"\n  ℹ️  [{account_key}] No pending live content")
-        return 0
+        return 2  # Distinct from 0 (posted) and 1 (failed)
 
     # Similarity duplicate check (fuzzy, 24h window)
     tweet_text = content_item.get('text', '')

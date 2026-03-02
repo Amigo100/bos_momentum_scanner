@@ -278,7 +278,7 @@ jobs:
           print(f'Recorded live_tweet: ${{ job.status }}')
           accts = record['account_results']
           for k, v in accts.items():
-              label = {0: 'posted', -1: 'skipped'}.get(v, f'FAILED({v})')
+              label = {0: 'posted', 2: 'no_content', -1: 'skipped'}.get(v, f'FAILED({v})')
               print(f'  {k}: {label}')
           "
 

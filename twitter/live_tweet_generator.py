@@ -831,6 +831,63 @@ def _notable_market_condition(context: Dict) -> bool:
     return False
 
 
+def _build_fallback_context(portfolio: List[Dict], signals: Dict) -> Dict:
+    """Build minimal context from portfolio + signals when Grok context is unavailable.
+
+    This ensures the decision cascade can still produce SIGNAL_ALERT, RECEIPT,
+    EDUCATIONAL, SUBSTACK_TEASER, TECHNICAL_ANALYSIS, and ENGAGEMENT tweets
+    even without live market data from Grok.
+
+    Returns empty dict if no usable data is available.
+    """
+    if not portfolio and not signals:
+        return {}
+
+    # Build portfolio_movers from open positions
+    movers = []
+    for pos in (portfolio or []):
+        if pos.get("status") != "OPEN":
+            continue
+        ticker = pos.get("ticker", "")
+        if not ticker:
+            continue
+        pnl = pos.get("pnl_pct", pos.get("return_pct", ""))
+        movers.append({
+            "ticker": f"${ticker}",
+            "move": f"{pnl}%" if pnl else "N/A",
+            "price": str(pos.get("current_price", pos.get("entry_price", "?"))),
+            "context": pos.get("theme", "portfolio position"),
+        })
+
+    # Build theme_activity from signals themes
+    theme_activity = []
+    for theme in (signals or {}).get("themes", []):
+        name = theme.get("name", "")
+        if name:
+            theme_activity.append({
+                "theme": name,
+                "status": theme.get("classification", "active"),
+                "detail": theme.get("thesis_summary", ""),
+            })
+
+    if not movers and not theme_activity:
+        return {}
+
+    logger.info(
+        "Built fallback context: %d movers, %d themes",
+        len(movers), len(theme_activity),
+    )
+    return {
+        "market_snapshot": {"market_mood": "unknown", "spy_move": "N/A"},
+        "portfolio_movers": movers[:5],
+        "theme_activity": theme_activity[:5],
+        "theme_tickers": [],
+        "fintwit_theme_overlaps": [],
+        "news_events": [],
+        "fallback_mode": True,
+    }
+
+
 def _fintwit_overlaps_themes(context: Dict) -> Optional[Dict]:
     """Check if FinTwit trending topics overlap with tracked themes.
 
@@ -2241,8 +2298,11 @@ def generate_live_tweet(
     )
 
     if not context:
-        logger.warning("No context data available")
-        return {"status": "failed", "reason": "no_context"}
+        logger.warning("No Grok context — building fallback from portfolio + signals")
+        context = _build_fallback_context(portfolio, signals)
+        if not context:
+            logger.warning("Fallback context also empty — no data available")
+            return {"status": "failed", "reason": "no_context"}
 
     # 2. Decide what to tweet (with category balance enforcement)
     if force_type:

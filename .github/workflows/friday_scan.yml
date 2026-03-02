@@ -106,9 +106,13 @@ jobs:
 
           logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-          signals_path = Path("scanner/output/signals.json")
+          # Read technical signals (produced by this scan), not merged signals.json
+          # (which is only created later by Saturday merge_decisions workflow)
+          signals_path = Path("scanner/output/signals_technical.json")
           if not signals_path.exists():
-              print("No signals.json found — skipping notifications")
+              signals_path = Path("scanner/output/signals.json")  # Fallback
+          if not signals_path.exists():
+              print("No signals file found — skipping notifications")
               sys.exit(0)
 
           data = json.loads(signals_path.read_text())

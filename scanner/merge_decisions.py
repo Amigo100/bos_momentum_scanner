@@ -54,7 +54,6 @@ except ImportError:
 SIGNALS_TECH = SIGNALS_TECH_FILE
 DECISIONS_DEFAULT = SCANNER_OUTPUT / "decisions.json"
 SIGNALS_OUT = SIGNALS_FILE  # Write to canonical location
-CONTENT_OUT = CURRENT_DIR / "content_schedule.json"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -589,7 +588,6 @@ def main():
 
     # ── Merge ───────────────────────────────────────────────────────────────
     merged = merge_signals(tech, decisions)
-    schedule = build_content_schedule(decisions)
 
     # ── Summary ─────────────────────────────────────────────────────────────
     n_tech = len(tech.get("buy_signals", []))
@@ -644,13 +642,9 @@ def main():
         if save_json(merged, current_signals):
             print(f"  ✓ {current_signals}")
 
-    if save_json(schedule, CONTENT_OUT):
-        print(f"  ✓ {CONTENT_OUT}")
-
     # Archive to weekly folder
     week_dir = get_weekly_archive_dir()
     save_json(merged, week_dir / "signals.json")
-    save_json(schedule, week_dir / "content_schedule.json")
     save_json(decisions, week_dir / "decisions.json")
 
     print(f"  ✓ Archived to {week_dir}/")

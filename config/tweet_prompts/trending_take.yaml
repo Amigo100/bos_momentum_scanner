@@ -1,0 +1,54 @@
+# config/tweet_prompts/trending_take.yaml
+category: TRENDING_TAKE
+description: "Hot takes on trending market topics and FinTwit discussions"
+
+# Examples from the original LIVE_CATEGORY_EXAMPLES dict
+# These are the existing examples, preserved exactly
+examples:
+  - "Everyone talking about $NVDA earnings but nobody mentioning the power infrastructure play behind it. Our thesis since Week 3."
+  - "FinTwit buzzing about AI stocks. Here's what the scanner actually says about the sector right now — and it's not what you'd expect."
+
+# Per-persona examples (NEW — start empty, to be filled in later)
+# These give each account a distinct voice for this category
+persona_examples:
+  variant_1: []  # Alex — The Analyst
+  variant_2: []  # Rozalia — The Strategist
+  variant_3: []  # James — The Scout
+
+# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
+bad_examples: []
+
+# Banned terms that must NEVER appear in tweets of this category
+# These come from content_prompt_handbook_v5.md
+banned_terms:
+  - "HMA"
+  - "Hull Moving Average"
+  - "MACD"
+  - "RSI"
+  - "UC"
+  - "Undercurrent"
+  - "Banker"
+  - "BoS"
+  - "ExD"
+  - "VWAP"
+  - "KDJ"
+  - "Gatekeeper"
+  - "Investment Gate"
+  - "Deep DD"
+  - "5-gate"
+  - "Tier 1"
+  - "Tier 2"
+  - "Tier 3"
+  - "conviction score"
+  - "conviction rating"
+  - "STRONG BUY"
+  - "SPEC BUY"
+  - "NO GO"
+  - "TEAL signal"
+  - "VIOLET signal"
+  - "AMBER signal"
+  - "stay tuned"
+  - "more to come"
+  - "some interesting setups"
+  - "keep an eye on"
+  - "picks and shovels"

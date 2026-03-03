@@ -331,9 +331,8 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
     """Download data and calculate Sterling Grid V6 indicators for all tickers.
 
     For each ticker:
-    1. Check price < $25 (fast filter)
-    2. Resample daily → weekly
-    3. Calculate V6 entry conditions via generate_entry_signal()
+    1. Resample daily → weekly
+    2. Calculate V6 entry conditions via generate_entry_signal()
        (HMA pivot + OR-gated UC/MACD + quality tier classification)
     4. Calculate V6 exit conditions via generate_exit_signal()
        (HMA pivot high + UC falling)
@@ -743,14 +742,14 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
         for s in exd_stocks[:sample_size]:
             print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} HMA={'⌃' if s.hma_pivot_high else '↓'}")
 
-    # Entry candidates under price cap with buy signal
-    buy_under_cap = [s for s in eligible_stocks if s.buy_signal]
+    # Entry candidates with buy signal
+    buy_candidates = [s for s in eligible_stocks if s.buy_signal]
     if verbose:
-        print(f"\n  ⭐ ENTRY CANDIDATES (V6 Signal): {len(buy_under_cap)}")
+        print(f"\n  ⭐ ENTRY CANDIDATES (V6 Signal): {len(buy_candidates)}")
     else:
-        print(f"\n  ⭐ ENTRY CANDIDATES (Gate Qualified): {len(buy_under_cap)}")
-    if buy_under_cap:
-        for s in sorted(buy_under_cap, key=lambda x: -x.uc)[:sample_size]:
+        print(f"\n  ⭐ ENTRY CANDIDATES (Gate Qualified): {len(buy_candidates)}")
+    if buy_candidates:
+        for s in sorted(buy_candidates, key=lambda x: -x.uc)[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
             tier_label = s.get_tier() or "?"
             print(f"      {s.symbol:<6} ${s.price:<8.2f} {tier_label} UC={s.uc:.1f} RSI={s.rsi14:.0f} MACD={'✓' if s.macd_cross_up else '✗'}{held_flag}")
@@ -1221,7 +1220,7 @@ def main() -> int:
         print("  TIERS: T1 (both, 20%) | T2 (MACD, 10%) | T3 (UC, 5%) | Max 8 positions")
         print("  EXIT:  ExD (HMA pivot↑ + UC↓) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)")
     else:
-        print("\n  ENTRY (V6): Pivot + Confirmation Gate Screening (Structural + Timing/Accumulation + Price)")
+        print("\n  ENTRY (V6): Pivot + Confirmation Gate Screening (Structural + Timing/Accumulation)")
         print("  EXIT:  Capital Preservation Protocol (first exit — whichever fires first)")
 
     print("\n  Pipeline: Pure Technical Signal Detector (no LLM API calls)")

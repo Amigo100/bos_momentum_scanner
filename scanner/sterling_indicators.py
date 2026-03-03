@@ -12,7 +12,7 @@ V6 CHANGES vs V4:
   1. Entry: HMA slope rising → HMA PIVOT LOW (V-bottom: HMA[i-2] > HMA[i-1] < HMA[i])
   2. RSI(14) > 50 gate REMOVED (computed but not filtered on)
   3. UC condition: uc_rising_above (UC > prev AND UC > 0) → uc_rising (UC > prev only)
-  4. Gate logic: All 5 AND'd → HMA_pivot_low AND (UC_rising OR MACD_cross_up) AND price < $25
+  4. Gate logic: HMA_pivot_low AND (UC_rising OR MACD_cross_up)
   5. Exit: HMA slope falling → HMA PIVOT HIGH (V-top: HMA[i-2] < HMA[i-1] > HMA[i])
   6. Quality Tiers: T1 (both gates), T2 (MACD only), T3 (UC only)
   7. Position Sizing: T1=20%, T2=10%, T3=5% of equity, max 8 concurrent
@@ -348,8 +348,7 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
         2. At least ONE confirmation gate:
            a. UC rising — UC > UC.shift(1)  (OR)
            b. MACD cross up — single-bar crossover event
-        3. Price < $25
-    
+
     QUALITY TIER CLASSIFICATION (at signal bar):
         T1: UC rising AND MACD cross-up   (both gates — highest conviction)
         T2: MACD cross-up only            (timing confirmed)
@@ -359,7 +358,7 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
         - HMA slope rising → HMA pivot low (3-bar V-shape detection)
         - RSI(14) > 50 gate REMOVED
         - UC "rising above" (>prev AND >0) → UC "rising" (>prev only)
-        - All 5 AND'd → pivot AND (UC OR MACD) AND price
+        - All 5 AND'd → pivot AND (UC OR MACD)
         - Added quality tier classification
     """
     hma_data = calculate_hma_pivots(weekly_df)
@@ -590,7 +589,6 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
         'tier_label': tier_label,
         'watchlist_signal': bool(cur['watchlist_signal']),
         'exd_exit_signal': bool(cur_exit['exd_signal']),
-        'price_under_25': True,  # Legacy field — price cap removed
     }
 
     if verbose:
@@ -617,8 +615,6 @@ def _print_scan_result(result: dict, cur_exit) -> None:
     print(f"    ── At least ONE gate: ──")
     print(f"    UC rising:             {'YES' if result['uc_rising'] else 'no ':>3}  UC={result['uc']} (RSI10={result['uc_rsi10']})")
     print(f"    MACD cross up (1 bar): {'YES' if result['macd_cross_up'] else 'no ':>3}  MACD={result['macd_line']}, Sig={result['signal_line']}")
-    print(f"    ── Always required: ───")
-    print(f"    Price < $25:           {'YES' if result['price_under_25'] else 'no ':>3}  ${result['close']}")
     print(f"    RSI(14):               {result['rsi14']:.0f}  (informational — not a gate)")
     print()
 
@@ -643,8 +639,6 @@ def _print_scan_result(result: dict, cur_exit) -> None:
             missing.append('HMA pivot')
         if not result['uc_rising'] and not result['macd_cross_up']:
             missing.append('UC or MACD gate')
-        if not result['price_under_25']:
-            missing.append('Price<$25')
         print(f"  -- No buy signal. Missing: {', '.join(missing)} --")
 
     print()
@@ -895,7 +889,7 @@ def show_portfolio_status(equity: float, positions: list,
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Sterling Grid V6 — Weekly Indicator Calculator")
-        print("  Entry: HMA pivot low + (UC rising OR MACD cross-up) + price < $25")
+        print("  Entry: HMA pivot low + (UC rising OR MACD cross-up)")
         print("  Exit:  HMA pivot high + UC falling, OR tiered profit lock")
         print("  Tiers: T1 (both gates, 20%), T2 (MACD, 10%), T3 (UC, 5%)")
         print()
@@ -1027,7 +1021,7 @@ if __name__ == "__main__":
     else:
         print("=" * 68)
         print("  STERLING GRID V6 — WEEKLY SIGNAL SCAN")
-        print(f"  Entry: HMA pivot + (UC rising OR MACD cross-up) + price < $25")
+        print(f"  Entry: HMA pivot + (UC rising OR MACD cross-up)")
         print(f"  Sizing: {gear} gear ({SIZING_GEARS[gear]['label']})")
         print("=" * 68)
 

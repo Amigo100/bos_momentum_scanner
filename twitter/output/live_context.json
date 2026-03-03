@@ -1,40 +1,290 @@
 {
-  "timestamp": "2026-03-03T13:38:25.356223+00:00",
+  "timestamp": "2026-03-03T15:00:00Z",
   "market_snapshot": {
-    "spy_move": "N/A",
-    "qqq_move": "N/A",
-    "iwm_move": "N/A",
-    "vix": "N/A",
-    "market_mood": "unknown",
-    "headline": "Market data unavailable \u2014 using portfolio context only"
+    "spy_move": "-1.82%",
+    "qqq_move": "-1.78%",
+    "iwm_move": "-1.5%",
+    "vix": "25.22",
+    "market_mood": "bearish",
+    "headline": "US stocks plunge over 1.5% amid escalating Middle East tensions with Iran and tariff uncertainties"
   },
   "portfolio_movers": [
     {
       "ticker": "$ETON",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $17.93"
+      "move": "+6.83%",
+      "price": "$18.15",
+      "context": "Craig Hallum raises price target to $30 on positive rare disease therapy outlook"
     },
     {
       "ticker": "$RELY",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $17.15"
+      "move": "-5.40%",
+      "price": "HK$76.20",
+      "context": "Biotech sector selloff amid broader market volatility"
     },
     {
       "ticker": "$NGNE",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $20.50"
+      "move": "-11.71%",
+      "price": "$20.74",
+      "context": "Pullback after recent gains; gene therapy pipeline updates for Rett syndrome in focus"
     }
   ],
-  "theme_activity": [],
-  "theme_tickers": [],
-  "fintwit_trending": [],
-  "fintwit_theme_overlaps": [],
-  "news_events": [],
-  "fallback_mode": true,
-  "gathered_at": "2026-03-03T13:38:25.356266+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": true
+  "theme_activity": [
+    {
+      "theme": "rare disease gene therapy",
+      "status": "active",
+      "detail": "Neurogene announces mid-2026 data for NGN-401 Rett syndrome therapy; AI-enhanced targets for Huntington's identified"
+    },
+    {
+      "theme": "biotech \u2014 protein degradation",
+      "status": "breaking",
+      "detail": "SEED Therapeutics presents advances in RBM39 degraders at AACR 2025; IND filing mid-2025 for oncology applications"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Geopolitical escalation in Middle East boosts sector amid US-Iran conflict"
+    },
+    {
+      "theme": "copper",
+      "status": "quiet",
+      "detail": "Copper prices stable despite inflation fears from tariffs and geopolitics"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "quiet",
+      "detail": "Tariff rulings add uncertainty to construction and materials spending"
+    },
+    {
+      "theme": "AI",
+      "status": "active",
+      "detail": "AI tools accelerating drug discovery in neurodegeneration and biotech"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "quiet",
+      "detail": "Sector pressured by broader tech selloff and tariff risks"
+    },
+    {
+      "theme": "nuclear",
+      "status": "quiet",
+      "detail": "No major developments; steady amid energy transition talks"
+    }
+  ],
+  "theme_tickers": [
+    {
+      "theme": "rare disease gene therapy",
+      "tickers": [
+        {
+          "symbol": "$NGNE",
+          "price": "$20.74",
+          "context": "Rett syndrome gene therapy developer"
+        },
+        {
+          "symbol": "$BLUE",
+          "price": "$1.25",
+          "context": "Bluebird bio, gene therapy for rare diseases"
+        },
+        {
+          "symbol": "$SRPT",
+          "price": "$145.30",
+          "context": "Sarepta Therapeutics, Duchenne muscular dystrophy focus"
+        },
+        {
+          "symbol": "$VKTX",
+          "price": "$82.50",
+          "context": "Viking Therapeutics, rare metabolic disorders"
+        },
+        {
+          "symbol": "$RARE",
+          "price": "$45.20",
+          "context": "Ultragenyx, rare genetic diseases"
+        },
+        {
+          "symbol": "$ITCI",
+          "price": "$78.10",
+          "context": "Intra-Cellular Therapies, rare neurological conditions"
+        }
+      ]
+    },
+    {
+      "theme": "biotech \u2014 protein degradation",
+      "tickers": [
+        {
+          "symbol": "$KTRA",
+          "price": "$0.45",
+          "context": "Kura Oncology, targeted degradation tech"
+        },
+        {
+          "symbol": "$CERS",
+          "price": "$2.10",
+          "context": "Ceres Therapeutics, protein degradation platforms"
+        },
+        {
+          "symbol": "$ARVN",
+          "price": "$22.80",
+          "context": "Arvinas, PROTAC degraders for oncology"
+        },
+        {
+          "symbol": "$BMS",
+          "price": "$55.40",
+          "context": "Bristol-Myers Squibb, degradation partnerships"
+        },
+        {
+          "symbol": "$ABBV",
+          "price": "$185.20",
+          "context": "AbbVie, investing in TPD modalities"
+        },
+        {
+          "symbol": "$MRK",
+          "price": "$132.50",
+          "context": "Merck, protein degradation collaborations"
+        },
+        {
+          "symbol": "$PFE",
+          "price": "$28.90",
+          "context": "Pfizer, advancing degrader therapies"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "$585.40",
+          "context": "Lockheed Martin, major defense contractor"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "$768.00",
+          "context": "Northrop Grumman, aerospace and defense"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$112.30",
+          "context": "RTX Corp, missiles and systems"
+        },
+        {
+          "symbol": "$GD",
+          "price": "$295.10",
+          "context": "General Dynamics, military vehicles"
+        },
+        {
+          "symbol": "$BA",
+          "price": "$192.50",
+          "context": "Boeing, defense division"
+        },
+        {
+          "symbol": "$HII",
+          "price": "$285.70",
+          "context": "Huntington Ingalls, shipbuilding"
+        },
+        {
+          "symbol": "$LHX",
+          "price": "$235.80",
+          "context": "L3Harris Technologies, electronics"
+        }
+      ]
+    },
+    {
+      "theme": "AI",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$125.40",
+          "context": "NVIDIA, AI chip leader"
+        },
+        {
+          "symbol": "$MSFT",
+          "price": "$425.20",
+          "context": "Microsoft, Azure AI cloud"
+        },
+        {
+          "symbol": "$GOOGL",
+          "price": "$152.80",
+          "context": "Alphabet, Google DeepMind"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$168.50",
+          "context": "AMD, AI accelerators"
+        },
+        {
+          "symbol": "$PLTR",
+          "price": "$45.10",
+          "context": "Palantir, AI analytics"
+        },
+        {
+          "symbol": "$PATH",
+          "price": "$12.30",
+          "context": "UiPath, AI automation"
+        },
+        {
+          "symbol": "$AI",
+          "price": "$28.70",
+          "context": "C3.ai, enterprise AI software"
+        }
+      ]
+    }
+  ],
+  "fintwit_trending": [
+    "Iran conflict stocks",
+    "Tariff rulings impact",
+    "Biotech selloff",
+    "VIX spike",
+    "Defense surge"
+  ],
+  "fintwit_theme_overlaps": [
+    {
+      "trending_topic": "Iran conflict stocks",
+      "matching_theme": "defense",
+      "our_positions": [],
+      "context": "FinTwit highlights defense plays amid US-Iran escalation boosting sector sentiment"
+    },
+    {
+      "trending_topic": "Biotech selloff",
+      "matching_theme": "rare disease gene therapy",
+      "our_positions": [
+        "$ETON",
+        "$NGNE"
+      ],
+      "context": "Market volatility hits biotechs; gene therapy updates provide counter-narrative for $NGNE"
+    },
+    {
+      "trending_topic": "AI drug discovery",
+      "matching_theme": "AI",
+      "our_positions": [],
+      "context": "Discussions on AI accelerating neurodegeneration therapies overlapping with biotech themes"
+    }
+  ],
+  "news_events": [
+    {
+      "event": "US Supreme Court strikes down Trump tariffs",
+      "impact": "increases trade uncertainty, potential alternative measures",
+      "relevance": "high"
+    },
+    {
+      "event": "Escalating US-Iran conflict",
+      "impact": "fuels inflation fears, boosts defense stocks",
+      "relevance": "high"
+    },
+    {
+      "event": "Fed emergency 50bp rate cut",
+      "impact": "supports markets amid banking strains",
+      "relevance": "medium"
+    },
+    {
+      "event": "SEED Therapeutics AACR presentation",
+      "impact": "advances in protein degradation tech",
+      "relevance": "high"
+    },
+    {
+      "event": "Neurogene Rett syndrome milestone",
+      "impact": "mid-2026 data readout for gene therapy",
+      "relevance": "high"
+    }
+  ],
+  "gathered_at": "2026-03-03T15:39:04.036227+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

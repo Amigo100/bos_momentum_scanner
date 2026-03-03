@@ -1,55 +1,55 @@
 {
-  "day": "monday",
-  "date": "2026-03-02",
-  "generated_at": "2026-03-02T15:28:11.483240Z",
+  "day": "tuesday",
+  "date": "2026-03-03",
+  "generated_at": "2026-03-03T11:31:06.494461Z",
   "note_schedule": [
     {
       "slot": 1,
-      "type": "MARKET_REACTION",
+      "type": "SIGNAL_ALERT",
       "time": "08:30 ET"
     },
     {
       "slot": 2,
-      "type": "SYSTEM_PROOF",
+      "type": "THEME_MOMENTUM",
       "time": "12:30 ET"
     },
     {
       "slot": 3,
-      "type": "PORTFOLIO_PULSE",
+      "type": "ENGAGEMENT_HOOK",
       "time": "17:00 ET"
     }
   ],
   "live_data": {
-    "spy_price": 683.6,
-    "spy_change_pct": -0.35,
-    "qqq_price": 604.71,
-    "qqq_change_pct": -0.42,
-    "vix": 21.2
+    "spy_price": 686.38,
+    "spy_change_pct": 0.06,
+    "qqq_price": 608.09,
+    "qqq_change_pct": 0.13,
+    "vix": 26.5
   },
   "portfolio": {
     "open_count": 3,
     "win_rate": 0.0,
-    "total_pnl_pct": -0.5,
+    "total_pnl_pct": 0.4,
     "top_performer": {
-      "symbol": "NGNE",
-      "pnl_pct": 2.5,
-      "entry": 20.5,
-      "current": 21.01
+      "symbol": "ETON",
+      "pnl_pct": 1.2,
+      "entry": 17.93,
+      "current": 18.15
     },
     "positions": [
       {
-        "symbol": "NGNE",
-        "pnl_pct": 2.5,
-        "theme": "Rare disease gene therapy \u2014 Rett syndrome"
-      },
-      {
         "symbol": "ETON",
-        "pnl_pct": -0.9,
+        "pnl_pct": 1.2,
         "theme": "Healthcare Contrarian Recovery"
       },
       {
+        "symbol": "NGNE",
+        "pnl_pct": 1.2,
+        "theme": "Rare disease gene therapy \u2014 Rett syndrome"
+      },
+      {
         "symbol": "RELY",
-        "pnl_pct": -3.1,
+        "pnl_pct": -1.3,
         "theme": "Cross-Border Digital Payments & Remittances"
       }
     ]

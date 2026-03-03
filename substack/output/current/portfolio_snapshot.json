@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-03-02T11:30:28.418323+00:00",
-  "prices_updated_at": "2026-03-02T11:30:27.446607+00:00",
+  "generated_at": "2026-03-03T11:30:25.487432+00:00",
+  "prices_updated_at": "2026-03-03T11:30:24.984542+00:00",
   "summary": {
     "open_positions": 3,
     "closed_trades": 0,
     "win_rate": 0,
     "avg_winner": 0,
     "avg_loser": 0,
-    "unrealized_pnl_pct": 2.88
+    "unrealized_pnl_pct": 0.43
   },
   "equity": {
-    "nav": 15335.94,
+    "nav": 15055.75,
     "cash": 0.0,
-    "invested": 15335.94,
+    "invested": 15055.75,
     "total_deployed": 15000.0,
-    "total_return_pct": 2.24,
-    "spy_return_pct": 0.53,
-    "alpha_pct": 1.71,
-    "qqq_return_pct": 0.98,
-    "alpha_vs_qqq_pct": 1.26,
+    "total_return_pct": 0.37,
+    "spy_return_pct": 0.58,
+    "alpha_pct": -0.21,
+    "qqq_return_pct": 1.11,
+    "alpha_vs_qqq_pct": -0.74,
     "max_drawdown_pct": -3.93
   },
   "open_positions": [
@@ -26,11 +26,11 @@
       "ticker": "ETON",
       "entry_date": "2026-02-22",
       "entry_price": 17.93,
-      "current_price": 16.989999771118164,
+      "current_price": 18.149999618530273,
       "highest_close": 18.45,
-      "pnl_pct": -5.24,
-      "pnl_usd": -94.0,
-      "days_held": 8,
+      "pnl_pct": 1.23,
+      "pnl_usd": 22.0,
+      "days_held": 9,
       "theme": "Healthcare Contrarian Recovery",
       "conviction": 8,
       "stop_level": 0.0,
@@ -41,11 +41,11 @@
       "ticker": "RELY",
       "entry_date": "2026-02-22",
       "entry_price": 17.15,
-      "current_price": 16.700000762939453,
+      "current_price": 16.93000030517578,
       "highest_close": 17.15,
-      "pnl_pct": -2.62,
-      "pnl_usd": -45.0,
-      "days_held": 8,
+      "pnl_pct": -1.28,
+      "pnl_usd": -22.0,
+      "days_held": 9,
       "theme": "Cross-Border Digital Payments & Remittances",
       "conviction": 8,
       "stop_level": 0.0,
@@ -56,11 +56,11 @@
       "ticker": "NGNE",
       "entry_date": "2026-03-01",
       "entry_price": 20.5,
-      "current_price": 23.489999771118164,
+      "current_price": 20.739999771118164,
       "highest_close": 23.49,
-      "pnl_pct": 14.59,
-      "pnl_usd": 299.0,
-      "days_held": 1,
+      "pnl_pct": 1.17,
+      "pnl_usd": 24.0,
+      "days_held": 2,
       "theme": "Rare disease gene therapy \u2014 Rett syndrome",
       "conviction": 6,
       "stop_level": 0.0,
@@ -71,14 +71,29 @@
   "closed_trades": [],
   "winners": [
     {
+      "ticker": "ETON",
+      "entry_date": "2026-02-22",
+      "entry_price": 17.93,
+      "current_price": 18.149999618530273,
+      "highest_close": 18.45,
+      "pnl_pct": 1.23,
+      "pnl_usd": 22.0,
+      "days_held": 9,
+      "theme": "Healthcare Contrarian Recovery",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
       "ticker": "NGNE",
       "entry_date": "2026-03-01",
       "entry_price": 20.5,
-      "current_price": 23.489999771118164,
+      "current_price": 20.739999771118164,
       "highest_close": 23.49,
-      "pnl_pct": 14.59,
-      "pnl_usd": 299.0,
-      "days_held": 1,
+      "pnl_pct": 1.17,
+      "pnl_usd": 24.0,
+      "days_held": 2,
       "theme": "Rare disease gene therapy \u2014 Rett syndrome",
       "conviction": 6,
       "stop_level": 0.0,
@@ -92,21 +107,21 @@
   "movers_today": [
     {
       "ticker": "NGNE",
-      "current_price": 23.49,
-      "prev_close": 19.68000030517578,
-      "change_pct": 19.36
+      "current_price": 20.74,
+      "prev_close": 23.489999771118164,
+      "change_pct": -11.71
     },
     {
       "ticker": "ETON",
-      "current_price": 16.99,
-      "prev_close": 17.25,
-      "change_pct": -1.51
+      "current_price": 18.15,
+      "prev_close": 16.989999771118164,
+      "change_pct": 6.83
     },
     {
       "ticker": "RELY",
-      "current_price": 16.7,
-      "prev_close": 16.84000015258789,
-      "change_pct": -0.83
+      "current_price": 16.93,
+      "prev_close": 16.700000762939453,
+      "change_pct": 1.38
     }
   ],
   "themes": {
@@ -115,58 +130,58 @@
       "tickers": [
         "ETON"
       ],
-      "avg_pnl_pct": -5.24
+      "avg_pnl_pct": 1.23
     },
     "Cross-Border Digital Payments & Remittances": {
       "count": 1,
       "tickers": [
         "RELY"
       ],
-      "avg_pnl_pct": -2.62
+      "avg_pnl_pct": -1.28
     },
     "Rare disease gene therapy \u2014 Rett syndrome": {
       "count": 1,
       "tickers": [
         "NGNE"
       ],
-      "avg_pnl_pct": 14.59
+      "avg_pnl_pct": 1.17
     }
   },
   "benchmarks": {
     "7d": {
       "portfolio": 0.0,
-      "spy": -0.04371152174348358,
-      "alpha": 0.04371152174348358,
+      "spy": 0.27758655742733396,
+      "alpha": -0.27758655742733396,
       "trades": 0
     },
     "30d": {
       "portfolio": 0.0,
-      "spy": -0.6330023770080073,
-      "alpha": 0.6330023770080073,
+      "spy": -0.8465251118442985,
+      "alpha": 0.8465251118442985,
       "trades": 0
     },
     "90d": {
       "portfolio": 0.0,
-      "spy": 3.5561915937794453,
-      "alpha": -3.5561915937794453,
+      "spy": 2.548518512608089,
+      "alpha": -2.548518512608089,
       "trades": 0
     },
     "180d": {
       "portfolio": 0.0,
-      "spy": 14.73835686305096,
-      "alpha": -14.73835686305096,
+      "spy": 15.131947714176807,
+      "alpha": -15.131947714176807,
       "trades": 0
     },
     "ytd": {
       "portfolio": 0.0,
-      "spy": 0.4127826741166407,
-      "alpha": -0.4127826741166407,
+      "spy": 0.46987163560410217,
+      "alpha": -0.46987163560410217,
       "trades": 0
     },
     "1y": {
       "portfolio": 0.0,
-      "spy": 24.938290982874435,
-      "alpha": -24.938290982874435,
+      "spy": 24.35983819668863,
+      "alpha": -24.35983819668863,
       "trades": 0
     }
   }

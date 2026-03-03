@@ -1,0 +1,57 @@
+# config/tweet_prompts/market_commentary.yaml
+category: MARKET_COMMENTARY
+description: "Market observations, relative strength analysis, and portfolio context"
+
+# Examples from the original LIVE_CATEGORY_EXAMPLES dict
+# These are the existing examples, preserved exactly
+examples:
+  - "SPY down 1.5% but our names holding relative strength. $STRL green, $RCAT flat. Conviction showing."
+  - "Russell 2000 outperforming S&P for the 3rd straight week. Small caps leading is exactly what we want to see for our names."
+  - "VIX below 15. Low volatility, steady grind higher. $WCC quietly holding above entry. Boring is beautiful in this tape."
+  - "Defense spending bill advancing. $LMT $RTX catching bids. Our defense thesis getting catalysts. NFA."
+  - "Portfolio outperforming S&P by 2.9% this week. Small cap exposure paying off while big tech consolidates. The system works."
+
+# Per-persona examples (NEW — start empty, to be filled in later)
+# These give each account a distinct voice for this category
+persona_examples:
+  variant_1: []  # Alex — The Analyst
+  variant_2: []  # Rozalia — The Strategist
+  variant_3: []  # James — The Scout
+
+# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
+bad_examples: []
+
+# Banned terms that must NEVER appear in tweets of this category
+# These come from content_prompt_handbook_v5.md
+banned_terms:
+  - "HMA"
+  - "Hull Moving Average"
+  - "MACD"
+  - "RSI"
+  - "UC"
+  - "Undercurrent"
+  - "Banker"
+  - "BoS"
+  - "ExD"
+  - "VWAP"
+  - "KDJ"
+  - "Gatekeeper"
+  - "Investment Gate"
+  - "Deep DD"
+  - "5-gate"
+  - "Tier 1"
+  - "Tier 2"
+  - "Tier 3"
+  - "conviction score"
+  - "conviction rating"
+  - "STRONG BUY"
+  - "SPEC BUY"
+  - "NO GO"
+  - "TEAL signal"
+  - "VIOLET signal"
+  - "AMBER signal"
+  - "stay tuned"
+  - "more to come"
+  - "some interesting setups"
+  - "keep an eye on"
+  - "picks and shovels"

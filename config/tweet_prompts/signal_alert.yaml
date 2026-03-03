@@ -1,0 +1,55 @@
+# config/tweet_prompts/signal_alert.yaml
+category: SIGNAL_ALERT
+description: "Announcing new scanner signals and GREEN signal alerts"
+
+# Examples from the original LIVE_CATEGORY_EXAMPLES dict
+# These are the existing examples, preserved exactly
+examples:
+  - "Friday scan done. $INOD at $61.54 and $RCAT at $13.25 cleared all gates. Institutional Accumulation Divergence confirmed. Full breakdown in the newsletter."
+  - "1,800 stocks. 5 gates. 2 survivors this week. Quality over quantity — that's the whole point."
+  - "On my radar: $IONQ at $42.15. Theme alignment is there. Waiting for momentum confirmation. NFA."
+
+# Per-persona examples (NEW — start empty, to be filled in later)
+# These give each account a distinct voice for this category
+persona_examples:
+  variant_1: []  # Alex — The Analyst
+  variant_2: []  # Rozalia — The Strategist
+  variant_3: []  # James — The Scout
+
+# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
+bad_examples: []
+
+# Banned terms that must NEVER appear in tweets of this category
+# These come from content_prompt_handbook_v5.md
+banned_terms:
+  - "HMA"
+  - "Hull Moving Average"
+  - "MACD"
+  - "RSI"
+  - "UC"
+  - "Undercurrent"
+  - "Banker"
+  - "BoS"
+  - "ExD"
+  - "VWAP"
+  - "KDJ"
+  - "Gatekeeper"
+  - "Investment Gate"
+  - "Deep DD"
+  - "5-gate"
+  - "Tier 1"
+  - "Tier 2"
+  - "Tier 3"
+  - "conviction score"
+  - "conviction rating"
+  - "STRONG BUY"
+  - "SPEC BUY"
+  - "NO GO"
+  - "TEAL signal"
+  - "VIOLET signal"
+  - "AMBER signal"
+  - "stay tuned"
+  - "more to come"
+  - "some interesting setups"
+  - "keep an eye on"
+  - "picks and shovels"

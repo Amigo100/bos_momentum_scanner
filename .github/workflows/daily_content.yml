@@ -74,7 +74,7 @@ jobs:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
         run: |
-          ARGS=""
+          ARGS="--skip-email"
           if [ -n "${{ github.event.inputs.day_override }}" ]; then
             ARGS="$ARGS --day ${{ github.event.inputs.day_override }}"
           fi

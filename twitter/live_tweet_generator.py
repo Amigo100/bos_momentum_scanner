@@ -41,6 +41,8 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Set, Tuple
 from zoneinfo import ZoneInfo
 
+import yaml
+
 try:
     import anthropic
 except ImportError:
@@ -195,6 +197,107 @@ LIVE_CATEGORY_EXAMPLES: Dict[str, str] = {
         'a bad day become a bad week."'
     ),
 }
+
+
+def load_category_examples() -> Optional[Dict[str, Dict]]:
+    """Load category configs from config/tweet_prompts/*.yaml files.
+
+    Returns dict mapping uppercase category name to full config:
+        { "SIGNAL_ALERT": { "examples": [...], "persona_examples": {...}, "banned_terms": [...], "bad_examples": [] }, ... }
+
+    Returns None on failure (missing dir, parse error) for graceful fallback.
+    """
+    prompts_dir = Path(__file__).resolve().parent.parent / "config" / "tweet_prompts"
+    if not prompts_dir.is_dir():
+        logging.warning("YAML category configs: %s not found, using hardcoded fallback", prompts_dir)
+        return None
+
+    configs = {}
+    try:
+        for yaml_file in sorted(prompts_dir.glob("*.yaml")):
+            with open(yaml_file, "r") as f:
+                data = yaml.safe_load(f)
+            if not data or "category" not in data:
+                continue
+            cat_name = data["category"].upper()
+            configs[cat_name] = {
+                "examples": data.get("examples", []),
+                "persona_examples": data.get("persona_examples", {}),
+                "banned_terms": data.get("banned_terms", []),
+                "bad_examples": data.get("bad_examples", []),
+            }
+    except Exception as e:
+        logging.warning("YAML category configs: parse error (%s), using hardcoded fallback", e)
+        return None
+
+    if configs:
+        logging.info("Loaded YAML category configs for %d categories", len(configs))
+    else:
+        logging.warning("YAML category configs: no valid files found, using hardcoded fallback")
+        return None
+
+    return configs
+
+
+_YAML_CATEGORY_CONFIGS = load_category_examples()
+
+
+def load_voice_guides() -> Optional[Dict[str, Dict]]:
+    """Load extended voice guides from config/persona_voice_guides.yaml.
+
+    Returns dict mapping variant key to guide data:
+        { "variant_1": { "name": "Alex", "role": "...", "voice_guide": "...", "rhythm_examples": [...], "never": [...] }, ... }
+
+    Returns None on failure for graceful fallback to default persona descriptions.
+    """
+    vg_path = Path(__file__).resolve().parent.parent / "config" / "persona_voice_guides.yaml"
+    if not vg_path.is_file():
+        logging.warning("Voice guides: %s not found, using default persona descriptions", vg_path)
+        return None
+
+    try:
+        with open(vg_path, "r") as f:
+            data = yaml.safe_load(f)
+        personas = data.get("personas", {})
+        if not personas:
+            logging.warning("Voice guides: no personas found in %s", vg_path)
+            return None
+        logging.info("Loaded voice guides for %d personas", len(personas))
+        return personas
+    except Exception as e:
+        logging.warning("Voice guides: parse error (%s), using default persona descriptions", e)
+        return None
+
+
+_VOICE_GUIDES = load_voice_guides()
+
+
+def load_engagement_data() -> Optional[Dict]:
+    """Load engagement metrics from state/engagement.json.
+
+    Returns dict with per-account, per-category engagement averages,
+    or None if file missing/empty/unpopulated (scaffold).
+    Used by decide_tweet_type() for engagement-weighted category selection.
+    """
+    eng_path = Path(__file__).resolve().parent.parent / "state" / "engagement.json"
+    if not eng_path.is_file():
+        logging.info("Engagement data: %s not found — no engagement weighting", eng_path)
+        return None
+
+    try:
+        data = json.loads(eng_path.read_text())
+        if not data or data.get("last_updated") is None:
+            logging.info("Engagement data: scaffold only (last_updated=null) — no engagement weighting")
+            return None
+        logging.info("Engagement data loaded: last_updated=%s", data.get("last_updated"))
+        return data
+    except Exception as e:
+        logging.warning("Engagement data: parse error (%s) — no engagement weighting", e)
+        return None
+
+
+_ENGAGEMENT_DATA = load_engagement_data()
+
 
 # Account variant mapping
 ACCOUNT_VARIANTS = ["variant_1", "variant_2", "variant_3"]
@@ -745,12 +848,14 @@ def _prepare_slot_data(
                 continue
             ticker = c
             used_tickers.add(c)
+            logger.debug("Slot dedup: $%s claimed for %s", c, variant)
             break
 
         # No-ticker fallback: switch to non-ticker category
         if not ticker and cat in ticker_requiring_cats:
             non_ticker_cats = ["EDUCATIONAL", "ENGAGEMENT"]
             cat = non_ticker_cats[ACCOUNT_VARIANTS.index(variant) % len(non_ticker_cats)]
+            logger.info("Slot dedup: %s switched to %s (no available ticker)", variant, cat)
 
         # Same-category-consecutively check
         if tracker and tracker.last_category_per_account.get(variant) == cat:
@@ -831,6 +936,38 @@ def _notable_market_condition(context: Dict) -> bool:
     return False
 
 
+def fetch_yfinance_context(symbol: str) -> Optional[Dict]:
+    """Fetch fresh market data for a single ticker via yfinance.
+
+    Returns dict with price, change, volume info, or None on failure.
+    Used to enrich fallback context when Grok is unavailable.
+    """
+    try:
+        import yfinance as yf
+        tk = yf.Ticker(symbol)
+        info = tk.info
+        if not info or "currentPrice" not in info:
+            return None
+        price = info.get("currentPrice", info.get("regularMarketPrice", 0))
+        prev_close = info.get("previousClose", 0)
+        change_pct = ((price - prev_close) / prev_close * 100) if prev_close else 0
+        avg_vol = info.get("averageVolume", 0)
+        cur_vol = info.get("volume", 0)
+        vol_ratio = round(cur_vol / avg_vol, 1) if avg_vol else 0
+        return {
+            "price": round(price, 2),
+            "change_pct": round(change_pct, 1),
+            "volume_ratio": vol_ratio,
+            "market_cap": info.get("marketCap"),
+            "sector": info.get("sector", ""),
+            "fifty_two_week_high": info.get("fiftyTwoWeekHigh"),
+            "fifty_two_week_low": info.get("fiftyTwoWeekLow"),
+        }
+    except Exception as e:
+        logger.debug("yfinance fetch failed for %s: %s", symbol, e)
+        return None
+
+
 def _build_fallback_context(portfolio: List[Dict], signals: Dict) -> Dict:
     """Build minimal context from portfolio + signals when Grok context is unavailable.
 
@@ -858,6 +995,18 @@ def _build_fallback_context(portfolio: List[Dict], signals: Dict) -> Dict:
             "price": str(pos.get("current_price", pos.get("entry_price", "?"))),
             "context": pos.get("theme", "portfolio position"),
         })
+
+    # Enrich movers with fresh yfinance data where portfolio data is stale
+    for mover in movers:
+        raw_ticker = mover["ticker"].replace("$", "")
+        if mover.get("move") in ("N/A", "", None) or mover.get("price") in ("?", "", None):
+            yf_data = fetch_yfinance_context(raw_ticker)
+            if yf_data:
+                mover["price"] = str(yf_data["price"])
+                mover["move"] = f"{yf_data['change_pct']:+.1f}%"
+                if yf_data.get("sector"):
+                    mover["context"] = f"{mover.get('context', '')} ({yf_data['sector']})"
+                logger.info("yfinance enriched fallback for %s: $%s %s", raw_ticker, yf_data["price"], mover["move"])
 
     # Build theme_activity from signals themes
     theme_activity = []
@@ -929,6 +1078,30 @@ def _get_today_post_topic() -> Optional[str]:
         return match.group(1).strip() if match else None
     except (OSError, UnicodeDecodeError):
         return None
+
+
+def _get_category_engagement_score(category: str) -> float:
+    """Get aggregate engagement score for a category across all accounts.
+
+    Score = avg_likes + avg_retweets * 2 + avg_replies * 3
+    (replies weighted highest as they indicate true engagement)
+
+    Returns 0.0 if no data available.
+    """
+    if not _ENGAGEMENT_DATA:
+        return 0.0
+    total = 0.0
+    count = 0
+    for variant, acct_data in _ENGAGEMENT_DATA.get("accounts", {}).items():
+        cat_data = acct_data.get("by_category", {}).get(category, {})
+        if cat_data and cat_data.get("count", 0) > 0:
+            total += (
+                cat_data.get("avg_likes", 0)
+                + cat_data.get("avg_retweets", 0) * 2
+                + cat_data.get("avg_replies", 0) * 3
+            )
+            count += 1
+    return round(total / count, 1) if count > 0 else 0.0
 
 
 def decide_tweet_type(
@@ -1039,6 +1212,22 @@ def decide_tweet_type(
         # No P2 history — try RECEIPT first (concrete > abstract)
         p2_order = ["RECEIPT", "MARKET_COMMENTARY"]
 
+    # Engagement-weighted reorder (soft bias — 70/30 when data available)
+    if _ENGAGEMENT_DATA:
+        score_r = _get_category_engagement_score("RECEIPT")
+        score_mc = _get_category_engagement_score("MARKET_COMMENTARY")
+        if score_r > 0 and score_mc > 0:
+            higher = "RECEIPT" if score_r >= score_mc else "MARKET_COMMENTARY"
+            lower = "MARKET_COMMENTARY" if higher == "RECEIPT" else "RECEIPT"
+            if random.random() < 0.7:
+                p2_order = [higher, lower]
+            else:
+                p2_order = [lower, higher]
+            logger.debug(
+                "P2 engagement weighting: RECEIPT=%.1f, MARKET_COMMENTARY=%.1f → trying %s first",
+                score_r, score_mc, p2_order[0],
+            )
+
     for p2_type in p2_order:
         if _is_category_over_budget(p2_type, tracker):
             continue
@@ -1118,6 +1307,7 @@ def decide_tweet_type(
             }
 
     # ── P3: THEME_CATALYST or TRENDING_TAKE ────────────────────────────────
+    # TODO Sprint 7: engagement-weighted reorder when both P3a/P3b are eligible
     # P3a: Breaking themes → THEME_CATALYST
     if not _is_category_over_budget("THEME_CATALYST", tracker):
         active_themes = [t for t in themes if t.get("status") == "breaking"]
@@ -1159,6 +1349,7 @@ def decide_tweet_type(
                 }
 
     # ── P4: THEME_LIST or SUBSTACK_TEASER ──────────────────────────────────
+    # TODO Sprint 7: engagement-weighted reorder when both P4a/P4b are eligible
     # P4a: Theme with 5+ external tickers → THEME_LIST
     if not _is_category_over_budget("THEME_LIST", tracker):
         theme_data = _theme_has_external_tickers(context, min_count=5)
@@ -1194,6 +1385,7 @@ def decide_tweet_type(
             }
 
     # ── P5: TECHNICAL_ANALYSIS or EDUCATIONAL ──────────────────────────────
+    # TODO Sprint 7: engagement-weighted reorder when both P5a/P5b are eligible
     # P5a: Position commentary
     if not is_weekend and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker):
         if not (tracker and tracker.type_recently_used("TECHNICAL_ANALYSIS", hours=4)):
@@ -1302,6 +1494,26 @@ variant_1 = data-driven analyst, variant_2 = approachable mentor, variant_3 = pu
 DO NOT just rearrange words — write as if 3 different people are tweeting.
 """
 
+    # Extended voice guides (from persona_voice_guides.yaml)
+    voice_guide_block = ""
+    if _VOICE_GUIDES and slot_assignments:
+        vg_lines = []
+        for variant in slot_assignments:
+            guide = _VOICE_GUIDES.get(variant)
+            if guide:
+                vg_text = guide.get("voice_guide", "").strip()
+                rhythm = guide.get("rhythm_examples", [])
+                never = guide.get("never", [])
+                pname = guide.get("name", variant)
+                section = f"{variant} ({pname}) VOICE GUIDE:\n{vg_text}"
+                if rhythm:
+                    section += "\nRhythm examples (match this cadence):\n" + "\n".join(f"  - {ex}" for ex in rhythm)
+                if never:
+                    section += "\nNEVER:\n" + "\n".join(f"  - {item}" for item in never)
+                vg_lines.append(section)
+        if vg_lines:
+            voice_guide_block = "\n\nEXTENDED VOICE GUIDES:\n" + "\n\n".join(vg_lines) + "\n"
+
     # Opening sentence dedup block (injected from tracker)
     opening_block = ""
     if tracker and tracker.recent_openings:
@@ -1329,7 +1541,7 @@ Use fresh wording and different sentence structures.
 
 STYLE RULES (non-negotiable):
 {style_guide}
-{persona_block}{opening_block}{phrase_block}
+{persona_block}{voice_guide_block}{opening_block}{phrase_block}
 YOUR TASK:
 Generate exactly 3 tweet variants for the same moment. Each variant must:
 - Sound like a different human wrote it (not just rearranged words)
@@ -1526,8 +1738,25 @@ FOCUS TICKER(S): {', '.join(f'${t}' for t in decision.get('tickers', []))}""")
     if assignment_block:
         parts.append(assignment_block)
 
-    # Category-specific few-shot examples (Step 4)
-    if decision_type in LIVE_CATEGORY_EXAMPLES:
+    # Category-specific few-shot examples (Step 4) — YAML-first, hardcoded fallback
+    _examples_added = False
+    if _YAML_CATEGORY_CONFIGS and decision_type in _YAML_CATEGORY_CONFIGS:
+        yaml_cfg = _YAML_CATEGORY_CONFIGS[decision_type]
+        examples_list = yaml_cfg.get("examples", [])
+        if examples_list:
+            numbered = "\n".join(f'{i+1}) "{ex}"' for i, ex in enumerate(examples_list))
+            parts.append(f"\nREFERENCE EXAMPLES (match this style and data density):\n{numbered}")
+            _examples_added = True
+        # Persona-specific examples (if slot_assignments present)
+        if slot_assignments:
+            persona_ex = yaml_cfg.get("persona_examples", {})
+            for variant_key in slot_assignments:
+                variant_examples = persona_ex.get(variant_key, [])
+                if variant_examples:
+                    pname = {"variant_1": "Alex", "variant_2": "Rozalia", "variant_3": "James"}.get(variant_key, variant_key)
+                    ex_text = "\n".join(f'  - "{ex}"' for ex in variant_examples)
+                    parts.append(f"\n{pname}-specific examples:\n{ex_text}")
+    if not _examples_added and decision_type in LIVE_CATEGORY_EXAMPLES:
         examples = LIVE_CATEGORY_EXAMPLES[decision_type]
         parts.append(f"\nREFERENCE EXAMPLES (match this style and data density):\n{examples}")
 
@@ -1948,6 +2177,14 @@ def validate_tweet(
                 failures.append(f"step3_banned: '{term}'")
                 break
 
+    # Step 3b: Category-specific YAML banned terms
+    if _YAML_CATEGORY_CONFIGS and category in _YAML_CATEGORY_CONFIGS:
+        yaml_banned = _YAML_CATEGORY_CONFIGS[category].get("banned_terms", [])
+        for term in yaml_banned:
+            if term.lower() in text_lower:
+                failures.append(f"step3b_yaml_banned: '{term}' (category-specific)")
+                break
+
     # Step 4: Winners-only check
     negative_pcts = re.findall(r'(?<!\d)-\d+\.?\d*%', text)
     if negative_pcts:
@@ -2016,6 +2253,31 @@ def validate_tweet(
                         failures.append(
                             f"step8_5_collision: ${my_ticker} + {my_category} on both {my_account} and {other_account}"
                         )
+
+    # Step 8.6: Cross-account ticker assignment enforcement
+    # Catches LLM ignoring slot assignment and using another account's ticker
+    if slot_assignments:
+        my_account_86 = tweet_dict.get("account", "")
+        my_ticker_86 = (tweet_dict.get("primary_ticker") or "").lstrip('$')
+        my_assigned = (slot_assignments.get(my_account_86, {}).get("ticker", "") or "").lstrip('$')
+        if my_ticker_86 and my_account_86 and my_assigned:
+            if my_ticker_86 != my_assigned:
+                # Check if this ticker was assigned to another account
+                claimed_by = None
+                for variant, slot in slot_assignments.items():
+                    if variant != my_account_86 and (slot.get("ticker", "") or "").lstrip('$') == my_ticker_86:
+                        claimed_by = variant
+                        break
+                if claimed_by:
+                    failures.append(
+                        f"step8_6_cross_dedup: ${my_ticker_86} assigned to {claimed_by}, "
+                        f"not {my_account_86} (assigned ${my_assigned})"
+                    )
+                    logger.info("Step 8.6: $%s used by %s but assigned to %s", my_ticker_86, my_account_86, claimed_by)
+                else:
+                    logger.debug("Step 8.6: $%s not in any assignment — allowing (unassigned ticker)", my_ticker_86)
+            else:
+                logger.debug("Step 8.6: $%s correctly matches assignment for %s", my_ticker_86, my_account_86)
 
     # Step 9: Context staleness check
     if context and category in {"MARKET_COMMENTARY", "TRENDING_TAKE"}:
@@ -2301,8 +2563,33 @@ def generate_live_tweet(
         logger.warning("No Grok context — building fallback from portfolio + signals")
         context = _build_fallback_context(portfolio, signals)
         if not context:
-            logger.warning("Fallback context also empty — no data available")
-            return {"status": "failed", "reason": "no_context"}
+            # Last resort: try yfinance directly for portfolio tickers
+            if portfolio:
+                tickers = [r.get("ticker", "") for r in portfolio if r.get("status") == "OPEN" and r.get("ticker")][:3]
+                yf_movers = []
+                for t in tickers:
+                    yf_data = fetch_yfinance_context(t)
+                    if yf_data:
+                        yf_movers.append({
+                            "ticker": f"${t}",
+                            "move": f"{yf_data['change_pct']:+.1f}%",
+                            "price": str(yf_data["price"]),
+                            "context": yf_data.get("sector", "portfolio position"),
+                        })
+                if yf_movers:
+                    logger.info("Built yfinance-only context for %d tickers", len(yf_movers))
+                    context = {
+                        "market_snapshot": {"market_mood": "unknown", "spy_move": "N/A"},
+                        "portfolio_movers": yf_movers,
+                        "theme_activity": [],
+                        "theme_tickers": [],
+                        "fintwit_theme_overlaps": [],
+                        "news_events": [],
+                        "fallback_mode": True,
+                    }
+            if not context:
+                logger.warning("All context sources exhausted — no data available")
+                return {"status": "failed", "reason": "no_context"}
 
     # 2. Decide what to tweet (with category balance enforcement)
     if force_type:
@@ -2315,6 +2602,18 @@ def generate_live_tweet(
         }
     else:
         decision = decide_tweet_type(context, portfolio, signals, recent_tweets, tracker=tracker)
+
+    # Engagement observation logging
+    selected_category = decision.get("type", "")
+    if selected_category:
+        eng_score = _get_category_engagement_score(selected_category)
+        if _ENGAGEMENT_DATA:
+            logger.info(
+                "Category selected: %s (engagement score: %.1f)",
+                selected_category, eng_score,
+            )
+        else:
+            logger.info("Category selected: %s (no engagement data yet)", selected_category)
 
     # 3. If nothing worth tweeting, skip
     if decision["action"] == "skip":

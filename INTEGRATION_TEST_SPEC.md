@@ -171,7 +171,7 @@ print(f'Date: {ctx.get(\"date\", \"?\")}')
 "
 
 echo "=== Pre-Generated Notes ==="
-ls -la substack/output/current/daily_notes/note_slot*.html 2>/dev/null || echo "No pre-generated notes found"
+ls -la substack/output/current/notes/note_*.html 2>/dev/null || echo "No pre-generated notes found"
 
 echo "=== Notes Generator Dry Run ==="
 # This tests the poster's ability to find and convert notes WITHOUT posting
@@ -277,12 +277,14 @@ ls -la substack/daily_notes_generator.py substack/notes_generator.py 2>/dev/null
 
 # Verify output
 echo "=== Generated Note ==="
-cat substack/output/current/daily_notes/note_slot1.html
+ls substack/output/current/notes/note_1_*.html
 
 # Validate the note
 echo "=== Validation ==="
 python3 -c "
-html = open('substack/output/current/daily_notes/note_slot1.html').read()
+import glob
+files = glob.glob('substack/output/current/notes/note_1_*.html')
+html = open(files[0]).read() if files else ''
 print(f'Length: {len(html)} chars')
 print(f'Has div wrapper: {\"<div\" in html.lower()}')
 print(f'Has disclaimer: {\"not financial advice\" in html.lower() or \"informational\" in html.lower()}')
@@ -688,7 +690,7 @@ python3 -m substack.daily_notes_generator 2>&1 | tail -20
 
 # Verify:
 for i in 1 2 3; do
-    FILE="substack/output/current/daily_notes/note_slot${i}.html"
+    FILE=$(ls substack/output/current/notes/note_${i}_*.html 2>/dev/null | head -1)
     if [ -f "$FILE" ]; then
         WORDS=$(python3 -c "import re; print(len(re.sub('<[^>]+>', '', open('$FILE').read()).split()))")
         echo "Slot $i: $WORDS words ✓"

@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 NOTES_API_URL = "https://substack.com/api/v1/comment/feed"
-COOKIE_CHECK_URL = "https://substack.com/api/v1/user/self"
+COOKIE_CHECK_URL = "https://substack.com/api/v1/reader/feed"
 STATE_FILE = BASE_DIR / "state" / "notes.json"
 NOTES_OUTPUT_DIR = BASE_DIR / "substack" / "output" / "current" / "notes"
 
@@ -241,7 +241,7 @@ def get_cookie() -> Optional[str]:
 def check_cookie_validity(cookie: str) -> Tuple[bool, str]:
     """Test if session cookie is still valid.
 
-    Makes a lightweight request to /api/v1/user/self.
+    Makes a lightweight request to /api/v1/reader/feed.
     Returns (is_valid, detail_message).
     """
     try:
@@ -252,14 +252,13 @@ def check_cookie_validity(cookie: str) -> Tuple[bool, str]:
     try:
         resp = requests.get(
             COOKIE_CHECK_URL,
-            headers={"Cookie": f"substack.sid={cookie}"},
+            cookies={"substack.sid": cookie},
             timeout=10,
         )
         if resp.status_code == 200:
             data = resp.json()
-            name = data.get("name", data.get("email", "unknown"))
-            user_id = data.get("id", "?")
-            return True, f"Authenticated as {name} (id: {user_id})"
+            items = data.get("items", [])
+            return True, f"Authenticated (feed returned {len(items)} items)"
         elif resp.status_code in (401, 403):
             return False, f"HTTP {resp.status_code}: Cookie expired or invalid"
         else:
@@ -354,7 +353,6 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
         return {"success": False, "note_id": None, "error": "requests package not installed"}
 
     headers = {
-        "Cookie": f"substack.sid={cookie}",
         "Content-Type": "application/json",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -365,6 +363,7 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
         resp = requests.post(
             NOTES_API_URL,
             headers=headers,
+            cookies={"substack.sid": cookie},
             json=payload,
             timeout=30,
         )

@@ -245,16 +245,7 @@ def check_cookie_validity(cookie: str) -> Tuple[bool, str]:
     Returns (is_valid, detail_message).
     """
     try:
-        import requests
-    except ImportError:
-        return False, "requests package not installed"
-
-    try:
-        resp = requests.get(
-            COOKIE_CHECK_URL,
-            cookies={"substack.sid": cookie},
-            timeout=10,
-        )
+        resp = _build_session(cookie).get(COOKIE_CHECK_URL, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
             items = data.get("items", [])
@@ -314,10 +305,42 @@ def send_cookie_expiry_alert(error_detail: str):
 # CORE POSTING
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _build_session(cookie: str):
+    """Build an authenticated session with browser-like TLS fingerprint.
+
+    Uses curl_cffi to impersonate Chrome's TLS handshake, which is required
+    to bypass Cloudflare Bot Management on Substack's POST endpoints.
+    Falls back to standard requests if curl_cffi is unavailable.
+
+    Sets the substack.sid cookie, then warms up the session by hitting
+    /notes to collect Cloudflare cookies (__cf_bm, etc.).
+    """
+    try:
+        from curl_cffi import requests as cffi_requests
+        session = cffi_requests.Session(impersonate="chrome")
+        logger.info("Using curl_cffi (browser TLS fingerprint)")
+    except ImportError:
+        import requests
+        session = requests.Session()
+        logger.warning("curl_cffi not available — falling back to requests (may hit Cloudflare 403)")
+
+    session.cookies.set("substack.sid", cookie, domain=".substack.com")
+
+    # Warm up session — picks up Cloudflare cookies
+    try:
+        warm_resp = session.get("https://substack.com/notes", timeout=15)
+        logger.info("Session warm-up: HTTP %d", warm_resp.status_code)
+    except Exception as e:
+        logger.warning("Session warm-up failed: %s — continuing anyway", e)
+
+    return session
+
+
 def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
     """Post a single note to Substack via session cookie API.
 
     Converts HTML to ProseMirror JSON and posts to the Notes API endpoint.
+    Uses a full requests.Session to collect all required cookies before POST.
 
     Returns:
         {"success": bool, "note_id": str|None, "error": str|None}
@@ -329,9 +352,9 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
     if paragraph_count == 0:
         return {"success": False, "note_id": None, "error": "Empty note — no paragraphs"}
 
-    # Build payload — bodyJson is a JSON string within the outer JSON
+    # Build payload — bodyJson as dict (Substack expects nested object)
     payload = {
-        "bodyJson": json.dumps(body_json),
+        "bodyJson": body_json,
         "tabId": "for-you",
         "replyMinimumRole": "everyone",
     }
@@ -348,22 +371,15 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
         return {"success": True, "note_id": "dry-run", "error": None}
 
     try:
-        import requests
-    except ImportError:
-        return {"success": False, "note_id": None, "error": "requests package not installed"}
+        session = _build_session(cookie)
 
-    headers = {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/120.0.0.0 Safari/537.36",
-    }
-
-    try:
-        resp = requests.post(
+        resp = session.post(
             NOTES_API_URL,
-            headers=headers,
-            cookies={"substack.sid": cookie},
+            headers={
+                "Content-Type": "application/json",
+                "Origin": "https://substack.com",
+                "Referer": "https://substack.com/notes",
+            },
             json=payload,
             timeout=30,
         )
@@ -381,13 +397,21 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
             return {"success": False, "note_id": None, "error": error}
 
         elif resp.status_code == 422:
-            # Substack returns 422 for malformed payload
+            # Substack returns 422 for malformed payload — try bodyJson as string
             error = f"HTTP 422 (Unprocessable Entity): {resp.text[:300]}"
             logger.error("Payload rejected: %s", error)
-            # Try alternative: bodyJson as nested dict instead of string
-            logger.info("Retrying with bodyJson as nested dict...")
-            payload["bodyJson"] = body_json  # dict, not string
-            resp2 = requests.post(NOTES_API_URL, headers=headers, json=payload, timeout=30)
+            logger.info("Retrying with bodyJson as JSON string...")
+            payload["bodyJson"] = json.dumps(body_json)
+            resp2 = session.post(
+                NOTES_API_URL,
+                headers={
+                    "Content-Type": "application/json",
+                    "Origin": "https://substack.com",
+                    "Referer": "https://substack.com/notes",
+                },
+                json=payload,
+                timeout=30,
+            )
             if resp2.status_code in (200, 201):
                 data = resp2.json()
                 note_id = str(data.get("id", data.get("comment_id", "")))

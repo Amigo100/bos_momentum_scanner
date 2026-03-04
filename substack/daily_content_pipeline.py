@@ -26,6 +26,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
+except ImportError:
+    pass
+
 from config.output_paths import get_substack_current_dir
 
 

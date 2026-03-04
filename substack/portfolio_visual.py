@@ -727,7 +727,7 @@ def generate_dashboard_html(data: Dict) -> str:
         sterlingsignals.substack.com
       </p>
       <p style="margin:4px 0 0 0;color:{COLORS['border']};font-size:11px;">
-        Proprietary 5-gate screening system | No ego, just execution
+        Proprietary screening system | No ego, just execution
       </p>
     </div>
 

@@ -1,10 +1,10 @@
-# Sterling Signals — Tuesday March 03, 2026
+# Sterling Signals — Wednesday March 04, 2026
 
 ## TODAY'S POST
-**Category:** Ticker Deep Dive
-**Topic:** Deep Dive — $ETON
-**Theme:** Editorial (light)
-**Why this topic:** Highest conviction portfolio position
+**Category:** Theme Rotation
+**Topic:** Theme Rotation — Rare Disease Gene Therapy
+**Theme:** Dashboard (dark)
+**Why this topic:** Top SELECTIVE theme (composite 6.8/10)
 
 ---
 
@@ -14,75 +14,49 @@ Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
 
 ---
 
-I have attached our Sterling Signals weekly context document. Read it carefully for system context, portfolio data, and all marketing/terminology rules.
+I have attached our Sterling Signals weekly context document. Read it carefully for system context, portfolio data, theme analysis, and all marketing/terminology rules.
 
-TICKER SELECTION: Read the weekly content schedule in the context document. Identify the ticker assigned for today's Ticker Deep Dive slot. If no specific ticker is assigned, select the portfolio position with the highest P&L percentage from the "Showcase-Ready Winners" section. If there are no showcase winners, select the highest-gaining position that qualifies (15%+ gain).
+THEME SELECTION: Read the weekly content schedule in the context document. Identify the theme assigned for today's Theme Rotation slot. If no specific theme is assigned, select the highest-rated theme from the "Top Themes" section of the context document.
 
-State which ticker you are analysing and why you selected it before proceeding.
+State which theme you are analysing and why before proceeding.
 
-FRESHNESS CHECK: Use web search to get the current stock price for this ticker. Compare to the entry price in the context document and recalculate P&L if it has changed. Use the CURRENT price throughout the article.
+FRESHNESS CHECK: The context document was generated on Friday. Use web search to:
+- Validate the theme thesis with any developments since Friday
+- Check for new ETF flow data, policy announcements, or earnings that affect this theme
+- Get current prices for any portfolio positions aligned with this theme
 
-You are a senior equity research analyst building an independent 12-month price target. You must NOT reference or anchor to any Wall Street analyst price targets. Your target must be built entirely from verifiable, sourced data. Use web search extensively.
+STAGE 1 — THEME VALIDATION
+Use web search to cross-reference the scanner's thesis with fresh data. Has anything changed since Friday? Is the thesis strengthening or weakening? Look for confirming or disconfirming evidence.
 
-Work through these stages sequentially using extended thinking:
+STAGE 2 — DEEP RESEARCH
+Use web search to find specific data for:
+- ETF flows for relevant sector ETFs (tickers and dollar amounts)
+- Institutional positioning — fund moves, 13F trends, commentary
+- Policy and regulatory catalysts
+- Earnings evidence — are companies in this theme beating estimates?
+- Key companies positioned to benefit
+- Risks — what could derail this? Crowded?
+- Historical parallels
+- Timeline — early-stage or late-stage?
 
-STAGE 1 — FINANCIAL BASELINE
-Search for and compile from the most recent 10-Q/10-K, earnings releases, and investor presentations:
-- Trailing 8-quarter revenue, broken out by business segment
-- Gross margin, operating margin, and net margin for each of those 8 quarters
-- Free cash flow for the trailing 4 quarters
-- Current shares outstanding and net change over 12 months
-- Total debt, cash position, and any debt maturing within 18 months
-- Current stock price (from your web search above)
-- Short interest as a percentage of float
-- Institutional ownership changes from the most recent 13F cycle
+STAGE 3 — ARTICLE
+Think through: What is the single strongest data point? Lead with that.
 
-Present as structured tables. Flag any data you cannot find.
+Write as complete HTML using the Dashboard theme (specs in Quick Reference).
 
-STAGE 2 — FORWARD REVENUE BUILD (next 12 months)
-For each revenue segment, search for and document:
-- Announced contracts, partnerships, or deals
-- Product launches or expansion initiatives
-- Pricing actions or ASP/ARPU trends
-- TAM/SAM sizing for new markets
-- Customer count or volume trends
-- Known headwinds
+Article structure (800-1200 words):
+1. Why This Theme, Why Now — Strongest data point first
+2. The Investment Thesis — Structural dynamics, multi-year story
+3. The Evidence — ETF flows, institutional moves, earnings, catalysts
+4. What Our System Sees — Connect to scanner theme analysis from context document. Reference aligned portfolio positions.
+5. Risks to the Thesis — Balanced assessment
+6. What We're Watching — Specific upcoming events with dates
+7. Stocks Positioned — 3-5 stocks, including any from our portfolio
+8. Footer — "Get weekly theme analysis and GREEN signals: https://sterlingsignals.substack.com"
 
-Produce low/mid/high revenue estimates. Every assumption must cite a source.
+Output complete HTML.
 
-STAGE 3 — MARGIN AND EARNINGS PROJECTION
-Project gross margins, operating margins, EPS, and FCF per share for bear/base/bull scenarios.
-
-STAGE 4 — VALUATION TRIANGULATION
-Apply four methods:
-A — Historical Multiple Range (P/E, EV/EBITDA over 5 years)
-B — DCF (using your FCF projections, current 10-year Treasury + equity risk premium)
-C — Peer-Relative (4-6 competitors, compare growth/margins/multiples)
-D — Catalyst-Adjusted (probability-weighted impact of known 12-month catalysts)
-
-STAGE 5 — SYNTHESIS AND ARTICLE
-- Produce bear/base/bull targets from each method
-- Weight the methods by appropriateness for this company type
-- Derive probability weightings from analysis (not 25/50/25 default)
-- Calculate probability-weighted expected value
-- Identify 3 assumptions most likely wrong
-
-Write the article as complete HTML using the Editorial theme (specs in Quick Reference at end of handbook).
-
-Article structure (1000-1500 words):
-1. The Pitch — 2-3 sentence elevator pitch
-2. The Thesis — Structural trend or catalyst driving this. Connect to theme from context document.
-3. Why Now — What changed recently? What's the inflection?
-4. The Numbers — Revenue trends, margins, valuation. Specific quarterly data.
-5. 12-Month Price Targets — Bear/base/bull with probability weightings and expected value
-6. Bear Case — What could go wrong? Why risk is manageable.
-7. Key Risk to Monitor — One specific thing with a date or metric
-8. Our View — Confident summary
-9. Footer — "Subscribe to Sterling Signals for weekly analysis and GREEN signals: https://sterlingsignals.substack.com"
-
-Include [CHART: TICKER] placeholder. Output complete HTML.
-
-Tone: Authoritative but accessible. Data-driven, confident, educational.
+Tone: Sharp, opinionated, data-backed. Institutional quality but accessible.
 
 ---
 
@@ -178,15 +152,15 @@ Output 3 notes clearly labelled [NOTE 1], [NOTE 2], [NOTE 3]. Each as self-conta
 ---
 
 ## MARKET CONTEXT
-**Live data (11:31 ET):** SPY $686.38 (+0.06%) | QQQ $608.09 (+0.13%) | VIX 26.5
+**Live data (11:28 ET):** SPY $680.33 (-0.88%) | QQQ $601.58 (-1.07%) | VIX 22.8
 
-U.S. stocks stumbled through the week ending February 27, with major indices posting modest declines as AI disruption concerns and geopolitical tensions weighed on sentiment. The S&P 500 fell 0.4% for the week, the NASDAQ dropped 0.9%, and the small-cap Russell 2000 declined 1.9%, with stocks tracking to finish down 0.50-0.80% across the majors. The VIX closed at 19.86, reflecting elevated but manageable uncertainty as markets digested a volatile mix of economic data and geopolitical developments.
+US equity markets closed lower for the week ending February 27, 2026, with major indices down 0.50-0.80% as investors grappled with AI disruption concerns, geopolitical tensions, and sticky inflation data. The S&P 500 fell 0.4%, the Nasdaq declined 0.9%, and small-cap Russell 2000 dropped a sharp 1.9%, marking a significant shift in market sentiment after weeks of relative stability.
 
-The year's notable sector rotation continued, with energy, materials, and industrials leading gains, while last year's champions—communication services and technology—lagged behind. Basic materials posted the strongest performance with 9.05% gains year-to-date, followed by industrials and energy, as real assets including gold, metals, and mining companies delivered "outstanding" performances. Technology and banks weakened during the week, while defensive sectors held up better, highlighting the market's continued broadening beyond the Magnificent Seven stocks that dominated 2025.
+Technology and banks led the decline as concerns about AI's disruptive impact drove a broader risk-off shift, while defensive sectors held up better. The selling pressure accelerated into a full-scale rout mid-week, wiping out billions in market capitalization and pushing the VIX up nearly 18% to above 20 levels. The sector rotation was stark, with utilities surging while financials cratered, reflecting investors' flight to safety amid uncertainty over massive AI capital expenditures and their eventual returns.
 
-Markets were rocked by surprise inflation data on Friday, with the Core PCE Price Index rising 0.5% in January—significantly above the 0.2% consensus—pushing annual core inflation to 3.1% from 2.8% in December. The selloff accelerated Friday as investors worried about AI disruption, geopolitical strains between the U.S. and Iran, and the sticky inflation reading after stronger-than-expected producer prices data. The Federal Reserve held rates steady at its January 28 meeting, with Chair Powell stating the economy is on "firm footing" and current policy stance is appropriate after 75 basis points of cuts over three meetings.
+Producer price pressures intensified the market's unease, with the PPI rising 0.5% in January versus expectations of 0.3%. Trade tensions escalated as US Trade Representative Jamieson Greer announced tariffs would increase from 10% to 15% on some countries, following the Supreme Court ruling on Trump's tariff authority. Meanwhile, NVIDIA delivered another blockbuster quarter with $68.1 billion in revenue (+73% year-over-year) and data center sales of $62.3 billion (+75%), beating all estimates, though the stock's muted reaction highlighted investors' increasingly high bar for AI leaders.
 
-Next week features key Fed speeches from New York Fed President John Williams at 9:55 AM ET on Tuesday and Minneapolis Fed President Neel Kashkari at 11:45 AM ET, with markets hungry for clarity on the policy outlook. The CME FedWatch Tool shows less than 5% probability of a
+Oil prices surged past $66 per barrel as escalating US-Iran tensions raised concerns about supply disruptions, with markets pricing in risks to Iran's 3.3 million barrels per day production and potential Strait of Hormuz impacts. Looking ahead, the market faces a critical inflection point with heightened geopolitical risks, persistent inflation pressures, and questions over AI investment sustainability. For momentum traders, the elevated VIX above 20 and defensive sector rotation suggest incre
 
 ## SIGNAL DATA
 
@@ -204,39 +178,39 @@ Next week features key Fed speeches from New York Fed President John Williams at
 No assessed signals available.
 
 ## PORTFOLIO SNAPSHOT
-Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
+Open: 3 positions | Avg P&L: +2.4% | Big winners (25%+): 0
 
-- Portfolio Return: +0.4%
-- S&P 500 Return: +0.6%
-- Alpha vs SPY: +-0.2%
-- NASDAQ Return: +1.1%
-- Alpha vs NASDAQ: +-0.7%
+- Portfolio Return: +2.4%
+- S&P 500 Return: -0.3%
+- Alpha vs SPY: +2.7%
+- NASDAQ Return: +0.0%
+- Alpha vs NASDAQ: +2.3%
 - Open Positions: 3
 
 ### Performance vs Benchmark (Since Inception)
 
 | Metric | Return |
 |--------|--------|
-| **Portfolio (Compounding)** | +0.4% |
-| **S&P 500** | +0.6% |
-| **Alpha vs S&P 500** | -0.2% |
-| **NASDAQ (QQQ)** | +1.1% |
-| **Alpha vs NASDAQ** | -0.7% |
+| **Portfolio (Compounding)** | +2.4% |
+| **S&P 500** | -0.3% |
+| **Alpha vs S&P 500** | +2.7% |
+| **NASDAQ (QQQ)** | +0.0% |
+| **Alpha vs NASDAQ** | +2.3% |
 | **Since** | 2026-02-22 |
 
-*Underperforming SPY by 0.2pp since inception. Staying disciplined.*
+*Outperforming the S&P 500 by 2.7pp and NASDAQ by 2.3pp since inception.*
 
 
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $ETON | $18.15 | $17.93 | +1.2% | 9 | Healthcare Contrarian Recovery | ExD |
-| $NGNE | $20.74 | $20.50 | +1.2% | 2 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $16.93 | $17.15 | -1.3% | 9 | Cross-Border Digital Payments & Remittances | ExD |
+| $NGNE | $21.99 | $20.50 | +7.3% | 3 | Rare disease gene therapy — Rett syndrome | ExD |
+| $RELY | $17.58 | $17.15 | +2.5% | 10 | Cross-Border Digital Payments & Remittances | ExD |
+| $ETON | $17.45 | $17.93 | -2.7% | 10 | Healthcare Contrarian Recovery | ExD |
 
 ### Showcase-Ready Winners
-- $ETON: $17.93 entry, +1.2% (Healthcare Contrarian Recovery)
-- $NGNE: $20.50 entry, +1.2% (Rare disease gene therapy — Rett syndrome)
+- $NGNE: $20.50 entry, +7.3% (Rare disease gene therapy — Rett syndrome)
+- $RELY: $17.15 entry, +2.5% (Cross-Border Digital Payments & Remittances)
 
 ## THEME SUMMARY
 
@@ -262,10 +236,10 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 
 ## TODAY'S NOTES
 
-**3 notes** for Tuesday:
-- Slot 1 (08:30 ET): SIGNAL_ALERT
-- Slot 2 (12:30 ET): THEME_MOMENTUM
-- Slot 3 (17:00 ET): ENGAGEMENT_HOOK
+**3 notes** for Wednesday:
+- Slot 1 (08:30 ET): MARKET_REACTION
+- Slot 2 (12:30 ET): PORTFOLIO_PULSE
+- Slot 3 (17:00 ET): LEARNING_NUGGET
 
 *Full HTML notes generated via the Notes Prompt above.*
 
@@ -274,4 +248,4 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-03 11:31:06 | Week 10*
+*Generated: 2026-03-04 11:28:49 | Week 10*

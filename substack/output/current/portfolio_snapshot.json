@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-03-03T11:30:25.487432+00:00",
-  "prices_updated_at": "2026-03-03T11:30:24.984542+00:00",
+  "generated_at": "2026-03-04T11:28:11.396367+00:00",
+  "prices_updated_at": "2026-03-04T11:28:10.916098+00:00",
   "summary": {
     "open_positions": 3,
     "closed_trades": 0,
     "win_rate": 0,
     "avg_winner": 0,
     "avg_loser": 0,
-    "unrealized_pnl_pct": 0.43
+    "unrealized_pnl_pct": 2.59
   },
   "equity": {
-    "nav": 15055.75,
+    "nav": 15354.93,
     "cash": 0.0,
-    "invested": 15055.75,
+    "invested": 15354.93,
     "total_deployed": 15000.0,
-    "total_return_pct": 0.37,
-    "spy_return_pct": 0.58,
-    "alpha_pct": -0.21,
-    "qqq_return_pct": 1.11,
-    "alpha_vs_qqq_pct": -0.74,
+    "total_return_pct": 2.37,
+    "spy_return_pct": -0.3,
+    "alpha_pct": 2.67,
+    "qqq_return_pct": 0.03,
+    "alpha_vs_qqq_pct": 2.34,
     "max_drawdown_pct": -3.93
   },
   "open_positions": [
@@ -26,11 +26,11 @@
       "ticker": "ETON",
       "entry_date": "2026-02-22",
       "entry_price": 17.93,
-      "current_price": 18.149999618530273,
+      "current_price": 17.450000762939453,
       "highest_close": 18.45,
-      "pnl_pct": 1.23,
-      "pnl_usd": 22.0,
-      "days_held": 9,
+      "pnl_pct": -2.68,
+      "pnl_usd": -48.0,
+      "days_held": 10,
       "theme": "Healthcare Contrarian Recovery",
       "conviction": 8,
       "stop_level": 0.0,
@@ -41,11 +41,11 @@
       "ticker": "RELY",
       "entry_date": "2026-02-22",
       "entry_price": 17.15,
-      "current_price": 16.93000030517578,
-      "highest_close": 17.15,
-      "pnl_pct": -1.28,
-      "pnl_usd": -22.0,
-      "days_held": 9,
+      "current_price": 17.579999923706055,
+      "highest_close": 17.579999923706055,
+      "pnl_pct": 2.51,
+      "pnl_usd": 43.0,
+      "days_held": 10,
       "theme": "Cross-Border Digital Payments & Remittances",
       "conviction": 8,
       "stop_level": 0.0,
@@ -56,11 +56,11 @@
       "ticker": "NGNE",
       "entry_date": "2026-03-01",
       "entry_price": 20.5,
-      "current_price": 20.739999771118164,
+      "current_price": 21.989999771118164,
       "highest_close": 23.49,
-      "pnl_pct": 1.17,
-      "pnl_usd": 24.0,
-      "days_held": 2,
+      "pnl_pct": 7.27,
+      "pnl_usd": 149.0,
+      "days_held": 3,
       "theme": "Rare disease gene therapy \u2014 Rett syndrome",
       "conviction": 6,
       "stop_level": 0.0,
@@ -71,31 +71,31 @@
   "closed_trades": [],
   "winners": [
     {
-      "ticker": "ETON",
-      "entry_date": "2026-02-22",
-      "entry_price": 17.93,
-      "current_price": 18.149999618530273,
-      "highest_close": 18.45,
-      "pnl_pct": 1.23,
-      "pnl_usd": 22.0,
-      "days_held": 9,
-      "theme": "Healthcare Contrarian Recovery",
-      "conviction": 8,
+      "ticker": "NGNE",
+      "entry_date": "2026-03-01",
+      "entry_price": 20.5,
+      "current_price": 21.989999771118164,
+      "highest_close": 23.49,
+      "pnl_pct": 7.27,
+      "pnl_usd": 149.0,
+      "days_held": 3,
+      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "conviction": 6,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
     },
     {
-      "ticker": "NGNE",
-      "entry_date": "2026-03-01",
-      "entry_price": 20.5,
-      "current_price": 20.739999771118164,
-      "highest_close": 23.49,
-      "pnl_pct": 1.17,
-      "pnl_usd": 24.0,
-      "days_held": 2,
-      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
-      "conviction": 6,
+      "ticker": "RELY",
+      "entry_date": "2026-02-22",
+      "entry_price": 17.15,
+      "current_price": 17.579999923706055,
+      "highest_close": 17.579999923706055,
+      "pnl_pct": 2.51,
+      "pnl_usd": 43.0,
+      "days_held": 10,
+      "theme": "Cross-Border Digital Payments & Remittances",
+      "conviction": 8,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
@@ -107,21 +107,21 @@
   "movers_today": [
     {
       "ticker": "NGNE",
-      "current_price": 20.74,
-      "prev_close": 23.489999771118164,
-      "change_pct": -11.71
+      "current_price": 21.99,
+      "prev_close": 20.739999771118164,
+      "change_pct": 6.03
     },
     {
       "ticker": "ETON",
-      "current_price": 18.15,
-      "prev_close": 16.989999771118164,
-      "change_pct": 6.83
+      "current_price": 17.45,
+      "prev_close": 18.149999618530273,
+      "change_pct": -3.86
     },
     {
       "ticker": "RELY",
-      "current_price": 16.93,
-      "prev_close": 16.700000762939453,
-      "change_pct": 1.38
+      "current_price": 17.58,
+      "prev_close": 16.93000030517578,
+      "change_pct": 3.84
     }
   ],
   "themes": {
@@ -130,58 +130,58 @@
       "tickers": [
         "ETON"
       ],
-      "avg_pnl_pct": 1.23
+      "avg_pnl_pct": -2.68
     },
     "Cross-Border Digital Payments & Remittances": {
       "count": 1,
       "tickers": [
         "RELY"
       ],
-      "avg_pnl_pct": -1.28
+      "avg_pnl_pct": 2.51
     },
     "Rare disease gene therapy \u2014 Rett syndrome": {
       "count": 1,
       "tickers": [
         "NGNE"
       ],
-      "avg_pnl_pct": 1.17
+      "avg_pnl_pct": 7.27
     }
   },
   "benchmarks": {
     "7d": {
       "portfolio": 0.0,
-      "spy": 0.27758655742733396,
-      "alpha": -0.27758655742733396,
+      "spy": -1.3199274302847064,
+      "alpha": 1.3199274302847064,
       "trades": 0
     },
     "30d": {
       "portfolio": 0.0,
-      "spy": -0.8465251118442985,
-      "alpha": 0.8465251118442985,
+      "spy": -1.6380817879596998,
+      "alpha": 1.6380817879596998,
       "trades": 0
     },
     "90d": {
       "portfolio": 0.0,
-      "spy": 2.548518512608089,
-      "alpha": -2.548518512608089,
+      "spy": 1.6461409714070063,
+      "alpha": -1.6461409714070063,
       "trades": 0
     },
     "180d": {
       "portfolio": 0.0,
-      "spy": 15.131947714176807,
-      "alpha": -15.131947714176807,
+      "spy": 13.665400219733193,
+      "alpha": -13.665400219733193,
       "trades": 0
     },
     "ytd": {
       "portfolio": 0.0,
-      "spy": 0.46987163560410217,
-      "alpha": -0.46987163560410217,
+      "spy": -0.4157041280143603,
+      "alpha": 0.4157041280143603,
       "trades": 0
     },
     "1y": {
       "portfolio": 0.0,
-      "spy": 24.35983819668863,
-      "alpha": -24.35983819668863,
+      "spy": 23.081899700171824,
+      "alpha": -23.081899700171824,
       "trades": 0
     }
   }

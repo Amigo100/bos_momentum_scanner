@@ -85,6 +85,22 @@ jobs:
           python -m substack.daily_content_pipeline $ARGS
 
       # ═══════════════════════════════════════════════════════════════════════
+      # SEND DAILY CONTENT EMAIL (mobile-friendly, self-contained prompts)
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Send daily content email
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+        run: |
+          echo "Building and sending daily content email..."
+          python -m scripts.build_daily_email || echo "⚠ Daily email failed — continuing"
+
+      # ═══════════════════════════════════════════════════════════════════════
       # COMMIT AND PUSH OUTPUTS
       # ═══════════════════════════════════════════════════════════════════════
 

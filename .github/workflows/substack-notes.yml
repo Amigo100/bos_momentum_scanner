@@ -120,8 +120,11 @@ jobs:
         id: post_note
         env:
           SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          STERLING_EMAIL_TO: ${{ secrets.STERLING_EMAIL_TO }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
         run: |
           python3 -m substack.notes_poster --slot ${{ steps.tz_check.outputs.slot }} && {
             echo "posted=true" >> $GITHUB_OUTPUT
@@ -141,8 +144,11 @@ jobs:
           && github.event.inputs.dry_run != 'true'
           && steps.post_note.outputs.posted == 'false'
         env:
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          STERLING_EMAIL_TO: ${{ secrets.STERLING_EMAIL_TO }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
         run: |
           python3 -m substack.notes_poster --email-fallback --slot ${{ steps.tz_check.outputs.slot }}
         continue-on-error: true

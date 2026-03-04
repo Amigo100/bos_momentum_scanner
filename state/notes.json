@@ -2,25 +2,50 @@
   "last_updated": "2026-03-04T14:59:42.640420-05:00",
   "today": {
     "date": "2026-03-04",
-    "notes_published": 0,
+    "notes_published": 3,
     "notes_target": 3,
     "slots": [
       {
         "slot": 1,
         "note_type": "MARKET_REACTION",
-        "status": "generated"
+        "status": "published",
+        "published_at": "2026-03-04T14:12:59.703868-05:00",
+        "note_id": "223035439"
       },
       {
         "slot": 2,
         "note_type": "PORTFOLIO_PULSE",
-        "status": "generated"
+        "status": "published",
+        "published_at": "2026-03-04T14:13:10.592643-05:00",
+        "note_id": "223035523"
       },
       {
         "slot": 3,
         "note_type": "LEARNING_NUGGET",
-        "status": "generated"
+        "status": "published",
+        "published_at": "2026-03-04T14:13:20.028438-05:00",
+        "note_id": "223035572"
       }
     ]
   },
-  "recent": []
+  "recent": [
+    {
+      "date": "2026-03-04",
+      "slot": 1,
+      "note_type": "MARKET_REACTION",
+      "note_id": "223035439"
+    },
+    {
+      "date": "2026-03-04",
+      "slot": 2,
+      "note_type": "PORTFOLIO_PULSE",
+      "note_id": "223035523"
+    },
+    {
+      "date": "2026-03-04",
+      "slot": 3,
+      "note_type": "LEARNING_NUGGET",
+      "note_id": "223035572"
+    }
+  ]
 }

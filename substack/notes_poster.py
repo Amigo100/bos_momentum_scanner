@@ -262,42 +262,54 @@ def check_cookie_validity(cookie: str) -> Tuple[bool, str]:
 def send_cookie_expiry_alert(error_detail: str):
     """Send email alert when session cookie expires.
 
-    Uses SendGrid pattern from scripts/build_daily_email.py.
-    Fails silently if SendGrid not configured.
+    Uses SMTP via utils.email_notifier.load_config() — same infrastructure
+    as all other workflow notifications. Fails silently if not configured.
     """
-    api_key = os.environ.get("SENDGRID_API_KEY")
-    to_email = os.environ.get("STERLING_EMAIL_TO")
-    if not api_key or not to_email:
-        logger.warning("SendGrid not configured — cannot send cookie alert")
-        return
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
 
     try:
-        from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail
+        from utils.email_notifier import load_config
+    except ImportError:
+        logger.warning("utils.email_notifier not available — cannot send cookie alert")
+        return
 
-        message = Mail(
-            from_email="noreply@sterlingsignals.com",
-            to_emails=to_email,
-            subject="⚠️ Sterling Signals — Substack session cookie expired",
-            html_content=(
-                "<h3>Substack Notes Publishing Paused</h3>"
-                f"<p><strong>Error:</strong> {error_detail}</p>"
-                "<p>Notes are still being generated and saved locally, "
-                "but cannot be posted until the cookie is refreshed.</p>"
-                "<h4>How to fix:</h4>"
-                "<ol>"
-                "<li>Log into <a href='https://substack.com'>Substack</a> in your browser</li>"
-                "<li>Open DevTools (F12) → Application → Cookies → substack.com</li>"
-                "<li>Copy the value of <code>substack.sid</code></li>"
-                "<li>Update <code>SUBSTACK_SESSION_COOKIE</code> in GitHub Secrets</li>"
-                "</ol>"
-                "<p>Cookie typically lasts months — don't sign out of Substack.</p>"
-            ),
-        )
+    config = load_config()
+    if not config:
+        logger.warning("Email not configured — cannot send cookie alert")
+        return
 
-        sg = SendGridAPIClient(api_key)
-        sg.send(message)
-        logger.info("Cookie expiry alert sent to %s", to_email)
+    subject = "\u26a0\ufe0f Sterling Signals \u2014 Substack session cookie expired"
+    html_content = (
+        "<h3>Substack Notes Publishing Paused</h3>"
+        f"<p><strong>Error:</strong> {error_detail}</p>"
+        "<p>Notes are still being generated and saved locally, "
+        "but cannot be posted until the cookie is refreshed.</p>"
+        "<h4>How to fix:</h4>"
+        "<ol>"
+        "<li>Log into <a href='https://substack.com'>Substack</a> in your browser</li>"
+        "<li>Open DevTools (F12) &rarr; Application &rarr; Cookies &rarr; substack.com</li>"
+        "<li>Copy the value of <code>substack.sid</code></li>"
+        "<li>Update <code>SUBSTACK_SESSION_COOKIE</code> in GitHub Secrets</li>"
+        "</ol>"
+        "<p>Cookie typically lasts months &mdash; don't sign out of Substack.</p>"
+    )
+
+    try:
+        recipients = config.get("recipients", [config.get("from_email")])
+        msg = MIMEMultipart("alternative")
+        msg["From"] = config["from_email"]
+        msg["To"] = ", ".join(recipients)
+        msg["Subject"] = subject
+        msg.attach(MIMEText(html_content, "html", "utf-8"))
+
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"]) as server:
+            server.starttls()
+            server.login(config["username"], config["password"])
+            server.sendmail(config["from_email"], recipients, msg.as_string())
+
+        logger.info("Cookie expiry alert sent to %s via SMTP", ", ".join(recipients))
     except Exception as e:
         logger.warning("Failed to send cookie alert: %s", e)
 
@@ -306,14 +318,24 @@ def send_note_email(slot: int, day: str) -> bool:
     """Email the generated note when CI posting fails.
 
     Sends the note as plain text (for easy copy-paste into Substack Notes)
-    with an HTML preview section. Uses SendGrid (same pattern as cookie alerts).
+    with an HTML preview section. Uses SMTP via utils.email_notifier.load_config()
+    — same infrastructure as all other workflow notifications.
 
     Returns True if email sent successfully, False otherwise.
     """
-    api_key = os.environ.get("SENDGRID_API_KEY")
-    to_email = os.environ.get("STERLING_EMAIL_TO")
-    if not api_key or not to_email:
-        logger.warning("SendGrid not configured — cannot email note")
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    try:
+        from utils.email_notifier import load_config
+    except ImportError:
+        logger.warning("utils.email_notifier not available — cannot email note")
+        return False
+
+    config = load_config()
+    if not config:
+        logger.warning("Email not configured (no SMTP env vars or email_config.json)")
         return False
 
     # Load note content from manifest (has plain text)
@@ -348,7 +370,7 @@ def send_note_email(slot: int, day: str) -> bool:
     html_preview = note_file.read_text() if note_file else ""
 
     subject = (
-        f"\U0001f4dd Substack Note Ready — Slot {slot} "
+        f"\U0001f4dd Substack Note Ready \u2014 Slot {slot} "
         f"({note_type.replace('_', ' ').title()})"
     )
 
@@ -358,7 +380,7 @@ def send_note_email(slot: int, day: str) -> bool:
         "'Segoe UI', Roboto, Arial, sans-serif; max-width: 680px; "
         'margin: 0 auto; padding: 20px;">'
         f'<h2 style="color: #1a1a1a; margin-bottom: 4px;">'
-        f"Substack Note — Slot {slot}</h2>"
+        f"Substack Note \u2014 Slot {slot}</h2>"
         f'<p style="color: #666; margin-top: 0;">'
         f"{day.title()} &middot; {note_type.replace('_', ' ').title()} "
         f"&middot; Scheduled {time_et} ET</p>"
@@ -395,21 +417,27 @@ def send_note_email(slot: int, day: str) -> bool:
     )
 
     try:
-        from sendgrid import SendGridAPIClient
-        from sendgrid.helpers.mail import Mail
+        recipients = config.get("recipients", [config.get("from_email")])
+        msg = MIMEMultipart("alternative")
+        msg["From"] = config["from_email"]
+        msg["To"] = ", ".join(recipients)
+        msg["Subject"] = subject
+        # Plain text first (for copy-paste), HTML second (email clients prefer last)
+        msg.attach(MIMEText(note_text, "plain", "utf-8"))
+        msg.attach(MIMEText(email_html, "html", "utf-8"))
 
-        message = Mail(
-            from_email="noreply@sterlingsignals.com",
-            to_emails=to_email,
-            subject=subject,
-            html_content=email_html,
-        )
-        sg = SendGridAPIClient(api_key)
-        resp = sg.send(message)
-        logger.info("Note emailed to %s (status: %s)", to_email, resp.status_code)
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"]) as server:
+            server.starttls()
+            server.login(config["username"], config["password"])
+            server.sendmail(config["from_email"], recipients, msg.as_string())
+
+        logger.info("Note emailed to %s via SMTP", ", ".join(recipients))
         return True
-    except ImportError:
-        logger.warning("sendgrid package not installed — cannot email note")
+    except smtplib.SMTPAuthenticationError as e:
+        logger.warning("SMTP auth failed: %s", e)
+        return False
+    except smtplib.SMTPException as e:
+        logger.warning("SMTP error: %s", e)
         return False
     except Exception as e:
         logger.warning("Failed to email note: %s", e)

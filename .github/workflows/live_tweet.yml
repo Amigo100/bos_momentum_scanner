@@ -95,16 +95,24 @@ jobs:
           pip install --quiet tzdata 2>/dev/null || true
           ET_OFFSET=$(python3 -c "from datetime import datetime; from zoneinfo import ZoneInfo; print(datetime.now(ZoneInfo('America/New_York')).strftime('%z')[:3])")
           echo "ET offset: $ET_OFFSET, UTC hour: $CURRENT_UTC_HOUR"
-          # EST season (-05): correct UTC hours are 12,15,17,20,21,23
-          #   Wrong (EDT crons): 11,14,16,19,20,22
-          # EDT season (-04): correct UTC hours are 11,14,16,19,20,22
-          #   Wrong (EST crons): 12,15,17,20,21,23
+          # Hour 20 is SHARED between EST Slot 4 (weekdays :30) and EDT Weekend 2 (:00).
+          # Must check day-of-week for hour 20 to avoid false skips.
+          # EST season (-05): correct = 12,15,17,20(wkday),21,23 | skip EDT = 11,14,16,19,20(wkend),22
+          # EDT season (-04): correct = 11,14,16,19,20(wkend),22 | skip EST = 12,15,17,20(wkday),21,23
+          DOW=$(date -u +%u)  # 1=Mon ... 7=Sun
           if [ "$ET_OFFSET" = "-05" ]; then
             case "$CURRENT_UTC_HOUR" in
-              11|14|16|19|20|22)
+              11|14|16|19|22)
                 echo "skip=true" >> $GITHUB_OUTPUT
                 echo "EDT cron fired during EST season — skipping"
                 exit 0 ;;
+              20)
+                if [ "$DOW" -ge 6 ]; then  # Sat/Sun: EDT Weekend 2 cron — wrong season
+                  echo "skip=true" >> $GITHUB_OUTPUT
+                  echo "EDT weekend cron (hour 20) fired during EST season — skipping"
+                  exit 0
+                fi ;;
+                # Weekday hour 20: EST Slot 4 (Power Hour) — correct, continue
             esac
           else
             case "$CURRENT_UTC_HOUR" in
@@ -112,6 +120,13 @@ jobs:
                 echo "skip=true" >> $GITHUB_OUTPUT
                 echo "EST cron fired during EDT season — skipping"
                 exit 0 ;;
+              20)
+                if [ "$DOW" -le 5 ]; then  # Mon-Fri: EST Slot 4 cron — wrong season
+                  echo "skip=true" >> $GITHUB_OUTPUT
+                  echo "EST weekday cron (hour 20) fired during EDT season — skipping"
+                  exit 0
+                fi ;;
+                # Weekend hour 20: EDT Weekend 2 — correct, continue
             esac
           fi
           echo "skip=false" >> $GITHUB_OUTPUT

@@ -5,9 +5,9 @@ on:
     # Slot 1: 08:30 ET
     - cron: '30 13 * * *'   # EST (UTC-5)
     - cron: '30 12 * * *'   # EDT (UTC-4)
-    # Slot 2: 12:30 ET
-    - cron: '30 17 * * *'   # EST
-    - cron: '30 16 * * *'   # EDT
+    # Slot 2: 12:35 ET (offset 5 min from live_tweet Slot 3 at 12:30)
+    - cron: '35 17 * * *'   # EST
+    - cron: '35 16 * * *'   # EDT
     # Slot 3: 17:00 ET
     - cron: '0 22 * * *'    # EST
     - cron: '0 21 * * *'    # EDT

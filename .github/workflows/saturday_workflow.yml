@@ -2,8 +2,8 @@ name: Saturday Workflow
 
 on:
   schedule:
-    # Saturday 21:00 UTC (fixed time, no EST/EDT dual-cron needed)
-    - cron: '0 21 * * 6'
+    # Saturday 21:30 UTC (offset from live_tweet weekend slot at 21:00)
+    - cron: '30 21 * * 6'
 
   workflow_dispatch:
     inputs:

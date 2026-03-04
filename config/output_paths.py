@@ -47,6 +47,9 @@ SIGNALS_FILE = SCANNER_OUTPUT / "signals.json"
 SIGNALS_TECH_FILE = SCANNER_OUTPUT / "signals_technical.json"
 ANALYSIS_LOG = SCANNER_OUTPUT / "analysis_log.csv"
 SCAN_REPORT = SCANNER_OUTPUT / "scan_report.txt"
+DECISIONS_FILE = SCANNER_OUTPUT / "current" / "decisions.json"
+SIGNAL_HISTORY_FILE = SCANNER_OUTPUT / "signal_history_rows.csv"
+ANALYSIS_PACKAGE_FILE = SCANNER_OUTPUT / "current" / "analysis_package.html"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

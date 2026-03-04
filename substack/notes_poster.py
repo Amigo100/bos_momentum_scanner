@@ -19,6 +19,7 @@ Usage:
     python -m substack.notes_poster --slot 1 --dry-run    # Preview without posting
     python -m substack.notes_poster --check-cookie         # Test cookie validity
     python -m substack.notes_poster --slot 1 --day tuesday # Override day
+    python -m substack.notes_poster --email-fallback --slot 1  # Email note (CI fallback)
 """
 
 import json
@@ -299,6 +300,120 @@ def send_cookie_expiry_alert(error_detail: str):
         logger.info("Cookie expiry alert sent to %s", to_email)
     except Exception as e:
         logger.warning("Failed to send cookie alert: %s", e)
+
+
+def send_note_email(slot: int, day: str) -> bool:
+    """Email the generated note when CI posting fails.
+
+    Sends the note as plain text (for easy copy-paste into Substack Notes)
+    with an HTML preview section. Uses SendGrid (same pattern as cookie alerts).
+
+    Returns True if email sent successfully, False otherwise.
+    """
+    api_key = os.environ.get("SENDGRID_API_KEY")
+    to_email = os.environ.get("STERLING_EMAIL_TO")
+    if not api_key or not to_email:
+        logger.warning("SendGrid not configured — cannot email note")
+        return False
+
+    # Load note content from manifest (has plain text)
+    manifest_path = NOTES_OUTPUT_DIR / "notes_manifest.json"
+    if not manifest_path.exists():
+        logger.error("No notes_manifest.json found")
+        return False
+
+    try:
+        manifest = json.loads(manifest_path.read_text())
+    except (json.JSONDecodeError, IOError) as e:
+        logger.error("Failed to read manifest: %s", e)
+        return False
+
+    note_data = next(
+        (n for n in manifest.get("notes", []) if n.get("slot") == slot), None
+    )
+    if not note_data:
+        logger.error("Slot %d not found in manifest", slot)
+        return False
+
+    note_text = note_data.get("text", "")
+    note_type = note_data.get("type", "UNKNOWN")
+    time_et = note_data.get("time_et", "")
+
+    if not note_text:
+        logger.error("Note text is empty for slot %d", slot)
+        return False
+
+    # Also load the HTML file for a styled preview section
+    note_file = find_note_file(slot, day)
+    html_preview = note_file.read_text() if note_file else ""
+
+    subject = (
+        f"\U0001f4dd Substack Note Ready — Slot {slot} "
+        f"({note_type.replace('_', ' ').title()})"
+    )
+
+    # Build email: plain text at top for copy-paste, HTML preview below
+    email_html = (
+        '<div style="font-family: -apple-system, BlinkMacSystemFont, '
+        "'Segoe UI', Roboto, Arial, sans-serif; max-width: 680px; "
+        'margin: 0 auto; padding: 20px;">'
+        f'<h2 style="color: #1a1a1a; margin-bottom: 4px;">'
+        f"Substack Note — Slot {slot}</h2>"
+        f'<p style="color: #666; margin-top: 0;">'
+        f"{day.title()} &middot; {note_type.replace('_', ' ').title()} "
+        f"&middot; Scheduled {time_et} ET</p>"
+        # Copy-paste section
+        '<div style="background: #f5f5f0; border: 1px solid #e0ddd8; '
+        'border-radius: 8px; padding: 20px; margin: 16px 0;">'
+        '<p style="color: #666; font-size: 13px; margin: 0 0 8px 0; '
+        'text-transform: uppercase; letter-spacing: 0.5px;">'
+        "Copy this text into Substack Notes &darr;</p>"
+        '<div style="white-space: pre-wrap; font-size: 15px; '
+        f'line-height: 1.6; color: #1a1a1a;">{note_text}</div>'
+        "</div>"
+    )
+
+    # Add HTML preview if available
+    if html_preview:
+        email_html += (
+            '<div style="margin-top: 24px;">'
+            '<p style="color: #666; font-size: 14px; '
+            'margin-bottom: 8px;">HTML Preview:</p>'
+            '<div style="border: 1px solid #e0ddd8; '
+            f'border-radius: 8px; padding: 16px;">{html_preview}</div>'
+            "</div>"
+        )
+
+    # Footer
+    email_html += (
+        '<p style="color: #999; font-size: 12px; margin-top: 24px; '
+        'border-top: 1px solid #eee; padding-top: 12px;">'
+        "CI posting blocked by Cloudflare. "
+        "To post from terminal: <code>python3 -m substack.notes_poster "
+        f"--slot {slot}</code></p>"
+        "</div>"
+    )
+
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+
+        message = Mail(
+            from_email="noreply@sterlingsignals.com",
+            to_emails=to_email,
+            subject=subject,
+            html_content=email_html,
+        )
+        sg = SendGridAPIClient(api_key)
+        resp = sg.send(message)
+        logger.info("Note emailed to %s (status: %s)", to_email, resp.status_code)
+        return True
+    except ImportError:
+        logger.warning("sendgrid package not installed — cannot email note")
+        return False
+    except Exception as e:
+        logger.warning("Failed to email note: %s", e)
+        return False
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -705,6 +820,10 @@ def main() -> int:
         "--check-cookie", action="store_true",
         help="Test if session cookie is valid",
     )
+    parser.add_argument(
+        "--email-fallback", action="store_true",
+        help="Email the note instead of posting (CI fallback when Cloudflare blocks)",
+    )
 
     args = parser.parse_args()
 
@@ -725,6 +844,28 @@ def main() -> int:
         print(f"\n  Cookie: {status}")
         print(f"  Detail: {info}")
         return 0 if valid else 1
+
+    # Email fallback mode — email the note content instead of posting
+    if args.email_fallback:
+        if not args.slot:
+            print("\n  Error: --slot required with --email-fallback")
+            print("  Usage: python -m substack.notes_poster --email-fallback --slot 1")
+            return 1
+
+        day = args.day.lower() if args.day else datetime.now(ET).strftime("%A").lower()
+        print(f"  Day: {day.capitalize()}")
+        print(f"  Slot: {args.slot}")
+        print(f"  Mode: EMAIL FALLBACK")
+        print("=" * 60 + "\n")
+
+        success = send_note_email(args.slot, day)
+        print(f"\n{'=' * 60}")
+        if success:
+            print(f"  ✓ Note emailed — Slot {args.slot}")
+        else:
+            print(f"  ✗ Email failed — Slot {args.slot}")
+        print(f"{'=' * 60}\n")
+        return 0 if success else 1
 
     # Publishing mode — slot required
     if not args.slot:

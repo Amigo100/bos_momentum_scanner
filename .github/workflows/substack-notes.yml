@@ -1,0 +1,156 @@
+name: Publish Substack Notes
+
+on:
+  schedule:
+    # Slot 1: 08:30 ET
+    - cron: '30 13 * * *'   # EST (UTC-5)
+    - cron: '30 12 * * *'   # EDT (UTC-4)
+    # Slot 2: 12:30 ET
+    - cron: '30 17 * * *'   # EST
+    - cron: '30 16 * * *'   # EDT
+    # Slot 3: 17:00 ET
+    - cron: '0 22 * * *'    # EST
+    - cron: '0 21 * * *'    # EDT
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'Slot number (1, 2, or 3)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Generate but do not post'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish-note:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # TIMEZONE DEDUP + SLOT DETECTION
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Timezone dedup and slot detection
+        id: tz_check
+        run: |
+          HOUR=$(date -u +%H)
+          MONTH=$(date +%m)
+          # EDT is roughly March-October
+          if [ "$MONTH" -ge 3 ] && [ "$MONTH" -le 10 ]; then
+            IS_EDT=1
+          else
+            IS_EDT=0
+          fi
+
+          # Determine slot from UTC hour
+          if [ "$HOUR" -le "14" ]; then
+            SLOT=1
+          elif [ "$HOUR" -le "18" ]; then
+            SLOT=2
+          else
+            SLOT=3
+          fi
+
+          # Dedup: skip the wrong cron trigger for current timezone
+          # Slot 1: EST=13, EDT=12 | Slot 2: EST=17, EDT=16 | Slot 3: EST=22, EDT=21
+          SKIP="false"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "$SLOT" = "1" ]; then
+              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "13" ] && SKIP="true"
+              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "12" ] && SKIP="true"
+            elif [ "$SLOT" = "2" ]; then
+              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "17" ] && SKIP="true"
+              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "16" ] && SKIP="true"
+            elif [ "$SLOT" = "3" ]; then
+              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "22" ] && SKIP="true"
+              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "21" ] && SKIP="true"
+            fi
+          fi
+
+          # Manual dispatch override
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SKIP="false"
+            if [ -n "${{ github.event.inputs.slot }}" ]; then
+              SLOT="${{ github.event.inputs.slot }}"
+            fi
+          fi
+
+          echo "slot=$SLOT" >> $GITHUB_OUTPUT
+          echo "skip=$SKIP" >> $GITHUB_OUTPUT
+          echo "Slot=$SLOT, Skip=$SKIP (hour=$HOUR, EDT=$IS_EDT)"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # GENERATE NOTE
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Generate note
+        if: steps.tz_check.outputs.skip != 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 -m substack.daily_notes_generator
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # POST TO SUBSTACK (non-blocking — cookie failures don't stop commit)
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Post to Substack
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          STERLING_EMAIL_TO: ${{ secrets.STERLING_EMAIL_TO }}
+        run: |
+          python3 -m substack.notes_poster --slot ${{ steps.tz_check.outputs.slot }} || {
+            echo "::warning::Posting failed — note saved locally but not published"
+            echo "Check if session cookie needs refresh"
+          }
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # UPDATE CONTENT TRACKER
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Update tracking
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          python3 -m scripts.content_tracker --published notes || echo "Tracking update failed — continuing"
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # COMMIT AND PUSH STATE UPDATES
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Commit state updates
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add state/notes.json state/content_tracker.json substack/output/current/notes/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto: note slot ${{ steps.tz_check.outputs.slot }} $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed — attempting merge"
+              git rebase --abort 2>/dev/null || true
+              git pull origin ${{ github.ref_name }}
+            }
+            git push
+          fi

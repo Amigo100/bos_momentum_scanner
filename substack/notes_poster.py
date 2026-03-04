@@ -329,7 +329,10 @@ def _build_session(cookie: str):
     # Warm up session — picks up Cloudflare cookies
     try:
         warm_resp = session.get("https://substack.com/notes", timeout=15)
-        logger.info("Session warm-up: HTTP %d", warm_resp.status_code)
+        logger.info("Session warm-up: HTTP %d (%d cookies collected)",
+                     warm_resp.status_code, len(session.cookies))
+        if warm_resp.status_code == 403:
+            logger.warning("Warm-up 403 — Cloudflare may be blocking this IP or cookie is expired")
     except Exception as e:
         logger.warning("Session warm-up failed: %s — continuing anyway", e)
 

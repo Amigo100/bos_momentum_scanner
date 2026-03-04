@@ -101,6 +101,17 @@ jobs:
       # GENERATE NOTE
       # ═══════════════════════════════════════════════════════════════════════
 
+      - name: Validate Substack cookie
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
+        run: |
+          python3 -m substack.notes_poster --check-cookie || {
+            echo "::warning::Substack cookie invalid — notes will generate but not post"
+            echo "Refresh: Browser → DevTools → Cookies → substack.sid → update GitHub Secret"
+          }
+        continue-on-error: true
+
       - name: Generate note
         if: steps.tz_check.outputs.skip != 'true'
         env:

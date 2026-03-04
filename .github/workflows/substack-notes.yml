@@ -101,17 +101,6 @@ jobs:
       # GENERATE NOTE
       # ═══════════════════════════════════════════════════════════════════════
 
-      - name: Validate Substack cookie
-        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
-        env:
-          SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
-        run: |
-          python3 -m substack.notes_poster --check-cookie || {
-            echo "::warning::Substack cookie invalid — notes will generate but not post"
-            echo "Refresh: Browser → DevTools → Cookies → substack.sid → update GitHub Secret"
-          }
-        continue-on-error: true
-
       - name: Generate note
         if: steps.tz_check.outputs.skip != 'true'
         env:
@@ -120,20 +109,27 @@ jobs:
           python3 -m substack.daily_notes_generator
 
       # ═══════════════════════════════════════════════════════════════════════
-      # POST TO SUBSTACK (non-blocking — cookie failures don't stop commit)
+      # POST TO SUBSTACK (best-effort — Cloudflare blocks CI datacenter IPs)
+      # Posting works from local/residential IPs via curl_cffi.
+      # In CI, notes are generated + committed; post manually if needed:
+      #   python3 -m substack.notes_poster --slot 1
       # ═══════════════════════════════════════════════════════════════════════
 
-      - name: Post to Substack
+      - name: Post to Substack (best-effort)
         if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        id: post_note
         env:
           SUBSTACK_SESSION_COOKIE: ${{ secrets.SUBSTACK_SESSION_COOKIE }}
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           STERLING_EMAIL_TO: ${{ secrets.STERLING_EMAIL_TO }}
         run: |
-          python3 -m substack.notes_poster --slot ${{ steps.tz_check.outputs.slot }} || {
-            echo "::warning::Posting failed — note saved locally but not published"
-            echo "Check if session cookie needs refresh"
+          python3 -m substack.notes_poster --slot ${{ steps.tz_check.outputs.slot }} && {
+            echo "posted=true" >> $GITHUB_OUTPUT
+          } || {
+            echo "posted=false" >> $GITHUB_OUTPUT
+            echo "::warning::Note generated but posting blocked by Cloudflare (CI datacenter IPs). Post manually: python3 -m substack.notes_poster --slot ${{ steps.tz_check.outputs.slot }}"
           }
+        continue-on-error: true
 
       # ═══════════════════════════════════════════════════════════════════════
       # UPDATE CONTENT TRACKER

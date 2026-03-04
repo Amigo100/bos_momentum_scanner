@@ -1,0 +1,77 @@
+name: Engagement Fetch
+
+on:
+  schedule:
+    # 21:00 ET = 02:00 UTC (EST) or 01:00 UTC (EDT)
+    - cron: '0 2 * * *'    # EST: 21:00 ET
+    - cron: '0 1 * * *'    # EDT: 21:00 ET
+  workflow_dispatch: {}
+
+jobs:
+  fetch-engagement:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Timezone dedup (skip wrong DST trigger)
+        id: tz_check
+        run: |
+          HOUR=$(date -u +%H)
+          MONTH=$(date +%m)
+          if [ "$MONTH" -ge 3 ] && [ "$MONTH" -le 10 ]; then
+            EXPECTED=1   # EDT: 01:00 UTC = 21:00 ET
+          else
+            EXPECTED=2   # EST: 02:00 UTC = 21:00 ET
+          fi
+          if [ "$HOUR" != "$EXPECTED" ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "Skipping: wrong DST trigger (hour=$HOUR, expected=$EXPECTED)"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.tz_check.outputs.skip != 'true'
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: steps.tz_check.outputs.skip != 'true'
+        run: pip install tweepy
+
+      - name: Fetch engagement metrics
+        if: steps.tz_check.outputs.skip != 'true'
+        env:
+          # Main account (@AlexSterlingGBR) — X_* secrets → X1_* env vars
+          X1_API_KEY: ${{ secrets.X_API_KEY }}
+          X1_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X1_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X1_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          # Account 2 (@Rdobrogowska)
+          X2_API_KEY: ${{ secrets.X2_API_KEY }}
+          X2_API_SECRET: ${{ secrets.X2_API_SECRET }}
+          X2_ACCESS_TOKEN: ${{ secrets.X2_ACCESS_TOKEN }}
+          X2_ACCESS_SECRET: ${{ secrets.X2_ACCESS_SECRET }}
+          # Account 3
+          X3_API_KEY: ${{ secrets.X3_API_KEY }}
+          X3_API_SECRET: ${{ secrets.X3_API_SECRET }}
+          X3_ACCESS_TOKEN: ${{ secrets.X3_ACCESS_TOKEN }}
+          X3_ACCESS_SECRET: ${{ secrets.X3_ACCESS_SECRET }}
+        run: python -m scripts.fetch_engagement
+
+      - name: Commit results
+        if: steps.tz_check.outputs.skip != 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add state/engagement.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto: engagement fetch $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git pull --rebase origin ${{ github.ref_name }} || {
+              echo "Rebase failed, retrying..."
+              git rebase --abort 2>/dev/null || true
+              git pull --rebase origin ${{ github.ref_name }}
+            }
+            git push
+          fi

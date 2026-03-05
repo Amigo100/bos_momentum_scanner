@@ -1,10 +1,10 @@
-# Sterling Signals — Wednesday March 04, 2026
+# Sterling Signals — Thursday March 05, 2026
 
 ## TODAY'S POST
-**Category:** Theme Rotation
-**Topic:** Theme Rotation — Rare Disease Gene Therapy
-**Theme:** Dashboard (dark)
-**Why this topic:** Top SELECTIVE theme (composite 6.8/10)
+**Category:** Educational
+**Topic:** Evergreen investing framework (topic via web search)
+**Theme:** Editorial (light)
+**Why this topic:** Quiet week — no new GREEN signals
 
 ---
 
@@ -14,49 +14,56 @@ Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
 
 ---
 
-I have attached our Sterling Signals weekly context document. Read it carefully for system context, portfolio data, theme analysis, and all marketing/terminology rules.
+I have attached our Sterling Signals weekly context document. Read it carefully for system context, portfolio data, themes, and all marketing/terminology rules.
 
-THEME SELECTION: Read the weekly content schedule in the context document. Identify the theme assigned for today's Theme Rotation slot. If no specific theme is assigned, select the highest-rated theme from the "Top Themes" section of the context document.
+TOPIC SELECTION: No topic is pre-assigned. You will discover one.
 
-State which theme you are analysing and why before proceeding.
+Use web search to identify 3-5 candidate topics. For each, evaluate:
+- Timeliness: Is there a recent study, market event, or data release making this relevant right now?
+- Data richness: Are there specific, citable studies or datasets?
+- Audience fit: Would an active small-cap swing trader find this actionable?
+- Novelty: Fresh angle, not generic advice?
+- Portfolio connection: Does it relate to what our scanner or portfolio is currently showing in the context document?
 
-FRESHNESS CHECK: The context document was generated on Friday. Use web search to:
-- Validate the theme thesis with any developments since Friday
-- Check for new ETF flow data, policy announcements, or earnings that affect this theme
-- Get current prices for any portfolio positions aligned with this theme
+Think through candidates from these areas:
+EXECUTION: Knowing when to sell vs buy, position sizing, letting winners run, first loss = best loss, averaging down trap
+ANALYSIS: Technical + fundamental synergy, reading institutional flow, revenue > earnings for small-caps, catalyst vs story, spotting crowded trades
+PSYCHOLOGY: FOMO cost, discipline paradox, confirmation bias, best trade you didn't make, compounding effect of avoiding big losses
+SYSTEM: Systematic > discretionary, emotion removal, theme alignment value, selectivity as edge
+RISK MANAGEMENT: Position sizing, trailing stops, max drawdown math, cash as ammunition
+MOMENTUM: Structural momentum, institutional accumulation, sector rotation, market breadth
+STRATEGY: Screening advantage, theme surfing, when to sell, concentration vs diversification
 
-STAGE 1 — THEME VALIDATION
-Use web search to cross-reference the scanner's thesis with fresh data. Has anything changed since Friday? Is the thesis strengthening or weakening? Look for confirming or disconfirming evidence.
+For each candidate, ask: (1) Can I illustrate this with something specific from the context document — a winning position, the scanner's rejection rate, a theme that's working? (2) Is there research data backing this up? (3) Is there a market event this week making this timely?
 
-STAGE 2 — DEEP RESEARCH
-Use web search to find specific data for:
-- ETF flows for relevant sector ETFs (tickers and dollar amounts)
-- Institutional positioning — fund moves, 13F trends, commentary
-- Policy and regulatory catalysts
-- Earnings evidence — are companies in this theme beating estimates?
-- Key companies positioned to benefit
-- Risks — what could derail this? Crowded?
-- Historical parallels
-- Timeline — early-stage or late-stage?
+Select the strongest and explain your choice.
 
-STAGE 3 — ARTICLE
-Think through: What is the single strongest data point? Lead with that.
+FRESHNESS CHECK: Use web search to verify any portfolio data you reference is current.
 
-Write as complete HTML using the Dashboard theme (specs in Quick Reference).
+RESEARCH: Use web search to find:
+- 2-3 academic studies or institutional research with specific findings
+- Historical market data illustrating the concept
+- Real-world examples from small-cap or growth stocks
+- Counter-arguments — when does this fail?
+- Practical application for individual investors
+- 2024-2026 data making this timely
+
+ARTICLE: Think through: What is the most surprising finding? Lead with that.
+
+Write as complete HTML using the Editorial theme (specs in Quick Reference).
 
 Article structure (800-1200 words):
-1. Why This Theme, Why Now — Strongest data point first
-2. The Investment Thesis — Structural dynamics, multi-year story
-3. The Evidence — ETF flows, institutional moves, earnings, catalysts
-4. What Our System Sees — Connect to scanner theme analysis from context document. Reference aligned portfolio positions.
-5. Risks to the Thesis — Balanced assessment
-6. What We're Watching — Specific upcoming events with dates
-7. Stocks Positioned — 3-5 stocks, including any from our portfolio
-8. Footer — "Get weekly theme analysis and GREEN signals: https://sterlingsignals.substack.com"
+1. Hook — Surprising stat, provocative question, or counterintuitive finding
+2. The Concept — Teach the core idea accessibly
+3. The Evidence — Studies, data, specific numbers and time periods
+4. How We Apply It — Connect to our screening system. Reference portfolio winners from context document.
+5. The Takeaway — One specific, actionable insight
+6. Engagement Close — Genuine question inviting discussion
+7. Footer — "Learn more in our weekly newsletter: https://sterlingsignals.substack.com"
 
 Output complete HTML.
 
-Tone: Sharp, opinionated, data-backed. Institutional quality but accessible.
+Tone: Teacher, not preacher. Evidence-based, slightly contrarian. Light and engaging.
 
 ---
 
@@ -152,15 +159,15 @@ Output 3 notes clearly labelled [NOTE 1], [NOTE 2], [NOTE 3]. Each as self-conta
 ---
 
 ## MARKET CONTEXT
-**Live data (20:14 ET):** SPY $686.16 (+0.86%) | QQQ $611.25 (+1.61%) | VIX 20.6
+**Live data (11:32 ET):** SPY $685.13 (+0.71%) | QQQ $610.75 (+1.52%) | VIX 21.0
 
-US equity markets endured a volatile week ending February 27, with major indices declining on broad risk-off sentiment. The S&P 500 fell 0.50-0.80% for the week, while the Nasdaq closed 0.9% lower and the Russell 2000 dropped 1.9%. Markets slid at the end of the month as investors continue to worry over AI disruption, geopolitical strains between the U.S. and Iran, and sticky inflation after stronger-than-expected producer prices data. The VIX surged 10.92% for the week and 25.85% over the past month, reflecting heightened uncertainty as investors grappled with multiple crosscurrents.
+US equity markets closed a volatile week lower, with the S&P 500 down 0.4%, the NASDAQ declining 0.9%, and the Russell 2000 falling 1.9%. The VIX briefly spiked above 21 on Monday before settling back to 19, reflecting heightened uncertainty as investors grappled with multiple headwinds including AI disruption fears, geopolitical tensions between the US and Iran, and sticky inflation after stronger-than-expected producer price data.
 
-Sector rotation patterns showed defensive positioning as concerns about AI's disruptive impact drove a broader risk-off shift. Technology and banks weakened, while defensive sectors held up better. Capital is fleeing high-valuation AI leaders and rotating into low-valuation sectors, marking a notable shift from the AI-dominated leadership that characterized much of the recent rally. The Russell 2000 continues its blistering 2026 start, up 8% year-to-date compared to the S&P 500's 1.4%, though small caps also felt pressure during Friday's selloff.
+A dramatic sector rotation dominated market dynamics as investors fled mega-cap technology stocks for "old economy" value plays. Industrials, Energy, Materials, and non-US equities led performance, while Technology, Communication Services, and Financials lagged. The Industrial sector saw the largest upward revisions of any group, moving from a tepid initial estimate of -0.3% to a final blended growth rate of nearly 27%, driven by federal infrastructure spending, domestic reshoring, and the unexpected role of industrial giants as the literal "backbone" of the AI revolution. Meanwhile, software stocks have taken a beating, with the iShares Expanded Tech-Software Sector ETF down more than 27% year-to-date.
 
-NVIDIA delivered blockbuster Q4 results with record revenue of $68.1 billion, beating guidance by about $3 billion and up 73% year-over-year. Despite the strong earnings beat, NVIDIA's stock is up only 5% in 2026, while the Nasdaq is down 0.4%. However, the week's defining moment came Friday when producer prices rose 0.5% in January, the most since September, with core PPI jumping 0.8% versus the 0.3% forecast. For the full year, core wholesale prices accelerated 3.6%, while the headline index posted a 2.9% gain - both well ahead of the Federal Reserve's 2% inflation goal.
+NVIDIA reported record Q4 revenue of $68.1 billion (+73% YoY) with fiscal 2026 revenue reaching $215.9 billion (+65% YoY), providing crucial validation for continued AI infrastructure investment. Sentiment shifted midweek after Anthropic emphasized that its AI tools are designed to work alongside existing platforms, and NVIDIA's strong earnings reinforced AI infrastructure demand. However, the market continues pushing back Fed rate cut timing, with a September cut now removed from the base case and June looking like a coin flip, as sticky inflation data and hawkish Fed commentary reinforce that policymakers are in no rush to lower rates.
 
-The next FOMC meeting will take place on March 17-18, giving policymakers about seven weeks to review fresh economic data before making their next move. The market sees low odds of the Fed choosing to cut at its March meeting, but strategists still expect one rate cut in 
+Looking ahead, the Russell 2000's 8% gain so far in 2026 versus the S&P 500's 1.4% highlights the continued momentum in small-caps, suggesting the sector rotation has staying power. Treasury yields' de
 
 ## SIGNAL DATA
 
@@ -178,39 +185,39 @@ The next FOMC meeting will take place on March 17-18, giving policymakers about 
 No assessed signals available.
 
 ## PORTFOLIO SNAPSHOT
-Open: 3 positions | Avg P&L: +7.0% | Big winners (25%+): 0
+Open: 3 positions | Avg P&L: +5.2% | Big winners (25%+): 0
 
-- Portfolio Return: +7.0%
-- S&P 500 Return: +0.6%
-- Alpha vs SPY: +6.5%
+- Portfolio Return: +5.2%
+- S&P 500 Return: +0.4%
+- Alpha vs SPY: +4.8%
 - NASDAQ Return: +1.6%
-- Alpha vs NASDAQ: +5.4%
+- Alpha vs NASDAQ: +3.7%
 - Open Positions: 3
 
 ### Performance vs Benchmark (Since Inception)
 
 | Metric | Return |
 |--------|--------|
-| **Portfolio (Compounding)** | +7.0% |
-| **S&P 500** | +0.6% |
-| **Alpha vs S&P 500** | +6.5% |
+| **Portfolio (Compounding)** | +5.2% |
+| **S&P 500** | +0.4% |
+| **Alpha vs S&P 500** | +4.8% |
 | **NASDAQ (QQQ)** | +1.6% |
-| **Alpha vs NASDAQ** | +5.4% |
+| **Alpha vs NASDAQ** | +3.7% |
 | **Since** | 2026-02-22 |
 
-*Outperforming the S&P 500 by 6.5pp and NASDAQ by 5.4pp since inception.*
+*Outperforming the S&P 500 by 4.8pp and NASDAQ by 3.7pp since inception.*
 
 
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $NGNE | $24.50 | $20.50 | +19.5% | 3 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $17.56 | $17.15 | +2.4% | 10 | Cross-Border Digital Payments & Remittances | ExD |
-| $ETON | $17.78 | $17.93 | -0.8% | 10 | Healthcare Contrarian Recovery | ExD |
+| $NGNE | $23.91 | $20.50 | +16.6% | 4 | Rare disease gene therapy — Rett syndrome | ExD |
+| $RELY | $17.37 | $17.15 | +1.3% | 11 | Cross-Border Digital Payments & Remittances | ExD |
+| $ETON | $17.53 | $17.93 | -2.2% | 11 | Healthcare Contrarian Recovery | ExD |
 
 ### Showcase-Ready Winners
-- $NGNE: $20.50 entry, +19.5% (Rare disease gene therapy — Rett syndrome)
-- $RELY: $17.15 entry, +2.4% (Cross-Border Digital Payments & Remittances)
+- $NGNE: $20.50 entry, +16.6% (Rare disease gene therapy — Rett syndrome)
+- $RELY: $17.15 entry, +1.3% (Cross-Border Digital Payments & Remittances)
 
 ## THEME SUMMARY
 
@@ -236,10 +243,10 @@ Open: 3 positions | Avg P&L: +7.0% | Big winners (25%+): 0
 
 ## TODAY'S NOTES
 
-**3 notes** for Wednesday:
-- Slot 1 (08:30 ET): MARKET_REACTION
-- Slot 2 (12:30 ET): PORTFOLIO_PULSE
-- Slot 3 (17:00 ET): LEARNING_NUGGET
+**3 notes** for Thursday:
+- Slot 1 (08:30 ET): THEME_MOMENTUM
+- Slot 2 (12:30 ET): SIGNAL_ALERT
+- Slot 3 (17:00 ET): ENGAGEMENT_HOOK
 
 *Full HTML notes generated via the Notes Prompt above.*
 
@@ -248,4 +255,4 @@ Open: 3 positions | Avg P&L: +7.0% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-04 20:14:40 | Week 10*
+*Generated: 2026-03-05 11:32:45 | Week 10*

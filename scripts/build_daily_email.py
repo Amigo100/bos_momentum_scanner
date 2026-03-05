@@ -66,7 +66,7 @@ HANDBOOK_SECTION_MAP = {
     "performance_review": "## Category 4 — Performance Review",
     "trade_alert_entry": "## Trade Alert — Entry",
     "trade_alert_exit": "## Trade Alert — Exit",
-    "daily_notes": "## Daily Notes Prompt",
+    "daily_notes": "## Notes Prompt",
 }
 
 # Normalise UPPER_SNAKE_CASE to title case for display

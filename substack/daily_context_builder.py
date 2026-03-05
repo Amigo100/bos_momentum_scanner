@@ -107,40 +107,40 @@ CATEGORY_THEMES = {
     CATEGORY_PERFORMANCE_REVIEW: "dashboard",
 }
 
-# Note type rotation matrix (from spec Section 3.4 / handbook v5)
+# Note type rotation matrix (v2 — 12 archetypes)
 NOTE_TYPE_MATRIX = {
     "saturday": [
-        {"slot": 1, "type": "PORTFOLIO_PULSE", "time": "08:30 ET"},
-        {"slot": 2, "type": "THEME_MOMENTUM", "time": "12:30 ET"},
+        {"slot": 1, "type": "WINNER_RECEIPT", "time": "08:30 ET"},
+        {"slot": 2, "type": "THEME_ROTATION", "time": "12:30 ET"},
     ],
     "sunday": [
-        {"slot": 1, "type": "LEARNING_NUGGET", "time": "08:30 ET"},
-        {"slot": 2, "type": "ENGAGEMENT_HOOK", "time": "12:30 ET"},
+        {"slot": 1, "type": "ALPHA_SCOREBOARD", "time": "08:30 ET"},
+        {"slot": 2, "type": "READER_QUESTION", "time": "12:30 ET"},
     ],
     "monday": [
-        {"slot": 1, "type": "MARKET_REACTION", "time": "08:30 ET"},
-        {"slot": 2, "type": "SYSTEM_PROOF", "time": "12:30 ET"},
-        {"slot": 3, "type": "PORTFOLIO_PULSE", "time": "17:00 ET"},
+        {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
+        {"slot": 2, "type": "THE_FILTER", "time": "12:30 ET"},
+        {"slot": 3, "type": "PORTFOLIO_UPDATE", "time": "17:00 ET"},
     ],
     "tuesday": [
-        {"slot": 1, "type": "SIGNAL_ALERT", "time": "08:30 ET"},
-        {"slot": 2, "type": "THEME_MOMENTUM", "time": "12:30 ET"},
-        {"slot": 3, "type": "ENGAGEMENT_HOOK", "time": "17:00 ET"},
+        {"slot": 1, "type": "SIGNAL_DROP", "time": "08:30 ET"},
+        {"slot": 2, "type": "THEME_ROTATION", "time": "12:30 ET"},
+        {"slot": 3, "type": "DATA_INSIGHT", "time": "17:00 ET"},
     ],
     "wednesday": [
-        {"slot": 1, "type": "MARKET_REACTION", "time": "08:30 ET"},
-        {"slot": 2, "type": "PORTFOLIO_PULSE", "time": "12:30 ET"},
-        {"slot": 3, "type": "LEARNING_NUGGET", "time": "17:00 ET"},
+        {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
+        {"slot": 2, "type": "WINNER_RECEIPT", "time": "12:30 ET"},
+        {"slot": 3, "type": "CATALYST_WATCH", "time": "17:00 ET"},
     ],
     "thursday": [
-        {"slot": 1, "type": "THEME_MOMENTUM", "time": "08:30 ET"},
-        {"slot": 2, "type": "SIGNAL_ALERT", "time": "12:30 ET"},
-        {"slot": 3, "type": "ENGAGEMENT_HOOK", "time": "17:00 ET"},
+        {"slot": 1, "type": "SECTOR_FLOW", "time": "08:30 ET"},
+        {"slot": 2, "type": "SIGNAL_DROP", "time": "12:30 ET"},
+        {"slot": 3, "type": "READER_QUESTION", "time": "17:00 ET"},
     ],
     "friday": [
-        {"slot": 1, "type": "MARKET_REACTION", "time": "08:30 ET"},
-        {"slot": 2, "type": "SYSTEM_PROOF", "time": "12:30 ET"},
-        {"slot": 3, "type": "PORTFOLIO_PULSE", "time": "17:00 ET"},
+        {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
+        {"slot": 2, "type": "PORTFOLIO_UPDATE", "time": "12:30 ET"},
+        {"slot": 3, "type": "EXIT_DEBRIEF", "time": "17:00 ET"},
     ],
 }
 
@@ -152,7 +152,7 @@ HANDBOOK_SECTION_MAP = {
     "performance_review": "## Category 4 — Performance Review",
     "trade_alert_entry": "## Trade Alert — Entry",
     "trade_alert_exit": "## Trade Alert — Exit",
-    "daily_notes": "## Daily Notes Prompt",
+    "daily_notes": "## Notes Prompt",
 }
 
 

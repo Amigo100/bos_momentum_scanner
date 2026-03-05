@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """
-DAILY NOTES GENERATOR
-======================
+DAILY NOTES GENERATOR — v2 (Data-Forward Voice)
+=================================================
 
-Generates 2-3 Substack Notes per day with live market data,
-replacing the Friday-batch system (notes_batch_generator.py, 1,347 lines).
+Generates 2-3 Substack Notes per day with live market data.
 
-Note Types:
-    PORTFOLIO_PULSE  — Winner receipts, alpha proof, system validation
-    SIGNAL_ALERT     — New signals or selectivity narrative
-    THEME_MOMENTUM   — Single theme focus, thesis, catalysts
-    MARKET_REACTION  — Quick takes on SPY/QQQ, VIX, rates
-    SYSTEM_PROOF     — Funnel stats, discipline, screening narrative
-    LEARNING_NUGGET  — Educational content (evergreen)
-    ENGAGEMENT_HOOK  — Community questions, polls, "what are you watching?"
+Note Types (12 archetypes, replacing 7 broad types):
+    MARKET_SNAPSHOT   — SPY/QQQ/VIX + specific portfolio impact
+    SIGNAL_DROP       — New GREEN signal announcement
+    WINNER_RECEIPT    — Single position spotlight (15%+ gain)
+    PORTFOLIO_UPDATE  — Honest full-portfolio snapshot
+    THEME_ROTATION    — One theme: score, catalysts, our positions
+    THE_FILTER        — Screening funnel numbers
+    CATALYST_WATCH    — Upcoming events for our positions
+    SECTOR_FLOW       — Where money is moving, connected to themes
+    EXIT_DEBRIEF      — Position closed: why, lesson
+    ALPHA_SCOREBOARD  — Portfolio vs SPY/QQQ with numbers
+    DATA_INSIGHT      — Counterintuitive investing stat, current context
+    READER_QUESTION   — Data-seeded question for engagement
 
 Usage:
     python -m substack.daily_notes_generator                       # Today's notes
@@ -72,73 +76,119 @@ from substack.note_utils import (
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NOTES SCHEDULE (from spec Section 3.4)
+# NOTE TYPES (12 archetypes)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+NOTE_TYPES = [
+    "MARKET_SNAPSHOT",
+    "SIGNAL_DROP",
+    "WINNER_RECEIPT",
+    "PORTFOLIO_UPDATE",
+    "THEME_ROTATION",
+    "THE_FILTER",
+    "CATALYST_WATCH",
+    "SECTOR_FLOW",
+    "EXIT_DEBRIEF",
+    "ALPHA_SCOREBOARD",
+    "DATA_INSIGHT",
+    "READER_QUESTION",
+]
+
+# Fallback mapping: if a conditional type can't fire, use this instead
+FALLBACK_MAP = {
+    "SIGNAL_DROP": "THE_FILTER",
+    "WINNER_RECEIPT": "PORTFOLIO_UPDATE",
+    "EXIT_DEBRIEF": "DATA_INSIGHT",
+    "CATALYST_WATCH": "SECTOR_FLOW",
+    "ALPHA_SCOREBOARD": "PORTFOLIO_UPDATE",
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NOTES SCHEDULE (12 archetypes across 7 days)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 NOTES_SCHEDULE = {
-    "saturday":  [("PORTFOLIO_PULSE", "08:30"), ("THEME_MOMENTUM", "12:30")],
-    "sunday":    [("LEARNING_NUGGET", "08:30"), ("ENGAGEMENT_HOOK", "12:30")],
-    "monday":    [("MARKET_REACTION", "08:30"), ("SYSTEM_PROOF", "12:30"), ("PORTFOLIO_PULSE", "17:00")],
-    "tuesday":   [("SIGNAL_ALERT", "08:30"), ("THEME_MOMENTUM", "12:30"), ("ENGAGEMENT_HOOK", "17:00")],
-    "wednesday": [("MARKET_REACTION", "08:30"), ("PORTFOLIO_PULSE", "12:30"), ("LEARNING_NUGGET", "17:00")],
-    "thursday":  [("THEME_MOMENTUM", "08:30"), ("SIGNAL_ALERT", "12:30"), ("ENGAGEMENT_HOOK", "17:00")],
-    "friday":    [("MARKET_REACTION", "08:30"), ("SYSTEM_PROOF", "12:30"), ("PORTFOLIO_PULSE", "17:00")],
+    "saturday":  [("WINNER_RECEIPT", "08:30"), ("THEME_ROTATION", "12:30")],
+    "sunday":    [("ALPHA_SCOREBOARD", "08:30"), ("READER_QUESTION", "12:30")],
+    "monday":    [("MARKET_SNAPSHOT", "08:30"), ("THE_FILTER", "12:30"), ("PORTFOLIO_UPDATE", "17:00")],
+    "tuesday":   [("SIGNAL_DROP", "08:30"), ("THEME_ROTATION", "12:30"), ("DATA_INSIGHT", "17:00")],
+    "wednesday": [("MARKET_SNAPSHOT", "08:30"), ("WINNER_RECEIPT", "12:30"), ("CATALYST_WATCH", "17:00")],
+    "thursday":  [("SECTOR_FLOW", "08:30"), ("SIGNAL_DROP", "12:30"), ("READER_QUESTION", "17:00")],
+    "friday":    [("MARKET_SNAPSHOT", "08:30"), ("PORTFOLIO_UPDATE", "12:30"), ("EXIT_DEBRIEF", "17:00")],
 }
 
-NOTE_TYPES = [
-    "PORTFOLIO_PULSE",
-    "SIGNAL_ALERT",
-    "THEME_MOMENTUM",
-    "MARKET_REACTION",
-    "SYSTEM_PROOF",
-    "LEARNING_NUGGET",
-    "ENGAGEMENT_HOOK",
-]
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SYSTEM PROMPT (ported from notes_batch_generator.py — single-note framing)
+# SYSTEM PROMPT — v2 (Data-Forward + Anti-AI + Anti-Filler)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-NOTES_SYSTEM_PROMPT = """You are the voice of Sterling Signals, a weekly momentum trading newsletter on Substack.
+NOTES_SYSTEM_PROMPT = """You are writing Substack Notes for Sterling Signals, a momentum investing newsletter that screens 1,800+ US stocks weekly and publishes a transparent paper portfolio with real entry prices, exit levels, and P&L.
 
-WHO WE ARE:
-Three physicians who traded stethoscopes for stock screeners. We built a systematic momentum scanner that screens 1,800+ US stocks through a proprietary screening system — because we believe the same evidence-based rigor that saves lives in medicine can generate alpha in markets. We diagnose momentum the way we once diagnosed patients: systematic screening, pattern recognition, ruling out false positives, and never letting emotion override data.
+WHAT WE DO:
+We run a systematic screening process — technical momentum confirmation, thematic alignment, and fundamental due diligence — and share everything transparently. Entry prices, current P&L, exit signals. When we're wrong, readers see it. When we're right, the numbers speak for themselves.
 
-OUR VOICE:
-- Clinical precision meets market conviction. We "triage" setups, "diagnose" trends, and let our system "prescribe" entries and exits.
-- We think in probabilities, not certainties. Like differential diagnosis, we weigh evidence and update our outlook as data changes.
-- Contrarian by training — medicine taught us to question consensus.
-- Process over prediction. Our screening system is our clinical protocol.
-- Direct and specific. Every claim comes with a number.
+HOW TO WRITE:
+- Lead with a specific number, price, or percentage. The data IS the hook.
+- Name tickers with prices: "$RCAT at $13.25, up 55.9% from our $8.50 entry."
+- State what happened, then what it means. Not the other way around.
+- Be direct. "Defence is rotating in. Grid infrastructure is accelerating."
+- Show the screening filter when relevant: "1,817 scanned. 48 passed technicals. 3 cleared all gates."
+- When referencing the portfolio, include the entry price and current level.
+- Losses are part of the system. Frame honestly: "$ANET at $85.50, down from our $89.00 entry — AI infrastructure hit by broader tech selling this week." Never hide them.
+- Keep it conversational. Short sentences. Occasional one-liners that land.
 
-SUBSTACK NOTES FORMAT:
-- 150-300 words. Short social posts, NOT articles.
-- NO markdown headers (no #, ##). Use line breaks and sparse emoji for structure.
-- NO bullet point lists (no •, -, *). Flowing paragraphs and single-line statements only.
-- Start with a scroll-stopping hook.
-- End with engagement — a question or challenge for the community.
-- $TICKER format with price or percentage when mentioning stocks.
+ANTI-FABRICATION (CRITICAL):
+- Use ONLY the data provided in the prompt. Do not invent dates, prices, percentages, historical comparisons, or time periods.
+- If you are given "days held: 67" but no entry date, say "67 days" — do NOT calculate backwards to guess a calendar date.
+- If you are not given historical theme scores, do NOT write "the highest score in six weeks" or any similar comparison.
+- If you are not given information about a feature (dashboard, alerts, app), do NOT reference it.
+- When in doubt, use what you have. Silence beats fabrication.
 
-MARKETING RULES (CRITICAL):
-- "GREEN signal" for buys. NEVER use: TEAL, PASS, VIOLET, AMBER.
-- NEVER use: HMA, RSI, MACD, KDJ, Banker, UC, Undercurrent, BoS, ExD, profit lock, tiered stop, Gatekeeper, Investment Gate, conviction 1-10, Tier 1/2/3, Roth IRA, PDT.
-- System: "proprietary screening system" or "our screening system".
-- Conviction: "Extremely Bullish" / "Bullish" / "Watching" — NEVER numbers.
-- Show ALL positions transparently — winners AND losers.
-- Frame losses positively: "Stop hit = system working as designed."
-- Always show entry prices for full transparency.
+WHAT SUBSCRIBERS ACTUALLY GET (use only these in subscribe hooks):
+- Saturday weekly newsletter with full portfolio breakdown, screening results, and theme analysis
+- GREEN signal alerts published before Monday market open
+- Every entry and exit documented with full reasoning on the Substack
+- Weekly theme scoring across 1,800 stocks
+Do NOT reference: dashboards, apps, real-time alerts, or any feature not listed above.
 
-ANTI-FABRICATION RULE:
-Use ONLY the data provided below. Do not invent any ticker, price, percentage, or date.
-If data is missing, write about the system's philosophy instead of fabricating numbers.
+BANNED TERMS:
+- Indicator names: HMA, RSI, MACD, KDJ, Banker, UC, Undercurrent, BoS, ExD
+- System internals: Gatekeeper, Investment Gate, Deep DD, Tier 1/2/3, conviction scores, profit lock, tiered stop
+- Old branding: TEAL, PASS, VIOLET, AMBER signal
+- Geography: UK ISA, GMT, BST, Roth IRA, PDT
+- Vague filler: "interesting setups", "keep an eye on", "more to come", "stay tuned", "some notable moves"
+- Use "GREEN signal" for buys. "Our screening system" for the system.
+- Conviction: "Extremely Bullish" / "Bullish" / "Watching" — never numbers.
 
-Always end with: "Not financial advice. Informational only."
+SOUND LIKE A PERSON, NOT AN AI:
+- Never start a note with a question. Start with a fact, a number, or a blunt statement.
+- Never use "Let's dive in", "Here's the thing", "It's worth noting", "Interestingly enough", "In today's market", "Let me break this down", "The bottom line is".
+- Never use three adjectives in a row. Pick one.
+- Never explain what you're about to do. Just do it.
+- Never use "This is what X looks like" or "That's the power of Y" or "This is why we Z". The reader draws their own conclusion.
+- Vary sentence length dramatically. A five-word sentence after a long one creates rhythm.
+- Use contractions. "We're" not "We are". "That's" not "That is".
+- Occasionally be blunt. "Defence is working. Tech isn't. Simple week."
+- Have an opinion. "We think this pullback is noise" is human. "The pullback may present opportunities" is AI.
+
+NO FILLER PARAGRAPHS (CRITICAL):
+- After presenting portfolio data, DO NOT add a paragraph restating what you just showed. If you wrote that $LUNR is up 140% and $RCAT is up 55.9%, do NOT follow with "These positions are banking gains while tech consolidates" — you already said that with numbers.
+- DO NOT add a paragraph explaining what the data means in abstract terms. "This is momentum rotation in real time" is filler.
+- DO NOT add closing lines that declare what the pattern is. "The rotation isn't noise — it's structural" is AI trying to sound punchy. The data already made the point.
+- A good note shows the data, gives one forward-looking thought, and stops. No recap. No thesis statement at the end.
+
+FORMAT:
+- 150-280 words. Every word earns its place.
+- No markdown headers. No bullet lists. Short paragraphs and standalone lines.
+- $TICKER format with price or percentage always.
+- One emoji maximum, only if it adds clarity.
+- End with: "Not financial advice. Informational only."
 """
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HTML NOTE TEMPLATE (ported from notes_batch_generator.py)
+# HTML NOTE TEMPLATE
 # ═══════════════════════════════════════════════════════════════════════════════
 
 HTML_NOTE_TEMPLATE = """\
@@ -160,82 +210,51 @@ HTML_NOTE_TEMPLATE = """\
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ENGAGEMENT HOOKS (60+ hooks, ported from notes_batch_generator.py)
+# SUBSCRIBE HOOKS (replacing generic engagement hooks)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-ENGAGEMENT_HOOKS = {
-    "PORTFOLIO_PULSE": [
-        "What themes are driving your portfolio right now?",
-        "Are you seeing alpha in the same sectors we are?",
-        "How are you positioning for the rest of this quarter?",
-        "Which of your positions has surprised you the most?",
-        "What is your screening system telling you this week?",
-        "Are you outperforming the index? If so, what is driving it?",
-        "How do you decide when to let a winner run vs take profits?",
-        "What does your portfolio tell you about where money is flowing?",
+SUBSCRIBE_HOOKS = {
+    "MARKET_SNAPSHOT": [
+        "Every position, every entry price, every week — in the Saturday newsletter.",
+        "We break down how every market move hits our portfolio. Full analysis every Saturday.",
     ],
-    "SIGNAL_ALERT": [
-        "Would you take this trade? Why or why not?",
-        "How selective is your screening process?",
-        "What is the best signal your system has generated this year?",
-        "How do you handle weeks with no clean signals?",
-        "What criteria separate a great setup from a good one?",
-        "Do you stay disciplined when the system says no?",
-        "What makes you override a signal from your system?",
-        "Have you ever passed on a signal and regretted it?",
+    "SIGNAL_DROP": [
+        "Subscribers got this signal before Monday's open. The next screening drops Friday.",
+        "Full analysis — entry reasoning, theme alignment, and exit plan — in this week's newsletter.",
     ],
-    "THEME_MOMENTUM": [
-        "Is anyone else noticing this theme gaining momentum?",
-        "Which themes are on your radar right now?",
-        "Have you noticed this sector rotation pattern?",
-        "What themes do you think are overhyped vs underappreciated?",
-        "Where do you see institutional money flowing next?",
-        "Do you agree with our read on this sector?",
-        "What is the next multi-year theme that nobody is talking about?",
-        "Are you positioned for this theme or waiting on the sidelines?",
+    "WINNER_RECEIPT": [
+        "Subscribers got this signal at ${entry}. The next screening drops Friday.",
+        "Full entry reasoning and exit plan in last Saturday's newsletter.",
+        "We publish every signal before Monday's open. This was one of them.",
     ],
-    "MARKET_REACTION": [
-        "How are you reading today's market action?",
-        "What does the breadth data tell you about this move?",
-        "Is this a rotation you are leaning into or fading?",
-        "How are you managing risk in this environment?",
-        "What is the market telling us that headlines are not?",
-        "Do you see this as a pullback to buy or a reason to reduce?",
-        "How important is the VIX level for your decision-making?",
-        "What is your framework for navigating choppy weeks?",
+    "PORTFOLIO_UPDATE": [
+        "Every entry and exit, with full reasoning, every Saturday.",
+        "See the complete portfolio with entry prices and live P&L in the weekly newsletter.",
     ],
-    "SYSTEM_PROOF": [
-        "Do you track your screening rejection rate?",
-        "What is the most important filter in your system?",
-        "How does your process handle crowded trades?",
-        "What gives you confidence in your screening methodology?",
-        "How do you measure whether your system is working?",
-        "What would make you change your screening criteria?",
-        "Do you believe in systematic or discretionary approaches?",
-        "What is the hardest part about trusting a process?",
+    "THEME_ROTATION": [
+        "We score themes weekly across 1,800 stocks. Full breakdown every Saturday.",
+        "Theme rankings, top tickers, and where capital is flowing — in the Saturday newsletter.",
     ],
-    "LEARNING_NUGGET": [
-        "What is one concept that changed how you invest?",
-        "How do you apply this principle in your own process?",
-        "What was the most expensive lesson you ever learned in markets?",
-        "Did you know this before you started investing?",
-        "How would you explain this concept to a beginner?",
-        "What is one book or resource that shaped your investment approach?",
-        "How do you think about risk differently from most investors?",
-        "What framework helps you stay disciplined?",
+    "THE_FILTER": [
+        "Full screening results — what passed and what didn't — every Saturday.",
+        "See which stocks cleared all gates this week in the newsletter.",
     ],
-    "ENGAGEMENT_HOOK": [
-        "What are you watching this week?",
-        "Quick poll: what is your biggest position right now?",
-        "One word to describe the current market. Go.",
-        "What is the best trade you have made in the last 90 days?",
-        "Agree or disagree: small caps will outperform large caps this year.",
-        "What sector are you most bullish on for the rest of 2026?",
-        "Name a stock under $25 that nobody is talking about.",
-        "What is your number one rule for managing risk?",
-        "If you could only hold 5 stocks, what would they be?",
-        "What advice would you give to your investing self from 3 years ago?",
+    "CATALYST_WATCH": [
+        "We track catalysts for every position. Full calendar in the Saturday newsletter.",
     ],
+    "SECTOR_FLOW": [
+        "We map sector flows weekly. See where the money's going in the Saturday newsletter.",
+    ],
+    "EXIT_DEBRIEF": [
+        "Every exit documented with full reasoning — Saturday newsletter.",
+    ],
+    "ALPHA_SCOREBOARD": [
+        "Full portfolio breakdown vs benchmarks every Saturday.",
+    ],
+    "DATA_INSIGHT": [
+        "We apply this to every screening decision. See how in the Saturday newsletter.",
+    ],
+    "READER_QUESTION": [],  # Pure engagement — no CTA
 }
 
 
@@ -255,19 +274,13 @@ def load_notes_context_json() -> Optional[Dict]:
 
 
 def build_note_context_from_daily(context: Dict) -> NoteContext:
-    """Build a NoteContext from the daily_notes_context.json data.
-
-    This bridges the daily context builder output to the NoteContext format
-    expected by prompt builders and note_utils validation/repair.
-    """
+    """Build a NoteContext from the daily_notes_context.json data."""
     now = datetime.now()
 
-    # Extract live market data
-    live = context.get("live_market", {})
+    live = context.get("live_market", context.get("live_data", {}))
     spy_pct = live.get("spy_change_pct", 0.0)
     qqq_pct = live.get("qqq_change_pct", 0.0)
 
-    # Portfolio positions — portfolio may be a dict or a list
     portfolio_data = context.get("portfolio", [])
     if isinstance(portfolio_data, dict):
         positions = portfolio_data.get("positions", [])
@@ -280,7 +293,6 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
 
     big_winners = [p for p in positions if p.get("pnl_pct", 0) >= BIG_WIN_THRESHOLD]
 
-    # Signals
     signals = context.get("signals", {})
     buy_signals = signals.get("buy_signals", signals.get("pass_signals", []))
     pass_signals = [s for s in buy_signals
@@ -301,7 +313,7 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
         pass_signals=pass_signals,
         consider_signals=consider_signals,
         themes=context.get("themes", []),
-        scan_stats=context.get("scan_stats", {}),
+        scan_stats=context.get("scan_stats", context.get("scanner_stats", {})),
     )
 
 
@@ -309,486 +321,626 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
 # HOOK SELECTION
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Track hooks used in this run to avoid repeats within the same day
 _hooks_used_today: List[str] = []
 
 
-def pick_hook(note_type: str) -> str:
-    """Pick an engagement hook not yet used today."""
+def pick_subscribe_hook(note_type: str, ctx: Optional[NoteContext] = None) -> str:
+    """Pick a subscribe hook for this note type, avoiding repeats within the day."""
     global _hooks_used_today
-    available = ENGAGEMENT_HOOKS.get(note_type, ENGAGEMENT_HOOKS["ENGAGEMENT_HOOK"])
-    unused = [h for h in available if h not in _hooks_used_today]
+    hooks = SUBSCRIBE_HOOKS.get(note_type, [])
+    if not hooks:
+        return ""
+
+    # For WINNER_RECEIPT, fill in entry price if available
+    if note_type == "WINNER_RECEIPT" and ctx and ctx.top_performer:
+        entry = ctx.top_performer.get("entry_price", ctx.top_performer.get("entry", 0))
+        hooks = [h.replace("${entry}", f"${entry:.2f}") for h in hooks]
+
+    unused = [h for h in hooks if h not in _hooks_used_today]
     if not unused:
-        unused = available
+        unused = hooks
     hook = random.choice(unused)
     _hooks_used_today.append(hook)
     return hook
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PER-TYPE PROMPT BUILDERS (ported from notes_batch_generator.py)
+# CONDITIONAL FIRING CHECKS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def build_portfolio_pulse_prompt(ctx: NoteContext) -> str:
-    """Winner receipts, benchmark alpha, system validation."""
-    winners_text = "No open positions currently."
-    if ctx.winners:
-        lines = []
-        for w in ctx.winners[:4]:
-            entry_info = f" (entry ${w.get('entry_price', 0):.2f})"
-            theme = w.get('theme', '')
-            theme_info = f" — {theme}" if theme else ""
-            pnl = w.get('pnl_pct', 0)
-            pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
-            lines.append(f"${w.get('ticker', '???')} at {pnl_str}{theme_info}{entry_info}")
-        winners_text = "\n".join(lines)
-
-    hook = pick_hook("PORTFOLIO_PULSE")
-
-    return f"""Write a "Portfolio Pulse" Substack Note ({ctx.date_str}).
-
-MARKET CONTEXT:
-SPY 5-day: {ctx.spy_5d_pct:+.1f}%  |  QQQ 5-day: {ctx.qqq_5d_pct:+.1f}%
-
-PORTFOLIO:
-Open positions: {ctx.open_count}
-
-POSITIONS (all open — full transparency):
-{winners_text}
-
-INSTRUCTIONS:
-1. Lead with the portfolio's strongest result. Make it concrete — the number IS the hook.
-2. Weave positions into flowing prose. Show winners as system validation; frame any losses positively: "Stop hit = system working as designed."
-3. Compare to SPY/QQQ if we are outperforming — show the alpha gap.
-4. Keep it clinical and confident, not boastful. "The data was clear. We followed protocol."
-5. End with this engagement question (rephrase naturally): "{hook}"
-6. Close with: "Full analysis every Saturday in Sterling Signals."
-7. Final line: "Not financial advice. Informational only."
-
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs. Medical-investor voice."""
+def can_fire(note_type: str, ctx: NoteContext) -> bool:
+    """Check if a conditional note type has the data it needs."""
+    if note_type == "SIGNAL_DROP":
+        return len(ctx.pass_signals) > 0
+    elif note_type == "WINNER_RECEIPT":
+        return any(p.get("pnl_pct", 0) >= MIN_WIN_THRESHOLD for p in ctx.winners)
+    elif note_type == "EXIT_DEBRIEF":
+        # Would need recent_exits in context — fallback if not available
+        return False  # TODO: enable when portfolio snapshot provides exit data
+    elif note_type == "ALPHA_SCOREBOARD":
+        return ctx.open_count > 0  # Need positions to show alpha
+    elif note_type == "CATALYST_WATCH":
+        return ctx.open_count > 0  # Need positions to watch
+    return True  # Most types can always fire
 
 
-def build_signal_alert_prompt(ctx: NoteContext) -> str:
-    """New signals or selectivity narrative."""
-    if ctx.pass_signals:
-        sig = ctx.pass_signals[0]
-        bullish = sig.get('bullish_factors', [])
-        bullish_text = ", ".join(bullish[:3]) if bullish else "Multiple factors aligned."
-        conv_text = get_conviction_text(sig.get('conviction', 0))
-
-        signal_section = f"""CONTENT PATH: NEW GREEN SIGNAL
-
-Signal: ${sig['symbol']}
-Theme: {sig.get('theme', 'N/A')}
-Outlook: {conv_text}
-Bullish factors: {bullish_text}
-Total GREEN signals this week: {len(ctx.pass_signals)}
-
-Focus on what the system diagnosed: theme alignment, structural confirmation, institutional accumulation patterns."""
-    else:
-        past_winner_text = ""
-        if ctx.winners:
-            pw = ctx.winners[0]
-            past_winner_text = f"\nReference: ${pw.get('ticker', '???')} at +{pw.get('pnl_pct', 0):.1f}% shows the system works when it fires."
-
-        signal_section = f"""CONTENT PATH: SELECTIVITY (NO NEW SIGNALS)
-
-Scan stats: {ctx.scan_stats.get('tickers_loaded', 1817)} stocks scanned → {ctx.scan_stats.get('technical_signals', 0)} passed technicals → 0 cleared every screening stage.
-{past_winner_text}
-Frame zero signals as a FEATURE. A good doctor does not prescribe when there is nothing to treat. Our system does the same."""
-
-    hook = pick_hook("SIGNAL_ALERT")
-
-    return f"""Write a "Signal Alert" Substack Note ({ctx.date_str}).
-
-{signal_section}
-
-INSTRUCTIONS:
-1. Open with a scroll-stopping hook about what the system just diagnosed (or chose NOT to prescribe).
-2. Use medical-analytical lens: "The chart showed symptoms of..." or "Our screening triaged 1,800 stocks and..."
-3. Be specific with numbers — funnel stats, theme alignment, what made this pass (or fail) our gates.
-4. End with: "{hook}"
-5. Close with: "Full analysis every Saturday in Sterling Signals."
-6. Final line: "Not financial advice. Informational only."
-
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs."""
+def resolve_note_type(note_type: str, ctx: NoteContext) -> str:
+    """Resolve a note type, falling back if it can't fire."""
+    if can_fire(note_type, ctx):
+        return note_type
+    fallback = FALLBACK_MAP.get(note_type, note_type)
+    if fallback != note_type and can_fire(fallback, ctx):
+        print(f"    ℹ {note_type} → {fallback} (insufficient data)")
+        return fallback
+    return fallback  # Use fallback even if imperfect
 
 
-def build_theme_momentum_prompt(ctx: NoteContext) -> str:
-    """One theme per note — thesis, catalysts, momentum."""
+# ═══════════════════════════════════════════════════════════════════════════════
+# HELPER: Format positions for prompts
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _format_positions_for_prompt(positions: List[Dict], max_positions: int = 8) -> str:
+    """Format portfolio positions as a clean text block for LLM prompts."""
+    if not positions:
+        return "  No open positions."
+    lines = []
+    for p in positions[:max_positions]:
+        ticker = p.get("ticker", p.get("symbol", "???"))
+        entry = p.get("entry_price", p.get("entry", 0))
+        current = p.get("current_price", p.get("current", 0))
+        pnl = p.get("pnl_pct", 0)
+        theme = p.get("theme", "")
+        days = p.get("days_held", p.get("days", "?"))
+        pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+        theme_str = f" — {theme}" if theme else ""
+        lines.append(f"  ${ticker}: entry ${entry:.2f}, now ${current:.2f} ({pnl_str}){theme_str}, {days} days held")
+    return "\n".join(lines)
+
+
+def _get_showcase_winner(ctx: NoteContext) -> Optional[Dict]:
+    """Get the best winner for showcase (15%+)."""
+    for p in ctx.winners:
+        if p.get("pnl_pct", 0) >= MIN_WIN_THRESHOLD:
+            return p
+    return ctx.top_performer if ctx.top_performer else (ctx.winners[0] if ctx.winners else None)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PER-TYPE PROMPT BUILDERS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def build_market_snapshot_prompt(ctx: NoteContext) -> str:
+    """SPY/QQQ/VIX + specific portfolio impact."""
+    positions_text = _format_positions_for_prompt(ctx.winners)
+    market_excerpt = ctx.market_analysis_excerpt or "No market analysis available."
+    hook = pick_subscribe_hook("MARKET_SNAPSHOT", ctx)
+
+    return f"""Write a MARKET_SNAPSHOT note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  SPY: {ctx.spy_5d_pct:+.1f}% | QQQ: {ctx.qqq_5d_pct:+.1f}%
+  Market context: {market_excerpt}
+
+  Portfolio ({ctx.open_count} positions):
+{positions_text}
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Entry dates (you have days held, not calendar dates)
+  - Historical comparisons to previous weeks
+  - Intraday prices or after-hours moves
+
+Connect today's market move to our specific positions. Which held up? Which felt it? Why?
+
+After showing positions with numbers, go straight to one forward-looking line about what we're watching. No recap paragraph.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_signal_drop_prompt(ctx: NoteContext) -> str:
+    """New GREEN signal announcement."""
+    sig = ctx.pass_signals[0]
+    stats = ctx.scan_stats
+    loaded = stats.get("tickers_loaded", stats.get("universe_size", 1817))
+    tech = stats.get("technical_signals", stats.get("technical_pass", 0))
+    theme_pass = stats.get("theme_confirmed", stats.get("theme_pass", 0))
+    green = stats.get("final_trade", stats.get("green_signals", len(ctx.pass_signals)))
+    conv_text = get_conviction_text(sig.get("conviction", sig.get("dd_conviction", 0)))
+    hook = pick_subscribe_hook("SIGNAL_DROP", ctx)
+
+    return f"""Write a SIGNAL_DROP note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  New GREEN signal: ${sig.get('symbol', '???')} at ${sig.get('price', 0):.2f}
+  Theme: {sig.get('theme', 'N/A')} (score: {sig.get('theme_score', 0)}/10)
+  Outlook: {conv_text}
+  Funnel: {loaded} scanned → {tech} passed technicals → {theme_pass} theme-confirmed → {green} GREEN
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Historical theme scores or "highest in X weeks" comparisons
+  - Analyst targets or institutional holdings
+  - Price targets for this signal
+
+Announce the signal. Ticker, price, theme. Show the funnel. One or two sentences on why this theme matters.
+
+After the funnel and thesis, stop. Don't add a paragraph about how selective the process is — the funnel already showed that.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_winner_receipt_prompt(ctx: NoteContext) -> str:
+    """Single position spotlight with entry, current, P&L."""
+    w = _get_showcase_winner(ctx)
+    if not w:
+        return build_portfolio_update_prompt(ctx)
+
+    ticker = w.get("ticker", w.get("symbol", "???"))
+    entry = w.get("entry_price", w.get("entry", 0))
+    current = w.get("current_price", w.get("current", 0))
+    pnl = w.get("pnl_pct", 0)
+    days = w.get("days_held", w.get("days", "?"))
+    theme = w.get("theme", "")
+
+    other_text = _format_positions_for_prompt(
+        [p for p in ctx.winners if p.get("ticker", p.get("symbol")) != ticker], max_positions=4
+    )
+
+    hook_raw = pick_subscribe_hook("WINNER_RECEIPT", ctx)
+    hook = hook_raw.replace("${entry}", f"${entry:.2f}")
+
+    return f"""Write a WINNER_RECEIPT note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  Spotlight: ${ticker} — entry ${entry:.2f}, now ${current:.2f}
+  P&L: +{pnl:.1f}% over {days} days
+  Theme: {theme}
+
+  Other positions:
+{other_text}
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - The calendar date we entered (you have days held only)
+  - Price targets or analyst ratings
+  - Any subscriber feature beyond the Saturday newsletter
+
+Lead with entry and current price. Show percentage and timeframe in days.
+
+1-2 sentences on the thesis — what structural trend is this riding.
+
+Mention the rest of the portfolio honestly. Winners exist alongside red positions.
+
+After the data, go straight to one forward thought. No recap paragraph.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_portfolio_update_prompt(ctx: NoteContext) -> str:
+    """Honest full-portfolio snapshot."""
+    positions_text = _format_positions_for_prompt(ctx.winners)
+    hook = pick_subscribe_hook("PORTFOLIO_UPDATE", ctx)
+
+    green_count = sum(1 for p in ctx.winners if p.get("pnl_pct", 0) > 0)
+    red_count = len(ctx.winners) - green_count
+
+    return f"""Write a PORTFOLIO_UPDATE note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  {ctx.open_count} positions open. {green_count} green, {red_count} red.
+  SPY: {ctx.spy_5d_pct:+.1f}% | QQQ: {ctx.qqq_5d_pct:+.1f}%
+
+  All positions:
+{positions_text}
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Entry dates (you have days held only)
+  - Historical performance comparisons
+
+Walk through the portfolio honestly. Top to bottom. Show every position with its entry price and current P&L.
+
+Green positions: state the gain matter-of-factly.
+Red positions: acknowledge them directly. What sector are they in? Is the thesis intact?
+
+One forward-looking line at the end.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_theme_rotation_prompt(ctx: NoteContext) -> str:
+    """One theme: score, catalysts, our positions."""
     if ctx.themes:
         theme = ctx.themes[0]
-        name = theme.get('name', 'Unknown')
-        classification = theme.get('classification', 'N/A')
-        score = theme.get('composite_score', 0)
-        thesis = theme.get('thesis_summary', 'Theme momentum building.')
-        catalysts = theme.get('key_catalysts', [])
+        name = theme.get("name", "Unknown")
+        classification = theme.get("classification", "N/A")
+        score = theme.get("composite_score", 0)
+        thesis = theme.get("thesis_summary", "")
+        catalysts = theme.get("key_catalysts", [])
         catalysts_text = "; ".join(catalysts[:3]) if catalysts else "Multiple catalysts converging."
 
-        # Find tickers in this theme
-        theme_tickers = [w for w in ctx.winners if w.get('theme', '') == name]
+        theme_tickers = [w for w in ctx.winners if w.get("theme", "") == name]
         ticker_text = ""
         if theme_tickers:
-            parts = [f"${t.get('ticker', '???')} +{t.get('pnl_pct', 0):.1f}%" for t in theme_tickers[:2]]
-            ticker_text = f"\nOur positions in this theme: {', '.join(parts)}"
+            parts = []
+            for t in theme_tickers[:2]:
+                tk = t.get("ticker", t.get("symbol", "???"))
+                pnl = t.get("pnl_pct", 0)
+                entry = t.get("entry_price", t.get("entry", 0))
+                parts.append(f"${tk} at {pnl:+.1f}% from ${entry:.2f} entry")
+            ticker_text = f"\n  Our positions in this theme: {', '.join(parts)}"
 
-        theme_section = f"""Theme: {name}
-Classification: {classification}
-Score: {score}/10
-Thesis: {thesis}
-Key catalysts: {catalysts_text}{ticker_text}"""
+        theme_block = f"""  Theme: {name}
+  Classification: {classification}
+  Score: {score}/10
+  Thesis: {thesis}
+  Catalysts: {catalysts_text}{ticker_text}"""
     else:
-        theme_section = """No scored themes available. Write about sector rotation in general — where institutional money appears to be flowing based on market breadth and recent strength."""
+        theme_block = "  No scored themes available. Write about sector rotation using market context."
 
-    hook = pick_hook("THEME_MOMENTUM")
+    hook = pick_subscribe_hook("THEME_ROTATION", ctx)
 
-    return f"""Write a "Theme Momentum" Substack Note ({ctx.date_str}).
+    return f"""Write a THEME_ROTATION note for {ctx.date_str}.
 
-{theme_section}
+DATA YOU HAVE (use only this):
+{theme_block}
 
-INSTRUCTIONS:
-1. Open with a strong observation about this theme's momentum — make it feel like a diagnosis.
-2. Explain the thesis in 2-3 sentences: WHY is capital flowing here?
-3. Name 1-2 catalysts on the horizon that could accelerate (or decelerate) this theme.
-4. If we have positions, mention them as validation — "Our screening system prescribed exposure early."
-5. End with: "{hook}"
-6. Close with: "Full analysis every Saturday in Sterling Signals."
-7. Final line: "Not financial advice. Informational only."
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Historical theme score changes or "up from last week" comparisons
+  - ETF flow numbers (unless provided above)
+  - Analyst recommendations
 
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs."""
+Name the theme. State the score. 1-2 catalysts driving it. If we hold positions in this theme, name them with entry prices.
 
+One forward thought: what event or data point would accelerate or derail this theme.
 
-def build_market_reaction_prompt(ctx: NoteContext) -> str:
-    """Quick takes on SPY/QQQ, VIX, rates, rotation."""
-    market_excerpt = ctx.market_analysis_excerpt or "Market data unavailable."
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
 
-    hook = pick_hook("MARKET_REACTION")
-
-    return f"""Write a "Market Reaction" Substack Note ({ctx.date_str}).
-
-MARKET DATA:
-SPY 5-day: {ctx.spy_5d_pct:+.1f}%
-QQQ 5-day: {ctx.qqq_5d_pct:+.1f}%
-
-MARKET ANALYSIS EXCERPT:
-{market_excerpt}
-
-OUR PORTFOLIO:
-{ctx.open_count} open positions
-
-INSTRUCTIONS:
-1. Open with a punchy observation about what the market just told us — like a doctor reading vitals.
-2. Reference SPY and QQQ performance with specific numbers.
-3. Comment on what this means for momentum stocks, small caps, or sector rotation.
-4. Add one forward-looking remark: what are we watching next?
-5. Do NOT mention any specific positions or tickers unless they are 15%+ winners.
-6. End with: "{hook}"
-7. Close with: "Full analysis every Saturday in Sterling Signals."
-8. Final line: "Not financial advice. Informational only."
-
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs."""
+150-280 words."""
 
 
-def build_system_proof_prompt(ctx: NoteContext) -> str:
-    """Funnel stats, discipline, screening narrative."""
-    tickers_loaded = ctx.scan_stats.get('tickers_loaded', 1817)
-    tech_signals = ctx.scan_stats.get('technical_signals', 0)
-    final_trade = ctx.scan_stats.get('final_trade', 0)
-    final_consider = ctx.scan_stats.get('final_consider', 0)
+def build_the_filter_prompt(ctx: NoteContext) -> str:
+    """Screening funnel numbers."""
+    stats = ctx.scan_stats
+    loaded = stats.get("tickers_loaded", stats.get("universe_size", 1817))
+    tech = stats.get("technical_signals", stats.get("technical_pass", 0))
+    theme_pass = stats.get("theme_confirmed", stats.get("theme_pass", 0))
+    green = stats.get("final_trade", stats.get("green_signals", 0))
 
-    winner_proof = ""
+    winner_line = ""
     if ctx.winners:
         w = ctx.winners[0]
-        winner_proof = f"\nProof it works: ${w.get('ticker', '???')} at +{w.get('pnl_pct', 0):.1f}% — diagnosed by the same screening system."
+        tk = w.get("ticker", w.get("symbol", "???"))
+        pnl = w.get("pnl_pct", 0)
+        if pnl >= MIN_WIN_THRESHOLD:
+            winner_line = f"\n  Proof: ${tk} at +{pnl:.1f}% — found by the same screening process."
 
-    hook = pick_hook("SYSTEM_PROOF")
+    hook = pick_subscribe_hook("THE_FILTER", ctx)
 
-    return f"""Write a "System Proof" Substack Note ({ctx.date_str}).
+    return f"""Write a THE_FILTER note for {ctx.date_str}.
 
-SCREENING FUNNEL:
-{tickers_loaded} stocks scanned
-→ {tech_signals} passed technical screening
-→ {final_trade} cleared every screening stage (GREEN signals)
-→ {final_consider} on watchlist
+DATA YOU HAVE (use only this):
+  {loaded} stocks scanned
+  → {tech} passed technical screening
+  → {theme_pass} cleared thematic alignment
+  → {green} earned GREEN signals
+  Rejection rate: {((1 - green / max(loaded, 1)) * 100):.1f}%{winner_line}
 
-Rejection rate: {((1 - final_trade / max(tickers_loaded, 1)) * 100):.1f}%
-{winner_proof}
-INSTRUCTIONS:
-1. Open with the funnel numbers — they ARE the hook. "{tickers_loaded} stocks. {final_trade} survived."
-2. Frame our selectivity as a competitive advantage. Most traders chase setups; our system rejects 99%+.
-3. Use a medical metaphor: "A screening test that catches everything is useless. Specificity is what matters."
-4. If winner proof exists, reference it as validation of the screening process.
-5. End with: "{hook}"
-6. Close with: "Full analysis every Saturday in Sterling Signals."
-7. Final line: "Not financial advice. Informational only."
+Lead with the funnel numbers. They're the hook.
 
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs."""
+Briefly explain what each stage filters for — without using banned indicator names. Frame selectivity as the edge. Most traders chase everything. This system rejects 99%+.
+
+If winner proof exists, mention it once. Don't belabour it.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
 
 
-def build_learning_nugget_prompt(ctx: NoteContext) -> str:
-    """Educational content — evergreen, no live data needed."""
-    hook = pick_hook("LEARNING_NUGGET")
+def build_catalyst_watch_prompt(ctx: NoteContext) -> str:
+    """Upcoming events for positions we hold."""
+    positions_text = _format_positions_for_prompt(ctx.winners, max_positions=5)
+    hook = pick_subscribe_hook("CATALYST_WATCH", ctx)
 
-    # Rotate through educational topics
+    return f"""Write a CATALYST_WATCH note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  Portfolio positions:
+{positions_text}
+
+  Themes we're tracking: {', '.join(t.get('name', '') for t in ctx.themes[:3]) or 'N/A'}
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Specific earnings dates or FDA dates (unless provided above)
+  - Conference schedules
+
+Based on the themes and sectors our positions are in, identify what types of catalysts could be coming: earnings seasons, sector-specific policy events, contract announcements. Frame as "what we're watching" rather than predicting specific dates.
+
+Keep it concrete to our positions and themes, not generic market events.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_sector_flow_prompt(ctx: NoteContext) -> str:
+    """Where money is moving — one sector gaining, one losing."""
+    market_excerpt = ctx.market_analysis_excerpt or ""
+    positions_text = _format_positions_for_prompt(ctx.winners, max_positions=4)
+    hook = pick_subscribe_hook("SECTOR_FLOW", ctx)
+
+    themes_text = ""
+    if ctx.themes:
+        parts = [f"{t.get('name', '?')} ({t.get('classification', '?')}, {t.get('composite_score', 0)}/10)" for t in ctx.themes[:3]]
+        themes_text = "\n  Theme scores: " + ", ".join(parts)
+
+    return f"""Write a SECTOR_FLOW note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  SPY: {ctx.spy_5d_pct:+.1f}% | QQQ: {ctx.qqq_5d_pct:+.1f}%
+  Market context: {market_excerpt}{themes_text}
+
+  Portfolio:
+{positions_text}
+
+Identify a rotation happening: one sector or theme strengthening, another weakening. Connect it to our positions.
+
+Be opinionated. "Capital is leaving X and entering Y. Our portfolio reflects that." Don't hedge with "may" and "could."
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_exit_debrief_prompt(ctx: NoteContext) -> str:
+    """Position closed — why, lesson. Falls back to DATA_INSIGHT if no exits."""
+    # This will typically fallback since exit data isn't always in context
+    return build_data_insight_prompt(ctx)
+
+
+def build_alpha_scoreboard_prompt(ctx: NoteContext) -> str:
+    """Portfolio vs SPY/QQQ with numbers."""
+    positions_text = _format_positions_for_prompt(ctx.winners, max_positions=5)
+    hook = pick_subscribe_hook("ALPHA_SCOREBOARD", ctx)
+
+    avg_pnl = sum(p.get("pnl_pct", 0) for p in ctx.winners) / max(len(ctx.winners), 1)
+
+    return f"""Write an ALPHA_SCOREBOARD note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  Portfolio: {ctx.open_count} positions
+  Average P&L: {avg_pnl:+.1f}%
+  SPY recent: {ctx.spy_5d_pct:+.1f}% | QQQ recent: {ctx.qqq_5d_pct:+.1f}%
+  Week {ctx.week_number}
+
+  Positions:
+{positions_text}
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - YTD portfolio return (use only what's above)
+  - Exact alpha figures unless calculable from the data provided
+
+Show the portfolio's performance against the benchmarks using the numbers provided. If we're outperforming, state it plainly. If we're not, acknowledge it.
+
+Name the top contributor and the laggard. Both with entry prices.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_data_insight_prompt(ctx: NoteContext) -> str:
+    """Counterintuitive investing stat connected to current context."""
     topics = [
-        ("Position Sizing", "Teach why position sizing matters more than stock picking. Use a medical analogy: 'A surgeon does not treat every patient the same way — dosage matters.'"),
-        ("Risk Management", "Explain why protecting capital is the most important skill. Use: 'In medicine, the first rule is do no harm. In markets, the first rule is preserve capital.'"),
-        ("Systematic vs Discretionary", "Compare systematic investing to evidence-based medicine. Why protocols beat intuition."),
-        ("The Power of Patience", "Explain why waiting for high-quality setups is a competitive advantage. Use: 'A doctor who operates on every patient is not thorough — they are reckless.'"),
-        ("Understanding Sector Rotation", "Teach how capital flows between sectors and why recognizing these patterns early matters."),
-        ("Compounding Returns", "Explain the math of compounding and why consistency beats occasional big wins."),
-        ("Confirmation Bias", "Teach how to recognize and avoid confirmation bias in investing. Use: 'In medicine, we seek to disprove our diagnosis, not confirm it.'"),
-        ("Win Rate vs Expectancy", "Explain why win rate alone is misleading. A 40% win rate with 3:1 reward-to-risk beats 80% with 0.5:1."),
+        "Position sizing matters more than stock picking. A portfolio of average picks with great sizing outperforms great picks with random sizing.",
+        "The average investor underperforms the funds they invest in by 1-2% annually because they buy after gains and sell after losses.",
+        "Stocks above their 200-day moving average historically return 12% annualized vs -2% for those below it. Trend following isn't fancy, but it works.",
+        "The best-performing accounts at most brokerages belong to people who forgot their passwords. Doing less beats doing more.",
+        "Small caps have outperformed large caps in 60% of rolling 10-year periods since 1926. The volatility is the premium.",
+        "90% of a portfolio's return comes from asset allocation and timing, not stock selection. Yet most investors spend 90% of their time on stock selection.",
+        "Momentum strategies have worked in every asset class, in every country, across every time period tested. It's one of the most robust anomalies in finance.",
+        "The stocks that fall the most in a correction are rarely the ones that lead the next rally. New leaders emerge.",
     ]
-    topic_title, topic_instruction = random.choice(topics)
 
-    return f"""Write an educational Substack Note ({ctx.date_str}).
-
-TOPIC: {topic_title}
-
-{topic_instruction}
-
-INSTRUCTIONS:
-1. Open with a scroll-stopping hook — a surprising fact, a counterintuitive claim, or a provocative question.
-2. Teach the concept in 2-3 flowing paragraphs. No jargon, no textbook tone.
-3. Frame it through the medical-investor lens where natural: "Like a diagnostic protocol..."
-4. Make it concrete with a relatable example.
-5. End with: "{hook}"
-6. Close with: "Full analysis every Saturday in Sterling Signals."
-7. Final line: "Not financial advice. Informational only."
-
-150-300 words. No markdown headers. No bullet lists. Flowing paragraphs."""
-
-
-def build_engagement_hook_prompt(ctx: NoteContext) -> str:
-    """Community questions, polls, open discussion."""
-    hook = pick_hook("ENGAGEMENT_HOOK")
-
-    # Pick a light data point to seed the conversation
-    data_seed = ""
+    # Try to connect to portfolio context
+    portfolio_context = ""
     if ctx.winners:
         w = ctx.winners[0]
-        data_seed = f"Our top performer ${w.get('ticker', '???')} is at +{w.get('pnl_pct', 0):.1f}%. "
-    elif ctx.themes:
+        tk = w.get("ticker", w.get("symbol", "???"))
+        pnl = w.get("pnl_pct", 0)
+        if pnl >= MIN_WIN_THRESHOLD:
+            portfolio_context = f"\n\nCONNECTION TO OUR PORTFOLIO:\n${tk} at +{pnl:.1f}% is a live example. Reference it briefly if it naturally connects to the topic."
+
+    topic = random.choice(topics)
+    hook = pick_subscribe_hook("DATA_INSIGHT", ctx)
+
+    return f"""Write a DATA_INSIGHT note for {ctx.date_str}.
+
+TOPIC SEED (use as starting point, not verbatim):
+{topic}{portfolio_context}
+
+DATA YOU DO NOT HAVE:
+  - The exact source study (don't cite a specific paper unless you're certain)
+  - Precise percentages beyond what's in the topic seed
+
+Start with the surprising stat or finding. Explain briefly why it matters. If there's a portfolio connection, make it in one sentence. Don't stretch the connection if it doesn't fit naturally.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+150-280 words."""
+
+
+def build_reader_question_prompt(ctx: NoteContext) -> str:
+    """Data-seeded question for genuine engagement."""
+    # Build a data seed based on what's available
+    data_seeds = []
+    if ctx.winners:
+        w = ctx.winners[0]
+        pnl = w.get("pnl_pct", 0)
+        theme = w.get("theme", "")
+        if pnl >= MIN_WIN_THRESHOLD and theme:
+            data_seeds.append(f"{theme} is up significantly in our portfolio while other sectors lag.")
+    if ctx.themes:
         t = ctx.themes[0]
-        data_seed = f"Our system scored {t.get('name', 'a theme')} at {t.get('composite_score', 0)}/10 this week. "
+        data_seeds.append(f"Our system scored {t.get('name', 'a theme')} at {t.get('composite_score', 0)}/10 this week.")
+    if ctx.scan_stats:
+        loaded = ctx.scan_stats.get("tickers_loaded", ctx.scan_stats.get("universe_size", 0))
+        green = ctx.scan_stats.get("final_trade", ctx.scan_stats.get("green_signals", 0))
+        if loaded > 0:
+            data_seeds.append(f"Our scanner rejected {((1 - green / max(loaded, 1)) * 100):.1f}% of stocks this week.")
 
-    return f"""Write a short, engagement-focused Substack Note ({ctx.date_str}).
+    seed = random.choice(data_seeds) if data_seeds else "Markets are rotating between sectors."
 
-This note is designed to start a conversation. Keep it UNDER 200 words.
+    return f"""Write a READER_QUESTION note for {ctx.date_str}.
 
-DATA SEED (optional — use if it naturally fits):
-{data_seed}
+DATA SEED:
+{seed}
 
-CORE QUESTION:
-{hook}
+Write a short note (under 150 words) that:
+1. Opens with a blunt observation grounded in the data seed.
+2. Adds 1-2 sentences of context.
+3. Asks ONE specific question that's easy to reply to.
 
-INSTRUCTIONS:
-1. Open with a bold statement, quick observation, or contrarian take (1-2 sentences max).
-2. Add 1-2 sentences of context that make the question relevant right now.
-3. Ask the engagement question clearly — make it easy to answer.
-4. Do NOT write a mini-article. This is a conversation starter, not an essay.
-5. Close with: "Full analysis every Saturday in Sterling Signals."
-6. Final line: "Not financial advice. Informational only."
+The question should be grounded in real data, not generic. 
+BAD: "What are you watching this week?"
+GOOD: "Defence is up 18% in six weeks while AI is flat. Are you rotating or staying put?"
 
-100-200 words. No markdown headers. No bullet lists. Conversational and direct."""
+No subscribe hook. This is pure engagement.
+
+End with: "Not financial advice. Informational only."
+
+100-150 words."""
 
 
-# Map note types to prompt builders
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROMPT BUILDERS MAP
+# ═══════════════════════════════════════════════════════════════════════════════
+
 PROMPT_BUILDERS = {
-    "PORTFOLIO_PULSE": build_portfolio_pulse_prompt,
-    "SIGNAL_ALERT": build_signal_alert_prompt,
-    "THEME_MOMENTUM": build_theme_momentum_prompt,
-    "MARKET_REACTION": build_market_reaction_prompt,
-    "SYSTEM_PROOF": build_system_proof_prompt,
-    "LEARNING_NUGGET": build_learning_nugget_prompt,
-    "ENGAGEMENT_HOOK": build_engagement_hook_prompt,
+    "MARKET_SNAPSHOT": build_market_snapshot_prompt,
+    "SIGNAL_DROP": build_signal_drop_prompt,
+    "WINNER_RECEIPT": build_winner_receipt_prompt,
+    "PORTFOLIO_UPDATE": build_portfolio_update_prompt,
+    "THEME_ROTATION": build_theme_rotation_prompt,
+    "THE_FILTER": build_the_filter_prompt,
+    "CATALYST_WATCH": build_catalyst_watch_prompt,
+    "SECTOR_FLOW": build_sector_flow_prompt,
+    "EXIT_DEBRIEF": build_exit_debrief_prompt,
+    "ALPHA_SCOREBOARD": build_alpha_scoreboard_prompt,
+    "DATA_INSIGHT": build_data_insight_prompt,
+    "READER_QUESTION": build_reader_question_prompt,
 }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TEMPLATE FALLBACKS (--no-llm)
+# TEMPLATE FALLBACKS (--no-llm mode)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def template_portfolio_pulse(ctx: NoteContext) -> str:
-    """Template fallback for PORTFOLIO_PULSE notes."""
-    lines = [f"Portfolio update — {ctx.date_str}", ""]
-
+def _tpl_market_snapshot(ctx: NoteContext) -> str:
+    lines = [f"SPY {ctx.spy_5d_pct:+.1f}%, QQQ {ctx.qqq_5d_pct:+.1f}%."]
     if ctx.winners:
         w = ctx.winners[0]
-        pnl = w.get('pnl_pct', 0)
+        tk = w.get("ticker", w.get("symbol", "???"))
+        pnl = w.get("pnl_pct", 0)
+        entry = w.get("entry_price", w.get("entry", 0))
+        lines.append(f"\n${tk} at {pnl:+.1f}% from our ${entry:.2f} entry. Holding through the noise.")
+    lines.append(f"\n{ctx.open_count} positions open.")
+    lines.append(f"\n{pick_subscribe_hook('MARKET_SNAPSHOT', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
+    return "\n".join(lines)
+
+
+def _tpl_portfolio_update(ctx: NoteContext) -> str:
+    lines = [f"{ctx.open_count} positions open."]
+    for p in ctx.winners[:4]:
+        tk = p.get("ticker", p.get("symbol", "???"))
+        entry = p.get("entry_price", p.get("entry", 0))
+        pnl = p.get("pnl_pct", 0)
         pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
-        lines.append(f"${w.get('ticker', '???')} is at {pnl_str} from a ${w.get('entry_price', 0):.2f} entry. Our screening system diagnosed this setup early and the thesis is playing out.")
-        lines.append("")
-        if len(ctx.winners) > 1:
-            w2 = ctx.winners[1]
-            lines.append(f"${w2.get('ticker', '???')} is also delivering at +{w2.get('pnl_pct', 0):.1f}%. The system continues to identify structural momentum before the crowd.")
-            lines.append("")
-
-    lines.append(f"With {ctx.open_count} positions open, the portfolio is navigating this market with systematic discipline.")
-    lines.append("")
-    lines.append(pick_hook("PORTFOLIO_PULSE"))
-    lines.append("")
-    lines.append("Full analysis every Saturday in Sterling Signals.")
-    lines.append("")
-    lines.append("Not financial advice. Informational only.")
+        lines.append(f"\n${tk} at {pnl_str} from ${entry:.2f} entry.")
+    lines.append(f"\n{pick_subscribe_hook('PORTFOLIO_UPDATE', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
     return "\n".join(lines)
 
 
-def template_signal_alert(ctx: NoteContext) -> str:
-    """Template fallback for SIGNAL_ALERT notes."""
-    lines = []
-
-    if ctx.pass_signals:
-        sig = ctx.pass_signals[0]
-        lines.append(f"GREEN signal on ${sig['symbol']} — our screening system just cleared this setup.")
-        lines.append("")
-        lines.append(f"Theme alignment: {sig.get('theme', 'N/A')}. The screening system identified structural momentum confirmation and institutional accumulation patterns that suggest this is more than noise.")
-        lines.append("")
-        lines.append(f"Out of {ctx.scan_stats.get('tickers_loaded', 1817)} stocks scanned, {len(ctx.pass_signals)} made it through every screening stage this week.")
-    else:
-        loaded = ctx.scan_stats.get('tickers_loaded', 1817)
-        tech = ctx.scan_stats.get('technical_signals', 0)
-        lines.append(f"{loaded} stocks scanned. Zero new GREEN signals.")
-        lines.append("")
-        lines.append(f"Only {tech} passed the initial technical screen. None cleared every screening stage. That is the system working as designed — a screening test with high specificity rejects noise.")
-        if ctx.winners:
-            w = ctx.winners[0]
-            lines.append("")
-            lines.append(f"Meanwhile, ${w.get('ticker', '???')} continues to run at +{w.get('pnl_pct', 0):.1f}%. Patience pays when the system is right.")
-
-    lines.extend(["", pick_hook("SIGNAL_ALERT"), "", "Full analysis every Saturday in Sterling Signals.", "", "Not financial advice. Informational only."])
+def _tpl_the_filter(ctx: NoteContext) -> str:
+    loaded = ctx.scan_stats.get("tickers_loaded", ctx.scan_stats.get("universe_size", 1817))
+    green = ctx.scan_stats.get("final_trade", ctx.scan_stats.get("green_signals", 0))
+    lines = [f"{loaded} stocks scanned. {green} survived."]
+    lines.append(f"\nThe screening system rejected {loaded - green}. That's the edge — selectivity over volume.")
+    lines.append(f"\n{pick_subscribe_hook('THE_FILTER', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
     return "\n".join(lines)
 
 
-def template_theme_momentum(ctx: NoteContext) -> str:
-    """Template fallback for THEME_MOMENTUM notes."""
-    lines = []
+def _tpl_theme_rotation(ctx: NoteContext) -> str:
     if ctx.themes:
         t = ctx.themes[0]
-        name = t.get('name', 'Unknown')
-        score = t.get('composite_score', 0)
-        classification = t.get('classification', 'N/A')
-        thesis = t.get('thesis_summary', 'Momentum building across this sector.')
-        lines.append(f"{name} scores {score}/10 in our sector flow analysis — classified as {classification}.")
-        lines.append("")
-        lines.append(thesis[:200])
-        lines.append("")
-        catalysts = t.get('key_catalysts', [])
-        if catalysts:
-            lines.append(f"Key catalysts: {'; '.join(catalysts[:2])}.")
-            lines.append("")
+        lines = [f"{t.get('name', 'Unknown')} scores {t.get('composite_score', 0)}/10 — classified {t.get('classification', 'N/A')}."]
+        thesis = t.get("thesis_summary", "")
+        if thesis:
+            lines.append(f"\n{thesis[:200]}")
     else:
-        lines.append("Sector rotation continues to create opportunities for systematic investors who track institutional flows.")
-        lines.append("")
-        lines.append("Our screening system maps capital movement across themes — identifying where the smart money is positioning before it becomes consensus.")
-        lines.append("")
-
-    lines.extend([pick_hook("THEME_MOMENTUM"), "", "Full analysis every Saturday in Sterling Signals.", "", "Not financial advice. Informational only."])
+        lines = ["Tracking sector rotation across our theme universe."]
+    lines.append(f"\n{pick_subscribe_hook('THEME_ROTATION', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
     return "\n".join(lines)
 
 
-def template_market_reaction(ctx: NoteContext) -> str:
-    """Template fallback for MARKET_REACTION notes."""
-    lines = [
-        f"Market vitals — SPY {ctx.spy_5d_pct:+.1f}%, QQQ {ctx.qqq_5d_pct:+.1f}% over the last 5 sessions.",
-        "",
-        "The question is not what the market did, but what it is telling us about where capital is rotating next.",
-        "",
-        f"With {ctx.open_count} positions open, we are watching breadth, sector strength, and our screening system for the next structural signal.",
-        "",
-        pick_hook("MARKET_REACTION"),
-        "",
-        "Full analysis every Saturday in Sterling Signals.",
-        "",
-        "Not financial advice. Informational only.",
-    ]
+def _tpl_data_insight(ctx: NoteContext) -> str:
+    lines = ["Momentum has worked in every asset class, every country, every time period tested. It's one of the most robust anomalies in finance."]
+    lines.append("\nMost investors know this intellectually but can't execute it emotionally. The system removes the emotion.")
+    lines.append(f"\n{pick_subscribe_hook('DATA_INSIGHT', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
     return "\n".join(lines)
 
 
-def template_system_proof(ctx: NoteContext) -> str:
-    """Template fallback for SYSTEM_PROOF notes."""
-    loaded = ctx.scan_stats.get('tickers_loaded', 1817)
-    final = ctx.scan_stats.get('final_trade', 0)
-    lines = [
-        f"{loaded} stocks. {final} survived every screening stage.",
-        "",
-        f"Our screening system rejected {loaded - final} setups this week. That is not a failure — that is specificity working exactly as designed.",
-        "",
-        "Like a diagnostic test, the value is not in what it catches — it is in what it correctly rules out. Most traders chase every setup. Our system is built to wait.",
-        "",
-    ]
-    if ctx.winners:
-        w = ctx.winners[0]
-        lines.append(f"The proof? ${w.get('ticker', '???')} at +{w.get('pnl_pct', 0):.1f}%. Diagnosed by the same screening system that says no to 99% of what it screens.")
-        lines.append("")
-
-    lines.extend([pick_hook("SYSTEM_PROOF"), "", "Full analysis every Saturday in Sterling Signals.", "", "Not financial advice. Informational only."])
-    return "\n".join(lines)
-
-
-def template_learning_nugget(ctx: NoteContext) -> str:
-    """Template fallback for LEARNING_NUGGET notes."""
-    lines = [
-        "Position sizing is the most underrated skill in investing.",
-        "",
-        "A surgeon does not administer the same dosage to every patient. The treatment depends on the diagnosis, the risk profile, and the patient's history. Investing works the same way.",
-        "",
-        "High conviction? Larger position. Speculative? Smaller allocation. The math of compounding rewards discipline more than it rewards boldness.",
-        "",
-        pick_hook("LEARNING_NUGGET"),
-        "",
-        "Full analysis every Saturday in Sterling Signals.",
-        "",
-        "Not financial advice. Informational only.",
-    ]
-    return "\n".join(lines)
-
-
-def template_engagement_hook(ctx: NoteContext) -> str:
-    """Template fallback for ENGAGEMENT_HOOK notes."""
-    hook = pick_hook("ENGAGEMENT_HOOK")
-    data_seed = ""
-    if ctx.winners:
-        w = ctx.winners[0]
-        data_seed = f"Our top performer ${w.get('ticker', '???')} is at +{w.get('pnl_pct', 0):.1f}% and climbing."
-
-    lines = []
-    if data_seed:
-        lines.extend([data_seed, ""])
-    lines.extend([
-        "The market never stops teaching. Every week we learn something new about how capital flows, how themes rotate, and how discipline separates consistent performers from the crowd.",
-        "",
-        hook,
-        "",
-        "Full analysis every Saturday in Sterling Signals.",
-        "",
-        "Not financial advice. Informational only.",
-    ])
+def _tpl_reader_question(ctx: NoteContext) -> str:
+    seed = ""
+    if ctx.themes:
+        seed = f"{ctx.themes[0].get('name', 'A theme')} is scoring high in our system."
+    lines = [seed or "Markets are rotating."]
+    lines.append("\nGenuine question — what sectors are you leaning into this quarter, and what made you decide?")
+    lines.append("\nNot financial advice. Informational only.")
     return "\n".join(lines)
 
 
 TEMPLATE_FALLBACKS = {
-    "PORTFOLIO_PULSE": template_portfolio_pulse,
-    "SIGNAL_ALERT": template_signal_alert,
-    "THEME_MOMENTUM": template_theme_momentum,
-    "MARKET_REACTION": template_market_reaction,
-    "SYSTEM_PROOF": template_system_proof,
-    "LEARNING_NUGGET": template_learning_nugget,
-    "ENGAGEMENT_HOOK": template_engagement_hook,
+    "MARKET_SNAPSHOT": _tpl_market_snapshot,
+    "SIGNAL_DROP": _tpl_the_filter,  # Falls back to filter
+    "WINNER_RECEIPT": _tpl_portfolio_update,  # Falls back to portfolio
+    "PORTFOLIO_UPDATE": _tpl_portfolio_update,
+    "THEME_ROTATION": _tpl_theme_rotation,
+    "THE_FILTER": _tpl_the_filter,
+    "CATALYST_WATCH": _tpl_theme_rotation,  # Falls back to theme
+    "SECTOR_FLOW": _tpl_theme_rotation,
+    "EXIT_DEBRIEF": _tpl_data_insight,
+    "ALPHA_SCOREBOARD": _tpl_portfolio_update,
+    "DATA_INSIGHT": _tpl_data_insight,
+    "READER_QUESTION": _tpl_reader_question,
 }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HTML WRAPPING (ported from notes_batch_generator.py)
+# HTML WRAPPING (preserved from v1)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def wrap_note_html(markdown_content: str, title: str = "Sterling Signals Note") -> str:
-    """Wrap a markdown note in self-contained HTML for Substack.
-
-    Converts markdown-style content into HTML paragraphs with inline styles.
-    Handles common patterns: headers, bold, line breaks, paragraphs.
-    """
+    """Wrap a markdown note in self-contained HTML for Substack."""
     lines = markdown_content.strip().split("\n")
     html_parts = []
     in_paragraph = False
@@ -796,65 +948,52 @@ def wrap_note_html(markdown_content: str, title: str = "Sterling Signals Note") 
     for line in lines:
         stripped = line.strip()
 
-        # Skip empty lines (paragraph break)
         if not stripped:
             if in_paragraph:
                 html_parts.append("</p>")
                 in_paragraph = False
             continue
 
-        # Skip the disclaimer line — we add it via the template
         if stripped.lower().startswith("not financial advice"):
             continue
 
-        # Headers (strip them — notes should not have headers)
         if stripped.startswith("### "):
             if in_paragraph:
                 html_parts.append("</p>")
                 in_paragraph = False
             text = stripped[4:]
-            html_parts.append(
-                f'<h3 style="font-size: 16px; font-weight: 700; margin: 16px 0 8px 0; color: #1a1a1a;">{text}</h3>'
-            )
+            html_parts.append(f'<h3 style="font-size: 16px; font-weight: 700; margin: 16px 0 8px 0; color: #1a1a1a;">{text}</h3>')
             continue
         if stripped.startswith("## "):
             if in_paragraph:
                 html_parts.append("</p>")
                 in_paragraph = False
             text = stripped[3:]
-            html_parts.append(
-                f'<h2 style="font-size: 18px; font-weight: 700; margin: 18px 0 8px 0; color: #1a1a1a;">{text}</h2>'
-            )
+            html_parts.append(f'<h2 style="font-size: 18px; font-weight: 700; margin: 18px 0 8px 0; color: #1a1a1a;">{text}</h2>')
             continue
         if stripped.startswith("# "):
             if in_paragraph:
                 html_parts.append("</p>")
                 in_paragraph = False
             text = stripped[2:]
-            html_parts.append(
-                f'<h1 style="font-size: 20px; font-weight: 700; margin: 20px 0 10px 0; color: #1a1a1a;">{text}</h1>'
-            )
+            html_parts.append(f'<h1 style="font-size: 20px; font-weight: 700; margin: 20px 0 10px 0; color: #1a1a1a;">{text}</h1>')
             continue
 
-        # CTA line
-        if any(phrase in stripped for phrase in ["Full analysis every", "Subscribe to", "Sterling Signals"]):
+        # Subscribe hook lines (styled as subtle CTA)
+        if any(phrase in stripped for phrase in ["Saturday newsletter", "screening drops Friday", "every Saturday", "Monday's open"]):
             if in_paragraph:
                 html_parts.append("</p>")
                 in_paragraph = False
             text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
-            html_parts.append(
-                f'<p style="color: #6b6b6b; font-size: 14px; margin-top: 14px; font-style: italic;">{text}</p>'
-            )
+            html_parts.append(f'<p style="color: #6b6b6b; font-size: 14px; margin-top: 14px; font-style: italic;">{text}</p>')
             continue
 
-        # Regular paragraph text
         if not in_paragraph:
             html_parts.append('<p style="margin: 0 0 12px 0;">')
             in_paragraph = True
         else:
             html_parts.append("<br>")
 
-        # Convert markdown bold/italic
         text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', stripped)
         text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
         html_parts.append(text)
@@ -867,13 +1006,11 @@ def wrap_note_html(markdown_content: str, title: str = "Sterling Signals Note") 
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# QUALITY GATES (spec Section 17.1)
+# QUALITY GATES (preserved from v1)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def fix_ticker_format(text: str) -> str:
-    """Ensure tickers use $TICKER format. Regex fix for common LLM omissions."""
-    # Match bare uppercase tickers (2-5 chars) that look like stock symbols
-    # preceded by whitespace or start-of-string, not already prefixed with $
+    """Ensure tickers use $TICKER format."""
     text = re.sub(r'(?<!\$)\b([A-Z]{2,5})\b(?=\s+(?:at|is|was|hit|up|down|rose|fell|gained|lost|\+|-|\d))',
                   r'$\1', text)
     return text
@@ -885,25 +1022,17 @@ def validate_and_repair(
     ctx: NoteContext,
     max_repairs: int = 2,
 ) -> Optional[str]:
-    """Validate a note and attempt LLM repair if needed.
-
-    Returns validated content or None if unrecoverable.
-    """
+    """Validate a note and attempt LLM repair if needed."""
     content = sanitize_note(raw_content)
-
-    # Auto-fix ticker format
     content = fix_ticker_format(content)
 
-    # Auto-append disclaimer if missing
     if "not financial advice" not in content.lower():
         content = content.rstrip() + "\n\nNot financial advice. Informational only."
 
-    # Validate
     is_valid, issues = validate_note(content)
     if is_valid:
         return content
 
-    # Attempt repair
     for attempt in range(max_repairs):
         print(f"    ⚠ Validation issues: {issues}")
         print(f"    Attempting repair ({attempt + 1}/{max_repairs})...")
@@ -926,7 +1055,6 @@ def validate_and_repair(
             print(f"    ✗ Repair error: {e}")
             break
 
-    # All repairs failed — try template fallback
     print(f"    ✗ Repair failed after {max_repairs} attempts. Using template fallback.")
     fallback_fn = TEMPLATE_FALLBACKS.get(note_type)
     if fallback_fn:
@@ -935,7 +1063,7 @@ def validate_and_repair(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LLM GENERATION
+# LLM GENERATION (preserved interface from v1)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def generate_single_note(note_type: str, ctx: NoteContext) -> Tuple[str, float]:
@@ -972,25 +1100,15 @@ def generate_single_note(note_type: str, ctx: NoteContext) -> Tuple[str, float]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SAVE
+# SAVE (preserved from v1)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def save_note_html(
-    content: str,
-    day: str,
-    slot: int,
-    note_type: str,
-    html_output: bool = True,
-) -> Path:
-    """Save a note to both current/ and archive/ directories.
-
-    Returns the path to the current/ file.
-    """
+def save_note_html(content, day, slot, note_type, html_output=True):
+    """Save a note to both current/ and archive/ directories."""
     current_dir, week_dir = ensure_output_dirs()
     date_str = datetime.now().strftime("%Y%m%d")
 
     if html_output:
-        # Wrap in HTML
         title = f"{day.capitalize()} — {note_type.replace('_', ' ').title()}"
         html_content = wrap_note_html(content, title=title)
         filename = f"note_{slot}_{note_type.lower()}_{date_str}.html"
@@ -998,7 +1116,6 @@ def save_note_html(
         html_content = content
         filename = f"note_{slot}_{note_type.lower()}_{date_str}.md"
 
-    # Ensure notes subdirectory exists
     (current_dir / "notes").mkdir(parents=True, exist_ok=True)
     (week_dir / "notes").mkdir(parents=True, exist_ok=True)
 
@@ -1011,7 +1128,7 @@ def save_note_html(
     return current_path
 
 
-def save_manifest(notes: List[Dict], day: str):
+def save_manifest(notes, day):
     """Save notes_manifest.json for today's generated notes."""
     current_dir, week_dir = ensure_output_dirs()
 
@@ -1029,7 +1146,7 @@ def save_manifest(notes: List[Dict], day: str):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# MAIN GENERATION FLOW (spec Section 6.3)
+# MAIN GENERATION FLOW (updated with conditional firing + fallbacks)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def generate_daily_notes(
@@ -1039,35 +1156,21 @@ def generate_daily_notes(
     no_llm: bool = False,
     html_output: bool = True,
 ) -> List[Dict]:
-    """Generate 2-3 notes for today using live context.
-
-    Args:
-        day: Day of the week (e.g. "monday").
-        context: Pre-loaded context dict (from daily_notes_context.json).
-                 If None, loads from file or builds fresh via note_utils.
-        dry_run: Preview without saving.
-        no_llm: Use template fallback instead of LLM.
-        html_output: Save as HTML (default True).
-
-    Returns:
-        List of note dicts with type, slot, filepath, text.
-    """
+    """Generate 2-3 notes for today using live context."""
     global _hooks_used_today
-    _hooks_used_today = []  # Reset for this run
+    _hooks_used_today = []
 
     day = day.lower()
 
-    # 1. Determine today's note types from schedule
     schedule = NOTES_SCHEDULE.get(day, [])
     if not schedule:
         print(f"  No notes scheduled for {day}")
         return []
 
-    # 2. Build NoteContext
+    # Build NoteContext
     if context is not None:
         ctx = build_note_context_from_daily(context)
     else:
-        # Try daily_notes_context.json first, then fall back to live fetch
         daily_ctx = load_notes_context_json()
         if daily_ctx:
             ctx = build_note_context_from_daily(daily_ctx)
@@ -1076,20 +1179,25 @@ def generate_daily_notes(
             print("  ℹ No daily_notes_context.json — building fresh context...")
             ctx = build_note_context()
 
-    # 3. Generate each note
+    # Generate each note
     notes = []
     total_cost = 0.0
 
-    for slot, (note_type, time_et) in enumerate(schedule, 1):
-        label = f"Slot {slot} ({note_type}, {time_et} ET)"
+    for slot, (scheduled_type, time_et) in enumerate(schedule, 1):
+        # Resolve conditional types
+        actual_type = resolve_note_type(scheduled_type, ctx)
+        label = f"Slot {slot} ({actual_type}, {time_et} ET)"
+        if actual_type != scheduled_type:
+            label += f" [was {scheduled_type}]"
 
         if dry_run:
             print(f"  [{slot}/{len(schedule)}] {label} — DRY RUN")
             notes.append({
-                "type": note_type,
+                "type": actual_type,
+                "scheduled_type": scheduled_type,
                 "slot": slot,
                 "time_et": time_et,
-                "text": f"[DRY RUN: {note_type} — {time_et} ET]",
+                "text": f"[DRY RUN: {actual_type} — {time_et} ET]",
             })
             continue
 
@@ -1099,27 +1207,23 @@ def generate_daily_notes(
         cost = 0.0
 
         if no_llm:
-            # Template fallback
-            fallback_fn = TEMPLATE_FALLBACKS.get(note_type)
+            fallback_fn = TEMPLATE_FALLBACKS.get(actual_type)
             if fallback_fn:
                 content = fallback_fn(ctx)
                 print(f"    Generated via template ({len(content.split())} words)")
             else:
-                print(f"    ✗ No template for {note_type}")
+                print(f"    ✗ No template for {actual_type}")
                 continue
         else:
-            # LLM generation
             try:
-                raw_content, cost = generate_single_note(note_type, ctx)
+                raw_content, cost = generate_single_note(actual_type, ctx)
                 total_cost += cost
                 print(f"    Generated via LLM ({len(raw_content.split())} words, ${cost:.4f})")
-
-                # Validate + repair
-                content = validate_and_repair(raw_content, note_type, ctx)
+                content = validate_and_repair(raw_content, actual_type, ctx)
             except Exception as e:
                 print(f"    ✗ LLM error: {e}")
                 print(f"    Falling back to template...")
-                fallback_fn = TEMPLATE_FALLBACKS.get(note_type)
+                fallback_fn = TEMPLATE_FALLBACKS.get(actual_type)
                 if fallback_fn:
                     content = fallback_fn(ctx)
                 else:
@@ -1129,12 +1233,12 @@ def generate_daily_notes(
             print(f"    ✗ Failed to generate {label}")
             continue
 
-        # Save
-        filepath = save_note_html(content, day, slot, note_type, html_output=html_output)
+        filepath = save_note_html(content, day, slot, actual_type, html_output=html_output)
         print(f"    ✓ Saved: {filepath.name}")
 
         notes.append({
-            "type": note_type,
+            "type": actual_type,
+            "scheduled_type": scheduled_type,
             "slot": slot,
             "time_et": time_et,
             "filepath": str(filepath),
@@ -1143,11 +1247,9 @@ def generate_daily_notes(
             "cost": cost,
         })
 
-    # Save manifest
     if not dry_run and notes:
         save_manifest(notes, day)
 
-    # Summary
     if total_cost > 0:
         print(f"\n  LLM cost: ${total_cost:.4f}")
 
@@ -1155,25 +1257,20 @@ def generate_daily_notes(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CLI
+# CLI (preserved from v1)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def main() -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Daily Notes Generator")
-    parser.add_argument("--day", type=str, default=None,
-                        help="Override day (e.g., wednesday)")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Preview without LLM or saving")
-    parser.add_argument("--no-llm", action="store_true",
-                        help="Use template fallback (no API cost)")
-    parser.add_argument("--html", action="store_true", default=True,
-                        help="HTML output (default)")
+    parser = argparse.ArgumentParser(description="Daily Notes Generator v2")
+    parser.add_argument("--day", type=str, default=None, help="Override day (e.g., wednesday)")
+    parser.add_argument("--dry-run", action="store_true", help="Preview without LLM or saving")
+    parser.add_argument("--no-llm", action="store_true", help="Use template fallback (no API cost)")
+    parser.add_argument("--html", action="store_true", default=True, help="HTML output (default)")
 
     args = parser.parse_args()
 
-    # Determine day
     if args.day:
         day = args.day.lower()
     else:
@@ -1183,7 +1280,7 @@ def main() -> int:
     now = datetime.now()
 
     print("\n" + "=" * 70)
-    print(f"  STERLING SIGNALS — DAILY NOTES GENERATOR")
+    print(f"  STERLING SIGNALS — DAILY NOTES GENERATOR v2")
     print(f"  {day_title} {now.strftime('%B %d, %Y')}")
     if getattr(args, 'no_llm', False):
         print("  Mode: TEMPLATE FALLBACK (no LLM)")
@@ -1193,7 +1290,6 @@ def main() -> int:
         print("  Mode: LLM-POWERED (Claude Sonnet)")
     print("=" * 70 + "\n")
 
-    # Show schedule
     schedule = NOTES_SCHEDULE.get(day, [])
     if not schedule:
         print(f"  No notes scheduled for {day_title}.")

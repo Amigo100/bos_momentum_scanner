@@ -619,5 +619,63 @@
     "cost_usd": 0.005164,
     "posted_at": "2026-03-05T16:01:54.386661",
     "tweet_id": "2029588219503706320"
+  },
+  {
+    "id": "live_20260305_132601_v1",
+    "text": "$ETON exit at $17.31. Banked +2.9% at the high. Gene therapy momentum helped the sector but setup invalidated below entry. Win more than you lose. NFA",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "ETON",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260305_1826.png",
+    "scheduled_time": "2026-03-05T13:26:01.000539-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-05T18:26:01.000538+00:00",
+    "cost_usd": 0.005277,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260305_132601_v2",
+    "text": "$RELY dipped 1.19% to $17.37 today as fintech got caught in the megacap rotation. Entry at $17.15 means we're still +1.3% \u2014 remittance flows haven't changed, just short-term noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$RELY",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_RELY_20260305_1826.png",
+    "scheduled_time": "2026-03-05T13:26:01.000539-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-05T18:26:01.000538+00:00",
+    "cost_usd": 0.005277,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260305_132601_v3",
+    "text": "$NGNE up 4.18% to $24.91 while VIX sits at 21.4. Gene therapy tailwinds real \u2014 FDA framework shifting fast. Worth watching.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$NGNE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260305_1826.png",
+    "scheduled_time": "2026-03-05T13:26:01.000539-05:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-05T18:26:01.000538+00:00",
+    "cost_usd": 0.005277,
+    "posted_at": "2026-03-05T18:46:21.344060",
+    "tweet_id": "2029629604760109226"
   }
 ]

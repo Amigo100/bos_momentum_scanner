@@ -1,73 +1,73 @@
 {
-  "timestamp": "2026-03-05T13:00:00Z",
+  "timestamp": "2026-03-05T15:00:00Z",
   "market_snapshot": {
     "spy_move": "+0.8%",
     "qqq_move": "+1.5%",
     "iwm_move": "+0.5%",
     "vix": "21.4",
     "market_mood": "volatile",
-    "headline": "US stocks rise amid escalating US-Iran tensions boosting oil and defense sectors while tariffs add uncertainty"
+    "headline": "US stocks rally amid easing oil prices and tariff concerns, but Iran tensions keep volatility elevated."
   },
   "portfolio_movers": [
     {
       "ticker": "$ETON",
-      "move": "-2.2%",
-      "price": "$17.15",
-      "context": "stable amid FDA gene therapy framework news boosting rare disease biotech sentiment"
+      "move": "+7.1%",
+      "price": "$18.19",
+      "context": "Biotech sector lift from FDA rare disease gene therapy framework news"
     },
     {
       "ticker": "$RELY",
-      "move": "+1.3%",
+      "move": "-1.2%",
       "price": "$17.37",
-      "context": "gains on broader market tech rotation despite no direct news"
+      "context": "Mixed fintech performance amid broader market volatility"
     },
     {
       "ticker": "$NGNE",
       "move": "+8.7%",
       "price": "$23.91",
-      "context": "surges on positive momentum in gene therapy sector following FDA's new approval pathway for rare diseases"
+      "context": "Gene therapy stock surges on FDA's new approval pathway for ultra-rare diseases"
     }
   ],
   "theme_activity": [
     {
       "theme": "rare disease gene therapy",
       "status": "breaking",
-      "detail": "FDA proposes framework to accelerate approvals for individualized gene therapies using plausible mechanism evidence"
+      "detail": "FDA launches plausible mechanism framework accelerating approvals for individualized therapies"
     },
     {
       "theme": "biotech \u2014 protein degradation",
       "status": "quiet",
-      "detail": "Cullgen acquired by Gyre Therapeutics in reverse merger; limited broader movement"
+      "detail": "No major developments; sector stable amid gene therapy buzz"
     },
     {
       "theme": "copper",
       "status": "active",
-      "detail": "Prices hit record highs near $14,500/tonne driven by AI data centers, EVs, and supply shortages projected to widen to 10M tons by 2040"
+      "detail": "Prices surge to record highs on AI data centers and defense demand, projected 50% growth by 2040"
     },
     {
       "theme": "infrastructure",
       "status": "active",
-      "detail": "Tariffs and defense spending boost demand for grid modernization and electrification"
+      "detail": "Tariffs and grid modernization boost demand for materials like copper"
     },
     {
       "theme": "defense",
       "status": "breaking",
-      "detail": "US-Iran military strikes escalate tensions, tripling projected copper demand in weaponry by 2040 amid NATO spending pledges"
+      "detail": "Escalating US-Iran tensions drive sector gains amid geopolitical risks"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "Boom in data centers and robotics projected to surge copper demand 50% by 2040; AI accelerates biotech innovations like protein design"
+      "detail": "Data centers fuel copper and semiconductor demand, with supply shortfalls looming"
     },
     {
       "theme": "semiconductors",
-      "status": "quiet",
-      "detail": "Copper supply risks impact chip production; AI integration in semis noted in broader tech trends"
+      "status": "active",
+      "detail": "Chip stocks lead rally; AI infrastructure expansion supports growth"
     },
     {
       "theme": "nuclear",
       "status": "quiet",
-      "detail": "Limited news; indirect ties to energy infrastructure amid geopolitical oil disruptions"
+      "detail": "Limited news; overshadowed by AI and defense themes"
     }
   ],
   "theme_tickers": [
@@ -76,38 +76,38 @@
       "tickers": [
         {
           "symbol": "$ETON",
-          "price": "$17.15",
-          "context": "Rare disease pharma with stable pricing"
+          "price": "$18.19",
+          "context": "Rare disease pharma with recent momentum"
         },
         {
           "symbol": "$NGNE",
           "price": "$23.91",
-          "context": "Gene therapy for neurological disorders"
-        },
-        {
-          "symbol": "$VKTX",
-          "price": "$85.20",
-          "context": "Viking Therapeutics in rare metabolic diseases"
+          "context": "Gene therapy developer for neurological disorders"
         },
         {
           "symbol": "$SRPT",
-          "price": "$145.60",
-          "context": "Sarepta for Duchenne muscular dystrophy"
+          "price": "$145.20",
+          "context": "Duchenne muscular dystrophy treatments"
+        },
+        {
+          "symbol": "$VKTX",
+          "price": "$82.50",
+          "context": "Rare endocrine disease therapies"
         },
         {
           "symbol": "$ITCI",
-          "price": "$78.40",
-          "context": "Neuro-focused rare disease biotech"
+          "price": "$76.80",
+          "context": "Neurological rare diseases"
         },
         {
           "symbol": "$PRAX",
-          "price": "$28.90",
-          "context": "Praxis Precision Medicines for rare epilepsies"
+          "price": "$28.40",
+          "context": "Central nervous system disorders"
         },
         {
-          "symbol": "$ZYNE",
-          "price": "$9.75",
-          "context": "Zynerba for neurodevelopmental disorders"
+          "symbol": "$DRUG",
+          "price": "$1.25",
+          "context": "Bright Minds Biosciences for rare conditions"
         }
       ]
     },
@@ -117,27 +117,17 @@
         {
           "symbol": "$ARVN",
           "price": "$42.10",
-          "context": "Arvinas targeted protein degradation leader"
+          "context": "Protein degradation platforms"
+        },
+        {
+          "symbol": "$CURI",
+          "price": "$5.60",
+          "context": "Curis targeted protein degradation"
         },
         {
           "symbol": "$KPTI",
-          "price": "$1.45",
-          "context": "Karyopharm Therapeutics in oncology degradation"
-        },
-        {
-          "symbol": "$CERS",
-          "price": "$2.30",
-          "context": "Ceres in biotech with degradation focus"
-        },
-        {
-          "symbol": "$NUVB",
-          "price": "$3.80",
-          "context": "Nuvation Bio oncology pipeline"
-        },
-        {
-          "symbol": "$VTRM",
-          "price": "$12.50",
-          "context": "Ventorum Therapeutics emerging player"
+          "price": "$1.80",
+          "context": "Karyopharm Therapeutics degradation tech"
         }
       ]
     },
@@ -147,7 +137,7 @@
         {
           "symbol": "$FCX",
           "price": "$60.41",
-          "context": "Freeport-McMoRan largest US copper producer"
+          "context": "Largest US copper producer"
         },
         {
           "symbol": "$SCCO",
@@ -156,18 +146,8 @@
         },
         {
           "symbol": "$CPER",
-          "price": "$32.15",
-          "context": "United Copper ETF"
-        },
-        {
-          "symbol": "$COPX",
-          "price": "$58.70",
-          "context": "Global X Copper Miners ETF"
-        },
-        {
-          "symbol": "$WCC",
-          "price": "$322.40",
-          "context": "Wesco in copper distribution"
+          "price": "$32.50",
+          "context": "Copper ETF tracking futures"
         },
         {
           "symbol": "$NEM",
@@ -175,9 +155,19 @@
           "context": "Newmont with copper exposure"
         },
         {
-          "symbol": "$TSM",
-          "price": "$210.50",
-          "context": "TSMC reliant on copper for semis"
+          "symbol": "$CCJ",
+          "price": "$45.10",
+          "context": "Cameco uranium but copper ties"
+        },
+        {
+          "symbol": "$ALAB",
+          "price": "$85.70",
+          "context": "Astera Labs AI infrastructure copper demand"
+        },
+        {
+          "symbol": "$BHP",
+          "price": "$58.90",
+          "context": "BHP Group diversified mining"
         }
       ]
     },
@@ -186,38 +176,38 @@
       "tickers": [
         {
           "symbol": "$CAT",
-          "price": "$380.20",
-          "context": "Caterpillar heavy machinery for infra"
+          "price": "$380.50",
+          "context": "Caterpillar heavy machinery"
         },
         {
           "symbol": "$VMC",
-          "price": "$285.40",
-          "context": "Vulcan Materials aggregates supplier"
+          "price": "$245.80",
+          "context": "Vulcan Materials aggregates"
+        },
+        {
+          "symbol": "$MLM",
+          "price": "$520.30",
+          "context": "Martin Marietta construction materials"
         },
         {
           "symbol": "$GVA",
-          "price": "$145.80",
-          "context": "Granite Construction infra projects"
+          "price": "$142.10",
+          "context": "Granite Construction"
         },
         {
           "symbol": "$FLR",
-          "price": "$52.30",
+          "price": "$48.70",
           "context": "Fluor engineering services"
         },
         {
           "symbol": "$PWR",
-          "price": "$280.10",
-          "context": "Quanta Services utility infra"
+          "price": "$280.40",
+          "context": "Quanta Services infrastructure buildout"
         },
         {
           "symbol": "$ETN",
           "price": "$325.60",
           "context": "Eaton electrical infrastructure"
-        },
-        {
-          "symbol": "$J",
-          "price": "$165.20",
-          "context": "Jacobs Solutions engineering"
         }
       ]
     },
@@ -226,37 +216,37 @@
       "tickers": [
         {
           "symbol": "$LMT",
-          "price": "$585.40",
-          "context": "Lockheed Martin leading defense contractor"
+          "price": "$520.80",
+          "context": "Lockheed Martin aerospace defense"
         },
         {
           "symbol": "$RTX",
-          "price": "$120.50",
-          "context": "RTX missiles and aerospace"
+          "price": "$115.40",
+          "context": "RTX missiles and systems"
         },
         {
           "symbol": "$NOC",
-          "price": "$510.20",
-          "context": "Northrop Grumman systems"
+          "price": "$485.20",
+          "context": "Northrop Grumman"
         },
         {
           "symbol": "$GD",
-          "price": "$295.80",
-          "context": "General Dynamics submarines"
+          "price": "$285.70",
+          "context": "General Dynamics"
         },
         {
           "symbol": "$BA",
-          "price": "$210.30",
+          "price": "$195.30",
           "context": "Boeing defense division"
         },
         {
           "symbol": "$LHX",
-          "price": "$245.70",
-          "context": "L3Harris tech"
+          "price": "$235.10",
+          "context": "L3Harris technologies"
         },
         {
           "symbol": "$HII",
-          "price": "$280.40",
+          "price": "$280.50",
           "context": "Huntington Ingalls shipbuilding"
         }
       ]
@@ -267,37 +257,42 @@
         {
           "symbol": "$NVDA",
           "price": "$125.80",
-          "context": "NVIDIA AI chips leader"
+          "context": "Nvidia AI chips leader"
         },
         {
           "symbol": "$AMD",
           "price": "$185.40",
-          "context": "AMD AI processors"
+          "context": "AMD semiconductors for AI"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$175.20",
+          "context": "TSMC AI chip manufacturing"
         },
         {
           "symbol": "$MSFT",
-          "price": "$450.20",
+          "price": "$425.70",
           "context": "Microsoft Azure AI cloud"
         },
         {
           "symbol": "$GOOGL",
-          "price": "$165.30",
-          "context": "Google DeepMind AI"
+          "price": "$155.90",
+          "context": "Google AI integrations"
+        },
+        {
+          "symbol": "$AMZN",
+          "price": "$185.60",
+          "context": "AWS AI services"
         },
         {
           "symbol": "$PLTR",
-          "price": "$42.50",
-          "context": "Palantir AI platforms"
+          "price": "$45.20",
+          "context": "Palantir AI analytics"
         },
         {
           "symbol": "$SMCI",
-          "price": "$850.10",
+          "price": "$850.30",
           "context": "Super Micro AI servers"
-        },
-        {
-          "symbol": "$CRWD",
-          "price": "$320.40",
-          "context": "CrowdStrike AI cybersecurity"
         }
       ]
     },
@@ -305,39 +300,39 @@
       "theme": "semiconductors",
       "tickers": [
         {
-          "symbol": "$TSM",
-          "price": "$210.50",
-          "context": "TSMC leading foundry"
-        },
-        {
-          "symbol": "$ASML",
-          "price": "$950.20",
-          "context": "ASML lithography equipment"
-        },
-        {
           "symbol": "$AVGO",
-          "price": "$175.80",
-          "context": "Broadcom semis and AI"
+          "price": "$175.40",
+          "context": "Broadcom AI semiconductors"
         },
         {
           "symbol": "$QCOM",
-          "price": "$185.40",
+          "price": "$185.70",
           "context": "Qualcomm mobile chips"
         },
         {
           "symbol": "$INTC",
           "price": "$35.20",
-          "context": "Intel processors"
+          "context": "Intel foundry push"
         },
         {
           "symbol": "$MU",
-          "price": "$125.60",
-          "context": "Micron memory"
+          "price": "$105.80",
+          "context": "Micron memory for AI"
+        },
+        {
+          "symbol": "$ASML",
+          "price": "$950.60",
+          "context": "ASML lithography equipment"
         },
         {
           "symbol": "$AMAT",
-          "price": "$220.10",
+          "price": "$225.40",
           "context": "Applied Materials equipment"
+        },
+        {
+          "symbol": "$KLAC",
+          "price": "$820.10",
+          "context": "KLA inspection tools"
         }
       ]
     },
@@ -346,100 +341,93 @@
       "tickers": [
         {
           "symbol": "$CCJ",
-          "price": "$52.30",
+          "price": "$45.10",
           "context": "Cameco uranium producer"
         },
         {
-          "symbol": "$NXE",
-          "price": "$8.45",
-          "context": "NexGen Energy uranium"
+          "symbol": "$NEE",
+          "price": "$85.40",
+          "context": "NextEra nuclear energy"
         },
         {
-          "symbol": "$UEC",
-          "price": "$7.80",
-          "context": "Uranium Energy Corp"
-        },
-        {
-          "symbol": "$BWXT",
-          "price": "$105.20",
-          "context": "BWX Technologies nuclear components"
+          "symbol": "$CEG",
+          "price": "$195.20",
+          "context": "Constellation Energy nuclear ops"
         },
         {
           "symbol": "$SMR",
-          "price": "$45.60",
+          "price": "$12.50",
           "context": "NuScale small modular reactors"
         },
         {
-          "symbol": "$OKLO",
-          "price": "$12.30",
-          "context": "Oklo advanced nuclear"
+          "symbol": "$BWXT",
+          "price": "$105.80",
+          "context": "BWX Technologies nuclear components"
         },
         {
-          "symbol": "$LEU",
-          "price": "$185.40",
-          "context": "Centrus Energy uranium enrichment"
+          "symbol": "$URNM",
+          "price": "$28.70",
+          "context": "Sprott Uranium Miners ETF"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "Iran strikes oil spike",
-    "AI copper demand",
-    "Berkshire buybacks",
-    "Biotech FDA holds",
-    "Tariffs impact"
+    "Iran tensions",
+    "copper surge",
+    "AI data centers",
+    "tariffs impact",
+    "Ark Invest trades",
+    "South Korea stocks"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "AI copper demand",
-      "matching_theme": "AI",
+      "trending_topic": "copper surge",
+      "matching_theme": "copper",
       "our_positions": [],
-      "context": "FinTwit buzzing about AI-driven copper surge tying to infrastructure and semis themes"
+      "context": "FinTwit buzzing about record copper prices driven by AI and defense demand"
     },
     {
-      "trending_topic": "Biotech FDA holds",
-      "matching_theme": "rare disease gene therapy",
-      "our_positions": [
-        "$ETON",
-        "$NGNE"
-      ],
-      "context": "Discussions on FDA gene therapy framework and holds like PepGen overlapping with our biotech positions"
-    },
-    {
-      "trending_topic": "Iran strikes oil spike",
+      "trending_topic": "Iran tensions",
       "matching_theme": "defense",
       "our_positions": [],
-      "context": "Geopolitical tensions boosting defense and nuclear energy talks on FinTwit"
+      "context": "Geopolitical risks boosting defense stocks amid US-Iran escalation"
+    },
+    {
+      "trending_topic": "AI data centers",
+      "matching_theme": "AI",
+      "our_positions": [],
+      "context": "Discussions on AI infrastructure fueling copper and semiconductor momentum"
     }
   ],
   "news_events": [
     {
-      "event": "US-Iran military strikes",
-      "impact": "oil prices up 7%, volatility in energy and defense",
+      "event": "US-Iran geopolitical escalation",
+      "impact": "elevated oil prices and volatility",
       "relevance": "high"
     },
     {
-      "event": "FDA gene therapy framework",
-      "impact": "accelerates approvals for rare diseases, boosts biotech",
+      "event": "New 15% global tariffs imposed",
+      "impact": "supply chain disruptions and inflation risks",
       "relevance": "high"
     },
     {
-      "event": "New US tariffs 25% on Canada/Mexico",
-      "impact": "global trade uncertainty, dollar strength",
+      "event": "FDA plausible mechanism framework for rare diseases",
+      "impact": "boosts gene therapy approvals",
       "relevance": "high"
     },
     {
       "event": "Fed Beige Book release",
-      "impact": "cautiously optimistic on growth, notes K-shaped recovery",
+      "impact": "cautiously optimistic on economy",
       "relevance": "medium"
     },
     {
-      "event": "Copper supply shortfall projections",
-      "impact": "prices at records, inflation risks from AI/defense demand",
-      "relevance": "medium"
+      "event": "Upcoming FOMC meeting March 18-19",
+      "impact": "potential rate pause amid inflation",
+      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-03-05T13:40:22.372143+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": true
+  "gathered_at": "2026-03-05T15:41:23.714017+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

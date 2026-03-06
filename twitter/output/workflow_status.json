@@ -928,5 +928,15 @@
     "duration_seconds": 0,
     "error": null,
     "trigger": "workflow_dispatch"
+  },
+  {
+    "workflow": "friday_scan",
+    "run_id": 22783467391,
+    "status": "success",
+    "started_at": "2026-03-06T21:54:45Z",
+    "completed_at": "2026-03-06T21:54:45Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule"
   }
 ]

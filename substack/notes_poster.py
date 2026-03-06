@@ -259,61 +259,6 @@ def check_cookie_validity(cookie: str) -> Tuple[bool, str]:
         return False, f"Connection error: {e}"
 
 
-def send_cookie_expiry_alert(error_detail: str):
-    """Send email alert when session cookie expires.
-
-    Uses SMTP via utils.email_notifier.load_config() — same infrastructure
-    as all other workflow notifications. Fails silently if not configured.
-    """
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-
-    try:
-        from utils.email_notifier import load_config
-    except ImportError:
-        logger.warning("utils.email_notifier not available — cannot send cookie alert")
-        return
-
-    config = load_config()
-    if not config:
-        logger.warning("Email not configured — cannot send cookie alert")
-        return
-
-    subject = "\u26a0\ufe0f Sterling Signals \u2014 Substack session cookie expired"
-    html_content = (
-        "<h3>Substack Notes Publishing Paused</h3>"
-        f"<p><strong>Error:</strong> {error_detail}</p>"
-        "<p>Notes are still being generated and saved locally, "
-        "but cannot be posted until the cookie is refreshed.</p>"
-        "<h4>How to fix:</h4>"
-        "<ol>"
-        "<li>Log into <a href='https://substack.com'>Substack</a> in your browser</li>"
-        "<li>Open DevTools (F12) &rarr; Application &rarr; Cookies &rarr; substack.com</li>"
-        "<li>Copy the value of <code>substack.sid</code></li>"
-        "<li>Update <code>SUBSTACK_SESSION_COOKIE</code> in GitHub Secrets</li>"
-        "</ol>"
-        "<p>Cookie typically lasts months &mdash; don't sign out of Substack.</p>"
-    )
-
-    try:
-        recipients = config.get("recipients", [config.get("from_email")])
-        msg = MIMEMultipart("alternative")
-        msg["From"] = config["from_email"]
-        msg["To"] = ", ".join(recipients)
-        msg["Subject"] = subject
-        msg.attach(MIMEText(html_content, "html", "utf-8"))
-
-        with smtplib.SMTP(config["smtp_server"], config["smtp_port"]) as server:
-            server.starttls()
-            server.login(config["username"], config["password"])
-            server.sendmail(config["from_email"], recipients, msg.as_string())
-
-        logger.info("Cookie expiry alert sent to %s via SMTP", ", ".join(recipients))
-    except Exception as e:
-        logger.warning("Failed to send cookie alert: %s", e)
-
-
 def send_note_email(slot: int, day: str) -> bool:
     """Email the generated note when CI posting fails.
 
@@ -539,7 +484,6 @@ def post_note(html_content: str, cookie: str, dry_run: bool = False) -> Dict:
         elif resp.status_code in (401, 403):
             error = f"Auth failed (HTTP {resp.status_code}) — cookie likely expired"
             logger.error(error)
-            send_cookie_expiry_alert(error)
             return {"success": False, "note_id": None, "error": error}
 
         elif resp.status_code == 422:

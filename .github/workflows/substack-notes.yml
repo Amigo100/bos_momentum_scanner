@@ -2,15 +2,10 @@ name: Publish Substack Notes
 
 on:
   schedule:
-    # Slot 1: 08:30 ET
-    - cron: '30 13 * * *'   # EST (UTC-5)
-    - cron: '30 12 * * *'   # EDT (UTC-4)
-    # Slot 2: 12:35 ET (offset 5 min from live_tweet Slot 3 at 12:30)
-    - cron: '35 17 * * *'   # EST
-    - cron: '35 16 * * *'   # EDT
-    # Slot 3: 17:00 ET
-    - cron: '0 22 * * *'    # EST
-    - cron: '0 21 * * *'    # EDT
+    # Single cron per slot (EDT-based). During EST, fires 1 hour early — acceptable.
+    - cron: '30 12 * * *'   # Slot 1: 08:30 EDT / 07:30 EST
+    - cron: '35 16 * * *'   # Slot 2: 12:35 EDT / 11:35 EST
+    - cron: '0 21 * * *'    # Slot 3: 17:00 EDT / 16:00 EST
   workflow_dispatch:
     inputs:
       slot:
@@ -48,17 +43,10 @@ jobs:
       # TIMEZONE DEDUP + SLOT DETECTION
       # ═══════════════════════════════════════════════════════════════════════
 
-      - name: Timezone dedup and slot detection
+      - name: Detect slot from UTC hour
         id: tz_check
         run: |
           HOUR=$(date -u +%H)
-          MONTH=$(date +%m)
-          # EDT is roughly March-October
-          if [ "$MONTH" -ge 3 ] && [ "$MONTH" -le 10 ]; then
-            IS_EDT=1
-          else
-            IS_EDT=0
-          fi
 
           # Determine slot from UTC hour
           if [ "$HOUR" -le "14" ]; then
@@ -69,33 +57,14 @@ jobs:
             SLOT=3
           fi
 
-          # Dedup: skip the wrong cron trigger for current timezone
-          # Slot 1: EST=13, EDT=12 | Slot 2: EST=17, EDT=16 | Slot 3: EST=22, EDT=21
-          SKIP="false"
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            if [ "$SLOT" = "1" ]; then
-              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "13" ] && SKIP="true"
-              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "12" ] && SKIP="true"
-            elif [ "$SLOT" = "2" ]; then
-              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "17" ] && SKIP="true"
-              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "16" ] && SKIP="true"
-            elif [ "$SLOT" = "3" ]; then
-              [ "$IS_EDT" = "1" ] && [ "$HOUR" = "22" ] && SKIP="true"
-              [ "$IS_EDT" = "0" ] && [ "$HOUR" = "21" ] && SKIP="true"
-            fi
-          fi
-
           # Manual dispatch override
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            SKIP="false"
-            if [ -n "${{ github.event.inputs.slot }}" ]; then
-              SLOT="${{ github.event.inputs.slot }}"
-            fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.slot }}" ]; then
+            SLOT="${{ github.event.inputs.slot }}"
           fi
 
           echo "slot=$SLOT" >> $GITHUB_OUTPUT
-          echo "skip=$SKIP" >> $GITHUB_OUTPUT
-          echo "Slot=$SLOT, Skip=$SKIP (hour=$HOUR, EDT=$IS_EDT)"
+          echo "skip=false" >> $GITHUB_OUTPUT
+          echo "Slot=$SLOT (hour=$HOUR)"
 
       # ═══════════════════════════════════════════════════════════════════════
       # GENERATE NOTE

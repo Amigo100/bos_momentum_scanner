@@ -910,5 +910,43 @@
     "cost_usd": 0.005217,
     "posted_at": "2026-03-06T17:26:23.333383",
     "tweet_id": "2029971868325654682"
+  },
+  {
+    "id": "live_20260306_130145_v1",
+    "text": "$RELY exit at $16.71. Entry $17.15, peaked at $17.78 (+3.7%). Cross-border payments thesis stalled \u2014 no institutional confirmation, theme dispersed. Setup invalidated but win more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "RELY",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_RELY_20260306_1801.png",
+    "scheduled_time": "2026-03-06T13:01:45.830138-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.56%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-06T18:01:45.830135+00:00",
+    "cost_usd": 0.005155,
+    "error": "403 Forbidden"
+  },
+  {
+    "id": "live_20260306_130145_v2",
+    "text": "FDA just changed rare disease approvals forever. Their plausible mechanism framework fast-tracks individualized gene therapies \u2014 exactly what $NGNE's Rett syndrome platform was built for. This accelerates the entire pathway.",
+    "category": "THEME_CATALYST",
+    "primary_ticker": "$NGNE",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260306_1801.png",
+    "scheduled_time": "2026-03-06T13:01:45.830138-05:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.56%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-06T18:01:45.830135+00:00",
+    "cost_usd": 0.005155,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

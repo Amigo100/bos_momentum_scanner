@@ -11,12 +11,20 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "1,817 stocks. 5 gates. 2 survivors. How the scanner found $RCAT before +55.9%. Full breakdown in Saturday's newsletter."
+    - "$NGNE +16.6% from $20.50 entry. The gene therapy thesis, the catalyst map, the exit plan — all in this week's deep dive."
+  variant_2:  # Rozalia
+    - "We wrote about why defense tech was set to outperform before $RCAT hit +55%. This week's post breaks down the theme rotation signals and what's next — link in bio."
+    - "How do we screen 1,817 stocks and end up with 2? Saturday's newsletter walks through every gate, every filter, every decision. The process is the product."
+  variant_3:  # James
+    - "$RCAT +55.9%. How we found it before the move. Saturday's newsletter has the full story."
+    - "The scanner, the gates, the exits. All in the newsletter. Link in bio."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "New post is up! Check it out on Substack!"  # no insight, pure promotion
+  - "Portfolio management isn't just picking winners — it's knowing when to hold. Newsletter breaks it down."  # generic, no specific data
+  - "Weekly newsletter drops Saturday. You don't want to miss it!"  # hype, no value proposition
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

@@ -11,12 +11,19 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex (hook tweet in thread)
+    - "Defense tech thesis: 3 names clearing all technical thresholds simultaneously. Theme composite 8.4/10. (1/3)"
+    - "Rare disease gene therapy. FDA framework shift creating the next structural opportunity. (1/3)"
+  variant_2:  # Rozalia (hook tweet in thread)
+    - "The defense spending wave is creating opportunities most of the market isn't seeing yet. Here are the names our scanner flagged before the move. (1/3)"
+    - "Gene therapy isn't hype anymore — it's regulatory reality. These are the names positioned for the FDA's new ultra-rare disease pathway. (1/3)"
+  variant_3:  # James (hook tweet in thread)
+    - "Defense tech heating up. The names worth watching right now: (1/3)"
+    - "Gene therapy names setting up. Here's the list: (1/3)"
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "If you missed Gold and Silver, Copper might be next: $TMQ $FCX $SCCO. Save this post!"  # no connection to our system/portfolio
+  - "Here are some interesting tickers in the defense space."  # no prices, no thesis, no data
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

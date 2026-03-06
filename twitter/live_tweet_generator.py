@@ -204,6 +204,37 @@ LIVE_CATEGORY_EXAMPLES: Dict[str, str] = {
     ),
 }
 
+# ── Market mood tone adjustment for system prompt ──────────────────────────
+MOOD_INSTRUCTIONS = {
+    "bullish": (
+        "MARKET MOOD: BULLISH — Confident, forward-looking tone. "
+        "Celebrate relative strength. 'Momentum confirmed,' 'thesis validating.' "
+        "Optimistic but grounded in specific numbers."
+    ),
+    "bearish": (
+        "MARKET MOOD: BEARISH — Defensive, honest tone. "
+        "Lead with market context before position updates. Never fake optimism. "
+        "'Watching,' 'holding,' 'invalidation at.' "
+        "If positions green in red tape, highlight relative strength. "
+        "If positions red, skip RECEIPT or frame as 'testing support.'"
+    ),
+    "volatile": (
+        "MARKET MOOD: VOLATILE — Cautious, measured tone. "
+        "Acknowledge the chop. 'Cash is a position' is valid. "
+        "Don't pump holdings during chaos. Focus on levels and invalidation. "
+        "Prefer EDUCATIONAL and MARKET_COMMENTARY over RECEIPT."
+    ),
+    "quiet": (
+        "MARKET MOOD: QUIET — Reflective, process-focused tone. "
+        "Good for EDUCATIONAL content about methodology. "
+        "THEME_CATALYST and TRENDING_TAKE suit this tape."
+    ),
+    "unknown": (
+        "MARKET MOOD: UNKNOWN — Stick to portfolio facts (entry prices, P&L). "
+        "Avoid claiming market direction. EDUCATIONAL and ENGAGEMENT safest."
+    ),
+}
+
 
 def load_category_examples() -> Optional[Dict[str, Dict]]:
     """Load category configs from config/tweet_prompts/*.yaml files.
@@ -317,10 +348,10 @@ try:
     )
 except ImportError:
     CATEGORY_WEEKLY_TARGETS = {
-        "RECEIPT": 7, "MARKET_COMMENTARY": 7, "SIGNAL_ALERT": 7,
+        "RECEIPT": 5, "MARKET_COMMENTARY": 7, "SIGNAL_ALERT": 7,
         "TRENDING_TAKE": 5, "THEME_CATALYST": 5, "ENGAGEMENT": 5,
         "TECHNICAL_ANALYSIS": 5, "SUBSTACK_TEASER": 4, "THEME_LIST": 3,
-        "EDUCATIONAL": 3, "SELL_SIGNAL": 3,
+        "EDUCATIONAL": 4, "SELL_SIGNAL": 3,
     }
     MAX_SAME_CATEGORY_PER_DAY = 3
     QUEUE_DEDUP_HOURS = 48
@@ -1139,6 +1170,10 @@ def decide_tweet_type(
     if tweets_today >= max_today:
         return {"action": "skip", "reason": f"Daily cap reached ({tweets_today}/{max_today})"}
 
+    # Low-position mode: shift category preferences when portfolio is thin
+    portfolio_count = len([p for p in portfolio if float(p.get('entry_price', 0) or 0) > 0])
+    is_low_position = portfolio_count < 5
+
     # ── P0: Sell/exit signals (ALWAYS highest priority) ────────────────────
     if not _is_category_over_budget("SELL_SIGNAL", tracker):
         for sig in signals.get("sell_signals", []):
@@ -1210,7 +1245,10 @@ def decide_tweet_type(
     last_p2 = tracker.last_p2_category if tracker else None
 
     # Determine try order: alternate away from last used
-    if last_p2 == "RECEIPT":
+    # Low-position mode: always prefer MARKET_COMMENTARY to avoid ticker repetition
+    if is_low_position:
+        p2_order = ["MARKET_COMMENTARY", "RECEIPT"]
+    elif last_p2 == "RECEIPT":
         p2_order = ["MARKET_COMMENTARY", "RECEIPT"]
     elif last_p2 == "MARKET_COMMENTARY":
         p2_order = ["RECEIPT", "MARKET_COMMENTARY"]
@@ -1246,7 +1284,7 @@ def decide_tweet_type(
                     pct = float(move_str)
                 except (ValueError, TypeError):
                     continue
-                if pct < 2.0:
+                if pct < 3.0:
                     continue
                 ticker = mover.get("ticker", "").lstrip("$")
                 if not ticker:
@@ -1392,6 +1430,19 @@ def decide_tweet_type(
 
     # ── P5: TECHNICAL_ANALYSIS or EDUCATIONAL ──────────────────────────────
     # TODO Sprint 7: engagement-weighted reorder when both P5a/P5b are eligible
+    # P5a: Low-position mode redirect — prefer EDUCATIONAL over TA to diversify
+    if is_low_position and not is_weekend:
+        if not _is_category_over_budget("EDUCATIONAL", tracker):
+            if not (tracker and tracker.type_recently_used("EDUCATIONAL", hours=4)):
+                edu_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker) or []
+                return {
+                    "action": "tweet",
+                    "type": "EDUCATIONAL",
+                    "reason": "Educational content (low-position mode — diversifying from TA)",
+                    "tickers": edu_tickers,
+                    "urgency": "low",
+                }
+
     # P5a: Position commentary
     if not is_weekend and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker):
         if not (tracker and tracker.type_recently_used("TECHNICAL_ANALYSIS", hours=4)):
@@ -1418,15 +1469,18 @@ def decide_tweet_type(
                     "bullish_factors": bullish,
                 }
 
-    # P5b: Educational content
+    # P5b: Educational content (every 3rd becomes a thread)
     if not _is_category_over_budget("EDUCATIONAL", tracker):
         if not (tracker and tracker.type_recently_used("EDUCATIONAL", hours=6)):
+            edu_count = tracker.categories_this_week.get("EDUCATIONAL", 0) if tracker else 0
+            is_edu_thread = edu_count > 0 and (edu_count % 3 == 0)
             return {
                 "action": "tweet",
                 "type": "EDUCATIONAL",
                 "reason": "Educational content — methodology / trading lessons",
                 "tickers": get_diverse_tickers(portfolio, n=1, tracker=tracker) or [],
                 "urgency": "low",
+                "thread": is_edu_thread,
             }
 
     # ── P6: ENGAGEMENT ─────────────────────────────────────────────────────
@@ -1452,6 +1506,7 @@ def build_system_prompt(
     style_guide: str, slot_assignments: Optional[Dict[str, Dict]] = None,
     tracker: Optional["RecentTweetTracker"] = None,
     is_thread: bool = False,
+    market_mood: str = "unknown",
 ) -> str:
     """Build the Sonnet system prompt for tweet generation.
 
@@ -1459,6 +1514,8 @@ def build_system_prompt(
         style_guide: FinTwit style guide text
         slot_assignments: Optional per-account slot data from _prepare_slot_data()
         tracker: Optional RecentTweetTracker for opening/phrase dedup injection
+        is_thread: Whether this is a thread generation
+        market_mood: Current market mood for tone adjustment (bullish/bearish/volatile/quiet/unknown)
     """
     banned_sample = ", ".join(f'"{t}"' for t in CRITICAL_BANNED[:40])
 
@@ -1543,11 +1600,46 @@ PHRASE COOLDOWN — do not reuse these phrases (used in last 48h):
 Use fresh wording and different sentence structures.
 """
 
-    return f"""You are the voice of Sterling Signals, a momentum trading newsletter on FinTwit.
+    # Market mood tone adjustment
+    mood_block = f"\n{MOOD_INSTRUCTIONS.get(market_mood, MOOD_INSTRUCTIONS['unknown'])}\n"
+
+    # Structural persona differentiation (enforced, not suggested)
+    structural_block = """
+STRUCTURAL DIFFERENTIATION (CRITICAL — enforced per variant):
+
+variant_1 (Alex — The System):
+- MUST open with a number (price, percentage, count, or ratio)
+- Maximum 3 sentences. No exceptions.
+- No exclamation marks. No questions. Statements only.
+- Never address the reader directly.
+- Rhythm: short — short — medium.
+
+variant_2 (Rozalia — The Mentor):
+- MUST connect the ticker/event to a broader theme or structural shift
+- Use "we" at least once. Community voice.
+- Include WHY the number matters, not just the number.
+- Flowing sentences that build specific to structural.
+- Can be the longest of the three variants.
+
+variant_3 (James — The Trader):
+- MUST be the shortest variant. Target 120-180 characters.
+- Casual language: fragments OK, contractions required.
+- Can address reader directly.
+- One idea only. If it needs 3 sentences, cut it to 2.
+- Gets NFA allocation when used.
+
+CROSS-VARIANT RULES:
+- Each variant MUST use a different opening word/phrase. Check: if the first 3 words are similar, rewrite.
+- Each variant MUST have a different sentence count (e.g., 2, 3, 1 — not 2, 2, 2).
+- If all 3 variants mention the same ticker, at least one must frame it from a DIFFERENT angle (market context vs thesis vs price action).
+- Never use the same adjective in two variants.
+"""
+
+    return f"""You are generating tweets for Sterling Signals, a momentum trading system on FinTwit that screens 1,800+ stocks through 5 gates and publishes entry/exit prices transparently.
 
 STYLE RULES (non-negotiable):
 {style_guide}
-{persona_block}{voice_guide_block}{opening_block}{phrase_block}
+{persona_block}{voice_guide_block}{structural_block}{opening_block}{phrase_block}
 YOUR TASK:
 Generate exactly 3 tweet variants for the same moment. Each variant must:
 - Sound like a different human wrote it (not just rearranged words)
@@ -1559,7 +1651,7 @@ FORMATTING RULES:
 - Return ONLY valid JSON — no markdown, no commentary
 - Format: {{"tweets": [{{"text": "...", "category": "...", "primary_ticker": "...", "chart_recommended": true/false, "account": "variant_1|variant_2|variant_3"}}, ...]}}
 - Categories: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT, MARKET_COMMENTARY, THEME_CATALYST, THEME_LIST, TRENDING_TAKE, TECHNICAL_ANALYSIS, EDUCATIONAL, SUBSTACK_TEASER, ENGAGEMENT
-- chart_recommended: true if tweet references a specific ticker with price action
+- chart_recommended: true ONLY when tweet references specific price action on a single ticker
 {"- For THREAD format: Use thread_tweets array with is_thread: true. Each tweet in thread must be <=280 chars independently. Hook first, data second, CTA third." if is_thread else ""}
 ABSOLUTE BANS (NEVER use these terms):
 {banned_sample}
@@ -1570,14 +1662,18 @@ ADDITIONAL RULES:
 - "Save this post" / "bookmark this" — use SPARINGLY as a CTA, NOT in every tweet
 - Never use hashtags
 - Never exceed 280 characters
-- Never mention losses or negative P&L
+- Never mention losses or negative P&L (except SELL_SIGNAL: frame as "setup invalidated")
 - Never use UK references (BST, GMT, GBP, ISA)
 - Never reference being an AI, bot, or automated system
-- Keep "NFA" to <=1 of the 3 variants
+- NFA in maximum 1 of 3 variants (assign to James unless specified otherwise)
+- Never use: "exciting," "amazing," "incredible," "our proprietary system," "our algorithm"
+- Never open with: "In the world of," "When it comes to," "Let's dive into," "Let's explore"
+- Never use: "landscape," "navigate," "journey," "unpack" (as metaphor)
 - SELL_SIGNAL tweets: Frame as "setup invalidated" or "win more than you lose". Never show loss amounts.
 - TECHNICAL_ANALYSIS tweets: Comment on position with price levels, catalysts, or tailwinds. Include invalidation level.
 - SIGNAL_ALERT (watching sub-type): Frame as "on my radar" or "watching closely". Waiting for confirmation.
-- Output ONLY the JSON — no explanations"""
+{mood_block}
+Output ONLY the JSON."""
 
 
 def _build_thread_prompt_section(decision: Dict) -> str:
@@ -1637,6 +1733,33 @@ def _build_thread_prompt_section(decision: Dict) -> str:
             '      ],\n'
             '      "category": "RECEIPT",\n'
             '      "primary_ticker": "AAA",\n'
+            '      "chart_recommended": false,\n'
+            '      "account": "variant_X",\n'
+            '      "is_thread": true\n'
+            '    }\n'
+            '  ]\n'
+            '}'
+        )
+
+    elif decision_type == "EDUCATIONAL":
+        return (
+            '\nTHREAD FORMAT (CRITICAL — this is a 2-3 tweet THREAD, not a single tweet):\n'
+            'Generate a thread with 2-3 tweets. Each tweet MUST be <=280 characters independently.\n\n'
+            'Thread structure for EDUCATIONAL:\n'
+            '- Tweet 1 (hook): A specific stat or question from our system — grounded in real data\n'
+            '- Tweet 2 (explanation): How the system handles this, with real numbers from this week\n'
+            '- Tweet 3 (takeaway): The principle applied + what we actually did\n\n'
+            'Output format — use "thread_tweets" array with "is_thread": true:\n'
+            '{\n'
+            '  "tweets": [\n'
+            '    {\n'
+            '      "thread_tweets": [\n'
+            '        {"text": "Hook with specific system stat (1/3)", "number": 1},\n'
+            '        {"text": "How the system handles it with real numbers (2/3)", "number": 2},\n'
+            '        {"text": "Principle + what we did this week (3/3)", "number": 3}\n'
+            '      ],\n'
+            '      "category": "EDUCATIONAL",\n'
+            '      "primary_ticker": "...",\n'
             '      "chart_recommended": false,\n'
             '      "account": "variant_X",\n'
             '      "is_thread": true\n'
@@ -1762,6 +1885,11 @@ FOCUS TICKER(S): {', '.join(f'${t}' for t in decision.get('tickers', []))}""")
                     pname = {"variant_1": "Alex", "variant_2": "Rozalia", "variant_3": "James"}.get(variant_key, variant_key)
                     ex_text = "\n".join(f'  - "{ex}"' for ex in variant_examples)
                     parts.append(f"\n{pname}-specific examples:\n{ex_text}")
+        # Bad examples — what NOT to do (from YAML)
+        bad_ex = yaml_cfg.get("bad_examples", [])
+        if bad_ex:
+            bad_text = "\n".join(f'  - BAD: "{ex}"' for ex in bad_ex[:3])
+            parts.append(f"\nAVOID THESE PATTERNS (bad tweets for this category — do NOT write like this):\n{bad_text}")
     if not _examples_added and decision_type in LIVE_CATEGORY_EXAMPLES:
         examples = LIVE_CATEGORY_EXAMPLES[decision_type]
         parts.append(f"\nREFERENCE EXAMPLES (match this style and data density):\n{examples}")
@@ -1897,9 +2025,11 @@ def call_sonnet(
 ) -> List[Dict]:
     """Generate 3 tweet variants in a single Sonnet call."""
     is_thread = decision.get("thread", False)
+    market_mood = context.get("market_snapshot", {}).get("market_mood", "unknown")
     system_prompt = build_system_prompt(
         style_guide, slot_assignments=slot_assignments,
         tracker=tracker, is_thread=is_thread,
+        market_mood=market_mood,
     )
     user_prompt = build_user_prompt(
         decision, context, portfolio,

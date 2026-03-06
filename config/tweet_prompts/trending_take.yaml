@@ -11,12 +11,19 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "FinTwit buzzing about AI stocks. Scanner data: 14 AI-adjacent names passed technical screen this week. 2 cleared all gates. Signal quality > noise."
+    - "Everyone watching $NVDA earnings. Our AI infrastructure play $APLD at $12.40 is the power behind the GPUs. Different angle, same theme."
+  variant_2:  # Rozalia
+    - "Everyone's talking about AI stocks today, but most are chasing the obvious names. Our scanner found 2 infrastructure plays that benefit from the same demand wave — at a fraction of the market cap. Picks-and-shovels thinking."
+    - "$NVDA earnings dominating FinTwit. Worth remembering: for every GPU sold, someone needs to power it. That's why we're in $APLD at $12.40."
+  variant_3:  # James
+    - "FinTwit going crazy over AI again. Our scanner says 2 names worth watching. Not the ones you'd expect."
+    - "$NVDA earnings tonight. Meanwhile $APLD quietly up from our $12.40 entry. The power play nobody's talking about."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "Everyone talking about $NVDA earnings but nobody mentioning the power infrastructure play behind it."  # too vague — which play? what price?
+  - "FinTwit is buzzing about AI stocks. Here's what the scanner actually says about the sector."  # teaser with no payoff
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

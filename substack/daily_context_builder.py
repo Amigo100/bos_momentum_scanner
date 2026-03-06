@@ -49,6 +49,7 @@ try:
         SUBSTACK_OUTPUT,
         CLAUDE_CONTENT_DIR,
         list_weekly_archives,
+        LIVE_CONTEXT_FILE,
     )
     OUTPUT_PATHS_AVAILABLE = True
 except ImportError:
@@ -604,10 +605,9 @@ def load_notes_prompt() -> str:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def generate_system_context() -> str:
-    """Generate the static system context section.
+    """Generate the system context section for the daily context document.
 
-    Preserved from content_production_guide.py — system identity, marketing
-    rules, banned terms, approved alternatives, HTML specs.
+    v2: Data-forward voice, honest transparency, white-background HTML.
     """
     banned_summary = [
         "Internal indicators: HMA, Banker, UC, Undercurrent, BoS, RSI, MACD, KDJ, ExD, VWAP, Beta >= 1.5",
@@ -616,13 +616,14 @@ def generate_system_context() -> str:
         "UK audience: UK ISA, GMT, BST, UK Time, GBP/USD",
         "US retirement: Roth IRA, PDT, 401k",
         "Leaked internal: Capital Preservation Protocol, Forensic Audit, Volatility Expansion Criteria",
+        "AI-sounding: Let's dive in, Here's the thing, It's worth noting, Interestingly enough, In today's market, The bottom line is",
     ]
 
     approved = [
-        ("System description", '"proprietary screening system", "our screening system"'),
+        ("System description", '"our screening system" — keep it simple'),
         ("Entry signals", '"momentum confirmed", "structural pivot confirmation"'),
-        ("Institutional signals", '"institutional accumulation divergence"'),
-        ("Exit/Risk", '"systematic exit discipline", "trailing stop"'),
+        ("Institutional signals", '"institutional accumulation patterns"'),
+        ("Exit/Risk", '"systematic exit discipline", "the system triggered an exit"'),
         ("Signal branding", '"GREEN signal" for buys, "system exit" for sells'),
         ("Conviction", '"Extremely Bullish" (high), "Bullish" (medium), "Watching" (low) — NEVER numbers'),
     ]
@@ -630,22 +631,29 @@ def generate_system_context() -> str:
     return f"""## SYSTEM CONTEXT
 
 ### Who We Are
-Sterling Signals is a weekly momentum trading newsletter on Substack. We are physicians who built a systematic momentum scanner — because the same evidence-based rigor that saves lives in medicine can generate alpha in markets. We diagnose momentum the way we once diagnosed patients: systematic screening, pattern recognition, ruling out false positives, and never letting emotion override data.
+Sterling Signals is a momentum investing newsletter on Substack. We screen 1,800+ US stocks weekly through a systematic process and share everything transparently — entry prices, current P&L, exit signals. When we're wrong, readers see it. When we're right, the numbers speak for themselves.
 
 ### Our Niche
-- **Small caps** (price < $25) — finding the next multibaggers before Wall Street
-- **Growth stocks** — revenue acceleration, margin expansion, compound returns
-- **Momentum** — riding structural trends, not chasing tips
-- **Sector rotation** — following institutional capital flows between themes
+Small-cap growth stocks (under $25) with momentum and thematic alignment. We're looking for the next $NVDA-in-2022 — right stock, right sector, right time. We track institutional capital flows across themes and only enter when technical momentum, thematic alignment, and fundamental screening all confirm.
 
 ### Our System (Public Description)
-Proprietary multi-stage screening system that filters ~1,800 stocks through:
+Systematic screening that filters ~1,800 stocks through:
 1. Technical screening — momentum confirmation, structural trend analysis
-2. Sector flow analysis — identifying which themes are attracting institutional capital
-3. Forensic screening — due diligence audit to filter out red flags
-4. Final selection — 0-3 actionable GREEN signals per week
+2. Thematic alignment — sector flow analysis, institutional capital tracking
+3. Fundamental screening — due diligence to filter red flags
+4. Final selection — 0-3 GREEN signals per week
 
-We reject 99%+ of what we screen. That selectivity IS the edge.
+We reject 99%+ of what we screen. That selectivity is the edge.
+
+### Voice & Writing Rules
+- Lead with specific numbers, prices, and percentages. The data IS the hook.
+- Name tickers with prices: "$RCAT at $13.25, up 55.9% from our $8.50 entry."
+- Be direct and opinionated. "Defence is rotating in. Grid infrastructure is accelerating."
+- Use contractions. Vary sentence length. Write like a person, not a marketing department.
+- Never use vague phrases: "interesting setups", "keep an eye on", "stay tuned"
+- Never use AI-sounding phrases: "Let's dive in", "Here's the thing", "It's worth noting"
+- Never add filler paragraphs that restate data you just showed
+- After presenting data, go straight to a forward-looking thought. No recap.
 
 ### Marketing Rules (CRITICAL)
 
@@ -657,17 +665,29 @@ We reject 99%+ of what we screen. That selectivity IS the edge.
 **Approved Alternatives:**
 {chr(10).join(f"- {name}: {alt}" for name, alt in approved)}
 
-**Entry Price Display Rules:**
-- Only show entry prices for closed winners or positions with **25%+ gains**
-- Only showcase/highlight positions with **15%+ gains**
-- NEVER mention losing positions, negative P&L, or underwater trades
+**Portfolio Display Rules (Honest Transparency):**
+- **15%+ gain**: Showcase with entry price and P&L percentage
+- **Under 15% (positive)**: Can mention in updates, no spotlight
+- **Negative P&L**: Acknowledge honestly. "$ANET at $85.50, down from our $89.00 entry — thesis intact, watching the $82 level." NEVER use the word "loss" or frame negatively. State the facts.
+- **Performance Reviews**: Show ALL positions with entry prices. Transparency builds trust.
+- **Notes**: Only spotlight 15%+ winners. Red positions only in PORTFOLIO_UPDATE and MARKET_SNAPSHOT types.
 
-**Footer:** End every post with a CTA: Subscribe to Sterling Signals: {SUBSTACK_URL}
+**Subscribe Hooks (vary these — don't use the same one twice in a day):**
+- "Every GREEN signal, every entry, every exit — documented weekly: {SUBSTACK_URL}"
+- "Subscribers got this signal before Monday's open. The next screening drops Friday."
+- "Every position, every entry price, every week — in the Saturday newsletter."
+- "We score themes weekly across 1,800 stocks. Full breakdown every Saturday."
+
 End every note with: "Not financial advice. Informational only."
 
-### HTML Themes
-**Editorial** (Ticker Deep Dive, Educational): Light bg #fafaf8, serif headings, warm palette
-**Dashboard** (Theme Rotation, Performance Review): Dark bg #111827, teal #2DD4BF accents
+### HTML Themes (White Background for All)
+**Editorial** (all post types): White bg #ffffff, Georgia serif headings, system sans-serif body 16px, line-height 1.7
+- Price targets: Bear (#fdf6f4, #dc2626 border), Base (#f4f7fa, #2563eb border), Bull (#f4faf5, #16a34a border)
+- Tables: #f8f7f5 header, #fafaf8 alt rows, #e8e4df borders
+- Callouts: 3px left border #3d5a80, bg #f4f7fa
+**Theme Rotation accent**: teal #0d9488 borders, #f0fdfa highlight bg
+**Performance Review accent**: stat cards bg #f8f7f5, 28px bold numbers
+**Notes**: transparent bg, system sans 16px, #1a1a1a text
 """
 
 
@@ -915,6 +935,90 @@ from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# CONTINUITY TRACKING (recent notes for anti-repetition)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def load_recent_notes_summary() -> Dict:
+    """Load yesterday's notes manifest for continuity tracking.
+
+    Returns a dict with:
+        yesterday_types: list of note types generated yesterday
+        yesterday_tickers: list of tickers mentioned yesterday
+        tickers_last_2_days: combined ticker list to avoid repetition
+    """
+    result = {
+        "yesterday_types": [],
+        "yesterday_tickers": [],
+        "tickers_last_2_days": [],
+    }
+
+    if not OUTPUT_PATHS_AVAILABLE:
+        return result
+
+    try:
+        # Check current/notes/notes_manifest.json (most recent generation)
+        current_dir = get_substack_current_dir()
+        manifest_path = current_dir / "notes" / "notes_manifest.json"
+
+        if not manifest_path.exists():
+            return result
+
+        manifest = json.loads(manifest_path.read_text())
+        generated_at = manifest.get("generated_at", "")
+
+        # Only use if generated in the last 48 hours
+        if generated_at:
+            try:
+                gen_time = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+                age_hours = (datetime.now(gen_time.tzinfo) - gen_time).total_seconds() / 3600
+                if age_hours > 48:
+                    return result
+            except (ValueError, TypeError):
+                pass
+
+        # Extract types and tickers from manifest
+        notes = manifest.get("notes", [])
+        types = []
+        tickers = []
+
+        for note in notes:
+            note_type = note.get("type", note.get("scheduled_type", ""))
+            if note_type:
+                types.append(note_type)
+
+            # Extract tickers from note text
+            text = note.get("text", "")
+            if text:
+                # Find $TICKER patterns
+                found = re.findall(r'\$([A-Z]{2,5})\b', text)
+                tickers.extend(found)
+
+        result["yesterday_types"] = types
+        result["yesterday_tickers"] = list(set(tickers))
+        result["tickers_last_2_days"] = list(set(tickers))
+
+        # Also check archive for day-before-yesterday
+        try:
+            archive_dir = get_substack_archive_dir()
+            archive_manifest = archive_dir / "notes" / "notes_manifest.json"
+            if archive_manifest.exists() and archive_manifest != manifest_path:
+                older = json.loads(archive_manifest.read_text())
+                for note in older.get("notes", []):
+                    text = note.get("text", "")
+                    if text:
+                        found = re.findall(r'\$([A-Z]{2,5})\b', text)
+                        result["tickers_last_2_days"].extend(found)
+                result["tickers_last_2_days"] = list(set(result["tickers_last_2_days"]))
+        except Exception:
+            pass
+
+    except Exception as e:
+        print(f"  Warning: Could not load recent notes summary: {e}")
+
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # DAILY NOTES CONTEXT (JSON sidecar)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -924,11 +1028,14 @@ def build_notes_context_json(
     portfolio: List[Dict],
     market_data: Dict,
 ) -> Dict:
-    """Build the daily_notes_context.json document."""
+    """Build the daily_notes_context.json document.
+
+    v2: Enriched positions, full theme data, market analysis, continuity tracking.
+    """
     now = datetime.now()
     day_lower = day.lower()
 
-    # Portfolio summary
+    # ── Portfolio: FULL position data (not stripped) ──────────────────────
     portfolio_summary = {
         "open_count": len(portfolio),
         "win_rate": 0.0,
@@ -938,40 +1045,74 @@ def build_notes_context_json(
     }
 
     if portfolio:
+        winners = [p for p in portfolio if p.get("pnl_pct", 0) > 0]
+        portfolio_summary["win_rate"] = round(
+            len(winners) / len(portfolio) * 100, 1
+        ) if portfolio else 0.0
         portfolio_summary["total_pnl_pct"] = round(
             sum(p.get("pnl_pct", 0) for p in portfolio) / len(portfolio), 1
         )
+
         top = portfolio[0]  # Already sorted by pnl_pct desc
         portfolio_summary["top_performer"] = {
             "symbol": top.get("ticker", ""),
             "pnl_pct": top.get("pnl_pct", 0),
             "entry": top.get("entry_price", 0),
             "current": top.get("current_price", 0),
+            "theme": top.get("theme", ""),
+            "days_held": top.get("days_held", 0),
         }
+
+        # ENRICHED: include all available fields per position
         portfolio_summary["positions"] = [
             {
                 "symbol": p.get("ticker", ""),
+                "entry_price": p.get("entry_price", 0),
+                "current_price": p.get("current_price", 0),
                 "pnl_pct": p.get("pnl_pct", 0),
                 "theme": p.get("theme", ""),
+                "days_held": p.get("days_held", 0),
+                "conviction": p.get("conviction", 0),
+                "stop_level": p.get("stop_level", 0),
+                "distance_to_stop_pct": p.get("distance_to_stop_pct", 0),
+                "stop_alert": p.get("stop_alert", False),
             }
             for p in portfolio
         ]
 
-    # Signals summary
+    # ── Signals: include full signal data ────────────────────────────────
     signals_summary = {
-        "new_this_week": [s.get("symbol", "") for s in ctx.buy_signals],
+        "new_this_week": [],
         "pass_count": ctx.pass_count,
-        "themes": [
-            {
-                "name": t.get("name", ""),
-                "status": t.get("classification", ""),
-                "composite": t.get("composite_score", 0),
-            }
-            for t in ctx.themes
-        ],
+        "buy_signals": [],
+        "themes": [],
     }
 
-    # Scanner stats
+    # Include signal tickers for quick reference
+    for s in ctx.buy_signals:
+        signals_summary["new_this_week"].append(s.get("symbol", ""))
+        signals_summary["buy_signals"].append({
+            "symbol": s.get("symbol", ""),
+            "price": s.get("price", 0),
+            "theme": s.get("theme", ""),
+            "theme_score": s.get("theme_score", 0),
+            "conviction": s.get("dd_conviction", s.get("conviction", 0)),
+            "catalyst_summary": s.get("catalyst_summary", ""),
+            "final_decision": s.get("final_decision", ""),
+        })
+
+    # ENRICHED: include thesis and catalysts for each theme
+    for t in ctx.themes:
+        signals_summary["themes"].append({
+            "name": t.get("name", ""),
+            "status": t.get("classification", ""),
+            "composite": t.get("composite_score", 0),
+            "thesis_summary": t.get("thesis_summary", ""),
+            "key_catalysts": t.get("key_catalysts", []),
+            "primary_etfs": t.get("primary_etfs", []),
+        })
+
+    # ── Scanner stats ────────────────────────────────────────────────────
     stats = ctx.scan_stats
     scanner_stats = {
         "universe_size": stats.get("tickers_loaded", 0),
@@ -980,15 +1121,68 @@ def build_notes_context_json(
         "green_signals": ctx.pass_count,
     }
 
+    # ── Market analysis excerpt ──────────────────────────────────────────
+    market_excerpt = ""
+    if OUTPUT_PATHS_AVAILABLE:
+        analysis_path = get_substack_current_dir() / "market_analysis.md"
+        if analysis_path.exists():
+            try:
+                full_text = analysis_path.read_text()
+                # Take first 1000 chars as excerpt (covers key findings)
+                market_excerpt = full_text[:1000].strip()
+                if len(full_text) > 1000:
+                    market_excerpt += "..."
+            except Exception:
+                pass
+
+    # ── Continuity: recent notes data ────────────────────────────────────
+    recent_notes = load_recent_notes_summary()
+
+    # ── Live context from tweet pipeline (if available) ──────────────────
+    ticker_events = []
+    try:
+        live_ctx_path = LIVE_CONTEXT_FILE if OUTPUT_PATHS_AVAILABLE else Path("twitter/output/live_context.json")
+        if live_ctx_path.exists():
+            live_ctx = json.loads(live_ctx_path.read_text())
+            # Extract any ticker-specific opportunities/events
+            opps = live_ctx.get("tweet_opportunities", [])
+            for opp in opps:
+                ticker = opp.get("ticker", "")
+                if ticker and any(p.get("ticker", "") == ticker for p in portfolio):
+                    ticker_events.append({
+                        "symbol": ticker,
+                        "event": opp.get("angle", opp.get("headline", "")),
+                        "category": opp.get("category", ""),
+                    })
+    except Exception:
+        pass
+
     return {
         "day": day_lower,
         "date": now.strftime("%Y-%m-%d"),
         "generated_at": now.isoformat() + "Z",
         "note_schedule": NOTE_TYPE_MATRIX.get(day_lower, []),
+
+        # Live market data
         "live_data": market_data,
+
+        # Enriched portfolio (Phase 2)
         "portfolio": portfolio_summary,
+
+        # Enriched signals + themes (Phase 2)
         "signals": signals_summary,
+
+        # Scanner stats
         "scanner_stats": scanner_stats,
+
+        # Market analysis excerpt (Phase 2 — NEW)
+        "market_analysis_excerpt": market_excerpt,
+
+        # Continuity tracking (Phase 2 — NEW)
+        "recent_notes": recent_notes,
+
+        # Ticker events from tweet pipeline (Phase 2 — NEW, opportunistic)
+        "ticker_events": ticker_events,
     }
 
 

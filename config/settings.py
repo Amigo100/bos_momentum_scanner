@@ -1220,7 +1220,7 @@ MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
 # Diversity controls (ported from batch system — prevents repetitive tweets)
 CATEGORY_WEEKLY_TARGETS: Dict[str, int] = {
-    "RECEIPT": 7,              # 16% of ~45 tweets/week (down from 12)
+    "RECEIPT": 5,              # ~9% — reduced from 7, quality over frequency
     "MARKET_COMMENTARY": 7,    # 16% — any-mood market context (was MARKET_REACTION)
     "SIGNAL_ALERT": 7,         # 16% — now includes CONSIDER sub-type
     "TRENDING_TAKE": 5,        # 11% — new: FinTwit overlap content
@@ -1229,7 +1229,7 @@ CATEGORY_WEEKLY_TARGETS: Dict[str, int] = {
     "TECHNICAL_ANALYSIS": 5,   # 11%
     "SUBSTACK_TEASER": 4,      # 9% — replaces NEWSLETTER_CTA (was 2)
     "THEME_LIST": 3,           # 7% — new: thread-only format
-    "EDUCATIONAL": 3,          # 7%
+    "EDUCATIONAL": 4,          # ~8% — increased from 3, grounded in real examples
     "SELL_SIGNAL": 3,          # 7% — exit signals
 }
 MAX_SAME_CATEGORY_PER_DAY = 3            # No more than 3 of same category per day

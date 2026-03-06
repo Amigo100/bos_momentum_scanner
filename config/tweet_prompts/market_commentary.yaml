@@ -14,12 +14,24 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "SPY -2.3%. $NGNE +6% to $21.99. Relative strength in a down tape — that's the thesis divergence showing."
+    - "Russell 2000 outperforming S&P for the 3rd straight week. Small caps leading is exactly what we need for our names."
+    - "VIX at 25.4. Portfolio flat while SPY drops 1.8%. Defensive healthcare positioning earning its keep today."
+  variant_2:  # Rozalia
+    - "SPY down 2.3% but our small-cap positions are showing relative strength. When your thesis is structural, not speculative, days like this separate conviction from hope. $NGNE +6% while broader market sells."
+    - "Tariff news hitting megacaps hardest today. Our defense and healthcare names decoupling from the broader selloff — that's why theme-level thesis matters more than market direction."
+    - "Quiet session, VIX below 15. We use days like this to review position sizes and watch for scanner setups. The best entries come when nobody's paying attention."
+  variant_3:  # James
+    - "SPY getting slaughtered but $NGNE doesn't care. Up 6% while everything else bleeds."
+    - "Tariffs rattling the market. Our names holding. Relative strength tells you everything."
+    - "Dead quiet tape. VIX below 15. Days like this test patience more than down days."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "Markets are volatile today. Stay safe out there!"  # no data, no portfolio connection
+  - "Interesting developments in the market. Several sectors showing movement."  # vague, says nothing
+  - "SPY is down 0.1% today on light volume."  # 0.1% move is not worth tweeting about
+  - "The stock market is experiencing turbulence amid economic uncertainty."  # sounds like a news wire
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

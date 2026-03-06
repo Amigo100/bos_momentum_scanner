@@ -11,12 +11,21 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "2 positions open. 48 rejected this week. Selectivity vs volume — which approach has better risk-adjusted returns in your experience?"
+    - "Our scanner uses a 5-gate system. Most signals fail at Gate 2 (theme alignment). What's the hardest filter in your own process?"
+  variant_2:  # Rozalia
+    - "We're running a concentrated portfolio right now — just 3 positions. Feels light, but that's the system working. How do you handle the urge to add more when the scanner says wait?"
+    - "Biggest lesson from running this system: the best weeks are often the ones where we do nothing. What's the hardest 'no' you've had to make in trading?"
+  variant_3:  # James
+    - "Cash heavy this week. Scanner said no. What's your move when there's nothing to buy?"
+    - "Portfolio running tight — 2 positions. How many do you typically hold?"
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "What's your biggest trading lesson this year?"  # too broad, not connected to our system
+  - "Bad day? Happens to everyone."  # empty empathy, no engagement hook
+  - "Two positions running, waiting for the next setup. Patience pays when you're selective."  # not a question, not engaging
+  - "How's your portfolio doing today?"  # too generic, won't generate meaningful replies
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

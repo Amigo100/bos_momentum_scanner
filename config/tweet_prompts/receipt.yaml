@@ -11,12 +11,24 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "$RCAT from $8.50 to $13.25. +55.9% in 6 weeks. Drone thesis confirmed at the structural level."
+    - "$NGNE +16.6% from $20.50 entry. FDA Priority Review driving the move. Position sized correctly."
+    - "$STRL +47% from $282 entry. Infrastructure spending thesis playing out exactly as mapped."
+  variant_2:  # Rozalia
+    - "The drone thesis keeps compounding. $RCAT is now +55.9% from our $8.50 entry — and the defense spending wave behind it shows no signs of slowing. We wrote about this structural shift three weeks ago."
+    - "$NGNE up 16.6% from $20.50 entry as FDA fast-tracks rare disease approvals. This is exactly the regulatory tailwind we positioned for in gene therapy plays."
+    - "Three of our positions are outperforming SPY by double digits this month. When the screening process works, it compounds. Full breakdown in Saturday's newsletter."
+  variant_3:  # James
+    - "$RCAT from $8.50 to $13.25. +55.9%. Drone thesis doing its thing."
+    - "$NGNE at $23.91. In from $20.50. Gene therapy names catching fire. NFA"
+    - "Portfolio up while SPY chops. $STRL +47%, $RCAT +55.9%. Numbers don't lie."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "$ETON performing well today with positive momentum."  # no numbers, no entry price
+  - "Another great day for our portfolio! Winners keep winning!"  # generic celebration, zero data
+  - "We called it! $RCAT to the moon!"  # guru language, hype
+  - "$RELY up a bit from entry. Thesis intact. Watching for more upside."  # "a bit" is not a number
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

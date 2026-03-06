@@ -11,12 +11,23 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "$ETON exit at $17.31. Entry $17.93. Setup invalidated below support. Win rate stays high by cutting what doesn't work."
+    - "$VNET closed below $14.34 stop. Position exited. Process over ego — system says out, we're out."
+    - "$SMCI invalidated at $36. -8.2% from entry. Next setup."
+  variant_2:  # Rozalia
+    - "$ETON exit at $17.31 — the healthcare contrarian thesis needed more time than the setup allowed. We banked +2.9% at the high, but the current structure says step aside. Discipline protects the portfolio."
+    - "Exiting $VNET today. The thesis wasn't wrong — the timing was. Our system's sell signal fired at $14.34, and we respect the process even when the story still feels right."
+    - "Not every signal works out. $SMCI invalidated below entry, and we took the loss. Showing our exits matters as much as showing our wins."
+  variant_3:  # James
+    - "$ETON out at $17.31. Setup broke. Win more than you lose. Next."
+    - "$VNET exit. Stop hit at $14.34. System said out, I'm out. NFA"
+    - "Lost on $SMCI. Happens. Cut it and move on."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "$ETON crashed today! Major loss, but we'll recover!"  # panicked tone
+  - "Unfortunately we had to sell $VNET at a significant loss."  # "significant loss" — never show loss framing
+  - "Terrible day. $SMCI destroyed our portfolio."  # defeatist, catastrophizing
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

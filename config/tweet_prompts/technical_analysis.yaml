@@ -11,12 +11,19 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "$NGNE holding $24.25 above entry at $20.50. Key resistance at $26. Invalidation below $18.45. FDA catalyst providing momentum floor."
+    - "$RELY consolidating at $17.58 above $17.15 entry. Cross-border payment flows accelerating. Stop at $13.72."
+  variant_2:  # Rozalia
+    - "$NGNE consolidating above our $20.50 entry after the FDA catalyst push. The gene therapy thesis has regulatory backing now — watching $26 as the next structural level where institutional selling might test the move."
+    - "$RELY holding above entry at $17.15 as remittance volumes tick up globally. Cross-border payments benefiting from geopolitical uncertainty — the thesis is playing out on multiple fronts."
+  variant_3:  # James
+    - "$NGNE above $24 from $20.50 entry. FDA news giving it legs. Watching $26. NFA"
+    - "$RELY at $17.58. In from $17.15. Fintech quietly working. Stop at $13.72."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "$ETON testing critical $17.93 level after healthcare sector rotation."  # "critical level" is the entry price — not actually a technical level
+  - "$RELY consolidating above $17.15 entry level. Setup invalidated on close below $13.72."  # robotic structure, no thesis context
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

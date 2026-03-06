@@ -274,7 +274,10 @@ def load_notes_context_json() -> Optional[Dict]:
 
 
 def build_note_context_from_daily(context: Dict) -> NoteContext:
-    """Build a NoteContext from the daily_notes_context.json data."""
+    """Build a NoteContext from the daily_notes_context.json data.
+
+    v2: Consumes enriched position data, market analysis, continuity info.
+    """
     now = datetime.now()
 
     live = context.get("live_market", context.get("live_data", {}))
@@ -291,8 +294,22 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
         open_count = len(positions)
         top_performer = positions[0] if positions else None
 
+    # Normalise field names: enriched JSON uses "symbol", NoteContext consumers
+    # may expect "ticker". Ensure both exist on each position dict.
+    for p in positions:
+        if "ticker" not in p and "symbol" in p:
+            p["ticker"] = p["symbol"]
+        if "symbol" not in p and "ticker" in p:
+            p["symbol"] = p["ticker"]
+        # Ensure entry_price exists (older JSON may use "entry")
+        if "entry_price" not in p and "entry" in p:
+            p["entry_price"] = p["entry"]
+        if "current_price" not in p and "current" in p:
+            p["current_price"] = p["current"]
+
     big_winners = [p for p in positions if p.get("pnl_pct", 0) >= BIG_WIN_THRESHOLD]
 
+    # Signals
     signals = context.get("signals", {})
     buy_signals = signals.get("buy_signals", signals.get("pass_signals", []))
     pass_signals = [s for s in buy_signals
@@ -300,19 +317,22 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
     consider_signals = [s for s in buy_signals
                         if s.get("final_decision") == "CONSIDER"]
 
+    # Market analysis excerpt (NEW — Phase 2)
+    market_excerpt = context.get("market_analysis_excerpt", "")
+
     return NoteContext(
         week_number=now.isocalendar().week,
         date_str=now.strftime("%B %d, %Y"),
         spy_5d_pct=spy_pct,
         qqq_5d_pct=qqq_pct,
-        market_analysis_excerpt=context.get("market_analysis_excerpt", ""),
+        market_analysis_excerpt=market_excerpt,
         open_count=open_count,
         winners=positions,
         big_winners=big_winners,
         top_performer=top_performer,
         pass_signals=pass_signals,
         consider_signals=consider_signals,
-        themes=context.get("themes", []),
+        themes=signals.get("themes", context.get("themes", [])),
         scan_stats=context.get("scan_stats", context.get("scanner_stats", {})),
     )
 
@@ -342,6 +362,53 @@ def pick_subscribe_hook(note_type: str, ctx: Optional[NoteContext] = None) -> st
     hook = random.choice(unused)
     _hooks_used_today.append(hook)
     return hook
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONTEXT EXTRAS (ticker events, continuity, market analysis for prompt builders)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Store context-level data that prompt builders can access
+_daily_context_extras: Dict = {}
+
+
+def set_context_extras(context: Optional[Dict]):
+    """Cache extra context fields for prompt builders to use.
+
+    Called once at the start of generate_daily_notes() after loading context.
+    Provides ticker_events, recent_notes, and market_analysis to prompt builders
+    without changing the NoteContext dataclass (which would break note_utils imports).
+    """
+    global _daily_context_extras
+    if context is None:
+        _daily_context_extras = {}
+        return
+
+    _daily_context_extras = {
+        "ticker_events": context.get("ticker_events", []),
+        "recent_notes": context.get("recent_notes", {}),
+        "market_analysis_excerpt": context.get("market_analysis_excerpt", ""),
+    }
+
+
+def get_ticker_event(ticker: str) -> str:
+    """Get a recent event for a specific ticker, if available."""
+    events = _daily_context_extras.get("ticker_events", [])
+    for e in events:
+        if e.get("symbol", "") == ticker:
+            return e.get("event", "")
+    return ""
+
+
+def get_recently_featured_tickers() -> List[str]:
+    """Get tickers featured in the last 2 days of notes."""
+    recent = _daily_context_extras.get("recent_notes", {})
+    return recent.get("tickers_last_2_days", [])
+
+
+def get_market_excerpt() -> str:
+    """Get the market analysis excerpt if available."""
+    return _daily_context_extras.get("market_analysis_excerpt", "")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -409,11 +476,41 @@ def _get_showcase_winner(ctx: NoteContext) -> Optional[Dict]:
 # PER-TYPE PROMPT BUILDERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _enrich_market_prompt(positions_text: str, ctx) -> str:
+    """Add ticker events and continuity data to market snapshot prompt."""
+    extras = []
+
+    # Ticker events from tweet pipeline
+    events = _daily_context_extras.get("ticker_events", [])
+    if events:
+        event_lines = []
+        for e in events[:3]:
+            event_lines.append(f"  ${e['symbol']}: {e['event']}")
+        if event_lines:
+            extras.append("TICKER NEWS (from live context — use if relevant):\n" + "\n".join(event_lines))
+
+    # Market analysis excerpt
+    excerpt = get_market_excerpt()
+    if excerpt and excerpt != (ctx.market_analysis_excerpt or ""):
+        extras.append(f"MARKET ANALYSIS:\n  {excerpt[:500]}")
+
+    # Continuity
+    recent_tickers = get_recently_featured_tickers()
+    if recent_tickers:
+        extras.append(f"TICKERS FEATURED IN LAST 2 DAYS (vary your focus if possible): {', '.join(recent_tickers)}")
+
+    return "\n\n".join(extras) if extras else ""
+
+
 def build_market_snapshot_prompt(ctx: NoteContext) -> str:
-    """SPY/QQQ/VIX + specific portfolio impact."""
+    """MARKET_SNAPSHOT with ticker events and continuity."""
     positions_text = _format_positions_for_prompt(ctx.winners)
-    market_excerpt = ctx.market_analysis_excerpt or "No market analysis available."
+    market_excerpt = ctx.market_analysis_excerpt or get_market_excerpt() or "No market analysis available."
     hook = pick_subscribe_hook("MARKET_SNAPSHOT", ctx)
+
+    # Enrichments
+    enrichments = _enrich_market_prompt(positions_text, ctx)
+    enrichment_block = f"\n\n{enrichments}" if enrichments else ""
 
     return f"""Write a MARKET_SNAPSHOT note for {ctx.date_str}.
 
@@ -423,6 +520,7 @@ DATA YOU HAVE (use only this):
 
   Portfolio ({ctx.open_count} positions):
 {positions_text}
+{enrichment_block}
 
 DATA YOU DO NOT HAVE (do not reference or guess):
   - Entry dates (you have days held, not calendar dates)
@@ -431,7 +529,9 @@ DATA YOU DO NOT HAVE (do not reference or guess):
 
 Connect today's market move to our specific positions. Which held up? Which felt it? Why?
 
-After showing positions with numbers, go straight to one forward-looking line about what we're watching. No recap paragraph.
+If there's specific ticker news above, use it — "LUNR up on NASA contract news" is much better than "LUNR continues to perform."
+
+After showing positions with numbers, go straight to one forward-looking line. No recap paragraph.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
@@ -449,6 +549,11 @@ def build_signal_drop_prompt(ctx: NoteContext) -> str:
     green = stats.get("final_trade", stats.get("green_signals", len(ctx.pass_signals)))
     conv_text = get_conviction_text(sig.get("conviction", sig.get("dd_conviction", 0)))
     hook = pick_subscribe_hook("SIGNAL_DROP", ctx)
+
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
 
     return f"""Write a SIGNAL_DROP note for {ctx.date_str}.
 
@@ -469,12 +574,12 @@ After the funnel and thesis, stop. Don't add a paragraph about how selective the
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
 def build_winner_receipt_prompt(ctx: NoteContext) -> str:
-    """Single position spotlight with entry, current, P&L."""
+    """WINNER_RECEIPT with ticker event context."""
     w = _get_showcase_winner(ctx)
     if not w:
         return build_portfolio_update_prompt(ctx)
@@ -493,12 +598,22 @@ def build_winner_receipt_prompt(ctx: NoteContext) -> str:
     hook_raw = pick_subscribe_hook("WINNER_RECEIPT", ctx)
     hook = hook_raw.replace("${entry}", f"${entry:.2f}")
 
+    # Ticker event
+    event = get_ticker_event(ticker)
+    event_block = f"\n  Recent event: {event}" if event else ""
+
+    # Continuity
+    recent = get_recently_featured_tickers()
+    continuity_note = ""
+    if ticker in recent:
+        continuity_note = f"\n\nNOTE: ${ticker} was featured in notes recently. If covering it again, reference the progression — don't repeat the same angle."
+
     return f"""Write a WINNER_RECEIPT note for {ctx.date_str}.
 
 DATA YOU HAVE (use only this):
   Spotlight: ${ticker} — entry ${entry:.2f}, now ${current:.2f}
   P&L: +{pnl:.1f}% over {days} days
-  Theme: {theme}
+  Theme: {theme}{event_block}
 
   Other positions:
 {other_text}
@@ -507,14 +622,15 @@ DATA YOU DO NOT HAVE (do not reference or guess):
   - The calendar date we entered (you have days held only)
   - Price targets or analyst ratings
   - Any subscriber feature beyond the Saturday newsletter
+{continuity_note}
 
 Lead with entry and current price. Show percentage and timeframe in days.
 
-1-2 sentences on the thesis — what structural trend is this riding.
+If there's a recent event for this ticker, mention it — it explains WHY the position is working right now, not just that it is.
 
-Mention the rest of the portfolio honestly. Winners exist alongside red positions.
+1-2 sentences on the thesis. Mention the rest of the portfolio honestly.
 
-After the data, go straight to one forward thought. No recap paragraph.
+After the data, go straight to one forward thought. No recap.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
@@ -529,6 +645,11 @@ def build_portfolio_update_prompt(ctx: NoteContext) -> str:
 
     green_count = sum(1 for p in ctx.winners if p.get("pnl_pct", 0) > 0)
     red_count = len(ctx.winners) - green_count
+
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
 
     return f"""Write a PORTFOLIO_UPDATE note for {ctx.date_str}.
 
@@ -552,7 +673,7 @@ One forward-looking line at the end.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -588,6 +709,11 @@ def build_theme_rotation_prompt(ctx: NoteContext) -> str:
 
     hook = pick_subscribe_hook("THEME_ROTATION", ctx)
 
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
+
     return f"""Write a THEME_ROTATION note for {ctx.date_str}.
 
 DATA YOU HAVE (use only this):
@@ -604,7 +730,7 @@ One forward thought: what event or data point would accelerate or derail this th
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -626,6 +752,11 @@ def build_the_filter_prompt(ctx: NoteContext) -> str:
 
     hook = pick_subscribe_hook("THE_FILTER", ctx)
 
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
+
     return f"""Write a THE_FILTER note for {ctx.date_str}.
 
 DATA YOU HAVE (use only this):
@@ -643,7 +774,7 @@ If winner proof exists, mention it once. Don't belabour it.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -651,6 +782,11 @@ def build_catalyst_watch_prompt(ctx: NoteContext) -> str:
     """Upcoming events for positions we hold."""
     positions_text = _format_positions_for_prompt(ctx.winners, max_positions=5)
     hook = pick_subscribe_hook("CATALYST_WATCH", ctx)
+
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
 
     return f"""Write a CATALYST_WATCH note for {ctx.date_str}.
 
@@ -670,7 +806,7 @@ Keep it concrete to our positions and themes, not generic market events.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -684,6 +820,11 @@ def build_sector_flow_prompt(ctx: NoteContext) -> str:
     if ctx.themes:
         parts = [f"{t.get('name', '?')} ({t.get('classification', '?')}, {t.get('composite_score', 0)}/10)" for t in ctx.themes[:3]]
         themes_text = "\n  Theme scores: " + ", ".join(parts)
+
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
 
     return f"""Write a SECTOR_FLOW note for {ctx.date_str}.
 
@@ -700,7 +841,7 @@ Be opinionated. "Capital is leaving X and entering Y. Our portfolio reflects tha
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -716,6 +857,11 @@ def build_alpha_scoreboard_prompt(ctx: NoteContext) -> str:
     hook = pick_subscribe_hook("ALPHA_SCOREBOARD", ctx)
 
     avg_pnl = sum(p.get("pnl_pct", 0) for p in ctx.winners) / max(len(ctx.winners), 1)
+
+    recent = get_recently_featured_tickers()
+    continuity = ""
+    if recent:
+        continuity = f"\n\nTICKERS FEATURED RECENTLY (vary if possible): {', '.join(recent[:5])}"
 
     return f"""Write an ALPHA_SCOREBOARD note for {ctx.date_str}.
 
@@ -738,7 +884,7 @@ Name the top contributor and the laggard. Both with entry prices.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
-
+{continuity}
 150-280 words."""
 
 
@@ -1178,6 +1324,14 @@ def generate_daily_notes(
         else:
             print("  ℹ No daily_notes_context.json — building fresh context...")
             ctx = build_note_context()
+
+    # Cache extras for prompt builders (ticker events, continuity, market analysis)
+    if context is not None:
+        set_context_extras(context)
+    elif daily_ctx:
+        set_context_extras(daily_ctx)
+    else:
+        set_context_extras(None)
 
     # Generate each note
     notes = []

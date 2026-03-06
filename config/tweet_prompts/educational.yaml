@@ -11,12 +11,24 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "48 tickers passed technical screening this week. 2 cleared all 5 gates. 97% rejection rate protects the portfolio from mediocre setups."
+    - "Position sizing rule: if the loss would make you emotional, you're too big. Our max risk per position: 5% of portfolio."
+    - "Win rate matters less than you think. 60% win rate + 2:1 reward/risk = consistent growth. Our system targets exactly that."
+  variant_2:  # Rozalia
+    - "We passed on 46 tickers this week that looked good technically. Why? Because looking good on a chart isn't enough — our gates check theme alignment, institutional flows, and catalyst proximity. Process eliminates noise."
+    - "Here's what most new traders miss: position sizing matters more than stock picking. We risk 5% max per position because even the best scanner gets it wrong sometimes. Protecting capital IS the strategy."
+    - "Our win rate sits around 70%. That sounds great until you realize the 30% that fail would wreck you without proper stop-losses. Every entry has an exit plan before we hit buy."
+  variant_3:  # James
+    - "48 scanned, 2 survived. The filter is the edge. Everything else is noise."
+    - "If losing $1000 keeps you up at night, your max risk is $500. Position sizing 101."
+    - "System said no this week. So we wait. Patience pays more than FOMO ever will."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "Discipline beats conviction every time. When setups don't meet criteria, cash is a position."  # generic, no specific data from our system
+  - "Most traders fail because they confuse activity with progress."  # motivational poster — could be from any account
+  - "Risk management beats being right."  # platitude, no system reference
+  - "Trading when nothing looks right is harder than trading when everything looks perfect."  # generic wisdom, no Sterling Signals context
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

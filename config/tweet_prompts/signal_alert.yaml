@@ -12,12 +12,24 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex — data-first, declarative
+    - "1,817 stocks. 5 gates. 2 survivors: $RCAT at $8.50 and $INOD at $61.54. Institutional Accumulation Divergence confirmed on both."
+    - "Friday scan complete. $APLD cleared all gates at $12.40. Theme score 8.1/10, momentum tier T1. Entry confirmed."
+    - "Zero GREEN signals this week. 1,847 screened, 48 passed technical, 0 passed all 5 gates. Selectivity in action."
+  variant_2:  # Rozalia — theme-connective, uses "we"
+    - "Our scanner screened 1,817 stocks down to 2 this week — $RCAT and $INOD. That 99.9% rejection rate is why a GREEN signal carries weight. When we find momentum, it's structurally confirmed."
+    - "New signal in the AI infrastructure theme: $APLD cleared all five gates at $12.40. We've been tracking this sector since Q4 — the institutional flows are accelerating."
+    - "We passed on every signal this week. No theme clustering, no institutional confirmation. The hardest part of running a system is trusting it when it says 'wait.'"
+  variant_3:  # James — short, punchy, casual
+    - "$RCAT at $8.50 and $INOD at $61.54 cleared the scanner. Two names, five gates each. NFA"
+    - "Friday scan done. 1,817 screened, 2 survived. When the system says GREEN, pay attention."
+    - "No signals this week. Not a bug — it's the whole point."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "Exciting new signal detected! $RCAT is showing incredible momentum and could be a massive winner!"  # hype language, no specifics
+  - "Our proprietary algorithm has identified a promising opportunity in $APLD."  # AI/system language banned
+  - "New scanner results are in. Looking good!"  # no data, no ticker, no value
+  - "Signal alert: the scanner found some interesting names this week worth watching."  # vague, no specifics
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

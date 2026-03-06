@@ -11,12 +11,23 @@ examples:
 # Per-persona examples (NEW — start empty, to be filled in later)
 # These give each account a distinct voice for this category
 persona_examples:
-  variant_1: []  # Alex — The Analyst
-  variant_2: []  # Rozalia — The Strategist
-  variant_3: []  # James — The Scout
+  variant_1:  # Alex
+    - "FDA rare disease framework announced. $NGNE +8.7% to $24.25 from $20.50 entry. Regulatory catalyst hit our gene therapy thesis directly."
+    - "Defense spending bill advancing committee. $RCAT at $13.25 (+55.9% from entry). Structural tailwind confirmed."
+    - "DOE announces $6B grid modernization fund. AI power infrastructure theme score now 9.1/10. $APLD positioned."
+  variant_2:  # Rozalia
+    - "FDA just launched a framework for accelerating ultra-rare disease therapies — exactly the regulatory shift we positioned for with $NGNE at $20.50. Now +18.3% as gene therapy names catch institutional attention."
+    - "The defense spending thesis isn't speculation anymore — it's policy. New appropriations bill puts $RCAT's drone technology directly in the procurement pipeline. We've been in since $8.50."
+    - "AI power demand isn't slowing. DOE's $6B grid fund validates what our scanner flagged months ago: infrastructure buildout is the picks-and-shovels play of this cycle."
+  variant_3:  # James
+    - "FDA framework just dropped for rare disease. $NGNE at $24.25 from $20.50 entry. Thesis getting catalysts."
+    - "Defense bill moving. $RCAT +55.9% and the tailwinds keep coming. NFA"
+    - "DOE throwing $6B at the grid. Our AI power names positioned ahead of this."
 
-# Anti-examples: tweets that violate our rules (NEW — to be filled in later)
-bad_examples: []
+bad_examples:
+  - "AI Infrastructure keeps leading. Institutional accumulation across the board."  # no specific catalyst, no portfolio connection
+  - "Breaking news is positive for our themes. More to come!"  # what news? what themes?
+  - "Grid infrastructure buildout accelerating. $ETON $RELY $NPB all clearing momentum thresholds."  # these tickers aren't all in the same theme
 
 # Banned terms that must NEVER appear in tweets of this category
 # These come from content_prompt_handbook_v5.md

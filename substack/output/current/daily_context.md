@@ -1,69 +1,8 @@
-# Sterling Signals — Thursday March 05, 2026
+# Sterling Signals — Friday March 06, 2026
 
 ## TODAY'S POST
-**Category:** Educational
-**Topic:** Evergreen investing framework (topic via web search)
-**Theme:** Editorial (light)
-**Why this topic:** Quiet week — no new GREEN signals
-
----
-
-## YOUR PROMPT
-
-Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
-
----
-
-I have attached our Sterling Signals weekly context document. Read it carefully for system context, portfolio data, themes, and all marketing/terminology rules.
-
-TOPIC SELECTION: No topic is pre-assigned. You will discover one.
-
-Use web search to identify 3-5 candidate topics. For each, evaluate:
-- Timeliness: Is there a recent study, market event, or data release making this relevant right now?
-- Data richness: Are there specific, citable studies or datasets?
-- Audience fit: Would an active small-cap swing trader find this actionable?
-- Novelty: Fresh angle, not generic advice?
-- Portfolio connection: Does it relate to what our scanner or portfolio is currently showing in the context document?
-
-Think through candidates from these areas:
-EXECUTION: Knowing when to sell vs buy, position sizing, letting winners run, first loss = best loss, averaging down trap
-ANALYSIS: Technical + fundamental synergy, reading institutional flow, revenue > earnings for small-caps, catalyst vs story, spotting crowded trades
-PSYCHOLOGY: FOMO cost, discipline paradox, confirmation bias, best trade you didn't make, compounding effect of avoiding big losses
-SYSTEM: Systematic > discretionary, emotion removal, theme alignment value, selectivity as edge
-RISK MANAGEMENT: Position sizing, trailing stops, max drawdown math, cash as ammunition
-MOMENTUM: Structural momentum, institutional accumulation, sector rotation, market breadth
-STRATEGY: Screening advantage, theme surfing, when to sell, concentration vs diversification
-
-For each candidate, ask: (1) Can I illustrate this with something specific from the context document — a winning position, the scanner's rejection rate, a theme that's working? (2) Is there research data backing this up? (3) Is there a market event this week making this timely?
-
-Select the strongest and explain your choice.
-
-FRESHNESS CHECK: Use web search to verify any portfolio data you reference is current.
-
-RESEARCH: Use web search to find:
-- 2-3 academic studies or institutional research with specific findings
-- Historical market data illustrating the concept
-- Real-world examples from small-cap or growth stocks
-- Counter-arguments — when does this fail?
-- Practical application for individual investors
-- 2024-2026 data making this timely
-
-ARTICLE: Think through: What is the most surprising finding? Lead with that.
-
-Write as complete HTML using the Editorial theme (specs in Quick Reference).
-
-Article structure (800-1200 words):
-1. Hook — Surprising stat, provocative question, or counterintuitive finding
-2. The Concept — Teach the core idea accessibly
-3. The Evidence — Studies, data, specific numbers and time periods
-4. How We Apply It — Connect to our screening system. Reference portfolio winners from context document.
-5. The Takeaway — One specific, actionable insight
-6. Engagement Close — Genuine question inviting discussion
-7. Footer — "Learn more in our weekly newsletter: https://sterlingsignals.substack.com"
-
-Output complete HTML.
-
-Tone: Teacher, not preacher. Evidence-based, slightly contrarian. Light and engaging.
+**No long-form post today** (Friday).
+Focus on notes only — use the Daily Notes Prompt below.
 
 ---
 
@@ -73,101 +12,60 @@ After the post, copy this prompt to generate today's 3 notes:
 
 ---
 
-I have attached our Sterling Signals weekly context document. Read it for portfolio data, themes, system context, and marketing rules.
+You've just written today's post in this conversation. Now generate 3 Substack Notes that COMPLEMENT it — different tickers, different angles.
 
-TODAY'S CONTEXT: Check the weekly content schedule in the context document to identify:
-1. What day of the week it is today
-2. What post category was assigned (Ticker Deep Dive, Theme Rotation, Educational, or Performance Review)
-3. What specific topic/ticker/theme was covered in today's post
+Check the context document for today's note schedule. The system uses these 12 types:
 
-Your 3 notes must COMPLEMENT today's post — cover different angles, tickers, and themes. Never repeat the same ticker or theme featured in the post.
+MARKET_SNAPSHOT — SPY/QQQ/VIX + what it means for our specific positions
+SIGNAL_DROP — New GREEN signal: ticker, price, funnel stats
+WINNER_RECEIPT — One position: entry, current, P&L%, days, theme
+PORTFOLIO_UPDATE — Honest snapshot of all positions
+THEME_ROTATION — One theme: score, catalysts, our positions in it
+THE_FILTER — Screening funnel numbers
+CATALYST_WATCH — Upcoming events for our positions
+SECTOR_FLOW — Where money is moving, connected to our themes
+EXIT_DEBRIEF — Position closed: why, what the system saw
+ALPHA_SCOREBOARD — Portfolio return vs SPY/QQQ
+DATA_INSIGHT — Counterintuitive investing stat, connected to current context
+READER_QUESTION — Data-seeded question for engagement
 
-FRESHNESS CHECK: Use web search to get:
-- SPY and QQQ current price and today's performance
-- VIX current level
-- Any breaking news for tickers in our portfolio (check the full portfolio list in the context document)
-- Any notable market or geopolitical developments today
+RULES:
+- Notes must cover DIFFERENT tickers and themes than today's post
+- Each note: 150-280 words, no headers, no bullet lists, short paragraphs
+- Lead every note with a specific number or data point — never a question
+- After the data, one forward-looking thought, then subscribe hook, then disclaimer
+- Never restate in abstract terms what you just showed with numbers
+- Use contractions. Vary sentence length. Be blunt when appropriate.
+- Never use: "Let's dive in", "Here's the thing", "It's worth noting", "This is what X looks like"
+- $TICKER format with prices always
 
-NOTE TYPE ROTATION (follow this matrix for today's day):
+FRESHNESS: Web search for SPY, QQQ current move, VIX, and any breaking news for portfolio tickers.
 
-| Day | Note 1 | Note 2 | Note 3 |
-|-----|--------|--------|--------|
-| Sunday | Community & Connection | Journey & Milestones | Week Preview |
-| Monday | Market Macro | Winner Highlight | Ticker News |
-| Tuesday | Geopolitics/Macro | Theme Spotlight | Community |
-| Wednesday | Teaching & Wisdom | Portfolio Insight | Community |
-| Thursday | Market Midweek | System Insight | Ticker News |
-| Friday | Week Reflection | Winner Recap | Engagement |
-| Saturday | Journey | Teaching | Community |
+SUBSCRIBE HOOKS (vary across the 3 notes):
+- "Every position, every entry price, every week — in the Saturday newsletter."
+- "Subscribers got this signal before Monday's open. The next screening drops Friday."
+- "Full analysis — entry reasoning, theme alignment, exit plan — every Saturday."
+- "We score themes weekly across 1,800 stocks. Full breakdown every Saturday."
+For READER_QUESTION type: no hook, end with the question.
 
-Generate 3 notes following today's assigned types. Use these guidelines for each type:
-
-**Community & Connection:** Invite connection with other Substack writers/investors. List 3-5 specific topics we cover from our themes. End with invitation to connect or share their work.
-
-**Journey & Milestones:** Share a genuine milestone from the context document — portfolio alpha, win count, screening stats, weeks publishing. Frame as reflection with 2-3 observations about what we've learned.
-
-**Week Preview / Week Reflection:** Preview upcoming catalysts (web search for earnings, Fed, data) or reflect on the week's market action and how our portfolio performed. Connect to our themes.
-
-**Market Macro / Geopolitics/Macro / Market Midweek:** Comment on today's market action or geopolitical developments using web search data. Connect sector moves to our portfolio themes.
-
-**Winner Highlight / Winner Recap:** Showcase a 15%+ winner from the context document with UPDATED price from web search. Frame through thematic lens. End with engagement question.
-
-**Ticker News:** Search for the most significant recent news (last 48 hours) for any portfolio ticker. Connect to our thesis for holding it. If no news, search for news about our top-rated theme.
-
-**Theme Spotlight:** Cover a theme from the context document that's NOT featured in today's post. One fresh data point from web search. Explain why it matters and how we're positioned.
-
-**System Insight:** Pull scanner numbers from context (screened, passed, rejection rate, GREEN signals). Frame selectivity as the edge. Build anticipation for signals.
-
-**Teaching & Wisdom:** Find a counterintuitive investing stat or pattern relevant to current markets. Connect to what's happening this week.
-
-**Portfolio Insight:** Identify an interesting pattern in our portfolio from the context document — theme clustering, sector exposure, newest vs oldest positions.
-
-**Engagement:** Ask a specific, informed question drawn from real data. Maximise reply potential.
-
-DEDUPLICATION RULES:
-- Monday's winner highlight and ticker news must feature DIFFERENT tickers than Thursday's and Friday's
-- Tuesday's theme spotlight must cover a DIFFERENT theme than Thursday's system update
-- Never repeat the same ticker across two notes on the same day
-
-FORMAT — PRODUCE EACH NOTE AS SELF-CONTAINED HTML:
-Each note must be a complete HTML snippet with inline styles. Use this template:
-
+Each note as self-contained HTML:
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 680px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.6; font-size: 16px;">
-[Note content here — use <p> tags for paragraphs, <strong> for emphasis, <br> for line breaks]
+[content — <p> tags, <strong> for emphasis]
 <p style="color: #6b6b6b; font-size: 13px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0ddd8;">Not financial advice. Informational only.</p>
 </div>
 
-CONTENT RULES (ALL NOTES):
-- NO markdown headers (no #, ##, ###)
-- NO bullet points (no -, *)
-- Use short paragraphs and single-line statements
-- $TICKER format with current price or percentage where relevant
-- One or two emoji max per note, placed naturally
-- 100-200 words per note
-- End EVERY note with: "Not financial advice. Informational only."
-
-Tone varies by day:
-- Monday: Sharp, informed, real-time market energy
-- Tuesday: Informed and conversational, connecting dots
-- Wednesday: Thoughtful midweek, reflective but data-grounded
-- Thursday: Sharp and data-focused, midweek intensity
-- Friday: End-of-week reflective, warm, inviting weekend conversation
-- Saturday/Sunday: Weekend casual, personal, community-focused
-
-Output 3 notes clearly labelled [NOTE 1], [NOTE 2], [NOTE 3]. Each as self-contained HTML.
+Output as [NOTE 1], [NOTE 2], [NOTE 3].
 
 ---
 
 ## MARKET CONTEXT
-**Live data (11:32 ET):** SPY $685.13 (+0.71%) | QQQ $610.75 (+1.52%) | VIX 21.0
+**Live data (11:27 ET):** SPY $681.31 (-0.56%) | QQQ $608.91 (-0.30%) | VIX 24.4
 
-US equity markets closed a volatile week lower, with the S&P 500 down 0.4%, the NASDAQ declining 0.9%, and the Russell 2000 falling 1.9%. The VIX briefly spiked above 21 on Monday before settling back to 19, reflecting heightened uncertainty as investors grappled with multiple headwinds including AI disruption fears, geopolitical tensions between the US and Iran, and sticky inflation after stronger-than-expected producer price data.
+US equities wrapped a volatile week with heightened geopolitical tensions dominating price action. The Dow Jones Industrial Average declined 784.67 points, or 1.61%, to 47,954.74. The S&P 500 fell 0.56% to 6,830.71, while the Nasdaq Composite dipped 0.26% to 22,748.99 on Thursday, following escalating conflict in Iran that sent oil prices rallying more than 8% on Thursday and were headed for their biggest weekly gain since 2022. Despite the late-week selloff, the Russell is off to a blistering start in 2026, up 8% so far compared to the more widely followed S&P 500's 1.4%, extending small-cap outperformance that has defined early 2026 trading.
 
-A dramatic sector rotation dominated market dynamics as investors fled mega-cap technology stocks for "old economy" value plays. Industrials, Energy, Materials, and non-US equities led performance, while Technology, Communication Services, and Financials lagged. The Industrial sector saw the largest upward revisions of any group, moving from a tepid initial estimate of -0.3% to a final blended growth rate of nearly 27%, driven by federal infrastructure spending, domestic reshoring, and the unexpected role of industrial giants as the literal "backbone" of the AI revolution. Meanwhile, software stocks have taken a beating, with the iShares Expanded Tech-Software Sector ETF down more than 27% year-to-date.
+Small-cap strength continued to steal the spotlight as sector rotation accelerated into domestic-focused names. Eight of the 11 S&P sectors ended lower, with consumer staples, materials, and industrials leading the declines amid energy price volatility concerns. However, defense and energy names topped the S&P 500, with Palantir and its deep connections to the US government at the top — up 6%. Axon, Northrop Grumman, RTX, and L3Harris were also leaders (up 2%-4%). In energy, Marathon Petro, APA, Devon, Valero and ConocoPhillips all gained 3-4%. Technology maintained relative resilience with chip stocks supporting the broader market, particularly those in the chips space. Micron Technology and Advanced Micro Devices each advanced more than 5%. Broadcom and Nvidia climbed more than 1% apiece.
 
-NVIDIA reported record Q4 revenue of $68.1 billion (+73% YoY) with fiscal 2026 revenue reaching $215.9 billion (+65% YoY), providing crucial validation for continued AI infrastructure investment. Sentiment shifted midweek after Anthropic emphasized that its AI tools are designed to work alongside existing platforms, and NVIDIA's strong earnings reinforced AI infrastructure demand. However, the market continues pushing back Fed rate cut timing, with a September cut now removed from the base case and June looking like a coin flip, as sticky inflation data and hawkish Fed commentary reinforce that policymakers are in no rush to lower rates.
-
-Looking ahead, the Russell 2000's 8% gain so far in 2026 versus the S&P 500's 1.4% highlights the continued momentum in small-caps, suggesting the sector rotation has staying power. Treasury yields' de
+Geopolitical risk drove this week's market narrative as US-Israeli strikes on Iran triggered an initial flight-to-safety before markets stabilized mid-week. The Cboe Volatility Index (VIX) staged a dramatic 12% rally, piercing the psychologically significant 20-level to close at 22.40. This sudden spike signals a sharp departure from the relative complacency that defined the start of the year, as traders pivot from a "Goldilocks" growth narrative to a defensive "risk-off" posture. The move reflects growing anxiety over a congested economi
 
 ## SIGNAL DATA
 
@@ -185,39 +83,39 @@ Looking ahead, the Russell 2000's 8% gain so far in 2026 versus the S&P 500's 1.
 No assessed signals available.
 
 ## PORTFOLIO SNAPSHOT
-Open: 3 positions | Avg P&L: +5.2% | Big winners (25%+): 0
+Open: 3 positions | Avg P&L: +1.7% | Big winners (25%+): 0
 
-- Portfolio Return: +5.2%
-- S&P 500 Return: +0.4%
-- Alpha vs SPY: +4.8%
-- NASDAQ Return: +1.6%
-- Alpha vs NASDAQ: +3.7%
+- Portfolio Return: +1.7%
+- S&P 500 Return: -0.2%
+- Alpha vs SPY: +1.9%
+- NASDAQ Return: +1.2%
+- Alpha vs NASDAQ: +0.5%
 - Open Positions: 3
 
 ### Performance vs Benchmark (Since Inception)
 
 | Metric | Return |
 |--------|--------|
-| **Portfolio (Compounding)** | +5.2% |
-| **S&P 500** | +0.4% |
-| **Alpha vs S&P 500** | +4.8% |
-| **NASDAQ (QQQ)** | +1.6% |
-| **Alpha vs NASDAQ** | +3.7% |
+| **Portfolio (Compounding)** | +1.7% |
+| **S&P 500** | -0.2% |
+| **Alpha vs S&P 500** | +1.9% |
+| **NASDAQ (QQQ)** | +1.2% |
+| **Alpha vs NASDAQ** | +0.5% |
 | **Since** | 2026-02-22 |
 
-*Outperforming the S&P 500 by 4.8pp and NASDAQ by 3.7pp since inception.*
+*Outperforming the S&P 500 by 1.9pp and NASDAQ by 0.5pp since inception.*
 
 
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $NGNE | $23.91 | $20.50 | +16.6% | 4 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $17.37 | $17.15 | +1.3% | 11 | Cross-Border Digital Payments & Remittances | ExD |
-| $ETON | $17.53 | $17.93 | -2.2% | 11 | Healthcare Contrarian Recovery | ExD |
+| $NGNE | $22.13 | $20.50 | +8.0% | 5 | Rare disease gene therapy — Rett syndrome | ExD |
+| $RELY | $17.32 | $17.15 | +1.0% | 12 | Cross-Border Digital Payments & Remittances | ExD |
+| $ETON | $17.24 | $17.93 | -3.8% | 12 | Healthcare Contrarian Recovery | ExD |
 
 ### Showcase-Ready Winners
-- $NGNE: $20.50 entry, +16.6% (Rare disease gene therapy — Rett syndrome)
-- $RELY: $17.15 entry, +1.3% (Cross-Border Digital Payments & Remittances)
+- $NGNE: $20.50 entry, +8.0% (Rare disease gene therapy — Rett syndrome)
+- $RELY: $17.15 entry, +1.0% (Cross-Border Digital Payments & Remittances)
 
 ## THEME SUMMARY
 
@@ -243,10 +141,10 @@ Open: 3 positions | Avg P&L: +5.2% | Big winners (25%+): 0
 
 ## TODAY'S NOTES
 
-**3 notes** for Thursday:
-- Slot 1 (08:30 ET): THEME_MOMENTUM
-- Slot 2 (12:30 ET): SIGNAL_ALERT
-- Slot 3 (17:00 ET): ENGAGEMENT_HOOK
+**3 notes** for Friday:
+- Slot 1 (08:30 ET): MARKET_SNAPSHOT
+- Slot 2 (12:30 ET): PORTFOLIO_UPDATE
+- Slot 3 (17:00 ET): EXIT_DEBRIEF
 
 *Full HTML notes generated via the Notes Prompt above.*
 
@@ -255,4 +153,4 @@ Open: 3 positions | Avg P&L: +5.2% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-05 11:32:45 | Week 10*
+*Generated: 2026-03-06 11:27:37 | Week 10*

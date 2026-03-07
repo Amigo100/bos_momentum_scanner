@@ -48,11 +48,14 @@ HANDBOOK_DIR = BASE_DIR / "substack" / "docs"
 # Mirrors HANDBOOK_SECTION_MAP from daily_context_builder.py:148 — redefined
 # locally to avoid importing the heavy daily_context_builder module.
 CATEGORY_TO_PROMPT_KEY = {
-    "Ticker Deep Dive": "ticker_deep_dive",
+    "Deep Dive": "ticker_deep_dive",
+    "Ticker Deep Dive": "ticker_deep_dive",       # backwards compat (v6)
     "TICKER_DEEP_DIVE": "ticker_deep_dive",
-    "Educational": "educational",
+    "The Edge": "educational",
+    "Educational": "educational",                   # backwards compat (v6)
     "EDUCATIONAL": "educational",
-    "Theme Rotation": "theme_rotation",
+    "Sector Watch": "theme_rotation",
+    "Theme Rotation": "theme_rotation",             # backwards compat (v6)
     "THEME_ROTATION": "theme_rotation",
     "Performance Review": "performance_review",
     "PERFORMANCE_REVIEW": "performance_review",
@@ -60,20 +63,20 @@ CATEGORY_TO_PROMPT_KEY = {
 }
 
 HANDBOOK_SECTION_MAP = {
-    "ticker_deep_dive": "## Category 1 — Ticker Deep Dive",
-    "educational": "## Category 2 — Educational",
-    "theme_rotation": "## Category 3 — Theme Rotation",
-    "performance_review": "## Category 4 — Performance Review",
-    "trade_alert_entry": "## Trade Alert — Entry",
-    "trade_alert_exit": "## Trade Alert — Exit",
-    "daily_notes": "## Notes Prompt",
+    "ticker_deep_dive": "## Deep Dive (3 Prompts)",
+    "educational": "## The Edge — Educational (3 Prompts)",
+    "theme_rotation": "## Sector Watch (2 Prompts)",
+    "performance_review": "## Performance Review — FALLBACK ONLY",
+    "trade_alert_entry": "## 🟢 GREEN Signal — Trade Alert Entry (1 Prompt)",
+    "trade_alert_exit": "## Position Update — Trade Alert Exit (1 Prompt)",
+    "daily_notes": "## Companion Note Strategy",
 }
 
 # Normalise UPPER_SNAKE_CASE to title case for display
 CATEGORY_DISPLAY = {
-    "TICKER_DEEP_DIVE": "Ticker Deep Dive",
-    "EDUCATIONAL": "Educational",
-    "THEME_ROTATION": "Theme Rotation",
+    "TICKER_DEEP_DIVE": "Deep Dive",
+    "EDUCATIONAL": "The Edge",
+    "THEME_ROTATION": "Sector Watch",
     "PERFORMANCE_REVIEW": "Performance Review",
     "NOTES_ONLY": "Notes Only",
 }
@@ -211,27 +214,37 @@ def parse_today_assignment(
 # STEP 2: LOAD HANDBOOK PROMPTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _handbook_version_key(path: Path) -> tuple:
+    """Extract version number for sorting. v6.2 -> (6, 2), v6 -> (6, 0)."""
+    match = re.search(r'_v(\d+(?:\.\d+)*)', path.stem)
+    if match:
+        return tuple(int(p) for p in match.group(1).split('.'))
+    return (0,)
+
+
 def find_handbook_path() -> Optional[Path]:
-    """Find the content prompt handbook in the repo."""
-    candidates = [
-        HANDBOOK_DIR / "content_prompt_handbook_v5.md",
-        HANDBOOK_DIR / "content_prompt_handbook.md",
-    ]
-    if HANDBOOK_DIR.exists():
-        for p in sorted(HANDBOOK_DIR.glob("content_prompt_handbook*.md"), reverse=True):
-            if p not in candidates:
-                candidates.append(p)
-    for p in candidates:
+    """Find the newest content prompt handbook in the repo."""
+    if not HANDBOOK_DIR.exists():
+        return None
+
+    # Find all handbook versions sorted by version number (highest first)
+    handbooks = sorted(
+        HANDBOOK_DIR.glob("content_prompt_handbook*.md"),
+        key=_handbook_version_key,
+        reverse=True,
+    )
+    for p in handbooks:
         if p.exists():
             return p
     return None
 
 
 def extract_prompt_from_handbook(handbook_text: str, section_header: str) -> str:
-    """Extract prompt text from a handbook section.
+    """Extract all prompt text from a handbook section.
 
-    Finds the section header, then extracts content between the first
-    ``` code fence in that section and the closing ```.
+    For multi-prompt sections (e.g. Deep Dive has 3 prompts), extracts
+    ALL code-fenced blocks and joins them with numbered dividers.
+    Single-prompt sections return the prompt text directly.
     """
     idx = handbook_text.find(section_header)
     if idx == -1:
@@ -242,11 +255,19 @@ def extract_prompt_from_handbook(handbook_text: str, section_header: str) -> str
     if next_section:
         section_text = section_text[: next_section.start()]
 
-    prompt_match = re.search(r"```\n(.*?)```", section_text, re.DOTALL)
-    if prompt_match:
-        return prompt_match.group(1).strip()
+    # Extract ALL code-fenced prompts
+    prompts = re.findall(r"```\n(.*?)```", section_text, re.DOTALL)
+    if not prompts:
+        return ""
 
-    return ""
+    if len(prompts) == 1:
+        return prompts[0].strip()
+
+    # Multi-prompt: join with numbered dividers
+    parts = []
+    for i, prompt in enumerate(prompts, 1):
+        parts.append(f"═══ PROMPT {i} OF {len(prompts)} ═══\n\n{prompt.strip()}")
+    return "\n\n".join(parts)
 
 
 def load_handbook_prompts() -> Dict[str, str]:

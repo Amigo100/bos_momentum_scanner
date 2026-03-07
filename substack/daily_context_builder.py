@@ -95,9 +95,9 @@ class PostAssignment:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # Category constants
-CATEGORY_TICKER_DIVE = "Ticker Deep Dive"
-CATEGORY_EDUCATIONAL = "Educational"
-CATEGORY_THEME_ROTATION = "Theme Rotation"
+CATEGORY_TICKER_DIVE = "Deep Dive"
+CATEGORY_EDUCATIONAL = "The Edge"
+CATEGORY_THEME_ROTATION = "Sector Watch"
 CATEGORY_PERFORMANCE_REVIEW = "Performance Review"
 
 # Category → HTML theme mapping
@@ -147,13 +147,13 @@ NOTE_TYPE_MATRIX = {
 
 # Handbook prompt section headers (used to extract prompts)
 HANDBOOK_SECTION_MAP = {
-    "ticker_deep_dive": "## Category 1 — Ticker Deep Dive",
-    "educational": "## Category 2 — Educational",
-    "theme_rotation": "## Category 3 — Theme Rotation",
-    "performance_review": "## Category 4 — Performance Review",
-    "trade_alert_entry": "## Trade Alert — Entry",
-    "trade_alert_exit": "## Trade Alert — Exit",
-    "daily_notes": "## Notes Prompt",
+    "ticker_deep_dive": "## Deep Dive (3 Prompts)",
+    "educational": "## The Edge — Educational (3 Prompts)",
+    "theme_rotation": "## Sector Watch (2 Prompts)",
+    "performance_review": "## Performance Review — FALLBACK ONLY",
+    "trade_alert_entry": "## 🟢 GREEN Signal — Trade Alert Entry (1 Prompt)",
+    "trade_alert_exit": "## Position Update — Trade Alert Exit (1 Prompt)",
+    "daily_notes": "## Companion Note Strategy",
 }
 
 
@@ -528,30 +528,38 @@ def determine_todays_post(
 # PROMPT EMBEDDING
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def find_handbook_path() -> Optional[Path]:
-    """Find the content prompt handbook in the repo."""
-    candidates = [
-        BASE_DIR / "substack" / "docs" / "content_prompt_handbook_v5.md",
-        BASE_DIR / "substack" / "docs" / "content_prompt_handbook.md",
-    ]
-    # Also glob for any version
-    docs_dir = BASE_DIR / "substack" / "docs"
-    if docs_dir.exists():
-        for p in sorted(docs_dir.glob("content_prompt_handbook*.md"), reverse=True):
-            if p not in candidates:
-                candidates.append(p)
+def _handbook_version_key(path: Path) -> tuple:
+    """Extract version number for sorting. v6.2 -> (6, 2), v6 -> (6, 0)."""
+    match = re.search(r'_v(\d+(?:\.\d+)*)', path.stem)
+    if match:
+        return tuple(int(p) for p in match.group(1).split('.'))
+    return (0,)
 
-    for p in candidates:
+
+def find_handbook_path() -> Optional[Path]:
+    """Find the newest content prompt handbook in the repo."""
+    docs_dir = BASE_DIR / "substack" / "docs"
+    if not docs_dir.exists():
+        return None
+
+    # Find all handbook versions sorted by version number (highest first)
+    handbooks = sorted(
+        docs_dir.glob("content_prompt_handbook*.md"),
+        key=_handbook_version_key,
+        reverse=True,
+    )
+    for p in handbooks:
         if p.exists():
             return p
     return None
 
 
 def extract_prompt_from_handbook(handbook_text: str, section_header: str) -> str:
-    """Extract the prompt text from a handbook section.
+    """Extract all prompt text from a handbook section.
 
-    Finds the section header, then extracts the content between the first
-    ``` code fence in that section and the closing ```.
+    For multi-prompt sections (e.g. Deep Dive has 3 prompts), extracts
+    ALL code-fenced blocks and joins them with numbered dividers.
+    Single-prompt sections return the prompt text directly.
     """
     # Find the section start
     idx = handbook_text.find(section_header)
@@ -564,13 +572,19 @@ def extract_prompt_from_handbook(handbook_text: str, section_header: str) -> str
     if next_section:
         section_text = section_text[:next_section.start()]
 
-    # Extract content between ``` fences
-    # Look for ### Post Prompt or ### Notes Prompt subsection first
-    prompt_match = re.search(r'```\n(.*?)```', section_text, re.DOTALL)
-    if prompt_match:
-        return prompt_match.group(1).strip()
+    # Extract ALL code-fenced prompts
+    prompts = re.findall(r'```\n(.*?)```', section_text, re.DOTALL)
+    if not prompts:
+        return ""
 
-    return ""
+    if len(prompts) == 1:
+        return prompts[0].strip()
+
+    # Multi-prompt: join with numbered dividers
+    parts = []
+    for i, prompt in enumerate(prompts, 1):
+        parts.append(f"═══ PROMPT {i} OF {len(prompts)} ═══\n\n{prompt.strip()}")
+    return "\n\n".join(parts)
 
 
 def load_prompt_for_category(prompt_key: str) -> str:

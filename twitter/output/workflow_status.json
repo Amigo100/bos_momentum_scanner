@@ -953,5 +953,20 @@
       "account2": 1,
       "account3": 1
     }
+  },
+  {
+    "workflow": "live_tweet",
+    "run_id": 22801788612,
+    "status": "success",
+    "started_at": "2026-03-07T15:50:53Z",
+    "completed_at": "2026-03-07T15:50:53Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule",
+    "account_results": {
+      "account1": 2,
+      "account2": 2,
+      "account3": 0
+    }
   }
 ]

@@ -14,30 +14,38 @@ Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
 
 ---
 
-Read the attached context document thoroughly — it has the complete scanner results, portfolio data, theme analysis, and market context for this week.
+═══ PROMPT 1 OF 2 ═══
 
-Before writing the newsletter, I need you to gather fresh data. The context document was generated earlier and some numbers may have moved.
+Read the attached context document. No analysis session was run this week,
+so we're producing the newsletter from the context document alone.
 
-Use web search to get current data for:
+Web search for current data:
 
-MARKET:
-- SPY: current price, weekly change, YTD return
-- QQQ: current price, weekly change, YTD return
-- IWM (Russell 2000): current price, weekly change, YTD return
-- VIX: current level
-- Any major market events since the context document was generated
+MARKET: SPY, QQQ, IWM current + YTD. VIX. Major events this week.
+PORTFOLIO: Current prices for all positions. Recalculate P&L.
+NEXT WEEK: Earnings in our themes. Fed/data releases. Sector catalysts.
 
-PORTFOLIO (check each position in the context document):
-- Current price for our top 3-5 positions
-- Recalculate P&L from entry prices if prices have moved >2%
-- Any significant news for portfolio tickers in the last 48 hours
+Present in a data table. Flag changes from context document.
 
-NEXT WEEK:
-- Key earnings reports next week (especially in our themes: defence, nuclear, AI infrastructure, or whatever themes are active in the context doc)
-- Fed/economic data releases
-- Any sector-specific catalysts
+═══ PROMPT 2 OF 2 ═══
 
-Present everything in a clean data table. Flag any significant changes from the context document.
+Write "The Weekly Screening" newsletter and companion note.
+
+TITLE: "The Weekly Screening — Week [N]: [Hook]"
+
+Follow the same structure as the analysis session newsletter (sections 1-9 from Prompt 11), but use only the context document data + your fresh web search data.
+
+Since there was no new analysis session, section 4 (New Signals) should either:
+- Reference any signals from LAST week's session if still relevant
+- Or run "Why We Passed" framing about selectivity
+
+Include a "Coming This Week" section previewing midweek content.
+
+Produce companion note (ALPHA_SCOREBOARD type — lead with strongest portfolio number vs benchmark).
+
+White-background HTML with stat cards, funnel, portfolio table (same specs as Prompt 11).
+
+Label: [NEWSLETTER HTML] and [COMPANION NOTE].
 
 ---
 
@@ -47,54 +55,12 @@ After the post, copy this prompt to generate today's 3 notes:
 
 ---
 
-You've just written today's post in this conversation. Now generate 3 Substack Notes that COMPLEMENT it — different tickers, different angles.
-
-Check the context document for today's note schedule. The system uses these 12 types:
-
-MARKET_SNAPSHOT — SPY/QQQ/VIX + what it means for our specific positions
-SIGNAL_DROP — New GREEN signal: ticker, price, funnel stats
-WINNER_RECEIPT — One position: entry, current, P&L%, days, theme
-PORTFOLIO_UPDATE — Honest snapshot of all positions
-THEME_ROTATION — One theme: score, catalysts, our positions in it
-THE_FILTER — Screening funnel numbers
-CATALYST_WATCH — Upcoming events for our positions
-SECTOR_FLOW — Where money is moving, connected to our themes
-EXIT_DEBRIEF — Position closed: why, what the system saw
-ALPHA_SCOREBOARD — Portfolio return vs SPY/QQQ
-DATA_INSIGHT — Counterintuitive investing stat, connected to current context
-READER_QUESTION — Data-seeded question for engagement
-
-RULES:
-- Notes must cover DIFFERENT tickers and themes than today's post
-- Each note: 150-280 words, no headers, no bullet lists, short paragraphs
-- Lead every note with a specific number or data point — never a question
-- After the data, one forward-looking thought, then subscribe hook, then disclaimer
-- Never restate in abstract terms what you just showed with numbers
-- Use contractions. Vary sentence length. Be blunt when appropriate.
-- Never use: "Let's dive in", "Here's the thing", "It's worth noting", "This is what X looks like"
-- $TICKER format with prices always
-
-FRESHNESS: Web search for SPY, QQQ current move, VIX, and any breaking news for portfolio tickers.
-
-SUBSCRIBE HOOKS (vary across the 3 notes):
-- "Every position, every entry price, every week — in the Saturday newsletter."
-- "Subscribers got this signal before Monday's open. The next screening drops Friday."
-- "Full analysis — entry reasoning, theme alignment, exit plan — every Saturday."
-- "We score themes weekly across 1,800 stocks. Full breakdown every Saturday."
-For READER_QUESTION type: no hook, end with the question.
-
-Each note as self-contained HTML:
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 680px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.6; font-size: 16px;">
-[content — <p> tags, <strong> for emphasis]
-<p style="color: #6b6b6b; font-size: 13px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0ddd8;">Not financial advice. Informational only.</p>
-</div>
-
-Output as [NOTE 1], [NOTE 2], [NOTE 3].
+[PROMPT NOT FOUND: could not extract from section '## Companion Note Strategy']
 
 ---
 
 ## MARKET CONTEXT
-**Live data (21:43 ET):** SPY $672.38 (-1.31%) | QQQ $599.75 (-1.50%) | VIX 29.5
+**Live data (22:43 ET):** SPY $672.38 (-1.31%) | QQQ $599.75 (-1.50%) | VIX 29.5
 
 The Nasdaq (-1.59%) and S&P 500 (-1.33%) finished out over one percent lower for the week ending March 6, while the Russell 2000 fell 2.39%, barely finishing out the week above 2,500. The broad selloff was driven by a perfect storm of negative catalysts: payrolls declined by 92,000 in February with monthly payrolls for December and January were revised downward by 69,000, while Brent Crude is heading higher today, adding to what has shaped up to be the biggest one-week increase in oil prices ever as oil prices trend upward, providing a hedge against the geopolitical risks now dominating the headlines.
 
@@ -190,4 +156,4 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-07 21:43:13 | Week 10*
+*Generated: 2026-03-07 22:43:43 | Week 10*

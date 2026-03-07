@@ -1,8 +1,43 @@
-# Sterling Signals — Friday March 06, 2026
+# Sterling Signals — Saturday March 07, 2026
 
 ## TODAY'S POST
-**No long-form post today** (Friday).
-Focus on notes only — use the Daily Notes Prompt below.
+**Category:** Performance Review
+**Topic:** Weekly Newsletter — flagship recap
+**Theme:** Dashboard (dark)
+**Why this topic:** Saturday = always weekly newsletter
+
+---
+
+## YOUR PROMPT
+
+Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
+
+---
+
+Read the attached context document thoroughly — it has the complete scanner results, portfolio data, theme analysis, and market context for this week.
+
+Before writing the newsletter, I need you to gather fresh data. The context document was generated earlier and some numbers may have moved.
+
+Use web search to get current data for:
+
+MARKET:
+- SPY: current price, weekly change, YTD return
+- QQQ: current price, weekly change, YTD return
+- IWM (Russell 2000): current price, weekly change, YTD return
+- VIX: current level
+- Any major market events since the context document was generated
+
+PORTFOLIO (check each position in the context document):
+- Current price for our top 3-5 positions
+- Recalculate P&L from entry prices if prices have moved >2%
+- Any significant news for portfolio tickers in the last 48 hours
+
+NEXT WEEK:
+- Key earnings reports next week (especially in our themes: defence, nuclear, AI infrastructure, or whatever themes are active in the context doc)
+- Fed/economic data releases
+- Any sector-specific catalysts
+
+Present everything in a clean data table. Flag any significant changes from the context document.
 
 ---
 
@@ -59,13 +94,15 @@ Output as [NOTE 1], [NOTE 2], [NOTE 3].
 ---
 
 ## MARKET CONTEXT
-**Live data (11:27 ET):** SPY $681.31 (-0.56%) | QQQ $608.91 (-0.30%) | VIX 24.4
+**Live data (11:18 ET):** SPY $672.38 (-1.31%) | QQQ $599.75 (-1.50%) | VIX 29.5
 
-US equities wrapped a volatile week with heightened geopolitical tensions dominating price action. The Dow Jones Industrial Average declined 784.67 points, or 1.61%, to 47,954.74. The S&P 500 fell 0.56% to 6,830.71, while the Nasdaq Composite dipped 0.26% to 22,748.99 on Thursday, following escalating conflict in Iran that sent oil prices rallying more than 8% on Thursday and were headed for their biggest weekly gain since 2022. Despite the late-week selloff, the Russell is off to a blistering start in 2026, up 8% so far compared to the more widely followed S&P 500's 1.4%, extending small-cap outperformance that has defined early 2026 trading.
+The Nasdaq (-1.59%) and S&P 500 (-1.33%) finished out over one percent lower for the week ending March 6, while the Russell 2000 fell 2.39%, barely finishing out the week above 2,500. The broad selloff was driven by a perfect storm of negative catalysts: payrolls declined by 92,000 in February with monthly payrolls for December and January were revised downward by 69,000, while Brent Crude is heading higher today, adding to what has shaped up to be the biggest one-week increase in oil prices ever as oil prices trend upward, providing a hedge against the geopolitical risks now dominating the headlines.
 
-Small-cap strength continued to steal the spotlight as sector rotation accelerated into domestic-focused names. Eight of the 11 S&P sectors ended lower, with consumer staples, materials, and industrials leading the declines amid energy price volatility concerns. However, defense and energy names topped the S&P 500, with Palantir and its deep connections to the US government at the top — up 6%. Axon, Northrop Grumman, RTX, and L3Harris were also leaders (up 2%-4%). In energy, Marathon Petro, APA, Devon, Valero and ConocoPhillips all gained 3-4%. Technology maintained relative resilience with chip stocks supporting the broader market, particularly those in the chips space. Micron Technology and Advanced Micro Devices each advanced more than 5%. Broadcom and Nvidia climbed more than 1% apiece.
+The week exposed a stark divergence in sector performance and market leadership. As of March 6, 2026, the index has lagged its large-cap counterparts by over 400 basis points since the start of the year, highlighting the "K-shaped" recovery where the clear winners in this environment remain the cash-rich mega-cap tech stocks, specifically Apple (NASDAQ: AAPL), Microsoft (NASDAQ: MSFT), and Alphabet (NASDAQ: GOOGL). The basic materials sector has the largest gains so far this year, rising 9.05%, followed by industrials and energy, while the financial services sector has been the second-worst performer in US markets, falling 0.33% so far this year.
 
-Geopolitical risk drove this week's market narrative as US-Israeli strikes on Iran triggered an initial flight-to-safety before markets stabilized mid-week. The Cboe Volatility Index (VIX) staged a dramatic 12% rally, piercing the psychologically significant 20-level to close at 22.40. This sudden spike signals a sharp departure from the relative complacency that defined the start of the year, as traders pivot from a "Goldilocks" growth narrative to a defensive "risk-off" posture. The move reflects growing anxiety over a congested economi
+The market's anxiety was amplified by multiple macro headwinds converging simultaneously. Stronger-than-expected labor data and a stubborn Consumer Price Index (CPI) reading in February forced market participants to price out further cuts for the first half of 2026, with the probability of a 25-basis-point cut from the Fed in March is unchanged at 5%, April ticked up to 20% from 18%, while June currently stands at 57%. This shift particularly hurt small-caps, as the Russell 2000, which has roughly 32% of its debt tied to floating rates—compared to just 6% for the S&P 500, faced immediate pressure on projected profitability.
+
+Volatility surged back into markets with the CBOE Volatility Index (INDEXCBOE: VIX) jumping to 22.08,
 
 ## SIGNAL DATA
 
@@ -83,39 +120,38 @@ Geopolitical risk drove this week's market narrative as US-Israeli strikes on Ir
 No assessed signals available.
 
 ## PORTFOLIO SNAPSHOT
-Open: 3 positions | Avg P&L: +1.7% | Big winners (25%+): 0
+Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 
-- Portfolio Return: +1.7%
-- S&P 500 Return: -0.2%
+- Portfolio Return: +0.4%
+- S&P 500 Return: -1.5%
 - Alpha vs SPY: +1.9%
-- NASDAQ Return: +1.2%
-- Alpha vs NASDAQ: +0.5%
+- NASDAQ Return: -0.3%
+- Alpha vs NASDAQ: +0.7%
 - Open Positions: 3
 
 ### Performance vs Benchmark (Since Inception)
 
 | Metric | Return |
 |--------|--------|
-| **Portfolio (Compounding)** | +1.7% |
-| **S&P 500** | -0.2% |
+| **Portfolio (Compounding)** | +0.4% |
+| **S&P 500** | -1.5% |
 | **Alpha vs S&P 500** | +1.9% |
-| **NASDAQ (QQQ)** | +1.2% |
-| **Alpha vs NASDAQ** | +0.5% |
+| **NASDAQ (QQQ)** | -0.3% |
+| **Alpha vs NASDAQ** | +0.7% |
 | **Since** | 2026-02-22 |
 
-*Outperforming the S&P 500 by 1.9pp and NASDAQ by 0.5pp since inception.*
+*Outperforming the S&P 500 by 1.9pp and NASDAQ by 0.7pp since inception.*
 
 
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $NGNE | $22.13 | $20.50 | +8.0% | 5 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $17.32 | $17.15 | +1.0% | 12 | Cross-Border Digital Payments & Remittances | ExD |
-| $ETON | $17.24 | $17.93 | -3.8% | 12 | Healthcare Contrarian Recovery | ExD |
+| $NGNE | $22.17 | $20.50 | +8.1% | 6 | Rare disease gene therapy — Rett syndrome | ExD |
+| $RELY | $17.04 | $17.15 | -0.6% | 13 | Cross-Border Digital Payments & Remittances | ExD |
+| $ETON | $16.80 | $17.93 | -6.3% | 13 | Healthcare Contrarian Recovery | ExD |
 
 ### Showcase-Ready Winners
-- $NGNE: $20.50 entry, +8.0% (Rare disease gene therapy — Rett syndrome)
-- $RELY: $17.15 entry, +1.0% (Cross-Border Digital Payments & Remittances)
+- $NGNE: $20.50 entry, +8.2% (Rare disease gene therapy — Rett syndrome)
 
 ## THEME SUMMARY
 
@@ -141,10 +177,9 @@ Open: 3 positions | Avg P&L: +1.7% | Big winners (25%+): 0
 
 ## TODAY'S NOTES
 
-**3 notes** for Friday:
-- Slot 1 (08:30 ET): MARKET_SNAPSHOT
-- Slot 2 (12:30 ET): PORTFOLIO_UPDATE
-- Slot 3 (17:00 ET): EXIT_DEBRIEF
+**2 notes** for Saturday:
+- Slot 1 (08:30 ET): WINNER_RECEIPT
+- Slot 2 (12:30 ET): THEME_ROTATION
 
 *Full HTML notes generated via the Notes Prompt above.*
 
@@ -153,4 +188,4 @@ Open: 3 positions | Avg P&L: +1.7% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-06 11:27:37 | Week 10*
+*Generated: 2026-03-07 11:18:46 | Week 10*

@@ -1,72 +1,105 @@
 {
-  "day": "friday",
-  "date": "2026-03-06",
-  "generated_at": "2026-03-06T11:27:37.609466Z",
+  "day": "saturday",
+  "date": "2026-03-07",
+  "generated_at": "2026-03-07T11:18:46.502777Z",
   "note_schedule": [
     {
       "slot": 1,
-      "type": "MARKET_SNAPSHOT",
+      "type": "WINNER_RECEIPT",
       "time": "08:30 ET"
     },
     {
       "slot": 2,
-      "type": "PORTFOLIO_UPDATE",
+      "type": "THEME_ROTATION",
       "time": "12:30 ET"
-    },
-    {
-      "slot": 3,
-      "type": "EXIT_DEBRIEF",
-      "time": "17:00 ET"
     }
   ],
   "live_data": {
-    "spy_price": 681.31,
-    "spy_change_pct": -0.56,
-    "qqq_price": 608.91,
-    "qqq_change_pct": -0.3,
-    "vix": 24.4
+    "spy_price": 672.38,
+    "spy_change_pct": -1.31,
+    "qqq_price": 599.75,
+    "qqq_change_pct": -1.5,
+    "vix": 29.5
   },
   "portfolio": {
     "open_count": 3,
-    "win_rate": 0.0,
-    "total_pnl_pct": 1.7,
+    "win_rate": 33.3,
+    "total_pnl_pct": 0.4,
     "top_performer": {
       "symbol": "NGNE",
-      "pnl_pct": 8.0,
+      "pnl_pct": 8.1,
       "entry": 20.5,
-      "current": 22.13
+      "current": 22.17,
+      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "days_held": 6
     },
     "positions": [
       {
         "symbol": "NGNE",
-        "pnl_pct": 8.0,
-        "theme": "Rare disease gene therapy \u2014 Rett syndrome"
+        "entry_price": 20.5,
+        "current_price": 22.17,
+        "pnl_pct": 8.1,
+        "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+        "days_held": 6,
+        "conviction": 6,
+        "stop_level": 0.0,
+        "distance_to_stop_pct": 0.0,
+        "stop_alert": false
       },
       {
         "symbol": "RELY",
-        "pnl_pct": 1.0,
-        "theme": "Cross-Border Digital Payments & Remittances"
+        "entry_price": 17.15,
+        "current_price": 17.04,
+        "pnl_pct": -0.6,
+        "theme": "Cross-Border Digital Payments & Remittances",
+        "days_held": 13,
+        "conviction": 8,
+        "stop_level": 0.0,
+        "distance_to_stop_pct": 0.0,
+        "stop_alert": false
       },
       {
         "symbol": "ETON",
-        "pnl_pct": -3.8,
-        "theme": "Healthcare Contrarian Recovery"
+        "entry_price": 17.93,
+        "current_price": 16.8,
+        "pnl_pct": -6.3,
+        "theme": "Healthcare Contrarian Recovery",
+        "days_held": 13,
+        "conviction": 8,
+        "stop_level": 0.0,
+        "distance_to_stop_pct": 0.0,
+        "stop_alert": false
       }
     ]
   },
   "signals": {
     "new_this_week": [],
     "pass_count": 0,
+    "buy_signals": [],
     "themes": [
       {
         "name": "Rare Disease Gene Therapy",
         "status": "SELECTIVE",
-        "composite": 6.8
+        "composite": 6.8,
+        "thesis_summary": "Gene therapy for rare neurological disease entering registrational stage with multiple FDA de-risking signals. However, sector remains binary \u2014 individual asset success/failure drives returns, not sector-wide momentum. Not a secular wave. Broader gene therapy sector in multi-year bear market since Bluebird Bio commercial struggles and AAV deaths.",
+        "key_catalysts": [
+          "NGNE Embolden data mid-2026",
+          "TSHA REVEAL Part A update H1 2026",
+          "FDA Plausible Mechanism Framework finalization",
+          "Gene therapy M&A activity (Novartis, Lilly actively acquiring AAV assets)"
+        ],
+        "primary_etfs": []
       },
       {
         "name": "Biotech \u2014 Protein Degradation",
         "status": "SELECTIVE",
-        "composite": 4.5
+        "composite": 4.5,
+        "thesis_summary": "TPD companies face dual challenge of proving efficacy in competitive oncology landscape while BMS holds first-mover advantage. Small players like CCCC have warrant overhang and long timelines. Not a theme with current momentum.",
+        "key_catalysts": [
+          "CCCC Phase 1 expansion data",
+          "BMS mezigdomide label expansion"
+        ],
+        "primary_etfs": []
       }
     ]
   },
@@ -75,5 +108,12 @@
     "technical_pass": 16,
     "theme_pass": 0,
     "green_signals": 0
-  }
+  },
+  "market_analysis_excerpt": "",
+  "recent_notes": {
+    "yesterday_types": [],
+    "yesterday_tickers": [],
+    "tickers_last_2_days": []
+  },
+  "ticker_events": []
 }

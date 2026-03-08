@@ -1,51 +1,8 @@
-# Sterling Signals — Saturday March 07, 2026
+# Sterling Signals — Sunday March 08, 2026
 
 ## TODAY'S POST
-**Category:** Performance Review
-**Topic:** Weekly Newsletter — flagship recap
-**Theme:** Dashboard (dark)
-**Why this topic:** Saturday = always weekly newsletter
-
----
-
-## YOUR PROMPT
-
-Copy everything below and paste into Claude.ai (Opus 4.6 + extended thinking):
-
----
-
-═══ PROMPT 1 OF 2 ═══
-
-Read the attached context document. No analysis session was run this week,
-so we're producing the newsletter from the context document alone.
-
-Web search for current data:
-
-MARKET: SPY, QQQ, IWM current + YTD. VIX. Major events this week.
-PORTFOLIO: Current prices for all positions. Recalculate P&L.
-NEXT WEEK: Earnings in our themes. Fed/data releases. Sector catalysts.
-
-Present in a data table. Flag changes from context document.
-
-═══ PROMPT 2 OF 2 ═══
-
-Write "The Weekly Screening" newsletter and companion note.
-
-TITLE: "The Weekly Screening — Week [N]: [Hook]"
-
-Follow the same structure as the analysis session newsletter (sections 1-9 from Prompt 11), but use only the context document data + your fresh web search data.
-
-Since there was no new analysis session, section 4 (New Signals) should either:
-- Reference any signals from LAST week's session if still relevant
-- Or run "Why We Passed" framing about selectivity
-
-Include a "Coming This Week" section previewing midweek content.
-
-Produce companion note (ALPHA_SCOREBOARD type — lead with strongest portfolio number vs benchmark).
-
-White-background HTML with stat cards, funnel, portfolio table (same specs as Prompt 11).
-
-Label: [NEWSLETTER HTML] and [COMPANION NOTE].
+**No long-form post today** (Sunday).
+Focus on notes only — use the Daily Notes Prompt below.
 
 ---
 
@@ -60,15 +17,15 @@ After the post, copy this prompt to generate today's 3 notes:
 ---
 
 ## MARKET CONTEXT
-**Live data (22:43 ET):** SPY $672.38 (-1.31%) | QQQ $599.75 (-1.50%) | VIX 29.5
+**Live data (11:19 ET):** SPY $672.38 (-1.31%) | QQQ $599.75 (-1.50%) | VIX 29.5
 
-The Nasdaq (-1.59%) and S&P 500 (-1.33%) finished out over one percent lower for the week ending March 6, while the Russell 2000 fell 2.39%, barely finishing out the week above 2,500. The broad selloff was driven by a perfect storm of negative catalysts: payrolls declined by 92,000 in February with monthly payrolls for December and January were revised downward by 69,000, while Brent Crude is heading higher today, adding to what has shaped up to be the biggest one-week increase in oil prices ever as oil prices trend upward, providing a hedge against the geopolitical risks now dominating the headlines.
+The S&P 500 fell 1.33% to close at 6,740 points on March 6, while the Nasdaq Composite declined 1.59% to 22,388 and the Dow Jones dropped 0.95% in what proved to be a challenging week for U.S. equities. The Russell 2000 bore the brunt of the selloff, plunging 3.70% for the week and 2.39% on Friday alone, barely finishing above the psychologically important 2,500 level. The broad market retreat reflected growing concerns about geopolitical instability and deteriorating economic conditions, with the VIX spiking 24.17% to close at 29.49, signaling elevated fear among investors.
 
-The week exposed a stark divergence in sector performance and market leadership. As of March 6, 2026, the index has lagged its large-cap counterparts by over 400 basis points since the start of the year, highlighting the "K-shaped" recovery where the clear winners in this environment remain the cash-rich mega-cap tech stocks, specifically Apple (NASDAQ: AAPL), Microsoft (NASDAQ: MSFT), and Alphabet (NASDAQ: GOOGL). The basic materials sector has the largest gains so far this year, rising 9.05%, followed by industrials and energy, while the financial services sector has been the second-worst performer in US markets, falling 0.33% so far this year.
+Basic materials led sector performance year-to-date with gains of 9.05%, followed by industrials and energy, though this week saw sharp reversals across cyclical sectors. Financial stocks and basic materials producers took the biggest hits on Friday as investors priced in ongoing disruptions to global trade. The clear winners remained cash-rich mega-cap tech stocks like Apple, Microsoft, and Alphabet, which act as "synthetic banks" benefiting from higher interest rates on their collective $500+ billion in cash reserves. The divergence between large-cap quality and smaller companies became more pronounced, with the Russell 2000 now lagging its large-cap counterparts by over 400 basis points since the start of the year.
 
-The market's anxiety was amplified by multiple macro headwinds converging simultaneously. Stronger-than-expected labor data and a stubborn Consumer Price Index (CPI) reading in February forced market participants to price out further cuts for the first half of 2026, with the probability of a 25-basis-point cut from the Fed in March is unchanged at 5%, April ticked up to 20% from 18%, while June currently stands at 57%. This shift particularly hurt small-caps, as the Russell 2000, which has roughly 32% of its debt tied to floating rates—compared to just 6% for the S&P 500, faced immediate pressure on projected profitability.
+The February jobs report delivered a stunning blow to market confidence, showing employers cut 92,000 jobs versus economist expectations of 60,000 gains, while the unemployment rate jumped to 4.4% from 4.3%. Adding insult to injury, December and January payrolls were revised downward by 69,000 jobs combined. Meanwhile, geopolitical tensions escalated dramatically as Iran conflict blocked shipping lanes at the Strait of Hormuz, sending crude oil prices up 35% for the week to over $92, the highest since 2023. This toxic combination of weakening labor markets and surging energy costs raised stagflation fears, forcing investors to reassess Fed rate cut expectations.
 
-Volatility surged back into markets with the CBOE Volatility Index (INDEXCBOE: VIX) jumping to 22.08,
+Looking ahead, t
 
 ## SIGNAL DATA
 
@@ -112,14 +69,12 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 ### Open Positions
 | Ticker | Current | Entry | P&L | Days | Theme | Stop |
 |--------|---------|-------|-----|------|-------|------|
-| $NGNE | $22.17 | $20.50 | +8.1% | 6 | Rare disease gene therapy — Rett syndrome | ExD |
-| $RELY | $17.04 | $17.15 | -0.6% | 13 | Cross-Border Digital Payments & Remittances | ExD |
-| $ETON | $16.80 | $17.93 | -6.3% | 13 | Healthcare Contrarian Recovery | ExD |
+| $NGNE | $22.17 | $20.50 | +8.1% | 7 | Rare disease gene therapy — Rett syndrome | ExD |
+| $RELY | $17.04 | $17.15 | -0.6% | 14 | Cross-Border Digital Payments & Remittances | ExD |
+| $ETON | $16.80 | $17.93 | -6.3% | 14 | Healthcare Contrarian Recovery | ExD |
 
 ### Showcase-Ready Winners
-- $NGNE: $20.50 entry, +18.3% (Rare disease gene therapy — Rett syndrome)
-- $RELY: $17.15 entry, +3.7% (Cross-Border Digital Payments & Remittances)
-- $ETON: $17.93 entry, +2.9% (Healthcare Contrarian Recovery)
+- $NGNE: $20.50 entry, +8.2% (Rare disease gene therapy — Rett syndrome)
 
 ## THEME SUMMARY
 
@@ -145,9 +100,9 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 
 ## TODAY'S NOTES
 
-**2 notes** for Saturday:
-- Slot 1 (08:30 ET): WINNER_RECEIPT
-- Slot 2 (12:30 ET): THEME_ROTATION
+**2 notes** for Sunday:
+- Slot 1 (08:30 ET): ALPHA_SCOREBOARD
+- Slot 2 (12:30 ET): READER_QUESTION
 
 *Full HTML notes generated via the Notes Prompt above.*
 
@@ -156,4 +111,4 @@ Open: 3 positions | Avg P&L: +0.4% | Big winners (25%+): 0
 *Attach this file to Claude.ai (Opus 4.6 + extended thinking). Paste the prompt
 from the "YOUR PROMPT" section. The response will be publishable HTML.*
 
-*Generated: 2026-03-07 22:43:43 | Week 10*
+*Generated: 2026-03-08 11:19:35 | Week 10*

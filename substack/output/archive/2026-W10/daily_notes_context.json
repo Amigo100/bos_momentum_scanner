@@ -1,0 +1,79 @@
+{
+  "day": "wednesday",
+  "date": "2026-03-04",
+  "generated_at": "2026-03-04T20:55:38.865207Z",
+  "note_schedule": [
+    {
+      "slot": 1,
+      "type": "MARKET_REACTION",
+      "time": "08:30 ET"
+    },
+    {
+      "slot": 2,
+      "type": "PORTFOLIO_PULSE",
+      "time": "12:30 ET"
+    },
+    {
+      "slot": 3,
+      "type": "LEARNING_NUGGET",
+      "time": "17:00 ET"
+    }
+  ],
+  "live_data": {
+    "spy_price": 685.84,
+    "spy_change_pct": 0.81,
+    "qqq_price": 610.99,
+    "qqq_change_pct": 1.56,
+    "vix": 21.1
+  },
+  "portfolio": {
+    "open_count": 3,
+    "win_rate": 0.0,
+    "total_pnl_pct": 5.3,
+    "top_performer": {
+      "symbol": "NGNE",
+      "pnl_pct": 16.6,
+      "entry": 20.5,
+      "current": 23.91
+    },
+    "positions": [
+      {
+        "symbol": "NGNE",
+        "pnl_pct": 16.6,
+        "theme": "Rare disease gene therapy \u2014 Rett syndrome"
+      },
+      {
+        "symbol": "RELY",
+        "pnl_pct": 1.0,
+        "theme": "Cross-Border Digital Payments & Remittances"
+      },
+      {
+        "symbol": "ETON",
+        "pnl_pct": -1.6,
+        "theme": "Healthcare Contrarian Recovery"
+      }
+    ]
+  },
+  "signals": {
+    "new_this_week": [],
+    "pass_count": 0,
+    "themes": [
+      {
+        "name": "Rare Disease Gene Therapy",
+        "status": "SELECTIVE",
+        "composite": 6.8
+      },
+      {
+        "name": "Biotech \u2014 Protein Degradation",
+        "status": "SELECTIVE",
+        "composite": 4.5
+      }
+    ]
+  },
+  "scanner_stats": {
+    "universe_size": 1279,
+    "technical_pass": 16,
+    "theme_pass": 0,
+    "green_signals": 0
+  }
+}

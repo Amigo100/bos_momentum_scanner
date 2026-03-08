@@ -20,5 +20,23 @@
       "step3b_yaml_banned: 'UC' (category-specific)"
     ],
     "timestamp": "2026-03-04T17:34:06.545086+00:00"
+  },
+  {
+    "text": "SPY +0.8% and $NGNE extends to $24.25, now +18.3% from $20.50 entry. Rare disease gene therapy names running while broader market chops \u2014 FDA's individualized therapy pathway creating structural separation from macro noise.",
+    "category": "MARKET_COMMENTARY",
+    "failures": [
+      "step3b_yaml_banned: 'UC' (category-specific)",
+      "step8_6_cross_dedup: $NGNE assigned to variant_3, not variant_2 (assigned $RELY)",
+      "step9_staleness: context 23.5h old, MARKET_COMMENTARY blocked"
+    ],
+    "timestamp": "2026-03-06T20:35:34.602913+00:00"
+  },
+  {
+    "text": "SPY chopping but $NGNE +18.3% to $24.25 from $20.50. Rare disease revenue is domestic-only \u2014 FDA timelines matter more than tariff headlines. $ETON and $RELY holding gains while market searches for direction.",
+    "category": "MARKET_COMMENTARY",
+    "failures": [
+      "step9_staleness: context 23.5h old, MARKET_COMMENTARY blocked"
+    ],
+    "timestamp": "2026-03-06T20:35:42.483656+00:00"
   }
 ]

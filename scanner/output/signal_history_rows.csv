@@ -1,17 +1,12 @@
-date,ticker,price,tier,theme,composite_score,system_fit,advanced,session_verdict
-2026-03-01,NGNE,24.50,T3,rare_disease_gene_therapy,6.80,POOR,yes,WATCHLIST
-2026-03-01,LRMR,5.29,T3,rare_disease_biotech,6.20,POOR,yes,NO GO
-2026-03-01,CCCC,3.50,T3,protein_degradation_biotech,4.50,POOR,yes,NO GO
-2026-03-01,ATLX,12.00,,biotech_specialty_pharma,4.00,POOR,no,NO GO
-2026-03-01,MBOT,0.00,,biotech_clinical,3.00,POOR,no,NO GO
-2026-03-01,ARTV,0.00,,biotech_clinical,3.00,POOR,no,NO GO
-2026-03-01,IKT,0.00,,biotech_clinical,3.00,POOR,no,NO GO
-2026-03-01,RCKT,0.00,,gene_therapy_platform,3.50,POOR,no,NO GO
-2026-03-01,SEPN,0.00,,biotech_clinical,2.50,POOR,no,NO GO
-2026-03-01,ASIC,0.00,,semiconductor,3.00,POOR,no,NO GO
-2026-03-01,CNTA,0.00,,biotech_clinical,2.50,POOR,no,NO GO
-2026-03-01,CRSP,0.00,,gene_editing,4.00,POOR,no,NO GO
-2026-03-01,LWLG,0.00,,photonics_tech,2.50,POOR,no,NO GO
-2026-03-01,VAC,0.00,,travel_leisure,3.00,POOR,no,NO GO
-2026-03-01,OSIS,0.00,,security_defense,3.50,POOR,no,NO GO
-2026-03-01,SGMO,0.00,,gene_therapy_platform,3.50,POOR,no,NO GO
+scan_date,symbol,price_at_scan,theme,theme_score,theme_classification,confirmation_level,stage_reached,final_verdict,conviction,tier,entry_price,stop_price,notes
+2026-03-06,BAND,16.55,AI Voice CPaaS Infrastructure,7.60,PRIME,MODERATE,dd,BUY,6,T3,16.55,11.00,CRO adjusted T2→T3 for MODERATE DRIFT (3/7 archetype). Owned Tier-1 IP voice network moat. $10M AI ARR embryonic.
+2026-03-06,GOGO,5.23,BizAv Connectivity Upgrade,7.65,PRIME,NONE,gate,SPEC_BUY,5,T2,0,0,CRO removed — STRONG DRIFT 1/7. Return math failed 50% on 12mo. $909M debt. Watchlist at $4.50.
+2026-03-06,XPER,6.16,Connected Car Monetization,6.45,INVESTABLE,NONE,gate,SPEC_BUY,5,T3,0,0,CRO removed — STRONG DRIFT 1/7. Bottom INVESTABLE via operator discretion. Revenue declining.
+2026-03-06,MEG,27.00,PFAS Methane Compliance,7.20,INVESTABLE,NONE,gate,SPEC_BUY,5,T3,0,0,CRO removed — STRONG DRIFT 1/7. MARGINAL return math. Already rallied 157% from lows.
+2026-03-06,CLDX,29.43,Anti-KIT Mast Cell Inhibition,6.95,INVESTABLE,NONE,thematic,FILTERED,0,NA,0,0,Binary biotech — operator discretion not exercised. Watchlist near Phase 3 readout.
+2026-03-06,SABR,1.59,GDS AI Travel Commerce,4.35,AVOID,NONE,thematic,FILTERED,0,NA,0,0,AVOID class. Structural execution challenges.
+2026-03-06,SOC,14.37,CA Offshore Oil Restart,4.70,SELECTIVE,NONE,thematic,FILTERED,0,NA,0,0,Capital cycle veto. Regulatory uncertainty.
+2026-03-06,HNST,2.93,Clean-Label Consumer Turnaround,4.40,AVOID,NONE,thematic,FILTERED,0,NA,0,0,AVOID class. No structural catalyst.
+2026-03-06,SEZL,73.47,BNPL Subscription Flywheel,6.90,INVESTABLE,NONE,thematic,FILTERED,0,NA,0,0,$2.5B cap and beta 8.75 disqualified. Theme is real but sizing incompatible.
+2026-03-06,PROK,2.30,CKD Autologous Cell Therapy,6.10,INVESTABLE,NONE,thematic,FILTERED,0,NA,0,0,15-month catalyst wait. Timeline mismatch with system.
+2026-03-06,CVI,26.83,Mid-Continent Refining Recovery,4.70,SELECTIVE,NONE,thematic,FILTERED,0,NA,0,0,SELECTIVE class. Cyclical without structural catalyst density.

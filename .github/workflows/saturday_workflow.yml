@@ -60,12 +60,28 @@ jobs:
             echo "  Push decisions.json to scanner/output/ before running"
           fi
 
+      - name: Validate decisions freshness
+        if: steps.decisions_check.outputs.exists == 'true'
+        id: freshness_check
+        run: |
+          SCAN_DATE=$(python3 -c "import json; print(json.load(open('scanner/output/decisions.json')).get('scan_date',''))")
+          TODAY=$(date -u +%Y-%m-%d)
+          DAYS_OLD=$(python3 -c "from datetime import datetime; print((datetime.strptime('$TODAY','%Y-%m-%d') - datetime.strptime('$SCAN_DATE','%Y-%m-%d')).days)")
+          echo "decisions.json scan_date: $SCAN_DATE (${DAYS_OLD}d old)"
+          if [ "$DAYS_OLD" -gt 5 ]; then
+            echo "::warning::STALE decisions.json — scan_date $SCAN_DATE is ${DAYS_OLD} days old. Push the latest decisions.json before running."
+            echo "fresh=false" >> $GITHUB_OUTPUT
+          else
+            echo "✓ decisions.json is fresh (${DAYS_OLD}d old)"
+            echo "fresh=true" >> $GITHUB_OUTPUT
+          fi
+
       # ═══════════════════════════════════════════════════════════════════════
       # RUN SATURDAY WORKFLOW
       # ═══════════════════════════════════════════════════════════════════════
 
       - name: Run Saturday workflow
-        if: steps.decisions_check.outputs.exists == 'true'
+        if: steps.decisions_check.outputs.exists == 'true' && steps.freshness_check.outputs.fresh == 'true'
         id: workflow
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -93,7 +109,7 @@ jobs:
       # ═══════════════════════════════════════════════════════════════════════
 
       - name: Commit outputs
-        if: steps.decisions_check.outputs.exists == 'true' && github.event.inputs.dry_run != 'true'
+        if: steps.decisions_check.outputs.exists == 'true' && steps.freshness_check.outputs.fresh == 'true' && github.event.inputs.dry_run != 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -127,6 +143,7 @@ jobs:
           echo "|---------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| **Trigger** | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **decisions.json** | ${{ steps.decisions_check.outputs.exists }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Decisions fresh** | ${{ steps.freshness_check.outputs.fresh || 'n/a' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Skip Market** | ${{ github.event.inputs.skip_market || 'false' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Skip Guide** | ${{ github.event.inputs.skip_guide || 'false' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Dry Run** | ${{ github.event.inputs.dry_run || 'false' }} |" >> $GITHUB_STEP_SUMMARY
@@ -135,4 +152,7 @@ jobs:
           if [ "${{ steps.decisions_check.outputs.exists }}" != "true" ]; then
             echo "> ⚠ **Skipped:** \`decisions.json\` not found in \`scanner/output/\`." >> $GITHUB_STEP_SUMMARY
             echo "> Push your Claude.ai decisions before triggering this workflow." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.freshness_check.outputs.fresh }}" != "true" ]; then
+            echo "> ⚠ **Skipped:** \`decisions.json\` is stale (scan_date too old)." >> $GITHUB_STEP_SUMMARY
+            echo "> Push the latest decisions.json before triggering this workflow." >> $GITHUB_STEP_SUMMARY
           fi

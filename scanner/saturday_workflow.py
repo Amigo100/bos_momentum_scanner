@@ -116,6 +116,22 @@ def preflight_check(decisions_path: Path) -> bool:
                 data = json.load(f)
             if not data.get("scan_date"):
                 print(f"  ⚠ decisions.json missing scan_date")
+            else:
+                # Check freshness — block stale decisions from previous weeks
+                try:
+                    scan_date = datetime.strptime(data["scan_date"], "%Y-%m-%d")
+                    age_days = (datetime.now() - scan_date).days
+                    if age_days > 5:
+                        print(f"  ✗ decisions.json is STALE — scan_date {data['scan_date']} "
+                              f"is {age_days} days old")
+                        print(f"    Push the latest decisions.json before running this workflow")
+                        ok = False
+                    else:
+                        n_pos = len(data.get("new_positions", []))
+                        print(f"  ✓ decisions.json is fresh (scan_date: {data['scan_date']}, "
+                              f"{n_pos} new position(s))")
+                except ValueError:
+                    print(f"  ⚠ scan_date '{data['scan_date']}' is not YYYY-MM-DD format")
         except json.JSONDecodeError as e:
             print(f"  ✗ decisions.json is not valid JSON: {e}")
             ok = False

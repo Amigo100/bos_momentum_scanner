@@ -1,8 +1,8 @@
 {
-  "scan_date": "2026-03-01",
-  "scan_week_ending": "2026-03-01",
+  "scan_date": "2026-03-06",
+  "scan_week_ending": "2026-03-07",
   "market_regime": "selective",
-  "market_context_summary": "S&P 500 near all-time highs but breadth narrowing with small caps underperforming. Fed holding rates amid tariff uncertainty and geopolitical risks (Iran/Gulf). Strongest capital flows into defense, AI infrastructure, and financials — none of which produced scanner signals this session.",
+  "market_context_summary": "SELECTIVE regime with NORMAL deployment stance. US GDP 2.6%, mid-cycle expansion with OBBBA fiscal boost. Fed holding at 3.5-3.75% with 1-2 cuts expected in 2026. Iran conflict sent VIX to 29.49 and oil above $90 WTI, creating acute near-term uncertainty within a structurally supportive backdrop. Small-cap earnings projected +18-22% for 2026 but IWM lagging large caps by 400bps YTD.",
 
   "retrospective": {
     "open_positions_total": 0,
@@ -13,201 +13,225 @@
     "notable_filter_misses": [],
     "notable_filter_validations": [],
     "calibration_notes": [
-      "First session — no prior data. Establishing baseline calibration.",
-      "Scanner batch was 100% biotech/healthcare — zero theme diversity. System needs broader sector signal sourcing.",
-      "Sector concentration warning was raised during batch processing but NOT acted upon — process failure to correct in future sessions."
+      "First session — no prior data. No retrospective calibration available.",
+      "Scanner gap identified: Prompt 2 structural forces (defence autonomy, grid power, reshoring) produced zero scanner signals. Expand scanner universe for next session."
     ]
   },
 
   "market_context": {
     "regime": "selective",
-    "regime_outlook_months": "Selective for 6-18 months: elevated large-cap valuations, policy uncertainty (tariffs, FDA staffing), rate path supportive but not stimulative",
-    "economic_trajectory": "stable",
+    "regime_outlook_months": "Mid-cycle expansion with improving trajectory. OBBBA provides +0.7pp GDP boost. Earnings broadening underway but incomplete. 15% Section 122 tariffs expire July 24 2026 creating policy uncertainty window.",
+    "economic_trajectory": "expanding",
     "fed_rate_path": "holding",
-    "earnings_cycle": "stable",
-    "small_cap_environment": "headwind",
-    "small_cap_3m_trend": "IWM underperforming SPY by ~3-5% over 3 months through Feb 2026",
-    "sectors_accelerating": ["Defense/aerospace — $1T+ budget, Golden Dome, NATO 3%+ GDP targets", "AI infrastructure — hyperscaler capex $360B/yr continuing", "Financial sector renaissance — deregulation, yield curve normalization"],
-    "sectors_decelerating": ["Traditional pharma — GLP-1 rotation fading", "Consumer discretionary — tariff headwinds", "Real estate — rates holding higher for longer"],
-    "established_waves": ["Defense/aerospace — consensus, multi-month $1T+ budget trend", "AI infrastructure buildout — datacenter, chips, power capex cycle", "Financial sector — deregulation + yield curve", "Small-cap broad rotation — partial, rate-path dependent"],
-    "emerging_shifts": ["BYOP data center power — pre-consensus, structural driver from AI power demand", "Attritable autonomous defense — pre-consensus, DOD budget shifting to unmanned systems", "Domestic manufacturing reshoring — tariff-driven but pre-consensus on beneficiaries", "Gene therapy regulatory acceleration — FDA Plausible Mechanism Framework Feb 23 2026"],
-    "deployment_implication": "Given 6-18 month holds, capital deployment is cautious — zero positions deployed this session. Scanner batch had zero alignment with established waves. Only surviving signal (NGNE) requires price consolidation to entry zone before deployment."
+    "earnings_cycle": "accelerating",
+    "small_cap_environment": "neutral",
+    "small_cap_3m_trend": "IWM lagging SPY by approximately 400bps YTD. Russell 2000 down 3.7% this week on Iran/oil shock. Floating-rate debt exposure (32% of R2000) creates rate sensitivity headwind.",
+    "sectors_accelerating": ["Industrials — Q4 earnings +27%, OBBBA infrastructure spending", "Energy — Iran conflict driving repricing", "Financials — rate environment supportive"],
+    "sectors_decelerating": ["Technology (broad) — Mag 7 down 7% YTD while average S&P stock up 7%", "Consumer Discretionary — uneven demand trends"],
+    "established_waves": ["AI Physical Infrastructure (data centres, power, cooling) — MIDDLE lifecycle, supply-chain picks still early", "Defence Autonomy & Drone Industrial Buildout — EARLY-TO-MIDDLE, $152B reconciliation spending", "Earnings Broadening / Domestic Industrial Renaissance — EARLY, OBBBA fiscal stimulus"],
+    "emerging_shifts": ["Grid Power Equipment Bottleneck — transformer lead times 2-4yr, $377B data centre capex by 2026", "Defence Autonomy Industrial Base — $13.4B Pentagon autonomy budget, 340K drones ordered", "Tariff Regime Reset / Reshoring — OBBBA permanent manufacturing tax cuts, decade-long secular shift", "Agentic AI Enterprise Deployment — 340% YoY enterprise voice agent growth, early adoption phase"],
+    "deployment_implication": "Given 3-18 month holds, capital deployment is NORMAL. Structural setup is best in years for small-caps but near-term headwinds from sticky inflation and Iran-driven oil spike. Deploy selectively into highest-conviction theme-aligned positions, preserve capital for scanner signals in defence/grid/reshoring themes."
   },
 
   "batch_assessment": {
-    "theme_clustering": "detected",
-    "theme_clustering_detail": "3 of 16 tickers in rare disease biotech/gene therapy theme (NGNE, LRMR, CCCC); 11 tickers across dispersed micro-themes filtered at Phase 1; 2 borderline parked",
-    "wave_alignment": "0 tickers align with established waves from market context — zero overlap with defense, AI infrastructure, financials, or reshoring themes",
-    "sector_concentration": "100% Healthcare/Biotech in advancing tickers",
-    "sector_concentration_warning": true,
-    "batch_quality": "WEAK",
-    "batch_quality_rationale": "16 signals yielded zero deployable positions — NGNE approved conditionally but entry price not met, LRMR removed by CRO, all others filtered. Scanner entirely disconnected from identified macro capital flows."
+    "theme_clustering": "none",
+    "theme_clustering_detail": "11 tickers across 11 isolated micro-themes. Zero within-session clustering. Zero cross-session clustering (no signal history).",
+    "wave_alignment": "1 ticker (BAND) aligns with Structural Force 4 (Agentic AI Enterprise Deployment). Remaining 10 tickers have no direct wave alignment.",
+    "sector_concentration": "Highly diversified — Technology, Industrials, Healthcare, Consumer, Energy represented across discovery set.",
+    "sector_concentration_warning": false,
+    "batch_quality": "MIXED",
+    "batch_quality_rationale": "Two PRIME themes (7.60, 7.65) and two INVESTABLE themes (6.45, 7.20) advanced to gates, but zero clustering and only one MODERATE confirmation. Session produced individually interesting stocks without a unifying wave."
   },
 
   "review_gate": {
-    "session_quality": "WEAK",
-    "session_quality_rationale": "Zero theme alignment with identified waves; 100% sector and opportunity-type concentration; zero positions deployed — NGNE conditionally approved but current price above entry zone",
-    "stocks_approved": [],
+    "session_quality": "ADEQUATE",
+    "session_quality_rationale": "Pipeline worked mechanically — discovery surfaced real companies, gates filtered appropriately, BAND DD was rigorous — but session did not produce what our system is designed to find. One individually interesting value play in a PRIME theme surrounded by three off-archetype positions.",
+    "stocks_approved": ["BAND"],
     "stocks_adjusted": [
       {
-        "symbol": "NGNE",
-        "adjustment": "Conditionally approved by CRO at 6/10, T3, but entry zone $19.50-$21.00 NOT met at current ~$24. Moved to watchlist pending price consolidation.",
-        "reason": "System drift — isolated biotech binary with zero theme alignment. Post-BTD gap (+26%) puts current price firmly above acceptable entry. CRO mandated entry at or below pre-gap price only."
+        "symbol": "BAND",
+        "adjustment": "Reduced from T2 to T3",
+        "reason": "MODERATE DRIFT on archetype scorecard (3/7). Lacks clustering, institutional discovery wave, short squeeze potential, and under-followed status. Insider selling pattern deeply inconsistent with conviction long."
       }
     ],
     "stocks_removed": [
       {
-        "symbol": "LRMR",
-        "reason": "System drift + unprecedented surrogate endpoint risk (skin FXN never accepted by FDA) + 100% correlation with NGNE creating zero diversification + 88% recent surge = chasing",
+        "symbol": "GOGO",
+        "reason": "STRONG DRIFT (1/7 archetype). Return math FAILED 50% threshold on 12-month basis. $909M net debt on $705M market cap. No DD completed.",
         "moved_to": "watchlist"
       },
       {
-        "symbol": "CCCC",
-        "reason": "Already reduced to 4/10 watchlist during DD — BMS competitive juggernaut, warrant overhang, 53% recent run, timeline extends beyond hold period. CRO confirmed.",
+        "symbol": "XPER",
+        "reason": "STRONG DRIFT (1/7 archetype). Theme scored 6.45 — bottom of INVESTABLE, advanced via operator discretion override. Total revenue still declining. No DD completed.",
+        "moved_to": "watchlist"
+      },
+      {
+        "symbol": "MEG",
+        "reason": "STRONG DRIFT (1/7 archetype). Return math MARGINAL — consensus PTs imply only 27-30% upside. Stock already rallied 157% from lows. ~$1B market cap above sub-$500M sweet spot.",
         "moved_to": "watchlist"
       }
     ],
     "conviction_inflation_detected": false,
-    "bear_case_quality": "ADEQUATE",
-    "portfolio_construction_notes": "Zero positions deployed. CRO rated portfolio construction FAIL: zero theme alignment, zero diversification by opportunity type. NGNE conditionally approved but entry price not met — watchlisted. Preserve capital for theme-aligned opportunities.",
-    "market_alignment": "swimming_against_current"
+    "bear_case_quality": "RIGOROUS",
+    "portfolio_construction_notes": "Single position deployed at T3 sizing (~2.5% of portfolio). Substantial dry powder preserved. All four catalyst timelines cluster in late April/May earnings season — monitor for concentrated risk. Scanner gap: zero signals in defence autonomy, grid power, or reshoring themes identified by Prompt 2.",
+    "market_alignment": "neutral"
   },
 
-  "new_positions": [],
+  "new_positions": [
+    {
+      "symbol": "BAND",
+      "action": "BUY",
+      "verdict": "BUY",
+      "conviction": 6,
+      "tier": "T3",
+      "quality_tier": 1,
+      "price": 16.55,
+      "stop_price": 11.00,
+      "position_size": "REDUCED",
+      "position_size_pct": 0.025,
+
+      "theme": "AI Voice CPaaS Infrastructure",
+      "theme_score": 7.60,
+      "theme_classification": "PRIME",
+      "theme_verdict": "STRONG FIT",
+      "system_fit": "MODERATE",
+      "system_fit_reason": "Archetype score 3/7 — PRIME theme and sub-$500M cap match, but lacks clustering, institutional discovery wave, short squeeze potential, and under-followed status.",
+      "opportunity_type": "SECULAR_GROWTH",
+      "valuation_regime": "FUNDAMENTAL",
+
+      "gate_verdict": "BUY",
+      "gate_conviction": 7,
+      "catalyst_summary": "Q1 2026 earnings late April/May — first test of $874M revenue and 20% EBITDA margin guidance. $80M buyback execution ongoing. AI software services revenue tracking.",
+      "red_flag_level": "MINOR",
+      "dilution_check": "CAUTION",
+      "dilution_detail": "Shares outstanding grew 10.2% YoY (27.2M to 30.0M) driven by SBC. FY2026 guidance assumes 36.1M diluted shares (+12.5%). $80M buyback partially offsets but is a treadmill, not a reducer.",
+      "gate_bear_case": "Twilio scale advantage in CPaaS, declining messaging revenue, debt overhang from convertible notes",
+      "gate_bear_classification": "PARTIALLY_DISMANTLED",
+      "gate_math": "Revenue grows 16% to $874M, operating leverage delivers 29% EBITDA growth to $120M, multiple re-rates from 5.3x to 9x EV/EBITDA (peer median) = $26/share (+57%). At 15x EPS ($1.70) = $25.50 (+54%).",
+      "entry_timing_verdict": "ELEVATED",
+      "entry_timing_detail": "Up 23.2% from pivot low at gate. No gap-up. PRE-BREAKOUT theme momentum. Conviction -1 applied for elevated entry.",
+      "exceptional_override": false,
+      "exceptional_override_criteria": "",
+
+      "dd_verdict": "BUY",
+      "dd_conviction": 6,
+      "dd_conviction_change": "DECREASED",
+      "dd_conviction_change_reason": "Material negative findings: (1) FTC cease-and-desist for knowingly routing illegal robocalls — new regulatory risk not visible at gate. (2) Insider selling far worse than gate identified — CEO halved personal stake, $2.3M+ across entire C-suite, zero open-market purchases. (3) AI software revenue quantified at only $10M annualized (1.3% of total) — gap between narrative and revenue reality wider than gate assumed. Partially offset by positive findings: corrected EV calculation shows stock significantly cheaper than screeners suggest, 82% incremental gross margin on new cloud comm revenue.",
+      "dd_elevator_pitch": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue — cheapest in the peer group despite 16% guided growth — the market prices in single-digit growth and ignores the emerging AI voice infrastructure thesis. The risk/reward from $16.55 is asymmetric: $21-28 on execution, $28-53 in a takeout, $10-12 on thesis failure.",
+      "dd_why_now": "Q1 2026 earnings (late April/May) — first test of $874M revenue and 20% EBITDA margin guidance. If Enterprise Voice growth sustains >20% and AI software revenue reaches $15M+ ARR, market begins repricing AI thesis from narrative to numbers.",
+      "dd_the_math": "Independent 12-month target $26.00 (operational, ex-M&A) to $30.29 (including M&A optionality). Method: peer-relative EV/Revenue 1.3x and EV/EBITDA 9x on corrected pro-forma EV (~$600M vs screener $860M), blended 50/25/25 with historical multiple (1.5x rev) and acquisition value (2.0x rev). Upside +57% to +83% from $16.55.",
+      "dd_bear_case": "AI primarily deflects calls reducing enterprise voice volumes (Gartner: 30-50% of calls AI-resolved by 2028), while AI software revenue is only $10M (1.3% of total). Zero insider buying against $2.3M selling with CEO halving stake. FTC cease-and-desist for knowingly routing 125 illegal robocalls. 10%+ annual SBC dilution erodes per-share economics. $150M convertible notes due April 2028 constrain flexibility.",
+      "dd_risk_to_monitor": "Q1 2026 Enterprise Voice growth rate — if decelerates from 21% to below 15%, the AI-driven growth acceleration narrative breaks. This is the single metric bridging $10M AI ARR today and the forward thesis.",
+      "dd_action": "Enter at ~$16.55. T3 reduced position (2.5% of portfolio). Set hard stop at $11.00 (34% below entry, below 52-week low). Monitor Q1 2026 earnings for cloud comm acceleration and AI revenue disclosure.",
+      "dd_hold_thesis": "Expected hold 6-12 months. Key milestones: Q1 earnings (Apr/May) validates revenue acceleration; H2 2026 $80M buyback execution and potential activist interest at sub-$500M cap; April 2028 convert maturity (if held). Early exit: cloud comm deceleration below 5% or any kill switch event.",
+      "dd_key_catalyst": "Q1 2026 earnings — Enterprise Voice growth continuation and AI software revenue trajectory",
+      "dd_fatal_flaw": "",
+
+      "variant_perception": "Market misprices Bandwidth's enterprise value. Screeners include $225M in operating lease liabilities as debt, inflating EV by 35% and making the stock appear fairly valued when it is significantly undervalued on financial-debt EV. Secondary: 82% incremental gross margin on new cloud comm revenue means operating leverage is dramatically steeper than trailing margins suggest.",
+      "key_assumption": "Cloud communications revenue must accelerate to 12%+ organic growth in FY2026 (from ~4% in Q4 2025). If cloud comm growth decelerates below 8%, the 16% headline revenue guide relies entirely on zero-margin surcharge growth.",
+      "kill_switch": "Exit if: (1) BAND closes below $11.00 on weekly basis; (2) Q1 2026 cloud comm revenue growth decelerates below 5% YoY; (3) any insider sells >25% of remaining holdings outside 10b5-1 plan; (4) FTC escalates to formal enforcement action or fine exceeding $25M.",
+      "downside_floor": "Trough valuation at 4x forward EBITDA ($120M) = ~$9.14/share. Acquisition floor at 1.5x forward revenue = ~$28-30/share. Realistic max loss ~35-38% to $10-12 range if thesis fails and no acquirer emerges.",
+
+      "off_system_exception": false,
+      "off_system_verdict": "N/A",
+      "off_system_exception_score": 0,
+      "off_system_reason": "",
+      "off_system_expected_return": 0,
+      "off_system_12mo_target": 0.00,
+      "off_system_checks_passed": "",
+      "off_system_failed_checks": "",
+      "off_system_monitoring_cadence": ""
+    }
+  ],
 
   "no_go": [
     {
-      "symbol": "LRMR",
+      "symbol": "GOGO",
       "verdict": "NO GO",
       "stage_rejected": "review_gate",
-      "rejection_reason": "CRO removed: system drift + unprecedented surrogate endpoint risk (skin FXN has zero FDA precedent) + 100% correlation with NGNE creating zero diversification + 88% recent surge = chasing territory",
-      "reconsider_if": "Pullback to $3.80-$4.20, FDA precedent accepting novel surrogate in any rare disease, or if NGNE position is NOT entered freeing biotech allocation",
+      "rejection_reason": "CRO removed — STRONG DRIFT 1/7 archetype score. Return math failed 50% threshold on 12-month basis (only cleared at 18 months). Net debt $770M on $705M market cap. No DD completed. Gate conviction already SPEC BUY 5/10.",
+      "reconsider_if": "GOGO reports first material Galileo 5G service revenue in Q1 2026 earnings AND stock pulls back to $4.50 or below. Run full DD at that point.",
       "prompt4_removal": true,
-      "prompt4_removal_reason": "System drift + unprecedented endpoint risk + portfolio overconcentration. Adding a second correlated biotech binary provides zero diversification. Novel surrogate endpoint has literally zero FDA precedent. 88% surge puts entry firmly in chasing territory."
+      "prompt4_removal_reason": "STRONG DRIFT on archetype scorecard (1/7). Only theme score matched system profile. Leveraged turnaround bet with binary downside does not match system edge targeting rare 200-700% theme-driven winners."
     },
     {
-      "symbol": "CCCC",
+      "symbol": "XPER",
       "verdict": "NO GO",
-      "stage_rejected": "dd",
-      "rejection_reason": "Reduced to 4/10 watchlist during DD — BMS competitive juggernaut with mezigdomide, warrant overhang, 53% recent run, timeline extends beyond hold period. CRO confirmed.",
-      "reconsider_if": "Pullback to $2.20-$2.40, BMS competitive timeline clarity, warrant expiration",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
+      "stage_rejected": "review_gate",
+      "rejection_reason": "CRO removed — STRONG DRIFT 1/7 archetype score. Theme scored 6.45 at bottom of INVESTABLE, advanced via operator discretion override. Total revenue still declining. Connected Car monetization unproven. No DD completed.",
+      "reconsider_if": "Q1 earnings show Media Platform >30% YoY growth AND first Connected Car data monetization revenue. Target entry $5.75 or below.",
+      "prompt4_removal": true,
+      "prompt4_removal_reason": "STRONG DRIFT on archetype scorecard (1/7). Weakest-themed, lowest-conviction position in session with no DD. Not a defensible use of capital when system targets high-conviction theme-driven plays."
     },
     {
-      "symbol": "ATLX",
+      "symbol": "MEG",
       "verdict": "NO GO",
-      "stage_rejected": "gate",
-      "rejection_reason": "Gated at 6.60/50 INVESTABLE, conviction 4/10 — insufficient catalyst clarity for position sizing",
-      "reconsider_if": "Clear near-term catalyst with institutional interest, lithium recovery triggers",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
+      "stage_rejected": "review_gate",
+      "rejection_reason": "CRO removed — STRONG DRIFT 1/7 archetype score. Return math MARGINAL (consensus PTs imply only 27-30% upside). Stock already rallied 157% from 52-week lows. ~$1B market cap above sub-$500M sweet spot. Insider selling cluster post-earnings.",
+      "reconsider_if": "Pullback to $23-24 for compounder allocation outside momentum system. Or if PFAS regulatory catalyst creates 50%+ upside math from a lower base.",
+      "prompt4_removal": true,
+      "prompt4_removal_reason": "STRONG DRIFT on archetype scorecard (1/7). Quality compounder for a different portfolio strategy, not a system trade targeting 200-700% returns from catching powerful secular themes early."
     },
     {
-      "symbol": "MBOT",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Borderline at Phase 1 — gated at 6.20/50 INVESTABLE, parked as borderline, not advanced to DD",
-      "reconsider_if": "Specific catalyst emerges with institutional accumulation signal",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
-    },
-    {
-      "symbol": "ARTV",
+      "symbol": "SABR",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — insufficient catalyst strength and demand signal",
-      "reconsider_if": "Meaningful catalyst with institutional interest",
+      "rejection_reason": "AVOID class — theme score 4.35. GDS AI travel commerce transformation theme failed minimum quality threshold.",
+      "reconsider_if": "Material turnaround evidence in GDS market share or AI-driven booking volume acceleration.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "IKT",
+      "symbol": "HNST",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — insufficient catalyst strength",
-      "reconsider_if": "Clinical data readout with clear inflection",
+      "rejection_reason": "AVOID class — theme score 4.40. Clean-label consumer turnaround theme failed minimum quality threshold.",
+      "reconsider_if": "Sustained revenue acceleration above 15% with margin expansion proving turnaround thesis.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "RCKT",
+      "symbol": "SOC",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — gene therapy platform but no near-term differentiating catalyst",
-      "reconsider_if": "Pipeline catalyst with institutional accumulation signal",
+      "rejection_reason": "SELECTIVE class — theme score 4.70. CA offshore oil restart theme received capital cycle veto.",
+      "reconsider_if": "Federal preemption of CA offshore drilling ban is legally upheld AND oil prices sustain above $80.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "SEPN",
+      "symbol": "CVI",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Fundamental improvement with sector tailwind",
+      "rejection_reason": "SELECTIVE class — theme score 4.70. Mid-continent refining margin recovery theme below minimum quality threshold. $2.7B market cap, T3.",
+      "reconsider_if": "Crack spreads widen materially above historical averages with sustained catalyst.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "ASIC",
+      "symbol": "SEZL",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Theme alignment with established wave (AI infrastructure, semiconductor cycle)",
+      "rejection_reason": "Filtered at Prompt 4 — $2.5B market cap, T3 signal, beta 8.75. BNPL subscription flywheel theme scored 6.90 INVESTABLE but position sizing and volatility profile disqualified.",
+      "reconsider_if": "Significant pullback creating better entry with sub-$1.5B cap and lower beta environment.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "CNTA",
+      "symbol": "PROK",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Clinical or regulatory catalyst",
+      "rejection_reason": "Filtered at Prompt 4 — 15-month catalyst wait until Phase 3 CKD readout. T3 signal. CKD cell therapy theme scored 6.10 INVESTABLE but timeline mismatch with system hold period.",
+      "reconsider_if": "Approaching Phase 3 readout within 6 months with clean interim data.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     },
     {
-      "symbol": "CRSP",
+      "symbol": "CLDX",
       "verdict": "NO GO",
       "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — gene editing leader but crowded, limited asymmetry at current valuation",
-      "reconsider_if": "Meaningful pullback creating entry or new indication data",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
-    },
-    {
-      "symbol": "LWLG",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Commercial traction or partnership announcement",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
-    },
-    {
-      "symbol": "VAC",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Travel sector re-acceleration with macro support",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
-    },
-    {
-      "symbol": "OSIS",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen",
-      "reconsider_if": "Security/defense spending catalyst aligning with established defense wave",
-      "prompt4_removal": false,
-      "prompt4_removal_reason": ""
-    },
-    {
-      "symbol": "SGMO",
-      "verdict": "NO GO",
-      "stage_rejected": "thematic",
-      "rejection_reason": "Failed Phase 1 thematic screen — gene therapy platform but no near-term catalyst",
-      "reconsider_if": "Partnership deal or clinical data with defined timeline",
+      "rejection_reason": "Borderline at Prompt 4 — binary biotech with operator discretion flag. Anti-KIT mast cell theme scored 6.95 INVESTABLE but pure binary catalyst profile with pre-revenue stage. Operator discretion not exercised.",
+      "reconsider_if": "Barzolvolimab Phase 3 data readout approaches within 3-month window with positive interim signals.",
       "prompt4_removal": false,
       "prompt4_removal_reason": ""
     }
@@ -217,69 +241,222 @@
 
   "watchlist": [
     {
-      "symbol": "NGNE",
-      "theme": "Rare disease gene therapy — Rett syndrome",
-      "status": "CRO conditionally approved at 6/10 T3, but entry zone $19.50-$21.00 NOT met at current ~$24 post-BTD gap. Off-system exception (DRIFT). DD verdict was SPEC BUY 7/10 before CRO adjusted to 6/10. The Rett Syndrome Trade We're Not Taking (Yet).",
-      "trigger_to_buy": "Price consolidates to $19.50-$21.00 entry zone (at or below pre-BTD gap price of $19.64). Do NOT chase above $21.00. Also monitor: Embolden enrollment completion Q2 2026, any safety signals.",
-      "price_at_scan": 24.50
+      "symbol": "GOGO",
+      "theme": "BizAv Connectivity Upgrade (5G + LEO)",
+      "status": "Near miss — PRIME theme (7.65) but return math failed 50% on 12-month basis. $909M debt, muted 2026 guidance. SPEC BUY 5/10 at gate.",
+      "trigger_to_buy": "First material Galileo 5G service revenue in Q1 earnings AND stock at $4.50 or below. Run full DD at trigger.",
+      "price_at_scan": 5.23
     },
     {
-      "symbol": "LRMR",
-      "theme": "Rare disease biotech — Friedreich's ataxia",
-      "status": "CRO removed from deployment — unprecedented surrogate endpoint risk (skin FXN), 88% recent surge, 100% correlation with NGNE. DD verdict was 6/10 SPEC BUY before CRO removal.",
-      "trigger_to_buy": "Pullback to $3.80-$4.20, FDA precedent accepting novel surrogate in any rare disease, clarity from FDA on BLA review expectations, or if NGNE is NOT entered freeing biotech allocation",
-      "price_at_scan": 5.29
+      "symbol": "XPER",
+      "theme": "Connected Car Platform Monetization",
+      "status": "Near miss — INVESTABLE theme (6.45) advanced via operator discretion. Clean entry timing near 52-week lows but total revenue declining and monetization unproven.",
+      "trigger_to_buy": "Q1 Media Platform >30% YoY growth AND first Connected Car data monetization revenue at $5.75 or below.",
+      "price_at_scan": 6.16
     },
     {
-      "symbol": "CCCC",
-      "theme": "Biotech — protein degradation (multiple myeloma)",
-      "status": "Reduced to 4/10 watchlist during DD — BMS competitive juggernaut with mezigdomide, warrant overhang, 53% recent run, long timeline",
-      "trigger_to_buy": "Pullback to $2.20-$2.40, BMS competitive timeline clarity, warrant expiration",
-      "price_at_scan": 3.50
+      "symbol": "MEG",
+      "theme": "PFAS / Methane Environmental Compliance",
+      "status": "Near miss — solid INVESTABLE theme (7.20) but return math MARGINAL from current levels. Quality compounder, not system trade. Already rallied 157% from lows.",
+      "trigger_to_buy": "Pullback to $23-24 creating 50%+ return math. Or new PFAS regulatory catalyst expanding TAM materially.",
+      "price_at_scan": 27.00
     },
     {
-      "symbol": "ATLX",
-      "theme": "Biotech — specialty pharma (lithium)",
-      "status": "Gate filtered at 4/10 — insufficient catalyst clarity for position sizing",
-      "trigger_to_buy": "Lithium market recovery triggers, clear near-term catalyst with institutional interest",
-      "price_at_scan": 12.00
+      "symbol": "CLDX",
+      "theme": "Anti-KIT Mast Cell Inhibition",
+      "status": "Borderline — INVESTABLE theme (6.95) with binary biotech profile. Barzolvolimab is differentiated but timeline and binary nature don't match system.",
+      "trigger_to_buy": "Phase 3 readout within 3-month window with positive interim data signals. Binary sizing cap applies.",
+      "price_at_scan": 29.43
     }
   ],
 
   "themes_this_week": [
     {
-      "name": "Rare Disease Gene Therapy",
-      "classification": "SELECTIVE",
+      "name": "AI Voice CPaaS Infrastructure",
+      "classification": "PRIME",
       "lifecycle_stage": "EARLY_ADOPTION",
-      "valuation_regime": "OPTIONALITY",
-      "composite_score": 6.8,
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 7.60,
       "catalyst_score": 8.0,
-      "momentum_score": 6.5,
-      "crowding_score": 7.5,
-      "runway_score": 5.0,
-      "one_liner": "FDA accelerated approval tailwinds (BTD, RMAT, Plausible Mechanism Framework) de-risking rare disease gene therapy, but multi-year sector bear market and commercialization failures cap upside",
-      "thesis_summary": "Gene therapy for rare neurological disease entering registrational stage with multiple FDA de-risking signals. However, sector remains binary — individual asset success/failure drives returns, not sector-wide momentum. Not a secular wave. Broader gene therapy sector in multi-year bear market since Bluebird Bio commercial struggles and AAV deaths.",
-      "why_now": "FDA BTD designation wave (NGNE Feb 2026). FDA Plausible Mechanism Framework Feb 23 2026. Embolden and REVEAL trials reading out mid-2026.",
-      "key_catalysts": ["NGNE Embolden data mid-2026", "TSHA REVEAL Part A update H1 2026", "FDA Plausible Mechanism Framework finalization", "Gene therapy M&A activity (Novartis, Lilly actively acquiring AAV assets)"],
-      "primary_risks": ["AAV safety class risk (multiple deaths across industry)", "Gene therapy commercialization failure (Pfizer Beqvez zero-uptake withdrawal)", "Regulatory uncertainty from FDA leadership changes", "Multi-year gene therapy bear market headwind"],
-      "tickers": ["NGNE", "LRMR", "SGMO", "CRSP", "RCKT"]
+      "momentum_score": 7.5,
+      "crowding_score": 4.0,
+      "runway_score": 7.75,
+      "one_liner": "Enterprise AI voice agents are generating 3-4x per-call revenue through the infrastructure plumbing layer beneath every major UCaaS/CCaaS platform.",
+      "thesis_summary": "Agentic AI deployment is driving 340% YoY enterprise voice agent growth. Each AI-enabled call generates multiplied revenue through simultaneous transcription, sentiment analysis, fraud detection, and routing. Owned Tier-1 IP voice networks capture this value at 20-50% cost advantage over resellers.",
+      "why_now": "Enterprise Voice revenue growing 21% YoY at Bandwidth. AI developers on platform quadrupled in FY2025. FY2026 guidance of 16% revenue growth and 29% EBITDA growth represents inflection point.",
+      "key_catalysts": ["Q1 2026 earnings validating cloud comm acceleration", "AI software revenue scaling beyond $10M ARR", "$80M buyback providing price support"],
+      "primary_risks": ["AI deflection reducing total call volumes vs generating them", "Twilio competitive response with scale advantage", "FTC regulatory action on robocall routing"],
+      "tickers": ["BAND"]
     },
     {
-      "name": "Biotech — Protein Degradation",
-      "classification": "SELECTIVE",
+      "name": "BizAv Connectivity Upgrade (5G + LEO)",
+      "classification": "PRIME",
       "lifecycle_stage": "EARLY_ADOPTION",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 7.65,
+      "catalyst_score": 8.5,
+      "momentum_score": 7.0,
+      "crowding_score": 4.5,
+      "runway_score": 8.0,
+      "one_liner": "Business aviation is transitioning from legacy air-to-ground to 5G and LEO satellite connectivity, with a multi-year hardware upgrade cycle ahead.",
+      "thesis_summary": "Gogo holds dominant market share in North American BizAv connectivity and is transitioning to Galileo 5G service launching mid-2026. Multi-orbit architecture (5G + LEO) creates competitive moat against Starlink in premium BizAv/military niche. Strong insider buying signal (CEO $1.4M, Chairman $907K).",
+      "why_now": "5G service revenue begins Q1 2026. Textron OEM line-fit late 2026. LTE network mid-2026. But stock needs to clear 12-month return math threshold — currently only works on 18-month hold.",
+      "key_catalysts": ["First 5G Galileo service revenue Q1 2026", "Textron OEM line-fit agreement late 2026", "Military C-130 connectivity ramp"],
+      "primary_risks": ["$909M debt at SOFR+6% creates downside if ramp delayed", "Starlink competition in broader aviation market", "Muted 2026 guidance (flat revenue, -4.5% EBITDA)"],
+      "tickers": ["GOGO"]
+    },
+    {
+      "name": "PFAS / Methane Environmental Compliance",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 7.20,
+      "catalyst_score": 7.5,
+      "momentum_score": 7.0,
+      "crowding_score": 3.5,
+      "runway_score": 7.25,
+      "one_liner": "State-driven PFAS remediation mandates and EU methane regulations are creating sustained demand for environmental compliance services independent of federal policy.",
+      "thesis_summary": "20+ states have adopted PFAS drinking water standards. The $10.3B 3M PFAS settlement funds remediation contracts for years. EU methane regulations require US LNG exporters to measure and report emissions. Montrose posted record Q4 with 19.3% FY2025 revenue growth and raised 2026 guidance.",
+      "why_now": "Record Q4 2025 results with raised guidance. VeriPlume methane measurement technology commercializing. M&A resumption planned H2 2026.",
+      "key_catalysts": ["Q1 2026 earnings validating guidance trajectory", "M&A resumption H2 2026", "VeriPlume commercialization", "EU methane regulation implementation"],
+      "primary_risks": ["Federal deregulation risk under current administration", "Valuation no longer cheap after 157% rally from lows", "Insider selling cluster post-earnings"],
+      "tickers": ["MEG"]
+    },
+    {
+      "name": "Connected Car Platform Monetization",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "TRANSITION",
+      "composite_score": 6.45,
+      "catalyst_score": 6.5,
+      "momentum_score": 6.0,
+      "crowding_score": 5.0,
+      "runway_score": 6.75,
+      "one_liner": "14 million connected vehicles deployed with zero data/ad monetization to date — the connected car platform is a pre-revenue option on a massive installed base.",
+      "thesis_summary": "Xperi provides entertainment, DTS audio, and connected car middleware to major OEMs including Mercedes-Benz. Media Platform revenue grew 15% in Q4 with 4.9M MAUs. Connected Car monetization (data, advertising) has not yet begun despite 14M vehicle deployments, representing untapped upside.",
+      "why_now": "Q4 Media Platform inflection (+15%). Mercedes-Benz all-four-solutions launch approaching. Near 52-week lows creating favorable entry. But total revenue still declining due to Pay TV runoff.",
+      "key_catalysts": ["Connected Car data monetization launch mid-2026", "Mercedes-Benz deployment", "Q1 earnings trajectory"],
+      "primary_risks": ["Pay TV decline rate accelerating (-21% YoY)", "Monetization perpetually next year story", "Total revenue still declining"],
+      "tickers": ["XPER"]
+    },
+    {
+      "name": "Anti-KIT Mast Cell Inhibition",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EMERGENCE",
       "valuation_regime": "OPTIONALITY",
-      "composite_score": 4.5,
+      "composite_score": 6.95,
+      "catalyst_score": 7.0,
+      "momentum_score": 6.5,
+      "crowding_score": 4.0,
+      "runway_score": 7.0,
+      "one_liner": "Barzolvolimab targets the KIT pathway in chronic spontaneous urticaria with differentiated mechanism and strong Phase 2 data.",
+      "thesis_summary": "Celldex's anti-KIT antibody barzolvolimab showed compelling Phase 2 efficacy in CSU. The mechanism is differentiated from anti-IgE approaches. Pre-revenue biotech with binary Phase 3 readout driving valuation.",
+      "why_now": "Phase 3 program advancing. Binary biotech profile with operator discretion flag.",
+      "key_catalysts": ["Phase 3 CSU data readout", "Potential partnership or licensing"],
+      "primary_risks": ["Binary Phase 3 outcome", "Pre-revenue capital needs", "Competitive landscape in CSU"],
+      "tickers": ["CLDX"]
+    },
+    {
+      "name": "BNPL Subscription Flywheel",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 6.90,
+      "catalyst_score": 7.0,
+      "momentum_score": 7.0,
+      "crowding_score": 3.0,
+      "runway_score": 7.0,
+      "one_liner": "Sezzle's premium subscription model creates recurring revenue flywheel atop BNPL transaction volume.",
+      "thesis_summary": "BNPL with subscription premium creating sticky revenue. Rapid growth trajectory but filtered on market cap ($2.5B), T3 signal quality, and extreme beta (8.75).",
+      "why_now": "Strong growth metrics but position sizing and volatility profile incompatible with system parameters at current levels.",
+      "key_catalysts": ["Subscriber growth trajectory", "Mobile platform adoption"],
+      "primary_risks": ["Extreme beta (8.75)", "Regulatory risk to BNPL", "Market cap above sweet spot"],
+      "tickers": ["SEZL"]
+    },
+    {
+      "name": "GDS AI Travel Commerce",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 4.35,
+      "catalyst_score": 4.0,
+      "momentum_score": 4.5,
+      "crowding_score": 6.0,
+      "runway_score": 4.5,
+      "one_liner": "Legacy GDS turnaround via AI-driven travel commerce — AVOID due to execution risk and competitive displacement.",
+      "thesis_summary": "Sabre's transformation thesis is structurally challenged by direct connect trends, thin margins, and heavy legacy infrastructure costs.",
+      "why_now": "Not actionable — theme below minimum quality threshold.",
+      "key_catalysts": [],
+      "primary_risks": ["Direct connect disintermediation", "Heavy debt load", "Execution risk"],
+      "tickers": ["SABR"]
+    },
+    {
+      "name": "Clean-Label Consumer Turnaround",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 4.40,
+      "catalyst_score": 4.0,
+      "momentum_score": 4.5,
+      "crowding_score": 5.5,
+      "runway_score": 4.5,
+      "one_liner": "Honest Company turnaround lacks the structural catalyst density required — AVOID.",
+      "thesis_summary": "Consumer turnaround in competitive CPG space without structural moat or catalyst stack.",
+      "why_now": "Not actionable — theme below minimum quality threshold.",
+      "key_catalysts": [],
+      "primary_risks": ["Intense CPG competition", "Margin pressure", "Brand differentiation eroding"],
+      "tickers": ["HNST"]
+    },
+    {
+      "name": "CA Offshore Oil Restart",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 4.70,
       "catalyst_score": 5.0,
       "momentum_score": 4.0,
       "crowding_score": 5.0,
-      "runway_score": 4.0,
-      "one_liner": "Targeted protein degradation promising but competitive dynamics dominated by BMS/Celgene with approved mezigdomide",
-      "thesis_summary": "TPD companies face dual challenge of proving efficacy in competitive oncology landscape while BMS holds first-mover advantage. Small players like CCCC have warrant overhang and long timelines. Not a theme with current momentum.",
-      "why_now": "BMS competitive timeline becoming clearer. Phase 1/2 data readouts in 2026-2027 for next-gen degraders.",
-      "key_catalysts": ["CCCC Phase 1 expansion data", "BMS mezigdomide label expansion"],
-      "primary_risks": ["BMS competitive juggernaut", "Warrant overhang on smaller players", "Long development timelines"],
-      "tickers": ["CCCC"]
+      "runway_score": 4.5,
+      "one_liner": "Federal preemption of California offshore drilling ban — capital cycle veto applied.",
+      "thesis_summary": "Sable Offshore restart thesis depends on federal preemption of state regulations. Capital cycle veto: massive capital requirements with uncertain regulatory timeline.",
+      "why_now": "Not actionable — capital cycle veto.",
+      "key_catalysts": ["Federal preemption legal ruling"],
+      "primary_risks": ["Regulatory uncertainty", "Capital requirements", "Environmental opposition"],
+      "tickers": ["SOC"]
+    },
+    {
+      "name": "Mid-Continent Refining Recovery",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 4.70,
+      "catalyst_score": 4.5,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 4.5,
+      "one_liner": "Cyclical refining margin recovery — below minimum theme quality threshold.",
+      "thesis_summary": "CVR Energy is a cyclical refining play without the structural catalyst density our system requires.",
+      "why_now": "Not actionable — theme below minimum quality threshold.",
+      "key_catalysts": ["Crack spread recovery"],
+      "primary_risks": ["Cyclical margin compression", "Regulatory risk", "Transition risk"],
+      "tickers": ["CVI"]
+    },
+    {
+      "name": "CKD Autologous Cell Therapy",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EMERGENCE",
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 6.10,
+      "catalyst_score": 6.0,
+      "momentum_score": 5.5,
+      "crowding_score": 4.5,
+      "runway_score": 6.5,
+      "one_liner": "Rilparencel for chronic kidney disease — 15-month catalyst wait creates timeline mismatch with system hold period.",
+      "thesis_summary": "ProKidney's autologous cell therapy for CKD is differentiated but Phase 3 readout timing (15+ months) exceeds comfortable positioning window given pre-revenue burn rate.",
+      "why_now": "Not actionable until approaching Phase 3 readout window.",
+      "key_catalysts": ["Phase 3 CKD readout"],
+      "primary_risks": ["Long catalyst wait", "Pre-revenue burn", "Regulatory pathway uncertainty"],
+      "tickers": ["PROK"]
     }
   ]
 }

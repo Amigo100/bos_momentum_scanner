@@ -1,4 +1,4 @@
-import { getPortfolio, getEquityCurve, enrichPositions } from "@/lib/data";
+import { getPortfolio, getEquityCurve, enrichPositions, getPortfolioSnapshot } from "@/lib/data";
 import { EquityChart } from "@/components/EquityChart";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +47,7 @@ export default function PortfolioPage() {
   const positions = getPortfolio();
   const equityCurve = getEquityCurve();
   const enriched = enrichPositions(positions);
+  const snapshot = getPortfolioSnapshot();
 
   const open = enriched.filter((p) => p.status === "OPEN");
   const closed = enriched.filter((p) => p.status !== "OPEN");
@@ -106,6 +107,51 @@ export default function PortfolioPage() {
             Equity Curve — Portfolio vs Benchmarks
           </h2>
           <EquityChart data={equityCurve} />
+        </div>
+      )}
+
+      {/* Benchmark Comparison */}
+      {snapshot?.benchmarks && (
+        <div className="stat-card rounded-xl overflow-hidden mb-8">
+          <div className="px-6 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+            <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+              Benchmark Comparison
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Portfolio</th>
+                  <th>SPY</th>
+                  <th>Alpha</th>
+                  <th>Trades</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(snapshot.benchmarks).map(([period, data]) => (
+                  <tr key={period}>
+                    <td>
+                      <span className="font-semibold text-xs uppercase" style={{ color: "var(--text-primary)" }}>{period}</span>
+                    </td>
+                    <td><PnlCell value={data.portfolio * 100} /></td>
+                    <td><PnlCell value={data.spy * 100} /></td>
+                    <td><PnlCell value={data.alpha * 100} /></td>
+                    <td style={{ color: "var(--text-secondary)" }}>{data.trades}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {snapshot.equity.max_drawdown_pct !== undefined && (
+            <div className="px-6 py-3 border-t flex items-center gap-4" style={{ borderColor: "var(--border)" }}>
+              <span className="text-xs font-medium uppercase" style={{ color: "var(--text-muted)" }}>Max Drawdown</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--accent-red)" }}>
+                {snapshot.equity.max_drawdown_pct.toFixed(1)}%
+              </span>
+            </div>
+          )}
         </div>
       )}
 

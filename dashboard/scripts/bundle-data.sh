@@ -21,6 +21,7 @@ PORTFOLIO_DIR="$PROJECT_ROOT/portfolio/output"
 SCANNER_DIR="$PROJECT_ROOT/scanner/output"
 TWITTER_DIR="$PROJECT_ROOT/twitter/output"
 SUBSTACK_DIR="$PROJECT_ROOT/substack/output"
+STATE_DIR="$PROJECT_ROOT/state"
 
 # Legacy fallback
 LEGACY_TRADES_DIR="$PROJECT_ROOT/trades"
@@ -32,6 +33,7 @@ echo "     Portfolio: $PORTFOLIO_DIR"
 echo "     Scanner:   $SCANNER_DIR"
 echo "     Twitter:   $TWITTER_DIR"
 echo "     Substack:  $SUBSTACK_DIR"
+echo "     State:     $STATE_DIR"
 echo "     Legacy:    $LEGACY_TRADES_DIR"
 
 # Helper: copy file from section dir with legacy fallback
@@ -64,12 +66,14 @@ fi
 rm -rf "$DATA_DIR"
 mkdir -p "$DATA_DIR/current/substack_posts"
 mkdir -p "$DATA_DIR/current/substack_notes"
+mkdir -p "$DATA_DIR/current/notes"
+mkdir -p "$DATA_DIR/state"
 mkdir -p "$DATA_DIR/archive"
 
 # ─── Portfolio data ───
 echo ""
 echo "   --- Portfolio ---"
-for f in portfolio.csv portfolio_google_sheets.csv equity_curve.csv; do
+for f in portfolio.csv portfolio_google_sheets.csv equity_curve.csv portfolio_snapshot.json; do
   copy_file "$PORTFOLIO_DIR" "$f" "$DATA_DIR/$f"
 done
 
@@ -141,12 +145,42 @@ if [ -f "$SUBSTACK_DIR/current/daily_context.md" ]; then
   echo "   + current/daily_context.md (from section)"
 fi
 
-# Handbook v5 (for dashboard prompt library)
-if [ -f "$PROJECT_ROOT/substack/docs/content_prompt_handbook_v5.md" ]; then
-  mkdir -p "$DATA_DIR/docs"
-  cp "$PROJECT_ROOT/substack/docs/content_prompt_handbook_v5.md" "$DATA_DIR/docs/"
-  echo "   + docs/content_prompt_handbook_v5.md"
+# Handbook (find highest version for dashboard prompt library)
+mkdir -p "$DATA_DIR/docs"
+latest_handbook=$(ls -1 "$PROJECT_ROOT/substack/docs"/content_prompt_handbook_v*.md 2>/dev/null | sort -V | tail -1)
+if [ -n "$latest_handbook" ]; then
+  cp "$latest_handbook" "$DATA_DIR/docs/"
+  echo "   + docs/$(basename "$latest_handbook")"
 fi
+
+# Notes from new notes/ directory
+if [ -d "$SUBSTACK_DIR/current/notes" ]; then
+  cp "$SUBSTACK_DIR/current/notes/"*.html "$DATA_DIR/current/notes/" 2>/dev/null || true
+  [ -f "$SUBSTACK_DIR/current/notes/notes_manifest.json" ] && cp "$SUBSTACK_DIR/current/notes/notes_manifest.json" "$DATA_DIR/current/notes/"
+  echo "   + current/notes/ (from section)"
+fi
+
+# Daily notes context
+if [ -f "$SUBSTACK_DIR/current/daily_notes_context.json" ]; then
+  cp "$SUBSTACK_DIR/current/daily_notes_context.json" "$DATA_DIR/current/"
+  echo "   + current/daily_notes_context.json"
+fi
+
+# Portfolio snapshot (also in substack output)
+if [ -f "$SUBSTACK_DIR/current/portfolio_snapshot.json" ]; then
+  cp "$SUBSTACK_DIR/current/portfolio_snapshot.json" "$DATA_DIR/current/"
+  echo "   + current/portfolio_snapshot.json"
+fi
+
+# ─── State data (content tracker, notes state) ───
+echo ""
+echo "   --- State ---"
+for f in content_tracker.json notes.json; do
+  if [ -f "$STATE_DIR/$f" ]; then
+    cp "$STATE_DIR/$f" "$DATA_DIR/state/"
+    echo "   + state/$f"
+  fi
+done
 
 # ─── Week archives ───
 echo ""

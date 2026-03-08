@@ -223,3 +223,103 @@ select:focus {
   border-color: var(--accent-teal);
   box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.3);
 }
+
+/* ─── Category badges (handbook v6.2 categories) ─── */
+.cat-deep-dive { background: rgba(96, 165, 250, 0.15); color: var(--accent-blue); }
+.cat-sector-watch { background: rgba(167, 139, 250, 0.15); color: var(--accent-violet); }
+.cat-the-edge { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
+.cat-performance { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); }
+
+/* Publishing status badges */
+.pub-pending { background: rgba(100, 116, 139, 0.15); color: var(--text-muted); }
+.pub-published { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); }
+.pub-generated { background: rgba(96, 165, 250, 0.15); color: var(--accent-blue); }
+.pub-failed { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); }
+
+/* Account badges (3-account tweet system) */
+.acct-alex { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); }
+.acct-rozalia { background: rgba(167, 139, 250, 0.15); color: var(--accent-violet); }
+.acct-james { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); }
+
+/* Prompt block — monospace copyable content */
+.prompt-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  position: relative;
+}
+
+/* Assignment card — hero card for today's post */
+.assignment-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(45, 212, 191, 0.05) 100%);
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* Copy button */
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(45, 212, 191, 0.15);
+  color: var(--accent-teal);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.copy-btn:hover {
+  background: rgba(45, 212, 191, 0.25);
+}
+
+/* Today highlight in schedule grid */
+.schedule-today {
+  border: 1px solid rgba(45, 212, 191, 0.4);
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.1);
+}
+
+/* Note slot card */
+.note-slot {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+.note-slot:hover {
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* Account filter toggle */
+.account-filter {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  background: rgba(42, 53, 72, 0.5);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.account-filter:hover {
+  color: var(--text-secondary);
+  border-color: rgba(42, 53, 72, 0.8);
+}
+.account-filter-active {
+  border-color: rgba(45, 212, 191, 0.3);
+  color: var(--accent-teal);
+  background: rgba(45, 212, 191, 0.1);
+}

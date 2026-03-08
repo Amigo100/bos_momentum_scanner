@@ -110,7 +110,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add substack/output/ scanner/output/current/market_analysis.md portfolio/output/portfolio.csv portfolio/output/portfolio_snapshot.json portfolio/output/equity_curve.csv portfolio/output/portfolio_google_sheets.csv 2>/dev/null || true
+          git add substack/output/ scanner/output/current/market_analysis.md portfolio/output/portfolio.csv portfolio/output/portfolio_snapshot.json portfolio/output/equity_curve.csv portfolio/output/portfolio_google_sheets.csv state/ 2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -125,3 +125,21 @@ jobs:
             git push
             echo "Daily content committed and pushed"
           fi
+
+      # ═══════════════════════════════════════════════════════════════════════
+      # TRIGGER VERCEL DEPLOY (refresh dashboard with latest data)
+      # ═══════════════════════════════════════════════════════════════════════
+
+      - name: Trigger Vercel deploy
+        if: steps.tz_check.outputs.skip != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "⚠ VERCEL_TOKEN not set — skipping deploy"
+            exit 0
+          fi
+          cd dashboard && npx vercel deploy --prod --token="$VERCEL_TOKEN" --yes
+        continue-on-error: true

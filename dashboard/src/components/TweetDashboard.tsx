@@ -48,7 +48,18 @@ function formatFullDate(dateStr: string): string {
   }
 }
 
-function TweetCard({ tweet, isNext, countdown }: { tweet: EnrichedTweet; isNext: boolean; countdown?: string }) {
+function AccountBadge({ account }: { account?: string }) {
+  if (!account) return null;
+  const labels: Record<string, string> = { account1: "Alex", account2: "Rozalia", account3: "James" };
+  const classes: Record<string, string> = { account1: "acct-alex", account2: "acct-rozalia", account3: "acct-james" };
+  return (
+    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${classes[account] || ""}`}>
+      {labels[account] || account}
+    </span>
+  );
+}
+
+function TweetCard({ tweet, isNext, countdown, account }: { tweet: EnrichedTweet; isNext: boolean; countdown?: string; account?: string }) {
   const isDimmed = tweet.displayStatus === "expired" || tweet.displayStatus === "abandoned";
   const fullDate = formatFullDate(tweet.scheduled_date);
 
@@ -87,11 +98,12 @@ function TweetCard({ tweet, isNext, countdown }: { tweet: EnrichedTweet; isNext:
         </div>
       )}
 
-      {/* Top Row: Status + Source + Category + Full Date + Slot Info */}
+      {/* Top Row: Status + Source + Account + Category + Full Date + Slot Info */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2 flex-wrap">
           <StatusBadge status={tweet.displayStatus} />
           <SourceBadge source={tweet.source} />
+          <AccountBadge account={account} />
           <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(167, 139, 250, 0.1)", color: "var(--accent-violet)" }}>
             {tweet.category || "\u2014"}
           </span>
@@ -537,17 +549,35 @@ function WorkflowIndicator({ summary }: { summary: LiveWorkflowSummary }) {
 // ─── Main Component ───
 
 export function TweetDashboard({ data, workflowSummary }: { data: EnrichedTweetData; workflowSummary?: LiveWorkflowSummary }) {
-  const [activeAccount, setActiveAccount] = useState<"account1" | "account2" | "account3">("account1");
+  const [activeAccount, setActiveAccount] = useState<"all" | "account1" | "account2" | "account3">("all");
   const [activeTab, setActiveTab] = useState<"upcoming" | "history" | "issues">("upcoming");
 
   const accountLabels: Record<string, string> = {
-    account1: "Account 1 (@AlexSterlingGBR)",
-    account2: "Account 2 (@Rdobrogowska)",
-    account3: "Account 3",
+    all: "All Accounts",
+    account1: "Alex (@AlexSterlingGBR)",
+    account2: "Rozalia (@Rdobrogowska)",
+    account3: "James",
   };
 
-  const tweets = data.accounts[activeAccount];
-  const rollingStats = data.rollingStats[activeAccount];
+  const accountBadgeClass: Record<string, string> = {
+    account1: "acct-alex",
+    account2: "acct-rozalia",
+    account3: "acct-james",
+  };
+
+  const tweets = useMemo(() => {
+    if (activeAccount === "all") {
+      // Merge all accounts with account tag
+      return [
+        ...data.accounts.account1.map(t => ({ ...t, _account: "account1" as const })),
+        ...data.accounts.account2.map(t => ({ ...t, _account: "account2" as const })),
+        ...data.accounts.account3.map(t => ({ ...t, _account: "account3" as const })),
+      ];
+    }
+    return data.accounts[activeAccount].map(t => ({ ...t, _account: activeAccount }));
+  }, [data.accounts, activeAccount]);
+
+  const rollingStats = activeAccount !== "all" ? data.rollingStats[activeAccount] : null;
 
   // All tweets from all accounts for schedule matching
   const allTweets = useMemo(
@@ -648,30 +678,36 @@ export function TweetDashboard({ data, workflowSummary }: { data: EnrichedTweetD
       {/* Daily Success Meter */}
       <DailySuccessMeter dailyStats={data.dailyStats} />
 
-      {/* Account Tabs */}
-      <div className="flex gap-1 mb-4 border-b" style={{ borderColor: "var(--border)" }}>
-        {(["account1", "account2", "account3"] as const).map((acct) => {
-          const count = data.accounts[acct].length;
-          const rolling = data.rollingStats[acct];
+      {/* Account Filters */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {(["all", "account1", "account2", "account3"] as const).map((acct) => {
+          const count = acct === "all"
+            ? data.accounts.account1.length + data.accounts.account2.length + data.accounts.account3.length
+            : data.accounts[acct].length;
+          const rolling = acct !== "all" ? data.rollingStats[acct] : null;
           const isActive = activeAccount === acct;
           return (
             <button
               key={acct}
               onClick={() => setActiveAccount(acct)}
-              className={`px-4 py-3 text-sm font-medium transition-all ${isActive ? "tab-active" : "tab-inactive"}`}
+              className={`account-filter ${isActive ? "account-filter-active" : ""}`}
             >
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
+                {acct !== "all" && (
+                  <span className={`w-2 h-2 rounded-full inline-block ${accountBadgeClass[acct]}`}
+                    style={{ background: "currentColor" }} />
+                )}
                 {accountLabels[acct]}
-                <span className="text-xs opacity-70">
+                <span className="opacity-70">
                   ({count})
-                  {rolling && rolling.total > 0 && (
-                    <span className="ml-1" style={{ color: rolling.successRate >= 90 ? "var(--accent-green)" : rolling.successRate >= 70 ? "var(--accent-amber)" : "var(--accent-red)" }}>
-                      {rolling.successRate}%
-                    </span>
-                  )}
                 </span>
+                {rolling && rolling.total > 0 && (
+                  <span style={{ color: rolling.successRate >= 90 ? "var(--accent-green)" : rolling.successRate >= 70 ? "var(--accent-amber)" : "var(--accent-red)" }}>
+                    {rolling.successRate}%
+                  </span>
+                )}
               </div>
-              {data.accountHealth[acct] && <AccountHealthBadge health={data.accountHealth[acct]} />}
+              {acct !== "all" && data.accountHealth[acct] && <AccountHealthBadge health={data.accountHealth[acct]} />}
             </button>
           );
         })}
@@ -731,6 +767,7 @@ export function TweetDashboard({ data, workflowSummary }: { data: EnrichedTweetD
             tweet={accountNextTweet}
             isNext={true}
             countdown={countdowns.get(accountNextTweet.id || accountNextTweet.sortKey)}
+            account={(accountNextTweet as unknown as Record<string, string>)._account}
           />
         </div>
       )}
@@ -777,6 +814,7 @@ export function TweetDashboard({ data, workflowSummary }: { data: EnrichedTweetD
                 tweet={t}
                 isNext={activeTab === "upcoming" && t.id === nextTweetId && t.id !== undefined && t.id !== ""}
                 countdown={countdowns.get(t.id || t.sortKey)}
+                account={(t as unknown as Record<string, string>)._account}
               />
             ))}
           </div>

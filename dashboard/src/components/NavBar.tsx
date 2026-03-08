@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const tabs = [
-  { href: "/overview", label: "Overview", icon: "🏠" },
   { href: "/", label: "Portfolio", icon: "📊" },
-  { href: "/tweets", label: "Tweets", icon: "🐦" },
   { href: "/substack", label: "Substack", icon: "📰" },
+  { href: "/notes", label: "Notes", icon: "📝" },
   { href: "/scanner", label: "Scanner", icon: "🔍" },
+  { href: "/tweets", label: "Tweets", icon: "🐦" },
 ];
 
 interface SystemStatus {
@@ -92,7 +92,7 @@ export function NavBar() {
         {/* Status */}
         <div className="flex items-center gap-3">
           <Link
-            href="/overview"
+            href="/"
             className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all hover:opacity-80"
             style={{
               background: statusBgColors[status.overall],

@@ -24,6 +24,9 @@ const SCANNER_DIR = path.join(PROJECT_ROOT, "scanner", "output");
 const TWITTER_DIR = path.join(PROJECT_ROOT, "twitter", "output");
 const SUBSTACK_DIR = path.join(PROJECT_ROOT, "substack", "output");
 
+// State directory (content tracker, notes state)
+const STATE_DIR = path.join(PROJECT_ROOT, "state");
+
 // Legacy fallback: trades/ directory (used if section dirs don't exist yet)
 const LEGACY_TRADES_DIR = path.join(PROJECT_ROOT, "trades");
 
@@ -118,6 +121,334 @@ function readFile(filePath: string): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Resolve a state file path — checks state/ dir locally, bundled data/state/ on Vercel.
+ */
+function resolveStateFile(relativePath: string): string {
+  if (isBundled()) {
+    return path.join(BUNDLED_DIR, "state", relativePath);
+  }
+  return path.join(STATE_DIR, relativePath);
+}
+
+// ─── Daily Context (Substack post assignment + prompts) ───
+
+export interface DailyContext {
+  // Today's post assignment
+  category: string | null;
+  topic: string | null;
+  theme: string | null;
+  reason: string | null;
+  // Copyable prompts
+  postPrompt: string | null;
+  notesPrompt: string | null;
+  // Embedded context sections
+  marketContext: string | null;
+  signalData: string | null;
+  portfolioSnapshot: string | null;
+  themeSummary: string | null;
+  todaysNotes: string | null;
+  // Raw markdown
+  raw: string;
+  generatedAt: string | null;
+}
+
+export function getDailyContext(): DailyContext | null {
+  const filePath = resolveFile(SUBSTACK_DIR, path.join("current", "daily_context.md"));
+  const content = readFile(filePath);
+  if (!content) return null;
+
+  // Extract TODAY'S POST metadata
+  const extractField = (field: string): string | null => {
+    const re = new RegExp(`\\*\\*${field}:\\*\\*\\s*(.+)`, "i");
+    const m = content.match(re);
+    return m ? m[1].trim() : null;
+  };
+
+  const category = extractField("Category");
+  const topic = extractField("Topic");
+  const theme = extractField("Theme");
+  const reason = extractField("Why this topic");
+
+  // Extract sections between ## headers
+  const extractSection = (startHeader: string, endHeaderPattern?: string): string | null => {
+    const startRe = new RegExp(`^## ${startHeader}\\s*$`, "m");
+    const startMatch = startRe.exec(content);
+    if (!startMatch) return null;
+    const startIdx = startMatch.index + startMatch[0].length;
+
+    let endIdx = content.length;
+    if (endHeaderPattern) {
+      const endRe = new RegExp(`^## ${endHeaderPattern}`, "m");
+      const endMatch = endRe.exec(content.slice(startIdx));
+      if (endMatch) endIdx = startIdx + endMatch.index;
+    } else {
+      // Find next ## header
+      const nextHeader = /^## /m.exec(content.slice(startIdx));
+      if (nextHeader) endIdx = startIdx + nextHeader.index;
+    }
+
+    return content.slice(startIdx, endIdx).trim() || null;
+  };
+
+  // Post prompt: everything between ## YOUR PROMPT and the next ## section
+  // The prompt content is between --- markers
+  const yourPromptSection = extractSection("YOUR PROMPT");
+  let postPrompt: string | null = null;
+  if (yourPromptSection) {
+    // Extract content between --- markers (the actual prompt)
+    const parts = yourPromptSection.split("---").map(s => s.trim()).filter(Boolean);
+    // Skip the "Copy everything below..." instruction, take the actual prompt
+    postPrompt = parts.length > 1 ? parts.slice(1).join("\n\n---\n\n") : parts[0] || null;
+  }
+
+  // Notes prompt: between ## NOTES PROMPT and next ##
+  const notesPromptSection = extractSection("NOTES PROMPT");
+  let notesPrompt: string | null = null;
+  if (notesPromptSection) {
+    const parts = notesPromptSection.split("---").map(s => s.trim()).filter(Boolean);
+    notesPrompt = parts.length > 1 ? parts.slice(1).join("\n\n---\n\n") : parts[0] || null;
+  }
+
+  const marketContext = extractSection("MARKET CONTEXT");
+  const signalData = extractSection("SIGNAL DATA");
+  const portfolioSnapshot = extractSection("PORTFOLIO SNAPSHOT");
+  const themeSummary = extractSection("THEME SUMMARY");
+  const todaysNotes = extractSection("TODAY'S NOTES");
+
+  // Generation timestamp
+  const genMatch = content.match(/\*Generated: (.+?) \|/);
+  const generatedAt = genMatch ? genMatch[1] : null;
+
+  return {
+    category,
+    topic,
+    theme,
+    reason,
+    postPrompt,
+    notesPrompt,
+    marketContext,
+    signalData,
+    portfolioSnapshot,
+    themeSummary,
+    todaysNotes,
+    raw: content,
+    generatedAt,
+  };
+}
+
+// ─── Content Tracker (weekly schedule + publishing status) ───
+
+export interface ContentTrackerPost {
+  date: string;
+  day: string;
+  category: string | null;
+  topic: string;
+  status: "pending" | "published" | "skipped";
+  note_types: string[];
+}
+
+export interface ContentTracker {
+  current_week: string;
+  posts: ContentTrackerPost[];
+  notes: unknown[];
+  streak: {
+    posts_on_schedule: number;
+    notes_streak: number;
+    last_post_date: string | null;
+    last_note_date: string | null;
+  };
+}
+
+export function getContentTracker(): ContentTracker | null {
+  const filePath = resolveStateFile("content_tracker.json");
+  return readJSON(filePath) as ContentTracker | null;
+}
+
+// ─── Notes State (today's slots + recent publishing history) ───
+
+export interface NoteSlot {
+  slot: number;
+  note_type: string;
+  status: "pending" | "generated" | "posted" | "failed";
+  note_id?: string;
+}
+
+export interface RecentNote {
+  date: string;
+  slot: number;
+  note_type: string;
+  note_id?: string;
+}
+
+export interface NotesState {
+  last_updated: string;
+  today: {
+    date: string;
+    notes_published: number;
+    notes_target: number;
+    slots: NoteSlot[];
+  };
+  recent: RecentNote[];
+}
+
+export function getNotesState(): NotesState | null {
+  const filePath = resolveStateFile("notes.json");
+  return readJSON(filePath) as NotesState | null;
+}
+
+// ─── Notes Manifest (generated note metadata) ───
+
+export interface NoteManifestEntry {
+  type: string;
+  scheduled_type: string;
+  slot: number;
+  time_et: string;
+  filepath: string;
+  text: string;
+  word_count: number;
+  cost: number;
+}
+
+export interface NotesManifest {
+  generated_at: string;
+  day: string;
+  total_notes: number;
+  notes: NoteManifestEntry[];
+}
+
+export function getNotesManifest(): NotesManifest | null {
+  // Try new notes/ directory first, then legacy substack_notes/
+  const newPath = resolveFile(SUBSTACK_DIR, path.join("current", "notes", "notes_manifest.json"));
+  const result = readJSON(newPath) as NotesManifest | null;
+  if (result) return result;
+
+  // Fallback: legacy substack_notes/
+  const legacyPath = resolveFile(SUBSTACK_DIR, path.join("current", "substack_notes", "notes_manifest.json"));
+  return readJSON(legacyPath) as NotesManifest | null;
+}
+
+/**
+ * Read generated note HTML files from the current notes directory.
+ * Returns an array of { slot, type, date, html, filepath } objects.
+ */
+export interface GeneratedNote {
+  slot: number;
+  type: string;
+  date: string;
+  html: string;
+  filename: string;
+}
+
+export function getGeneratedNotes(): GeneratedNote[] {
+  const notes: GeneratedNote[] = [];
+
+  // Try new notes/ directory first
+  const dirs = [
+    resolveDir(SUBSTACK_DIR, path.join("current", "notes")),
+    resolveDir(SUBSTACK_DIR, path.join("current", "substack_notes")),
+  ];
+
+  for (const dir of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    for (const file of fs.readdirSync(dir)) {
+      // Match: note_1_market_snapshot_20260306.html
+      const match = file.match(/^note_(\d+)_(.+)_(\d{8})\.html$/);
+      if (match) {
+        const html = readFile(path.join(dir, file));
+        if (html) {
+          notes.push({
+            slot: parseInt(match[1]),
+            type: match[2].toUpperCase(),
+            date: `${match[3].slice(0, 4)}-${match[3].slice(4, 6)}-${match[3].slice(6, 8)}`,
+            html,
+            filename: file,
+          });
+        }
+      }
+    }
+    // If we found notes in the first dir, don't check the fallback
+    if (notes.length > 0) break;
+  }
+
+  return notes.sort((a, b) => a.slot - b.slot);
+}
+
+// ─── Portfolio Snapshot (enriched equity + benchmark periods) ───
+
+export interface PortfolioSnapshotPosition {
+  ticker: string;
+  entry_date: string;
+  entry_price: number;
+  current_price: number;
+  highest_close: number;
+  pnl_pct: number;
+  pnl_usd: number;
+  days_held: number;
+  theme: string;
+  conviction: number;
+  stop_level: number;
+  distance_to_stop_pct: number;
+  stop_alert: boolean;
+}
+
+export interface BenchmarkPeriod {
+  portfolio: number;
+  spy: number;
+  alpha: number;
+  trades: number;
+}
+
+export interface PortfolioSnapshot {
+  generated_at: string;
+  prices_updated_at: string;
+  summary: {
+    open_positions: number;
+    closed_trades: number;
+    win_rate: number;
+    avg_winner: number;
+    avg_loser: number;
+    unrealized_pnl_pct: number;
+  };
+  equity: {
+    nav: number;
+    cash: number;
+    invested: number;
+    total_deployed: number;
+    total_return_pct: number;
+    spy_return_pct: number;
+    alpha_pct: number;
+    qqq_return_pct: number;
+    alpha_vs_qqq_pct: number;
+    max_drawdown_pct: number;
+  };
+  open_positions: PortfolioSnapshotPosition[];
+  closed_trades: PortfolioSnapshotPosition[];
+  winners: PortfolioSnapshotPosition[];
+  big_wins: PortfolioSnapshotPosition[];
+  home_runs: PortfolioSnapshotPosition[];
+  recent_exits: PortfolioSnapshotPosition[];
+  movers_today: Array<{
+    ticker: string;
+    current_price: number;
+    prev_close: number;
+    change_pct: number;
+  }>;
+  themes: Record<string, { count: number; tickers: string[]; avg_pnl_pct: number }>;
+  benchmarks: Record<string, BenchmarkPeriod>;
+}
+
+export function getPortfolioSnapshot(): PortfolioSnapshot | null {
+  // Try portfolio/output/ first, then substack/output/current/ (daily pipeline puts a copy there)
+  const portfolioPath = resolveFile(PORTFOLIO_DIR, "portfolio_snapshot.json");
+  const result = readJSON(portfolioPath) as PortfolioSnapshot | null;
+  if (result) return result;
+
+  // Fallback: substack output (daily pipeline copy)
+  const substackPath = resolveFile(SUBSTACK_DIR, path.join("current", "portfolio_snapshot.json"));
+  return readJSON(substackPath) as PortfolioSnapshot | null;
 }
 
 // ─── Utilities ───
@@ -768,10 +1099,15 @@ export function getSubstackContent(week?: string): SubstackContentResult {
     }
   }
 
-  // Notes (md and html)
-  const currentNotesDir = resolveDir(SUBSTACK_DIR, path.join("current", "substack_notes"));
-  if (fs.existsSync(currentNotesDir)) {
+  // Notes (md and html) — check new notes/ dir first, then legacy substack_notes/
+  const notesDirs = [
+    resolveDir(SUBSTACK_DIR, path.join("current", "notes")),
+    resolveDir(SUBSTACK_DIR, path.join("current", "substack_notes")),
+  ];
+  for (const currentNotesDir of notesDirs) {
+    if (!fs.existsSync(currentNotesDir)) continue;
     for (const file of fs.readdirSync(currentNotesDir)) {
+      if (file === "notes_manifest.json") continue; // skip manifest
       if (file.endsWith(".md") || file.endsWith(".html")) {
         const filePath = path.join(currentNotesDir, file);
         const content = readFile(filePath) || "";
@@ -788,6 +1124,7 @@ export function getSubstackContent(week?: string): SubstackContentResult {
         });
       }
     }
+    if (notes.length > 0) break; // found notes in first dir, skip fallback
   }
 
   // ─── Week archives ───
@@ -1258,13 +1595,35 @@ export function getContentProductionGuide(): ContentProductionGuide | null {
 }
 
 export function getHandbookPrompts(): HandbookPrompt[] {
-  // Try bundled docs first, then source docs
-  let handbookPath: string;
+  // Find highest version handbook: content_prompt_handbook_v*.md
+  let handbookPath: string | null = null;
+
+  const findHighestVersion = (dir: string): string | null => {
+    if (!fs.existsSync(dir)) return null;
+    const files = fs.readdirSync(dir)
+      .filter(f => f.match(/^content_prompt_handbook_v[\d.]+\.md$/))
+      .sort((a, b) => {
+        const verA = a.match(/v([\d.]+)/)?.[1] || "0";
+        const verB = b.match(/v([\d.]+)/)?.[1] || "0";
+        // Compare version strings numerically
+        const partsA = verA.split(".").map(Number);
+        const partsB = verB.split(".").map(Number);
+        for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+          const diff = (partsA[i] || 0) - (partsB[i] || 0);
+          if (diff !== 0) return diff;
+        }
+        return 0;
+      });
+    return files.length > 0 ? path.join(dir, files[files.length - 1]) : null;
+  };
+
   if (isBundled()) {
-    handbookPath = path.join(BUNDLED_DIR, "docs", "content_prompt_handbook_v5.md");
+    handbookPath = findHighestVersion(path.join(BUNDLED_DIR, "docs"));
   } else {
-    handbookPath = path.join(PROJECT_ROOT, "substack", "docs", "content_prompt_handbook_v5.md");
+    handbookPath = findHighestVersion(path.join(PROJECT_ROOT, "substack", "docs"));
   }
+
+  if (!handbookPath) return [];
 
   const content = readFile(handbookPath);
   if (!content) return [];
@@ -1274,42 +1633,46 @@ export function getHandbookPrompts(): HandbookPrompt[] {
   // Split by ## sections (level 2 headers)
   const sections = content.split(/^## /m).slice(1); // skip content before first ##
 
+  // Skip non-prompt sections
+  const skipPrefixes = [
+    "How to Use", "Quick Reference", "Companion Note",
+    "Prompt Count", "Change Log", "v6", "v5",
+  ];
+
   for (const section of sections) {
     const lines = section.split("\n");
     const sectionTitle = lines[0].trim();
 
-    // Skip non-prompt sections (How to Use, Quick Reference, etc.)
-    if (!sectionTitle.startsWith("Category") && !sectionTitle.startsWith("Trade Alert") && !sectionTitle.startsWith("Daily Notes")) {
-      continue;
-    }
+    // Skip non-prompt sections
+    if (skipPrefixes.some(p => sectionTitle.startsWith(p))) continue;
 
     // Determine type
     let type: HandbookPrompt["type"] = "post";
-    if (sectionTitle.startsWith("Trade Alert")) type = "trade-alert";
-    if (sectionTitle.startsWith("Daily Notes")) type = "notes";
+    if (/trade alert|signal|position update/i.test(sectionTitle)) type = "trade-alert";
+    if (/daily notes|companion note/i.test(sectionTitle)) type = "notes";
 
-    // Find all code fences in this section
+    // Find all code fences in this section — match various prompt header patterns
     const sectionText = section;
-    const fenceRegex = /### (?:Post Prompt|Notes Prompt)\s*\n+```\n([\s\S]*?)```/g;
+    const fenceRegex = /### (?:Post Prompt|Notes Prompt|Prompt|Entry Prompt|Exit Prompt|(?:Prompt \d+)[^\n]*)\s*\n+```\n([\s\S]*?)```/g;
     let match;
+    let promptIndex = 0;
     while ((match = fenceRegex.exec(sectionText)) !== null) {
       const promptText = match[1].trim();
       if (promptText.length > 0) {
-        const id = sectionTitle
+        promptIndex++;
+        const headerLine = match[0].split("\n")[0].trim().replace(/^### /, "");
+        const isNotes = /notes prompt/i.test(headerLine);
+        const baseId = sectionTitle
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-|-$/g, "");
-        // For the Notes section, use a distinct title
-        const isNotes = match[0].includes("Notes Prompt");
-        const title = isNotes && type !== "notes" ? `${sectionTitle} (Notes)` : sectionTitle;
+        const id = isNotes ? `${baseId}-notes` : promptIndex > 1 ? `${baseId}-${promptIndex}` : baseId;
+        const title = isNotes && type !== "notes"
+          ? `${sectionTitle} (Notes)`
+          : promptIndex > 1 ? `${sectionTitle} — ${headerLine}` : sectionTitle;
         const finalType = isNotes ? "notes" : type;
 
-        prompts.push({
-          id: isNotes ? `${id}-notes` : id,
-          title,
-          type: finalType,
-          prompt: promptText,
-        });
+        prompts.push({ id, title, type: finalType, prompt: promptText });
       }
     }
   }

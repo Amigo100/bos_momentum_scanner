@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sterling Signals Carousel Data",
+  "description": "Data schema for the carousel-generator.js slide builder. Cowork generates this JSON, the generator consumes it.",
+  "type": "object",
+  "required": ["title", "subtitle", "series_tag", "date", "slides"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Main title text. Rendered on the title slide (dark theme)."
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Subtitle line below the title."
+    },
+    "series_tag": {
+      "type": "string",
+      "description": "Series label shown in header, e.g. 'MACRO PULSE' or 'DEEP DIVE'."
+    },
+    "date": {
+      "type": "string",
+      "description": "Date string shown on title slide, e.g. 'MARCH 2026'."
+    },
+    "output_path": {
+      "type": "string",
+      "description": "Optional output directory. Defaults to substack/output/current/carousels/."
+    },
+    "output_filename": {
+      "type": "string",
+      "description": "Optional filename. Defaults to sterling-signals-carousel.pptx."
+    },
+    "slides": {
+      "type": "array",
+      "description": "Ordered array of content slides. Title slide is auto-generated from top-level fields.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "heading", "paragraphs"],
+            "properties": {
+              "type": { "const": "context" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "paragraphs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 5 },
+              "callout": { "type": "string", "description": "Optional italic callout with gold left border." }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "heading", "items"],
+            "properties": {
+              "type": { "const": "stats" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["number", "label"],
+                  "properties": {
+                    "number": { "type": "string" },
+                    "label": { "type": "string" }
+                  }
+                },
+                "minItems": 2,
+                "maxItems": 4
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "heading", "left", "right"],
+            "properties": {
+              "type": { "const": "two_column" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "left": {
+                "type": "object",
+                "required": ["title", "color", "items"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "color": { "type": "string", "description": "Hex color without #, e.g. C0392B" },
+                  "items": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 8 }
+                }
+              },
+              "right": {
+                "type": "object",
+                "required": ["title", "color", "items"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "color": { "type": "string" },
+                  "items": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 8 }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "heading", "items"],
+            "properties": {
+              "type": { "const": "takeaway" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["title", "body"],
+                  "properties": {
+                    "title": { "type": "string" },
+                    "body": { "type": "string" }
+                  }
+                },
+                "minItems": 1,
+                "maxItems": 5
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "heading", "items"],
+            "properties": {
+              "type": { "const": "timeline" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["date", "event"],
+                  "properties": {
+                    "date": { "type": "string" },
+                    "event": { "type": "string" }
+                  }
+                },
+                "minItems": 2,
+                "maxItems": 6
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "heading", "bull", "base", "bear"],
+            "properties": {
+              "type": { "const": "scenarios" },
+              "heading": { "type": "string" },
+              "icon": { "type": "string", "enum": ["bolt", "chart_bar", "shield", "lightbulb", "chart_line"] },
+              "bull": {
+                "type": "object",
+                "required": ["label", "value", "detail"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" },
+                  "detail": { "type": "string" }
+                }
+              },
+              "base": {
+                "type": "object",
+                "required": ["label", "value", "detail"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" },
+                  "detail": { "type": "string" }
+                }
+              },
+              "bear": {
+                "type": "object",
+                "required": ["label", "value", "detail"],
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" },
+                  "detail": { "type": "string" }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "number", "label"],
+            "properties": {
+              "type": { "const": "single_stat" },
+              "number": { "type": "string" },
+              "label": { "type": "string" },
+              "sublabel": { "type": "string", "description": "Optional secondary text below the label." }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

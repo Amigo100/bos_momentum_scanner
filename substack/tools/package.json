@@ -1,0 +1,17 @@
+{
+  "name": "sterling-signals-carousel-tools",
+  "version": "1.0.0",
+  "description": "Carousel and visual asset generators for Sterling Signals",
+  "private": true,
+  "scripts": {
+    "carousel": "node carousel-generator.js",
+    "carousel:test": "node carousel-generator.js test-carousel-data.json"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "sharp": "^0.33.0"
+  }
+}

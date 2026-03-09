@@ -1,67 +1,142 @@
 {
-  "generated_at": "2026-03-08T11:18:47.451971+00:00",
-  "prices_updated_at": "2026-03-08T11:18:47.015782+00:00",
+  "generated_at": "2026-03-09T11:33:22.730484+00:00",
+  "prices_updated_at": "2026-03-09T11:33:22.220170+00:00",
   "summary": {
-    "open_positions": 3,
+    "open_positions": 8,
     "closed_trades": 0,
     "win_rate": 0,
     "avg_winner": 0,
     "avg_loser": 0,
-    "unrealized_pnl_pct": 0.77
+    "unrealized_pnl_pct": 47.0
   },
   "equity": {
-    "nav": 15060.13,
+    "nav": 54838.78,
     "cash": 0.0,
-    "invested": 15060.13,
-    "total_deployed": 15000.0,
-    "total_return_pct": 0.4,
+    "invested": 54838.78,
+    "total_deployed": 40000.0,
+    "total_return_pct": 37.1,
     "spy_return_pct": -1.47,
-    "alpha_pct": 1.87,
+    "alpha_pct": 38.56,
     "qqq_return_pct": -0.28,
-    "alpha_vs_qqq_pct": 0.68,
+    "alpha_vs_qqq_pct": 37.37,
     "max_drawdown_pct": -5.69
   },
   "open_positions": [
     {
-      "ticker": "ETON",
+      "ticker": "SOFI",
       "entry_date": "2026-02-22",
-      "entry_price": 17.93,
-      "current_price": 16.799999237060547,
-      "highest_close": 18.45,
-      "pnl_pct": -6.3,
-      "pnl_usd": -113.0,
-      "days_held": 14,
-      "theme": "Healthcare Contrarian Recovery",
+      "entry_price": 7.9,
+      "current_price": 18.899999618530273,
+      "highest_close": 32.0,
+      "pnl_pct": 139.24,
+      "pnl_usd": 1100.0,
+      "days_held": 15,
+      "theme": "Financial Technology",
       "conviction": 8,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
     },
     {
-      "ticker": "RELY",
+      "ticker": "EVTL",
       "entry_date": "2026-02-22",
-      "entry_price": 17.15,
-      "current_price": 17.040000915527344,
-      "highest_close": 17.78,
-      "pnl_pct": -0.64,
-      "pnl_usd": -11.0,
-      "days_held": 14,
-      "theme": "Cross-Border Digital Payments & Remittances",
+      "entry_price": 4.5,
+      "current_price": 4.010000228881836,
+      "highest_close": 7.0,
+      "pnl_pct": -10.89,
+      "pnl_usd": -49.0,
+      "days_held": 15,
+      "theme": "Drone tech",
       "conviction": 8,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
     },
     {
-      "ticker": "NGNE",
+      "ticker": "NVDA",
       "entry_date": "2026-03-01",
-      "entry_price": 20.5,
-      "current_price": 22.170000076293945,
-      "highest_close": 24.25,
-      "pnl_pct": 8.15,
-      "pnl_usd": 167.0,
+      "entry_price": 150.0,
+      "current_price": 177.82000732421875,
+      "highest_close": 177.82000732421875,
+      "pnl_pct": 18.55,
+      "pnl_usd": 2782.0,
+      "days_held": 8,
+      "theme": "AI Chip Manufacturer",
+      "conviction": 6,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "AMD",
+      "entry_date": "2026-03-02",
+      "entry_price": 120.0,
+      "current_price": 192.42999267578125,
+      "highest_close": 220.0,
+      "pnl_pct": 60.36,
+      "pnl_usd": 7243.0,
       "days_held": 7,
-      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "theme": "Semiconductors",
+      "conviction": 7,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "TMDX",
+      "entry_date": "2026-03-03",
+      "entry_price": 65.0,
+      "current_price": 129.61000061035156,
+      "highest_close": 150.0,
+      "pnl_pct": 99.4,
+      "pnl_usd": 6461.0,
+      "days_held": 6,
+      "theme": "Organ Transplantation",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "ASPI",
+      "entry_date": "2026-03-04",
+      "entry_price": 6.0,
+      "current_price": 5.550000190734863,
+      "highest_close": 14.4,
+      "pnl_pct": -7.5,
+      "pnl_usd": -45.0,
+      "days_held": 5,
+      "theme": "Nuclear Fuel",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "HIVE",
+      "entry_date": "2026-03-04",
+      "entry_price": 2.1,
+      "current_price": 2.049999952316284,
+      "highest_close": 6.0,
+      "pnl_pct": -2.38,
+      "pnl_usd": -5.0,
+      "days_held": 5,
+      "theme": "Crypto Miner and Datacentres",
+      "conviction": 7,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "BAND",
+      "entry_date": "2026-03-08",
+      "entry_price": 16.55,
+      "current_price": 16.549999237060547,
+      "highest_close": 16.55,
+      "pnl_pct": -0.0,
+      "pnl_usd": -0.0,
+      "days_held": 1,
+      "theme": "AI Voice CPaaS Infrastructure",
       "conviction": 6,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
@@ -71,65 +146,249 @@
   "closed_trades": [],
   "winners": [
     {
-      "ticker": "NGNE",
-      "entry_date": "2026-03-01",
-      "entry_price": 20.5,
-      "current_price": 22.170000076293945,
-      "highest_close": 24.25,
-      "pnl_pct": 8.15,
-      "pnl_usd": 167.0,
+      "ticker": "SOFI",
+      "entry_date": "2026-02-22",
+      "entry_price": 7.9,
+      "current_price": 18.899999618530273,
+      "highest_close": 32.0,
+      "pnl_pct": 139.24,
+      "pnl_usd": 1100.0,
+      "days_held": 15,
+      "theme": "Financial Technology",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "TMDX",
+      "entry_date": "2026-03-03",
+      "entry_price": 65.0,
+      "current_price": 129.61000061035156,
+      "highest_close": 150.0,
+      "pnl_pct": 99.4,
+      "pnl_usd": 6461.0,
+      "days_held": 6,
+      "theme": "Organ Transplantation",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "AMD",
+      "entry_date": "2026-03-02",
+      "entry_price": 120.0,
+      "current_price": 192.42999267578125,
+      "highest_close": 220.0,
+      "pnl_pct": 60.36,
+      "pnl_usd": 7243.0,
       "days_held": 7,
-      "theme": "Rare disease gene therapy \u2014 Rett syndrome",
+      "theme": "Semiconductors",
+      "conviction": 7,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "NVDA",
+      "entry_date": "2026-03-01",
+      "entry_price": 150.0,
+      "current_price": 177.82000732421875,
+      "highest_close": 177.82000732421875,
+      "pnl_pct": 18.55,
+      "pnl_usd": 2782.0,
+      "days_held": 8,
+      "theme": "AI Chip Manufacturer",
       "conviction": 6,
       "stop_level": 0.0,
       "distance_to_stop_pct": 0.0,
       "stop_alert": false
     }
   ],
-  "big_wins": [],
-  "home_runs": [],
+  "big_wins": [
+    {
+      "ticker": "SOFI",
+      "entry_date": "2026-02-22",
+      "entry_price": 7.9,
+      "current_price": 18.899999618530273,
+      "highest_close": 32.0,
+      "pnl_pct": 139.24,
+      "pnl_usd": 1100.0,
+      "days_held": 15,
+      "theme": "Financial Technology",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "TMDX",
+      "entry_date": "2026-03-03",
+      "entry_price": 65.0,
+      "current_price": 129.61000061035156,
+      "highest_close": 150.0,
+      "pnl_pct": 99.4,
+      "pnl_usd": 6461.0,
+      "days_held": 6,
+      "theme": "Organ Transplantation",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "AMD",
+      "entry_date": "2026-03-02",
+      "entry_price": 120.0,
+      "current_price": 192.42999267578125,
+      "highest_close": 220.0,
+      "pnl_pct": 60.36,
+      "pnl_usd": 7243.0,
+      "days_held": 7,
+      "theme": "Semiconductors",
+      "conviction": 7,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    }
+  ],
+  "home_runs": [
+    {
+      "ticker": "SOFI",
+      "entry_date": "2026-02-22",
+      "entry_price": 7.9,
+      "current_price": 18.899999618530273,
+      "highest_close": 32.0,
+      "pnl_pct": 139.24,
+      "pnl_usd": 1100.0,
+      "days_held": 15,
+      "theme": "Financial Technology",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "TMDX",
+      "entry_date": "2026-03-03",
+      "entry_price": 65.0,
+      "current_price": 129.61000061035156,
+      "highest_close": 150.0,
+      "pnl_pct": 99.4,
+      "pnl_usd": 6461.0,
+      "days_held": 6,
+      "theme": "Organ Transplantation",
+      "conviction": 8,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    },
+    {
+      "ticker": "AMD",
+      "entry_date": "2026-03-02",
+      "entry_price": 120.0,
+      "current_price": 192.42999267578125,
+      "highest_close": 220.0,
+      "pnl_pct": 60.36,
+      "pnl_usd": 7243.0,
+      "days_held": 7,
+      "theme": "Semiconductors",
+      "conviction": 7,
+      "stop_level": 0.0,
+      "distance_to_stop_pct": 0.0,
+      "stop_alert": false
+    }
+  ],
   "recent_exits": [],
   "movers_today": [
     {
-      "ticker": "ETON",
-      "current_price": 16.8,
-      "prev_close": 17.239999771118164,
-      "change_pct": -2.55
+      "ticker": "ASPI",
+      "current_price": 5.55,
+      "prev_close": 5.110000133514404,
+      "change_pct": 8.61
     },
     {
-      "ticker": "RELY",
-      "current_price": 17.04,
-      "prev_close": 17.31999969482422,
-      "change_pct": -1.62
+      "ticker": "TMDX",
+      "current_price": 129.61,
+      "prev_close": 140.07000732421875,
+      "change_pct": -7.47
     },
     {
-      "ticker": "NGNE",
-      "current_price": 22.17,
-      "prev_close": 22.1299991607666,
-      "change_pct": 0.18
+      "ticker": "HIVE",
+      "current_price": 2.05,
+      "prev_close": 2.200000047683716,
+      "change_pct": -6.82
+    },
+    {
+      "ticker": "AMD",
+      "current_price": 192.43,
+      "prev_close": 199.4499969482422,
+      "change_pct": -3.52
+    },
+    {
+      "ticker": "NVDA",
+      "current_price": 177.82,
+      "prev_close": 183.33999633789062,
+      "change_pct": -3.01
     }
   ],
   "themes": {
-    "Healthcare Contrarian Recovery": {
+    "Financial Technology": {
       "count": 1,
       "tickers": [
-        "ETON"
+        "SOFI"
       ],
-      "avg_pnl_pct": -6.3
+      "avg_pnl_pct": 139.24
     },
-    "Cross-Border Digital Payments & Remittances": {
+    "Drone tech": {
       "count": 1,
       "tickers": [
-        "RELY"
+        "EVTL"
       ],
-      "avg_pnl_pct": -0.64
+      "avg_pnl_pct": -10.89
     },
-    "Rare disease gene therapy \u2014 Rett syndrome": {
+    "AI Chip Manufacturer": {
       "count": 1,
       "tickers": [
-        "NGNE"
+        "NVDA"
       ],
-      "avg_pnl_pct": 8.15
+      "avg_pnl_pct": 18.55
+    },
+    "Semiconductors": {
+      "count": 1,
+      "tickers": [
+        "AMD"
+      ],
+      "avg_pnl_pct": 60.36
+    },
+    "Organ Transplantation": {
+      "count": 1,
+      "tickers": [
+        "TMDX"
+      ],
+      "avg_pnl_pct": 99.4
+    },
+    "Nuclear Fuel": {
+      "count": 1,
+      "tickers": [
+        "ASPI"
+      ],
+      "avg_pnl_pct": -7.5
+    },
+    "Crypto Miner and Datacentres": {
+      "count": 1,
+      "tickers": [
+        "HIVE"
+      ],
+      "avg_pnl_pct": -2.38
+    },
+    "AI Voice CPaaS Infrastructure": {
+      "count": 1,
+      "tickers": [
+        "BAND"
+      ],
+      "avg_pnl_pct": -0.0
     }
   },
   "benchmarks": {
@@ -165,8 +424,8 @@
     },
     "1y": {
       "portfolio": 0.0,
-      "spy": 19.909473646858622,
-      "alpha": -19.909473646858622,
+      "spy": 19.90948669871575,
+      "alpha": -19.90948669871575,
       "trades": 0
     }
   }

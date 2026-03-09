@@ -1,93 +1,93 @@
 {
-  "timestamp": "2026-03-09T12:00:00Z",
+  "timestamp": "2026-03-09T14:00:00Z",
   "market_snapshot": {
-    "spy_move": "-1.3%",
-    "qqq_move": "-1.5%",
+    "spy_move": "-2.0%",
+    "qqq_move": "-2.5%",
     "iwm_move": "-4.0%",
-    "vix": "29.5",
-    "market_mood": "volatile",
-    "headline": "US stock futures plunge over 2% amid Iran strikes and oil surge to $116, erasing $2T in value"
+    "vix": "33.0",
+    "market_mood": "bearish",
+    "headline": "US stocks plunge over 2% at open amid Iran conflict escalation and oil surge to $100+ per barrel"
   },
   "portfolio_movers": [
+    {
+      "ticker": "$NVDA",
+      "move": "-2.9%",
+      "price": "$177.95",
+      "context": "AI chip demand holds but pressured by broader tech selloff on geopolitical risks"
+    },
     {
       "ticker": "$SOFI",
       "move": "-1.8%",
       "price": "$18.90",
-      "context": "tracking broader market selloff on geopolitical tensions"
-    },
-    {
-      "ticker": "$EVTL",
-      "move": "-1.0%",
-      "price": "$4.01",
-      "context": "eVTOL sector pressured by energy cost spikes"
-    },
-    {
-      "ticker": "$NVDA",
-      "move": "-2.0%",
-      "price": "$177.89",
-      "context": "AI chip demand intact but hit by Nasdaq futures drop"
+      "context": "Fintech dips with market amid rising yields and tariff uncertainty impacting consumer lending"
     },
     {
       "ticker": "$AMD",
-      "move": "-1.5%",
+      "move": "-3.2%",
       "price": "$145.20",
-      "context": "semiconductor weakness amid tech selloff"
-    },
-    {
-      "ticker": "$TMDX",
-      "move": "-0.5%",
-      "price": "$68.50",
-      "context": "medtech resilient relative to market"
-    },
-    {
-      "ticker": "$ASPI",
-      "move": "-2.5%",
-      "price": "$5.80",
-      "context": "AI infrastructure play volatile on sector rotation"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "-3.0%",
-      "price": "$2.00",
-      "context": "crypto mining exposed to energy price surge"
+      "context": "Semiconductor weakness on AI sector rotation and oil-driven inflation fears"
     },
     {
       "ticker": "$BAND",
-      "move": "+1.2%",
-      "price": "$17.50",
-      "context": "networking software gains on recent scanner signal and defense connectivity buzz"
+      "move": "+1.5%",
+      "price": "$17.80",
+      "context": "Recent scanner signal holds as cybersecurity theme resilient to macro volatility"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "-4.1%",
+      "price": "$2.01",
+      "context": "Bitcoin mining exposed to crypto liquidation wave from equity selloff"
+    },
+    {
+      "ticker": "$TMDX",
+      "move": "-2.2%",
+      "price": "$63.50",
+      "context": "Medtech stable but dragged by healthcare sector rotation"
+    },
+    {
+      "ticker": "$EVTL",
+      "move": "-3.5%",
+      "price": "$4.34",
+      "context": "Vertical farming hit by commodity price swings from oil shock"
+    },
+    {
+      "ticker": "$ASPI",
+      "move": "-1.9%",
+      "price": "$5.89",
+      "context": "ASP Isotopes dips on uranium volatility tied to energy crisis"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
       "status": "active",
-      "detail": "AI infrastructure demand strong despite market volatility, institutional inflows into related software"
+      "detail": "AI stocks like NVDA and AMD under pressure from market crash but long-term demand intact amid infrastructure push"
     },
     {
       "theme": "copper",
       "status": "breaking",
-      "detail": "copper prices volatile but up on supply concerns from geopolitical risks"
+      "detail": "Copper prices surge 5% on supply chain disruptions from Middle East tensions and China demand"
     },
     {
       "theme": "infrastructure",
-      "status": "quiet",
-      "detail": "tariff uncertainties weighing on broader infra spending outlook"
+      "status": "active",
+      "detail": "Infrastructure spending eyed as hedge against stagflation from oil and tariffs"
     },
     {
       "theme": "defense",
-      "status": "active",
-      "detail": "sector leading with inflows amid Iran escalation, relative strength in LMT NOC RTX"
-    },
-    {
-      "theme": "bnpl subscription flywheel",
-      "status": "quiet",
-      "detail": "SOFI under pressure but consumer credit resilient pre-tariff impacts"
+      "status": "breaking",
+      "detail": "Defense stocks rally on US-Israel strikes against Iran, boosting sector amid geopolitical escalation"
     },
     {
       "theme": "ca offshore oil restart",
-      "status": "breaking",
-      "detail": "oil supply disruptions from Middle East boosting restart narratives"
+      "status": "active",
+      "detail": "California offshore oil permits accelerated due to global supply crunch from Iran conflict"
+    },
+    {
+      "theme": "pfas / methane environmental compliance",
+      "status": "quiet",
+      "detail": "Compliance costs rise with energy volatility but no major moves"
     }
   ],
   "theme_tickers": [
@@ -95,74 +95,39 @@
       "theme": "AI",
       "tickers": [
         {
+          "symbol": "$NVDA",
+          "price": "$177.95",
+          "context": "AI GPU leader facing short-term volatility"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$145.20",
+          "context": "Competitor in AI chips with data center growth"
+        },
+        {
+          "symbol": "$SMCI",
+          "price": "$850.00",
+          "context": "AI server hardware provider"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$165.00",
+          "context": "AI chip foundry essential to supply chain"
+        },
+        {
           "symbol": "$PLTR",
-          "price": "$45.20",
-          "context": "AI data analytics leader with institutional buying"
-        },
-        {
-          "symbol": "$SNPS",
-          "price": "$620.00",
-          "context": "EDA software for AI chip design"
-        },
-        {
-          "symbol": "$ZETA",
           "price": "$28.50",
-          "context": "AI marketing infrastructure"
+          "context": "AI software for defense and enterprise"
         },
         {
-          "symbol": "$AVPT",
-          "price": "$12.80",
-          "context": "AI software infrastructure play"
+          "symbol": "$CRWD",
+          "price": "$310.00",
+          "context": "AI-enhanced cybersecurity"
         },
         {
-          "symbol": "$ORCL",
-          "price": "$165.30",
-          "context": "cloud AI infrastructure giant"
-        },
-        {
-          "symbol": "$CRDO",
-          "price": "$75.40",
-          "context": "AI connectivity components"
-        }
-      ]
-    },
-    {
-      "theme": "defense",
-      "tickers": [
-        {
-          "symbol": "$LMT",
-          "price": "$520.10",
-          "context": "Lockheed Martin, major defense contractor"
-        },
-        {
-          "symbol": "$NOC",
-          "price": "$480.50",
-          "context": "Northrop Grumman, aerospace and defense"
-        },
-        {
-          "symbol": "$RTX",
-          "price": "$115.20",
-          "context": "RTX Corp, missiles and defense systems"
-        },
-        {
-          "symbol": "$LHX",
-          "price": "$225.80",
-          "context": "L3Harris, communication and defense tech"
-        },
-        {
-          "symbol": "$KTOS",
-          "price": "$22.10",
-          "context": "Kratos, unmanned systems and defense"
-        },
-        {
-          "symbol": "$AVAV",
-          "price": "$140.30",
-          "context": "AeroVironment, drones for defense"
-        },
-        {
-          "symbol": "$PARA",
-          "price": "$18.90",
-          "context": "Indian defense optics via Paras Defence"
+          "symbol": "$SNOW",
+          "price": "$140.00",
+          "context": "AI data platform"
         }
       ]
     },
@@ -171,28 +136,73 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "$60.41",
-          "context": "Freeport-McMoRan, major copper producer"
+          "price": "$52.30",
+          "context": "Major copper producer benefiting from price surge"
         },
         {
           "symbol": "$SCCO",
-          "price": "$184.30",
-          "context": "Southern Copper, large-scale mining"
+          "price": "$120.50",
+          "context": "Southern Copper with strong output"
         },
         {
           "symbol": "$CPER",
-          "price": "$28.50",
-          "context": "United Copper ETF tracking futures"
+          "price": "$28.00",
+          "context": "Copper ETF tracking futures rally"
         },
         {
           "symbol": "$NEM",
-          "price": "$52.10",
-          "context": "Newmont with copper exposure"
+          "price": "$48.20",
+          "context": "Diversified miner with copper exposure"
         },
         {
-          "symbol": "$PXC",
-          "price": "$4.20",
-          "context": "Phoenix Copper, exploration play"
+          "symbol": "$ALMMY",
+          "price": "$12.80",
+          "context": "Aluminum-copper alloy producer"
+        },
+        {
+          "symbol": "$TGB",
+          "price": "$1.25",
+          "context": "Taseko Mines copper developer"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "$520.00",
+          "context": "Lockheed Martin leading missile systems"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$115.00",
+          "context": "Raytheon in defense electronics"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "$480.00",
+          "context": "Northrop Grumman aerospace defense"
+        },
+        {
+          "symbol": "$GD",
+          "price": "$290.00",
+          "context": "General Dynamics ground systems"
+        },
+        {
+          "symbol": "$BA",
+          "price": "$220.00",
+          "context": "Boeing defense division"
+        },
+        {
+          "symbol": "$HII",
+          "price": "$280.00",
+          "context": "Huntington Ingalls shipbuilding"
+        },
+        {
+          "symbol": "$LHX",
+          "price": "$230.00",
+          "context": "L3Harris communications"
         }
       ]
     },
@@ -200,92 +210,86 @@
       "theme": "ca offshore oil restart",
       "tickers": [
         {
+          "symbol": "$CVX",
+          "price": "$155.00",
+          "context": "Chevron with California offshore assets"
+        },
+        {
+          "symbol": "$XOM",
+          "price": "$120.00",
+          "context": "ExxonMobil potential beneficiary of restarts"
+        },
+        {
+          "symbol": "$SHEL",
+          "price": "$75.00",
+          "context": "Shell Gulf of America operations"
+        },
+        {
+          "symbol": "$APA",
+          "price": "$30.00",
+          "context": "Apache Energy offshore explorer"
+        },
+        {
           "symbol": "$OXY",
-          "price": "$58.20",
-          "context": "Occidental, CA oil operations"
-        },
-        {
-          "symbol": "$EOG",
-          "price": "$125.40",
-          "context": "EOG Resources, offshore potential"
-        },
-        {
-          "symbol": "$DVN",
-          "price": "$42.80",
-          "context": "Devon Energy, CA basin exposure"
+          "price": "$60.00",
+          "context": "Occidental Petroleum California holdings"
         },
         {
           "symbol": "$MRO",
-          "price": "$26.50",
-          "context": "Marathon Oil, Gulf of CA assets"
-        },
-        {
-          "symbol": "$88E",
-          "price": "$0.05",
-          "context": "88 Energy, oil exploration ties"
-        },
-        {
-          "symbol": "$FTW",
-          "price": "$1.20",
-          "context": "Fresh oil deSPAC with restart potential"
+          "price": "$28.00",
+          "context": "Marathon Oil offshore potential"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "oil surge",
-    "stock crash",
-    "Iran strikes",
-    "defense stocks",
-    "AI infrastructure"
+    "oil surge Iran",
+    "stock market crash",
+    "tariffs Trump",
+    "VIX spike",
+    "geopolitical risk"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "defense stocks",
-      "matching_theme": "defense",
+      "trending_topic": "oil surge Iran",
+      "matching_theme": "ca offshore oil restart",
       "our_positions": [],
-      "context": "FinTwit buzzing on LMT NOC inflows amid Iran escalation"
+      "context": "FinTwit focused on oil hitting $100+ due to strikes, boosting energy compliance and restart themes"
     },
     {
-      "trending_topic": "AI infrastructure",
+      "trending_topic": "defense rally",
+      "matching_theme": "defense",
+      "our_positions": [],
+      "context": "Posts buzzing on defense stocks up 3-5% amid US-Israel actions against Iran"
+    },
+    {
+      "trending_topic": "AI rotation",
       "matching_theme": "AI",
       "our_positions": [
         "$NVDA",
-        "$AMD",
-        "$ASPI"
+        "$AMD"
       ],
-      "context": "Institutional flows into PLTR SNPS despite market drop"
-    },
-    {
-      "trending_topic": "oil surge",
-      "matching_theme": "ca offshore oil restart",
-      "our_positions": [],
-      "context": "25% oil jump on supply offline, boosting restart plays"
+      "context": "FinTwit discussing AI dip as buying opportunity despite market turmoil"
     }
   ],
   "news_events": [
     {
       "event": "US-Israel strikes on Iran",
-      "impact": "oil up 25% to $116, futures down 2T",
+      "impact": "oil prices +25%, $2T market wipeout",
       "relevance": "high"
     },
     {
-      "event": "Trump reinstates 15% global tariffs",
-      "impact": "trade uncertainty weighs on growth stocks",
+      "event": "Trump 15% global tariffs reinstated",
+      "impact": "trade uncertainty, inflation risks",
       "relevance": "high"
     },
     {
-      "event": "Fed pause on rate cuts",
-      "impact": "50bps easing priced for H2 amid inflation risks",
-      "relevance": "medium"
-    },
-    {
-      "event": "Initial Jobless Claims release",
-      "impact": "labor market softening could prompt Fed action",
+      "event": "Fed speeches on outlook",
+      "impact": "hints at summer rate cut pause due to energy shock",
       "relevance": "medium"
     }
   ],
-  "gathered_at": "2026-03-09T11:54:10.750693+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": true
+  "gathered_at": "2026-03-09T14:42:08.877718+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

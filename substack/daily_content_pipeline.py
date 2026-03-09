@@ -107,6 +107,7 @@ def run_step_context_builder(day: str, dry_run: bool = False) -> Dict:
         from substack.daily_context_builder import (
             PostAssignment,
             build_daily_context,
+            build_full_content_schedule,
             build_notes_context_json,
             determine_todays_post,
             load_full_portfolio,
@@ -168,6 +169,11 @@ def run_step_context_builder(day: str, dry_run: bool = False) -> Dict:
 
         json_path = current_dir / "daily_notes_context.json"
         json_path.write_text(json.dumps(notes_json, indent=2))
+
+        # Build + save content schedule (full 7-day schedule for content_tracker)
+        content_schedule = build_full_content_schedule(ctx, portfolio, snapshot)
+        schedule_path = current_dir / "content_schedule.json"
+        schedule_path.write_text(json.dumps(content_schedule, indent=2))
 
         # Archive
         try:

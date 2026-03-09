@@ -158,12 +158,12 @@ Replace internal conviction scores with public-facing language:
 | **Monday-Friday** | Tweet posting (7 slots/day), daily content pipeline (07:00 ET) | 1 Substack post (adaptive category) + 3 notes |
 | **Daily 07:00 ET** | `daily_content.yml` → market analysis + daily context + notes | - |
 
-**Daily content workflow (handbook v5 — 4 adaptive categories):**
+**Daily content workflow (handbook v6.2 — 6 series types):**
 1. Daily pipeline runs at 07:00 ET → generates `substack/output/current/daily_context.md` + notes
 2. Open `daily_context.md` → check today's category + topic
-3. Open `substack/docs/content_prompt_handbook_v5.md` → copy the matching category prompt
+3. Prompts are embedded in the daily context doc — copy from YOUR PROMPT section
 4. Attach the daily context doc to Claude.ai (Opus 4.6 + extended thinking)
-5. Paste prompt → get HTML post + 3 HTML notes
+5. Paste prompt → get HTML post + companion note HTML
 6. Paste into Substack
 
 ### Daily Tweet Schedule (7-Slot System, Eastern Time)
@@ -367,10 +367,8 @@ twitter/output/
 | `substack/daily_context_builder.py` | Generate daily context doc (post assignment, embedded prompt, portfolio/scanner data) |
 | `substack/daily_notes_generator.py` | Generate 2-3 daily Substack notes from rotation matrix (LLM or template fallback) |
 | `substack/note_utils.py` | Note formatting, HTML wrapping, file I/O utilities |
-| `substack/notes_generator.py` | Tuesday/Thursday mid-week Substack notes (legacy) |
 | `substack/dd_post_generator.py` | Standalone DD HTML posts per buy signal (for Substack) |
 | `substack/html_templates.py` | HTML template definitions for posts |
-| `substack/learning_content_library.py` | Educational content library |
 | `substack/market_analyzer.py` | Market context analysis via LLM |
 | `substack/portfolio_visual.py` | Portfolio HTML dashboard with equity curve SVG, SPY/QQQ benchmarks |
 
@@ -397,7 +395,6 @@ twitter/output/
 | `config/__init__.py` | Re-exports settings (backwards compat: `from config import X`) |
 | `config/output_paths.py` | Multi-section output path registry |
 | `config/banned_terms.py` | Single source of truth for banned terms, phrases, patterns |
-| `config/marketing_vocabulary.py` | Marketing vocabulary validation |
 
 #### `utils/` — Shared Utilities
 | File | Purpose |

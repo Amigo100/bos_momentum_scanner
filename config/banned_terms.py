@@ -147,6 +147,31 @@ BANNED_PHRASES: List[str] = [
     "picks and shovels",
     "2 signals",
     "2 survivors",
+
+    # ── AI-sounding phrases ───────────────────────────────────────────────────
+    "let's dive in",
+    "here's the thing",
+    "it's worth noting",
+    "interestingly enough",
+    "in today's market",
+    "let me break this down",
+    "the bottom line is",
+    "this is what",
+    "that's the power of",
+    "this is why we",
+    "some notable moves",
+    "the rotation isn't noise",
+
+    # ── Binary market framing (markets are not zero-sum) ─────────────────────
+    "while everything else bleeds",
+    "while everything else struggles",
+    "while the rest of the market",
+    "everything else is red",
+    "everything else gets crushed",
+    "while tech collapses",
+    "while everything burns",
+    "soaring while",
+    "ripping while",
 ]
 
 

@@ -74,6 +74,9 @@ from substack.note_utils import (
     ensure_output_dirs,
 )
 
+# Single source of truth for rotation matrix lives in daily_context_builder
+from substack.daily_context_builder import NOTE_TYPE_MATRIX
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # NOTE TYPES (12 archetypes)
@@ -82,6 +85,7 @@ from substack.note_utils import (
 NOTE_TYPES = [
     "MARKET_SNAPSHOT",
     "SIGNAL_DROP",
+    "SIGNAL_TRACKING",
     "WINNER_RECEIPT",
     "PORTFOLIO_UPDATE",
     "THEME_ROTATION",
@@ -97,6 +101,7 @@ NOTE_TYPES = [
 # Fallback mapping: if a conditional type can't fire, use this instead
 FALLBACK_MAP = {
     "SIGNAL_DROP": "THE_FILTER",
+    "SIGNAL_TRACKING": "PORTFOLIO_UPDATE",
     "WINNER_RECEIPT": "PORTFOLIO_UPDATE",
     "EXIT_DEBRIEF": "DATA_INSIGHT",
     "CATALYST_WATCH": "SECTOR_FLOW",
@@ -105,17 +110,12 @@ FALLBACK_MAP = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NOTES SCHEDULE (12 archetypes across 7 days)
+# NOTES SCHEDULE — derived from NOTE_TYPE_MATRIX (single source of truth)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 NOTES_SCHEDULE = {
-    "saturday":  [("WINNER_RECEIPT", "08:30"), ("THEME_ROTATION", "12:30")],
-    "sunday":    [("ALPHA_SCOREBOARD", "08:30"), ("READER_QUESTION", "12:30")],
-    "monday":    [("MARKET_SNAPSHOT", "08:30"), ("THE_FILTER", "12:30"), ("PORTFOLIO_UPDATE", "17:00")],
-    "tuesday":   [("SIGNAL_DROP", "08:30"), ("THEME_ROTATION", "12:30"), ("DATA_INSIGHT", "17:00")],
-    "wednesday": [("MARKET_SNAPSHOT", "08:30"), ("WINNER_RECEIPT", "12:30"), ("CATALYST_WATCH", "17:00")],
-    "thursday":  [("SECTOR_FLOW", "08:30"), ("SIGNAL_DROP", "12:30"), ("READER_QUESTION", "17:00")],
-    "friday":    [("MARKET_SNAPSHOT", "08:30"), ("PORTFOLIO_UPDATE", "12:30"), ("EXIT_DEBRIEF", "17:00")],
+    day: [(entry["type"], entry["time"].replace(" ET", "")) for entry in slots]
+    for day, slots in NOTE_TYPE_MATRIX.items()
 }
 
 
@@ -178,8 +178,20 @@ NO FILLER PARAGRAPHS (CRITICAL):
 - DO NOT add closing lines that declare what the pattern is. "The rotation isn't noise — it's structural" is AI trying to sound punchy. The data already made the point.
 - A good note shows the data, gives one forward-looking thought, and stops. No recap. No thesis statement at the end.
 
+NO BINARY MARKET FRAMING (CRITICAL):
+- Markets are NOT binary. Never write "[X] is soaring while everything else bleeds" or "defence is up while tech collapses" unless the data literally shows this.
+- SPY down 1.2% is not "everything bleeding." QQQ down 0.8% is not "tech collapsing." Use proportionate language.
+- Never describe one position as winning "while the rest of the market struggles" unless you have data showing the broad market is materially down.
+- Avoid zero-sum framing: "capital leaving X and pouring into Y" needs evidence. Sectors can both be flat, both be up, or move independently.
+- Be specific: "$RCAT +3.2% today. SPY flat. Defence names outperforming broader indices this week." Not: "$RCAT soaring while everything else gets crushed."
+
+CROSS-LINKING:
+- When referencing a signal, mention "from Saturday's newsletter" or "announced last week."
+- When referencing a theme, note "we covered this in Wednesday's Sector Watch."
+- This creates reader loops — Notes drive traffic to posts, posts drive subscriptions.
+
 FORMAT:
-- 150-280 words. Every word earns its place.
+- Word counts vary by type (specified per prompt). Shorter is better. One strong point beats two weak ones.
 - No markdown headers. No bullet lists. Short paragraphs and standalone lines.
 - $TICKER format with price or percentage always.
 - One emoji maximum, only if it adds clarity.
@@ -221,6 +233,10 @@ SUBSCRIBE_HOOKS = {
     "SIGNAL_DROP": [
         "Subscribers got this signal before Monday's open. The next screening drops Friday.",
         "Full analysis — entry reasoning, theme alignment, and exit plan — in this week's newsletter.",
+    ],
+    "SIGNAL_TRACKING": [
+        "We track every signal in real time. See all entries and exits in the Saturday newsletter.",
+        "Every position tracked from entry. Full portfolio breakdown every Saturday.",
     ],
     "WINNER_RECEIPT": [
         "Subscribers got this signal at ${entry}. The next screening drops Friday.",
@@ -280,7 +296,7 @@ def build_note_context_from_daily(context: Dict) -> NoteContext:
     """
     now = datetime.now()
 
-    live = context.get("live_market", context.get("live_data", {}))
+    live = context.get("live_data", {})
     spy_pct = live.get("spy_change_pct", 0.0)
     qqq_pct = live.get("qqq_change_pct", 0.0)
 
@@ -419,6 +435,9 @@ def can_fire(note_type: str, ctx: NoteContext) -> bool:
     """Check if a conditional note type has the data it needs."""
     if note_type == "SIGNAL_DROP":
         return len(ctx.pass_signals) > 0
+    elif note_type == "SIGNAL_TRACKING":
+        # Fires when any position is under 14 days old
+        return any(p.get("days_held", p.get("days", 999)) <= 14 for p in ctx.winners)
     elif note_type == "WINNER_RECEIPT":
         return any(p.get("pnl_pct", 0) >= MIN_WIN_THRESHOLD for p in ctx.winners)
     elif note_type == "EXIT_DEBRIEF":
@@ -536,7 +555,7 @@ After showing positions with numbers, go straight to one forward-looking line. N
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 
-150-280 words."""
+100-150 words."""
 
 
 def build_signal_drop_prompt(ctx: NoteContext) -> str:
@@ -575,7 +594,59 @@ After the funnel and thesis, stop. Don't add a paragraph about how selective the
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+80-120 words."""
+
+
+def build_signal_tracking_prompt(ctx: NoteContext) -> str:
+    """Mid-week signal update — how are recent entries performing?"""
+    # Get positions entered in last 14 days
+    recent = [p for p in ctx.winners if p.get("days_held", p.get("days", 999)) <= 14]
+    if not recent:
+        return build_portfolio_update_prompt(ctx)
+
+    # Format recent entries
+    lines = []
+    for p in recent[:3]:
+        ticker = p.get("ticker", p.get("symbol", "???"))
+        entry = p.get("entry_price", p.get("entry", 0))
+        current = p.get("current_price", p.get("current", 0))
+        pnl = p.get("pnl_pct", 0)
+        days = p.get("days_held", p.get("days", "?"))
+        theme = p.get("theme", "")
+        pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+        lines.append(f"  ${ticker}: entry ${entry:.2f}, now ${current:.2f} ({pnl_str}), day {days} — {theme}")
+
+    recent_text = "\n".join(lines)
+    hook = pick_subscribe_hook("SIGNAL_TRACKING", ctx)
+
+    return f"""Write a SIGNAL_TRACKING note for {ctx.date_str}.
+
+DATA YOU HAVE (use only this):
+  Recent entries being tracked:
+{recent_text}
+
+  Broader portfolio: {ctx.open_count} total positions
+  SPY: {ctx.spy_5d_pct:+.1f}% | QQQ: {ctx.qqq_5d_pct:+.1f}%
+
+DATA YOU DO NOT HAVE (do not reference or guess):
+  - Why prices moved today (don't invent reasons)
+  - Price targets or expected returns
+  - Calendar entry dates (use "day N" format)
+
+This is a real-time signal check-in. Show each recent entry with its current P&L from our entry price.
+
+CRITICAL RULES:
+- Give EQUAL space to positions that are working AND positions that are flat or red. This builds credibility.
+- Do NOT frame winners as "soaring while everything else bleeds." Markets are not binary. SPY down 1% is not "everything bleeding."
+- If a position is red, state the facts: "$INOD at $31.80, down from our $32.50 entry. Thesis intact, watching $30 support."
+- If a position is green, state simply: "$ASTS at $24.10 from $22.80 entry. +5.7% in 5 days."
+
+One sentence on overall thesis status. No recap paragraph.
+
+Close with: "{hook}"
+Then: "Not financial advice. Informational only."
+
+80-120 words."""
 
 
 def build_winner_receipt_prompt(ctx: NoteContext) -> str:
@@ -635,7 +706,7 @@ After the data, go straight to one forward thought. No recap.
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 
-150-280 words."""
+100-150 words."""
 
 
 def build_portfolio_update_prompt(ctx: NoteContext) -> str:
@@ -674,7 +745,7 @@ One forward-looking line at the end.
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+150-200 words."""
 
 
 def build_theme_rotation_prompt(ctx: NoteContext) -> str:
@@ -731,7 +802,7 @@ One forward thought: what event or data point would accelerate or derail this th
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+100-150 words."""
 
 
 def build_the_filter_prompt(ctx: NoteContext) -> str:
@@ -775,7 +846,7 @@ If winner proof exists, mention it once. Don't belabour it.
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+80-120 words."""
 
 
 def build_catalyst_watch_prompt(ctx: NoteContext) -> str:
@@ -807,7 +878,7 @@ Keep it concrete to our positions and themes, not generic market events.
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+100-150 words."""
 
 
 def build_sector_flow_prompt(ctx: NoteContext) -> str:
@@ -835,14 +906,19 @@ DATA YOU HAVE (use only this):
   Portfolio:
 {positions_text}
 
-Identify a rotation happening: one sector or theme strengthening, another weakening. Connect it to our positions.
+Identify what's happening in sector flows. Connect to our positions.
 
-Be opinionated. "Capital is leaving X and entering Y. Our portfolio reflects that." Don't hedge with "may" and "could."
+CRITICAL: Markets are not binary. Don't write "X is soaring while everything else bleeds." Be proportionate:
+- If SPY is down 1%, that's a pullback, not "everything bleeding."
+- Two sectors can both be up. Both can be flat. Don't force a winner/loser narrative.
+- Use specific data: "$ITA (defence ETF) +4.2% this month while $XLK (tech) is flat" — not "defence soaring while tech collapses."
+
+Be opinionated but accurate. "Capital is rotating into defence names this week" is fine. "Defence is ripping while everything else gets destroyed" is wrong unless SPY is down 5%+.
 
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+100-150 words."""
 
 
 def build_exit_debrief_prompt(ctx: NoteContext) -> str:
@@ -885,7 +961,7 @@ Name the top contributor and the laggard. Both with entry prices.
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 {continuity}
-150-280 words."""
+80-120 words."""
 
 
 def build_data_insight_prompt(ctx: NoteContext) -> str:
@@ -927,7 +1003,7 @@ Start with the surprising stat or finding. Explain briefly why it matters. If th
 Close with: "{hook}"
 Then: "Not financial advice. Informational only."
 
-150-280 words."""
+100-150 words."""
 
 
 def build_reader_question_prompt(ctx: NoteContext) -> str:
@@ -939,7 +1015,7 @@ def build_reader_question_prompt(ctx: NoteContext) -> str:
         pnl = w.get("pnl_pct", 0)
         theme = w.get("theme", "")
         if pnl >= MIN_WIN_THRESHOLD and theme:
-            data_seeds.append(f"{theme} is up significantly in our portfolio while other sectors lag.")
+            data_seeds.append(f"Our {theme} positions are outperforming the broader market.")
     if ctx.themes:
         t = ctx.themes[0]
         data_seeds.append(f"Our system scored {t.get('name', 'a theme')} at {t.get('composite_score', 0)}/10 this week.")
@@ -949,7 +1025,7 @@ def build_reader_question_prompt(ctx: NoteContext) -> str:
         if loaded > 0:
             data_seeds.append(f"Our scanner rejected {((1 - green / max(loaded, 1)) * 100):.1f}% of stocks this week.")
 
-    seed = random.choice(data_seeds) if data_seeds else "Markets are rotating between sectors."
+    seed = random.choice(data_seeds) if data_seeds else "The screening system ran this week."
 
     return f"""Write a READER_QUESTION note for {ctx.date_str}.
 
@@ -963,13 +1039,13 @@ Write a short note (under 150 words) that:
 
 The question should be grounded in real data, not generic. 
 BAD: "What are you watching this week?"
-GOOD: "Defence is up 18% in six weeks while AI is flat. Are you rotating or staying put?"
+GOOD: "Our defence positions are up 18% in six weeks. SPY's barely moved. Anyone else positioned in this space, or is it too crowded?"
 
 No subscribe hook. This is pure engagement.
 
 End with: "Not financial advice. Informational only."
 
-100-150 words."""
+60-100 words."""
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -979,6 +1055,7 @@ End with: "Not financial advice. Informational only."
 PROMPT_BUILDERS = {
     "MARKET_SNAPSHOT": build_market_snapshot_prompt,
     "SIGNAL_DROP": build_signal_drop_prompt,
+    "SIGNAL_TRACKING": build_signal_tracking_prompt,
     "WINNER_RECEIPT": build_winner_receipt_prompt,
     "PORTFOLIO_UPDATE": build_portfolio_update_prompt,
     "THEME_ROTATION": build_theme_rotation_prompt,
@@ -1065,9 +1142,27 @@ def _tpl_reader_question(ctx: NoteContext) -> str:
     return "\n".join(lines)
 
 
+def _tpl_signal_tracking(ctx: NoteContext) -> str:
+    recent = [p for p in ctx.winners if p.get("days_held", p.get("days", 999)) <= 14]
+    if not recent:
+        return _tpl_portfolio_update(ctx)
+    lines = ["Signal check-in."]
+    for p in recent[:3]:
+        tk = p.get("ticker", p.get("symbol", "???"))
+        entry = p.get("entry_price", p.get("entry", 0))
+        pnl = p.get("pnl_pct", 0)
+        days = p.get("days_held", p.get("days", "?"))
+        pnl_str = f"+{pnl:.1f}%" if pnl >= 0 else f"{pnl:.1f}%"
+        lines.append(f"\n${tk} at {pnl_str} from ${entry:.2f} entry. Day {days}.")
+    lines.append(f"\n{pick_subscribe_hook('SIGNAL_TRACKING', ctx)}")
+    lines.append("\nNot financial advice. Informational only.")
+    return "\n".join(lines)
+
+
 TEMPLATE_FALLBACKS = {
     "MARKET_SNAPSHOT": _tpl_market_snapshot,
     "SIGNAL_DROP": _tpl_the_filter,  # Falls back to filter
+    "SIGNAL_TRACKING": _tpl_signal_tracking,
     "WINNER_RECEIPT": _tpl_portfolio_update,  # Falls back to portfolio
     "PORTFOLIO_UPDATE": _tpl_portfolio_update,
     "THEME_ROTATION": _tpl_theme_rotation,

@@ -120,26 +120,26 @@ NOTE_TYPE_MATRIX = {
     ],
     "monday": [
         {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
-        {"slot": 2, "type": "THE_FILTER", "time": "12:30 ET"},
+        {"slot": 2, "type": "SIGNAL_TRACKING", "time": "12:30 ET"},
         {"slot": 3, "type": "PORTFOLIO_UPDATE", "time": "17:00 ET"},
     ],
     "tuesday": [
-        {"slot": 1, "type": "SIGNAL_DROP", "time": "08:30 ET"},
+        {"slot": 1, "type": "SIGNAL_TRACKING", "time": "08:30 ET"},
         {"slot": 2, "type": "THEME_ROTATION", "time": "12:30 ET"},
         {"slot": 3, "type": "DATA_INSIGHT", "time": "17:00 ET"},
     ],
     "wednesday": [
-        {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
-        {"slot": 2, "type": "WINNER_RECEIPT", "time": "12:30 ET"},
+        {"slot": 1, "type": "SIGNAL_TRACKING", "time": "08:30 ET"},
+        {"slot": 2, "type": "MARKET_SNAPSHOT", "time": "12:30 ET"},
         {"slot": 3, "type": "CATALYST_WATCH", "time": "17:00 ET"},
     ],
     "thursday": [
         {"slot": 1, "type": "SECTOR_FLOW", "time": "08:30 ET"},
-        {"slot": 2, "type": "SIGNAL_DROP", "time": "12:30 ET"},
+        {"slot": 2, "type": "SIGNAL_TRACKING", "time": "12:30 ET"},
         {"slot": 3, "type": "READER_QUESTION", "time": "17:00 ET"},
     ],
     "friday": [
-        {"slot": 1, "type": "MARKET_SNAPSHOT", "time": "08:30 ET"},
+        {"slot": 1, "type": "SIGNAL_TRACKING", "time": "08:30 ET"},
         {"slot": 2, "type": "PORTFOLIO_UPDATE", "time": "12:30 ET"},
         {"slot": 3, "type": "EXIT_DEBRIEF", "time": "17:00 ET"},
     ],
@@ -1201,6 +1201,92 @@ def build_notes_context_json(
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# CONTENT SCHEDULE (full 7-day schedule for content_tracker + build_daily_email)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Category key → handbook prompt label (for content_schedule.json)
+_CATEGORY_PROMPT_LABELS = {
+    "ticker_deep_dive": "Deep Dive",
+    "educational": "The Edge — Educational",
+    "theme_rotation": "Sector Watch",
+    "performance_review": "Performance Review / Newsletter",
+    "trade_alert_entry": "🟢 GREEN Signal — Trade Alert Entry",
+    "trade_alert_exit": "Position Update — Trade Alert Exit",
+}
+
+# Day ordering (Sunday → Saturday, matching old content_schedule.json)
+_SCHEDULE_DAY_ORDER = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+
+def build_full_content_schedule(
+    ctx: ContentContext,
+    portfolio: List[Dict],
+    snapshot: Optional[Dict] = None,
+) -> dict:
+    """Build the full 7-day content_schedule.json with schedule array.
+
+    Replaces the old content_production_guide.py schedule generation.
+    Uses determine_todays_post() for each day to get categories/topics.
+    Uses NOTE_TYPE_MATRIX for archetype-based note types.
+
+    Returns dict compatible with content_tracker.py and build_daily_email.py:
+        {
+            "week": <int>,
+            "generated": <iso timestamp>,
+            "schedule": [
+                {"day": "Sunday", "category": "NOTES_ONLY", "topic": "...",
+                 "theme_style": "N/A", "note_types": ["ALPHA_SCOREBOARD", ...],
+                 "handbook_prompt": "Daily Notes Prompt only"},
+                ...
+            ]
+        }
+    """
+    now = datetime.now()
+    week_num = now.isocalendar()[1]
+
+    schedule_entries = []
+
+    for day_name in _SCHEDULE_DAY_ORDER:
+        day_lower = day_name.lower()
+
+        # Determine post assignment for this day
+        assignment = determine_todays_post(day_lower, ctx, portfolio, snapshot)
+
+        # Get note types from rotation matrix (using archetype names)
+        note_slots = NOTE_TYPE_MATRIX.get(day_lower, [])
+        note_types = [slot["type"] for slot in note_slots]
+
+        if assignment:
+            # This day has a long-form post
+            theme_style = "Editorial (light)" if assignment.theme == "editorial" else "Dashboard (dark)"
+            prompt_label = _CATEGORY_PROMPT_LABELS.get(assignment.prompt_key, assignment.category)
+            schedule_entries.append({
+                "day": day_name,
+                "category": assignment.prompt_key.upper(),
+                "topic": assignment.topic,
+                "theme_style": theme_style,
+                "note_types": note_types,
+                "handbook_prompt": prompt_label,
+            })
+        else:
+            # Notes-only day (Sunday, Monday, Friday)
+            schedule_entries.append({
+                "day": day_name,
+                "category": "NOTES_ONLY",
+                "topic": f"No post — notes only ({', '.join(note_types[:3])})",
+                "theme_style": "N/A",
+                "note_types": note_types,
+                "handbook_prompt": "Daily Notes Prompt only",
+            })
+
+    return {
+        "week": week_num,
+        "generated": now.isoformat(),
+        "schedule": schedule_entries,
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # CLI
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1299,6 +1385,12 @@ def main():
     json_path = current_dir / "daily_notes_context.json"
     json_path.write_text(json.dumps(notes_json, indent=2))
     print(f"  \u2713 Saved: {json_path}")
+
+    # Build + save content schedule (full 7-day schedule for content_tracker)
+    content_schedule = build_full_content_schedule(ctx, portfolio, snapshot)
+    schedule_path = current_dir / "content_schedule.json"
+    schedule_path.write_text(json.dumps(content_schedule, indent=2))
+    print(f"  \u2713 Saved: {schedule_path} (week {content_schedule['week']}, {len(content_schedule['schedule'])} days)")
 
     # Archive to weekly
     if OUTPUT_PATHS_AVAILABLE:

@@ -29,6 +29,12 @@ from typing import Dict, Optional, Tuple
 
 from config.output_paths import SUBSTACK_OUTPUT, BASE_DIR
 
+# Import shared handbook extraction from single source of truth
+from substack.daily_context_builder import (
+    HANDBOOK_SECTION_MAP,
+    extract_prompt_from_handbook,
+)
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PATHS
@@ -45,8 +51,6 @@ HANDBOOK_DIR = BASE_DIR / "substack" / "docs"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # Maps category names (title case and UPPER_SNAKE_CASE) to handbook prompt keys.
-# Mirrors HANDBOOK_SECTION_MAP from daily_context_builder.py:148 — redefined
-# locally to avoid importing the heavy daily_context_builder module.
 CATEGORY_TO_PROMPT_KEY = {
     "Deep Dive": "ticker_deep_dive",
     "Ticker Deep Dive": "ticker_deep_dive",       # backwards compat (v6)
@@ -60,16 +64,6 @@ CATEGORY_TO_PROMPT_KEY = {
     "Performance Review": "performance_review",
     "PERFORMANCE_REVIEW": "performance_review",
     "NOTES_ONLY": None,
-}
-
-HANDBOOK_SECTION_MAP = {
-    "ticker_deep_dive": "## Deep Dive (3 Prompts)",
-    "educational": "## The Edge — Educational (3 Prompts)",
-    "theme_rotation": "## Sector Watch (2 Prompts)",
-    "performance_review": "## Performance Review — FALLBACK ONLY",
-    "trade_alert_entry": "## 🟢 GREEN Signal — Trade Alert Entry (1 Prompt)",
-    "trade_alert_exit": "## Position Update — Trade Alert Exit (1 Prompt)",
-    "daily_notes": "## Companion Note Strategy",
 }
 
 # Normalise UPPER_SNAKE_CASE to title case for display
@@ -237,37 +231,6 @@ def find_handbook_path() -> Optional[Path]:
         if p.exists():
             return p
     return None
-
-
-def extract_prompt_from_handbook(handbook_text: str, section_header: str) -> str:
-    """Extract all prompt text from a handbook section.
-
-    For multi-prompt sections (e.g. Deep Dive has 3 prompts), extracts
-    ALL code-fenced blocks and joins them with numbered dividers.
-    Single-prompt sections return the prompt text directly.
-    """
-    idx = handbook_text.find(section_header)
-    if idx == -1:
-        return ""
-
-    section_text = handbook_text[idx + len(section_header):]
-    next_section = re.search(r"\n## ", section_text)
-    if next_section:
-        section_text = section_text[: next_section.start()]
-
-    # Extract ALL code-fenced prompts
-    prompts = re.findall(r"```\n(.*?)```", section_text, re.DOTALL)
-    if not prompts:
-        return ""
-
-    if len(prompts) == 1:
-        return prompts[0].strip()
-
-    # Multi-prompt: join with numbered dividers
-    parts = []
-    for i, prompt in enumerate(prompts, 1):
-        parts.append(f"═══ PROMPT {i} OF {len(prompts)} ═══\n\n{prompt.strip()}")
-    return "\n\n".join(parts)
 
 
 def load_handbook_prompts() -> Dict[str, str]:

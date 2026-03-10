@@ -1315,12 +1315,13 @@
     "primary_ticker": "SOFI",
     "chart_recommended": true,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
     "generated_at": "2026-03-10T07:00:00-04:00",
     "context_snapshot": {
       "market_mood": "selective regime"
-    }
+    },
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260310_004",
@@ -1329,12 +1330,13 @@
     "primary_ticker": "BAND",
     "chart_recommended": false,
     "account": "variant_2",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
     "generated_at": "2026-03-10T07:00:00-04:00",
     "context_snapshot": {
       "market_mood": "selective regime"
-    }
+    },
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "cowork_20260310_005",
@@ -1358,11 +1360,13 @@
     "primary_ticker": "",
     "chart_recommended": false,
     "account": "variant_3",
-    "status": "pending",
+    "status": "posted",
     "source": "cowork",
     "generated_at": "2026-03-10T07:00:00-04:00",
     "context_snapshot": {
       "market_mood": "selective regime, VIX 29.49"
-    }
+    },
+    "posted_at": "2026-03-10T15:00:07.757933",
+    "tweet_id": "2031384612639776847"
   }
 ]

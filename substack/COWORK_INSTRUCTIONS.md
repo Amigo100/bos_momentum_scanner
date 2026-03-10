@@ -402,10 +402,14 @@ Key requirements:
 - Animations: CSS only (no JavaScript), `@keyframes` for draw-in effects
 - Single file: Everything in one `.html` file
 
-Export to MP4:
+Export to MP4 (run after generating the HTML diagram):
 ```bash
 python3 substack/tools/capture.py {html_file} --duration 10 --fps 24 --format mp4
 ```
+Prerequisites: `playwright` (installed via requirements.txt) + `ffmpeg` (auto-discovered
+from `imageio-ffmpeg` pip package — no manual install needed).
+The capture tool uses Playwright's headless Chromium to render frames, then ffmpeg to encode MP4.
+Output lands in the same directory as the input HTML file.
 
 Output: `substack/output/current/diagrams/diagram_{ticker}_{YYYYMMDD}.html` + `.mp4`
 

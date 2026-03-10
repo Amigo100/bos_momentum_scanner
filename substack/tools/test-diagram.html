@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1280px; height: 720px; overflow: hidden; background: #111318; }
+
+  .box {
+    position: absolute;
+    width: 200px; height: 80px;
+    border: 2px dashed #00bcd4;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #e0e0e0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+  }
+  .box-1 { top: 320px; left: 100px;  animation-delay: 0s; }
+  .box-2 { top: 320px; left: 540px;  animation-delay: 1s; border-color: #4caf50; }
+  .box-3 { top: 320px; left: 980px;  animation-delay: 2s; border-color: #c9a84c; }
+
+  .line {
+    position: absolute;
+    top: 360px; height: 2px;
+    background: #00bcd4;
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: drawLine 1s ease forwards;
+  }
+  .line-1 { left: 300px; width: 240px; animation-delay: 0.5s; }
+  .line-2 { left: 740px; width: 240px; animation-delay: 1.5s; background: #4caf50; }
+
+  .title {
+    position: absolute;
+    top: 180px; left: 0; right: 0;
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: #c9a84c;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+    animation-delay: 2.5s;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes drawLine { to { transform: scaleX(1); } }
+</style>
+</head>
+<body>
+  <div class="title">Test Diagram</div>
+  <div class="box box-1">Input</div>
+  <div class="line line-1"></div>
+  <div class="box box-2">Process</div>
+  <div class="line line-2"></div>
+  <div class="box box-3">Output</div>
+</body>
+</html>

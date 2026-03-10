@@ -1,0 +1,44 @@
+{
+    "date": "2026-03-10",
+    "day": "tuesday",
+    "generated_at": "2026-03-10T07:15:00",
+    "decision_reason": "CHECK 1: BAND entered 2026-03-08, no GREEN Signal post yet. Replaces normal Tuesday Deep Dive.",
+    "post": {
+        "category": "green_signal",
+        "file": "posts/green_signal_20260310.html",
+        "title": "\ud83d\udfe2 GREEN Signal: $BAND at $16.55 \u2014 AI Voice CPaaS Infrastructure"
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "CATALYST_WATCH",
+            "time_et": "08:30",
+            "time_label": "morning",
+            "file": "notes/morning_catalyst_watch_20260310.html"
+        },
+        {
+            "slot": 2,
+            "type": "COMPANION_NOTE",
+            "time_et": "12:30",
+            "time_label": "midday",
+            "file": "notes/midday_companion_note_20260310.html"
+        },
+        {
+            "slot": 3,
+            "type": "DATA_INSIGHT",
+            "time_et": "17:00",
+            "time_label": "evening",
+            "file": "notes/evening_data_insight_20260310.html"
+        }
+    ],
+    "visual": {
+        "type": "diagram",
+        "file": "diagrams/diagram_band_20260310.html"
+    },
+    "reminders": [
+        {"time_et": "08:30", "slot": "morning", "file": "notes/morning_catalyst_watch_20260310.html", "type": "note"},
+        {"time_et": "12:30", "slot": "midday", "file": "notes/midday_companion_note_20260310.html", "type": "note"},
+        {"time_et": "17:00", "slot": "evening", "file": "notes/evening_data_insight_20260310.html", "type": "note"}
+    ],
+    "tweets_generated": 6
+}

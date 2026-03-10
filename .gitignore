@@ -57,6 +57,7 @@ twitter/output/*
 !twitter/output/live_context.json
 !twitter/output/live_cost_log.json
 !twitter/output/workflow_status.json
+!twitter/output/cowork_content_queue.json
 
 # Exceptions: files needed by Saturday workflow (GitHub Actions)
 !scanner/output/decisions.json
@@ -77,6 +78,11 @@ substack/output/current/*
 !substack/output/current/daily_notes_context.json
 !substack/output/current/portfolio_visual.html
 !substack/output/current/portfolio_snapshot.json
+!substack/output/current/daily_manifest.json
+!substack/output/current/daily_email.html
+!substack/output/current/posts/
+!substack/output/current/notes/
+!substack/output/current/diagrams/
 
 # Dashboard bundled data (generated at build time)
 dashboard/data/

@@ -234,17 +234,8 @@ def step_market_analysis(dry_run: bool = False, skip: bool = False):
         print()
         return
 
-    try:
-        from substack.market_analyzer import run_market_analysis
-        print("  Generating market analysis (this calls the LLM)...")
-        run_market_analysis()
-        print("  ✓ market_analysis.md generated")
-    except ImportError:
-        print("  ⚠ market_analyzer not available")
-        print("    (Market context from decisions.json is sufficient)")
-    except Exception as e:
-        print(f"  ⚠ Market analyzer failed: {e}")
-        print("    (Market context from decisions.json is sufficient)")
+    print("  ⏭ Retired — market analysis now handled by Cowork")
+    print("    (Market context from decisions.json is sufficient)")
     print()
 
 
@@ -264,14 +255,7 @@ def step_content_guide(dry_run: bool = False, skip: bool = False):
         print()
         return
 
-    try:
-        from substack.daily_context_builder import main as dcb_main
-        dcb_main()
-        print("  ✓ daily_context.md generated")
-    except ImportError:
-        print("  ⚠ daily_context_builder not available")
-    except Exception as e:
-        print(f"  ⚠ Daily context builder failed: {e}")
+    print("  ⏭ Retired — daily context now handled by Cowork")
     print()
 
 

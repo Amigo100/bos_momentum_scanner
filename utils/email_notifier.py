@@ -18,10 +18,12 @@ import json
 import os
 import smtplib
 import sys
+from email import encoders
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -40,8 +42,18 @@ def load_config() -> Optional[Dict]:
     """Load email configuration, preferring env vars over config file.
 
     In CI (GitHub Actions), env vars are set from secrets.
-    Locally, falls back to email_config.json created by the setup wizard.
+    Locally, loads .env file first, then checks env vars.
+    Falls back to email_config.json created by the setup wizard.
     """
+    # Load .env file if available (for Cowork / local runs)
+    # Uses override=False so CI env vars from GitHub Actions take precedence
+    try:
+        from dotenv import load_dotenv
+        env_path = Path(__file__).resolve().parent.parent / ".env"
+        load_dotenv(env_path, override=False)
+    except ImportError:
+        pass
+
     # Try environment variables first (for CI / GitHub Actions)
     smtp_server = os.environ.get("SMTP_SERVER")
     email_sender = os.environ.get("EMAIL_SENDER")
@@ -232,6 +244,69 @@ def send_email(subject: str, body: str) -> bool:
             server.starttls()
             server.login(config['username'], config['password'])
             server.sendmail(config['from_email'], recipients, msg.as_string())
+
+        return True
+
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"  ✗ Email authentication failed: {e}")
+        return False
+    except smtplib.SMTPException as e:
+        print(f"  ✗ SMTP error: {e}")
+        return False
+    except OSError as e:
+        print(f"  ✗ Network error: {e}")
+        return False
+
+
+def send_email_with_attachments(
+    subject: str,
+    body_html: str,
+    attachments: Optional[List[Tuple[str, bytes]]] = None,
+) -> bool:
+    """
+    Send an HTML email with file attachments to all configured recipients.
+
+    Args:
+        subject: Email subject line
+        body_html: Email body as HTML string
+        attachments: List of (filename, content_bytes) tuples to attach
+
+    Returns:
+        True if sent successfully, False otherwise
+
+    Raises:
+        RuntimeError: If email is not configured
+    """
+    config = load_config()
+    if not config:
+        raise RuntimeError("Email not configured. Run: python email_notifier.py setup")
+
+    recipients = config.get("recipients", [config.get("to_email", config["from_email"])])
+
+    try:
+        msg = MIMEMultipart("mixed")
+        msg["From"] = config["from_email"]
+        msg["To"] = ", ".join(recipients)
+        msg["Subject"] = subject
+
+        # HTML body
+        msg.attach(MIMEText(body_html, "html"))
+
+        # File attachments
+        for filename, content in (attachments or []):
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(content)
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                f'attachment; filename="{filename}"',
+            )
+            msg.attach(part)
+
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"]) as server:
+            server.starttls()
+            server.login(config["username"], config["password"])
+            server.sendmail(config["from_email"], recipients, msg.as_string())
 
         return True
 

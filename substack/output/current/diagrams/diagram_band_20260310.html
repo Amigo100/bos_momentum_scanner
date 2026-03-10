@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bandwidth Business Model — AI Voice Infrastructure</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111318; font-family: 'Inter', sans-serif; overflow: hidden; }
+.canvas {
+    width: 1280px; height: 720px; position: relative; overflow: hidden;
+    background: #111318;
+}
+.dot-grid {
+    position: absolute; inset: 0; opacity: 0.15;
+    background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+.box {
+    position: absolute; border-radius: 8px; padding: 14px 16px;
+    opacity: 0; animation: fadeIn 0.6s ease forwards;
+}
+.label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px;
+}
+.title {
+    font-size: 15px; font-weight: 700; margin-bottom: 4px;
+}
+.kpi {
+    font-size: 12px; font-weight: 400; opacity: 0.85; line-height: 1.5;
+}
+.connector {
+    position: absolute; height: 2px; opacity: 0;
+    animation: drawLine 0.4s ease forwards;
+    transform-origin: left center;
+}
+.connector-v {
+    position: absolute; width: 2px; opacity: 0;
+    animation: drawLineV 0.4s ease forwards;
+    transform-origin: top center;
+}
+/* Core Tech */
+.core { background: rgba(13,148,136,0.15); border: 1px solid #0d9488; color: #5eead4; }
+.core .label { color: #0d9488; }
+/* Segments */
+.segment { background: rgba(59,130,246,0.12); border: 1px solid #3b82f6; color: #93c5fd; }
+.segment .label { color: #3b82f6; }
+/* Revenue */
+.revenue { background: rgba(234,179,8,0.12); border: 1px solid #eab308; color: #fde68a; }
+.revenue .label { color: #eab308; }
+/* AI Flywheel */
+.flywheel { background: rgba(168,85,247,0.12); border: 1px solid #a855f7; color: #d8b4fe; }
+.flywheel .label { color: #a855f7; }
+/* Header */
+.header {
+    position: absolute; top: 20px; left: 32px; color: #e2e8f0;
+    opacity: 0; animation: fadeIn 0.5s ease 0.1s forwards;
+}
+.header h1 { font-size: 20px; font-weight: 700; }
+.header p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+/* Brand */
+.brand {
+    position: absolute; bottom: 16px; right: 32px;
+    font-size: 10px; font-weight: 600; letter-spacing: 2px;
+    color: #475569; text-transform: uppercase;
+    opacity: 0; animation: fadeIn 0.5s ease 3s forwards;
+}
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes drawLine {
+    from { opacity: 0; transform: scaleX(0); }
+    to { opacity: 0.6; transform: scaleX(1); }
+}
+@keyframes drawLineV {
+    from { opacity: 0; transform: scaleY(0); }
+    to { opacity: 0.6; transform: scaleY(1); }
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(13,148,136,0.3); }
+    50% { box-shadow: 0 0 12px 4px rgba(13,148,136,0.15); }
+}
+.pulse { animation: pulse 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="canvas">
+<div class="dot-grid"></div>
+
+<div class="header">
+    <h1>$BAND &mdash; Bandwidth Inc.</h1>
+    <p>AI Voice CPaaS Infrastructure | Tier-1 IP Voice Network Owner</p>
+</div>
+
+<!-- CORE TECH -->
+<div class="box core pulse" style="left: 80px; top: 120px; width: 260px; animation-delay: 0.3s;">
+    <div class="label">Core Infrastructure</div>
+    <div class="title">Tier-1 IP Voice Network</div>
+    <div class="kpi">Only independent network in CPaaS<br>20-50% cost advantage vs resellers<br>Global reach across 65+ countries</div>
+</div>
+
+<!-- MAESTRO PLATFORM -->
+<div class="box core" style="left: 80px; top: 320px; width: 260px; animation-delay: 0.6s;">
+    <div class="label">Software Platform</div>
+    <div class="title">Maestro</div>
+    <div class="kpi">Bring Your Own AI<br>OpenAI + Google + Cognigy integrations<br>SIP-based AI voice agent orchestration</div>
+</div>
+
+<!-- SEGMENTS -->
+<div class="box segment" style="left: 440px; top: 100px; width: 220px; animation-delay: 0.9s;">
+    <div class="label">Segment 1</div>
+    <div class="title">Enterprise Voice</div>
+    <div class="kpi">Growing 21% YoY<br>$1M+ deals doubled in 2025<br>UCaaS: Teams, Zoom, RingCentral</div>
+</div>
+
+<div class="box segment" style="left: 440px; top: 260px; width: 220px; animation-delay: 1.1s;">
+    <div class="label">Segment 2</div>
+    <div class="title">Messaging & 911</div>
+    <div class="kpi">A2P, P2P, toll-free messaging<br>RCS 96% device coverage<br>E911 compliance backbone</div>
+</div>
+
+<div class="box segment" style="left: 440px; top: 420px; width: 220px; animation-delay: 1.3s;">
+    <div class="label">Segment 3</div>
+    <div class="title">AI Voice Services</div>
+    <div class="kpi">~$10M ARR and scaling<br>4x developer growth in FY2025<br>GPT-powered voice agents</div>
+</div>
+
+<!-- REVENUE -->
+<div class="box revenue" style="left: 760px; top: 100px; width: 220px; animation-delay: 1.6s;">
+    <div class="label">FY2025 Actual</div>
+    <div class="title">$754M Revenue</div>
+    <div class="kpi">Record Q4 EBITDA: $25M<br>Q4 FCF: $31M<br>82% incremental gross margin</div>
+</div>
+
+<div class="box revenue" style="left: 760px; top: 280px; width: 220px; animation-delay: 1.8s;">
+    <div class="label">FY2026 Guidance</div>
+    <div class="title">$864-884M Revenue</div>
+    <div class="kpi">~16% growth at midpoint<br>EBITDA $117-123M (+29%)<br>Q1: $200-203M rev, $0.30-0.32 EPS</div>
+</div>
+
+<!-- FLYWHEEL -->
+<div class="box flywheel" style="left: 760px; top: 460px; width: 240px; animation-delay: 2.1s;">
+    <div class="label">AI Flywheel</div>
+    <div class="title">Next 1B PSTN Users = AI Agents</div>
+    <div class="kpi">Each AI call = transcription + sentiment +<br>fraud detection + routing revenue<br>Network scale compounds value</div>
+</div>
+
+<!-- VALUATION -->
+<div class="box" style="left: 80px; top: 510px; width: 260px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; animation-delay: 2.4s;">
+    <div class="label" style="color: #ef4444;">Valuation Gap</div>
+    <div class="title">0.7x Forward Revenue</div>
+    <div class="kpi">Cheapest in peer group<br>Market prices single-digit growth<br>Ignores AI infrastructure thesis</div>
+</div>
+
+<!-- CAPITAL RETURN -->
+<div class="box" style="left: 440px; top: 570px; width: 220px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.4); color: #86efac; animation-delay: 2.6s;">
+    <div class="label" style="color: #22c55e;">Capital Return</div>
+    <div class="title">$80M Buyback + Debt Cut</div>
+    <div class="kpi">Converts $600M → $150M debt<br>First-ever shareholder returns<br>Saves ~$80M in obligations</div>
+</div>
+
+<!-- CONNECTORS (horizontal) -->
+<div class="connector" style="background: #0d9488; left: 340px; top: 170px; width: 100px; animation-delay: 1.5s;"></div>
+<div class="connector" style="background: #0d9488; left: 340px; top: 370px; width: 100px; animation-delay: 1.5s;"></div>
+<div class="connector" style="background: #3b82f6; left: 660px; top: 150px; width: 100px; animation-delay: 2.0s;"></div>
+<div class="connector" style="background: #3b82f6; left: 660px; top: 310px; width: 100px; animation-delay: 2.0s;"></div>
+<div class="connector" style="background: #3b82f6; left: 660px; top: 470px; width: 60px; animation-delay: 2.0s;"></div>
+
+<!-- CONNECTORS (vertical) -->
+<div class="connector-v" style="background: #0d9488; left: 210px; top: 268px; height: 52px; animation-delay: 0.8s;"></div>
+<div class="connector-v" style="background: #a855f7; left: 880px; top: 410px; height: 50px; animation-delay: 2.3s;"></div>
+
+<div class="brand">STERLING SIGNALS</div>
+</div>
+</body>
+</html>

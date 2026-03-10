@@ -2656,6 +2656,50 @@ def log_failed_tweet(tweet_dict: Dict, failures: List[str]):
 # MAIN ENTRY POINT
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _has_pending_cowork_items(account: str) -> bool:
+    """Check if Cowork already provided pending tweets for this account today.
+
+    Checks the dedicated cowork queue file first, then falls back to the
+    live queue for already-merged items.
+    """
+    from config.output_paths import COWORK_QUEUE_FILE
+
+    today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
+
+    def _check_queue(queue_data, require_not_merged=False):
+        if not queue_data or not isinstance(queue_data, list):
+            return False
+        return any(
+            item.get("source") == "cowork"
+            and item.get("status") == "pending"
+            and item.get("account") == account
+            and item.get("generated_at", "").startswith(today)
+            and (not require_not_merged or not item.get("merged"))
+            for item in queue_data
+        )
+
+    try:
+        # Check dedicated cowork queue first (un-merged items)
+        if COWORK_QUEUE_FILE.exists():
+            cowork_queue = load_json(COWORK_QUEUE_FILE)
+            if _check_queue(cowork_queue, require_not_merged=True):
+                return True
+        # Fallback: check live queue for already-merged cowork items
+        live_queue = load_json(LIVE_QUEUE_FILE)
+        return _check_queue(live_queue)
+    except Exception:
+        return False
+
+
+def _count_pending_cowork_accounts() -> List[str]:
+    """Return list of accounts that have pending Cowork tweets today."""
+    accounts_with_cowork = []
+    for account in ACCOUNT_VARIANTS:
+        if _has_pending_cowork_items(account):
+            accounts_with_cowork.append(account)
+    return accounts_with_cowork
+
+
 def generate_live_tweet(
     context_path: Optional[Path] = None,
     portfolio_path: Optional[Path] = None,
@@ -2669,6 +2713,23 @@ def generate_live_tweet(
     Returns:
         Status dict: {"status": "generated"|"skipped"|"failed", ...}
     """
+    # 0. Check if Cowork already provided content for all accounts today
+    cowork_accounts = _count_pending_cowork_accounts()
+    if cowork_accounts and not force_type:
+        if len(cowork_accounts) == len(ACCOUNT_VARIANTS):
+            logger.info(
+                "Cowork content available for all accounts — skipping generation"
+            )
+            return {
+                "status": "skipped",
+                "reason": f"cowork_content_pending ({', '.join(cowork_accounts)})",
+            }
+        else:
+            logger.info(
+                "Cowork content available for %s — generation will proceed for remaining accounts",
+                ", ".join(cowork_accounts),
+            )
+
     # 1. Load inputs
     context = load_json(context_path or LIVE_CONTEXT_FILE)
     portfolio = load_portfolio(portfolio_path)

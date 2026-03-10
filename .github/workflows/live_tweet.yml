@@ -145,13 +145,41 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Gather live market context
+      - name: Check for Cowork-generated tweets
+        id: cowork_check
         if: steps.tz_check.outputs.skip != 'true'
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          accounts = set()
+          today = datetime.now(ZoneInfo('America/New_York')).strftime('%Y-%m-%d')
+          # Check both cowork queue (primary) and live queue (already-merged items)
+          for f in ['twitter/output/cowork_content_queue.json', 'twitter/output/live_content_queue.json']:
+              try:
+                  queue = json.load(open(f))
+              except Exception:
+                  continue
+              for item in queue:
+                  if (item.get('source') == 'cowork'
+                      and item.get('status') == 'pending'
+                      and item.get('generated_at', '').startswith(today)):
+                      accounts.add(item.get('account', ''))
+          print(f'Cowork tweets found for {len(accounts)} account(s): {accounts}')
+          skip = 'true' if len(accounts) >= 3 else 'false'
+          print(f'skip_generation={skip}')
+          with open('$GITHUB_OUTPUT', 'a') as out:
+              out.write(f'skip_generation={skip}\n')
+          " || echo "skip_generation=false" >> $GITHUB_OUTPUT
+
+      - name: Gather live market context
+        if: steps.tz_check.outputs.skip != 'true' && steps.cowork_check.outputs.skip_generation != 'true'
         run: python -m twitter.live_context_gatherer
         continue-on-error: true
 
       - name: Generate live tweet
-        if: steps.tz_check.outputs.skip != 'true'
+        if: steps.tz_check.outputs.skip != 'true' && steps.cowork_check.outputs.skip_generation != 'true'
         id: generate
         run: |
           ARGS=""
@@ -164,7 +192,7 @@ jobs:
           python -m twitter.live_tweet_generator $ARGS
 
       - name: Generate charts for flagged tweets
-        if: steps.tz_check.outputs.skip != 'true'
+        if: steps.tz_check.outputs.skip != 'true' && steps.cowork_check.outputs.skip_generation != 'true'
         run: python -m twitter.chart_generator
         continue-on-error: true
 
@@ -305,6 +333,7 @@ jobs:
 
           # Stage live system files
           git add twitter/output/live_content_queue.json 2>/dev/null || true
+          git add twitter/output/cowork_content_queue.json 2>/dev/null || true
           git add twitter/output/live_context.json 2>/dev/null || true
           git add twitter/output/live_cost_log.json 2>/dev/null || true
           git add twitter/output/charts/live_*.png 2>/dev/null || true

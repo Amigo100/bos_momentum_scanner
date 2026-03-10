@@ -346,6 +346,64 @@ def save_queue(queue: list[Dict], queue_file: Path) -> None:
         raise
 
 
+def merge_cowork_queue(live_queue_file: Path) -> int:
+    """Merge pending Cowork tweets into the live queue.
+
+    Reads from the dedicated cowork queue file, appends un-merged pending
+    items to the live queue, and marks them as merged in the cowork file.
+
+    Returns number of items merged.
+    """
+    from config.output_paths import COWORK_QUEUE_FILE
+
+    if not COWORK_QUEUE_FILE.exists():
+        return 0
+
+    try:
+        with open(COWORK_QUEUE_FILE, 'r') as f:
+            cowork_items = json.load(f)
+    except (json.JSONDecodeError, Exception):
+        return 0
+
+    if not cowork_items:
+        return 0
+
+    # Load live queue (create empty if missing)
+    if live_queue_file.exists():
+        try:
+            with open(live_queue_file, 'r') as f:
+                live_items = json.load(f)
+        except (json.JSONDecodeError, Exception):
+            live_items = []
+    else:
+        live_items = []
+
+    live_ids = {item.get("id") for item in live_items}
+
+    new_items = [
+        item for item in cowork_items
+        if item.get("id") not in live_ids
+        and item.get("status") == "pending"
+        and not item.get("merged")
+    ]
+
+    if not new_items:
+        return 0
+
+    live_items.extend(new_items)
+    save_queue(live_items, live_queue_file)
+
+    # Mark merged in cowork queue
+    merged_ids = {item["id"] for item in new_items}
+    for item in cowork_items:
+        if item.get("id") in merged_ids:
+            item["merged"] = True
+    save_queue(cowork_items, COWORK_QUEUE_FILE)
+
+    print(f"  \U0001f500 Merged {len(new_items)} Cowork tweet(s) into live queue")
+    return len(new_items)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # POSTING
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -671,6 +729,10 @@ def post_for_account(account_key: str, args) -> int:
         0 on success, 1 on failure.
     """
     queue_file = LIVE_QUEUE_FILE
+
+    # Merge any Cowork-generated tweets before loading
+    merge_cowork_queue(queue_file)
+
     print(f"\n  📂 [{account_key}] Live Queue: {queue_file}")
 
     if not queue_file.exists():

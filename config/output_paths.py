@@ -70,6 +70,7 @@ PORTFOLIO_SUMMARY_PNG = SUBSTACK_OUTPUT / "current" / "portfolio_summary.png"
 # ═══════════════════════════════════════════════════════════════════════════════
 
 LIVE_QUEUE_FILE = TWITTER_OUTPUT / "live_content_queue.json"
+COWORK_QUEUE_FILE = TWITTER_OUTPUT / "cowork_content_queue.json"
 LIVE_CONTEXT_FILE = TWITTER_OUTPUT / "live_context.json"
 LIVE_COST_LOG_FILE = TWITTER_OUTPUT / "live_cost_log.json"
 TWEET_TRACKING_FILE = TWITTER_OUTPUT / "tweet_tracking.json"
@@ -160,10 +161,10 @@ def ensure_output_structure() -> Tuple[Path, Path]:
     scanner_current.mkdir(parents=True, exist_ok=True)
     scanner_archive.mkdir(parents=True, exist_ok=True)
 
-    # Substack output dirs with subdirs
-    for d in [substack_current, substack_archive]:
-        (d / "substack_notes").mkdir(parents=True, exist_ok=True)
-        (d / "substack_posts").mkdir(parents=True, exist_ok=True)
+    # Substack output dirs with subdirs (Cowork daily content)
+    for subdir in ["posts", "notes", "diagrams", "carousels"]:
+        (substack_current / subdir).mkdir(parents=True, exist_ok=True)
+    substack_archive.mkdir(parents=True, exist_ok=True)
 
     # Claude.ai content storage
     CLAUDE_CONTENT_DIR.mkdir(parents=True, exist_ok=True)

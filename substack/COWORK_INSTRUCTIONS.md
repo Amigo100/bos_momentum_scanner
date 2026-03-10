@@ -484,9 +484,9 @@ From today's 5-7 tweets:
 1. Read today's Substack content (the notes and post you just generated)
 2. Read portfolio data and scanner signals for fresh context
 3. Generate 5-7 tweets across all 3 accounts
-4. Read the existing `twitter/output/live_content_queue.json` file
-5. **Append** new tweets to the existing queue — do NOT overwrite existing items
-6. Write the updated queue back to `twitter/output/live_content_queue.json`
+4. Read the existing `twitter/output/cowork_content_queue.json` file (create if missing)
+5. **Replace** the file with today's tweets — the poster merges them into the live queue automatically
+6. Write to `twitter/output/cowork_content_queue.json`
 
 ### Tweet Queue Item Schema
 
@@ -825,7 +825,7 @@ Sends generated HTML files as email attachments for mobile posting.
 Sync content to the repo so the tweet posting pipeline (GitHub Actions) picks up the new tweets:
 
 ```bash
-git add twitter/output/live_content_queue.json substack/output/current/
+git add twitter/output/cowork_content_queue.json substack/output/current/
 git commit -m "Cowork: daily content $(date +%Y-%m-%d)"
 git pull --rebase origin master
 git push origin master

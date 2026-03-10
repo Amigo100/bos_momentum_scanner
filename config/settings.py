@@ -29,7 +29,7 @@ from config.output_paths import (
     SIGNALS_FILE, ANALYSIS_LOG,
     PORTFOLIO_FILE, SHEETS_EXPORT_FILE, EQUITY_CURVE_FILE,
     PORTFOLIO_BACKUP_DIR,
-    LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
+    LIVE_QUEUE_FILE, COWORK_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
     CHARTS_DIR, FAILED_TWEETS_FILE, WORKFLOW_STATUS_FILE,
     TWEET_TRACKING_FILE, CELEBRATIONS_FILE,
 )
@@ -1216,6 +1216,7 @@ COST_LOG_FILE = LIVE_COST_LOG_FILE  # Alias for backward compat
 MAX_TWEETS_PER_DAY = 12                   # Hard cap across all accounts
 MAX_SAME_TICKER_PER_DAY = 3              # Max tweets about same ticker per day
 CONTEXT_STALENESS_HOURS = 4              # Stale threshold for MARKET_COMMENTARY
+WEEKEND_CONTEXT_STALENESS_HOURS = 24     # Relaxed threshold on weekends (markets closed)
 MIN_HOURS_BETWEEN_SAME_TICKER = 3        # Min gap between same-ticker tweets
 
 # Diversity controls (ported from batch system — prevents repetitive tweets)

@@ -80,10 +80,10 @@ logger = logging.getLogger(__name__)
 
 try:
     from config import (
-        LIVE_QUEUE_FILE, PORTFOLIO_FILE, SIGNALS_FILE,
+        LIVE_QUEUE_FILE, PORTFOLIO_FILE, SIGNALS_FILE, COWORK_QUEUE_FILE,
         LIVE_CONTEXT_FILE, FAILED_TWEETS_FILE,
         MAX_TWEETS_PER_DAY, MAX_SAME_TICKER_PER_DAY,
-        MIN_HOURS_BETWEEN_SAME_TICKER, CONTEXT_STALENESS_HOURS,
+        MIN_HOURS_BETWEEN_SAME_TICKER, CONTEXT_STALENESS_HOURS, WEEKEND_CONTEXT_STALENESS_HOURS,
         MODEL_LIVE_TWEET, WEEKEND_MAX_TWEETS, WEEKEND_CATEGORIES as _WEEKEND_CATS,
         PERSONAS, get_persona, PERSONA_AFFINITY,
     )
@@ -95,6 +95,7 @@ except ImportError:
     _SCANNER_OUTPUT = BASE_DIR / "scanner" / "output"
     _PORTFOLIO_OUTPUT = BASE_DIR / "portfolio" / "output"
     LIVE_QUEUE_FILE = _TWITTER_OUTPUT / "live_content_queue.json"
+    COWORK_QUEUE_FILE = _TWITTER_OUTPUT / "cowork_content_queue.json"
     PORTFOLIO_FILE = _PORTFOLIO_OUTPUT / "portfolio.csv"
     SIGNALS_FILE = _SCANNER_OUTPUT / "signals.json"
     LIVE_CONTEXT_FILE = _TWITTER_OUTPUT / "live_context.json"
@@ -105,6 +106,7 @@ except ImportError:
     MAX_SAME_TICKER_PER_DAY = 3
     MIN_HOURS_BETWEEN_SAME_TICKER = 3
     CONTEXT_STALENESS_HOURS = 4
+    WEEKEND_CONTEXT_STALENESS_HOURS = 24
     WEEKEND_CATEGORIES = {"EDUCATIONAL", "ENGAGEMENT", "RECEIPT", "SIGNAL_ALERT", "SUBSTACK_TEASER", "THEME_LIST"}
     PERSONA_AFFINITY = {
         "variant_1": {"primary": set(), "secondary": set(), "avoids": set()},
@@ -593,8 +595,10 @@ def load_portfolio(path: Optional[Path] = None) -> List[Dict]:
 
 
 def load_recent_tweets() -> List[Dict]:
-    """Load recent tweets from live content queue."""
-    return load_json_list(LIVE_QUEUE_FILE)
+    """Load recent tweets from live and cowork content queues for dedup."""
+    live = load_json_list(LIVE_QUEUE_FILE)
+    cowork = load_json_list(COWORK_QUEUE_FILE)
+    return live + cowork
 
 
 def load_style_guide() -> str:
@@ -2439,7 +2443,7 @@ def validate_tweet(
             else:
                 logger.debug("Step 8.6: $%s correctly matches assignment for %s", my_ticker_86, my_account_86)
 
-    # Step 9: Context staleness check
+    # Step 9: Context staleness check (relaxed on weekends — markets closed)
     if context and category in {"MARKET_COMMENTARY", "TRENDING_TAKE"}:
         gathered_at = context.get("gathered_at", "")
         if gathered_at:
@@ -2448,9 +2452,11 @@ def validate_tweet(
                 if gathered_time.tzinfo is None:
                     gathered_time = gathered_time.replace(tzinfo=timezone.utc)
                 age_hours = (datetime.now(timezone.utc) - gathered_time).total_seconds() / 3600
-                if age_hours > CONTEXT_STALENESS_HOURS:
+                now_et = datetime.now(ZoneInfo("America/New_York"))
+                staleness_limit = WEEKEND_CONTEXT_STALENESS_HOURS if now_et.weekday() >= 5 else CONTEXT_STALENESS_HOURS
+                if age_hours > staleness_limit:
                     failures.append(
-                        f"step9_staleness: context {age_hours:.1f}h old, {category} blocked"
+                        f"step9_staleness: context {age_hours:.1f}h old (limit {staleness_limit}h), {category} blocked"
                     )
             except (ValueError, TypeError):
                 pass

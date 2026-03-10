@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 try:
     from config import (
         PORTFOLIO_FILE, SIGNALS_FILE, LIVE_QUEUE_FILE, LIVE_CONTEXT_FILE,
-        CONTEXT_STALENESS_HOURS,
+        CONTEXT_STALENESS_HOURS, WEEKEND_CONTEXT_STALENESS_HOURS,
         MODEL_CONTEXT, XAI_BASE_URL,
     )
     MODEL = MODEL_CONTEXT
@@ -65,6 +65,7 @@ except ImportError:
     MODEL = "grok-4-fast-non-reasoning"
     XAI_BASE_URL = "https://api.x.ai/v1"
     CONTEXT_STALENESS_HOURS = 4
+    WEEKEND_CONTEXT_STALENESS_HOURS = 24
 
 # Base themes that are always tracked (structural macro themes, not scanner-specific)
 BASE_THEMES = ["copper", "infrastructure", "defense", "AI", "semiconductors", "nuclear"]
@@ -350,7 +351,7 @@ def parse_json_response(text: str) -> Dict:
 
 
 def check_stale_context() -> Optional[Dict]:
-    """Check if existing context file is usable (< CONTEXT_STALENESS_HOURS old)."""
+    """Check if existing context file is usable (relaxed threshold on weekends)."""
     if not LIVE_CONTEXT_FILE.exists():
         return None
     try:
@@ -363,7 +364,9 @@ def check_stale_context() -> Optional[Dict]:
         if gathered_time.tzinfo is None:
             gathered_time = gathered_time.replace(tzinfo=timezone.utc)
         age_hours = (datetime.now(timezone.utc) - gathered_time).total_seconds() / 3600
-        if age_hours < CONTEXT_STALENESS_HOURS:
+        now_et = datetime.now(ZoneInfo("America/New_York"))
+        staleness_limit = WEEKEND_CONTEXT_STALENESS_HOURS if now_et.weekday() >= 5 else CONTEXT_STALENESS_HOURS
+        if age_hours < staleness_limit:
             data['context_stale'] = True
             return data
     except (json.JSONDecodeError, ValueError, TypeError):

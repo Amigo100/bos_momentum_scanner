@@ -111,7 +111,7 @@ except ImportError:
         "variant_2": {"primary": set(), "secondary": set(), "avoids": set()},
         "variant_3": {"primary": set(), "secondary": set(), "avoids": set()},
     }
-STYLE_GUIDE_PATH = Path(__file__).resolve().parent.parent / "FINTWIT_STYLE_GUIDE.md"
+STYLE_GUIDE_PATH = Path(__file__).resolve().parent / "docs" / "FINTWIT_STYLE_GUIDE.md"
 
 MAX_TOKENS = 1500
 MAX_TWEET_CHARS = 280

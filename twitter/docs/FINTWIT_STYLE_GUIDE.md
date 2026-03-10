@@ -59,7 +59,7 @@ FinTwit rewards accountability. Reference past calls, show entry prices, display
 **Real Examples:**
 
 ```
-$AREC break weekly purple and it's game on... got triple blue diamonds already.
+$AREC breaking weekly resistance and it's game on... strong institutional accumulation confirmed.
 ```
 
 ```
@@ -96,21 +96,21 @@ I'll share them as they come...
 ```
 
 ```
-$ZETA has a new Blue Diamond.
+$ZETA just triggered a GREEN signal.
 
 It can be invalidated still, so the safe play is to wait until we close today.
 
-Broke clean through the gold zone.
+Broke clean through the support zone.
 
 Bottom may be in...
 ```
 
 ```
-New Daily BD on $HIMS.
+New daily momentum confirmation on $HIMS.
 
-Same boat as $ZETA, the BD can be invalidated. Safe play is to wait for today's candle to close.
+Same boat as $ZETA, the signal can be invalidated. Safe play is to wait for today's candle to close.
 
-For those with even less risk tolerance, wait for the Weekly BD to appear.
+For those with even less risk tolerance, wait for the weekly structural pivot to appear.
 
 Will update you guys when it does!
 ```
@@ -178,10 +178,10 @@ AI, Space, Defense, the list goes on.
 
 One theme that's been catching momentum lately is copper. Keep an eye on:
 
-$ERO +110% from BDs.
-$FCX +42% from BDs.
-$SCCO +79% from BDs.
-$TMQ +18% from BDs.
+$ERO +110% from signals.
+$FCX +42% from signals.
+$SCCO +79% from signals.
+$TMQ +18% from signals.
 
 Will share potential entries soon...
 ```
@@ -245,7 +245,7 @@ You don't get rich by missing half the run.
 
 You get rich by riding momentum.
 
-$SATL Daily BD came in at $2. It's now sitting at $5.25 - a solid 2x for those who followed.
+$SATL daily momentum confirmation came in at $2. It's now sitting at $5.25 - a solid 2x for those who followed.
 
 Just like when I caught $ONDS at $0.83.
 
@@ -265,7 +265,7 @@ A ton of my followers made millions.
 ```
 
 ```
-$USAR up 86% from our initial BDs.
+$USAR up 86% from our initial GREEN signals.
 
 The U.S planning to invest $1.6B (for 10% equity) is extremely bullish.
 
@@ -338,23 +338,23 @@ I'll share them as they come...
 ```
 
 ```
-$BITF not seeing blue diamonds yet, but it refuses to break below the gold zone.
+$BITF not seeing GREEN signals yet, but it refuses to break below the support zone.
 
-Interestingly, the Arch (first pane) flipped bullish... which usually precedes BDs.
+Interestingly, the Arch (first pane) flipped bullish... which usually precedes signals.
 
 Will update if I see anything!
 ```
 
 ```
-$RZLV no blue diamonds yet.
+$RZLV no GREEN signals yet.
 
 Will update the moment I see any!
 ```
 
 ```
-No new BDs on $HIMS yet, but seems like the bottom is near.
+No new GREEN signals on $HIMS yet, but seems like the bottom is near.
 
-Safest entry is to wait for a new BD - will update you guys when I start a new position.
+Safest entry is to wait for a new signal - will update you guys when I start a new position.
 ```
 
 **Anti-patterns (NEVER do this):**
@@ -383,7 +383,7 @@ Once we break through, which we're very well on track to do, we're shooting towa
 ```
 
 ```
-$TMQ I wouldn't get shaken out at 4H gold, green, and purple support.
+$TMQ I wouldn't get shaken out at 4H support zone, green, and weekly resistance support.
 
 Looks just like $SATL yesterday...
 
@@ -407,9 +407,9 @@ Always know your levels!
 ```
 
 ```
-$ONDS continues to hold at the daily gold zone I highlighted last week.
+$ONDS continues to hold at the daily support zone I highlighted last week.
 
-Pink diamonds usually mean a trip down to the gold, which we already got.
+Exit signals usually mean a trip down to support, which we already got.
 
 Bears are wrong unless this breaks.
 
@@ -421,7 +421,7 @@ $LAC probably ready to take out silver resistance this week and proceed higher f
 ```
 
 ```
-$CLSK this is why our gold zone is so powerful... basically every ticker respects it... on every timeframe.
+$CLSK this is why our support zone is so powerful... basically every ticker respects it... on every timeframe.
 
 Perfect rejection on the first attempt.
 Successful break on the second.
@@ -431,7 +431,7 @@ Will keep updating...
 ```
 
 ```
-$LPTH it's easy to get nervous on red days, but so far it's just a gold retest.
+$LPTH it's easy to get nervous on red days, but so far it's just a support retest.
 
 Just like the previous 2 times...
 
@@ -445,7 +445,7 @@ Psychological resistance is real. Once past, it should soar.
 ```
 
 ```
-A lot of tickers, including $OSS 4H, are sitting at their gold zone supports.
+A lot of tickers, including $OSS 4H, are sitting at their support zone levels.
 
 I think FOMC turbulence next week will provide us with a clear direction.
 ```
@@ -453,13 +453,13 @@ I think FOMC turbulence next week will provide us with a clear direction.
 ```
 $COPX sometimes I like to experience anxiety by looking at the 5 min chart.
 
-About to breach gold zone...
+About to breach support zone...
 ```
 
 ```
-$COPX nice bounce off hourly gold!
+$COPX nice bounce off hourly support!
 
-Every ticker has its own gold zone support, and thus setup invalidation.
+Every ticker has its own support zone level, and thus setup invalidation.
 ```
 
 **Key Phrases for Technical Posts:**
@@ -468,10 +468,10 @@ Every ticker has its own gold zone support, and thus setup invalidation.
 - "Easy invalidation on a close below"
 - "Bears are wrong unless this breaks"
 - "Don't get shaken out at support"
-- "Triple blue diamonds"
+- "Strong institutional accumulation"
 - "Important inflection point"
 - "Psychological resistance"
-- "Just a gold retest"
+- "Just a support retest"
 
 ---
 
@@ -487,16 +487,16 @@ Every ticker has its own gold zone support, and thus setup invalidation.
 **Real Examples:**
 
 ```
-Blue Diamonds are buy signals.
-Pink Diamonds are sell signals.
+GREEN signals are buy signals.
+Exit signals are sell signals.
 
-You can also set alerts for Blue or Pink Diamonds on TradingView, for any ticker or an entire watchlist, on any timeframe.
+You can set alerts for GREEN or exit signals on TradingView, for any ticker or an entire watchlist, on any timeframe.
 
-The more diamonds across the board, the stronger the signal.
+The more confirmations across the board, the stronger the signal.
 ```
 
 ```
-Buy blue. Sell pink. Repeat forever.
+Buy GREEN. Sell on exit signal. Repeat forever.
 ```
 
 ```
@@ -508,9 +508,9 @@ All the previous breakout attempts looked convincing, but ultimately failed.
 ```
 
 ```
-$CRML has triple weekly blue diamonds, with a "fresh" break of the silver.
+$CRML has strong weekly institutional accumulation, with a "fresh" break of the silver.
 
-At $18.46 I noticed that it breached the purple... I never ignore tickers that clear the next resistance right away.
+At $18.46 I noticed that it breached weekly resistance... I never ignore tickers that clear the next resistance right away.
 
 Pay attention to Rare Earths IMO...
 ```
@@ -544,7 +544,7 @@ Just because "alligator safari" is a theme, doesn't mean it has to be bullish.
 ```
 
 ```
-Blue diamonds don't expire until the next pink, especially if there's minimal resistance above.
+GREEN signals don't expire until the next exit signal, especially if there's minimal resistance above.
 ```
 
 ```
@@ -596,7 +596,7 @@ $SATL stock picker's market.
 
 Green while indices are red...
 
-Just make sure to set alerts for pink diamonds etc. on 4H/1D/1W IMO!
+Just make sure to set alerts for exit signals etc. on 4H/1D/1W IMO!
 ```
 
 ```
@@ -618,7 +618,7 @@ New trade today. Stay tuned.
 ```
 Silver $SLV weekly update.
 
-Blue diamonds don't expire until the next pink diamond... will update if I see one.
+GREEN signals don't expire until the next exit signal... will update if I see one.
 
 I haven't made a single bearish post on metals since December.
 
@@ -628,7 +628,7 @@ Just respecting momentum...
 ```
 $SLV Silver new all time highs.
 
-Will update when I do see a weekly pink diamond... but wouldn't try to short this.
+Will update when I do see a weekly exit signal... but wouldn't try to short this.
 ```
 
 ```
@@ -702,7 +702,7 @@ Will $COPX be one of the best performing ETFs in 2026?
 ```
 Copper bull run loading IMO...
 
-Triple blue WEEKLY diamonds and basically thin air (no resistance) above.
+Strong weekly institutional accumulation and basically thin air (no resistance) above.
 
 Bulls maxed out in the fourth pane.
 
@@ -963,10 +963,10 @@ These phrases appear frequently in high-performing FinTwit posts:
 | "Easy invalidation on a close below" | Clear risk management |
 | "Bears are wrong unless this breaks" | Bullish bias with exit |
 | "Don't get shaken out at support" | Encouraging hold |
-| "Triple blue diamonds" | Strong signal |
+| "Strong institutional accumulation" | Strong signal |
 | "Important inflection point" | Key level approaching |
 | "Psychological resistance" | Round number levels |
-| "Just a gold retest" | Normal pullback |
+| "Just a support retest" | Normal pullback |
 
 ### Receipts & Proof
 | Phrase | Context |
@@ -1125,7 +1125,7 @@ $TICKER [technical observation]
 - Key support/resistance levels marked
 - Entry point if discussing a call
 - Current price
-- Diamond indicators visible
+- Signal indicators visible
 
 ### Quote Tweets
 **When to quote your own tweets:**

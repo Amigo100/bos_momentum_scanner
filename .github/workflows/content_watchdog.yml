@@ -1,0 +1,104 @@
+name: Content Delivery Watchdog
+
+on:
+  schedule:
+    # 08:00 ET = 12:00 UTC (EST) or 13:00 UTC (EDT)
+    # Using 12:00 UTC — in summer fires at 08:00 EDT, in winter at 07:00 EST
+    # Slightly early in winter is acceptable: faster fallback detection
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Manual trigger for testing
+
+# Required for git push
+permissions:
+  contents: write
+
+jobs:
+  check-and-fallback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Check if Cowork delivered today's content
+        id: check
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          MANIFEST="substack/output/current/daily_manifest.json"
+
+          if [ -f "$MANIFEST" ]; then
+            MANIFEST_DATE=$(python3 -c "import json; print(json.load(open('$MANIFEST'))['date'])")
+            if [ "$MANIFEST_DATE" = "$TODAY" ]; then
+              echo "✅ Cowork delivered content for $TODAY"
+              echo "cowork_delivered=true" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ Manifest exists but date is $MANIFEST_DATE, not $TODAY"
+              echo "cowork_delivered=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "⚠️ No manifest found — Cowork did not run"
+            echo "cowork_delivered=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Python
+        if: steps.check.outputs.cowork_delivered == 'false'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        if: steps.check.outputs.cowork_delivered == 'false'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run fallback content generation
+        if: steps.check.outputs.cowork_delivered == 'false'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 scripts/fallback_content_generator.py
+
+      - name: Commit and push fallback content
+        if: steps.check.outputs.cowork_delivered == 'false'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add substack/output/current/ twitter/output/cowork_content_queue.json 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "[watchdog] Fallback content for $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Send notification email
+        if: steps.check.outputs.cowork_delivered == 'false'
+        continue-on-error: true
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+        run: |
+          if [ -n "$EMAIL_PASSWORD" ] && [ -n "$EMAIL_SENDER" ]; then
+            python3 -c "
+          from utils.email_notifier import send_email
+          if send_email(
+              '⚠️ Sterling Signals: Cowork missed — fallback ran',
+              'Cowork did not deliver content for today. The watchdog ran fallback generation using the API.\n\nCheck the repo for output quality. Consider rerunning Cowork manually if your Mac was asleep.'
+          ):
+              print('✓ Notification email sent')
+          else:
+              print('✗ Notification email failed')
+          " || echo "Email notification errored"
+          else
+            echo "Email notification skipped — no SMTP credentials configured"
+          fi

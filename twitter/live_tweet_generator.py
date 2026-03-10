@@ -858,9 +858,9 @@ def _prepare_slot_data(
 
     # ── Step 4: Assign tickers per variant ───────────────────────────────
     angles = {
-        "variant_1": "data-driven",
-        "variant_2": "explains-why",
-        "variant_3": "punchy-direct",
+        "variant_1": "numbers-first, max 2-3 sentences, lead with $TICKER at $PRICE",
+        "variant_2": "open with question or insight, 3-4 sentences, teaching voice",
+        "variant_3": "short fragments with line breaks, max 4 lines, trader slang",
     }
     # Categories that need a specific ticker to be meaningful
     ticker_requiring_cats = {
@@ -1622,11 +1622,11 @@ variant_2 (Rozalia — The Mentor):
 - Can be the longest of the three variants.
 
 variant_3 (James — The Trader):
-- MUST be the shortest variant. Target 120-180 characters.
-- Casual language: fragments OK, contractions required.
-- Can address reader directly.
-- One idea only. If it needs 3 sentences, cut it to 2.
-- Gets NFA allocation when used.
+- MUST be the shortest variant. Max 4 lines, each under 60 characters.
+- Uses line breaks between thoughts. Short fragments, not full sentences.
+- Casual language: fragments OK, contractions required, drops articles.
+- NEVER explains WHY. States WHAT and WHAT NEXT.
+- Can address reader directly. Gets NFA allocation when used.
 
 CROSS-VARIANT RULES:
 - Each variant MUST use a different opening word/phrase. Check: if the first 3 words are similar, rewrite.

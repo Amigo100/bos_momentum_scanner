@@ -476,8 +476,9 @@ class RecentTweetTracker:
                 return True
         return False
 
-    def category_over_weekly_budget(self, category: str) -> bool:
-        target = CATEGORY_WEEKLY_TARGETS.get(category, 999)
+    def category_over_weekly_budget(self, category: str, overrides: Optional[Dict[str, int]] = None) -> bool:
+        targets = overrides if overrides else CATEGORY_WEEKLY_TARGETS
+        target = targets.get(category, CATEGORY_WEEKLY_TARGETS.get(category, 999))
         return self.categories_this_week.get(category, 0) >= target
 
     def category_at_daily_limit(self, category: str) -> bool:
@@ -746,6 +747,7 @@ def _pick_available_category(
     primary: set, secondary: set, avoids: set,
     tracker: Optional["RecentTweetTracker"] = None,
     exclude: Optional[set] = None,
+    overrides: Optional[Dict[str, int]] = None,
 ) -> str:
     """Pick the best available category from persona's pools.
 
@@ -759,7 +761,7 @@ def _pick_available_category(
     for cat in sorted(primary):  # sorted for deterministic order
         if cat in exclude or cat in avoids:
             continue
-        if _is_category_over_budget(cat, tracker):
+        if _is_category_over_budget(cat, tracker, overrides=overrides):
             continue
         return cat
 
@@ -767,7 +769,7 @@ def _pick_available_category(
     for cat in sorted(secondary):
         if cat in exclude or cat in avoids:
             continue
-        if _is_category_over_budget(cat, tracker):
+        if _is_category_over_budget(cat, tracker, overrides=overrides):
             continue
         return cat
 
@@ -775,7 +777,7 @@ def _pick_available_category(
     for cat in sorted(LIVE_VALID_CATEGORIES):
         if cat in exclude or cat in avoids:
             continue
-        if _is_category_over_budget(cat, tracker):
+        if _is_category_over_budget(cat, tracker, overrides=overrides):
             continue
         return cat
 
@@ -897,7 +899,7 @@ def _prepare_slot_data(
         # Same-category-consecutively check
         if tracker and tracker.last_category_per_account.get(variant) == cat:
             alt_cats = [c for c in sorted(LIVE_VALID_CATEGORIES)
-                        if c != cat and not _is_category_over_budget(c, tracker)]
+                        if c != cat and not _is_category_over_budget(c, tracker, overrides=None)]
             if alt_cats:
                 cat = alt_cats[ACCOUNT_VARIANTS.index(variant) % len(alt_cats)]
 
@@ -910,11 +912,21 @@ def _prepare_slot_data(
     return slot_data
 
 
-def _is_category_over_budget(category: str, tracker: Optional["RecentTweetTracker"]) -> bool:
-    """Check if a category has exceeded its weekly target or daily limit."""
+def _is_category_over_budget(
+    category: str,
+    tracker: Optional["RecentTweetTracker"],
+    overrides: Optional[Dict[str, int]] = None,
+) -> bool:
+    """Check if a category has exceeded its weekly target or daily limit.
+
+    Args:
+        overrides: Optional dict of {category: adjusted_target} that temporarily
+                   replaces CATEGORY_WEEKLY_TARGETS for the weekly budget check.
+                   Used by low-position mode to shift distribution.
+    """
     if tracker is None:
         return False
-    return tracker.category_over_weekly_budget(category) or tracker.category_at_daily_limit(category)
+    return tracker.category_over_weekly_budget(category, overrides=overrides) or tracker.category_at_daily_limit(category)
 
 
 def _get_time_context() -> str:
@@ -1174,8 +1186,19 @@ def decide_tweet_type(
     portfolio_count = len([p for p in portfolio if float(p.get('entry_price', 0) or 0) > 0])
     is_low_position = portfolio_count < 5
 
+    # Budget overrides for low-position mode: suppress ticker-heavy categories,
+    # boost theme/educational content that doesn't depend on open positions.
+    low_pos_overrides = None
+    if is_low_position:
+        low_pos_overrides = {
+            "RECEIPT": 3,            # down from 5 — fewer positions to showcase
+            "TECHNICAL_ANALYSIS": 2, # down from 5 — fewer charts to discuss
+            "THEME_LIST": 5,         # up from 3 — themes don't need positions
+            "EDUCATIONAL": 6,        # up from 4 — principles over tickers
+        }
+
     # ── P0: Sell/exit signals (ALWAYS highest priority) ────────────────────
-    if not _is_category_over_budget("SELL_SIGNAL", tracker):
+    if not _is_category_over_budget("SELL_SIGNAL", tracker, overrides=low_pos_overrides):
         for sig in signals.get("sell_signals", []):
             ticker = sig.get("symbol", "").upper()
             if not ticker:
@@ -1193,7 +1216,7 @@ def decide_tweet_type(
             }
 
     # ── P1: Fresh scanner signals (buy + consider) ─────────────────────────
-    if not _is_category_over_budget("SIGNAL_ALERT", tracker):
+    if not _is_category_over_budget("SIGNAL_ALERT", tracker, overrides=low_pos_overrides):
         # P1a: Fresh buy signals (< 72h old)
         signal_timestamp = signals.get("timestamp", "")
         hours_since_scan = 999
@@ -1273,7 +1296,7 @@ def decide_tweet_type(
             )
 
     for p2_type in p2_order:
-        if _is_category_over_budget(p2_type, tracker):
+        if _is_category_over_budget(p2_type, tracker, overrides=low_pos_overrides):
             continue
 
         if p2_type == "RECEIPT":
@@ -1353,7 +1376,7 @@ def decide_tweet_type(
     # ── P3: THEME_CATALYST or TRENDING_TAKE ────────────────────────────────
     # TODO Sprint 7: engagement-weighted reorder when both P3a/P3b are eligible
     # P3a: Breaking themes → THEME_CATALYST
-    if not _is_category_over_budget("THEME_CATALYST", tracker):
+    if not _is_category_over_budget("THEME_CATALYST", tracker, overrides=low_pos_overrides):
         active_themes = [t for t in themes if t.get("status") == "breaking"]
         for theme in active_themes:
             theme_name = theme.get("theme", "")
@@ -1370,7 +1393,7 @@ def decide_tweet_type(
             }
 
     # P3b: FinTwit overlap → TRENDING_TAKE
-    if not _is_category_over_budget("TRENDING_TAKE", tracker):
+    if not _is_category_over_budget("TRENDING_TAKE", tracker, overrides=low_pos_overrides):
         overlap = _fintwit_overlaps_themes(context)
         if overlap:
             overlap_theme = overlap.get("theme", "")
@@ -1394,9 +1417,10 @@ def decide_tweet_type(
 
     # ── P4: THEME_LIST or SUBSTACK_TEASER ──────────────────────────────────
     # TODO Sprint 7: engagement-weighted reorder when both P4a/P4b are eligible
-    # P4a: Theme with 5+ external tickers → THEME_LIST
-    if not _is_category_over_budget("THEME_LIST", tracker):
-        theme_data = _theme_has_external_tickers(context, min_count=5)
+    # P4a: Theme with external tickers → THEME_LIST (min 3 in low-position, 5 otherwise)
+    if not _is_category_over_budget("THEME_LIST", tracker, overrides=low_pos_overrides):
+        theme_min = 3 if is_low_position else 5
+        theme_data = _theme_has_external_tickers(context, min_count=theme_min)
         if theme_data:
             theme_name = theme_data.get("theme", "")
             if not (tracker and tracker.theme_recently_used(theme_name, hours=6)):
@@ -1415,7 +1439,7 @@ def decide_tweet_type(
                 }
 
     # P4b: Substack teaser on post days
-    if not _is_category_over_budget("SUBSTACK_TEASER", tracker):
+    if not _is_category_over_budget("SUBSTACK_TEASER", tracker, overrides=low_pos_overrides):
         if _is_post_day():
             topic = _get_today_post_topic()
             reason = f"Substack teaser — today's post: {topic}" if topic else "Scheduled Substack teaser"
@@ -1432,7 +1456,7 @@ def decide_tweet_type(
     # TODO Sprint 7: engagement-weighted reorder when both P5a/P5b are eligible
     # P5a: Low-position mode redirect — prefer EDUCATIONAL over TA to diversify
     if is_low_position and not is_weekend:
-        if not _is_category_over_budget("EDUCATIONAL", tracker):
+        if not _is_category_over_budget("EDUCATIONAL", tracker, overrides=low_pos_overrides):
             if not (tracker and tracker.type_recently_used("EDUCATIONAL", hours=4)):
                 edu_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker) or []
                 return {
@@ -1443,8 +1467,8 @@ def decide_tweet_type(
                     "urgency": "low",
                 }
 
-    # P5a: Position commentary
-    if not is_weekend and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker):
+    # P5b: Position commentary
+    if not is_weekend and not _is_category_over_budget("TECHNICAL_ANALYSIS", tracker, overrides=low_pos_overrides):
         if not (tracker and tracker.type_recently_used("TECHNICAL_ANALYSIS", hours=4)):
             commentary_tickers = get_diverse_tickers(portfolio, n=1, tracker=tracker)
             if commentary_tickers:
@@ -1469,8 +1493,8 @@ def decide_tweet_type(
                     "bullish_factors": bullish,
                 }
 
-    # P5b: Educational content (every 3rd becomes a thread)
-    if not _is_category_over_budget("EDUCATIONAL", tracker):
+    # P5c: Educational content (every 3rd becomes a thread)
+    if not _is_category_over_budget("EDUCATIONAL", tracker, overrides=low_pos_overrides):
         if not (tracker and tracker.type_recently_used("EDUCATIONAL", hours=6)):
             edu_count = tracker.categories_this_week.get("EDUCATIONAL", 0) if tracker else 0
             is_edu_thread = edu_count > 0 and (edu_count % 3 == 0)
@@ -1484,7 +1508,7 @@ def decide_tweet_type(
             }
 
     # ── P6: ENGAGEMENT ─────────────────────────────────────────────────────
-    if not _is_category_over_budget("ENGAGEMENT", tracker):
+    if not _is_category_over_budget("ENGAGEMENT", tracker, overrides=low_pos_overrides):
         if not (tracker and tracker.type_recently_used("ENGAGEMENT", hours=6)):
             return {
                 "action": "tweet",

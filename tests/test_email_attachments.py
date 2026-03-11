@@ -251,7 +251,7 @@ class TestAttachmentCollection:
         try:
             result = mod._collect_attachments_fallback(date(2026, 3, 9))
             assert len(result) == 1
-            assert "20260309" in result[0][0]
+            assert "20260309" in result[0].name
         finally:
             mod.NOTES_DIR = original_notes
             mod.POSTS_DIR = original_posts

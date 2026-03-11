@@ -21,7 +21,7 @@ import os
 import sys
 from datetime import datetime, date
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from config.output_paths import SUBSTACK_OUTPUT, BASE_DIR
 
@@ -88,8 +88,8 @@ def _load_notes_manifest(target_date: date) -> Optional[Dict]:
 
 def _collect_attachments_from_manifest(
     manifest: Dict,
-) -> List[Tuple[str, bytes]]:
-    """Collect HTML files referenced in manifest as (filename, content) pairs."""
+) -> List[Path]:
+    """Collect file paths referenced in manifest for email attachment."""
     attachments = []
     base = SUBSTACK_OUTPUT / "current"
 
@@ -99,10 +99,10 @@ def _collect_attachments_from_manifest(
     if post_file:
         post_path = base / post_file if not Path(post_file).is_absolute() else Path(post_file)
         if post_path.exists() and post_path.suffix in EMAILABLE_EXTENSIONS:
-            content = post_path.read_bytes()
-            if len(content) <= MAX_ATTACHMENT_BYTES:
-                attachments.append((post_path.name, content))
-                print(f"    ✓ Post: {post_path.name} ({len(content)//1024}KB)")
+            size_kb = post_path.stat().st_size // 1024
+            if post_path.stat().st_size <= MAX_ATTACHMENT_BYTES:
+                attachments.append(post_path)
+                print(f"    ✓ Post: {post_path.name} ({size_kb}KB)")
 
     # Note files
     for note in manifest.get("notes", []):
@@ -111,12 +111,12 @@ def _collect_attachments_from_manifest(
             continue
         note_path = base / note_file if not Path(note_file).is_absolute() else Path(note_file)
         if note_path.exists() and note_path.suffix in EMAILABLE_EXTENSIONS:
-            content = note_path.read_bytes()
-            if len(content) <= MAX_ATTACHMENT_BYTES:
-                attachments.append((note_path.name, content))
+            size_kb = note_path.stat().st_size // 1024
+            if note_path.stat().st_size <= MAX_ATTACHMENT_BYTES:
+                attachments.append(note_path)
                 slot = note.get("slot", "?")
                 ntype = note.get("type", "?")
-                print(f"    ✓ Note {slot} ({ntype}): {note_path.name} ({len(content)//1024}KB)")
+                print(f"    ✓ Note {slot} ({ntype}): {note_path.name} ({size_kb}KB)")
 
     # Diagram HTML (not MP4)
     visual = manifest.get("visual", {})
@@ -124,17 +124,17 @@ def _collect_attachments_from_manifest(
     if visual_file:
         visual_path = base / visual_file if not Path(visual_file).is_absolute() else Path(visual_file)
         if visual_path.exists() and visual_path.suffix in EMAILABLE_EXTENSIONS:
-            content = visual_path.read_bytes()
-            if len(content) <= MAX_ATTACHMENT_BYTES:
-                attachments.append((visual_path.name, content))
-                print(f"    ✓ Visual: {visual_path.name} ({len(content)//1024}KB)")
+            size_kb = visual_path.stat().st_size // 1024
+            if visual_path.stat().st_size <= MAX_ATTACHMENT_BYTES:
+                attachments.append(visual_path)
+                print(f"    ✓ Visual: {visual_path.name} ({size_kb}KB)")
 
     return attachments
 
 
 def _collect_attachments_fallback(
     target_date: date,
-) -> List[Tuple[str, bytes]]:
+) -> List[Path]:
     """Fallback: scan output dirs for today's HTML files when no manifest."""
     attachments = []
     date_str = target_date.strftime("%Y%m%d")
@@ -148,10 +148,10 @@ def _collect_attachments_fallback(
             continue
         for ext in (".html", ".png"):
             for f in sorted(directory.glob(f"*{date_str}*{ext}")):
-                content = f.read_bytes()
-                if len(content) <= MAX_ATTACHMENT_BYTES:
-                    attachments.append((f.name, content))
-                    print(f"    ✓ {label}: {f.name} ({len(content)//1024}KB)")
+                if f.stat().st_size <= MAX_ATTACHMENT_BYTES:
+                    attachments.append(f)
+                    size_kb = f.stat().st_size // 1024
+                    print(f"    ✓ {label}: {f.name} ({size_kb}KB)")
 
     return attachments
 
@@ -348,11 +348,12 @@ def main():
 
     print("\n  Step 4: Sending email...")
     try:
-        from utils.email_notifier import send_email_with_attachments
+        from scripts.email_utils import send_email, get_recipient_email
 
+        recipient = get_recipient_email()
         subject = f"Sterling Signals — {day_name} Content ({target_date.isoformat()})"
 
-        if send_email_with_attachments(subject, email_html, attachments):
+        if send_email(recipient, subject, email_html, attachments=attachments):
             print(f"  ✓ Email sent with {len(attachments)} attachment(s)")
         else:
             print("  ✗ Email send failed")
@@ -361,7 +362,7 @@ def main():
         print(f"  ✗ {e}")
         sys.exit(1)
     except ImportError:
-        print("  ✗ email_notifier not available")
+        print("  ✗ scripts.email_utils not available")
         sys.exit(1)
 
     print(f"\n{'='*60}")

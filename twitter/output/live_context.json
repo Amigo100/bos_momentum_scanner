@@ -1,348 +1,133 @@
 {
-  "timestamp": "2026-03-09T20:00:00Z",
+  "timestamp": "2026-03-11T13:00:00Z",
   "market_snapshot": {
-    "spy_move": "-2.0%",
-    "qqq_move": "-2.0%",
-    "iwm_move": "-4.0%",
-    "vix": "29.5",
-    "market_mood": "bearish",
-    "headline": "US stocks plunge amid escalating Middle East tensions and oil prices surging past $100 per barrel"
+    "spy_move": "-0.21%",
+    "qqq_move": "-0.04%",
+    "iwm_move": "+1.1%",
+    "vix": "24.4",
+    "market_mood": "volatile",
+    "headline": "US markets dip amid escalating Iran tensions and tariff uncertainties, with VIX spiking on geopolitical risks"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "-3.5%",
-      "price": "$18.25",
-      "context": "broader market selloff pressures fintech amid economic uncertainty"
+      "move": "-2.55%",
+      "price": "$18.31",
+      "context": "Broader fintech pullback amid market volatility"
     },
     {
       "ticker": "$EVTL",
-      "move": "-5.2%",
-      "price": "$12.40",
-      "context": "biotech volatility in risk-off environment"
+      "move": "+15.4%",
+      "price": "$5.70",
+      "context": "EV sector rebound on China stimulus news"
     },
     {
       "ticker": "$NVDA",
-      "move": "-2.9%",
-      "price": "$177.50",
-      "context": "AI chip demand intact but hit by tech sector rotation"
+      "move": "+1.16%",
+      "price": "$185.63",
+      "context": "$2B investment in Nebius for AI data centers"
     },
     {
       "ticker": "$AMD",
-      "move": "-3.1%",
-      "price": "$145.20",
-      "context": "semiconductor weakness tied to Nasdaq decline"
+      "move": "+1.50%",
+      "price": "$205.72",
+      "context": "AI chip demand surge"
     },
     {
       "ticker": "$TMDX",
-      "move": "-4.0%",
-      "price": "$85.60",
-      "context": "medtech under pressure from small-cap selloff"
+      "move": "-0.2%",
+      "price": "$677.18",
+      "context": "Medtech steady despite market dip"
     },
     {
       "ticker": "$ASPI",
-      "move": "-6.5%",
-      "price": "$4.80",
-      "context": "small-cap energy services hit hard by oil volatility"
+      "move": "+42.5%",
+      "price": "$1.02",
+      "context": "Speculative spike on AI infrastructure buzz"
     },
     {
       "ticker": "$HIVE",
-      "move": "-7.8%",
-      "price": "$3.20",
-      "context": "crypto mining exposed to risk-off sentiment"
+      "move": "-1.1%",
+      "price": "$7.80",
+      "context": "Crypto mining volatility"
     },
     {
       "ticker": "$BAND",
-      "move": "-2.2%",
-      "price": "$14.50",
-      "context": "communications software resilient relative to peers"
+      "move": "-2.4%",
+      "price": "$38.82",
+      "context": "Recent scanner signal but pressured by sector rotation"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
-      "status": "active",
-      "detail": "AI defense integration gaining traction amid geopolitical tensions"
+      "status": "breaking",
+      "detail": "NVIDIA invests $2B in Nebius for AI cloud expansion; global copper shortage intensifying due to AI data center demand"
     },
     {
       "theme": "copper",
-      "status": "breaking",
-      "detail": "copper prices volatile with oil surge impacting industrial metals"
+      "status": "active",
+      "detail": "S&P Global warns of widening supply shortfall from AI and defense spending; tariffs boosting US producers"
     },
     {
       "theme": "infrastructure",
       "status": "active",
-      "detail": "renewed focus on energy infrastructure due to supply disruptions"
+      "detail": "US-Japan framework drives $500B investment in energy and AI infrastructure; data center buildout accelerating"
     },
     {
       "theme": "defense",
       "status": "breaking",
-      "detail": "escalating Middle East conflict boosts defense spending expectations"
+      "detail": "Iran targets US tech infrastructure including NVIDIA; surging defense budgets widen copper demand"
+    },
+    {
+      "theme": "bnpl subscription flywheel",
+      "status": "quiet",
+      "detail": "Klarna eyes NYSE IPO amid US expansion with Walmart and Stripe partnerships"
     },
     {
       "theme": "ca offshore oil restart",
-      "status": "breaking",
-      "detail": "Sable Offshore gains federal approval for pipeline restart amid energy crisis"
+      "status": "active",
+      "detail": "DoJ opinion clears path for Sable Offshore pipeline restart under Defense Production Act"
     },
     {
       "theme": "mid-continent refining recovery",
       "status": "active",
-      "detail": "refiners expanding heavy crude capacity to capitalize on oil price spikes"
+      "detail": "Refiners like CVR Energy boosting heavy crude intake to 20,000 b/d amid Venezuelan supply gains"
     }
   ],
   "theme_tickers": [
     {
-      "theme": "ai voice cpaas infrastructure",
+      "theme": "AI",
       "tickers": [
         {
-          "symbol": "$TWLO",
-          "price": "$85.20",
-          "context": "leading CPaaS provider with AI integrations"
+          "symbol": "$NVDA",
+          "price": "$185.63",
+          "context": "AI chip leader with data center investments"
         },
         {
-          "symbol": "$BAND",
-          "price": "$14.50",
-          "context": "communications platform with voice AI focus"
+          "symbol": "$MSFT",
+          "price": "$405.76",
+          "context": "Azure AI cloud platform"
         },
         {
-          "symbol": "$AUDC",
-          "price": "$12.80",
-          "context": "voice networking for AI agents"
+          "symbol": "$GOOGL",
+          "price": "$306.93",
+          "context": "Google Cloud AI services"
         },
         {
-          "symbol": "$SINCH",
-          "price": "$6.10",
-          "context": "global CPaaS with AI enhancements"
+          "symbol": "$AMD",
+          "price": "$205.72",
+          "context": "AI GPU competitor"
         },
         {
-          "symbol": "$VONAGE",
-          "price": "$4.90",
-          "context": "acquired by Ericsson, AI voice solutions"
+          "symbol": "$PLTR",
+          "price": "$77.07",
+          "context": "AI-driven data analytics"
         },
         {
-          "symbol": "$CMBM",
-          "price": "$3.50",
-          "context": "wireless infrastructure for AI connectivity"
-        }
-      ]
-    },
-    {
-      "theme": "bizav connectivity upgrade (5g + leo)",
-      "tickers": [
-        {
-          "symbol": "$GOGO",
-          "price": "$8.75",
-          "context": "in-flight connectivity with LEO and 5G"
-        },
-        {
-          "symbol": "$VOD",
-          "price": "$10.20",
-          "context": "partnering with Amazon Leo for 5G satellite"
-        },
-        {
-          "symbol": "$CMBM",
-          "price": "$3.50",
-          "context": "LTE/5G for LEO networks"
-        },
-        {
-          "symbol": "$IRDM",
-          "price": "$28.40",
-          "context": "satellite communications for aviation"
-        }
-      ]
-    },
-    {
-      "theme": "pfas / methane environmental compliance",
-      "tickers": [
-        {
-          "symbol": "$MEG",
-          "price": "$45.60",
-          "context": "PFAS treatment and environmental services"
-        },
-        {
-          "symbol": "$WCN",
-          "price": "$185.30",
-          "context": "waste management with PFAS leachate solutions"
-        },
-        {
-          "symbol": "$CLH",
-          "price": "$210.50",
-          "context": "environmental compliance and remediation"
-        }
-      ]
-    },
-    {
-      "theme": "connected car platform monetization",
-      "tickers": [
-        {
-          "symbol": "$HAR",
-          "price": "$120.80",
-          "context": "connected vehicle data platforms"
-        },
-        {
-          "symbol": "$CAR",
-          "price": "$28.70",
-          "context": "OEM data monetization services"
-        },
-        {
-          "symbol": "$VERI",
-          "price": "$3.20",
-          "context": "vehicle data analytics for monetization"
-        },
-        {
-          "symbol": "$PTGX",
-          "price": "$15.40",
-          "context": "telematics and connected car tech"
-        }
-      ]
-    },
-    {
-      "theme": "anti-kit mast cell inhibition",
-      "tickers": [
-        {
-          "symbol": "$CLDX",
-          "price": "$42.10",
-          "context": "barzolvolimab KIT inhibitor for urticaria"
-        },
-        {
-          "symbol": "$ENTA",
-          "price": "$28.90",
-          "context": "EDP-978 KIT inhibitor in development"
-        },
-        {
-          "symbol": "$ALLK",
-          "price": "$1.80",
-          "context": "lirentelimab for mast cell disorders"
-        }
-      ]
-    },
-    {
-      "theme": "bnpl subscription flywheel",
-      "tickers": [
-        {
-          "symbol": "$KLAR",
-          "price": "$40.50",
-          "context": "leading BNPL with subscription integrations"
-        },
-        {
-          "symbol": "$AFRM",
-          "price": "$45.20",
-          "context": "BNPL platform expanding subscriptions"
-        },
-        {
-          "symbol": "$PYPL",
-          "price": "$82.30",
-          "context": "PayPal BNPL with recurring payments"
-        },
-        {
-          "symbol": "$SEZL",
-          "price": "$95.60",
-          "context": "BNPL focused on subscription models"
-        }
-      ]
-    },
-    {
-      "theme": "gds ai travel commerce",
-      "tickers": [
-        {
-          "symbol": "$SABR",
-          "price": "$5.80",
-          "context": "GDS transitioning to AI-native travel tech"
-        },
-        {
-          "symbol": "$AMAD",
-          "price": "$85.40",
-          "context": "Amadeus AI for travel distribution"
-        },
-        {
-          "symbol": "$TRIP",
-          "price": "$22.10",
-          "context": "Trip.com AI-enhanced commerce platform"
-        }
-      ]
-    },
-    {
-      "theme": "clean-label consumer turnaround",
-      "tickers": [
-        {
-          "symbol": "$ZVIA",
-          "price": "$1.20",
-          "context": "clean-label soda expanding distribution"
-        },
-        {
-          "symbol": "$K",
-          "price": "$68.50",
-          "context": "Kellogg clean-label product reforms"
-        },
-        {
-          "symbol": "$GIS",
-          "price": "$72.30",
-          "context": "General Mills clean-label initiatives"
-        },
-        {
-          "symbol": "$HSY",
-          "price": "$195.40",
-          "context": "Hershey clean-label consumer focus"
-        }
-      ]
-    },
-    {
-      "theme": "ca offshore oil restart",
-      "tickers": [
-        {
-          "symbol": "$SOC",
-          "price": "$10.40",
-          "context": "Sable Offshore restarting Santa Ynez unit"
-        },
-        {
-          "symbol": "$XOM",
-          "price": "$120.50",
-          "context": "former owner with CA offshore exposure"
-        }
-      ]
-    },
-    {
-      "theme": "mid-continent refining recovery",
-      "tickers": [
-        {
-          "symbol": "$PSX",
-          "price": "$145.20",
-          "context": "Phillips 66 mid-continent expansions"
-        },
-        {
-          "symbol": "$CVI",
-          "price": "$22.80",
-          "context": "CVR Energy heavy crude upgrades"
-        },
-        {
-          "symbol": "$DINO",
-          "price": "$38.90",
-          "context": "HF Sinclair El Dorado enhancements"
-        },
-        {
-          "symbol": "$PBF",
-          "price": "$35.60",
-          "context": "PBF mid-continent throughput gains"
-        }
-      ]
-    },
-    {
-      "theme": "ckd autologous cell therapy",
-      "tickers": [
-        {
-          "symbol": "$PROK",
-          "price": "$3.10",
-          "context": "rilparencel Phase III for CKD"
-        },
-        {
-          "symbol": "$VKTX",
-          "price": "$85.40",
-          "context": "Viking cell therapy pipeline for kidney"
-        },
-        {
-          "symbol": "$RDY",
-          "price": "$62.70",
-          "context": "Dr. Reddy's CKD therapeutics"
+          "symbol": "$TSM",
+          "price": "$607.77",
+          "context": "AI chip foundry"
         }
       ]
     },
@@ -351,38 +136,38 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "$58.40",
-          "context": "largest US copper producer"
+          "price": "$62.40",
+          "context": "Largest US copper producer"
         },
         {
           "symbol": "$SCCO",
-          "price": "$184.50",
+          "price": "$196.16",
           "context": "Southern Copper major miner"
         },
         {
           "symbol": "$BHP",
-          "price": "$70.85",
-          "context": "diversified with significant copper"
+          "price": "$73.88",
+          "context": "Global mining giant with copper exposure"
         },
         {
-          "symbol": "$NEM",
-          "price": "$114.40",
-          "context": "Newmont copper operations"
+          "symbol": "$RIO",
+          "price": "$91.53",
+          "context": "Diversified miner including copper"
         },
         {
           "symbol": "$TECK",
-          "price": "$48.95",
-          "context": "Teck Resources copper focus"
+          "price": "$51.68",
+          "context": "Copper and zinc producer"
         },
         {
-          "symbol": "$LUN",
+          "symbol": "$NEM",
+          "price": "$74.93",
+          "context": "Gold miner with copper byproducts"
+        },
+        {
+          "symbol": "$LUNMF",
           "price": "$15.20",
-          "context": "Lundin Mining copper assets"
-        },
-        {
-          "symbol": "$ANFGF",
-          "price": "$28.10",
-          "context": "Antofagasta copper producer"
+          "context": "Copper-focused mid-tier miner"
         }
       ]
     },
@@ -390,39 +175,39 @@
       "theme": "infrastructure",
       "tickers": [
         {
-          "symbol": "$ENB",
-          "price": "$42.50",
-          "context": "energy infrastructure pipelines"
+          "symbol": "$UNP",
+          "price": "$253.72",
+          "context": "Rail infrastructure leader"
         },
         {
           "symbol": "$AMT",
-          "price": "$255.60",
-          "context": "tower infrastructure REIT"
+          "price": "$186.38",
+          "context": "Tower and data center REIT"
         },
         {
           "symbol": "$CAT",
-          "price": "$380.20",
-          "context": "construction machinery for infra"
-        },
-        {
-          "symbol": "$BIPC",
-          "price": "$32.10",
-          "context": "Brookfield infrastructure assets"
-        },
-        {
-          "symbol": "$PWR",
-          "price": "$285.40",
-          "context": "Quanta Services utility infra"
+          "price": "$327.90",
+          "context": "Heavy machinery for infrastructure"
         },
         {
           "symbol": "$ETN",
-          "price": "$325.80",
-          "context": "Eaton electrical infrastructure"
+          "price": "$250.00",
+          "context": "Electrical infrastructure equipment"
         },
         {
           "symbol": "$URI",
-          "price": "$720.50",
-          "context": "United Rentals equipment for infra"
+          "price": "$650.00",
+          "context": "Equipment rental for projects"
+        },
+        {
+          "symbol": "$BIPC",
+          "price": "$32.50",
+          "context": "Global infrastructure assets"
+        },
+        {
+          "symbol": "$ENB",
+          "price": "$35.00",
+          "context": "Energy pipeline infrastructure"
         }
       ]
     },
@@ -431,139 +216,181 @@
       "tickers": [
         {
           "symbol": "$LMT",
-          "price": "$585.30",
-          "context": "Lockheed Martin leading contractor"
-        },
-        {
-          "symbol": "$RTX",
-          "price": "$209.65",
-          "context": "RTX missiles and aerospace"
+          "price": "$651.22",
+          "context": "F-35 and missile systems"
         },
         {
           "symbol": "$NOC",
-          "price": "$510.20",
-          "context": "Northrop Grumman bombers"
+          "price": "$734.98",
+          "context": "B-21 bomber and space defense"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$120.00",
+          "context": "Missiles and radar systems"
         },
         {
           "symbol": "$GD",
-          "price": "$315.80",
-          "context": "General Dynamics naval systems"
-        },
-        {
-          "symbol": "$BA",
-          "price": "$223.60",
-          "context": "Boeing defense aircraft"
+          "price": "$280.00",
+          "context": "Submarines and tanks"
         },
         {
           "symbol": "$HWM",
-          "price": "$98.90",
-          "context": "Howmet Aerospace components"
+          "price": "$100.00",
+          "context": "Aerospace components"
         },
         {
-          "symbol": "$LHX",
-          "price": "$245.70",
-          "context": "L3Harris defense tech"
+          "symbol": "$KTOS",
+          "price": "$25.00",
+          "context": "Unmanned systems"
+        },
+        {
+          "symbol": "$AVAV",
+          "price": "$150.00",
+          "context": "Drones and surveillance"
         }
       ]
     },
     {
-      "theme": "AI",
+      "theme": "bnpl subscription flywheel",
       "tickers": [
         {
-          "symbol": "$NVDA",
-          "price": "$177.50",
-          "context": "Nvidia AI chips leader"
+          "symbol": "$KLAR",
+          "price": "$15.00",
+          "context": "Global BNPL leader expanding subscriptions"
         },
         {
-          "symbol": "$MSFT",
-          "price": "$406.80",
-          "context": "Microsoft Azure AI cloud"
+          "symbol": "$AFRM",
+          "price": "$50.00",
+          "context": "Affirm's subscription financing model"
         },
         {
-          "symbol": "$GOOGL",
-          "price": "$301.30",
-          "context": "Alphabet Google AI models"
+          "symbol": "$PYPL",
+          "price": "$80.00",
+          "context": "PayPal's BNPL integration"
         },
         {
-          "symbol": "$AMZN",
-          "price": "$195.40",
-          "context": "Amazon AWS AI services"
+          "symbol": "$SEZL",
+          "price": "$100.00",
+          "context": "Sezzle's recurring payment focus"
         },
         {
-          "symbol": "$META",
-          "price": "$635.70",
-          "context": "Meta AI platforms"
+          "symbol": "$SQ",
+          "price": "$80.00",
+          "context": "Block's Afterpay BNPL flywheel"
+        }
+      ]
+    },
+    {
+      "theme": "ca offshore oil restart",
+      "tickers": [
+        {
+          "symbol": "$SOC",
+          "price": "$11.68",
+          "context": "Sable Offshore pipeline restart"
         },
         {
-          "symbol": "$TSM",
-          "price": "$185.20",
-          "context": "TSMC AI chip manufacturing"
+          "symbol": "$SHEL",
+          "price": "$70.00",
+          "context": "Shell's CA offshore operations"
         },
         {
-          "symbol": "$IBM",
-          "price": "$245.60",
-          "context": "IBM Watson AI enterprise"
+          "symbol": "$CVX",
+          "price": "$150.00",
+          "context": "Chevron's Pacific assets"
+        }
+      ]
+    },
+    {
+      "theme": "mid-continent refining recovery",
+      "tickers": [
+        {
+          "symbol": "$VLO",
+          "price": "$140.00",
+          "context": "Midcon refinery expansions"
         },
         {
-          "symbol": "$ASML",
-          "price": "$920.50",
-          "context": "ASML lithography for AI semis"
+          "symbol": "$DINO",
+          "price": "$35.00",
+          "context": "HF Sinclair heavy crude processing"
+        },
+        {
+          "symbol": "$PARR",
+          "price": "$25.00",
+          "context": "Par Pacific refining recovery"
+        },
+        {
+          "symbol": "$MPC",
+          "price": "$170.00",
+          "context": "Marathon midcon operations"
+        },
+        {
+          "symbol": "$PSX",
+          "price": "$140.00",
+          "context": "Phillips 66 heavy intake boost"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "oil surge",
-    "market crash",
-    "Iran conflict",
-    "copper volatility",
-    "AI defense"
+    "$NVDA AI investments",
+    "Iran targets US banks",
+    "Copper shortage AI defense",
+    "Oil prices geopolitics",
+    "$NIO EV rebound"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "AI defense",
+      "trending_topic": "$NVDA AI investments",
       "matching_theme": "AI",
       "our_positions": [
-        "$NVDA"
+        "$NVDA",
+        "$AMD",
+        "$HIVE"
       ],
-      "context": "FinTwit buzzing about AI tools in military intelligence amid tensions"
+      "context": "FinTwit buzzing about NVIDIA's $2B Nebius deal and AI data center expansion"
     },
     {
-      "trending_topic": "copper volatility",
+      "trending_topic": "Copper shortage AI defense",
       "matching_theme": "copper",
       "our_positions": [],
-      "context": "Discussions on copper prices reacting to industrial demand fears from oil shock"
+      "context": "Discussions on S&P report linking AI/defense to copper supply gaps"
     },
     {
-      "trending_topic": "oil surge",
-      "matching_theme": "ca offshore oil restart",
+      "trending_topic": "Iran targets US banks",
+      "matching_theme": "defense",
       "our_positions": [],
-      "context": "FinTwit highlights Sable Offshore pipeline approval boosting CA oil restart hopes"
+      "context": "Geopolitical escalation threatening US infrastructure including AI firms"
     }
   ],
   "news_events": [
     {
-      "event": "Middle East escalation with Iran",
-      "impact": "oil prices spike to $116, stocks plunge",
+      "event": "US CPI data release",
+      "impact": "subdued inflation at 0.3% MoM amid tariff and oil pressures",
       "relevance": "high"
     },
     {
-      "event": "Fed pauses rate cuts",
-      "impact": "hawkish stance amid inflation from energy shock",
+      "event": "DoJ opinion on Defense Production Act",
+      "impact": "enables federal override of CA laws for oil restarts",
       "relevance": "high"
     },
     {
-      "event": "US tariffs ruled unlawful by Supreme Court",
-      "impact": "trade uncertainty eases slightly",
+      "event": "Iran infrastructure threats",
+      "impact": "targets US banks and tech firms like NVIDIA",
+      "relevance": "high"
+    },
+    {
+      "event": "Supreme Court tariff ruling",
+      "impact": "invalidates portions of Trump tariffs, leading to 10-15% baseline hikes",
       "relevance": "medium"
     },
     {
-      "event": "Sable Offshore pipeline restart approved",
-      "impact": "potential boost to CA oil production",
+      "event": "Fed March meeting",
+      "impact": "holds rates at 3.50-3.75% amid hawkish inflation outlook",
       "relevance": "high"
     }
   ],
-  "gathered_at": "2026-03-09T19:56:49.598041+00:00",
+  "gathered_at": "2026-03-11T13:42:51.042660+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

@@ -14,27 +14,23 @@ import re
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# NOTE TYPE ROTATION MATRIX (v3 — 12 archetypes, rebalanced)
+# NOTE TYPE ROTATION MATRIX (v4 — 5-post calendar with companion notes)
 #
-# Changes from v2:
-#   - SIGNAL_TRACKING capped at 3/week (was 5). On no-signal weeks, these
-#     pivot to "system selectivity" framing rather than empty updates.
-#   - CATALYST_WATCH increased to 2/week (was 1). High-value for engagement.
-#   - DATA_INSIGHT increased to 2/week (was 1). Uses equity curve data.
-#   - MARKET_SNAPSHOT moved to Monday morning (strongest position for
-#     "week ahead" framing) and Wednesday midday (midweek check-in).
-#   - Weekend slots diversified: Saturday gets ALPHA_SCOREBOARD (performance
-#     after newsletter), Sunday gets DATA_INSIGHT (quieter, reflective).
-#
-# NOTE: On post days (Tue/Wed/Thu), the midday slot is ALWAYS overridden
-# by COMPANION_NOTE from the day's article. The types listed for those
-# midday slots are fallbacks for notes-only days (no-post weeks, holidays).
+# Changes from v3:
+#   - 5 post days (Tue–Sat) each get explicit COMPANION_NOTE in midday slot.
+#     Previously COMPANION_NOTE was a runtime override; now it's in the matrix.
+#   - THEME_ROTATION removed (0/week, was 2). Replaced by COMPANION_NOTE.
+#   - SIGNAL_TRACKING reduced to 2/week (was 3). Fri morning → PORTFOLIO_UPDATE.
+#   - MARKET_SNAPSHOT reduced to 1/week (was 2). Wed midday → COMPANION_NOTE.
+#   - Saturday expanded to 3 slots (was 2). WINNER_RECEIPT moved to evening.
+#   - COMPANION_NOTE added as explicit type: 5/week (Tue–Sat midday).
 # ═══════════════════════════════════════════════════════════════════════════════
 
 NOTE_TYPE_MATRIX = {
     "saturday": [
         {"slot": 1, "type": "ALPHA_SCOREBOARD", "time": "08:30 ET"},
-        {"slot": 2, "type": "WINNER_RECEIPT", "time": "12:30 ET"},
+        {"slot": 2, "type": "COMPANION_NOTE", "time": "12:30 ET"},    # Tools & Tech companion
+        {"slot": 3, "type": "WINNER_RECEIPT", "time": "17:00 ET"},
     ],
     "sunday": [
         {"slot": 1, "type": "DATA_INSIGHT", "time": "08:30 ET"},
@@ -46,23 +42,23 @@ NOTE_TYPE_MATRIX = {
         {"slot": 3, "type": "PORTFOLIO_UPDATE", "time": "17:00 ET"},
     ],
     "tuesday": [
-        {"slot": 1, "type": "CATALYST_WATCH", "time": "08:30 ET"},
-        {"slot": 2, "type": "THEME_ROTATION", "time": "12:30 ET"},
+        {"slot": 1, "type": "CATALYST_WATCH", "time": "08:30 ET"},    # Teases Deep Dive ticker
+        {"slot": 2, "type": "COMPANION_NOTE", "time": "12:30 ET"},    # Deep Dive companion
         {"slot": 3, "type": "DATA_INSIGHT", "time": "17:00 ET"},
     ],
     "wednesday": [
-        {"slot": 1, "type": "SECTOR_FLOW", "time": "08:30 ET"},
-        {"slot": 2, "type": "MARKET_SNAPSHOT", "time": "12:30 ET"},
+        {"slot": 1, "type": "SECTOR_FLOW", "time": "08:30 ET"},       # Previews Sector Watch theme
+        {"slot": 2, "type": "COMPANION_NOTE", "time": "12:30 ET"},    # Sector Watch companion
         {"slot": 3, "type": "CATALYST_WATCH", "time": "17:00 ET"},
     ],
     "thursday": [
         {"slot": 1, "type": "SIGNAL_TRACKING", "time": "08:30 ET"},
-        {"slot": 2, "type": "THEME_ROTATION", "time": "12:30 ET"},
+        {"slot": 2, "type": "COMPANION_NOTE", "time": "12:30 ET"},    # The Edge companion
         {"slot": 3, "type": "READER_QUESTION", "time": "17:00 ET"},
     ],
     "friday": [
-        {"slot": 1, "type": "SIGNAL_TRACKING", "time": "08:30 ET"},
-        {"slot": 2, "type": "PORTFOLIO_UPDATE", "time": "12:30 ET"},
+        {"slot": 1, "type": "PORTFOLIO_UPDATE", "time": "08:30 ET"},  # Sets up Investor Lessons
+        {"slot": 2, "type": "COMPANION_NOTE", "time": "12:30 ET"},    # Investor Lessons companion
         {"slot": 3, "type": "EXIT_DEBRIEF", "time": "17:00 ET"},
     ],
 }
@@ -73,20 +69,20 @@ NOTE_TYPE_MATRIX = {
 #
 # Type               | Slots/wk | Notes
 # -------------------|----------|------
-# SIGNAL_TRACKING    | 3        | Mon midday, Thu morning, Fri morning
-# MARKET_SNAPSHOT    | 2        | Mon morning, Wed midday*
+# COMPANION_NOTE     | 5        | Tue–Sat midday (post day companion)
+# SIGNAL_TRACKING    | 2        | Mon midday, Thu morning
 # CATALYST_WATCH     | 2        | Tue morning, Wed evening
-# THEME_ROTATION     | 2        | Tue midday*, Thu midday*
 # DATA_INSIGHT       | 2        | Sun morning, Tue evening
-# PORTFOLIO_UPDATE   | 2        | Mon evening, Fri midday
+# PORTFOLIO_UPDATE   | 2        | Mon evening, Fri morning
 # READER_QUESTION    | 2        | Sun midday, Thu evening
+# MARKET_SNAPSHOT    | 1        | Mon morning
 # ALPHA_SCOREBOARD   | 1        | Sat morning
-# WINNER_RECEIPT     | 1        | Sat midday
+# WINNER_RECEIPT     | 1        | Sat evening
 # SECTOR_FLOW        | 1        | Wed morning
 # EXIT_DEBRIEF       | 1        | Fri evening
 #
-# * = overridden by COMPANION_NOTE on post days
-# Total: 19 slots/week (2 weekend + 3×5 weekday)
+# Removed in v4: THEME_ROTATION (was 2/week, replaced by COMPANION_NOTE)
+# Total: 20 slots/week (2 weekend + 3×5 weekday + 1 extra Sat slot)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 

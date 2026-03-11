@@ -1228,7 +1228,7 @@ CATEGORY_WEEKLY_TARGETS: Dict[str, int] = {
     "THEME_CATALYST": 5,       # 11% — renamed from THEME_MOMENTUM
     "ENGAGEMENT": 5,           # 11%
     "TECHNICAL_ANALYSIS": 5,   # 11%
-    "SUBSTACK_TEASER": 4,      # 9% — replaces NEWSLETTER_CTA (was 2)
+    "SUBSTACK_TEASER": 7,      # 16% — 1+ per post day (5 post days Tue–Sat)
     "THEME_LIST": 3,           # 7% — new: thread-only format
     "EDUCATIONAL": 4,          # ~8% — increased from 3, grounded in real examples
     "SELL_SIGNAL": 3,          # 7% — exit signals

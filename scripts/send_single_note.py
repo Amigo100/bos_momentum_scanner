@@ -26,7 +26,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from zoneinfo import ZoneInfo
 
-from config.output_paths import SUBSTACK_OUTPUT, SCANNER_OUTPUT
+from config.output_paths import SUBSTACK_OUTPUT
+from scripts.build_weekly_plan import get_current_week_plan, check_new_signals
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -138,51 +139,8 @@ def _load_manifest(target_date: date) -> Optional[Dict]:
     return None
 
 
-def _load_weekly_plan() -> Optional[Dict]:
-    """Load the latest weekly plan JSON."""
-    plans = sorted(CURRENT_DIR.glob("weekly_plan_*.json"))
-    if not plans:
-        return None
-    try:
-        return json.loads(plans[-1].read_text())
-    except (json.JSONDecodeError, OSError):
-        return None
-
-
-def _load_signals() -> Optional[Dict]:
-    """Load the latest signals.json from scanner output."""
-    signals_path = SCANNER_OUTPUT / "signals.json"
-    if not signals_path.exists():
-        return None
-    try:
-        return json.loads(signals_path.read_text())
-    except (json.JSONDecodeError, OSError):
-        return None
-
-
-def _check_new_signals(weekly_plan: Optional[Dict]) -> List[str]:
-    """Find buy signal tickers not in the weekly plan."""
-    signals = _load_signals()
-    if not signals:
-        return []
-
-    buy_tickers = [s.get("symbol", "") for s in signals.get("buy_signals", [])]
-    if not buy_tickers:
-        return []
-
-    if not weekly_plan:
-        return buy_tickers  # All are new if no plan exists
-
-    # Extract planned tickers from weekly plan
-    planned = set()
-    for day_data in weekly_plan.get("days", {}).values():
-        for item in day_data if isinstance(day_data, list) else [day_data]:
-            if isinstance(item, dict):
-                ticker = item.get("ticker", "")
-                if ticker:
-                    planned.add(ticker.upper())
-
-    return [t for t in buy_tickers if t.upper() not in planned]
+## _load_weekly_plan, _load_signals, _check_new_signals moved to
+## scripts.build_weekly_plan (Task 4). Imported at module top.
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -288,7 +246,7 @@ def send_morning_bundle(target_date: date, dry_run: bool = False) -> bool:
     post_path = _find_post_for_date(date_str)
     visual_path = _find_visual_for_date(date_str)
     manifest = _load_manifest(target_date)
-    weekly_plan = _load_weekly_plan()
+    weekly_plan = get_current_week_plan()
 
     # Determine post title
     post_title = None
@@ -332,7 +290,7 @@ def send_morning_bundle(target_date: date, dry_run: bool = False) -> bool:
         sections += _section_card("Today's Visual", visual_html, "#8B5CF6")
 
     # ─── Section 4: New Signal Alert ─────────────────────────────────
-    new_tickers = _check_new_signals(weekly_plan)
+    new_tickers = check_new_signals(weekly_plan)
     if new_tickers:
         ticker_list = ", ".join(f"<b>${t}</b>" for t in new_tickers)
         alert_html = f'<p style="color: #FCD34D; font-size: 14px; margin: 0;">New signals not in weekly plan: {ticker_list}</p>'

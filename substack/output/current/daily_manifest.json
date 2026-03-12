@@ -1,7 +1,7 @@
 {
-  "date": "2026-03-11",
-  "day": "wednesday",
-  "generated_at": "2026-03-11T13:15:46.840925+00:00",
+  "date": "2026-03-12",
+  "day": "thursday",
+  "generated_at": "2026-03-12T13:15:56.327941+00:00",
   "source": "watchdog_fallback",
   "decision_reason": "Cowork missed \u2014 watchdog fallback ran",
   "post": {
@@ -12,24 +12,24 @@
   "notes": [
     {
       "slot": 1,
-      "type": "SECTOR_FLOW",
+      "type": "SIGNAL_TRACKING",
       "time_et": "08:30",
       "time_label": "morning",
-      "file": "notes/morning_sector_flow_20260311.html"
+      "file": "notes/morning_signal_tracking_20260312.html"
     },
     {
       "slot": 2,
-      "type": "MARKET_SNAPSHOT",
+      "type": "COMPANION_NOTE",
       "time_et": "12:30",
       "time_label": "midday",
-      "file": "notes/midday_market_snapshot_20260311.html"
+      "file": "notes/midday_companion_note_20260312.html"
     },
     {
       "slot": 3,
-      "type": "CATALYST_WATCH",
+      "type": "READER_QUESTION",
       "time_et": "17:00",
       "time_label": "evening",
-      "file": "notes/evening_catalyst_watch_20260311.html"
+      "file": "notes/evening_reader_question_20260312.html"
     }
   ],
   "visual": {

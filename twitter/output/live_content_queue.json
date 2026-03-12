@@ -1,123 +1,5 @@
 [
   {
-    "id": "live_20260304_123406_v1",
-    "text": "$RELY at $17.58 while SPY drops 2.27%. +2.5% from $17.15 entry. Cross-border payment flows accelerating when traditional markets seize up. NFA",
-    "category": "RECEIPT",
-    "primary_ticker": "$RELY",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_RELY_20260304_2100.png",
-    "scheduled_time": "2026-03-04T12:34:06.558915-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-2.27%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-04T17:34:06.558914+00:00",
-    "cost_usd": 0.005184,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260304_123406_v2",
-    "text": "$ETON down 3.86% to $17.45 but the rare disease thesis hasn't changed. Broader biotech getting hit today. Still up from entry, waiting for sector to stabilize.",
-    "category": "RECEIPT",
-    "primary_ticker": "$ETON",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": null,
-    "scheduled_time": "2026-03-04T12:34:06.558915-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-2.27%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-04T17:34:06.558914+00:00",
-    "cost_usd": 0.005184,
-    "posted_at": "2026-03-04T17:36:13.301386",
-    "tweet_id": "2029249567418360062"
-  },
-  {
-    "id": "live_20260304_160011_v1",
-    "text": "$ETON down 1.51% to $16.99. Below $17.93 entry, invalidates the rare disease setup. System says exit. Win rate stays high by cutting what doesn't work.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$ETON",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260304_2330.png",
-    "scheduled_time": "2026-03-04T16:00:11.340405-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+1.01%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-04T21:00:11.340404+00:00",
-    "cost_usd": 0.005205,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260304_160011_v2",
-    "text": "$NGNE pushing to $24.25 from $20.50 entry. FDA ultrarare disease pathway news hitting exactly when gene therapy names were coiling. Momentum confirmed.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "NGNE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260304_2100.png",
-    "scheduled_time": "2026-03-04T16:00:11.340405-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.01%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-04T21:00:11.340404+00:00",
-    "cost_usd": 0.005205,
-    "posted_at": "2026-03-04T21:20:31.627955",
-    "tweet_id": "2029306015448256719"
-  },
-  {
-    "id": "live_20260304_183052_v1",
-    "text": "$NGNE +16.6% from entry at $23.91. Gene therapy thesis accelerating on FDA rare disease framework. Market down, this position up. Chart attached.",
-    "category": "RECEIPT",
-    "primary_ticker": "$NGNE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260304_2331.png",
-    "scheduled_time": "2026-03-04T18:30:52.825678-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-04T23:30:52.825677+00:00",
-    "cost_usd": 0.005195,
-    "posted_at": "2026-03-04T23:51:09.657181",
-    "tweet_id": "2029343923685249442"
-  },
-  {
-    "id": "live_20260305_084040_v1",
-    "text": "$NGNE pushing +18.3% to $24.25. FDA framework accelerating rare disease approvals \u2014 gene therapy names catching fire. Watching this one closely.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "NGNE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260305_1340.png",
-    "scheduled_time": "2026-03-05T08:40:40.986828-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.8%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-05T13:40:40.986826+00:00",
-    "cost_usd": 0.005193,
-    "posted_at": "2026-03-05T14:00:47.723170",
-    "tweet_id": "2029557740775842017"
-  },
-  {
     "id": "live_20260305_104137_v1",
     "text": "$NGNE exit at $23.91. Entry $20.50, +16.6% realized. FDA framework news drove the spike \u2014 took profits into the catalyst. Rare disease thesis still valid, but momentum extended past my entry confirmation.",
     "category": "SELL_SIGNAL",
@@ -1051,9 +933,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-11T13:15:46.840332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-12T14:01:37.402254",
+    "tweet_id": "2032094664908476737"
   },
   {
     "id": "watchdog_20260311_004",
@@ -1074,9 +958,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-11T13:15:46.840332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260311_104040_v1",
@@ -1085,16 +970,17 @@
     "primary_ticker": "$AMD",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260311_1440.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260312_1341.png",
     "scheduled_time": "2026-03-11T10:40:40.386163-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.21%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-11T14:40:40.386162+00:00",
-    "cost_usd": 0.015772
+    "cost_usd": 0.015772,
+    "skip_reason": "Stale: 23h old"
   },
   {
     "id": "live_20260311_104040_v2",
@@ -1103,15 +989,90 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260311_1440.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260312_1341.png",
     "scheduled_time": "2026-03-11T10:40:40.386163-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.21%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-11T14:40:40.386162+00:00",
-    "cost_usd": 0.015772
+    "cost_usd": 0.015772,
+    "skip_reason": "Stale: 23h old"
+  },
+  {
+    "id": "live_20260312_094121_v1",
+    "text": "$EVTL at $4.00.\nEntry was $4.50.\nBiotech catching momentum.\nPosition sized for volatility.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260312_1341.png",
+    "scheduled_time": "2026-03-12T09:41:21.252141-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.42%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-12T13:41:21.252139+00:00",
+    "cost_usd": 0.016331
+  },
+  {
+    "id": "watchdog_20260312_001",
+    "text": "\ud83d\udfe2 $BAND signal confirmed. AI Voice CPaaS infrastructure seeing institutional accumulation as enterprise demand accelerates. Scanner shows structural pivot with all technical gates cleared.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$BAND",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-03-12T13:15:56.327308+00:00",
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "watchdog_20260312_002",
+    "text": "Portfolio update: 8 positions across themes from financial tech to nuclear fuel. Diversified exposure to structural growth drivers while maintaining capital preservation discipline.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-12T13:15:56.327308+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260312_003",
+    "text": "VIX spiked to 29.49 on Iran tensions but selective deployment stance keeps us focused on quality setups. Mid-cycle expansion with OBBBA fiscal tailwinds supports risk-on themes.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-12T13:15:56.327308+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260312_004",
+    "text": "AI Voice CPaaS hitting PRIME status on our scanner. Enterprise adoption of conversational AI creating massive TAM expansion for infrastructure providers. Theme catalyst brewing.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-12T13:15:56.327308+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260312_005",
+    "text": "What's your biggest challenge in momentum trading? Position sizing? Entry timing? Exit discipline? Share below - building content around what matters most to you.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-12T13:15:56.327308+00:00",
+    "source": "watchdog"
   }
 ]

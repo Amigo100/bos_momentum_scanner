@@ -1,40 +1,60 @@
 {
-  "date": "2026-03-13",
-  "day": "friday",
-  "generated_at": "2026-03-13T13:13:33.857982+00:00",
-  "source": "watchdog_fallback",
-  "decision_reason": "Cowork missed \u2014 watchdog fallback ran",
+  "date": "2026-03-12",
+  "day": "thursday",
+  "generated_at": "2026-03-12T08:18:51.989517",
+  "source": "cowork",
+  "decision_reason": "Thursday + BAND signal needs Deep Dive (CHECK 5). GREEN Signal post was Tuesday \u2014 separate from Deep Dive.",
   "post": {
-    "category": "none",
+    "category": "deep_dive",
     "file": null,
-    "title": null
+    "title": "Deep Dive: $BAND \u2014 The Only Independent Tier-1 Voice Network in CPaaS",
+    "status": "MISSING"
+  },
+  "visual": {
+    "type": "diagram",
+    "file": null,
+    "status": "MISSING"
   },
   "notes": [
     {
       "slot": 1,
-      "type": "PORTFOLIO_UPDATE",
+      "type": "SIGNAL_TRACKING",
       "time_et": "08:30",
       "time_label": "morning",
-      "file": "notes/morning_portfolio_update_20260313.html"
+      "file": "notes/morning_signal_tracking_20260312.html"
     },
     {
       "slot": 2,
       "type": "COMPANION_NOTE",
       "time_et": "12:30",
       "time_label": "midday",
-      "file": "notes/midday_companion_note_20260313.html"
+      "file": "notes/midday_companion_note_20260312.html"
     },
     {
       "slot": 3,
-      "type": "EXIT_DEBRIEF",
+      "type": "READER_QUESTION",
       "time_et": "17:00",
       "time_label": "evening",
-      "file": "notes/evening_exit_debrief_20260313.html"
+      "file": "notes/evening_reader_question_20260312.html"
     }
   ],
-  "visual": {
-    "type": "none",
-    "file": null
-  },
-  "tweets_generated": 5
+  "reminders": [
+    {
+      "time_et": "08:30",
+      "action": "Post morning note (SIGNAL_TRACKING)",
+      "file": "notes/morning_signal_tracking_20260312.html"
+    },
+    {
+      "time_et": "12:30",
+      "action": "Post companion note + publish Deep Dive (if ready)",
+      "file": "notes/midday_companion_note_20260312.html"
+    },
+    {
+      "time_et": "17:00",
+      "action": "Post evening note (READER_QUESTION)",
+      "file": "notes/evening_reader_question_20260312.html"
+    }
+  ],
+  "tweets_generated": 7,
+  "new_signals": []
 }

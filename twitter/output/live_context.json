@@ -1,98 +1,93 @@
 {
-  "timestamp": "2026-03-12T22:23:00Z",
+  "timestamp": "2026-03-13T12:00:00Z",
   "market_snapshot": {
-    "spy_move": "-1.52%",
-    "qqq_move": "-1.78%",
-    "iwm_move": "-1.56%",
-    "vix": "25.58",
+    "spy_move": "+0.36%",
+    "qqq_move": "+0.35%",
+    "iwm_move": "+0.4%",
+    "vix": "25.5",
     "market_mood": "volatile",
-    "headline": "US stocks decline amid escalating US-Iran tensions and rising oil prices from Middle East conflict"
+    "headline": "US futures point higher amid geopolitical tensions and AI-driven sector buzz, with oil prices pressuring energy costs"
   },
   "portfolio_movers": [
     {
-      "ticker": "$SOFI",
-      "move": "-4.48%",
-      "price": "$17.70",
-      "context": "broader fintech pullback in risk-off environment"
-    },
-    {
-      "ticker": "$EVTL",
-      "move": "+2.5%",
-      "price": "$5.20",
-      "context": "biotech resilience amid sector rotation"
-    },
-    {
       "ticker": "$NVDA",
-      "move": "-1.55%",
-      "price": "$186.03",
-      "context": "tech sector pressure from AI overvaluation concerns"
+      "move": "+1.2%",
+      "price": "$184.77",
+      "context": "AI chip demand surges on data center expansion news"
     },
     {
       "ticker": "$AMD",
-      "move": "-1.20%",
-      "price": "$145.50",
-      "context": "semiconductor weakness tied to market volatility"
-    },
-    {
-      "ticker": "$TMDX",
-      "move": "-0.8%",
-      "price": "$85.40",
-      "context": "medtech stable despite broader declines"
-    },
-    {
-      "ticker": "$ASPI",
-      "move": "+1.1%",
-      "price": "$6.06",
-      "context": "nuclear energy play benefiting from energy security focus"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "-2.3%",
-      "price": "$2.05",
-      "context": "crypto mining hit by risk-off sentiment"
+      "move": "+0.8%",
+      "price": "$145.20",
+      "context": "Semiconductor rally tied to AI infrastructure buildout"
     },
     {
       "ticker": "$BAND",
+      "move": "+2.5%",
+      "price": "$18.50",
+      "context": "Recent scanner signal on momentum breakout"
+    },
+    {
+      "ticker": "$SOFI",
+      "move": "-0.5%",
+      "price": "$17.70",
+      "context": "BNPL sector pressure from rising rates"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "+1.1%",
+      "price": "$3.20",
+      "context": "Crypto mining rebound amid Bitcoin surge"
+    },
+    {
+      "ticker": "$TMDX",
       "move": "+3.2%",
-      "price": "$17.08",
-      "context": "recent scanner signal on cybersecurity demand"
+      "price": "$130.50",
+      "context": "Medtech gains on cell therapy advancements"
+    },
+    {
+      "ticker": "$EVTL",
+      "move": "-1.2%",
+      "price": "$4.20",
+      "context": "Biotech volatility in mast cell inhibition space"
+    },
+    {
+      "ticker": "$ASPI",
+      "move": "+0.9%",
+      "price": "$6.50",
+      "context": "Quiet trading in AI voice infrastructure"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
-      "status": "active",
-      "detail": "AI infrastructure stocks rally despite tech headwinds; NVDA investments in NBIS and CRWV"
+      "status": "breaking",
+      "detail": "AI data centers driving massive copper and power infrastructure demand, with Big Tech pledging self-supply to avoid grid strain"
     },
     {
       "theme": "copper",
-      "status": "breaking",
-      "detail": "copper prices breakout on AI data center demand and supply concerns"
-    },
-    {
-      "theme": "defense",
-      "status": "breaking",
-      "detail": "escalating US-Iran conflict boosts defense stocks like LMT and KTOS"
+      "status": "active",
+      "detail": "Copper prices rally toward $12,000/ton on AI and defense spending surge, supply shortages loom by 2040"
     },
     {
       "theme": "infrastructure",
       "status": "active",
-      "detail": "geopolitical tensions highlight energy infrastructure needs amid oil disruptions"
+      "detail": "US AI boom strains electric grids; new policies accelerate energy infrastructure for data centers"
     },
     {
-      "theme": "pfas / methane environmental compliance",
-      "status": "quiet",
-      "detail": "Minnesota updates PFAS reporting system; due July 2026 with no major market moves"
+      "theme": "defense",
+      "status": "breaking",
+      "detail": "Geopolitical tensions boost defense stocks; Trump signals strikes on Iran, increasing military spending outlook"
     },
     {
-      "theme": "bnpl subscription flywheel",
+      "theme": "ckd autologous cell therapy",
       "status": "quiet",
-      "detail": "no significant developments; SOFI pullback tied to broader fintech"
+      "detail": "Limited news; sector stable amid broader biotech rotation"
     },
     {
-      "theme": "connected car platform monetization",
+      "theme": "anti-kit mast cell inhibition",
       "status": "quiet",
-      "detail": "no active news; sector stable in volatile markets"
+      "detail": "No major developments; EVTL faces volatility"
     }
   ],
   "theme_tickers": [
@@ -100,34 +95,39 @@
       "theme": "AI",
       "tickers": [
         {
-          "symbol": "$VRT",
-          "price": "$95.20",
-          "context": "AI infrastructure leader with strong Q1 growth"
+          "symbol": "$NVDA",
+          "price": "$184.77",
+          "context": "AI chip leader with data center dominance"
         },
         {
-          "symbol": "$HUBS",
-          "price": "$620.50",
-          "context": "AI-driven CRM platform expanding enterprise adoption"
+          "symbol": "$AMD",
+          "price": "$145.20",
+          "context": "Competitive AI GPU provider"
         },
         {
-          "symbol": "$DELL",
-          "price": "$112.30",
-          "context": "AI server demand boosting hardware sales"
+          "symbol": "$MSFT",
+          "price": "$450.00",
+          "context": "Azure cloud powers AI workloads"
         },
         {
-          "symbol": "$KEYS",
-          "price": "$155.80",
-          "context": "testing equipment for AI chip development"
+          "symbol": "$GOOGL",
+          "price": "$180.50",
+          "context": "Gemini AI and cloud infrastructure"
         },
         {
-          "symbol": "$CGNX",
-          "price": "$42.10",
-          "context": "AI vision systems for industrial automation"
+          "symbol": "$AMZN",
+          "price": "$195.30",
+          "context": "AWS leads AI hyperscale computing"
         },
         {
-          "symbol": "$PLTR",
-          "price": "$153.50",
-          "context": "AI analytics platform with bullish options flow"
+          "symbol": "$META",
+          "price": "$520.00",
+          "context": "Llama models drive AI research"
+        },
+        {
+          "symbol": "$ORCL",
+          "price": "$165.80",
+          "context": "Enterprise AI cloud services"
         }
       ]
     },
@@ -137,62 +137,32 @@
         {
           "symbol": "$FCX",
           "price": "$60.41",
-          "context": "major copper miner undervalued post-Grasberg incident"
+          "context": "Major US copper producer benefiting from AI demand"
         },
         {
           "symbol": "$SCCO",
           "price": "$184.30",
-          "context": "Southern Copper with strong production outlook"
+          "context": "Southern Copper with strong export exposure"
         },
         {
           "symbol": "$CPER",
           "price": "$28.50",
-          "context": "copper ETF tracking futures breakout"
+          "context": "Copper ETF tracking futures rally"
         },
         {
           "symbol": "$NEM",
-          "price": "$48.20",
-          "context": "diversified miner with copper exposure"
+          "price": "$52.10",
+          "context": "Diversified miner with copper assets"
         },
         {
-          "symbol": "$ALAB",
-          "price": "$75.60",
-          "context": "copper interconnect tech for AI data centers"
-        }
-      ]
-    },
-    {
-      "theme": "defense",
-      "tickers": [
-        {
-          "symbol": "$LMT",
-          "price": "$520.40",
-          "context": "Lockheed Martin leading amid Iran conflict escalation"
+          "symbol": "$ALMMY",
+          "price": "$12.20",
+          "context": "Aluminum-copper alloy player in infrastructure"
         },
         {
-          "symbol": "$KTOS",
-          "price": "$22.80",
-          "context": "drone and autonomous systems for military applications"
-        },
-        {
-          "symbol": "$RTX",
-          "price": "$115.70",
-          "context": "Raytheon missiles in demand from Middle East tensions"
-        },
-        {
-          "symbol": "$NOC",
-          "price": "$480.90",
-          "context": "Northrop Grumman aerospace defense contractor"
-        },
-        {
-          "symbol": "$GD",
-          "price": "$285.20",
-          "context": "General Dynamics with strong backlog"
-        },
-        {
-          "symbol": "$UMAC",
-          "price": "$18.50",
-          "context": "drone sector surging 11% on geopolitical risks"
+          "symbol": "$WCC",
+          "price": "$322.40",
+          "context": "Electrical components tied to copper wiring"
         }
       ]
     },
@@ -201,100 +171,144 @@
       "tickers": [
         {
           "symbol": "$CAT",
-          "price": "$380.50",
-          "context": "Caterpillar heavy machinery for energy projects"
-        },
-        {
-          "symbol": "$J",
-          "price": "$155.30",
-          "context": "Eaton electrical infrastructure for data centers"
+          "price": "$380.00",
+          "context": "Heavy machinery for grid and data center builds"
         },
         {
           "symbol": "$ETN",
-          "price": "$320.40",
-          "context": "power management amid AI and energy demands"
+          "price": "$320.50",
+          "context": "Electrical equipment for power infrastructure"
         },
         {
-          "symbol": "$URI",
-          "price": "$710.20",
-          "context": "United Rentals equipment for infrastructure buildout"
+          "symbol": "$NEE",
+          "price": "$85.20",
+          "context": "Renewable energy grid operator"
         },
         {
-          "symbol": "$FLR",
-          "price": "$48.90",
-          "context": "Fluor engineering for oil and gas restarts"
+          "symbol": "$VST",
+          "price": "$95.80",
+          "context": "Utility scaling for AI power needs"
+        },
+        {
+          "symbol": "$EME",
+          "price": "$410.00",
+          "context": "Engineering for energy projects"
         },
         {
           "symbol": "$PWR",
-          "price": "$260.80",
-          "context": "Quanta Services transmission lines for renewables"
+          "price": "$280.30",
+          "context": "Transmission line construction"
         },
         {
-          "symbol": "$ORCL",
-          "price": "$145.60",
-          "context": "cloud infrastructure for AI expansion"
+          "symbol": "$J",
+          "price": "$155.40",
+          "context": "Industrial conglomerate in infrastructure"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "$520.00",
+          "context": "Lockheed Martin, major defense contractor"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$115.20",
+          "context": "Raytheon missiles and aerospace"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "$480.50",
+          "context": "Northrop Grumman systems integration"
+        },
+        {
+          "symbol": "$GD",
+          "price": "$295.80",
+          "context": "General Dynamics vehicles and subs"
+        },
+        {
+          "symbol": "$BA",
+          "price": "$190.30",
+          "context": "Boeing defense division"
+        },
+        {
+          "symbol": "$HII",
+          "price": "$280.00",
+          "context": "Huntington Ingalls shipbuilding"
+        },
+        {
+          "symbol": "$LDOS",
+          "price": "$155.40",
+          "context": "Leidos IT and cyber defense"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "Iran conflict oil surge",
-    "copper breakout AI demand",
-    "defense stocks rally",
-    "AI infrastructure rotation",
-    "tariffs trade war"
+    "$NVDA AI chips",
+    "$ADBE earnings miss",
+    "$TSLA robotaxi",
+    "copper rally AI",
+    "oil Iran tensions",
+    "$SPY futures",
+    "$HIMS GLP-1",
+    "$ONDS drones"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "Iran conflict oil surge",
-      "matching_theme": "defense",
-      "our_positions": [],
-      "context": "FinTwit buzzing on LMT and KTOS gains from US-Iran escalation"
-    },
-    {
-      "trending_topic": "copper breakout AI demand",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "rotation from AI tech to hard assets like FCX amid data center needs"
-    },
-    {
-      "trending_topic": "AI infrastructure rotation",
+      "trending_topic": "$NVDA AI chips",
       "matching_theme": "AI",
       "our_positions": [
         "$NVDA",
-        "$AMD"
+        "$AMD",
+        "$HIVE"
       ],
-      "context": "VRT and DELL surging while NVDA dips; options flow bullish on PLTR"
+      "context": "FinTwit buzzing on Nvidia's data center dominance and chip deployments amid supply chain shifts"
+    },
+    {
+      "trending_topic": "copper rally AI",
+      "matching_theme": "copper",
+      "our_positions": [],
+      "context": "Discussions on AI infrastructure fueling copper shortages, overlapping with defense spending surge"
+    },
+    {
+      "trending_topic": "oil Iran tensions",
+      "matching_theme": "defense",
+      "our_positions": [],
+      "context": "Geopolitical chatter on Trump-Iran signals boosting defense plays and energy volatility"
     }
   ],
   "news_events": [
     {
-      "event": "US-Iran military escalation",
-      "impact": "oil prices spike, market volatility rises",
+      "event": "Trump G7 call on Iran surrender",
+      "impact": "escalates geopolitical risks, supports defense stocks",
       "relevance": "high"
     },
     {
-      "event": "Supreme Court invalidates Trump tariffs",
-      "impact": "temporary 10% import tariff enacted under Section 122",
+      "event": "AI data center power pledges by Big Tech",
+      "impact": "eases grid strain but boosts infrastructure spending",
       "relevance": "high"
     },
     {
-      "event": "FOMC meeting March 18-19",
-      "impact": "potential rate pause amid inflation from oil and tariffs",
+      "event": "Copper demand surge from AI/defense",
+      "impact": "prices toward $12k/ton, supply crisis by 2040",
       "relevance": "high"
     },
     {
-      "event": "NVIDIA GTC AI Conference March 16-19",
-      "impact": "AI sector updates could drive tech rotation",
+      "event": "Fed CBDC ban bill passes Senate",
+      "impact": "delays digital dollar, favors crypto themes",
       "relevance": "medium"
     },
     {
-      "event": "CPI Inflation Data March 11",
-      "impact": "higher readings from energy costs pressure Fed path",
+      "event": "BlackRock launches staked ETH ETF",
+      "impact": "increases crypto exposure for institutions",
       "relevance": "medium"
     }
   ],
-  "gathered_at": "2026-03-12T22:23:30.097831+00:00",
+  "gathered_at": "2026-03-13T11:50:44.586378+00:00",
   "is_market_hours": false,
   "is_extended_hours": true
 }

@@ -1,63 +1,5 @@
 [
   {
-    "id": "live_20260305_185134_v1",
-    "text": "Closed $RELY at $17.32 for quick +1% bounce. Fintech ran solo while broader tape wobbled \u2014 no thematic momentum to ride. Taking the W and moving on. NFA",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "RELY",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_RELY_20260305_2351.png",
-    "scheduled_time": "2026-03-05T18:51:34.569407-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.56%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-05T23:51:34.569406+00:00",
-    "cost_usd": 0.005216,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260305_185134_v2",
-    "text": "$ETON down 3.8% to $17.24, but here's what matters: FDA just launched a framework for individualized ultra-rare therapies. Gene editing and RNA treatments are moving from experimental to fast-track. This validates the thesis.",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "$ETON",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260305_2351.png",
-    "scheduled_time": "2026-03-05T18:51:34.569407-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.56%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-05T23:51:34.569406+00:00",
-    "cost_usd": 0.005216,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260305_185134_v3",
-    "text": "$NGNE at $24.60, up 2.89% while markets bleed. FDA framework for ultra-rare gene therapy just dropped \u2014 that's the tailwind we've been waiting for. Eyes on this one.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$NGNE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260305_2351.png",
-    "scheduled_time": "2026-03-05T18:51:34.569407-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.56%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-05T23:51:34.569406+00:00",
-    "cost_usd": 0.005216,
-    "posted_at": "2026-03-06T00:11:55.150163",
-    "tweet_id": "2029711535480672588"
-  },
-  {
     "id": "live_20260306_102805_v1",
     "text": "$ETON at $17.24, down 4.5% from $17.93 entry. Q4 earnings March 19 \u2014 invalidation at $16.50. Rare disease thesis needs data to confirm, not market noise.",
     "category": "TECHNICAL_ANALYSIS",
@@ -884,9 +826,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-12T13:15:56.327308+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-13T12:11:22.998706",
+    "tweet_id": "2032429310062239861"
   },
   {
     "id": "live_20260312_141001_v1",
@@ -971,16 +915,17 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260312_2223.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260313_1151.png",
     "scheduled_time": "2026-03-12T15:57:55.455301-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-12T19:57:55.455300+00:00",
-    "cost_usd": 0.015692
+    "cost_usd": 0.015692,
+    "skip_reason": "Stale: 16h old"
   },
   {
     "id": "live_20260312_182347_v1",
@@ -1008,15 +953,53 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260312_2224.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260313_1151.png",
     "scheduled_time": "2026-03-12T18:23:47.440957-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.52%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-12T22:23:47.440956+00:00",
-    "cost_usd": 0.015764
+    "cost_usd": 0.015764,
+    "skip_reason": "Stale: 14h old"
+  },
+  {
+    "id": "live_20260313_075101_v1",
+    "text": "$BAND at $18.50. +2.5% pre-market on momentum breakout confirmation. Entry $16.55 cleared all technical gates. Cybersecurity CPaaS thesis accelerating.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$BAND",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260313_1151.png",
+    "scheduled_time": "2026-03-13T07:51:01.192990-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.36%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-13T11:51:01.192989+00:00",
+    "cost_usd": 0.015982,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260313_075101_v2",
+    "text": "$TMDX ripping pre-market.\n+3.2% to $130.50.\nCell therapy wave building.\nMedtech holding strength.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$TMDX",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260313_1151.png",
+    "scheduled_time": "2026-03-13T07:51:01.192990-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.36%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-13T11:51:01.192989+00:00",
+    "cost_usd": 0.015982
   }
 ]

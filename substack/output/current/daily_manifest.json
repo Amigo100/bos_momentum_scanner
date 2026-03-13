@@ -1,60 +1,32 @@
 {
-  "date": "2026-03-12",
-  "day": "thursday",
-  "generated_at": "2026-03-12T08:18:51.989517",
-  "source": "cowork",
-  "decision_reason": "Thursday + BAND signal needs Deep Dive (CHECK 5). GREEN Signal post was Tuesday \u2014 separate from Deep Dive.",
-  "post": {
-    "category": "deep_dive",
-    "file": null,
-    "title": "Deep Dive: $BAND \u2014 The Only Independent Tier-1 Voice Network in CPaaS",
-    "status": "MISSING"
-  },
-  "visual": {
-    "type": "diagram",
-    "file": null,
-    "status": "MISSING"
-  },
-  "notes": [
-    {
-      "slot": 1,
-      "type": "SIGNAL_TRACKING",
-      "time_et": "08:30",
-      "time_label": "morning",
-      "file": "notes/morning_signal_tracking_20260312.html"
+    "date": "2026-03-13",
+    "day": "friday",
+    "generated_at": "2026-03-13T07:15:00",
+    "source": "cowork",
+    "decision_reason": "Friday → Investor Lessons: Letting Winners Run (TMDX +86.6% from $65). Post MISSING — user needs to generate in claude.ai.",
+    "post": {
+        "category": "investor_lessons",
+        "subcategory": "investing_principle",
+        "file": null,
+        "title": "Investor Lessons: The +100% Position Most Investors Would Have Sold at +30%",
+        "status": "MISSING"
     },
-    {
-      "slot": 2,
-      "type": "COMPANION_NOTE",
-      "time_et": "12:30",
-      "time_label": "midday",
-      "file": "notes/midday_companion_note_20260312.html"
+    "visual": {
+        "type": "carousel",
+        "series": "INVESTOR TOOLKIT",
+        "file": null,
+        "status": "MISSING"
     },
-    {
-      "slot": 3,
-      "type": "READER_QUESTION",
-      "time_et": "17:00",
-      "time_label": "evening",
-      "file": "notes/evening_reader_question_20260312.html"
-    }
-  ],
-  "reminders": [
-    {
-      "time_et": "08:30",
-      "action": "Post morning note (SIGNAL_TRACKING)",
-      "file": "notes/morning_signal_tracking_20260312.html"
-    },
-    {
-      "time_et": "12:30",
-      "action": "Post companion note + publish Deep Dive (if ready)",
-      "file": "notes/midday_companion_note_20260312.html"
-    },
-    {
-      "time_et": "17:00",
-      "action": "Post evening note (READER_QUESTION)",
-      "file": "notes/evening_reader_question_20260312.html"
-    }
-  ],
-  "tweets_generated": 7,
-  "new_signals": []
+    "notes": [
+        {"slot": 1, "type": "PORTFOLIO_UPDATE", "time_et": "08:30", "time_label": "morning", "file": "notes/morning_portfolio_update_20260313.html", "graphic": "notes/morning_portfolio_update_graphic_20260313.png"},
+        {"slot": 2, "type": "COMPANION_NOTE", "time_et": "12:30", "time_label": "midday", "file": null},
+        {"slot": 3, "type": "EXIT_DEBRIEF", "time_et": "17:00", "time_label": "evening", "file": null}
+    ],
+    "reminders": [
+        {"time_et": "08:30", "action": "Post morning PORTFOLIO_UPDATE note + graphic", "file": "notes/morning_portfolio_update_20260313.html"},
+        {"time_et": "12:30", "action": "Post companion note + publish Investor Lessons post (GENERATE FIRST in claude.ai)", "file": null},
+        {"time_et": "17:00", "action": "Post evening EXIT_DEBRIEF note (GENERATE FIRST)", "file": null}
+    ],
+    "tweets_generated": 6,
+    "new_signals": []
 }

@@ -1,83 +1,5 @@
 [
   {
-    "id": "live_20260306_102805_v1",
-    "text": "$ETON at $17.24, down 4.5% from $17.93 entry. Q4 earnings March 19 \u2014 invalidation at $16.50. Rare disease thesis needs data to confirm, not market noise.",
-    "category": "TECHNICAL_ANALYSIS",
-    "primary_ticker": "$ETON",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260306_1528.png",
-    "scheduled_time": "2026-03-06T10:28:05.732466-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.06%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-06T15:28:05.732465+00:00",
-    "cost_usd": 0.005307,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260306_102805_v2",
-    "text": "$NGNE hit $24.25 yesterday (+18% from my $20.50 entry) but pulled back today. Gene therapy names get volatile \u2014 FDA breakthrough designation doesn't disappear because of one red day. Watching how it holds here.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "NGNE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260306_1528.png",
-    "scheduled_time": "2026-03-06T10:28:05.732466-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-1.06%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-06T15:28:05.732465+00:00",
-    "cost_usd": 0.005307,
-    "posted_at": "2026-03-06T15:48:28.039638",
-    "tweet_id": "2029947225455898632"
-  },
-  {
-    "id": "live_20260306_120604_v1",
-    "text": "$NGNE closed at $22.13 after riding from $20.50 to $24.25 highs. FDA framework still bullish for gene therapy, but taking chips off the table here. Setup stays valid above $19.50 \u2014 will re-enter on next confirmation.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "NGNE",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260306_1706.png",
-    "scheduled_time": "2026-03-06T12:06:04.760785-05:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.56%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-06T17:06:04.760784+00:00",
-    "cost_usd": 0.005217,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260306_120604_v2",
-    "text": "$ETON at $17.24 after FDA drops rare disease framework. Down today but the regulatory tailwind just got bigger. Watching $17.00 as the line.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$ETON",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260306_1706.png",
-    "scheduled_time": "2026-03-06T12:06:04.760785-05:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.56%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-06T17:06:04.760784+00:00",
-    "cost_usd": 0.005217,
-    "posted_at": "2026-03-06T17:26:23.333383",
-    "tweet_id": "2029971868325654682"
-  },
-  {
     "id": "live_20260306_130145_v1",
     "text": "$RELY exit at $16.71. Entry $17.15, peaked at $17.78 (+3.7%). Cross-border payments thesis stalled \u2014 no institutional confirmation, theme dispersed. Setup invalidated but win more than you lose.",
     "category": "SELL_SIGNAL",
@@ -1081,9 +1003,10 @@
     "account": "variant_3",
     "ticker": "$SOFI",
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-13T13:13:33.857391+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-0.60%']"
   },
   {
     "id": "watchdog_20260313_003",
@@ -1126,7 +1049,26 @@
     "primary_ticker": "TMDX",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260313_1436.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260313_1801.png",
+    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-13T14:36:15.300565+00:00",
+    "cost_usd": 0.015813,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260313_103615_v2",
+    "text": "$EVTL down 14% from entry.\nAviation theme choppy.\nCash is a position.\nWaiting for confirmation.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1801.png",
     "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1138,21 +1080,21 @@
     "cost_usd": 0.015813
   },
   {
-    "id": "live_20260313_103615_v2",
-    "text": "$EVTL down 14% from entry.\nAviation theme choppy.\nCash is a position.\nWaiting for confirmation.",
-    "category": "ENGAGEMENT",
+    "id": "live_20260313_140130_v1",
+    "text": "$EVTL down to $4.01.\nEntry was $4.50.\nSmall-cap chop in the selloff.\nPosition size keeps this manageable.",
+    "category": "RECEIPT",
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1436.png",
-    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1801.png",
+    "scheduled_time": "2026-03-13T14:01:30.409648-04:00",
     "status": "pending",
     "context_snapshot": {
-      "spy_at_generation": "-0.1%",
+      "spy_at_generation": "-0.51%",
       "market_mood": "volatile",
       "context_stale": false
     },
-    "generated_at": "2026-03-13T14:36:15.300565+00:00",
-    "cost_usd": 0.015813
+    "generated_at": "2026-03-13T18:01:30.409647+00:00",
+    "cost_usd": 0.015961
   }
 ]

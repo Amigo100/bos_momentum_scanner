@@ -1049,16 +1049,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260313_1338.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260313_1436.png",
     "scheduled_time": "2026-03-13T09:38:18.688054-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-13T13:38:18.688053+00:00",
-    "cost_usd": 0.015937
+    "cost_usd": 0.015937,
+    "posted_at": "2026-03-13T14:56:34.101651",
+    "tweet_id": "2032470879880216771"
   },
   {
     "id": "watchdog_20260313_001",
@@ -1067,9 +1069,10 @@
     "account": "variant_1",
     "ticker": "$BAND",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-13T13:13:33.857391+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260313_002",
@@ -1100,9 +1103,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-13T13:13:33.857391+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260313_005",
@@ -1114,5 +1118,41 @@
     "status": "pending",
     "created_at": "2026-03-13T13:13:33.857391+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260313_103615_v1",
+    "text": "$TMDX at $150.00. +130.8% from $65.00 entry. Organ preservation tech catching institutional flows as healthcare innovation narrative builds.",
+    "category": "RECEIPT",
+    "primary_ticker": "TMDX",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260313_1436.png",
+    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-13T14:36:15.300565+00:00",
+    "cost_usd": 0.015813
+  },
+  {
+    "id": "live_20260313_103615_v2",
+    "text": "$EVTL down 14% from entry.\nAviation theme choppy.\nCash is a position.\nWaiting for confirmation.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1436.png",
+    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-13T14:36:15.300565+00:00",
+    "cost_usd": 0.015813
   }
 ]

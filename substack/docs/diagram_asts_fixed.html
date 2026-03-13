@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ASTS Business Model Flow</title>
+<!--
+╔════════════════════════════════════════════════════════════════════════╗
+║  LAYOUT MAP — 1280×720 canvas                                        ║
+║                                                                       ║
+║  Title bar (y=10..48)                                                 ║
+║                                                                       ║
+║  COL1 (x=40..250)    CHAN_A (x=250..340)   COL2 (x=340..580)         ║
+║  ┌──────────┐        ║                     ┌───────────┐              ║
+║  │Core Tech │────────╫────────────────────→│Direct-to- │              ║
+║  │(x=40,y=70│        ║                     │Device     │              ║
+║  │ w=210    │        ║                     │(x=340,y=70│              ║
+║  │ h=185)   │────────╫────────────────┐    │ w=240     │              ║
+║  └──────────┘        ║                │    │ h=140)    │              ║
+║                      ║                │    └───────────┘              ║
+║  ┌──────────┐        ║                │    ┌───────────┐              ║
+║  │IP &      │        ║                └───→│Govt/Intl  │              ║
+║  │Spectrum  │        ║                     │(x=340,    │              ║
+║  │(x=40,y=290│       ║                     │ y=240,    │              ║
+║  │ w=210    │        ║                     │ w=240     │              ║
+║  │ h=160)   │        ║                     │ h=140)    │              ║
+║  └──────────┘        ║                     └───────────┘              ║
+║                      ║                                                ║
+║  CHAN_B (x=580..670)  COL3 (x=670..920)   CHAN_C (x=920..990)        ║
+║                      ║ ┌───────────┐       ║                          ║
+║                      ║ │Revenue    │       ║  COL4 (x=990..1240)     ║
+║                      ║ │(x=670,y=70│       ║  ┌───────────┐          ║
+║                      ║ │ w=250     │───────╫─→│Flywheel   │          ║
+║                      ║ │ h=160)    │       ║  │(x=990,y=70│          ║
+║                      ║ └───────────┘       ║  │ w=250     │          ║
+║                      ║                     ║  │ h=200)    │          ║
+║                      ║ ┌───────────┐       ║  └───────────┘          ║
+║                      ║ │Pipeline   │       ║                          ║
+║                      ║ │(x=670,    │       ║                          ║
+║                      ║ │ y=270,    │       ║                          ║
+║                      ║ │ w=250,    │       ║                          ║
+║                      ║ │ h=160)    │       ║                          ║
+║                      ║ └───────────┘       ║                          ║
+║                      ║                     ║                          ║
+║  Loop-back: Flywheel bottom → y=580 → x=60 → up to Core Tech        ║
+╚════════════════════════════════════════════════════════════════════════╝
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body { background:#000; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+
+.frame {
+  position:relative; width:1280px; height:720px; background:#111318;
+  overflow:hidden; font-family:'IBM Plex Sans',sans-serif;
+}
+
+.frame::before {
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background-image: radial-gradient(circle, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Title */
+.title-bar {
+  position:absolute; z-index:15; top:10px; left:40px;
+  display:flex; align-items:baseline; gap:14px;
+}
+.title-bar h1 {
+  font-size:17px; font-weight:700; color:#fff; letter-spacing:0.5px;
+}
+.title-bar .ticker {
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:#38bdf8;
+  letter-spacing:2.5px; font-weight:600;
+}
+.title-bar .sub {
+  font-size:10px; font-weight:500; color:rgba(255,255,255,0.5);
+}
+
+/* Boxes */
+.bx {
+  position:absolute; z-index:3; border-radius:12px;
+  border: 2px dashed rgba(255,255,255,0.25);
+  padding: 10px 12px;
+}
+.bt {
+  font-size:14px; font-weight:700; margin-bottom:6px;
+}
+.bt small {
+  font-size:9.5px; font-weight:500; opacity:0.55; display:block; margin-top:2px;
+}
+.icons {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;
+}
+.ic { text-align:center; }
+.d {
+  width:42px; height:42px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+}
+.t {
+  font-size:8.5px; font-weight:600; color:rgba(255,255,255,0.8);
+  margin-top:3px;
+}
+.kpi {
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  color:rgba(255,255,255,0.75); padding:5px 8px;
+  background:rgba(255,255,255,0.05); border-radius:6px;
+}
+.kpi b { color:#fff; }
+
+/* Color palette */
+.b-cy { border-color: rgba(56,189,248,.4); }
+.b-cy .bt { color: #7dd3fc; }
+.d-cy { background: rgba(56,189,248,.14); }
+
+.b-gr { border-color: rgba(52,211,153,.4); }
+.b-gr .bt { color: #6ee7b7; }
+.d-gr { background: rgba(52,211,153,.14); }
+
+.b-pu { border-color: rgba(167,139,250,.4); }
+.b-pu .bt { color: #c4b5fd; }
+.d-pu { background: rgba(167,139,250,.14); }
+
+.b-yl { border-color: rgba(250,204,21,.3); }
+.b-yl .bt { color: #fde047; }
+.d-yl { background: rgba(250,204,21,.12); }
+
+.b-pk { border-color: rgba(244,114,182,.3); border-style: dashed; }
+.b-pk .bt { color: #f9a8d4; }
+.d-pk { background: rgba(244,114,182,.12); }
+
+/* SVG */
+.svg-layer { position:absolute; z-index:10; pointer-events:none; overflow:visible; }
+
+.sline { fill:none; stroke-width:2; stroke-dasharray:6 6; opacity:0.22; }
+.fline { fill:none; stroke-width:2; stroke-dasharray:8 18; stroke-linecap:round; opacity:0.7; }
+
+@keyframes dsh { to { stroke-dashoffset: -52; } }
+.f1 { animation: dsh 2.2s linear infinite; }
+.f2 { animation: dsh 2.4s linear infinite; animation-delay: 0.35s; }
+.f3 { animation: dsh 2.6s linear infinite; animation-delay: 0.7s; }
+.f4 { animation: dsh 2.3s linear infinite; animation-delay: 1.0s; }
+.f5 { animation: dsh 2.5s linear infinite; animation-delay: 0.5s; }
+
+.td { opacity:0; filter: drop-shadow(0 0 6px currentColor); }
+.td.a { animation: mv 2.8s ease-in-out infinite; }
+@keyframes mv {
+  0%   { offset-distance:0%;   opacity:0; }
+  6%   { opacity:0.95; }
+  90%  { opacity:0.95; }
+  100% { offset-distance:100%; opacity:0; }
+}
+.s0 { animation-delay: 0s !important; }
+.s1 { animation-delay: 0.4s !important; }
+.s2 { animation-delay: 0.8s !important; }
+.s3 { animation-delay: 1.2s !important; }
+.s4 { animation-delay: 1.6s !important; }
+
+.ah { opacity:0.65; }
+
+/* Glow on primary */
+.glow::after {
+  content:''; position:absolute; inset:-1px; border-radius:12px;
+  border:1.5px solid #38bdf8; opacity:0;
+  animation: gp 3s ease-in-out infinite; pointer-events:none;
+}
+@keyframes gp { 0%,100%{opacity:0} 50%{opacity:0.25} }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- Title -->
+  <div class="title-bar">
+    <span class="ticker">$ASTS</span>
+    <h1>AST SpaceMobile Business Model</h1>
+    <span class="sub">Direct-to-Device Satellite Connectivity</span>
+  </div>
+
+  <!-- BOX 1: Core Technology (Col1) -->
+  <div class="bx b-cy glow" style="left:40px; top:70px; width:210px; height:185px;">
+    <div class="bt">Core Technology<small>Space-based cellular broadband</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-cy">📡</div><div class="t">BlueBird</div></div>
+      <div class="ic"><div class="d d-cy">🛰️</div><div class="t">LEO Sats</div></div>
+      <div class="ic"><div class="d d-cy">📱</div><div class="t">Unmodified</div></div>
+    </div>
+    <div class="kpi">PATENTS · <b>47</b> | SATS PLANNED · <b>243</b></div>
+  </div>
+
+  <!-- BOX 2: IP & Spectrum (Col1) -->
+  <div class="bx b-pu" style="left:40px; top:290px; width:210px; height:160px;">
+    <div class="bt">IP &amp; Spectrum<small>Regulatory moat</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-pu">📋</div><div class="t">FCC</div></div>
+      <div class="ic"><div class="d d-pu">🌍</div><div class="t">40+ MNOs</div></div>
+      <div class="ic"><div class="d d-pu">🔒</div><div class="t">5MHz</div></div>
+    </div>
+    <div class="kpi">MNO AGREEMENTS · <b>40+</b> | COUNTRIES · <b>50+</b></div>
+  </div>
+
+  <!-- BOX 3: Direct-to-Device (Col2) -->
+  <div class="bx b-gr" style="left:340px; top:70px; width:240px; height:140px;">
+    <div class="bt">Direct-to-Device<small>Consumer broadband via carriers</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-gr">📞</div><div class="t">AT&T</div></div>
+      <div class="ic"><div class="d d-gr">📞</div><div class="t">Vodafone</div></div>
+      <div class="ic"><div class="d d-gr">📞</div><div class="t">Rakuten</div></div>
+    </div>
+    <div class="kpi">TAM · <b>$175B</b> | LAUNCH · <b>2026</b></div>
+  </div>
+
+  <!-- BOX 4: Govt & International (Col2) -->
+  <div class="bx b-gr" style="left:340px; top:240px; width:240px; height:140px;">
+    <div class="bt">Govt &amp; International<small>Military, emergency, rural</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-gr">🏛️</div><div class="t">DoD</div></div>
+      <div class="ic"><div class="d d-gr">🚨</div><div class="t">FirstNet</div></div>
+      <div class="ic"><div class="d d-gr">🌾</div><div class="t">Rural</div></div>
+    </div>
+    <div class="kpi">BACKLOG · <b>$3.2B</b> | CONTRACTS · <b>6</b></div>
+  </div>
+
+  <!-- BOX 5: Revenue (Col3) -->
+  <div class="bx b-yl" style="left:670px; top:70px; width:250px; height:160px;">
+    <div class="bt">Revenue Trajectory<small>Pre-revenue → commercial</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-yl">💰</div><div class="t">TTM $0</div></div>
+      <div class="ic"><div class="d d-yl">📈</div><div class="t">'27E $240M</div></div>
+      <div class="ic"><div class="d d-yl">🎯</div><div class="t">'28E $1.2B</div></div>
+    </div>
+    <div class="kpi">CASH · <b>$265M</b> | DEBT · <b>$0</b> | BURN · <b>$45M/Q</b></div>
+  </div>
+
+  <!-- BOX 6: Pipeline (Col3, dashed pink) -->
+  <div class="bx b-pk" style="left:670px; top:270px; width:250px; height:160px;">
+    <div class="bt">Strategic Pipeline<small>Pending / future</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-pk">🚀</div><div class="t">Block 2</div></div>
+      <div class="ic"><div class="d d-pk">📶</div><div class="t">5G NTN</div></div>
+      <div class="ic"><div class="d d-pk">🤝</div><div class="t">New MNOs</div></div>
+    </div>
+    <div class="kpi">BLOCK 2 SATS · <b>168</b> | 5G NTN · <b>2028</b></div>
+  </div>
+
+  <!-- BOX 7: Flywheel (Col4) -->
+  <div class="bx b-yl" style="left:990px; top:70px; width:250px; height:200px;">
+    <div class="bt">Growth Flywheel<small>Network effects compound</small></div>
+    <div class="icons">
+      <div class="ic"><div class="d d-yl">🛰️</div><div class="t">More Sats</div></div>
+      <div class="ic"><div class="d d-yl">📶</div><div class="t">Coverage</div></div>
+      <div class="ic"><div class="d d-yl">📞</div><div class="t">MNO Deals</div></div>
+      <div class="ic"><div class="d d-yl">💵</div><div class="t">Revenue</div></div>
+    </div>
+    <div class="kpi">MORE SATS → MORE COVERAGE → MORE MNOs → MORE <b>$</b></div>
+  </div>
+
+  <!-- SVG Connectors -->
+  <svg class="svg-layer" style="left:0;top:0;width:1280px;height:720px;"
+       viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Core Tech → Direct-to-Device -->
+      <path id="p1" d="M250,130 L340,130"/>
+      <!-- Core Tech → Govt -->
+      <path id="p2" d="M250,170 L295,170 L295,310 L340,310"/>
+      <!-- IP & Spectrum → Direct-to-Device (regulatory enablement) -->
+      <path id="p2b" d="M250,350 L295,350 L295,170 L340,170"/>
+      <!-- Direct-to-Device → Revenue -->
+      <path id="p3" d="M580,130 L670,130"/>
+      <!-- Govt → Revenue -->
+      <path id="p4" d="M580,310 L625,310 L625,180 L670,180"/>
+      <!-- Revenue → Flywheel -->
+      <path id="p5" d="M920,150 L990,150"/>
+      <!-- Loop-back: Flywheel → Core Tech (routed at x=20, outside IP box at x=40) -->
+      <path id="p6" d="M1115,270 L1115,580 L20,580 L20,70 L40,70"/>
+    </defs>
+
+    <!-- Static lines -->
+    <use href="#p1" class="sline" stroke="#38bdf8"/>
+    <use href="#p2" class="sline" stroke="#38bdf8"/>
+    <use href="#p2b" class="sline" stroke="#a78bfa"/>
+    <use href="#p3" class="sline" stroke="#34d399"/>
+    <use href="#p4" class="sline" stroke="#34d399"/>
+    <use href="#p5" class="sline" stroke="#fbbf24"/>
+    <use href="#p6" class="sline" stroke="#fbbf24"/>
+
+    <!-- Animated flowing dashes -->
+    <use href="#p1" class="fline f1" stroke="#38bdf8"/>
+    <use href="#p2" class="fline f2" stroke="#38bdf8"/>
+    <use href="#p2b" class="fline f3" stroke="#a78bfa"/>
+    <use href="#p3" class="fline f3" stroke="#34d399"/>
+    <use href="#p4" class="fline f4" stroke="#34d399"/>
+    <use href="#p5" class="fline f5" stroke="#fbbf24"/>
+    <use href="#p6" class="fline f1" stroke="#fbbf24"/>
+
+    <!-- Traveling dots -->
+    <circle class="td a s0" r="4" fill="#38bdf8" style="offset-path: path('M250,130 L340,130')"/>
+    <circle class="td a s1" r="4" fill="#38bdf8" style="offset-path: path('M250,170 L295,170 L295,310 L340,310')"/>
+    <circle class="td a s2" r="4" fill="#a78bfa" style="offset-path: path('M250,350 L295,350 L295,170 L340,170')"/>
+    <circle class="td a s3" r="4" fill="#34d399" style="offset-path: path('M580,130 L670,130')"/>
+    <circle class="td a s4" r="4" fill="#34d399" style="offset-path: path('M580,310 L625,310 L625,180 L670,180')"/>
+    <circle class="td a s0" r="4" fill="#fbbf24" style="offset-path: path('M920,150 L990,150')"/>
+    <circle class="td a s1" r="4" fill="#fbbf24" style="offset-path: path('M1115,270 L1115,580 L20,580 L20,70 L40,70')"/>
+
+    <!-- Arrowheads -->
+    <polygon class="ah" points="340,124 328,130 340,136" fill="#38bdf8"/>
+    <polygon class="ah" points="340,304 328,310 340,316" fill="#38bdf8"/>
+    <polygon class="ah" points="340,164 328,170 340,176" fill="#a78bfa"/>
+    <polygon class="ah" points="670,124 658,130 670,136" fill="#34d399"/>
+    <polygon class="ah" points="670,174 658,180 670,186" fill="#34d399"/>
+    <polygon class="ah" points="990,144 978,150 990,156" fill="#fbbf24"/>
+    <!-- Loop-back enters Core Tech from left -->
+    <polygon class="ah" points="40,64 40,76 52,70" fill="#fbbf24"/>
+
+    <!-- Loop-back label -->
+    <text x="540" y="573" font-family="'IBM Plex Mono',monospace" font-size="9"
+      fill="#fbbf24" opacity=".45" letter-spacing="1.5" text-anchor="middle">
+      REINVEST → COMPOUND → SCALE
+    </text>
+  </svg>
+
+</div>
+</body>
+</html>

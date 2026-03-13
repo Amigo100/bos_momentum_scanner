@@ -125,6 +125,27 @@ The layout uses **columns** (where boxes live) separated by **routing channels**
 .d-pk  { background: rgba(244,114,182,.12); }
 ```
 
+### Box Color Guide by Business Function
+
+Assign colors based on what the box represents in the business model. This creates instant visual hierarchy — readers see revenue (green), technology (cyan), and future pipeline (pink) without reading labels.
+
+| Business Function | CSS Class | When to Use | Example Boxes |
+|---|---|---|---|
+| **Core Technology / IP** | `b-cy` (cyan) | The company's competitive advantage, patents, platform | "Core Tech", "IP & Spectrum", "Platform" |
+| **Revenue Segments** | `b-gr` (green) | Active revenue-generating business lines | "Direct-to-Device", "Enterprise", "Licensing" |
+| **Growth / R&D Pipeline** | `b-pu` (purple) | Pre-revenue segments, R&D, upcoming launches | "Pipeline", "Phase 3 Trials", "Next-Gen Products" |
+| **Industrial / Infrastructure** | `b-or` (orange) | Physical assets, manufacturing, operations | "Production Facility", "Supply Chain", "Deployments" |
+| **Revenue / Financials / Flywheel** | `b-yl` (gold) | Aggregate revenue, financial summary, compounding loops | "Revenue Engine", "Flywheel", "Capital Allocation" |
+| **Strategic / Future / Pending** | `b-pk` (pink) | Items that haven't materialised yet — dashed border signals uncertainty | "Strategic Pipeline", "Pending Contracts", "Regulatory Approvals" |
+
+**Rules:**
+- Every diagram should use at least 3 different colors to create visual variety
+- Core Tech is almost always cyan (left column) — it's the anchor
+- Revenue summaries are almost always gold (right column) — it's the destination
+- Pink is always dashed border — it visually signals "not yet confirmed"
+- Green boxes should contain revenue KPIs ($M or growth rates)
+- Purple boxes should contain pipeline KPIs (dates, probabilities, counts)
+
 ### Optional: Glow Pulse on Primary Box
 ```css
 .glow::after {
@@ -323,7 +344,7 @@ All text must be clearly legible against the `#111318` background. The values be
 - **Box titles**: 14px bold, color-matched to segment accent
 - **Box subtitles** (`<small>`): 9.5px, weight 500, opacity `0.55`
 - **Icon labels**: 8.5px, weight 600, `rgba(255,255,255,0.8)`
-- **KPI text**: 9px monospace, `rgba(255,255,255,0.75)`, key values in `#fff` bold
+- **KPI text**: 10px monospace, `rgba(255,255,255,0.75)`, key values in `#fff` bold. 10px is the minimum — 9px is too dim after MP4 encoding.
 - **KPI background**: `rgba(255,255,255,0.05)`
 - **Box borders (default)**: `rgba(255,255,255,0.25)` dashed
 - **Box borders (colored)**: `0.4–0.5` alpha on the segment color
@@ -351,6 +372,40 @@ Early iterations used 35-55% opacity for text and 15-18% for borders. These are 
 ### Flow Direction
 Left → Right: Technology → Segments → Revenue → Strategy
 Bottom loop: Revenue/Flywheel → back to Core Technology (reinforcement)
+
+### KPI Selection Priority
+
+Each box should have 1-3 KPIs in its KPI strip. Choose from the company's researched data in this priority order:
+
+| Priority | KPI Type | Format | Example |
+|---|---|---|---|
+| 1 | Revenue or contract value | `$XM` or `$XB` | `TTM Rev · $42M` |
+| 2 | Growth rate | `+X% YoY` or `+X% QoQ` | `Growth · +340% YoY` |
+| 3 | Market share or penetration | `X% of TAM` | `Penetration · 2.3% of $1.1T TAM` |
+| 4 | Unit count | Number + label | `47 Patents · 5 Launches Pending` |
+| 5 | Timeline | Date + milestone | `FDA Decision · Jun 2026` |
+| 6 | Financial health | `$XM cash` or ratio | `Cash · $265M · Zero Debt` |
+
+**AVOID vague KPIs:**
+- ❌ `Revenue: Growing` → ✅ `TTM Rev · $42M (+340% YoY)`
+- ❌ `Market: Large` → ✅ `TAM · $1.1T by 2030`
+- ❌ `Strong Pipeline` → ✅ `Pipeline · 4 Contracts ($180M)`
+- ❌ `Institutional Interest` → ✅ `13F Buyers · +16% QoQ`
+
+Every KPI must be a specific number sourced from the Deep Dive research stage. If you don't have a number, search for it before building the diagram — never leave a box without at least one quantified KPI.
+
+### Research-First Workflow
+
+**Never build a diagram from memory or assumptions.** The quality of the diagram is directly proportional to the quality of the research that precedes it.
+
+Before writing any HTML, you must have:
+1. **Revenue segments** — how many, what each does, approximate revenue per segment
+2. **Key metrics per segment** — at least one quantified KPI per box
+3. **Strategic pipeline** — what's coming next, with dates if available
+4. **Flywheel dynamics** — what compounds? Users → data → better product → more users?
+5. **Financial snapshot** — TTM revenue, cash, debt, burn rate (if pre-profit)
+
+The Sunday planner's prompt kit includes a diagram prompt that says "Web search for $TICKER business model." Execute that search thoroughly — the diagram will be exactly as good as the data you find.
 
 ---
 
@@ -439,6 +494,14 @@ window.__setTime = (ms) => {
 - [ ] No box content overflows its container
 - [ ] ASCII layout map is present as HTML comment
 - [ ] Title bar z-index is 15 (above boxes) and positioned at y ≤ 4px so subtitle clears box tops
+- [ ] At least 3 different box colors used for visual hierarchy
+- [ ] Color assignments follow the Business Function guide (cyan=tech, green=revenue, etc.)
+
+### Research & Content
+- [ ] Every box has at least one quantified KPI (not "Growing" — a specific number)
+- [ ] All KPIs sourced from actual research (SEC filings, earnings, press releases)
+- [ ] Revenue segments match the company's actual business lines (not guessed)
+- [ ] Pipeline items have dates or probability estimates where available
 
 ### SVG — The Danger Zone
 - [ ] All `<path>` elements are inside `<defs>`, never in SVG body directly
@@ -478,20 +541,28 @@ window.__setTime = (ms) => {
 
 ## 11. Template for New Diagrams
 
-When requesting a new business model diagram, provide:
+When requesting a new business model diagram in claude.ai chat, attach these files:
+1. **This spec** (`animated-diagram-spec.md`) — the rules
+2. **The reference diagram** (`aspi-v7.html`) — a production-quality example
+3. **banned_terms.py** — to avoid internal terminology in KPI labels
+
+Then provide the research data (or ask the model to web search for it):
 
 ```
 Company: [TICKER] [Company Name]
 Core Technology/Advantage: [What makes them unique]
 Segments (2-4):
-  1. [Name] — [Products/Services] — [Key metric]
+  1. [Name] — [Products/Services] — [Key metric: $X revenue or X users]
   2. [Name] — [Products/Services] — [Key metric]
   3. [Name] — [Products/Services] — [Key metric]
-Revenue: [TTM] → [Projection] | Cash: [Amount] | Target: [Amount by year]
+Revenue: TTM $[X]M → [Projection] $[Y]M | Cash: $[Z]M | Debt: $[W]M
 Flywheel: [Step 1] → [Step 2] → [Step 3] → [Step 4] → (loops back)
-Strategic/Pending: [Item 1] | [Item 2] | [Item 3]
-Locations: [Country 1 — status] | [Country 2 — status]
+Strategic/Pending: [Item 1 + date] | [Item 2 + date] | [Item 3 + probability]
 ```
+
+**If you don't have this data:** Start the claude.ai chat with Research mode ON and ask:
+"Web search for [TICKER] business model, revenue segments, key financials, strategic pipeline, and flywheel dynamics. Present as structured data for a business model diagram."
+Then switch to Standard mode and ask for the diagram HTML.
 
 ---
 

@@ -90,5 +90,9 @@ dashboard/data/
 # Chart images committed for tweet posting pipeline
 # (small files ~50-100KB, needed by daily_post workflow)
 
+# Node.js (carousel template tool)
+node_modules/
+package-lock.json
+
 # Git worktrees
 .worktrees/

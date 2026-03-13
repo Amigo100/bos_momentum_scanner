@@ -429,8 +429,8 @@ tr:nth-child(even) td {
 <tr><td>3</td><td>Discovery & theme map</td><td>Extended Thinking</td><td>~10 min</td></tr>
 <tr><td>4</td><td>Theme quality scoring</td><td>Extended Thinking</td><td>~15 min</td></tr>
 <tr><td>5</td><td>Investment gate (per ticker)</td><td>Extended Thinking</td><td>~7 min each</td></tr>
-<tr><td>6</td><td>Deep research (per ticker)</td><td>Research mode</td><td>~12 min each</td></tr>
-<tr><td>7</td><td>Adversarial verdict (per ticker)</td><td>Extended Thinking</td><td>~10 min each</td></tr>
+<tr><td>6</td><td>Deep research (per ticker)</td><td>Research mode</td><td>~15 min each</td></tr>
+<tr><td>7</td><td>Adversarial verdict (per ticker)</td><td>Extended Thinking</td><td>~12 min each</td></tr>
 <tr><td>8</td><td>CRO portfolio review</td><td>Extended Thinking</td><td>~7 min</td></tr>
 <tr><td>9</td><td>Exception analysis (if needed)</td><td>Research + ET</td><td>~15 min</td></tr>
 <tr><td>10</td><td>Sell signal review</td><td>Extended Thinking</td><td>~5 min</td></tr>
@@ -605,8 +605,8 @@ NEXT FRIDAY
 <tr><td>3</td><td>Discovery &amp; Theme Map</td><td>Scanner signals + macro candidates, portfolio</td><td>Theme map with wave alignment, sector composition</td><td>Review map, correct errors</td></tr>
 <tr><td>4</td><td>Theme Quality Analysis</td><td>(theme map in memory)</td><td>Theme scores, confirmations, per-ticker assessments, session quality</td><td>Decide which advance</td></tr>
 <tr><td>5</td><td>Investment Gate</td><td>Ticker name(s)</td><td>Disqualifiers, return math, bear case, timing, verdict per ticker</td><td>Decide which advance to DD</td></tr>
-<tr><td>6</td><td>Deep Research</td><td>Ticker name</td><td>Financial baseline, bear forensics, smart money, comps, valuation inputs</td><td>Review data, request more if needed</td></tr>
-<tr><td>7</td><td>Adversarial Verdict</td><td>(Prompt 6 data in memory)</td><td>Independent valuation, analyst sanity check, steelmanned bear case, verdict</td><td>Challenge bear case, accept/reject</td></tr>
+<tr><td>6</td><td>Deep Research</td><td>Ticker name</td><td>Return driver ID, financial baseline, bear forensics (incl. return-driver-specific), narrative dynamics, smart money, comps, valuation inputs</td><td>Review data, check return driver match, request more if needed</td></tr>
+<tr><td>7</td><td>Adversarial Verdict</td><td>(Prompt 6 data in memory)</td><td>Driver-adapted valuation, analyst sanity check, steelmanned bear case, position management plan, verdict</td><td>Challenge bear case, check method match, accept/reject</td></tr>
 <tr><td>8</td><td>CRO Portfolio Review</td><td>(full session in memory)</td><td>7-review audit, per-stock approve/adjust/remove, session quality</td><td>Final approve/override</td></tr>
 <tr><td>9</td><td>Off-System Exception</td><td>Ticker flagged as DRIFT</td><td>Probability-weighted 12mo target, exception score, approve/deny</td><td>Accept exception or deny</td></tr>
 <tr><td>11</td><td>Newsletter HTML</td><td>(session decisions in memory)</td><td>Complete HTML newsletter</td><td>Save to repo</td></tr>
@@ -643,18 +643,29 @@ NEXT FRIDAY
 <p>   timing, or a fragile capital structure. The macro overlay ensures we LOOK</p>
 <p>   at stocks in the strongest waves; the analysis pipeline judges quality.</p>
 
-<p>5. <strong>The bear case is the most important output.</strong> A rigorous, steelmanned bear case</p>
-<p>   with data-driven rebuttals is more valuable than a beautiful bull thesis. If the</p>
-<p>   bear case is easy to dismiss, the analysis is shallow. Push back until it's hard.</p>
+<p>5. <strong>The bear case must target the RETURN DRIVER, not just the company.</strong> A rigorous</p>
+<p>   bear case asks "what prevents this stock from making us money?" — not just "what</p>
+<p>   could go wrong with the business?" For narrative stocks, "no revenue" is a fact,</p>
+<p>   not a bear case — the bear case is what kills the narrative. For premium-multiple</p>
+<p>   stocks, "expensive" is a description, not a bear case — the bear case is what</p>
+<p>   collapses the premium. Push back until the bear case threatens the actual mechanism</p>
+<p>   by which the stock is supposed to make money.</p>
 
-<p>6. <strong>Conviction should decrease or stay flat.</strong> If conviction rises from gate to DD,</p>
-<p>   something is wrong — either the DD found genuinely material new information (rare)</p>
-<p>   or confirmation bias is inflating the score (common). The CRO audits this.</p>
+<p>6. <strong>The gate screens, the DD decides.</strong> The gate is a binary PASS/FAIL filter —</p>
+<p>   it catches disqualifiers, checks the math works, identifies the bear case, and</p>
+<p>   screens timing. It does NOT produce conviction scores or position sizing. Those</p>
+<p>   decisions belong entirely to the DD (Prompt 7), where forensic depth produces</p>
+<p>   honest judgment. The deeper you dig, the more risks you find — that's the DD</p>
+<p>   working, not failing. The CRO audits whether the DD honestly reflected its findings.</p>
 
-<p>7. <strong>Independent valuations prevent anchoring.</strong> Prompt 7 builds a price target</p>
-<p>   from comps, precedents, and forward projections BEFORE checking analyst consensus.</p>
-<p>   If the target converges with analysts for stated reasons, that's fine. If it</p>
-<p>   diverges, the divergence IS the analysis — don't adjust to match.</p>
+<p>7. <strong>Use the right valuation lens for the right stock.</strong> Prompt 7 builds an</p>
+<p>   independent price target BEFORE checking analyst consensus — and uses methods</p>
+<p>   matched to the stock's return driver. Peer-relative EV/Revenue for fundamental</p>
+<p>   re-rating plays. Theme trajectory and comparable precedent for narrative plays.</p>
+<p>   Growth-justified multiple analysis for premium stocks. Applying fundamental</p>
+<p>   methods to a narrative stock produces a FAIL verdict on what might be the next</p>
+<p>   RGTI. Applying narrative methods to a value stock inflates speculative upside.</p>
+<p>   The return driver (Phase 0) determines the lens. The lens determines the target.</p>
 
 <p>8. <strong>Run the Theme Power Check</strong> after Prompt 4 whenever you suspect the batch is</p>
 <p>   composed of isolated micro-themes rather than a genuine capital flow wave.</p>
@@ -3011,7 +3022,7 @@ PHASE A: DISQUALIFIER SCREEN
 Search: &quot;[ticker] SEC filing insider trading news&quot;
 Search: &quot;[ticker] earnings date short interest analyst revisions&quot;
 
-IMMEDIATE DISQUALIFIERS (→ NO GO, stop analysis):
+IMMEDIATE DISQUALIFIERS (→ FAIL, stop analysis):
 - Auditor resignation or delayed 10-K filing
 - CFO/CEO resigned in last 60 days (without clear succession)
 - Shelf offering (S-3) filed in last 30 days with no stated use
@@ -3116,7 +3127,7 @@ with a regulatory citation that doesn&#x27;t address the actual concern.
 BEAR CASE CLASSIFICATION — be honest:
 - CAN&#x27;T DISMANTLE: The bear argument stands and you cannot refute it with
   data. Does it threaten &gt;50% of the thesis?
-  If YES → FATAL FLAW → NO GO. State why and what would change the verdict.
+  If YES → FATAL FLAW → FAIL. State why and what would change the verdict.
   If NO → ACCEPTABLE RISK. Note it honestly and reduce conviction by 1 point.
   Do NOT spin an undismantled bear case as resolved.
 
@@ -3260,85 +3271,44 @@ ENTRY TIMING VERDICT:
 - CHASING: Recommend WATCHLIST with specific pullback target price
 - POOR TIMING: Recommend WATCHLIST with re-entry trigger closer to catalyst
 
-If timing verdict is CHASING or POOR TIMING, this DOES affect the overall
-verdict — a STRONG BUY with bad timing becomes BUY or WATCHLIST. A BUY
-with bad timing becomes SPEC BUY or WATCHLIST. Timing can demote but never
-promote a verdict.
+If timing verdict is CHASING or POOR TIMING, the stock FAILS the gate on
+timing. A good thesis at a bad price is a WATCHLIST, not a PASS.
 
 ═══════════════════════════════════════════════════════════════════
-VERDICT
+VERDICT: PASS / FAIL / WATCHLIST
 ═══════════════════════════════════════════════════════════════════
 
-STRONG BUY (conviction 8-10):
-- No disqualifiers + math to 50%+ clear + entry timing CLEAN or ELEVATED
-- Catalyst pipeline over 6-18 months with structural drivers
-- Bear case DISMANTLED or only minor ACCEPTABLE RISK
-→ Advance to Deep DD at FULL position size
+The gate produces a BINARY decision: does this stock warrant the 25+ minutes
+of deep due diligence? This is a screening decision, not a sizing decision.
+Conviction scores, position sizing, and final verdicts belong to Prompt 7.
 
-BUY (conviction 6-7):
-- Thesis intact, math works, but meaningful concerns remain
-  (moderate dilution, partially dismantled bear case, single catalyst
-  dependency, or elevated entry reducing margin of safety)
-→ Advance to Deep DD at STANDARD position size (T2)
+PASS — Advance to Deep DD:
+- No disqualifiers
+- Math to 50%+ is CLEAR or MARGINAL (≥30% path exists)
+- No FATAL bear case identified (bear concerns flagged for DD investigation)
+- Entry timing is CLEAN or ELEVATED
 
-SPEC BUY (conviction 4-5):
-- Thesis has merit but multiple unresolved concerns
-  (heavy dilution, competitive threats, execution dependency, partially
-  dismantled bear case that could materialise)
-→ Advance to Deep DD at REDUCED (50%) position size
+FAIL — Do not advance:
+- Any disqualifier hit → state which one
+- Math FAILS (&lt;30% path) → state the numbers
+- Bear case appears FATAL on initial identification → state why
+→ State the specific reason AND what would flip the verdict.
 
-WATCHLIST (timing-driven):
-- Strong thesis (conviction would be 5+) but CHASING or POOR TIMING entry
-→ Do NOT advance now. Set specific re-entry trigger and price target.
-  Re-evaluate if the stock pulls back to target or catalyst window approaches.
-  State: &quot;Re-enter watchlist process if [TICKER] reaches $[X] or on [event].&quot;
+WATCHLIST — Thesis works but timing doesn&#x27;t:
+- Math works, no disqualifiers, but entry timing is CHASING or POOR TIMING
+→ Do NOT advance to DD now. Set specific re-entry trigger.
 
-NO GO (conviction 1-3):
-- Any disqualifier hit, no credible math to 50%, or fatal bear case
-→ Stop. State the specific reason AND what would flip the verdict.
-  &quot;NO GO because [reason]. Would reconsider if [specific condition].&quot;
+FLAGS FOR DD (for stocks that PASS):
+List specific items the DD must investigate with its deeper search budget:
+- Bear case identified: &quot;[The #1 argument — DD Phase 2 must investigate]&quot;
+- Caution flags from Phase A: &quot;[Dilution concern / earnings proximity]&quot;
+- Entry timing notes: &quot;[Elevated entry — DD should assess runway]&quot;
+- Math sensitivity: &quot;[Return math depends on assumption X — DD must stress-test]&quot;
 
-BINARY RISK SIZING MODIFIER:
-If opportunity type is BINARY_CATALYST (from Prompt 4), cap position size
-at 50% (T2 max) REGARDLESS of conviction score. This is a SIZING adjustment,
-not a conviction adjustment. A conviction-8 binary catalyst is still 8/10
-conviction — it gets 50% size because the outcome distribution is bimodal,
-not because the thesis is weak.
-
-Report both dimensions: &quot;BUY 7/10, T2 (binary cap)&quot; or &quot;STRONG BUY 8/10,
-50% size (binary modifier).&quot;
-
-PURE BINARY MODIFIER (from Prompt 4):
-If the stock was classified PURE BINARY (no post-event runway, value entirely
-depends on the binary event succeeding), cap at T3 (25% standard size) AND
-require PRIME theme score (7.5+) from 1B. If the theme scored below PRIME,
-a PURE BINARY is NO GO regardless of individual conviction — the risk/reward
-profile doesn&#x27;t match our system&#x27;s return requirements.
-
-THEME-CONVICTION INTERPLAY:
-The gate conviction score should reflect STOCK-SPECIFIC findings (Phases A-D),
-not replay the theme score. However, theme quality provides CONTEXT:
-- A stock in a PRIME (7.5+) theme with STRONG confirmation starts from a
-  position of strength. The theme tailwind is real. Stock-specific concerns
-  need to be material to justify filtering.
-- A stock in a lower INVESTABLE (6.0-6.4) theme with NONE confirmation has
-  no theme tailwind. The stock must be individually compelling across ALL
-  four phases — clean disqualifiers, strong math, dismantled bear case, and
-  good timing — to justify deploying capital that could otherwise wait for
-  a theme-aligned opportunity.
-
-This is NOT about lowering the bar for stocks in good themes. The disqualifier
-screen, return math, bear case, and timing assessment are IDENTICAL regardless
-of theme score. It&#x27;s about how much BENEFIT OF THE DOUBT a stock gets on
-borderline calls. A partially dismantled bear case in a PRIME theme is an
-acceptable risk with a live monitor. The same partially dismantled bear case
-in a weak theme is enough to filter — the theme isn&#x27;t providing the tailwind
-that helps good stocks survive temporary setbacks.
-
-IMPORTANT: Your job is to FILTER, not to CONFIRM. Each phase must independently
-justify advancement. If the bear case is strong, the dilution is severe, or
-the math doesn&#x27;t work — kill it. Don&#x27;t rationalise a pass because the thematic
-score was high. The gate&#x27;s value is measured by what it REJECTS.
+NOTE ON BINARY STOCKS: If opportunity type is BINARY_CATALYST or PURE BINARY,
+note this as a flag for the DD. Binary sizing modifiers (T2 max for binary,
+T3 max for pure binary with PRIME required) are applied at the DD verdict
+stage (Prompt 7), not at the gate.
 
 ═══════════════════════════════════════════════════════════════════
 OUTPUT FORMAT
@@ -3346,7 +3316,7 @@ OUTPUT FORMAT
 
 Present for each ticker:
 
-GATE ANALYSIS: [TICKER] — Theme: [name] ([score] [classification])
+GATE SCREEN: [TICKER] — Theme: [name] ([score] [classification])
 
 Phase A — Disqualifiers: [CLEAN / CAUTION / DQ]
   [If CAUTION: list specific flags]
@@ -3356,128 +3326,77 @@ Phase A — Disqualifiers: [CLEAN / CAUTION / DQ]
 Phase B — Return Math:
   Regime: [FUNDAMENTAL / OPTIONALITY / TRANSITION]
   Path to 50%+: [Specific numerical logic chain, 2-3 sentences]
-  [For FUNDAMENTAL: current multiple, target multiple, basis for expansion]
-  [For OPTIONALITY: milestone, comparable re-ratings, expected move]
-  [For TRANSITION: revenue validation threshold, target multiple, range]
   Math verdict: [CLEAR (&gt;50% path) / MARGINAL (30-50% path) / FAILS (&lt;30%)]
 
-Phase C — Bear Case:
+Phase C — Bear Case Identified:
   #1 bear argument: [The specific short thesis, 1-2 sentences]
-  Rebuttal: [Data-based rebuttal or honest admission it can&#x27;t be dismantled]
-  Classification: [DISMANTLED / PARTIALLY DISMANTLED / CAN&#x27;T DISMANTLE]
-  Impact: [If partially or can&#x27;t: how much of the thesis does it threaten?]
-  Downside floor: $[X.XX] ([basis: cash value / trough multiple / acquisition])
-  Maximum realistic loss: [X]% from current price
+  Severity estimate: [POTENTIALLY FATAL / SERIOUS / MANAGEABLE]
+  (DD will investigate and classify — gate only identifies)
 
 Phase D — Entry Timing:
-  Recent move from pivot: [+X%] → [CLEAN / ELEVATED / CHASING]
-  Gap-up risk: [None / Flag: gapped +X% on date]
-  Catalyst pipeline: [First catalyst: event, date | Stack: X events over Y months]
-  Waiting cost: [Low — stock likely to consolidate / High — catalyst imminent]
-  Theme momentum: [ACCELERATING / STABLE / DECELERATING / PRE-BREAKOUT]
-  Timing verdict: [CLEAN ENTRY / ELEVATED ENTRY / CHASING / POOR TIMING]
+  Recent move: [+X% from pivot] → [CLEAN / ELEVATED / CHASING]
+  [For macro-only: Technical posture → BASING / BREAKOUT / MID-TREND / DOWNTREND]
+  Catalyst pipeline: [First catalyst: event, date | Stack depth: X events]
+  Timing verdict: [CLEAN / ELEVATED / CHASING / POOR TIMING]
 
 ═══════════════════════════════════════════════════════════════════
 
-VERDICT: [STRONG BUY / BUY / SPEC BUY / WATCHLIST / NO GO]
-Conviction: [X]/10
-[If BINARY_CATALYST: &quot;Binary sizing modifier: T2 max (50% standard)&quot;]
-[If PURE BINARY: &quot;Pure binary modifier: T3 max (25%) — requires PRIME theme&quot;]
-Position size: T[1/2/3] — [Full / Standard / Reduced / Binary cap]
-Entry: ~$[X.XX] [at open / limit at / on pullback to]
-Stop: $[X.XX] [basis for stop level]
+GATE VERDICT: [PASS / FAIL / WATCHLIST]
+[If PASS: &quot;CLEAN PASS&quot; or &quot;PASS WITH FLAGS&quot;]
+
+FLAGS FOR DD:
+- [Bear case to investigate: specific argument]
+- [Caution flags: specific concerns from Phase A]
+- [Math sensitivity: key assumption to stress-test]
+- [Timing notes: any entry concerns]
+- [If BINARY: &quot;Binary catalyst — DD applies T2 max sizing modifier&quot;]
+
+If FAIL:
+  Reason: [specific phase that failed and why]
+  Reconsider if: [specific condition that would flip to PASS]
 
 If WATCHLIST:
   Re-entry trigger: [specific price level or catalyst event]
   Target entry: $[X.XX]
-  Re-evaluate: [date or condition]
-
-If NO GO:
-  Fatal flaw: [specific reason]
-  Reconsider if: [specific condition that would flip the verdict]
 
 Then STOP and wait for my feedback before we proceed to Deep DD.</pre>
 </div>
 <div class="section-text">
 <p>---</p>
 
-<h3>OPERATOR NOTES: REVIEWING PROMPT 2 OUTPUT</h3>
+<h3>OPERATOR NOTES: REVIEWING THE GATE SCREEN</h3>
 
 <h4>The Most Important Thing to Check</h4>
 
-<p><strong>Is the bear case steelmanned or is it a strawman?</strong></p>
+<p><strong>Did the bear case identification find the right threat?</strong></p>
 
-<p>This is the gate's primary function. The test: would a short-seller read Claude's</p>
-<p>bear case and say "yes, that's my thesis" — or would they say "you missed the</p>
-<p>real problem entirely"?</p>
+<p>The gate's bear case phase IDENTIFIES rather than dismantles. Your job
+is to assess whether the identified bear argument is the one a real short-seller
+would trade on. If it feels like a strawman — generic "competition could increase"
+rather than specific "their largest customer is building in-house capabilities" —
+push back before advancing to DD:</p>
 
-<p>Common strawman patterns to catch:</p>
-<ul>
-<li>"Competition could increase" — who specifically, and what would they need to do?</li>
-<li>"The market may not value this" — that's a tautology, not a bear case</li>
-<li>"Execution risk exists" — execution risk always exists. What SPECIFIC execution</li>
-</ul>
-<p>  failure is most likely?</p>
-<ul>
-<li>Rebutting with regulatory designations: "BTD mitigates the risk" — BTD doesn't</li>
-</ul>
-<p>  mitigate commercial risk, competitive risk, or capital structure risk</p>
+<p>"Your bear case for [TICKER] feels too easy. Search specifically for '[ticker]
+short seller thesis' — what are the bears actually saying?"</p>
 
-<p>If the bear case feels too easy to dismiss, use the Challenge the Bear Case prompt:</p>
-<p>"Your bear case for [TICKER] feels too easy to dismiss. Steelman it harder.</p>
-<p>Search specifically for '[ticker] short seller thesis' — what are the bears</p>
-<p>actually saying?"</p>
+<h4>When to Override</h4>
 
-<h4>Theme-Conviction Consistency</h4>
+<p><strong>Override a FAIL:</strong> "I want to advance [TICKER] to DD despite the gate FAIL.
+Reason: [your reasoning]." Valid when you disagree with the math assumptions
+or believe the bear case severity was overestimated.</p>
 
-<p>Check that the gate conviction is consistent with both the theme quality AND the</p>
-<p>stock-specific findings:</p>
-<ul>
-<li>Theme PRIME + all phases clean → conviction should be 7-9</li>
-<li>Theme PRIME + partially dismantled bear case → conviction should be 5-7</li>
-</ul>
-<p>  (reduced by the bear case, not inflated by the theme)</p>
-<ul>
-<li>Theme INVESTABLE + all phases clean → conviction should be 6-8</li>
-<li>Theme INVESTABLE + multiple caution flags → conviction should be 4-6</li>
-</ul>
-
-<p>If conviction feels disconnected from the evidence — either too high (ignoring</p>
-<p>real concerns) or too low (penalising without basis) — challenge it.</p>
-
-<h4>When to Run Tickers Together vs Separately</h4>
-
-<p><strong>Together (2-3 tickers in one gate prompt):</strong></p>
-<ul>
-<li>Tickers share a theme and you want direct comparison within the gate</li>
-<li>You want Claude to allocate its bear case investigation across the group</li>
-</ul>
-<p>  (finding the weakest link in the batch)</p>
-<ul>
-<li>Useful when deciding "which of these two drone stocks do I actually gate?"</li>
-</ul>
-
-<p><strong>Separately (one ticker per gate prompt):</strong></p>
-<ul>
-<li>Deep DD candidates that need maximum individual attention</li>
-<li>Tickers in different themes with different risk profiles</li>
-<li>When you want Claude's full search budget on a single stock's bear case</li>
-</ul>
-
-<p>For most sessions, running 2-3 tickers together is efficient. For your highest-</p>
-<p>conviction single-stock setup, run it alone to maximise the bear case investigation.</p>
+<p><strong>Override a PASS:</strong> "I'm filtering [TICKER] despite the PASS. Reason: [your
+reason]." Valid when you have information the gate couldn't find.</p>
 
 <h4>The WATCHLIST Verdict Is Underused</h4>
 
-<p>The WATCHLIST verdict exists for a reason: good thesis, bad timing. The old system</p>
-<p>tended to either PASS or FAIL stocks, losing track of strong setups that simply</p>
-<p>needed a better entry. If a stock has a strong thesis but has run 35% from pivot</p>
-<p>with no near-term catalyst, WATCHLIST with a specific pullback target is often the</p>
-<p>right call — not a forced BUY at an elevated price or a NO GO that throws away the</p>
-<p>analysis.</p>
+<p>The WATCHLIST verdict exists for a reason: good thesis, bad timing. If a stock
+has a strong thesis but has run 35% from pivot with no near-term catalyst,
+WATCHLIST with a specific pullback target is often the right call — not a
+forced PASS at an elevated price or a FAIL that throws away the analysis.</p>
 
-<p>Track WATCHLIST tickers for re-evaluation. When the stock pulls back to the target</p>
-<p>or the catalyst window approaches, re-run the gate on current data.</p>
+<p>Track WATCHLIST tickers for re-evaluation. When the stock pulls back to the target
+or the catalyst window approaches, re-run the gate on current data.</p>
 
 
 <p>---</p>
@@ -3498,7 +3417,7 @@ Then STOP and wait for my feedback before we proceed to Deep DD.</pre>
 <div class="guidance-note"><p><strong>Mode recommendations:</strong></p>
 <div class="table-wrap"><table>
 <tr><th>Part</th><th>Task</th><th>Recommended Mode</th></tr>
-<tr><td>Part A: Deep Research</td><td>Broad data gathering, financial baseline, bear case forensics, independent valuation inputs</td><td>**Research mode** (preferred — deeper search) or Extended Thinking with aggressive search</td></tr>
+<tr><td>Part A: Deep Research</td><td>Return driver identification, financial baseline, bear case forensics (incl. return-driver-specific), narrative &amp; capital flow dynamics, independent valuation inputs</td><td>**Research mode** (preferred — deeper search) or Extended Thinking with aggressive search</td></tr>
 <tr><td>Part B: Adversarial Verdict</td><td>Synthesise Prompt 6 data, build independent price target, steelman bear case, produce verdict</td><td>**Extended Thinking** — needs full reasoning budget for adversarial judgment</td></tr>
 </table></div></div>
 <div class="guidance-note"><p>If Research mode is unavailable: run both parts in Extended Thinking. Part A should</p>
@@ -3541,7 +3460,11 @@ Then STOP and wait for my feedback before we proceed to Deep DD.</pre>
         <div class="guidance-note"><p><strong>Mode:</strong> Research mode (preferred) or Extended Thinking with thorough web search.</p>
 <p>This part is PURE DATA GATHERING — broad, cross-referenced, primary-source focused.</p>
 <p>Present data without synthesising into a recommendation. The verdict happens in Prompt 7.</p></div>
-<div class="guidance-note"><p><strong>Time budget:</strong> 10-15 minutes. Budget 10-15 searches minimum.</p></div>
+<div class="guidance-note"><p><strong>Time budget:</strong> 12-18 minutes. Budget 10-15 searches minimum. Phase 0 (return</p>
+<p>driver ID) takes no searches. Phase 3B (narrative dynamics) adds 2-3 searches</p>
+<p>for Driver B/C/E/F stocks. Allocate search budget based on the return driver:</p>
+<p>Driver A: heavy on Phase 1 (financials) and Phase 5 (valuation inputs).</p>
+<p>Driver B: heavy on Phase 3B (narrative) and Phase 2g (return-driver bear case).</p></div>
 <div class="guidance-note"><p><strong>After Part A:</strong> The operator reviews the data foundation. If the data paints a</p>
 <p>weaker picture than the gate suggested, that's the DD working — say so honestly.</p>
 <p>The operator may ask for additional research on specific items before proceeding</p>
@@ -3565,6 +3488,101 @@ I review your findings.
 Prioritise PRIMARY SOURCES (SEC filings, earnings transcripts, company presentations,
 ClinicalTrials.gov, 13F filings) over secondary commentary. When data conflicts
 between sources, present both and flag the discrepancy.
+
+═══════════════════════════════════════════════════════════════════
+PHASE 0: RETURN DRIVER IDENTIFICATION
+═══════════════════════════════════════════════════════════════════
+
+Before gathering data, identify the PRIMARY mechanism by which this stock&#x27;s
+price is expected to increase over the hold period. This is NOT the investment
+thesis — it&#x27;s the specific market dynamic that translates the thesis into
+stock price appreciation. Getting this right determines which subsequent
+phases matter most and how to weight the verdict.
+
+Reference the valuation regime (from Prompt 4) and the stock&#x27;s specific
+characteristics to classify:
+
+RETURN DRIVER TYPES:
+
+A) FUNDAMENTAL RE-RATING: Revenue/earnings acceleration → multiple expansion
+   to peer levels. The stock is genuinely cheap on traditional metrics AND
+   growing fast enough to force the market to re-rate it.
+   Examples: BAND at 0.7x revenue vs peer median 1.3x with 16% growth.
+   → Phase 1 (financials) and Phase 5 (valuation inputs) are CRITICAL.
+   → Bear case focus: Is growth real? Will it sustain? Are margins expanding?
+   → Valuation: Traditional methods (peer-relative, DCF, historical) are
+     PRIMARY. The math must work on fundamentals.
+
+B) NARRATIVE EXPANSION: Theme goes from unknown → discovered → consensus.
+   Capital flows into the theme as institutions take notice. The stock re-rates
+   based on TAM credibility, milestone velocity, and narrative power — NOT
+   current financial metrics. Revenue may be zero or immaterial.
+   Examples: RGTI at $2 (quantum computing pre-consensus). Early IONQ.
+   → Phase 3B (narrative &amp; capital flow) is CRITICAL.
+   → Bear case focus: Is the narrative durable? Can it survive a setback?
+     Is the theme real or pure hype? When does narrative peak?
+   → Valuation: Traditional methods are a SANITY CHECK only. They will
+     produce targets far below market price — and that&#x27;s expected. The
+     return comes from capital inflows driven by theme discovery, not
+     from fundamental value convergence. Use narrative-specific methods
+     (theme market cap trajectory, institutional adoption curve, comparable
+     narrative precedent) as PRIMARY. Do NOT penalise the stock for
+     &quot;expensive&quot; traditional multiples if the narrative is powering the move.
+
+C) MULTIPLE TOLERANCE EXPANSION: Market structurally changes what it&#x27;s
+   willing to pay for this type of company. &quot;Expensive&quot; by historical
+   standards becomes the new normal because of growth durability, strategic
+   positioning, or structural advantages that consensus under-appreciates.
+   Examples: PLTR at 80x revenue (AI + government stickiness + growth
+   durability justified premium expansion). CRWD post-platform shift.
+   → Phase 4 (moat depth + customer stickiness) is CRITICAL.
+   → Bear case focus: What would BREAK the premium? Growth deceleration
+     below [threshold]? Competitive entry? Customer churn? A stretched
+     multiple is NOT the bear case — the bear case is whatever causes
+     the premium to collapse.
+   → Valuation: Traditional methods will say &quot;overvalued&quot; and they will
+     be technically correct yet wrong on outcomes. Assess instead: at what
+     growth rate does the current multiple become JUSTIFIED on a 3-year
+     forward basis? If that growth rate is achievable, the &quot;overvaluation&quot;
+     resolves through growth into the multiple.
+
+D) CATALYST-DRIVEN: Specific binary or near-binary event re-prices the
+   stock (FDA approval, contract win, M&amp;A announcement). Returns are
+   concentrated around event timing, not gradual re-rating.
+   Examples: Biotech PDUFA dates, defence contract decisions.
+   → Phase 2 (bear case) focuses on event-specific risks.
+   → Sizing MUST reflect binary nature regardless of conviction.
+
+E) CONVERGENCE: Multiple return drivers operating simultaneously. The best
+   setups combine fundamental improvement + narrative expansion + short
+   squeeze fuel + scarcity premium. When these converge, the return
+   magnitude exceeds what any single driver would produce.
+   Examples: RGTI (narrative + short squeeze + scarcity). SMCI 2023-24
+   (fundamental + narrative + institutional discovery).
+   → All phases matter. Weight verdict toward the STRONGEST driver.
+
+F) SCARCITY PREMIUM: Being THE stock people buy for exposure to a hot theme
+   creates buying pressure independent of fundamentals. When a powerful
+   theme has only 1-2 investable pure-play vehicles under $2B market cap,
+   capital crowds into those names disproportionately.
+   → Assess in Phase 3B: How many competing pure-play vehicles exist?
+   → If this is the ONLY sub-$2B pure-play in a POWERFUL wave, that
+     scarcity itself is a return driver worth significant conviction.
+
+CLASSIFICATION:
+Primary return driver: [A/B/C/D/E/F]
+Secondary return driver (if applicable): [letter]
+
+HOW THIS SHAPES THE DD:
+State explicitly which phases are CRITICAL vs supplementary for this stock.
+&quot;Primary driver is FUNDAMENTAL RE-RATING. Phases 1 and 5 are critical.
+Phase 3B is supplementary — narrative dynamics exist but the thesis works
+on fundamentals alone.&quot;
+
+Or: &quot;Primary driver is NARRATIVE EXPANSION with SCARCITY PREMIUM secondary.
+Phase 3B is critical. Phase 1 provides baseline context but traditional
+financials will look terrible (pre-revenue) — do NOT let that drive the
+verdict. Phase 5 uses narrative-specific valuation methods primarily.&quot;
 
 ═══════════════════════════════════════════════════════════════════
 PHASE 1: FINANCIAL BASELINE
@@ -3700,6 +3718,70 @@ For each risk, classify:
 - MINOR: Real but manageable. Note and monitor.
 - NOT FOUND: Searched and found no evidence. State what you searched for.
 
+g) RETURN-DRIVER-SPECIFIC BEAR CASE:
+   Based on the return driver identified in Phase 0, what specifically
+   threatens the MECHANISM by which we expect to make money? This is
+   the bear case that matters most for our position. A stock can have
+   &quot;fundamental&quot; risks that don&#x27;t threaten the return driver, and can
+   have risks that look minor fundamentally but are fatal to the return
+   mechanism.
+
+   For FUNDAMENTAL RE-RATING (Driver A):
+   What prevents the multiple from expanding? Specific threats:
+   - Revenue growth decelerating below the rate that justifies re-rating
+   - Margin compression eroding the operating leverage thesis
+   - A peer trading at the same discount for JUSTIFIED reasons (broken
+     comparison — &quot;cheap vs peers&quot; only works if the discount is unjustified)
+   - Customer loss or competitive entry that degrades forward estimates
+
+   For NARRATIVE EXPANSION (Driver B):
+   What kills the narrative? Specific threats:
+   - Competing technology or company that repositions this stock as a follower
+   - Thesis-damaging data point (a milestone failure, a demo debunked, a key
+     claim proven exaggerated)
+   - Capital rotation to a newer, more exciting theme (narratives have windows)
+   - Narrative peak: the theme is already consensus and the &quot;discovery premium&quot;
+     has been fully captured. The return from unknown → consensus IS the trade.
+     If consensus already knows, the re-rating is done.
+   - Fundamental void: if the narrative runs for 12 months but revenue never
+     materialises, the narrative eventually collapses. How far away is
+     fundamental validation? &lt;18 months = manageable. &gt;3 years = fragile.
+
+   For MULTIPLE TOLERANCE EXPANSION (Driver C):
+   What collapses the premium? Specific threats:
+   - Growth deceleration below [X]% — calculate the specific threshold where
+     the current multiple becomes unjustifiable even on a 3-year forward basis
+   - Key customer loss (especially for government/enterprise sticky revenue)
+   - Management departure (premium companies are often premium because of
+     the team — loss of a visionary CEO can instantly collapse the multiple)
+   - Sector de-rating event (regulatory change, macro shift that hits all
+     premium multiples in the space)
+   - IMPORTANT: &quot;The stock is expensive at Xx revenue&quot; is NOT a bear case
+     for a Driver C stock. The market has CHOSEN to pay that multiple. The
+     bear case is what causes the market to STOP choosing to pay it.
+
+   For CATALYST-DRIVEN (Driver D):
+   What specific outcomes of the catalyst cause the stock to decline?
+   - Failure probability (base rate × company-specific adjustment)
+   - Expected price impact on failure (from comparable precedents)
+   - Is the catalyst priced in? A stock that has already rallied 80% into
+     a catalyst may decline even on a POSITIVE outcome (buy the rumour,
+     sell the news)
+
+   For CONVERGENCE (Driver E):
+   Identify which of the converging drivers is the WEAKEST LINK — the one
+   most likely to break first. If the narrative breaks but fundamentals
+   are intact, the stock pulls back 30% but recovers. If fundamentals
+   break while the narrative is strong, the stock crashes as reality
+   catches up. Map the dependency chain.
+
+   Classify the return-driver bear case:
+   - DRIVER INTACT: No credible threat to the return mechanism identified
+   - DRIVER AT RISK: One or more threats could impair the return mechanism
+     within the hold period. Specify which and estimate probability.
+   - DRIVER BROKEN: The return mechanism is already impaired or likely to
+     break. This is a FAIL signal regardless of fundamental quality.
+
 ═══════════════════════════════════════════════════════════════════
 PHASE 3: SMART MONEY POSITIONING
 ═══════════════════════════════════════════════════════════════════
@@ -3732,6 +3814,103 @@ d) SHORT DYNAMICS:
    - Cost to borrow if findable (elevated = high short conviction)
 
 ═══════════════════════════════════════════════════════════════════
+PHASE 3B: NARRATIVE &amp; CAPITAL FLOW DYNAMICS
+═══════════════════════════════════════════════════════════════════
+
+Required for return driver B (Narrative Expansion), C (Multiple Tolerance),
+E (Convergence), or F (Scarcity Premium). For pure FUNDAMENTAL RE-RATING
+(Driver A) or CATALYST-DRIVEN (Driver D): skip this phase — the return
+mechanism doesn&#x27;t depend on narrative dynamics.
+
+Search: &quot;[theme] institutional interest ETF flows media coverage 2026&quot;
+Search: &quot;[ticker] analyst initiation coverage mentions momentum&quot;
+
+a) NARRATIVE POSITIONING:
+   - Is this stock THE name people buy for exposure to this theme?
+     (RGTI = quantum. PLTR = AI government. What is [TICKER] = ?)
+   - How many competing pure-play vehicles exist in this theme at sub-$2B
+     market cap? If this is the ONLY pure-play, scarcity premium applies.
+   - Is the narrative EXPANDING (new analyst initiations, increasing
+     conference mentions, FinTwit/media coverage growing) or CONTRACTING
+     (fading interest, coverage dropping, narrative fatigue)?
+   - What STAGE is the narrative in?
+     PRE-DISCOVERY: Almost no one is talking about this theme yet. Highest
+       upside potential but longest wait. Early institutional positions
+       may be forming beneath the surface.
+     EARLY DISCOVERY: A few specialist analysts and newsletters have
+       identified it. 1-3 institutional initiations. This is the ideal
+       entry point — the narrative exists but hasn&#x27;t gone mainstream.
+     ACCELERATING DISCOVERY: FinTwit buzz, mainstream financial media
+       picking it up, ETF flows beginning. Capital is actively moving in.
+       The trade is working but the window is narrowing.
+     CONSENSUS: Everyone knows. Major publications, CNBC segments, retail
+       awareness is high. The discovery premium has been largely captured.
+       Remaining upside comes from fundamental delivery, not narrative
+       expansion. Late entry with reduced expected return.
+
+b) CAPITAL FLOW DYNAMICS:
+   - Reference Prompt 2B&#x27;s wave strength data for the aligned structural
+     force. Is capital ACCELERATING into this theme?
+   - Institutional discovery status: are sector specialist funds INITIATING
+     positions? (Reference Phase 3 holdings data.) The pattern before
+     multibaggers: specialist initiation → generalist follow → index
+     inclusion. Where is this stock in that sequence?
+   - Any activist interest? 13D filings signal concentrated conviction.
+   - Retail awareness: is the stock showing up on investment forums,
+     Reddit, FinTwit? Retail capital amplifies moves once institutions
+     establish direction — but retail-only momentum without institutional
+     backing is fragile.
+
+c) NARRATIVE DURABILITY:
+   - What could BREAK the narrative? Not generic risk — the specific
+     narrative-killer. For quantum computing: &quot;a major company announces
+     quantum advantage is further away than expected.&quot; For AI voice:
+     &quot;Gartner publishes data showing AI deflects more calls than it
+     generates, inverting the volume thesis.&quot;
+   - How long can the narrative sustain capital inflows? Estimate the
+     narrative window in months. A 12-month window is excellent for our
+     hold period. A 3-month window that&#x27;s already 2 months in is dangerous.
+   - Is the narrative AHEAD of fundamentals or are fundamentals APPROACHING
+     the narrative?
+     Ahead: Stock has re-rated but revenue won&#x27;t validate for 12+ months.
+       Fragile — any disappointment causes sharp correction.
+     Approaching: Revenue is starting to inflect toward the narrative.
+       Safer — the gap between narrative and reality is closing.
+     Validated: Revenue already supports the re-rating. The narrative
+       became reality. Remaining upside is fundamental, not narrative.
+
+d) REFLEXIVITY ASSESSMENT:
+   - Does the stock&#x27;s price action itself create positive feedback?
+     Rising price → media attention → retail discovery → short covering →
+     institutional FOMO → more capital inflow → higher price. If yes,
+     the upside scenario is NON-LINEAR and traditional valuation methods
+     will significantly underestimate the potential move magnitude.
+   - Short squeeze potential as AMPLIFIER: If SI &gt;15% and narrative is
+     accelerating, forced covering becomes a return driver. The squeeze
+     doesn&#x27;t CREATE value — it amplifies the move that the narrative is
+     already driving. Model the mechanics: how much buying pressure would
+     full short covering create relative to average daily volume?
+   - NEGATIVE reflexivity risk: Could a 20% drawdown trigger forced selling
+     → margin calls → more selling → cascade? Concentrated retail ownership,
+     heavy options open interest, or leveraged ETF exposure create this risk.
+
+e) SCARCITY ASSESSMENT:
+   - How many PUBLIC, LIQUID, SUB-$2B companies are PURE-PLAYS in this theme?
+     List them. If the answer is 1-2: scarcity premium is a real return driver.
+   - Is scarcity INCREASING (companies going private, being acquired, or
+     growing above $2B) or DECREASING (IPOs, spin-offs, new entrants)?
+   - What happens to the scarcity premium when more vehicles emerge?
+     (First-mover often retains premium through brand recognition, but
+     capital spreads across more names, reducing intensity of flows.)
+
+PHASE 3B SUMMARY:
+Narrative stage: [PRE-DISCOVERY / EARLY DISCOVERY / ACCELERATING / CONSENSUS]
+Capital flow direction: [ACCELERATING / STABLE / DECELERATING]
+Scarcity premium: [STRONG (1-2 vehicles) / MODERATE (3-5) / NONE (&gt;5)]
+Narrative durability: [X months estimated remaining window]
+Reflexivity: [POSITIVE (non-linear upside) / NEUTRAL / NEGATIVE (cascade risk)]
+
+═══════════════════════════════════════════════════════════════════
 PHASE 4: COMPETITIVE MOAT &amp; TAM REALITY CHECK
 ═══════════════════════════════════════════════════════════════════
 
@@ -3748,6 +3927,19 @@ a) COMPETITIVE MOAT:
    - Who is the BIGGEST competitive threat and what would they need to do
      to erode this company&#x27;s position?
 
+   FOR NARRATIVE/SCARCITY STOCKS (Return driver B, C, E, or F):
+   Also assess NARRATIVE MOAT — a different kind of defence that&#x27;s equally
+   real within our hold period:
+   - Is this company the DEFINITIVE pure-play name for this theme?
+     (When investors want quantum exposure, they buy RGTI. When they want
+     AI government, they buy PLTR. What do they buy for [this theme]?)
+   - How entrenched is the association? (Media mentions, analyst framing,
+     ETF inclusion as a theme representative.) The stronger the brand
+     association, the more durable the capital inflow.
+   - What would it take for a COMPETITOR to steal the &quot;theme stock&quot; label?
+     (A rival IPO? A larger company pivoting into the space? A new pure-play
+     with better metrics?) This is the competitive threat for narrative stocks.
+
 b) BOTTOMS-UP TAM (build from units, not top-down assertions):
    For biotech: prevalence × diagnosis rate × treatment-eligible % ×
    expected price × realistic market share = addressable revenue
@@ -3756,11 +3948,28 @@ b) BOTTOMS-UP TAM (build from units, not top-down assertions):
    For all: What penetration rate does the bull case assume? Is that
    achievable given competition, pricing, and adoption curves?
 
+   FOR NARRATIVE STOCKS (Return driver B):
+   TAM analysis is speculative by nature for pre-revenue companies. Build
+   it honestly but recognise: the market is not pricing this stock on TAM
+   penetration. It&#x27;s pricing it on the BELIEF that the TAM will materialise.
+   The relevant question is: is the TAM credible enough to sustain the
+   narrative? Not: does the TAM justify the current price on a DCF basis?
+
 c) PEAK REVENUE ESTIMATE:
    - What&#x27;s the realistic peak annual revenue if the thesis works?
    - Timeline to peak (years from today)
    - What margin profile at peak? (Gross, operating)
    - What does peak revenue imply for stock price at peer multiples?
+
+   FOR PRE-REVENUE / OPTIONALITY STOCKS:
+   Peak revenue may be 5-10 years away. That&#x27;s fine for TAM context but
+   irrelevant for the 6-18 month hold period return calculation. For these
+   stocks, the more useful question is: &quot;What revenue run-rate does the
+   stock need to reach within 18 months for the market to start pricing
+   it on fundamentals rather than narrative?&quot; That&#x27;s the transition point
+   where our position thesis evolves from narrative expansion to fundamental
+   re-rating — and may be our exit signal if the narrative premium fades
+   before fundamentals take over.
 
 ═══════════════════════════════════════════════════════════════════
 PHASE 5: INDEPENDENT VALUATION INPUTS
@@ -3831,18 +4040,25 @@ easy reference in Prompt 7. For each data point:
   source or &gt;3 months old) / LOW (single source, unverified, or old)
 - Flag CONFLICTS where sources disagree — present both, don&#x27;t choose
 
-SUMMARY OF FINDINGS (3-5 sentences):
-Briefly note what this data collection revealed that the gate analysis
-DIDN&#x27;T have. What&#x27;s genuinely new? Any surprises — positive or negative?
-Does the data CONFIRM or CHALLENGE the gate&#x27;s thesis?
+SUMMARY OF FINDINGS (5-8 sentences):
+
+RETURN DRIVER: [State the primary return driver identified in Phase 0 and
+whether the data supports it, challenges it, or revealed a different driver.]
+
+KEY NEW FINDINGS: What did this DD reveal that the gate screen DIDN&#x27;T have?
+List the 2-4 most important discoveries — positive or negative.
+
+NARRATIVE STATUS (if Phase 3B was conducted): What stage is the narrative in?
+Is capital accelerating? Is scarcity real? State the Phase 3B summary line.
+
+RETURN-DRIVER BEAR CASE: State in one sentence whether the return mechanism
+is INTACT, AT RISK, or BROKEN based on Phase 2g findings.
 
 If the data paints a weaker picture than the gate suggested: SAY SO.
 &quot;The financial baseline reveals [specific concern] that wasn&#x27;t visible in
 the gate&#x27;s analysis.&quot; This is the DD doing its job, not a failure.
 
-If the data confirms the gate&#x27;s view: also say so, but note: &quot;Confirmation
-without new findings means conviction should stay SAME from the gate, not
-increase.&quot;
+If the data confirms the gate&#x27;s view: also say so honestly.
 
 Then STOP. I&#x27;ll review the data foundation before we proceed to Prompt 7
 (adversarial synthesis and verdict).</pre>
@@ -3862,10 +4078,19 @@ Then STOP. I&#x27;ll review the data foundation before we proceed to Prompt 7
 <p>and producing an honest final verdict. This is adversarial work — Claude should</p>
 <p>be trying to find reasons NOT to buy, and only approving if the stock survives</p>
 <p>that scrutiny.</p></div>
-<div class="guidance-note"><p><strong>Time budget:</strong> 8-12 minutes. This is reasoning-intensive with targeted searches</p>
-<p>(2-4) to fill gaps identified during synthesis.</p></div>
-<div class="guidance-note"><p><strong>Conviction Direction Rule:</strong> The DEFAULT outcome is SAME or LOWER conviction</p>
-<p>from the gate. To UPGRADE, Part B must cite a MATERIAL new finding from Prompt 6.</p></div>
+<div class="guidance-note"><p><strong>Time budget:</strong> 10-15 minutes. This is reasoning-intensive with targeted searches</p>
+<p>(2-4) to fill gaps identified during synthesis. The new position management plan</p>
+<p>and return-driver-specific valuation methods add ~3 minutes but produce output</p>
+<p>that directly guides post-entry decisions — worth the investment.</p></div>
+<div class="guidance-note"><p><strong>Conviction is assigned here, not inherited.</strong> The gate produced a PASS/FAIL screen</p>
+<p>with flags. The DD is where conviction is FIRST set based on forensic depth. Be honest —</p>
+<p>the deeper you dig, the more risks you find. That's normal. Low conviction after</p>
+<p>thorough DD is the system working correctly.</p></div>
+<div class="guidance-note"><p><strong>Return driver awareness:</strong> Prompt 6 Phase 0 identified the primary return driver.</p>
+<p>Your valuation methods, bear case weighting, and conviction calibration must all be</p>
+<p>CONSISTENT with that driver. A narrative expansion stock should not be penalised for</p>
+<p>"expensive" traditional multiples. A fundamental re-rating stock should not be given</p>
+<p>credit for "narrative momentum." Use the right lens for the right stock.</p></div>
 <div class="prompt-block" id="prompt-7-adversarial-synthesis-verdict-code-0">
 <div class="prompt-header">
     <span class="prompt-label">📋 Prompt Text — Copy and paste into Claude.ai</span>
@@ -3874,19 +4099,29 @@ Then STOP. I&#x27;ll review the data foundation before we proceed to Prompt 7
 <pre class="prompt-text">Using the data foundation from Prompt 6, produce the adversarial synthesis and
 final verdict for [TICKER].
 
-Your Prompt 5 gate verdict was [X/10]. The DEFAULT outcome of this deep DD is SAME
-or LOWER conviction — not higher. To upgrade conviction, you must point to
-a SPECIFIC finding from Prompt 6 that wasn&#x27;t available at gate stage.
+Prompt 6 identified the PRIMARY RETURN DRIVER as: [A/B/C/D/E/F from Phase 0].
+Your valuation methods, bear case focus, and conviction calibration must be
+CONSISTENT with this return driver. Use the right analytical lens for this stock.
+
+Your Prompt 5 gate screen result was [PASS / PASS WITH FLAGS].
+Gate flags: [list of specific flags, or &quot;CLEAN — no flags&quot;].
+
+This DD is where conviction is FIRST assigned. Be honest — the deeper you
+dig, the more risks you find. Conviction should reflect the TOTALITY of what
+you find, including the gate&#x27;s flagged concerns and any new findings from
+Prompt 6&#x27;s forensic investigation.
 
 ═══════════════════════════════════════════════════════════════════
 STEP 1: INDEPENDENT VALUATION (build BEFORE checking analyst targets)
 ═══════════════════════════════════════════════════════════════════
 
-Using Prompt 6&#x27;s comparable company analysis, precedent transactions, and
-forward projections, build YOUR OWN 12-month price target. Use the methods
-appropriate to this stock&#x27;s valuation regime:
+Using Prompt 6&#x27;s data, build YOUR OWN 12-month price target. Use the methods
+appropriate to this stock&#x27;s RETURN DRIVER (from Phase 0), not just its
+valuation regime label. The return driver determines which methods are
+PRIMARY (driving the target) vs SUPPLEMENTARY (sanity checks).
 
-FOR FUNDAMENTAL REGIME — Triangulate from 2-3 methods:
+═══════════════════════════════════════════════════════════════════
+FOR FUNDAMENTAL RE-RATING (Return Driver A) — Triangulate from 2-3 methods:
 
 METHOD A — PEER-RELATIVE VALUATION:
 Apply the peer median multiple (from Prompt 6&#x27;s comps table) to YOUR forward
@@ -3928,18 +4163,113 @@ probabilities, build a risk-adjusted NPV.
 
 FOR TRANSITION REGIME — Blend fundamental and optionality methods.
 
+═══════════════════════════════════════════════════════════════════
+FOR NARRATIVE EXPANSION (Return Driver B) or SCARCITY (F) — use THESE methods:
+
+Traditional valuation methods (EV/Revenue, EV/EBITDA, DCF) will produce
+targets far below market price for narrative stocks — and that&#x27;s EXPECTED.
+The return comes from capital inflows driven by theme discovery, not from
+fundamental value convergence. Use narrative-specific methods as PRIMARY,
+with traditional methods as a supplementary floor/ceiling check only.
+
+METHOD N1 — THEME MARKET CAP TRAJECTORY:
+What total market cap did the THEME accumulate when a comparable structural
+shift went from niche to consensus? Examples:
+- Quantum computing small-caps: ~$3B combined → ~$30B at peak narrative
+- AI infrastructure small-caps: ~$10B → ~$80B in 18 months
+- Cannabis stocks 2018: ~$5B → ~$50B in 12 months
+
+If [this theme] follows a comparable trajectory, what share does [TICKER]
+capture based on its positioning (pure-play vs diversified, market cap
+rank within theme, narrative strength)?
+
+&quot;If theme market cap expands from $[X]B to $[Y]B and [TICKER] captures
+[Z]% of theme capital (based on pure-play scarcity and positioning),
+implied market cap = $[A]M → price = $[B]&quot;
+
+METHOD N2 — INSTITUTIONAL ADOPTION CURVE:
+At current institutional ownership of [X]%, what happens to price if
+institutional ownership increases to [2X]% (typical for a stock
+transitioning from &quot;unknown&quot; to &quot;institutional favourite&quot;)?
+
+Calculate: additional institutional AUM entering ÷ current float =
+buying pressure. For a $300M float stock, $100M in new institutional
+buying = significant price impact. Model the implied price at the
+absorption rate typical for small-cap discovery cycles (usually 6-12
+months for the transition from &lt;5% specialist ownership to 15-20%).
+
+METHOD N3 — COMPARABLE NARRATIVE PRECEDENT:
+What stock most closely resembles [TICKER] at a similar point in its
+narrative arc? What did that comparable do over the subsequent 12 months?
+
+&quot;[Comparable] was a $[X]M [theme] pure-play with [Y] analysts and [Z]%
+institutional ownership when the narrative broke. It went to $[A]M in
+[B] months (+[C]%). [TICKER] at $[X]M with [Y] analysts has a
+[stronger/weaker/comparable] setup because [specific reasons].&quot;
+
+This is the most powerful method for narrative stocks because it grounds
+speculative upside in observed market behaviour. But be honest about
+differences — every narrative is unique and cherry-picking the best comp
+while ignoring failed narratives is confirmation bias.
+
+METHOD N4 — TRADITIONAL FLOOR (supplementary):
+Run one traditional method (peer-relative or asset value) to establish
+the DOWNSIDE FLOOR — what the stock is worth if the narrative fails
+entirely and the market re-prices it on fundamentals alone. This is
+your max-loss scenario, not your target.
+
+═══════════════════════════════════════════════════════════════════
+FOR MULTIPLE TOLERANCE EXPANSION (Return Driver C):
+
+The stock is already trading at a premium multiple. The question is NOT
+&quot;is it overvalued?&quot; but &quot;does the premium persist or expand?&quot;
+
+METHOD M1 — GROWTH-JUSTIFIED MULTIPLE:
+At what growth rate does the current multiple become justified on a
+3-year forward basis? Calculate: if revenue grows at [X]% for 3 years
+and then the company trades at the SECTOR MEDIAN multiple, what is the
+implied current multiple? If that implied multiple is ABOVE the current
+multiple, the stock is actually CHEAP despite looking expensive.
+
+&quot;At 35% revenue CAGR for 3 years and a terminal 15x EV/EBITDA, the
+growth-justified current EV/EBITDA is 45x. The stock trades at 38x.
+The &#x27;premium&#x27; is actually a DISCOUNT to growth-justified value.&quot;
+
+METHOD M2 — PREMIUM PERSISTENCE ANALYSIS:
+For how long has this stock traded at a premium to peers? If the premium
+has been stable or expanding for 2+ years, the market has structurally
+accepted it — it&#x27;s not a temporary overshoot. If the premium emerged
+in the last 3 months, it may be temporary.
+
+What would cause premium COMPRESSION vs EXPANSION?
+Premium expands if: growth accelerates, new market entry, AI capability
+demonstration, government contract wins.
+Premium compresses if: growth decelerates below [X]%, key customer loss,
+competitive entry by a credible rival.
+
+═══════════════════════════════════════════════════════════════════
+
 VALUATION SYNTHESIS:
 
 | Method | Bear | Base | Bull | Weight |
 |--------|------|------|------|--------|
-| A      | $XX  | $XX  | $XX  | XX%    |
-| B      | $XX  | $XX  | $XX  | XX%    |
-| C      | $XX  | $XX  | $XX  | XX%    |
+| [Primary method for this driver] | $XX  | $XX  | $XX  | XX%    |
+| [Secondary method]               | $XX  | $XX  | $XX  | XX%    |
+| [Supplementary/floor method]     | $XX  | $XX  | $XX  | XX%    |
 | **WEIGHTED** | **$XX** | **$XX** | **$XX** | **100%** |
 
-Weight each method by appropriateness for THIS company. Revenue-stage:
-weight peer-relative and historical higher. Pre-revenue: weight catalyst-
-adjusted and stage-comparable higher.
+Weight each method by appropriateness for THIS stock&#x27;s RETURN DRIVER:
+- Driver A (Fundamental): Peer-relative and historical PRIMARY (60-70%).
+  Acquisition value SECONDARY (20-30%). Narrative methods NOT used.
+- Driver B (Narrative): Theme trajectory and comparable precedent PRIMARY
+  (50-60%). Institutional adoption SECONDARY (20-30%). Traditional floor
+  SUPPLEMENTARY (10-20%). Traditional methods should NOT dominate the target.
+- Driver C (Multiple Tolerance): Growth-justified multiple PRIMARY (50%).
+  Premium persistence SECONDARY (30%). Peer-relative SUPPLEMENTARY (20%).
+- Driver D (Catalyst): Catalyst-adjusted probability PRIMARY (60-70%).
+  Stage comparable SECONDARY (20-30%).
+- Driver E (Convergence): Blend weights from the converging drivers.
+- Driver F (Scarcity): Theme trajectory with scarcity adjustment PRIMARY.
 
 INDEPENDENT 12-MONTH TARGET: $[X.XX] (BASE case, weighted)
 INDEPENDENT RANGE: $[bear] — $[bull]
@@ -4010,31 +4340,67 @@ CRITICAL HONESTY RULES:
   It only works if the bear argument IS about regulatory risk.
 - &quot;The thesis is strong so this risk is acceptable&quot; is circular reasoning.
   The bear case is testing WHETHER the thesis is strong.
+- &quot;It&#x27;s expensive&quot; is NOT automatically a bear case for Driver B/C/F stocks.
+  High multiples are the EXPECTED state for narrative expansion and multiple
+  tolerance plays. The bear case for these stocks is what BREAKS the premium,
+  not the existence of the premium itself.
 - If you CAN&#x27;T DISMANTLE an argument: state it honestly. A CAN&#x27;T DISMANTLE
   that threatens &lt;25% of the thesis is an ACCEPTABLE RISK with a live
   monitor. A CAN&#x27;T DISMANTLE that threatens &gt;50% of the thesis is a
-  POTENTIAL FATAL FLAW that may flip the verdict to NO GO.
+  POTENTIAL FATAL FLAW that may flip the verdict to FAIL.
+
+RETURN-DRIVER BEAR CASE (from Prompt 6 Phase 2g):
+Separately from the traditional bear table, synthesise the threat to the
+RETURN MECHANISM specifically:
+
+&quot;The return driver for this position is [DRIVER TYPE]. The specific threat
+to this mechanism is: [1-2 sentences]. Status: [INTACT / AT RISK / BROKEN].&quot;
+
+This matters because a stock can have unresolved FUNDAMENTAL bear arguments
+(e.g., &quot;no revenue, cash burn, dilution risk&quot;) while its return driver
+(narrative expansion) remains fully intact — those fundamental concerns don&#x27;t
+prevent the stock from making money if capital continues flowing into the
+theme. Conversely, a stock can be fundamentally clean while its return driver
+is broken (the narrative peaked, capital is rotating out).
+
+Weight the verdict toward the return-driver bear case:
+- If the return driver is INTACT and traditional bear case is MODERATE:
+  the stock can still work. Conviction reduction is modest.
+- If the return driver is AT RISK: this directly threatens our profits.
+  Conviction reduction is significant regardless of other factors.
+- If the return driver is BROKEN: FAIL regardless of fundamental quality.
 
 BEAR CASE SEVERITY:
 Rate the overall bear case: WEAK (1-2 minor risks, all dismantled) /
 MODERATE (1+ partially dismantled risk) / STRONG (1+ can&#x27;t dismantle)
+Return driver status: INTACT / AT RISK / BROKEN
 
 ═══════════════════════════════════════════════════════════════════
 STEP 4: FULL DELIVERABLES
 ═══════════════════════════════════════════════════════════════════
 
+RETURN DRIVER: [State the primary return driver from Phase 0 and whether
+the DD confirmed, challenged, or modified it.]
+
 ELEVATOR PITCH: 2-3 sentences — why this stock, why NOW, what&#x27;s the edge.
 Must be specific enough that someone unfamiliar with the stock understands
-the thesis in 10 seconds.
+the thesis in 10 seconds. MUST reference the return driver — how does this
+stock actually make money for us?
 
 WHY NOW: Key catalyst with SPECIFIC date. Not &quot;upcoming catalysts&quot; —
 &quot;PDUFA date March 28&quot; or &quot;Q2 earnings on May 5 with expected beat based
 on channel checks showing X.&quot;
+For narrative stocks: &quot;Narrative is in EARLY DISCOVERY stage with
+institutional adoption accelerating. The 12-month discovery window is open.&quot;
 
 THE MATH (from Step 1):
 Independent 12-month target: $[X.XX] (+[X]% from $[current])
-Method: [1-2 sentences explaining the primary valuation method used]
+Method: [Name the PRIMARY method used and why it&#x27;s appropriate for this
+return driver — e.g., &quot;Peer-relative EV/Revenue (Driver A: fundamental
+re-rating)&quot; or &quot;Theme market cap trajectory (Driver B: narrative expansion)&quot;]
 Sanity check: [Our target vs consensus, and why any gap exists]
+[For Driver B/C/F stocks: &quot;Traditional floor: $[X] if narrative/premium
+collapses. Narrative upside: $[Y] if theme discovery plays out.&quot;]
 
 VARIANT PERCEPTION: What we see that the consensus misses. This is our EDGE.
 If we don&#x27;t have a variant perception — if our view is the same as consensus —
@@ -4043,34 +4409,98 @@ margin of safety. State honestly: &quot;Our view is largely consensus. Edge come
 from [technical entry timing / theme momentum / position sizing discipline].&quot;
 
 KEY ASSUMPTION: The ONE thing that must be true for this to work. If this
-assumption breaks, the thesis breaks. Be specific: not &quot;the company must
-execute well&quot; but &quot;PDUFA approval on March 28 with a clean label&quot; or
-&quot;Revenue must accelerate to $15M/quarter by Q3 to justify the multiple.&quot;
+assumption breaks, the thesis breaks. Be specific and ADAPT TO RETURN DRIVER:
+- Driver A: &quot;Revenue must accelerate to $15M/quarter by Q3 to justify the
+  multiple expansion from 5x to 9x.&quot;
+- Driver B: &quot;The quantum computing narrative must sustain institutional
+  capital inflows through at least Q3 2026. If capital rotates to a new
+  theme before then, the position stalls.&quot;
+- Driver C: &quot;Revenue growth must stay above 30% YoY. Below 25%, the
+  premium multiple compresses to peer levels — a 40% drawdown.&quot;
+- Driver D: &quot;PDUFA approval on March 28 with a clean label.&quot;
 
 BEAR CASE SUMMARY: The strongest argument against, with classification.
 State what remains unresolved and how it affects conviction.
+RETURN DRIVER STATUS: [INTACT / AT RISK / BROKEN from Step 3]
 
 KILL SWITCH: What triggers early exit — specific and measurable.
-NOT &quot;if the thesis breaks&quot; (vague). YES &quot;If [TICKER] loses the $[X]
-level on a weekly close, OR if [specific event] produces [specific
-negative outcome], exit within [timeframe].&quot;
+NOT &quot;if the thesis breaks&quot; (vague). Adapt to return driver:
+- Driver A: &quot;Weekly close below $[X] OR quarterly revenue growth below [Y]%.&quot;
+- Driver B: &quot;Narrative stage shifts to CONSENSUS (discovery premium captured)
+  OR capital flow reverses (ETF outflows, institutional selling) OR a
+  competing pure-play IPOs that breaks the scarcity premium.&quot;
+- Driver C: &quot;Revenue growth decelerates below [X]% for 2 consecutive quarters
+  OR key customer loss representing &gt;[Y]% of revenue.&quot;
+- Driver D: &quot;Catalyst fails OR stock doesn&#x27;t re-rate within [X] days of
+  positive catalyst (priced in).&quot;
 
 DOWNSIDE FLOOR: Where value investors or strategic acquirers step in.
 From Step 1&#x27;s bear-case valuation: $[X.XX] (-[X]% from current).
 Maximum realistic loss over the hold period if thesis fails completely.
+For Driver B stocks: &quot;If narrative collapses and stock reverts to
+fundamental valuation: $[X] (-[Y]%). This is the worst-case scenario,
+not the expected outcome.&quot;
 
 RISK TO MONITOR: The single most important risk with a specific metric
 or date that tells you the risk is materialising.
 
 ACTION: Be specific:
 &quot;Enter at ~$[X.XX]. [Full/Standard/Reduced] position at T[1/2/3].
-Set trailing stop at $[Y.YY] ([basis]).
+Set stop at $[Y.YY] ([basis]).
 Monitor [specific event] on [date].
 [If BINARY_CATALYST: binary sizing modifier, T2 max / T3 max]&quot;
 
 HOLD THESIS: Expected hold period (3-6 / 6-12 / 12-18 months).
 Key milestones that should re-rate the stock over the hold period.
 What triggers early exit (thesis broken) vs what&#x27;s noise (drawdown).
+For Driver B: &quot;Hold as long as narrative is in DISCOVERY phase. Begin
+reducing when narrative reaches CONSENSUS. Exit fully if capital flows
+reverse.&quot;
+
+═══════════════════════════════════════════════════════════════════
+POSITION MANAGEMENT PLAN
+═══════════════════════════════════════════════════════════════════
+
+The best trades aren&#x27;t fully sized on entry — they&#x27;re scaled into as
+the thesis confirms. Our system targets 50-700% returns over 3-18 months;
+scaling allows us to increase conviction with evidence and cut quickly
+when the thesis fails.
+
+SCALING STRATEGY:
+- Initial entry: T[X] at $[entry price]
+- Scale-up trigger: [Specific event or metric that would increase conviction]
+  → Add to T[X+1] if [condition met]. E.g.:
+  &quot;Scale to T2 if Q1 earnings show Enterprise Voice growth &gt;20% AND AI
+  software revenue reaches $15M+ ARR.&quot;
+  &quot;Scale to T1 if 2+ additional stocks fire scanner signals in this theme
+  (wave confirmation) within the next 4 weeks.&quot;
+- Scale-down trigger: [Warning sign that reduces conviction without hitting
+  the kill switch]
+  → Reduce to T[X-1] if [condition met]. E.g.:
+  &quot;Reduce to T3 if insider selling accelerates beyond current levels.&quot;
+  &quot;Reduce if narrative stage advances to CONSENSUS before fundamentals
+  validate — take partial profits on the discovery premium.&quot;
+
+DRAWDOWN TOLERANCE:
+The system&#x27;s historical monsters (RGTI +705%, SMCI +300%+) experienced
+multiple 20-30% drawdowns during the hold period. State explicitly which
+drawdowns are NOISE vs SIGNALS for this position:
+- NOISE (hold through): [E.g., &quot;Broad market selloff of 5-10% in a RISK-ON
+  regime. Sector rotation out of tech temporarily. VIX spike without
+  thesis-damaging catalyst.&quot;]
+- SIGNAL (evaluate reducing): [E.g., &quot;Company-specific bad news. Insider
+  selling acceleration. Narrative competitor emergence. Revenue miss.&quot;]
+
+PARTIAL PROFIT TARGETS:
+- At +50%: [Take partial / Hold full — and why. E.g., &quot;Hold full —
+  thesis is only beginning to play out if narrative is still in EARLY
+  DISCOVERY.&quot; Or: &quot;Take 25% — fundamental re-rating to peer median is
+  largely complete; remaining upside is speculative.&quot;]
+- At +100%: [E.g., &quot;Take 30-50% to lock in base return. Let remainder
+  run with trailing stop.&quot;]
+- At +200%: [E.g., &quot;Trail stop aggressively. This is monster-winner
+  territory. Don&#x27;t sell the full position into strength — but protect
+  the majority of the gain.&quot;]
 
 ═══════════════════════════════════════════════════════════════════
 STEP 5: CONVICTION &amp; VERDICT
@@ -4078,57 +4508,64 @@ STEP 5: CONVICTION &amp; VERDICT
 
 CONVICTION DIRECTION CHECK — complete this before stating your verdict:
 
-Prompt 5 gate verdict was: [X]/10 [STRONG BUY / BUY / SPEC BUY]
+Prompt 5 gate result: [PASS / PASS WITH FLAGS]
 Gate price: $[X.XX] | Current price: $[X.XX] | Change: [+/-X%]
+Gate flags for DD: [List the specific flags from the gate screen]
 
-Did Part A surface ANY material new finding not available at gate?
-- If YES (positive): Name it specifically. This may justify SAME or
-  +1 conviction. &quot;Part A revealed [specific finding] which strengthens
-  the thesis because [reason].&quot;
-- If YES (negative): Name it specifically. This justifies -1 or more
-  conviction. &quot;Part A uncovered [specific risk] which the gate couldn&#x27;t
-  see because [reason].&quot;
-- If NO new material findings: Conviction stays SAME as gate.
-  &quot;DD confirmed the gate&#x27;s analysis with more depth but no material
-  new findings. Conviction unchanged at [X]/10.&quot;
+Did the DD surface ANY material new finding beyond the gate&#x27;s flags?
+- If YES (positive): Name it specifically. This strengthens the thesis.
+  &quot;DD revealed [specific finding] which the gate screen couldn&#x27;t see.&quot;
+- If YES (negative): Name it specifically. This weakens the thesis.
+  &quot;DD uncovered [specific risk] beyond the gate&#x27;s identified bear case.&quot;
+- If NO new material findings beyond investigating the gate&#x27;s flags:
+  The DD confirmed what the gate flagged. Note whether the gate&#x27;s flags
+  proved more or less serious than the initial severity estimate.
 
 PRICE ANCHORING (if price moved &gt;10% since gate):
 - Stock ROSE &gt;10%: Risk/reward deteriorated. Default: DECREASE conviction
-  by 1 UNLESS Part A surfaced a material positive finding that offsets
-  the worse entry. &quot;Thesis unchanged&quot; is NOT sufficient to maintain
-  conviction at a worse price.
+  by 1 UNLESS the DD surfaced a material positive finding that offsets
+  the worse entry.
 - Stock FELL &gt;10%: Risk/reward improved. May INCREASE conviction by 1
   IF the decline was NOT thesis-damaging (broad selloff, not company news).
-  If decline IS thesis-related, DECREASE despite better price.
 - Stock moved &lt;10%: No price-driven adjustment.
+
+RETURN DRIVER INTEGRITY:
+- Is the return driver from Phase 0 still INTACT after the full DD?
+- If INTACT: conviction calibrates normally based on findings.
+- If AT RISK: reduce conviction by 1-2 points regardless of other factors.
+  The mechanism by which we make money is threatened.
+- If BROKEN: FAIL. The thesis may be intellectually interesting but the
+  market mechanism for capturing the return is impaired.
 
 FINAL VERDICT:
 
-STRONG BUY (conviction 8-10):
-No disqualifiers, independent math to 50%+, bear case weak or dismantled,
-entry timing clean or elevated, material positive finding from DD.
-→ Advance at FULL position size
+PASS (conviction 6-10):
+The stock survives forensic scrutiny. The return driver is INTACT. Math
+confirms sufficient upside through the appropriate method for this driver.
+Bear case investigated and either dismantled or classified as acceptable risk.
+No fatal flaws discovered beyond the gate&#x27;s flags.
 
-BUY (conviction 6-7):
-Thesis intact, math works, but meaningful concerns remain (partially
-dismantled bear case, moderate dilution, single catalyst dependency).
-→ Advance at STANDARD position size (T2)
+Conviction determines sizing:
+- 8-10: FULL position (T1). Return driver intact, bear case weak, math
+  compelling through primary valuation method. High confidence.
+- 6-7: STANDARD position (T2). Return driver intact but meaningful concerns
+  remain (partially dismantled bear case, return-driver risk identified,
+  or traditional metrics at odds with narrative thesis).
+- 4-5: REDUCED position (T3). Return driver intact but multiple unresolved
+  concerns. Bear case moderate to strong. Math works but with wider error bars.
+  Position is a probe that scales up only on thesis confirmation.
 
-SPEC BUY (conviction 4-5):
-Thesis has merit but multiple unresolved concerns. Bear case moderate
-to strong. Math works but with wider error bars.
-→ Advance at REDUCED position size (50%)
+[If BINARY_CATALYST: cap at T2 max regardless of conviction — bimodal outcome
+distribution requires smaller sizing. State: &quot;Binary modifier: T2 max.&quot;]
+[If PURE BINARY: cap at T3 AND require PRIME theme (7.5+). Below PRIME → FAIL.]
 
-NO GO (conviction 1-3):
-Part A revealed a fatal flaw the gate missed. Bear case can&#x27;t be
-dismantled and threatens the majority of the thesis. Math doesn&#x27;t work
-at current price. Or: conviction decreased enough through DD that the
-stock no longer justifies capital allocation.
+FAIL (conviction 1-3):
+DD revealed a fatal flaw the gate screen missed. Return driver is BROKEN
+or AT RISK with no mitigation path. Bear case can&#x27;t be dismantled and
+threatens the majority of the thesis. Math doesn&#x27;t work through the
+appropriate method for this stock&#x27;s return driver. Or: the accumulation
+of concerns means the stock no longer justifies capital allocation.
 → Stop. State the specific fatal flaw AND what would flip the verdict.
-
-[If BINARY_CATALYST: state sizing modifier separately from conviction]
-[If verdict CHANGED from gate: explain specifically what DD found that
-shifted it — which Part A phase produced the finding]
 
 Then STOP. I may challenge your bear case, stress-test the valuation,
 ask for a head-to-head comparison, or accept and proceed to the CRO
@@ -4137,72 +4574,75 @@ review (Prompt 8) after all DDs are complete.</pre>
 <div class="section-text">
 <p>---</p>
 
-<h3>OPERATOR NOTES: REVIEWING PROMPT 3 OUTPUT</h3>
+<h3>OPERATOR NOTES: REVIEWING DD OUTPUT</h3>
 
-<h4>Reviewing Part A</h4>
+<h4>Reviewing Prompt 6 (Data Foundation)</h4>
 
 <p>The data foundation is only useful if it's HONEST. Watch for:</p>
 
-<p><strong>1. Is the financial baseline complete?</strong></p>
-<p>Check that the revenue table has 8 quarters (not 4), margins are reported</p>
-<p>(not skipped), and cash position includes dilution pipeline. Gaps in the</p>
-<p>baseline mean Prompt 7's valuation will be built on incomplete data.</p>
+<p><strong>1. Is the return driver correctly identified?</strong></p>
+<p>Phase 0 should produce a clear classification (A through F) that matches your
+intuition about why this stock will make money. If Claude classified a pre-revenue
+quantum computing stock as "FUNDAMENTAL RE-RATING" — push back. If it classified
+BAND (0.7x revenue, 16% growth) as "NARRATIVE EXPANSION" when the thesis is
+clearly valuation-gap-driven — push back. Getting the return driver right
+determines whether all subsequent analysis uses the correct lens.</p>
 
-<p><strong>2. Did the bear case forensics find ANYTHING new?</strong></p>
-<p>If Prompt 6's Phase 2 is just a restatement of the gate's bear case with</p>
-<p>better prose, the DD hasn't earned its search budget. Push back: "Your</p>
-<p>bear case forensics found nothing the gate didn't already identify.</p>
-<p>Search specifically for [ticker] short thesis on Twitter/X and [ticker]</p>
-<p>seeking alpha bear case. What are the bears actually saying?"</p>
+<p><strong>2. Was Phase 3B conducted when needed?</strong></p>
+<p>For Driver B/C/E/F stocks, Phase 3B (Narrative & Capital Flow) is the most
+important new phase. Check that it was completed with real data: narrative stage
+assessment, capital flow direction, scarcity count, durability estimate. If it
+was skipped or superficial for a narrative stock, the DD is incomplete.</p>
 
-<p><strong>3. Are the valuation inputs INDEPENDENT?</strong></p>
-<p>Check that the comps table was actually researched (specific peer names,</p>
-<p>specific multiples) and that the forward projections are built from the</p>
-<p>company's own data — not from analyst estimates. The whole point of Phase 5</p>
-<p>is to build an anchor BEFORE seeing analyst targets.</p>
+<p><strong>3. Did the bear case forensics find ANYTHING new?</strong></p>
+<p>If Prompt 6's Phase 2 is just a restatement of the gate's bear case with
+better prose, the DD hasn't earned its search budget. Push back: "Your
+bear case forensics found nothing the gate didn't already identify.
+Search specifically for [ticker] short thesis on Twitter/X and [ticker]
+seeking alpha bear case. What are the bears actually saying?"</p>
 
-<h4>Reviewing Part B</h4>
+<p><strong>4. Did Phase 2g (return-driver bear case) identify the RIGHT threat?</strong></p>
+<p>For a Driver B stock, the return-driver bear case should focus on narrative
+durability and capital flow risk — not on "no revenue" or "expensive multiples."
+For a Driver C stock, it should focus on what breaks the premium — not on the
+premium itself. If the return-driver bear case is misaligned with the actual
+return mechanism, the DD is investigating the wrong risks.</p>
 
-<p><strong>1. Does the independent target make sense?</strong></p>
-<p>Check the math. If Claude's target is $15 based on peer-relative valuation,</p>
-<p>verify: what peer multiple was used, what forward estimate was it applied to,</p>
-<p>and is that estimate justified by the Phase 1 data? A target that can't be</p>
-<p>reverse-engineered from the supporting data is suspect.</p>
+<h4>Reviewing Prompt 7 (Verdict)</h4>
 
-<p><strong>2. Is the analyst divergence analysis honest?</strong></p>
-<p>If Claude's target is $12 and consensus is $25, there should be a clear</p>
-<p>explanation of WHY — and it should be one of: (a) we're more conservative</p>
-<p>on revenue growth because [data], (b) we use a lower multiple because</p>
-<p>[reason], (c) we assign lower catalyst probabilities because [base rate].</p>
-<p>If the explanation is vague, the independent target may actually be anchored</p>
-<p>to the analyst range despite the process design. Push back.</p>
+<p><strong>1. Are the valuation methods matched to the return driver?</strong></p>
+<p>This is the single most important check. If the return driver is NARRATIVE
+EXPANSION but the valuation uses peer-relative EV/Revenue as primary — the
+target will be too low and the stock may get a FAIL verdict on what could be
+the next RGTI. Conversely, if the driver is FUNDAMENTAL RE-RATING but narrative
+methods are primary — the target may be inflated by speculative upside that
+the thesis doesn't actually depend on.</p>
 
-<p><strong>3. Is the conviction direction honest?</strong></p>
-<p>If conviction INCREASED from the gate, check the stated justification.</p>
-<p>Valid upgrades require a MATERIAL new finding — "previously unknown</p>
-<p>institutional accumulation by [named specialist fund]" or "competitor</p>
-<p>[name] withdrew from [indication] eliminating key competitive threat."</p>
-<p>Invalid upgrades: "the thesis is even stronger than I thought" (just</p>
-<p>restating the bull case), "management sounds confident" (assertion),</p>
-<p>"the market is undervaluing this" (circular).</p>
+<p><strong>2. Does the position management plan make sense?</strong></p>
+<p>Check the scale-up and scale-down triggers. They should be specific, measurable
+events — not vague ("if thesis confirms"). Good: "Scale to T2 if Q1 Enterprise
+Voice growth >20%." Bad: "Scale up when we feel more confident."</p>
 
-<h4>When to Run Part A in Research Mode</h4>
+<p><strong>3. Is the conviction calibrated to the return driver status?</strong></p>
+<p>If the return driver is AT_RISK, conviction should be 4-5 at most (T3). If
+BROKEN, the verdict should be FAIL. If INTACT, conviction should reflect the
+quality of the setup through the appropriate analytical lens.</p>
 
-<p>Research mode is genuinely better for Part A when:</p>
+<h4>When to Run Prompt 6 in Research Mode</h4>
+
+<p>Research mode is genuinely better for Prompt 6 when:</p>
 <ul>
 <li>The company is complex (multiple business segments, holding company structure)</li>
-<li>The competitive landscape requires researching 3-5 peers in detail</li>
+<li>Phase 3B requires extensive narrative research (multiple theme searches)</li>
 <li>The bear case requires deep forensic investigation (insider filing patterns,</li>
 </ul>
 <p>  litigation history, regulatory correspondence)</p>
 <ul>
 <li>You want the financial baseline to include 8 quarters of segmented revenue</li>
 </ul>
-<p>  (this requires finding multiple quarterly earnings releases)</p>
 
-<p>For simpler companies (single product, clear thesis, limited competitive set),</p>
-<p>Extended Thinking in the main session is sufficient and avoids the context</p>
-<p>fragmentation of switching to a side chat.</p>
+<p>For simpler companies (single product, clear thesis, limited competitive set),
+Extended Thinking in the main session is sufficient.</p>
 
 <h4>The Exception Path (Prompt 9)</h4>
 
@@ -4409,50 +4849,61 @@ VERDICT for each flagged stock:
 - UPGRADE NOT JUSTIFIED: [explain why] → recommend REVERTING to gate conviction
 
 ═══════════════════════════════════════════════════════════════════
-REVIEW 4: VALUATION INDEPENDENCE AUDIT
+REVIEW 4: VALUATION INDEPENDENCE &amp; METHOD APPROPRIATENESS AUDIT
 ═══════════════════════════════════════════════════════════════════
 
 Prompt 7 was designed to build an INDEPENDENT valuation before checking
-analyst targets. Verify this actually happened correctly:
+analyst targets, using methods appropriate to the stock&#x27;s RETURN DRIVER.
+Verify both independence and method selection:
 
 For each stock:
 
-a) INDEPENDENT TARGET: What was the target from Prompt 7 Step 1?
-   Method(s) used: [peer-relative / historical multiple / catalyst-adjusted / rNPV]
+a) RETURN DRIVER CONSISTENCY:
+   Did Prompt 7 use valuation methods appropriate for the return driver
+   identified in Prompt 6 Phase 0?
+   - Driver A (Fundamental): Should use peer-relative, historical multiple,
+     acquisition value as PRIMARY. If narrative methods were used as primary,
+     the valuation may overstate upside.
+   - Driver B (Narrative): Should use theme trajectory, comparable narrative
+     precedent, institutional adoption as PRIMARY. If traditional EV/Revenue
+     methods drove the target, the valuation may UNDERSTATE upside or produce
+     a FAIL verdict on a stock that would have been RGTI.
+   - Driver C (Multiple Tolerance): Should use growth-justified multiple
+     and premium persistence as PRIMARY. If the DD penalised the stock for
+     &quot;expensive&quot; multiples without assessing whether the premium is structural,
+     the analysis missed the point.
+   Flag any mismatch: &quot;DD used peer-relative valuation as primary for a
+   Driver B (narrative) stock — methods are mismatched. The $12 target
+   reflects fundamental value, not narrative re-rating potential.&quot;
+
+b) INDEPENDENT TARGET: What was the target from Prompt 7 Step 1?
+   Method(s) used and weights: [method — weight%]
    Target: $[X.XX] (+[X]% from entry price)
 
-b) ANALYST CONSENSUS: What did the Step 2 sanity check find?
+c) ANALYST CONSENSUS: What did the Step 2 sanity check find?
    Consensus: $[X.XX]
    Gap: [Our target is X% above/below consensus]
 
-c) INDEPENDENCE CHECK:
+d) INDEPENDENCE CHECK:
    - Did the independent target land suspiciously close to consensus (within 10%)?
-     If yes, this isn&#x27;t necessarily wrong — but verify: are the ASSUMPTIONS truly
-     independent? If our peer multiple, growth rate, and timeline assumptions
-     closely mirror what analysts are using, we haven&#x27;t built independent conviction.
-     We&#x27;ve just reconstructed consensus with extra steps.
+     Verify: are the ASSUMPTIONS truly independent?
    - Did the independent target diverge significantly from consensus (&gt;30%)?
-     If yes and OUR target is HIGHER: are we being more aggressive than professionals
-     who cover this stock full-time? What do we see that they don&#x27;t? The variant
-     perception must be specific and defensible.
-     If yes and OUR target is LOWER: good — we may be more conservative. Is our
-     conservatism driven by genuine risk assessment or by anchoring to the bear case?
+     Is the divergence explained by return-driver-appropriate analysis?
+     For Driver B stocks: &quot;Our narrative trajectory target of $35 vs consensus
+     $18 reflects the theme discovery premium that consensus isn&#x27;t modelling.&quot;
 
-d) ANCHORING RED FLAG:
-   Did the DD output mention specific analyst price targets (e.g., &quot;$200 from
-   Canaccord,&quot; &quot;$70 from HC Wainwright&quot;) BEFORE presenting the independent
-   valuation? If yes, the independent process may have been contaminated by
-   anchoring. Flag this and assess whether the independent target was truly
-   built bottoms-up.
+e) ANCHORING RED FLAG:
+   Did the DD output mention specific analyst price targets BEFORE presenting
+   the independent valuation? If yes, flag potential contamination.
 
-For each stock, rate valuation independence:
-- GENUINELY INDEPENDENT: Target built from own data, diverges from or converges
-  with consensus for stated reasons
-- LIKELY ANCHORED: Target suspiciously close to consensus without clear
-  independent methodology, or analyst targets appeared before independent work
-- INSUFFICIENT: No independent valuation was built (reverted to analyst targets)
-  → Recommend re-running Prompt 7 Step 1 with explicit instruction to ignore
-  analyst targets
+For each stock, rate valuation:
+- GENUINELY INDEPENDENT + APPROPRIATE METHODS: Target built from own data
+  using methods matched to return driver
+- GENUINELY INDEPENDENT + MISMATCHED METHODS: Target is independent but
+  uses wrong analytical lens for this stock type → recommend re-evaluating
+  with appropriate methods
+- LIKELY ANCHORED: Target suspiciously close to consensus
+- INSUFFICIENT: No independent valuation built
 
 ═══════════════════════════════════════════════════════════════════
 REVIEW 5: BEAR CASE QUALITY AUDIT
@@ -4499,6 +4950,31 @@ For each stock, rate bear case handling:
 - WEAK: Strawman bear case, assertion-driven rebuttal, or unresolved risks that
   didn&#x27;t reduce conviction. → Recommend re-running the bear case challenge prompt
   or reducing conviction by 1-2 points.
+
+d) RETURN DRIVER INTEGRITY CHECK:
+   Did the DD correctly identify and assess the RETURN DRIVER from Phase 0?
+
+   - Was the bear case focused on the RIGHT threat? For a Driver B (narrative)
+     stock, did the bear case investigate narrative durability and capital flow
+     sustainability — or did it only investigate traditional fundamental risks
+     that don&#x27;t threaten the actual return mechanism?
+   - Was the return driver status (INTACT/AT_RISK/BROKEN) honestly assessed?
+     An AT_RISK status should have reduced conviction. A BROKEN status should
+     have produced a FAIL verdict.
+   - For Driver B/C stocks specifically: did the DD penalise the stock for
+     &quot;expensive&quot; traditional multiples? If yes, and the return driver is
+     narrative expansion or multiple tolerance, this penalty is MISAPPLIED.
+     &quot;Expensive&quot; is the expected state, not a bear case. Flag this.
+   - Was Phase 3B (Narrative &amp; Capital Flow) conducted when required? If the
+     return driver was B/C/E/F and Phase 3B was skipped, the DD is incomplete.
+
+   For each stock, rate return driver analysis:
+   - CORRECTLY MATCHED: Right driver identified, right bear case focus, right
+     valuation methods, conviction calibrated to driver status
+   - PARTIALLY MATCHED: Right driver identified but analysis partially used
+     wrong lens (e.g., penalised narrative stock on fundamental metrics)
+   - MISMATCHED: Wrong driver or analysis defaulted to fundamental lens
+     regardless of driver → recommend re-evaluating conviction
 
 ═══════════════════════════════════════════════════════════════════
 REVIEW 6: PORTFOLIO CONSTRUCTION
@@ -4651,9 +5127,9 @@ For each stock that passed DD, issue one of:
 SESSION SUMMARY TABLE
 ═══════════════════════════════════════════════════════════════════
 
-| Stock | Theme (1B Score) | Wave Strength | Archetype | Gate → DD Conviction | Bear Case | Valuation Independence | CRO Verdict |
-|-------|-----------------|--------------|-----------|---------------------|-----------|----------------------|-------------|
-| ...   | [name] (X.XX)   | POWERFUL/CONFIRMED/etc | X/7 FIT/DRIFT | X → X (↑↓→) | RIG/ADQ/WEAK | INDEP/ANCHORED | ✅⚠️❌ |
+| Stock | Theme (Score) | Wave | Driver | Archetype | Gate → DD Conv | Bear Case | Val. Methods | CRO Verdict |
+|-------|--------------|------|--------|-----------|---------------|-----------|-------------|-------------|
+| ...   | [name] (X.XX) | POW/CONF/etc | A/B/C/D/E/F | X/7 FIT/DRIFT | PASS → X/10 | RIG/ADQ/WEAK | MATCH/PARTIAL | ✅⚠️❌ |
 
 OVERALL SESSION QUALITY:
 Rate: STRONG / GOOD / ADEQUATE / WEAK
@@ -5482,7 +5958,9 @@ For any EXIT recommendation, also say:
     <div class="section-body collapsible">
         <div class="guidance-note">
 <p><strong>When:</strong> After Prompt 8 (and 9/10 if triggered). Final content prompt before Prompt 12 export.</p>
-<p><strong>Key rule:</strong> TEASE midweek content — don't deliver the full analysis. Announce signals with 2-3 sentence pitches, name themes with scores, then say "Full deep dive Tuesday" and "Sector analysis Wednesday." This creates reasons to return.</p>
+<p><strong>Key change (v2):</strong> The newsletter is now FORWARD-LOOKING. It leads with what's happening next week — catalysts, events, data releases — especially those affecting tickers we hold. The screening results and portfolio update support the forward view. Signal names are NEVER revealed — only the sector/theme is hinted at, with a promise that the full trade alert drops Sunday.</p>
+<p><strong>Structure shift:</strong> OLD: Funnel → Signals (named) → Themes → Portfolio → Coming This Week. NEW: Week Ahead (catalysts) → Portfolio Update → Signal Hint (sector only) → Themes → Funnel → Sunday Preview.</p>
+<p><strong>Why:</strong> The old newsletter front-loaded what happened (backward-looking). Readers had already seen signal announcements by Saturday. The new format gives readers a reason to open the email: "What do I need to know for next week?" The signal hint creates genuine anticipation for Sunday's trade alert.</p>
 <p><strong>Output:</strong> <code class="inline">newsletter.html</code> + one companion Substack Note. White background HTML.</p>
 </div>
 <div class="prompt-block" id="prompt-11-newsletter-html-code-0">
@@ -5498,11 +5976,19 @@ Use the decisions we made in this session for all content.
 FRESHNESS CHECK: Use web search to get current prices for:
 - SPY, QQQ, IWM &mdash; current price and weekly/YTD performance
 - VIX current level
-- Any portfolio positions we discussed &mdash; recalculate P&amp;L if prices moved
+- All portfolio positions &mdash; recalculate P&amp;L if prices moved since session start
 
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+Also web search for NEXT WEEK&#x27;S CALENDAR:
+- Economic data releases (CPI, PPI, jobs, GDP, Fed minutes) with exact dates
+- Earnings dates for any ticker in our portfolio or watchlist
+- Fed speeches or FOMC-related events
+- Congressional hearings, regulatory decisions, or policy votes relevant to our themes
+- Sector-specific events: FDA decision dates, DOE funding, DOD contract awards
+- Any options expiration, index rebalancing, or quad witching dates
+
+=================================================================
 MARKETING RULES
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+=================================================================
 
 Signal branding: &quot;GREEN signal&quot; only. NEVER: TEAL, PASS, VIOLET, AMBER, STRONG BUY, SPEC BUY, NO GO.
 
@@ -5525,50 +6011,113 @@ Portfolio display (HONEST TRANSPARENCY):
   thesis intact.&quot; NEVER say &quot;loss&quot;, &quot;stopped out&quot;, &quot;down&quot; as framing.
 - Show ALL positions in the portfolio table.
 
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
-NEWSLETTER STRUCTURE &mdash; &quot;THE WEEKLY SCREENING&quot; (1,200-1,500 words)
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+=================================================================
+NEWSLETTER STRUCTURE &mdash; &quot;THE WEEKLY SCREENING&quot; (1,200-1,800 words)
+=================================================================
 
-Before writing, decide: What is the strongest story? Lead with it.
+Before writing, decide: What is the most important thing a reader needs to
+know heading into next week? Lead with it.
 
-TITLE: &quot;The Weekly Screening &mdash; Week [N]: [2-4 word hook]&quot;
+TITLE: &quot;The Weekly Screening &mdash; Week [N]: [2-4 word forward-looking hook]&quot;
+Examples:
+- &quot;The Weekly Screening &mdash; Week 12: CPI Tuesday, Eyes on Defence&quot;
+- &quot;The Weekly Screening &mdash; Week 12: Earnings Season Begins&quot;
+- &quot;The Weekly Screening &mdash; Week 12: New Signal Incoming&quot;
 
-1. Market Context &mdash; 2-3 sentences. SPY/QQQ/IWM, VIX, key events. Brief.
+── SECTION 1: THE WEEK AHEAD (lead section &mdash; this is why readers open the email)
 
-2. The Screening Funnel &mdash; Scanned &#x2192; passed &#x2192; theme-confirmed &#x2192; GREEN.
-   &quot;1,817 stocks screened. 3 survived.&quot; Include [SCAN_FUNNEL] placeholder.
+Open with: &quot;Here&#x27;s what matters next week.&quot;
 
-3. Themes This Week &mdash; Top 2-3 themes. Name, score, 1-2 sentences ONLY.
-   DO NOT deep-dive &mdash; tease it: &quot;Defence scored 8.4/10. We break down the
-   ETF flows and institutional positioning on Wednesday.&quot;
-   Include [THEME_SCORES] placeholder.
+Present the 5-8 most important events that could move our portfolio or the
+broader market. For EACH event:
+- Exact date and time (ET) if known
+- What it is and why it matters
+- Which of our holdings (if any) are directly affected
+- What to watch for (the number or outcome that changes the picture)
 
-4. New GREEN Signals &mdash; Per signal:
-   - Ticker, price, company, theme. 2-3 sentence pitch MAXIMUM.
-   - &quot;Full deep dive with price targets drops Tuesday.&quot;
-   - Include [CHART: TICKER]
-   If NO signals: &quot;Why We Passed&quot; &mdash; what came close, what failed, why
-   patience is the system working.
+Format as a visual calendar/timeline &mdash; not a paragraph. Use styled HTML cards
+or a table with dates in the left column and events in the right. This section
+should feel like a professional briefing, not a blog post.
 
-5. Portfolio &mdash; ALL positions in a table: Ticker | Entry | Current | P&amp;L% |
-   Theme | Days. Lead with strongest. Acknowledge any under pressure.
-   Include [WINNERS_TABLE] placeholder.
+If a portfolio ticker has earnings next week, flag it prominently:
+&quot;⚡ $ETON reports Tuesday after close. Consensus: $X revenue. Our thesis
+depends on [specific metric]. We&#x27;re watching for [specific outcome].&quot;
 
-6. Benchmark Check &mdash; Portfolio vs SPY vs QQQ. One sentence.
+── SECTION 2: PORTFOLIO UPDATE
 
-7. Coming This Week &mdash; Preview midweek content specifically:
-   &quot;Tuesday: Deep Dive on $ASTS &mdash; full valuation and price targets&quot;
-   &quot;Wednesday: Sector Watch &mdash; why Defence capital flows are accelerating&quot;
-   &quot;Thursday: [Deep Dive / The Edge: topic]&quot;
+&quot;Here&#x27;s where we stand heading into the week.&quot;
 
-8. Looking Ahead &mdash; 3-5 specific catalysts next week (web search).
+ALL positions in a table: Ticker | Entry | Current | P&amp;L% | Theme | Days Held
+Lead narrative with the strongest performer. Acknowledge any under pressure.
+One sentence on portfolio vs SPY vs QQQ (alpha or underperformance &mdash; be honest).
 
-9. Footer &mdash; &quot;Every GREEN signal, every entry, every exit &mdash; before Monday&#x27;s
-   open: https://sterlingsignals.substack.com&quot;
+Include [WINNERS_TABLE] placeholder.
 
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+── SECTION 3: SIGNAL PREVIEW (only if this session produced GREEN signals)
+
+⛔ CRITICAL: Do NOT name the ticker. Only hint at the sector/theme.
+
+If signals exist:
+&quot;This week&#x27;s screening found [N] stock(s) that cleared all gates. [It sits /
+They sit] in the [THEME NAME] space &mdash; a sector we&#x27;ve been tracking since [context].
+
+Full trade alert with entry price, valuation, and price targets drops tomorrow
+(Sunday). Don&#x27;t miss it.&quot;
+
+This creates genuine anticipation. The reader must come back Sunday to learn
+which stock. If you name the ticker here, the Sunday trade alert loses its hook.
+
+If NO signals:
+&quot;1,817 stocks scanned this week. None cleared all gates. That&#x27;s the system
+working &mdash; selectivity IS the edge. We break down what came close and why we
+passed in Wednesday&#x27;s Investor Lessons.&quot;
+
+Include [SCAN_FUNNEL] placeholder either way &mdash; the funnel visual is core brand.
+
+── SECTION 4: THEMES THIS WEEK
+
+Top 2-3 themes by score. For each:
+- Theme name and score (e.g., &quot;Defence Technology: 8.4/10&quot;)
+- One sentence on why it scored well &mdash; specific catalyst or flow
+- Tease midweek content: &quot;Full sector analysis in Tuesday&#x27;s Sector Watch.&quot;
+
+DO NOT deep-dive any theme here. These are 2-3 sentence teasers only.
+
+Include [THEME_SCORES] placeholder.
+
+── SECTION 5: THE SCREENING &mdash; THIS WEEK&#x27;S FUNNEL
+
+&quot;Every week, our system screens [N] stocks across [N] themes. Here&#x27;s this
+week&#x27;s pipeline.&quot;
+
+Scanned &#x2192; passed technical gates &#x2192; theme-confirmed &#x2192; GREEN signal.
+Include the rejection stats &mdash; &quot;99.7% eliminated&quot; is powerful branding.
+
+This section is shorter than in the old format &mdash; the funnel is a brand element,
+not the lead story anymore.
+
+── SECTION 6: WHAT&#x27;S COMING THIS WEEK (specific content preview)
+
+&quot;Here&#x27;s what we&#x27;re publishing this week:&quot;
+
+| Day | Content |
+|-----|---------|
+| Sunday | 🟢 Trade Alert &mdash; full analysis on this week&#x27;s signal (or: Portfolio Spotlight on $TICKER) |
+| Tuesday | Sector Watch: [Theme Name] |
+| Wednesday | Investor Lessons: [Topic hint] |
+| Thursday | Tools &amp; Tech: [Tool] (carousel in Notes) |
+
+Be specific. Name the theme, hint at the lesson topic, name the tool.
+This gives readers 4 reasons to come back next week.
+
+── SECTION 7: FOOTER
+
+&quot;Every GREEN signal, every entry, every exit &mdash; before Monday&#x27;s open:
+https://sterlingsignals.substack.com&quot;
+
+=================================================================
 HTML FORMAT &mdash; WHITE BACKGROUND
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+=================================================================
 
 Complete self-contained HTML with all styles in a &lt;style&gt; block.
 
@@ -5578,28 +6127,38 @@ Complete self-contained HTML with all styles in a &lt;style&gt; block.
 - Section dividers: 1px solid #e8e4df
 
 Components:
+- Week Ahead calendar: styled cards with date badges (#f4f7fa bg, #3d5a80 left
+  border for general events, #dc2626 border for portfolio-affecting events,
+  #16a34a border for earnings we hold)
 - Stat cards: inline-block #f8f7f5, 28px bold number, 12px uppercase label
-- Screening funnel: stepped bars, green&#x2192;amber&#x2192;red left borders (680px screenshot-friendly)
+- Screening funnel: stepped bars, green&#x2192;amber&#x2192;red left borders
 - Theme cards: teal (#0d9488) left border, #f0fdfa bg, score + one-line thesis
 - Portfolio table: #f8f7f5 header, #fafaf8 alt rows, green/red P&amp;L column
-- Signal cards: #f8fafc bg, 4px solid #16a34a left border, ticker prominent
+- Signal preview: #fef9e7 bg (warm hint), dashed border, no ticker named
 - Coming This Week: #fafaf8 bg, light left border, day + topic
 
-VOICE: Confident weekly briefing. Numbers first. Honest about red positions.
-No filler paragraphs. No medical metaphors. Contractions. Varied sentence
-length. End on what&#x27;s ahead, not a summary.
+VOICE: Forward-looking weekly briefing. &quot;Here&#x27;s what matters next week&quot; not
+&quot;Here&#x27;s what happened this week.&quot; Numbers first. Honest about red positions.
+No filler. Contractions. The reader should finish this thinking &quot;I need to
+check back Sunday and Tuesday.&quot;
 
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+=================================================================
 COMPANION NOTE
-&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+=================================================================
 
 Also produce ONE companion Substack Note (150-280 words) for the Notes feed.
 
-- Lead with the portfolio&#x27;s strongest number (biggest winner, alpha vs benchmark,
-  or screening rejection rate)
-- ONE data point that makes a reader think &quot;I need the full thing&quot;
-- End with: &quot;Full breakdown in this week&#x27;s newsletter.&quot;
-- Then: &quot;Not financial advice. Informational only.&quot;
+Lead with the strongest forward-looking hook:
+- &quot;CPI drops Tuesday. $ETON reports Wednesday. And we have a new signal in the
+  defence space. Here&#x27;s what to watch.&quot;
+- &quot;1,817 screened. [N] survived. Trade alert drops tomorrow. Full preview in
+  today&#x27;s newsletter.&quot;
+- &quot;Portfolio at +34% vs SPY +12%. Plus: what&#x27;s coming next week and why it matters.&quot;
+
+Do NOT name signal tickers in the note either &mdash; maintain the Sunday reveal.
+
+End with: &quot;Full preview in this week&#x27;s newsletter.&quot;
+Then: &quot;Not financial advice. Informational only.&quot;
 
 Note format:
 &lt;div style=&quot;font-family: -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, Roboto,
@@ -5756,7 +6315,7 @@ JSON SCHEMA (IDENTICAL TO PREVIOUS VERSION — DO NOT CHANGE FIELD NAMES)
     {
       &quot;symbol&quot;: &quot;TICKER&quot;,
       &quot;action&quot;: &quot;BUY&quot;,
-      &quot;verdict&quot;: &quot;STRONG BUY|BUY|SPEC BUY&quot;,
+      &quot;verdict&quot;: &quot;PASS&quot;,
       &quot;conviction&quot;: 8,
       &quot;tier&quot;: &quot;T1|T2|T3&quot;,
       &quot;quality_tier&quot;: 1,
@@ -5778,38 +6337,46 @@ JSON SCHEMA (IDENTICAL TO PREVIOUS VERSION — DO NOT CHANGE FIELD NAMES)
       &quot;opportunity_type&quot;: &quot;SECULAR_GROWTH|BINARY_CATALYST|CYCLICAL_RECOVERY|SPECIAL_SITUATION|MOMENTUM_CATCHUP&quot;,
       &quot;valuation_regime&quot;: &quot;FUNDAMENTAL|OPTIONALITY|TRANSITION&quot;,
 
-      &quot;gate_verdict&quot;: &quot;STRONG_BUY|BUY|SPEC_BUY&quot;,
-      &quot;gate_conviction&quot;: 8,
+      &quot;gate_verdict&quot;: &quot;PASS|FAIL|WATCHLIST&quot;,
+      &quot;gate_result&quot;: &quot;CLEAN_PASS|PASS_WITH_FLAGS|FAIL|WATCHLIST&quot;,
+      &quot;gate_flags&quot;: &quot;List of specific flags for DD investigation, or empty if CLEAN_PASS&quot;,
       &quot;catalyst_summary&quot;: &quot;Specific catalyst with date&quot;,
       &quot;red_flag_level&quot;: &quot;CLEAN|MINOR&quot;,
       &quot;dilution_check&quot;: &quot;CLEAN|CAUTION|DQ&quot;,
       &quot;dilution_detail&quot;: &quot;Shares outstanding change and warrant status&quot;,
-      &quot;gate_bear_case&quot;: &quot;1-sentence bear case&quot;,
-      &quot;gate_bear_classification&quot;: &quot;DISMANTLED|PARTIALLY_DISMANTLED|CANT_DISMANTLE&quot;,
+      &quot;gate_bear_case&quot;: &quot;1-sentence bear case IDENTIFIED by gate&quot;,
+      &quot;gate_bear_severity&quot;: &quot;POTENTIALLY_FATAL|SERIOUS|MANAGEABLE&quot;,
       &quot;gate_math&quot;: &quot;Path to 50%+&quot;,
       &quot;entry_timing_verdict&quot;: &quot;CLEAN|ELEVATED|CHASING|POOR_TIMING&quot;,
       &quot;entry_timing_detail&quot;: &quot;Up X% from pivot, catalyst in Y weeks&quot;,
       &quot;exceptional_override&quot;: false,
       &quot;exceptional_override_criteria&quot;: &quot;Which 4 criteria were met, or empty if not applicable&quot;,
 
-      &quot;dd_verdict&quot;: &quot;STRONG BUY|BUY|SPEC BUY&quot;,
+      &quot;dd_verdict&quot;: &quot;PASS|FAIL&quot;,
       &quot;dd_conviction&quot;: 8,
       &quot;dd_conviction_change&quot;: &quot;INCREASED|SAME|DECREASED&quot;,
       &quot;dd_conviction_change_reason&quot;: &quot;Specific new finding or risk that shifted conviction&quot;,
+      &quot;dd_return_driver&quot;: &quot;FUNDAMENTAL_RERATE|NARRATIVE_EXPANSION|MULTIPLE_TOLERANCE|CATALYST_DRIVEN|CONVERGENCE|SCARCITY_PREMIUM&quot;,
+      &quot;dd_return_driver_secondary&quot;: &quot;Same options as above, or empty string&quot;,
+      &quot;dd_return_driver_status&quot;: &quot;INTACT|AT_RISK|BROKEN&quot;,
+      &quot;dd_narrative_stage&quot;: &quot;PRE_DISCOVERY|EARLY_DISCOVERY|ACCELERATING|CONSENSUS|N/A&quot;,
       &quot;dd_elevator_pitch&quot;: &quot;2-3 sentences from our DD&quot;,
       &quot;dd_why_now&quot;: &quot;Key catalyst with date&quot;,
-      &quot;dd_the_math&quot;: &quot;Regime-adapted path to 50%+ (from independent valuation, NOT analyst targets)&quot;,
+      &quot;dd_the_math&quot;: &quot;Return-driver-adapted path to target (from independent valuation using appropriate methods for this driver)&quot;,
       &quot;dd_bear_case&quot;: &quot;Steelmanned bear argument&quot;,
+      &quot;dd_bear_case_severity&quot;: &quot;WEAK|MODERATE|STRONG&quot;,
       &quot;dd_risk_to_monitor&quot;: &quot;Single most important risk&quot;,
       &quot;dd_action&quot;: &quot;Specific: Enter at ~$X, T1 full position, stop at $Y&quot;,
       &quot;dd_hold_thesis&quot;: &quot;Expected hold 6-12mo. Key milestones: [catalyst1 in Q2, catalyst2 in Q4]&quot;,
       &quot;dd_key_catalyst&quot;: &quot;Primary catalyst driving the trade&quot;,
       &quot;dd_fatal_flaw&quot;: &quot;&quot;,
+      &quot;dd_scale_up_trigger&quot;: &quot;Specific event/metric that would increase position size&quot;,
+      &quot;dd_scale_down_trigger&quot;: &quot;Warning sign that would reduce position size&quot;,
 
       &quot;variant_perception&quot;: &quot;What we see that consensus misses&quot;,
-      &quot;key_assumption&quot;: &quot;The ONE thing that must be true&quot;,
-      &quot;kill_switch&quot;: &quot;What triggers early exit&quot;,
-      &quot;downside_floor&quot;: &quot;Where value buyers step in&quot;,
+      &quot;key_assumption&quot;: &quot;The ONE thing that must be true — adapted to return driver&quot;,
+      &quot;kill_switch&quot;: &quot;What triggers early exit — adapted to return driver&quot;,
+      &quot;downside_floor&quot;: &quot;Where value buyers step in / narrative collapse floor&quot;,
 
       &quot;off_system_exception&quot;: false,
       &quot;off_system_verdict&quot;: &quot;APPROVED|CONDITIONAL|DENIED|N/A&quot;,
@@ -5826,7 +6393,7 @@ JSON SCHEMA (IDENTICAL TO PREVIOUS VERSION — DO NOT CHANGE FIELD NAMES)
   &quot;no_go&quot;: [
     {
       &quot;symbol&quot;: &quot;TICKER&quot;,
-      &quot;verdict&quot;: &quot;NO GO&quot;,
+      &quot;verdict&quot;: &quot;FAIL&quot;,
       &quot;stage_rejected&quot;: &quot;thematic|gate|dd|review_gate|exception_denied&quot;,
       &quot;rejection_reason&quot;: &quot;Specific reason&quot;,
       &quot;reconsider_if&quot;: &quot;What would flip the verdict&quot;,
@@ -5972,9 +6539,21 @@ CRITICAL RULES (unchanged)
 - system_fit must match the assessment from Prompt 4 (STRONG/MODERATE/POOR)
 - dd_conviction_change must be explicitly stated (INCREASED/SAME/DECREASED)
 - dd_conviction_change_reason is required if conviction changed in either direction
-- dd_the_math should reference the INDEPENDENT valuation from Prompt 7, not
-  analyst price targets. The independent target is the authoritative math.
-- gate_bear_classification must reflect the honest bear case assessment
+- dd_the_math should reference the INDEPENDENT valuation from Prompt 7 using the
+  appropriate method for the stock&#x27;s return driver. For Driver A stocks: traditional
+  methods (peer-relative, historical). For Driver B stocks: narrative methods (theme
+  trajectory, comparable precedent). The independent target is the authoritative math.
+- dd_return_driver captures the Phase 0 classification from Prompt 6. This field is
+  CRITICAL for downstream analysis — it determines how the CRO evaluates the stock
+  and how the newsletter frames the thesis.
+- dd_return_driver_status captures whether the return mechanism is INTACT, AT_RISK,
+  or BROKEN after the full DD investigation. BROKEN = automatic FAIL.
+- dd_narrative_stage captures Phase 3B&#x27;s narrative positioning assessment. Set to
+  &quot;N/A&quot; for Driver A or D stocks where narrative dynamics are not the return driver.
+- dd_bear_case_severity: WEAK/MODERATE/STRONG from Prompt 7 Step 3.
+- dd_scale_up_trigger and dd_scale_down_trigger capture the Position Management Plan.
+- gate_bear_severity captures the gate&#x27;s bear case severity estimate (POTENTIALLY_FATAL/SERIOUS/MANAGEABLE)
+- gate_result captures whether the gate passed CLEAN or WITH FLAGS
 - dilution_check captures the structural dilution screen result from Prompt 5 Phase A
 - Theme sub-scores (catalyst, momentum, crowding, runway) are mapped from the 5-factor
   system per the table above. These feed the content production guide and newsletter
@@ -6004,10 +6583,10 @@ Output format — one row per ticker that was ANALYSED this session (not just pa
 <pre class="prompt-text">
 Example rows:</pre>
 </div>
-<div class="section-text"><p>2026-03-07,NGNE,24.50,T2,rare_disease_biotech,7.60,MODERATE,yes,BUY</p>
-<p>2026-03-07,LRMR,3.20,T1,rare_disease_biotech,7.70,MODERATE,yes,SPEC BUY</p>
-<p>2026-03-07,CCCC,8.50,T3,china_consumer,6.80,POOR,no,NO GO</p>
-<p>2026-03-07,ABCD,5.10,T2,quantum_computing,5.20,POOR,no,NO GO</p></div>
+<div class="section-text"><p>2026-03-07,NGNE,24.50,T2,rare_disease_biotech,7.60,MODERATE,yes,PASS</p>
+<p>2026-03-07,LRMR,3.20,T1,rare_disease_biotech,7.70,MODERATE,yes,PASS</p>
+<p>2026-03-07,CCCC,8.50,T3,china_consumer,6.80,POOR,no,FAIL</p>
+<p>2026-03-07,ABCD,5.10,T2,quantum_computing,5.20,POOR,no,FAIL</p></div>
 <div class="prompt-block" id="prompt-12-structured-export-decisions-json-code-2">
 <div class="prompt-header">
     <span class="prompt-label">📋 Prompt Text — Copy and paste into Claude.ai</span>

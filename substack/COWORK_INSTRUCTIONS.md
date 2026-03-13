@@ -1,4 +1,4 @@
-# Sterling Signals — Cowork Content Engine
+# Sterling Signals — Cowork Content Engine v7.1
 
 > **Master instructions for Claude Cowork scheduled tasks.**
 > Cowork automates notes (2-3/day), tweets (5-7/day), note graphics,
@@ -17,7 +17,7 @@ portfolio scanning, manifests, email delivery, and GitHub push.
 
 **What you prepare but DON'T generate:** Long-form posts, animated diagrams,
 and carousels. For these, you build prompt kits with pre-filled data that
-the user executes in claude.ai chat using the Content Prompt Handbook v7.0.
+the user executes in claude.ai chat using the Content Prompt Handbook v7.1.
 
 **Audience:** US Active Investors, Swing Traders, Roth IRA Builders
 
@@ -76,52 +76,63 @@ based on priority. Check conditions in order — **first match wins.**
 ### Decision Priority
 
 ```
-CHECK 1 — NEW SIGNAL?
+CHECK 1 — NEW SIGNAL? (any day, highest priority)
   If signals.json contains buy_signals entered in the last 7 days that have NOT
-  had a 🟢 GREEN Signal post written yet:
-  → Plan a 🟢 GREEN Signal post (highest engagement — publish same day)
-  → This REPLACES whatever day-of-week content would normally run
+  had a 🟢 Trade Alert post written yet:
+  → If it's SUNDAY: this becomes the Sunday Trade Alert (normal flow)
+  → If it's MID-WEEK: plan a 🟢 GREEN Signal post (replaces scheduled content)
 
-CHECK 2 — EXIT SIGNAL?
+CHECK 2 — EXIT SIGNAL? (any day, second priority)
   If signals.json contains sell_signals or portfolio.csv shows positions
-  closed/stopped in the last 7 days that have NOT had a Position Update post:
-  → Plan a Position Update post (exit with reasoning)
-  → This REPLACES whatever day-of-week content would normally run
+  closed/stopped in the last 7 days that have NOT been covered:
+  → If it's SUNDAY: fold into the Sunday Trade Alert as an exit section
+  → If it's MID-WEEK: plan a standalone Position Update post
 
-CHECK 3 — TUESDAY?
-  → Plan a Deep Dive on the newest signal OR the highest-performing open position
-  → If no signals this week, use "position update mode" on the best-performing holding
+CHECK 3 — SUNDAY?
+  → If new signals exist: 🟢 Trade Alert (Variant A: 1 signal, Variant B: 2 signals)
+  → If no new signals: Portfolio Spotlight on best-performing holding
+  → Include brief exit notes if any positions closing this week
 
-CHECK 4 — WEDNESDAY?
+CHECK 4 — TUESDAY?
   → Plan a Sector Watch on the highest-rated PRIME or INVESTABLE theme
+  → Theme MUST differ from Sunday's signal theme (anti-concentration rule)
 
-CHECK 5 — THURSDAY?
-  → Check if ANY signal from this week has NOT had a Deep Dive planned yet
-    (a GREEN Signal trade alert does NOT count — Deep Dive is separate):
-    If yes: Deep Dive on the earliest uncovered signal
-    If no (all signals have Deep Dives, or no signals): The Edge (educational)
-
-CHECK 6 — FRIDAY?
+CHECK 5 — WEDNESDAY?
   → Plan an Investor Lessons post
-  → Subcategory rotation: check last 4 Fridays' manifests, pick the
+  → Subcategory rotation: check last 4 Wednesdays' manifests, pick the
     least-recently-used from: case_study, legendary_investor,
     investing_principle, market_mechanics, behavioural_finance
-  → Topic MUST connect to a portfolio position or system feature
-  → If no compelling portfolio connection exists, use investing_principle
-    (easiest to connect to live trades)
+  → Portfolio connection is OPTIONAL — only if natural
 
-CHECK 7 — SATURDAY?
-  → Plan a Tools & Tech post (default)
-  → Subcategory rotation: check last 4 Saturdays' manifests, pick the
+CHECK 6 — THURSDAY?
+  → Plan a Tools & Tech carousel (posted as a Note, NOT an article)
+  → Subcategory rotation: check last 4 Thursdays' manifests, pick the
     least-recently-used from: screeners, charting, data_research,
     portfolio_management, ai_automation, free_vs_paid
   → Tool MUST be demonstrated on a portfolio ticker
-  → Performance Review fallback ONLY if no analysis session AND no
-    suitable tool topic exists this week
+  → Demo ticker MUST differ from Sunday's and Tuesday's focus tickers
 
-CHECK 8 — MONDAY / SUNDAY?
+CHECK 7 — MONDAY / FRIDAY?
   → Notes only (2-3 notes, no long-form post)
+
+CHECK 8 — SATURDAY?
+  → Newsletter day (Prompt 11 from analysis session — not Cowork's job)
+  → Cowork generates notes only on Saturday
+  → Performance Review fallback ONLY if no analysis session ran
 ```
+
+### Anti-Concentration Rules (MANDATORY)
+
+Before finalising any content decision:
+
+- **Max 2 posts per ticker per week.** If $ASTS is in Sunday's Trade Alert and
+  is part of Tuesday's Sector Watch theme, that's 2 — no more mentions as the
+  primary focus of any other post.
+- **Sector Watch theme ≠ Sunday's signal theme** (when possible). If the signal
+  is in Defence and Defence is the top theme, pick the second-highest theme for
+  Sector Watch. If only one theme is rated PRIME/INVESTABLE, this rule relaxes.
+- **Tools & Tech demo ticker ≠ Sunday or Tuesday focus.** Pick a different
+  portfolio holding.
 
 ### Duplicate Content Prevention (MANDATORY)
 
@@ -142,27 +153,25 @@ for manifest_path in glob.glob(str(archive_root / "**" / "daily_manifest.json"),
 ```
 
 Use this to enforce:
-- **No duplicate signal posts:** If a 🟢 GREEN Signal post for $TICKER exists in the last 7 days, do NOT write another. Move to CHECK 2.
+- **No duplicate signal posts:** If a 🟢 Trade Alert for $TICKER exists in the last 7 days, do NOT write another. Move to CHECK 2.
 - **No duplicate exit posts:** Same rule for Position Update posts.
-- **Deep Dive recency:** If $TICKER had a Deep Dive in the last 21 days (3 weeks), use the next-highest ticker.
 - **Sector Watch recency:** If a theme was covered in the last 14 days, use the next-highest-rated theme.
-- **Investor Lessons subcategory:** Check last 4 Fridays. Pick the least-recently-used subcategory.
-- **Tools & Tech subcategory:** Check last 4 Saturdays. Pick the least-recently-used subcategory.
+- **Investor Lessons subcategory:** Check last 4 Wednesdays. Pick the least-recently-used subcategory.
+- **Tools & Tech subcategory:** Check last 4 Thursdays. Pick the least-recently-used subcategory.
 
 ### Picking the Right Ticker/Theme/Topic
 
-- **Deep Dive ticker:** Newest GREEN signal first. If none, highest P&L% open position (15%+ preferred). **Skip any ticker covered in the last 21 days.**
-- **Sector Watch theme:** Highest composite_score theme classified PRIME or INVESTABLE. **Skip any theme covered in the last 14 days.**
-- **The Edge topic:** Portfolio event first, scanner anomaly second, market connection third, research last resort.
-- **Investor Lessons topic:** Must connect to a specific portfolio ticker with entry price and P&L. No abstract lessons.
-- **Tools & Tech tool:** Must be demonstrable on a portfolio ticker. Free tools preferred over paid.
+- **Sunday Trade Alert ticker:** Newest GREEN signal(s) from Friday's session. If no signals, best P&L% open position for Portfolio Spotlight.
+- **Sector Watch theme:** Highest composite_score theme classified PRIME or INVESTABLE. **Skip if covered in last 14 days.** Must differ from Sunday's signal theme.
+- **Investor Lessons topic:** Any compelling topic from subcategory rotation. Portfolio connection welcome but not required. If natural, include it. If forced, skip it.
+- **Tools & Tech tool:** Must be demonstrable on a portfolio ticker (different from Sunday/Tuesday focus). Free tools preferred over paid.
 
 ---
 
 ## 5. Post Types — Reference Summary
 
 Each post type uses a specific prompt sequence from the **Content Prompt
-Handbook v7.0** (`substack/docs/content_prompt_handbook_v7.0.md`). The
+Handbook v7.1** (`substack/docs/content_prompt_handbook_v7.1.md`). The
 handbook contains the full prompts with mode annotations, quality gates,
 and specific research instructions.
 
@@ -170,74 +179,67 @@ and specific research instructions.
 > prompt kits. The user generates posts in claude.ai chat using the handbook
 > prompts. The summaries below are for planning and note complementarity.
 
-### 5a. 🟢 GREEN Signal — Trade Alert Entry (1 Prompt)
+### 5a. 🟢 GREEN Signal — Mid-Week Trade Alert (1 Prompt)
 
-**When:** New position entered (ad-hoc, highest priority)
+**When:** Mid-week entry outside the normal Friday → Sunday cycle (ad-hoc, highest priority)
 **Prompts:** 1 (Standard mode)
 **Structure:** Signal Header → Why This Company → Trigger → Setup → Watching → Risk → Footer
 **Title:** `🟢 GREEN Signal: $TICKER at $PRICE — [Theme]`
 **Visual:** None (publish immediately)
 
-### 5b. Position Update — Trade Alert Exit (1 Prompt)
+### 5b. Position Update — Standalone Exit (1 Prompt)
 
-**When:** Position closed/stopped (ad-hoc, second priority)
+**When:** Mid-week exit outside the Sunday cycle (ad-hoc, second priority)
 **Prompts:** 1 (Standard mode)
 **Structure:** Trade Header → Exit → What Changed → Lesson → What's Next → Footer
 **Title:** `Position Update: $TICKER — +Y% in Z Weeks` or `— Systematic Exit`
 **Visual:** None
 
-### 5c. Deep Dive (3 Prompts) — Tuesday/Thursday
+### 5c. 🟢 Sunday Trade Alert (3-4 Prompts) — Sunday
 
-**When:** Tuesday or Thursday with signal or position to analyse
-**Prompts:** 3 (Research mode → Extended Thinking → Standard)
-**Structure:** Pitch → Thesis → Why Now → Numbers (TABLE required) → Price Targets (Bear/Base/Bull cards) → Bear Case → Risk → Position → Footer
-**Title:** `Deep Dive: $TICKER — [One-line hook]`
+**When:** Every Sunday — the flagship post of the week
+**Prompts:** 3 (1 signal) or 4 (2 signals) — Research → Extended → Standard
+**Structure:** The Reveal → Why This Company → Trigger → Numbers (TABLE) → Price Targets (Bear/Base/Bull) → Bear Case → Risk → Position → Watching → [Exits] → Footer
+**Title:** `🟢 Trade Alert: $TICKER at $PRICE — [Theme]` or `🟢 Trade Alert: $TICK1 & $TICK2 — This Week's Entries`
 **Visual:** Animated diagram
+**No-signal variant:** Portfolio Spotlight on best-performing holding (3 prompts)
+**Title (no signal):** `Portfolio Spotlight: $TICKER — [Hook]`
 
-### 5d. Sector Watch (2 Prompts) — Wednesday
+### 5d. Sector Watch (2 Prompts) — Tuesday
 
-**When:** Wednesday
+**When:** Tuesday
 **Prompts:** 2 (Research mode → Standard)
 **Structure:** Why Now → Thesis → Evidence (ETF flows, 13F data) → Our Positions (TABLE) → Risks → Watching → Stocks → Footer
 **Title:** `Sector Watch: [Theme] ([Score]/10)`
 **Visual:** Carousel (MACRO PULSE)
+**Anti-concentration:** Theme must differ from Sunday's signal theme
 
-### 5e. The Edge — Educational (3 Prompts) — Thursday (Flex)
+### 5e. Investor Lessons (3 Prompts) — Wednesday
 
-**When:** Thursday if no second signal for Deep Dive
-**Prompts:** 3 (Extended Thinking → Research mode → Standard)
-**Structure:** Hook → Concept → Evidence → In Our Portfolio (REQUIRED) → Exception → Takeaway → Footer
-**Title:** `The Edge: [Specific, Surprising Topic]`
-**Visual:** Animated diagram
-
-### 5f. Investor Lessons (3 Prompts) — Friday
-
-**When:** Friday
+**When:** Wednesday
 **Prompts:** 3 (Extended Thinking → Research mode → Standard)
 **Subcategory rotation:** case_study, legendary_investor, investing_principle, market_mechanics, behavioural_finance
-**Structure:** Hook → Story → Evidence → In Our Portfolio (REQUIRED) → Exception → Takeaway → Footer
+**Structure:** Hook → Story → Evidence → [Optional: In Our Portfolio] → Exception → Takeaway → Footer
 **Title:** `Investor Lessons: [Specific Topic]`
-**Visual:** Carousel (INVESTOR TOOLKIT)
+**Visual:** None (standalone educational)
 
-**Portfolio connection is mandatory.** Every Investor Lessons post must name
-a specific ticker with entry price and P&L. Examples:
-- "Druckenmiller concentrated into one trade. We hold 5 max. $RCAT is up 55%."
-- "Stop losses saved us on $VNET. Here's the math of systematic exits."
+**Portfolio connection is OPTIONAL.** If a natural connection exists, include
+it. If not, skip it — a forced connection is worse than no connection.
 
-### 5g. Tools & Tech (2 Prompts) — Saturday
+### 5f. Tools & Tech (1 Prompt) — Thursday Carousel
 
-**When:** Saturday
-**Prompts:** 2 (Research mode → Standard)
+**When:** Thursday
+**Prompts:** 1 (Research mode)
 **Subcategory rotation:** screeners, charting, data_research, portfolio_management, ai_automation, free_vs_paid
-**Structure:** Problem → Tool → How We Use It (demo on $TICKER) → What It Found → Limitations → Setup Guide → Footer
+**Structure:** 5-slide carousel with companion note (100-150 words)
 **Title:** `Tools & Tech: [Tool] — [Hook]`
 **Visual:** Carousel (INVESTOR TOOLKIT)
+**Format:** Posted as a Substack **Note**, not a long-form article
+**Anti-concentration:** Demo ticker must differ from Sunday and Tuesday focus
 
-**Live demo required.** Every tool must be demonstrated on a portfolio ticker.
+### 5g. Performance Review (2 Prompts) — Saturday Fallback
 
-### 5h. Performance Review (2 Prompts) — Saturday Fallback
-
-**When:** Saturday, ONLY if no analysis session ran AND no Tools & Tech topic fits
+**When:** Saturday, ONLY if no analysis session ran AND no newsletter from Prompt 11
 **Prompts:** 2 (Research mode → Standard)
 **Title:** `The Weekly Screening — Week [N]: [Hook]`
 
@@ -273,7 +275,7 @@ ALPHA_SCOREBOARD (benchmark comparison — web search SPY/QQQ).
 | Slot 2 | 12:30 | `midday` |
 | Slot 3 | 17:00 | `evening` |
 
-### Note Type Matrix v4
+### Note Type Matrix v5
 
 Notes are designed to **complement** that day's planned post. On post days,
 the morning note teases the post topic without spoiling it. The midday slot
@@ -281,22 +283,23 @@ is always COMPANION_NOTE on post days.
 
 | Day | 08:30 (Morning) | 12:30 (Midday) | 17:00 (Evening) |
 |-----|------------------|-----------------|-------------------|
+| **Sunday** | SIGNAL_TRACKING *(teases Trade Alert ticker)* | COMPANION_NOTE | PORTFOLIO_UPDATE |
 | **Monday** | MARKET_SNAPSHOT | SIGNAL_TRACKING | PORTFOLIO_UPDATE |
-| **Tuesday** | CATALYST_WATCH *(teases Deep Dive ticker)* | COMPANION_NOTE | DATA_INSIGHT |
-| **Wednesday** | SECTOR_FLOW *(previews Sector Watch theme)* | COMPANION_NOTE | CATALYST_WATCH |
-| **Thursday** | SIGNAL_TRACKING | COMPANION_NOTE | READER_QUESTION |
-| **Friday** | PORTFOLIO_UPDATE *(sets up Investor Lessons)* | COMPANION_NOTE | EXIT_DEBRIEF |
-| **Saturday** | ALPHA_SCOREBOARD | COMPANION_NOTE *(Tools & Tech)* | WINNER_RECEIPT |
-| **Sunday** | DATA_INSIGHT | READER_QUESTION | — |
+| **Tuesday** | SECTOR_FLOW *(previews Sector Watch theme)* | COMPANION_NOTE | CATALYST_WATCH |
+| **Wednesday** | CATALYST_WATCH *(previews Investor Lessons topic)* | COMPANION_NOTE | DATA_INSIGHT |
+| **Thursday** | SIGNAL_TRACKING | COMPANION_NOTE *(Tools & Tech carousel)* | READER_QUESTION |
+| **Friday** | PORTFOLIO_UPDATE | ALPHA_SCOREBOARD | WINNER_RECEIPT |
+| **Saturday** | ALPHA_SCOREBOARD | COMPANION_NOTE *(newsletter)* | — |
 
 ### Complementary Note Strategy
 
 On post days, the morning note should relate to the post without giving away the analysis:
-- **Tuesday** morning CATALYST_WATCH: mention the Deep Dive ticker's upcoming catalyst, not the valuation
-- **Wednesday** morning SECTOR_FLOW: reference the theme's ETF flows, not the full sector analysis
-- **Thursday** morning SIGNAL_TRACKING: update a recent signal that connects to The Edge topic
-- **Friday** morning PORTFOLIO_UPDATE: highlight the position that the Investor Lessons post examines
-- **Saturday** morning ALPHA_SCOREBOARD: performance vs benchmarks, tees up Tools & Tech as "here's how we track this"
+- **Sunday** morning SIGNAL_TRACKING: mention the signal's theme momentum, not the full analysis
+- **Tuesday** morning SECTOR_FLOW: reference the theme's ETF flows, not the full sector analysis
+- **Wednesday** morning CATALYST_WATCH: highlight an upcoming catalyst that connects to the Investor Lessons topic
+- **Thursday** morning SIGNAL_TRACKING: update a recent signal — the carousel is standalone, so the note complements the week's signals
+- **Friday** morning PORTFOLIO_UPDATE: highlight a holding's performance — sets up the weekend
+- **Saturday** morning ALPHA_SCOREBOARD: portfolio vs benchmarks, tees up the newsletter
 
 ### ⛔ Companion Note Anti-Spoiler Rule (ALL post types)
 
@@ -311,9 +314,10 @@ At least one note per day should have an accompanying data graphic (HTML + PNG):
 
 | Day Type | Visual Suggestion |
 |----------|-------------------|
-| Post day (Tue–Sat) | Companion note graphic OR morning catalyst card |
-| Notes-only day (Mon) | Portfolio snapshot card OR screening funnel |
-| Weekend (Sun) | Performance bars OR winner receipt card |
+| Post day (Sun, Tue, Wed) | Companion note graphic OR morning catalyst card |
+| Carousel day (Thu) | Carousel is the visual — no extra graphic needed |
+| Notes-only day (Mon, Fri) | Portfolio snapshot card OR screening funnel |
+| Newsletter day (Sat) | Performance bars OR winner receipt card |
 
 Save graphics to `substack/output/current/notes/`:
 - HTML: `{time_label}_{type}_graphic_{YYYYMMDD}.html`
@@ -362,13 +366,13 @@ Save graphics to `substack/output/current/notes/`:
 
 ## 7. Visual Assets
 
-### 7a. Animated Diagrams (Tuesday / Thursday)
+### 7a. Animated Diagrams (Sunday)
 
 **Spec:** `substack/docs/animated-diagram-spec.md`
 **Reference:** `substack/docs/aspi-v7.html`
 
 **Generated by the user in claude.ai chat** — not by Cowork. Sunday planner
-includes diagram prompts in the weekly prompt kits.
+includes diagram prompts in the weekly prompt kits for the Trade Alert post.
 
 Key requirements:
 - Canvas: 1280 x 720px, dark background `#111318`
@@ -378,7 +382,7 @@ Key requirements:
 
 Export: `python3 substack/tools/capture.py {html_file} --duration 10 --fps 24 --format mp4`
 
-### 7b. Carousel Slides (Wednesday / Friday / Saturday)
+### 7b. Carousel Slides (Tuesday / Thursday)
 
 **Spec:** `substack/docs/carousel-guide.docx` + `substack/docs/carousel-series-templates.md`
 
@@ -386,9 +390,8 @@ Export: `python3 substack/tools/capture.py {html_file} --duration 10 --fps 24 --
 
 | Day | Series Tag | Topic Source |
 |-----|-----------|-------------|
-| Wednesday | MACRO PULSE | Sector Watch theme |
-| Friday | INVESTOR TOOLKIT | Investor Lessons principle |
-| Saturday | INVESTOR TOOLKIT | Tools & Tech walkthrough |
+| Tuesday | MACRO PULSE | Sector Watch theme |
+| Thursday | INVESTOR TOOLKIT | Tools & Tech walkthrough |
 
 Generator: `node substack/tools/carousel-generator.js [json_file]`
 
@@ -598,20 +601,20 @@ on Sunday evening. Output is saved to the repo and pushed.
 **What Cowork does:**
 1. Web searches live prices for all portfolio positions
 2. Reads scanner data, equity curve, market analysis
-3. Runs Decision Engine (Section 4) for Tue, Wed, Thu, Fri, Sat
-4. Applies duplicate prevention and subcategory rotation
+3. Runs Decision Engine (Section 4) for Sun, Tue, Wed, Thu
+4. Applies duplicate prevention, anti-concentration, and subcategory rotation
 5. Plans complementary notes for each day (Section 6 matrix)
-6. Extracts full prompts from Content Prompt Handbook v7.0
+6. Extracts full prompts from Content Prompt Handbook v7.1
 7. Pre-fills prompts with tickers, prices, themes, newsletter context
 8. Saves `weekly_plan_YYYY-WXX.json` and `weekly_prompt_kits_YYYY-WXX.md`
 9. Git pushes
 
 **What the user does:**
-1. Opens claude.ai — one chat per post (typically 5 sessions)
+1. Opens claude.ai — one chat per post (typically 3 sessions: Sun, Tue, Wed) + 1 for Thu carousel
 2. Attaches handbook + banned_terms.py + relevant spec
 3. Pastes prompts in sequence, waits between stages
 4. Saves all outputs to repo, git pushes
-5. ~90-120 min for a full week of heavy content
+5. ~60-90 min for a full week of heavy content
 
 ### Mode B — Daily Notes + Tweets (Daily, Cowork Task 2)
 

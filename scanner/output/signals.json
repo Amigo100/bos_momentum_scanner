@@ -1,43 +1,76 @@
 {
-  "timestamp": "2026-03-08 23:29:40",
+  "timestamp": "2026-03-14 21:48:43",
   "timeframe": "WEEKLY",
   "entry_criteria": "Sterling Grid V6: HMA pivot + (UC rising OR MACD cross-up)",
   "exit_criteria": "ExD compound exit + tiered profit lock",
   "stats": {
     "tickers_loaded": 1279,
-    "data_downloaded": 1265,
-    "hma_pivot_low": 38,
-    "macd_cross_up": 24,
-    "uc_rising": 105,
-    "buy_signal": 11,
-    "tier_t1": 2,
+    "data_downloaded": 1269,
+    "hma_pivot_low": 45,
+    "macd_cross_up": 25,
+    "uc_rising": 156,
+    "buy_signal": 18,
+    "tier_t1": 6,
     "tier_t2": 3,
-    "tier_t3": 6,
-    "exd_exit": 42,
-    "technical_signals": 11
+    "tier_t3": 9,
+    "exd_exit": 37,
+    "technical_signals": 18
   },
-  "market_context_summary": "SELECTIVE regime with NORMAL deployment stance. US GDP 2.6%, mid-cycle expansion with OBBBA fiscal boost. Fed holding at 3.5-3.75% with 1-2 cuts expected in 2026. Iran conflict sent VIX to 29.49 and oil above $90 WTI, creating acute near-term uncertainty within a structurally supportive backdrop. Small-cap earnings projected +18-22% for 2026 but IWM lagging large caps by 400bps YTD.",
+  "market_context_summary": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016 \u2014 earnings broadening, 25-year relative valuation discount, institutional rotation accelerating \u2014 but the Iran conflict (Strait of Hormuz effectively closed, oil $100+), a Fed trapped between rising CPI and collapsing payrolls (-92K February), and midterm election headwinds create a SELECTIVE regime requiring quality filters and thematic alignment. Three of six structural forces (defence, nuclear, biotech capital cycle) are READY for deployment; the remaining three require patience.",
   "market_regime": "selective",
   "themes": [
     {
-      "name": "AI Voice CPaaS Infrastructure",
+      "name": "BBB Gene Therapy Platform",
       "classification": "PRIME",
-      "composite_score": 7.6,
+      "composite_score": 8.05,
+      "catalyst_score": 9.0,
+      "momentum_score": 7.0,
+      "crowding_score": 8.5,
+      "runway_score": 8.0,
+      "thesis_summary": "IV-delivered AAV capsids engineered to cross the blood-brain barrier represent the next frontier in CNS therapeutics. Big pharma has validated the technology through $800M-$1.4B licensing deals (AbbVie/Aliada, Roche/Dyno, Lilly/Sangamo, AZ/JCR), but competing vehicles are being acquired or paused \u2014 creating extreme scarcity. The one remaining public pure-play has 3 pharma partnerships worth $6.8B in milestones and a dense catalyst calendar through H2 2026.",
+      "why_now": "VY1706 IND filing Q2 2026 \u2014 first wholly-owned clinical program. Narrative in EARLY DISCOVERY stage with institutional adoption just beginning (EcoR1 +497% in Q4 2025).",
+      "key_catalysts": [
+        "VY1706 IND filing Q2 2026",
+        "BIIB080 Phase 2 tau data mid-2026",
+        "VY7523 tau PET imaging data H2 2026",
+        "VY1706 first-in-human dosing H2 2026",
+        "Neurocrine FA IND H2 2026",
+        "Potential new partnership deal 2026-2027"
+      ],
+      "primary_risks": [
+        "Capsida CAP-002 patient death (Sep 2025) established 1/1 fatality base rate for IV BBB-crossing AAV class",
+        "Zero human proof-of-concept data for TRACER platform",
+        "CMO departed Feb 2026, 3 months before IND \u2014 execution risk",
+        "BIIB080 failure could undermine tau-targeting thesis by sentiment contagion"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "GLP-1 Obesity Telehealth",
+      "classification": "INVESTABLE",
+      "composite_score": 7.45,
       "catalyst_score": 8.0,
       "momentum_score": 7.5,
       "crowding_score": 4.0,
-      "runway_score": 7.75,
-      "thesis_summary": "Agentic AI deployment is driving 340% YoY enterprise voice agent growth. Each AI-enabled call generates multiplied revenue through simultaneous transcription, sentiment analysis, fraud detection, and routing. Owned Tier-1 IP voice networks capture this value at 20-50% cost advantage over resellers.",
-      "why_now": "Enterprise Voice revenue growing 21% YoY at Bandwidth. AI developers on platform quadrupled in FY2025. FY2026 guidance of 16% revenue growth and 29% EBITDA growth represents inflection point.",
+      "runway_score": 7.5,
+      "thesis_summary": "The GLP-1 obesity medication market is experiencing explosive demand through telehealth channels. Oral Wegovy's January 2026 launch has driven record patient sign-ups. However, the competitive moat thesis weakened materially when HIMS announced its own Novo Nordisk partnership on March 9, demonstrating that branded GLP-1 access is not exclusive. Smaller operators like LFMD trade at deep discounts (0.8x revenue vs 2.7x for HIMS) but the discount may be justified by scale disadvantage.",
+      "why_now": "Q1 2026 earnings (May) will be the first full quarter with oral Wegovy contribution. Record 1,200/day sign-ups suggest potential revenue beat, but competitive dynamics remain the dominant variable.",
       "key_catalysts": [
-        "Q1 2026 earnings validating cloud comm acceleration",
-        "AI software revenue scaling beyond $10M ARR",
-        "$80M buyback providing price support"
+        "Q1 2026 earnings ~May for LFMD",
+        "HIMS competitive pricing evolution",
+        "Benefits infrastructure 220M coverage build-out by June",
+        "Oral Wegovy supply chain expansion"
       ],
       "primary_risks": [
-        "AI deflection reducing total call volumes vs generating them",
-        "Twilio competitive response with scale advantage",
-        "FTC regulatory action on robocall routing"
+        "HIMS competitive parity at 12x scale",
+        "LFMD revenue restatement + active securities lawsuit",
+        "ARPU compression 18% in 9 months masking subscriber growth",
+        "Zero insider buying during 75% stock decline"
       ],
       "valuation_regime": "FUNDAMENTAL",
       "lifecycle_stage": "EARLY_ADOPTION",
@@ -47,26 +80,25 @@
       "crowding_indicator": ""
     },
     {
-      "name": "BizAv Connectivity Upgrade (5G + LEO)",
+      "name": "Bladder Cancer Immunotherapy",
       "classification": "PRIME",
-      "composite_score": 7.65,
+      "composite_score": 7.75,
       "catalyst_score": 8.5,
       "momentum_score": 7.0,
-      "crowding_score": 4.5,
+      "crowding_score": 7.0,
       "runway_score": 8.0,
-      "thesis_summary": "Gogo holds dominant market share in North American BizAv connectivity and is transitioning to Galileo 5G service launching mid-2026. Multi-orbit architecture (5G + LEO) creates competitive moat against Starlink in premium BizAv/military niche. Strong insider buying signal (CEO $1.4M, Chairman $907K).",
-      "why_now": "5G service revenue begins Q1 2026. Textron OEM line-fit late 2026. LTE network mid-2026. But stock needs to clear 12-month return math threshold \u2014 currently only works on 18-month hold.",
+      "thesis_summary": "RLMD scored PRIME with strong comparable company validation (CG Oncology) and institutional backing through a $160M PIPE at $4.75 from tier-1 funds. The 505b2 regulatory pathway de-risks the prior Phase 3 failure for REL-1017. However, the stock had already rallied 48-69% from base, creating an elevated entry, and the pure binary biotech catalyst profile conflicted with operator preferences.",
+      "why_now": "Phase 3 data readouts approaching. $160M PIPE provides runway and institutional validation.",
       "key_catalysts": [
-        "First 5G Galileo service revenue Q1 2026",
-        "Textron OEM line-fit agreement late 2026",
-        "Military C-130 connectivity ramp"
+        "Phase 3 data readout",
+        "Potential partnership or M&A"
       ],
       "primary_risks": [
-        "$909M debt at SOFR+6% creates downside if ramp delayed",
-        "Starlink competition in broader aviation market",
-        "Muted 2026 guidance (flat revenue, -4.5% EBITDA)"
+        "Prior Phase 3 failure history",
+        "Elevated entry after 48-69% rally",
+        "Pure binary catalyst profile"
       ],
-      "valuation_regime": "FUNDAMENTAL",
+      "valuation_regime": "OPTIONALITY",
       "lifecycle_stage": "EARLY_ADOPTION",
       "theme_type": "TREND",
       "position_sizing_recommendation": "",
@@ -74,104 +106,25 @@
       "crowding_indicator": ""
     },
     {
-      "name": "PFAS / Methane Environmental Compliance",
+      "name": "Defence Additive Manufacturing",
       "classification": "INVESTABLE",
-      "composite_score": 7.2,
-      "catalyst_score": 7.5,
-      "momentum_score": 7.0,
-      "crowding_score": 3.5,
-      "runway_score": 7.25,
-      "thesis_summary": "20+ states have adopted PFAS drinking water standards. The $10.3B 3M PFAS settlement funds remediation contracts for years. EU methane regulations require US LNG exporters to measure and report emissions. Montrose posted record Q4 with 19.3% FY2025 revenue growth and raised 2026 guidance.",
-      "why_now": "Record Q4 2025 results with raised guidance. VeriPlume methane measurement technology commercializing. M&A resumption planned H2 2026.",
-      "key_catalysts": [
-        "Q1 2026 earnings validating guidance trajectory",
-        "M&A resumption H2 2026",
-        "VeriPlume commercialization",
-        "EU methane regulation implementation"
-      ],
-      "primary_risks": [
-        "Federal deregulation risk under current administration",
-        "Valuation no longer cheap after 157% rally from lows",
-        "Insider selling cluster post-earnings"
-      ],
-      "valuation_regime": "FUNDAMENTAL",
-      "lifecycle_stage": "EARLY_ADOPTION",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "Connected Car Platform Monetization",
-      "classification": "INVESTABLE",
-      "composite_score": 6.45,
-      "catalyst_score": 6.5,
+      "composite_score": 6.55,
+      "catalyst_score": 7.0,
       "momentum_score": 6.0,
       "crowding_score": 5.0,
-      "runway_score": 6.75,
-      "thesis_summary": "Xperi provides entertainment, DTS audio, and connected car middleware to major OEMs including Mercedes-Benz. Media Platform revenue grew 15% in Q4 with 4.9M MAUs. Connected Car monetization (data, advertising) has not yet begun despite 14M vehicle deployments, representing untapped upside.",
-      "why_now": "Q4 Media Platform inflection (+15%). Mercedes-Benz all-four-solutions launch approaching. Near 52-week lows creating favorable entry. But total revenue still declining due to Pay TV runoff.",
-      "key_catalysts": [
-        "Connected Car data monetization launch mid-2026",
-        "Mercedes-Benz deployment",
-        "Q1 earnings trajectory"
-      ],
-      "primary_risks": [
-        "Pay TV decline rate accelerating (-21% YoY)",
-        "Monetization perpetually next year story",
-        "Total revenue still declining"
-      ],
-      "valuation_regime": "TRANSITION",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "Anti-KIT Mast Cell Inhibition",
-      "classification": "INVESTABLE",
-      "composite_score": 6.95,
-      "catalyst_score": 7.0,
-      "momentum_score": 6.5,
-      "crowding_score": 4.0,
       "runway_score": 7.0,
-      "thesis_summary": "Celldex's anti-KIT antibody barzolvolimab showed compelling Phase 2 efficacy in CSU. The mechanism is differentiated from anti-IgE approaches. Pre-revenue biotech with binary Phase 3 readout driving valuation.",
-      "why_now": "Phase 3 program advancing. Binary biotech profile with operator discretion flag.",
+      "thesis_summary": "The NDAA FY2026 ban on foreign-sourced 3D printing for DoD programs creates structural demand for domestic additive manufacturing providers. DDD's A&D segment grew 16% in 2025 with >20% growth guided for 2026, and an $18.5M USAF program through 2027 provides visibility. However, DDD's capital structure is fragile: 45% dilution in 2 years, $92M secured convertible notes with June 2028 put date, $73M annual cash burn against $97M cash. The turnaround is producing smaller losses but not revenue growth.",
+      "why_now": "NDAA Section 1709 provisions active. DDD A&D revenue guided >20% growth to $35M+ in 2026. 23% short interest creates potential squeeze on positive catalyst.",
       "key_catalysts": [
-        "Phase 3 CSU data readout",
-        "Potential partnership or licensing"
+        "Q1 2026 earnings ~March 25",
+        "A&D revenue trajectory toward $35M+",
+        "Potential short squeeze on 23% SI"
       ],
       "primary_risks": [
-        "Binary Phase 3 outcome",
-        "Pre-revenue capital needs",
-        "Competitive landscape in CSU"
-      ],
-      "valuation_regime": "OPTIONALITY",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "BNPL Subscription Flywheel",
-      "classification": "INVESTABLE",
-      "composite_score": 6.9,
-      "catalyst_score": 7.0,
-      "momentum_score": 7.0,
-      "crowding_score": 3.0,
-      "runway_score": 7.0,
-      "thesis_summary": "BNPL with subscription premium creating sticky revenue. Rapid growth trajectory but filtered on market cap ($2.5B), T3 signal quality, and extreme beta (8.75).",
-      "why_now": "Strong growth metrics but position sizing and volatility profile incompatible with system parameters at current levels.",
-      "key_catalysts": [
-        "Subscriber growth trajectory",
-        "Mobile platform adoption"
-      ],
-      "primary_risks": [
-        "Extreme beta (8.75)",
-        "Regulatory risk to BNPL",
-        "Market cap above sweet spot"
+        "Serial turnaround failure \u2014 decade of declining stock price",
+        "45% share dilution in 2 years",
+        "Revenue declining 12% YoY despite cost savings",
+        "$92M convertible with June 2028 put creates balance sheet cliff"
       ],
       "valuation_regime": "FUNDAMENTAL",
       "lifecycle_stage": "EARLY_ADOPTION",
@@ -181,120 +134,25 @@
       "crowding_indicator": ""
     },
     {
-      "name": "GDS AI Travel Commerce",
-      "classification": "SELECTIVE",
-      "composite_score": 4.35,
-      "catalyst_score": 4.0,
-      "momentum_score": 4.5,
-      "crowding_score": 6.0,
-      "runway_score": 4.5,
-      "thesis_summary": "Sabre's transformation thesis is structurally challenged by direct connect trends, thin margins, and heavy legacy infrastructure costs.",
-      "why_now": "Not actionable \u2014 theme below minimum quality threshold.",
-      "key_catalysts": [],
-      "primary_risks": [
-        "Direct connect disintermediation",
-        "Heavy debt load",
-        "Execution risk"
-      ],
-      "valuation_regime": "FUNDAMENTAL",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "Clean-Label Consumer Turnaround",
-      "classification": "SELECTIVE",
-      "composite_score": 4.4,
-      "catalyst_score": 4.0,
-      "momentum_score": 4.5,
-      "crowding_score": 5.5,
-      "runway_score": 4.5,
-      "thesis_summary": "Consumer turnaround in competitive CPG space without structural moat or catalyst stack.",
-      "why_now": "Not actionable \u2014 theme below minimum quality threshold.",
-      "key_catalysts": [],
-      "primary_risks": [
-        "Intense CPG competition",
-        "Margin pressure",
-        "Brand differentiation eroding"
-      ],
-      "valuation_regime": "FUNDAMENTAL",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "CA Offshore Oil Restart",
-      "classification": "SELECTIVE",
-      "composite_score": 4.7,
-      "catalyst_score": 5.0,
-      "momentum_score": 4.0,
-      "crowding_score": 5.0,
-      "runway_score": 4.5,
-      "thesis_summary": "Sable Offshore restart thesis depends on federal preemption of state regulations. Capital cycle veto: massive capital requirements with uncertain regulatory timeline.",
-      "why_now": "Not actionable \u2014 capital cycle veto.",
-      "key_catalysts": [
-        "Federal preemption legal ruling"
-      ],
-      "primary_risks": [
-        "Regulatory uncertainty",
-        "Capital requirements",
-        "Environmental opposition"
-      ],
-      "valuation_regime": "OPTIONALITY",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "Mid-Continent Refining Recovery",
-      "classification": "SELECTIVE",
-      "composite_score": 4.7,
-      "catalyst_score": 4.5,
-      "momentum_score": 5.0,
-      "crowding_score": 5.0,
-      "runway_score": 4.5,
-      "thesis_summary": "CVR Energy is a cyclical refining play without the structural catalyst density our system requires.",
-      "why_now": "Not actionable \u2014 theme below minimum quality threshold.",
-      "key_catalysts": [
-        "Crack spread recovery"
-      ],
-      "primary_risks": [
-        "Cyclical margin compression",
-        "Regulatory risk",
-        "Transition risk"
-      ],
-      "valuation_regime": "FUNDAMENTAL",
-      "lifecycle_stage": "EMERGENCE",
-      "theme_type": "TREND",
-      "position_sizing_recommendation": "",
-      "primary_etfs": [],
-      "crowding_indicator": ""
-    },
-    {
-      "name": "CKD Autologous Cell Therapy",
+      "name": "Photonic Interconnect",
       "classification": "INVESTABLE",
-      "composite_score": 6.1,
-      "catalyst_score": 6.0,
-      "momentum_score": 5.5,
-      "crowding_score": 4.5,
-      "runway_score": 6.5,
-      "thesis_summary": "ProKidney's autologous cell therapy for CKD is differentiated but Phase 3 readout timing (15+ months) exceeds comfortable positioning window given pre-revenue burn rate.",
-      "why_now": "Not actionable until approaching Phase 3 readout window.",
+      "composite_score": 6.85,
+      "catalyst_score": 7.5,
+      "momentum_score": 7.0,
+      "crowding_score": 5.5,
+      "runway_score": 7.0,
+      "thesis_summary": "Photonic interconnects represent a potential next-generation data centre infrastructure play. HIMX's reported involvement in TSMC's CPO supply chain triggered a 35% surge, but the stock now trades above all analyst price targets, making the risk-reward unfavorable at current levels.",
+      "why_now": "Momentum has already run \u2014 this is a watchlist-for-pullback theme, not a current deployment opportunity.",
       "key_catalysts": [
-        "Phase 3 CKD readout"
+        "TSMC CPO revenue confirmation in quarterly results",
+        "Analyst target revisions"
       ],
       "primary_risks": [
-        "Long catalyst wait",
-        "Pre-revenue burn",
-        "Regulatory pathway uncertainty"
+        "Stock above all analyst targets",
+        "Speculation-driven rather than revenue-confirmed",
+        "TSMC CPO relationship unconfirmed"
       ],
-      "valuation_regime": "OPTIONALITY",
+      "valuation_regime": "TRANSITION",
       "lifecycle_stage": "EMERGENCE",
       "theme_type": "TREND",
       "position_sizing_recommendation": "",
@@ -305,144 +163,135 @@
   "pass_signals": [],
   "consider_signals": [
     {
-      "symbol": "BAND",
-      "price": 16.55,
-      "tier": "T3",
-      "quality_tier": 1,
-      "beta": 1.24,
-      "uc": 19.13,
+      "symbol": "VYGR",
+      "price": 4.45,
+      "tier": "T2",
+      "quality_tier": 2,
+      "beta": 1.37,
+      "uc": 15.22,
       "uc_rising": true,
-      "rsi14": 59.3,
+      "rsi14": 57.6,
       "macd_cross_up": true,
       "hma_pivot_low": true,
       "hma_pivot_high": false,
       "hma_slope_rising": true,
       "buy_signal": true,
       "exd_signal": false,
-      "return_20d": 23.2,
-      "banker": 19.13,
+      "return_20d": 31.4,
+      "banker": 15.22,
       "uc_rising_above": false,
-      "theme": "AI Voice CPaaS Infrastructure",
-      "theme_score": 7.6,
-      "pure_play_score": 7.6,
+      "theme": "BBB Gene Therapy Platform",
+      "theme_score": 8.05,
+      "pure_play_score": 8.05,
       "theme_verdict": "STRONG FIT",
       "theme_classification": "PRIME",
-      "valuation_regime": "FUNDAMENTAL",
+      "valuation_regime": "OPTIONALITY",
       "final_decision": "CONSIDER",
       "conviction": 6,
-      "gate_verdict": "BUY",
-      "gate_conviction": 7,
-      "gate_catalyst": "Q1 2026 earnings late April/May \u2014 first test of $874M revenue and 20% EBITDA margin guidance. $80M buyback execution ongoing. AI software services revenue tracking.",
-      "gate_bear_case": "Twilio scale advantage in CPaaS, declining messaging revenue, debt overhang from convertible notes",
-      "gate_math": "Revenue grows 16% to $874M, operating leverage delivers 29% EBITDA growth to $120M, multiple re-rates from 5.3x to 9x EV/EBITDA (peer median) = $26/share (+57%). At 15x EPS ($1.70) = $25.50 (+54%).",
+      "gate_verdict": "PASS",
+      "gate_conviction": 6,
+      "gate_catalyst": "VY1706 IND filing Q2 2026, BIIB080 Phase 2 data mid-2026, VY7523 tau PET data H2 2026, VY1706 first-in-human H2 2026",
+      "gate_bear_case": "No human proof-of-concept for IV BBB-crossing AAV gene therapy. CMO departed 3 months before IND filing.",
+      "gate_math": "Cash floor $3.43-3.76 (18-20% downside). Catalyst-adjusted expected value $8.28 (+86%). M&A comps at $800M-$1.4B imply $14-25/share. Platform validation would unlock 100-300% upside.",
       "sector_status": "",
-      "upside_potential": "Independent 12-month target $26.00 (operational, ex-M&A) to $30.29 (including M&A optionality). Method: peer-relative EV/Revenue 1.3x and EV/EBITDA 9x on corrected pro-forma EV (~$600M vs screener $860M), blended 50/25/25 with historical multiple (1.5x rev) and acquisition value (2.0x rev). Upside +57% to +83% from $16.55.",
+      "upside_potential": "Catalyst-adjusted probability valuation (50% weight): $8.28 base across 6 milestones with 93% probability of at least one success. Comparable stage valuation (30%): $9.50 at $530M implied market cap. M&A floor (20%): $7.15 at modest premium. Weighted independent target: $8.40 (+89%). Cash floor at $3.43-3.63 limits downside to ~20%.",
       "bullish_factors": [
-        "Market misprices Bandwidth's enterprise value. Screeners include $225M in operating lease liabilities as debt, inflating EV by 35% and making the stock appear fairly valued when it is significantly undervalued on financial-debt EV. Secondary: 82% incremental gross margin on new cloud comm revenue means operating leverage is dramatically steeper than trailing margins suggest.",
-        "Q1 2026 earnings (late April/May) \u2014 first test of $874M revenue and 20% EBITDA margin guidance. If Enterprise Voice growth sustains >20% and AI software revenue reaches $15M+ ARR, market begins repricing AI thesis from narrative to numbers.",
-        "Q1 2026 earnings \u2014 Enterprise Voice growth continuation and AI software revenue trajectory"
+        "The market prices TRACER as near-certain failure ($56M EV). We see 55-65% probability of at least one wholly-owned program entering human dosing within 12 months and 93% probability of at least one major catalyst producing a positive outcome. The EV anomaly ($56M vs $6.8B milestone portfolio and $800M-$1.4B deal comps) creates asymmetry the consensus isn't pricing.",
+        "VY1706 IND filing targeted Q2 2026 \u2014 the first wholly-owned clinical program leveraging TRACER capsids. The 12-month catalyst window is the densest in the company's history. Narrative is in EARLY DISCOVERY stage with institutional adoption just beginning.",
+        "VY1706 IND filing and acceptance Q2 2026"
       ],
       "risk_factors": [
-        "AI primarily deflects calls reducing enterprise voice volumes (Gartner: 30-50% of calls AI-resolved by 2028), while AI software revenue is only $10M (1.3% of total). Zero insider buying against $2.3M selling with CEO halving stake. FTC cease-and-desist for knowingly routing 125 illegal robocalls. 10%+ annual SBC dilution erodes per-share economics. $150M convertible notes due April 2028 constrain flexibility.",
-        "Q1 2026 Enterprise Voice growth rate \u2014 if decelerates from 21% to below 15%, the AI-driven growth acceleration narrative breaks. This is the single metric bridging $10M AI ARR today and the forward thesis.",
-        "Exit if: (1) BAND closes below $11.00 on weekly basis; (2) Q1 2026 cloud comm revenue growth decelerates below 5% YoY; (3) any insider sells >25% of remaining holdings outside 10b5-1 plan; (4) FTC escalates to formal enforcement action or fine exceeding $25M."
+        "The only human ever treated with an IV BBB-crossing engineered AAV capsid died (Capsida CAP-002, Sep 2025 \u2014 cerebral edema). VYGR's TRACER platform has zero human data and only one peer-reviewed publication. The CMO resigned 3 months before IND filing with no disclosed destination. No insider has ever purchased shares on the open market.",
+        "VY1706 IND filing date \u2014 any slippage from Q2 2026 timeline is earliest warning signal that CMO departure had operational impact or FDA feedback was more cautious than disclosed. Watch Q1 2026 earnings call (May) for IND timing specificity.",
+        "VY1706 IND delayed beyond Q3 2026, FDA clinical hold citing Capsida safety signal, a second IV BBB gene therapy death in any company's program, Neurocrine terminates FA partnership, or cash drops below $100M without a funding event."
       ],
-      "reasoning": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue \u2014 cheapest in the peer group despite 16% guided growth \u2014 the market prices in single-digit growth and ignores the emerging AI voice infrastructure thesis. The risk/reward from $16.55 is asymmetric: $21-28 on execution, $28-53 in a takeout, $10-12 on thesis failure.",
-      "position_size_pct": 0.025,
+      "reasoning": "Voyager Therapeutics at $4.45 offers a 4.5:1 risk-reward on a validated BBB gene therapy platform that pharma is paying $800M-$1.4B to access, while the public market assigns just $56M of enterprise value above cash. The catalysts are specific (VY1706 IND Q2, FIH H2 2026), the downside is structurally bounded by a $3.43-3.63 cash floor, and an elite biotech specialist fund (EcoR1) increased its stake 497% in Q4 2025.",
+      "position_size_pct": 0.1,
       "position_dollars": 0,
-      "position_tier": "T3",
-      "dd_verdict": "BUY",
+      "position_tier": "T2",
+      "dd_verdict": "PASS",
       "dd_conviction": 6,
       "dd_position_size": "REDUCED",
-      "dd_elevator_pitch": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue \u2014 cheapest in the peer group despite 16% guided growth \u2014 the market prices in single-digit growth and ignores the emerging AI voice infrastructure thesis. The risk/reward from $16.55 is asymmetric: $21-28 on execution, $28-53 in a takeout, $10-12 on thesis failure.",
-      "dd_why_now": "Q1 2026 earnings (late April/May) \u2014 first test of $874M revenue and 20% EBITDA margin guidance. If Enterprise Voice growth sustains >20% and AI software revenue reaches $15M+ ARR, market begins repricing AI thesis from narrative to numbers.",
-      "dd_the_math": "Independent 12-month target $26.00 (operational, ex-M&A) to $30.29 (including M&A optionality). Method: peer-relative EV/Revenue 1.3x and EV/EBITDA 9x on corrected pro-forma EV (~$600M vs screener $860M), blended 50/25/25 with historical multiple (1.5x rev) and acquisition value (2.0x rev). Upside +57% to +83% from $16.55.",
-      "dd_bear_case": "AI primarily deflects calls reducing enterprise voice volumes (Gartner: 30-50% of calls AI-resolved by 2028), while AI software revenue is only $10M (1.3% of total). Zero insider buying against $2.3M selling with CEO halving stake. FTC cease-and-desist for knowingly routing 125 illegal robocalls. 10%+ annual SBC dilution erodes per-share economics. $150M convertible notes due April 2028 constrain flexibility.",
-      "dd_risk_to_monitor": "Q1 2026 Enterprise Voice growth rate \u2014 if decelerates from 21% to below 15%, the AI-driven growth acceleration narrative breaks. This is the single metric bridging $10M AI ARR today and the forward thesis.",
-      "dd_action": "Enter at ~$16.55. T3 reduced position (2.5% of portfolio). Set hard stop at $11.00 (34% below entry, below 52-week low). Monitor Q1 2026 earnings for cloud comm acceleration and AI revenue disclosure.",
-      "dd_key_catalyst": "Q1 2026 earnings \u2014 Enterprise Voice growth continuation and AI software revenue trajectory",
+      "dd_elevator_pitch": "Voyager Therapeutics at $4.45 offers a 4.5:1 risk-reward on a validated BBB gene therapy platform that pharma is paying $800M-$1.4B to access, while the public market assigns just $56M of enterprise value above cash. The catalysts are specific (VY1706 IND Q2, FIH H2 2026), the downside is structurally bounded by a $3.43-3.63 cash floor, and an elite biotech specialist fund (EcoR1) increased its stake 497% in Q4 2025.",
+      "dd_why_now": "VY1706 IND filing targeted Q2 2026 \u2014 the first wholly-owned clinical program leveraging TRACER capsids. The 12-month catalyst window is the densest in the company's history. Narrative is in EARLY DISCOVERY stage with institutional adoption just beginning.",
+      "dd_the_math": "Catalyst-adjusted probability valuation (50% weight): $8.28 base across 6 milestones with 93% probability of at least one success. Comparable stage valuation (30%): $9.50 at $530M implied market cap. M&A floor (20%): $7.15 at modest premium. Weighted independent target: $8.40 (+89%). Cash floor at $3.43-3.63 limits downside to ~20%.",
+      "dd_bear_case": "The only human ever treated with an IV BBB-crossing engineered AAV capsid died (Capsida CAP-002, Sep 2025 \u2014 cerebral edema). VYGR's TRACER platform has zero human data and only one peer-reviewed publication. The CMO resigned 3 months before IND filing with no disclosed destination. No insider has ever purchased shares on the open market.",
+      "dd_risk_to_monitor": "VY1706 IND filing date \u2014 any slippage from Q2 2026 timeline is earliest warning signal that CMO departure had operational impact or FDA feedback was more cautious than disclosed. Watch Q1 2026 earnings call (May) for IND timing specificity.",
+      "dd_action": "Enter at ~$4.45. Standard position at T2 (10% equity). Binary catalyst modifier: T2 max. Stop at $3.40 (below cash floor). Monitor VY1706 IND filing Q2 2026 and BIIB080 data mid-2026.",
+      "dd_key_catalyst": "VY1706 IND filing and acceptance Q2 2026",
       "dd_fatal_flaw": "",
-      "action": "Enter at ~$16.55. T3 reduced position (2.5% of portfolio). Set hard stop at $11.00 (34% below entry, below 52-week low). Monitor Q1 2026 earnings for cloud comm acceleration and AI revenue disclosure.",
-      "catalyst_summary": "Q1 2026 earnings late April/May \u2014 first test of $874M revenue and 20% EBITDA margin guidance. $80M buyback execution ongoing. AI software services revenue tracking."
+      "action": "Enter at ~$4.45. Standard position at T2 (10% equity). Binary catalyst modifier: T2 max. Stop at $3.40 (below cash floor). Monitor VY1706 IND filing Q2 2026 and BIIB080 data mid-2026.",
+      "catalyst_summary": "VY1706 IND filing Q2 2026, BIIB080 Phase 2 data mid-2026, VY7523 tau PET data H2 2026, VY1706 first-in-human H2 2026"
     }
   ],
   "buy_signals": [
     {
-      "symbol": "BAND",
-      "price": 16.55,
-      "tier": "T3",
-      "quality_tier": 1,
-      "beta": 1.24,
-      "uc": 19.13,
+      "symbol": "VYGR",
+      "price": 4.45,
+      "tier": "T2",
+      "quality_tier": 2,
+      "beta": 1.37,
+      "uc": 15.22,
       "uc_rising": true,
-      "rsi14": 59.3,
+      "rsi14": 57.6,
       "macd_cross_up": true,
       "hma_pivot_low": true,
       "hma_pivot_high": false,
       "hma_slope_rising": true,
       "buy_signal": true,
       "exd_signal": false,
-      "return_20d": 23.2,
-      "banker": 19.13,
+      "return_20d": 31.4,
+      "banker": 15.22,
       "uc_rising_above": false,
-      "theme": "AI Voice CPaaS Infrastructure",
-      "theme_score": 7.6,
-      "pure_play_score": 7.6,
+      "theme": "BBB Gene Therapy Platform",
+      "theme_score": 8.05,
+      "pure_play_score": 8.05,
       "theme_verdict": "STRONG FIT",
       "theme_classification": "PRIME",
-      "valuation_regime": "FUNDAMENTAL",
+      "valuation_regime": "OPTIONALITY",
       "final_decision": "CONSIDER",
       "conviction": 6,
-      "gate_verdict": "BUY",
-      "gate_conviction": 7,
-      "gate_catalyst": "Q1 2026 earnings late April/May \u2014 first test of $874M revenue and 20% EBITDA margin guidance. $80M buyback execution ongoing. AI software services revenue tracking.",
-      "gate_bear_case": "Twilio scale advantage in CPaaS, declining messaging revenue, debt overhang from convertible notes",
-      "gate_math": "Revenue grows 16% to $874M, operating leverage delivers 29% EBITDA growth to $120M, multiple re-rates from 5.3x to 9x EV/EBITDA (peer median) = $26/share (+57%). At 15x EPS ($1.70) = $25.50 (+54%).",
+      "gate_verdict": "PASS",
+      "gate_conviction": 6,
+      "gate_catalyst": "VY1706 IND filing Q2 2026, BIIB080 Phase 2 data mid-2026, VY7523 tau PET data H2 2026, VY1706 first-in-human H2 2026",
+      "gate_bear_case": "No human proof-of-concept for IV BBB-crossing AAV gene therapy. CMO departed 3 months before IND filing.",
+      "gate_math": "Cash floor $3.43-3.76 (18-20% downside). Catalyst-adjusted expected value $8.28 (+86%). M&A comps at $800M-$1.4B imply $14-25/share. Platform validation would unlock 100-300% upside.",
       "sector_status": "",
-      "upside_potential": "Independent 12-month target $26.00 (operational, ex-M&A) to $30.29 (including M&A optionality). Method: peer-relative EV/Revenue 1.3x and EV/EBITDA 9x on corrected pro-forma EV (~$600M vs screener $860M), blended 50/25/25 with historical multiple (1.5x rev) and acquisition value (2.0x rev). Upside +57% to +83% from $16.55.",
+      "upside_potential": "Catalyst-adjusted probability valuation (50% weight): $8.28 base across 6 milestones with 93% probability of at least one success. Comparable stage valuation (30%): $9.50 at $530M implied market cap. M&A floor (20%): $7.15 at modest premium. Weighted independent target: $8.40 (+89%). Cash floor at $3.43-3.63 limits downside to ~20%.",
       "bullish_factors": [
-        "Market misprices Bandwidth's enterprise value. Screeners include $225M in operating lease liabilities as debt, inflating EV by 35% and making the stock appear fairly valued when it is significantly undervalued on financial-debt EV. Secondary: 82% incremental gross margin on new cloud comm revenue means operating leverage is dramatically steeper than trailing margins suggest.",
-        "Q1 2026 earnings (late April/May) \u2014 first test of $874M revenue and 20% EBITDA margin guidance. If Enterprise Voice growth sustains >20% and AI software revenue reaches $15M+ ARR, market begins repricing AI thesis from narrative to numbers.",
-        "Q1 2026 earnings \u2014 Enterprise Voice growth continuation and AI software revenue trajectory"
+        "The market prices TRACER as near-certain failure ($56M EV). We see 55-65% probability of at least one wholly-owned program entering human dosing within 12 months and 93% probability of at least one major catalyst producing a positive outcome. The EV anomaly ($56M vs $6.8B milestone portfolio and $800M-$1.4B deal comps) creates asymmetry the consensus isn't pricing.",
+        "VY1706 IND filing targeted Q2 2026 \u2014 the first wholly-owned clinical program leveraging TRACER capsids. The 12-month catalyst window is the densest in the company's history. Narrative is in EARLY DISCOVERY stage with institutional adoption just beginning.",
+        "VY1706 IND filing and acceptance Q2 2026"
       ],
       "risk_factors": [
-        "AI primarily deflects calls reducing enterprise voice volumes (Gartner: 30-50% of calls AI-resolved by 2028), while AI software revenue is only $10M (1.3% of total). Zero insider buying against $2.3M selling with CEO halving stake. FTC cease-and-desist for knowingly routing 125 illegal robocalls. 10%+ annual SBC dilution erodes per-share economics. $150M convertible notes due April 2028 constrain flexibility.",
-        "Q1 2026 Enterprise Voice growth rate \u2014 if decelerates from 21% to below 15%, the AI-driven growth acceleration narrative breaks. This is the single metric bridging $10M AI ARR today and the forward thesis.",
-        "Exit if: (1) BAND closes below $11.00 on weekly basis; (2) Q1 2026 cloud comm revenue growth decelerates below 5% YoY; (3) any insider sells >25% of remaining holdings outside 10b5-1 plan; (4) FTC escalates to formal enforcement action or fine exceeding $25M."
+        "The only human ever treated with an IV BBB-crossing engineered AAV capsid died (Capsida CAP-002, Sep 2025 \u2014 cerebral edema). VYGR's TRACER platform has zero human data and only one peer-reviewed publication. The CMO resigned 3 months before IND filing with no disclosed destination. No insider has ever purchased shares on the open market.",
+        "VY1706 IND filing date \u2014 any slippage from Q2 2026 timeline is earliest warning signal that CMO departure had operational impact or FDA feedback was more cautious than disclosed. Watch Q1 2026 earnings call (May) for IND timing specificity.",
+        "VY1706 IND delayed beyond Q3 2026, FDA clinical hold citing Capsida safety signal, a second IV BBB gene therapy death in any company's program, Neurocrine terminates FA partnership, or cash drops below $100M without a funding event."
       ],
-      "reasoning": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue \u2014 cheapest in the peer group despite 16% guided growth \u2014 the market prices in single-digit growth and ignores the emerging AI voice infrastructure thesis. The risk/reward from $16.55 is asymmetric: $21-28 on execution, $28-53 in a takeout, $10-12 on thesis failure.",
-      "position_size_pct": 0.025,
+      "reasoning": "Voyager Therapeutics at $4.45 offers a 4.5:1 risk-reward on a validated BBB gene therapy platform that pharma is paying $800M-$1.4B to access, while the public market assigns just $56M of enterprise value above cash. The catalysts are specific (VY1706 IND Q2, FIH H2 2026), the downside is structurally bounded by a $3.43-3.63 cash floor, and an elite biotech specialist fund (EcoR1) increased its stake 497% in Q4 2025.",
+      "position_size_pct": 0.1,
       "position_dollars": 0,
-      "position_tier": "T3",
-      "dd_verdict": "BUY",
+      "position_tier": "T2",
+      "dd_verdict": "PASS",
       "dd_conviction": 6,
       "dd_position_size": "REDUCED",
-      "dd_elevator_pitch": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue \u2014 cheapest in the peer group despite 16% guided growth \u2014 the market prices in single-digit growth and ignores the emerging AI voice infrastructure thesis. The risk/reward from $16.55 is asymmetric: $21-28 on execution, $28-53 in a takeout, $10-12 on thesis failure.",
-      "dd_why_now": "Q1 2026 earnings (late April/May) \u2014 first test of $874M revenue and 20% EBITDA margin guidance. If Enterprise Voice growth sustains >20% and AI software revenue reaches $15M+ ARR, market begins repricing AI thesis from narrative to numbers.",
-      "dd_the_math": "Independent 12-month target $26.00 (operational, ex-M&A) to $30.29 (including M&A optionality). Method: peer-relative EV/Revenue 1.3x and EV/EBITDA 9x on corrected pro-forma EV (~$600M vs screener $860M), blended 50/25/25 with historical multiple (1.5x rev) and acquisition value (2.0x rev). Upside +57% to +83% from $16.55.",
-      "dd_bear_case": "AI primarily deflects calls reducing enterprise voice volumes (Gartner: 30-50% of calls AI-resolved by 2028), while AI software revenue is only $10M (1.3% of total). Zero insider buying against $2.3M selling with CEO halving stake. FTC cease-and-desist for knowingly routing 125 illegal robocalls. 10%+ annual SBC dilution erodes per-share economics. $150M convertible notes due April 2028 constrain flexibility.",
-      "dd_risk_to_monitor": "Q1 2026 Enterprise Voice growth rate \u2014 if decelerates from 21% to below 15%, the AI-driven growth acceleration narrative breaks. This is the single metric bridging $10M AI ARR today and the forward thesis.",
-      "dd_action": "Enter at ~$16.55. T3 reduced position (2.5% of portfolio). Set hard stop at $11.00 (34% below entry, below 52-week low). Monitor Q1 2026 earnings for cloud comm acceleration and AI revenue disclosure.",
-      "dd_key_catalyst": "Q1 2026 earnings \u2014 Enterprise Voice growth continuation and AI software revenue trajectory",
+      "dd_elevator_pitch": "Voyager Therapeutics at $4.45 offers a 4.5:1 risk-reward on a validated BBB gene therapy platform that pharma is paying $800M-$1.4B to access, while the public market assigns just $56M of enterprise value above cash. The catalysts are specific (VY1706 IND Q2, FIH H2 2026), the downside is structurally bounded by a $3.43-3.63 cash floor, and an elite biotech specialist fund (EcoR1) increased its stake 497% in Q4 2025.",
+      "dd_why_now": "VY1706 IND filing targeted Q2 2026 \u2014 the first wholly-owned clinical program leveraging TRACER capsids. The 12-month catalyst window is the densest in the company's history. Narrative is in EARLY DISCOVERY stage with institutional adoption just beginning.",
+      "dd_the_math": "Catalyst-adjusted probability valuation (50% weight): $8.28 base across 6 milestones with 93% probability of at least one success. Comparable stage valuation (30%): $9.50 at $530M implied market cap. M&A floor (20%): $7.15 at modest premium. Weighted independent target: $8.40 (+89%). Cash floor at $3.43-3.63 limits downside to ~20%.",
+      "dd_bear_case": "The only human ever treated with an IV BBB-crossing engineered AAV capsid died (Capsida CAP-002, Sep 2025 \u2014 cerebral edema). VYGR's TRACER platform has zero human data and only one peer-reviewed publication. The CMO resigned 3 months before IND filing with no disclosed destination. No insider has ever purchased shares on the open market.",
+      "dd_risk_to_monitor": "VY1706 IND filing date \u2014 any slippage from Q2 2026 timeline is earliest warning signal that CMO departure had operational impact or FDA feedback was more cautious than disclosed. Watch Q1 2026 earnings call (May) for IND timing specificity.",
+      "dd_action": "Enter at ~$4.45. Standard position at T2 (10% equity). Binary catalyst modifier: T2 max. Stop at $3.40 (below cash floor). Monitor VY1706 IND filing Q2 2026 and BIIB080 data mid-2026.",
+      "dd_key_catalyst": "VY1706 IND filing and acceptance Q2 2026",
       "dd_fatal_flaw": "",
-      "action": "Enter at ~$16.55. T3 reduced position (2.5% of portfolio). Set hard stop at $11.00 (34% below entry, below 52-week low). Monitor Q1 2026 earnings for cloud comm acceleration and AI revenue disclosure.",
-      "catalyst_summary": "Q1 2026 earnings late April/May \u2014 first test of $874M revenue and 20% EBITDA margin guidance. $80M buyback execution ongoing. AI software services revenue tracking."
+      "action": "Enter at ~$4.45. Standard position at T2 (10% equity). Binary catalyst modifier: T2 max. Stop at $3.40 (below cash floor). Monitor VY1706 IND filing Q2 2026 and BIIB080 data mid-2026.",
+      "catalyst_summary": "VY1706 IND filing Q2 2026, BIIB080 Phase 2 data mid-2026, VY7523 tau PET data H2 2026, VY1706 first-in-human H2 2026"
     }
   ],
   "sell_signals": [],
   "assessed_signals": [
     {
-      "symbol": "GOGO",
-      "price": 5.23,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T2"
-    },
-    {
-      "symbol": "XPER",
-      "price": 6.16,
+      "symbol": "DDD",
+      "price": 2.42,
       "theme": "",
       "theme_score": 0,
       "theme_verdict": "WEAK FIT",
@@ -450,17 +299,17 @@
       "tier": "T3"
     },
     {
-      "symbol": "MEG",
-      "price": 27.0,
+      "symbol": "LFMD",
+      "price": 3.98,
       "theme": "",
       "theme_score": 0,
       "theme_verdict": "WEAK FIT",
       "final_decision": "REJECTED",
-      "tier": "T2"
+      "tier": "T3"
     },
     {
-      "symbol": "SABR",
-      "price": 1.59,
+      "symbol": "HIMX",
+      "price": 9.84,
       "theme": "",
       "theme_score": 0,
       "theme_verdict": "WEAK FIT",
@@ -468,53 +317,8 @@
       "tier": "T1"
     },
     {
-      "symbol": "HNST",
-      "price": 2.93,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T3"
-    },
-    {
-      "symbol": "SOC",
-      "price": 14.37,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T3"
-    },
-    {
-      "symbol": "CVI",
-      "price": 26.83,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T3"
-    },
-    {
-      "symbol": "SEZL",
-      "price": 73.47,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T3"
-    },
-    {
-      "symbol": "PROK",
-      "price": 2.3,
-      "theme": "",
-      "theme_score": 0,
-      "theme_verdict": "WEAK FIT",
-      "final_decision": "REJECTED",
-      "tier": "T3"
-    },
-    {
-      "symbol": "CLDX",
-      "price": 29.43,
+      "symbol": "RLMD",
+      "price": 5.91,
       "theme": "",
       "theme_score": 0,
       "theme_verdict": "WEAK FIT",
@@ -522,69 +326,258 @@
       "tier": "T2"
     },
     {
-      "symbol": "GOGO",
-      "price": 5.23,
-      "theme": "BizAv Connectivity Upgrade (5G + LEO)",
+      "symbol": "VKTX",
+      "price": 35.63,
+      "theme": "",
       "theme_score": 0,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "WATCHLIST",
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "FRHC",
+      "price": 131.99,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T1"
+    },
+    {
+      "symbol": "WIX",
+      "price": 88.09,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
       "tier": "T2"
     },
     {
-      "symbol": "XPER",
-      "price": 6.16,
-      "theme": "Connected Car Platform Monetization",
+      "symbol": "BMBL",
+      "price": 3.77,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T1"
+    },
+    {
+      "symbol": "WOOF",
+      "price": 3.62,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T1"
+    },
+    {
+      "symbol": "WEYS",
+      "price": 33.01,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T1"
+    },
+    {
+      "symbol": "RES",
+      "price": 6.52,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "TONX",
+      "price": 3.35,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "EMPD",
+      "price": 4.39,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T2"
+    },
+    {
+      "symbol": "ROMA",
+      "price": 5.4,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "BCAX",
+      "price": 19.19,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "CZR",
+      "price": 28.06,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "GEVO",
+      "price": 2.38,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "HIMX",
+      "price": 9.84,
+      "theme": "Photonic Interconnect",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": "T1"
+    },
+    {
+      "symbol": "LFMD",
+      "price": 3.98,
+      "theme": "GLP-1 Obesity Telehealth",
       "theme_score": 0,
       "theme_verdict": "GOOD FIT",
       "final_decision": "WATCHLIST",
       "tier": "T3"
-    },
-    {
-      "symbol": "MEG",
-      "price": 27.0,
-      "theme": "PFAS / Methane Environmental Compliance",
-      "theme_score": 0,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "WATCHLIST",
-      "tier": "T2"
-    },
-    {
-      "symbol": "CLDX",
-      "price": 29.43,
-      "theme": "Anti-KIT Mast Cell Inhibition",
-      "theme_score": 0,
-      "theme_verdict": "GOOD FIT",
-      "final_decision": "WATCHLIST",
-      "tier": "T2"
     }
   ],
   "historical_winners": [
     {
-      "ticker": "ETON",
-      "entry_price": 17.93,
-      "current_price": 16.8,
-      "pnl_pct": -6.302286670384827,
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
       "signal_date": "2026-02-22",
-      "theme": "Healthcare Contrarian Recovery"
+      "theme": "Financial Technology"
     },
     {
-      "ticker": "RELY",
-      "entry_price": 17.15,
-      "current_price": 17.04,
-      "pnl_pct": -0.641399416909616,
+      "ticker": "EVTL",
+      "entry_price": 4.5,
+      "current_price": 3.74,
+      "pnl_pct": -16.888888888888886,
       "signal_date": "2026-02-22",
-      "theme": "Cross-Border Digital Payments & Remittances"
+      "theme": "Drone tech"
     },
     {
-      "ticker": "NGNE",
-      "entry_price": 20.5,
-      "current_price": 22.17,
-      "pnl_pct": 8.146341463414641,
+      "ticker": "NVDA",
+      "entry_price": 150.0,
+      "current_price": 180.25,
+      "pnl_pct": 20.166666666666664,
       "signal_date": "2026-03-01",
-      "theme": "Rare disease gene therapy \u2014 Rett syndrome"
+      "theme": "AI Chip Manufacturer"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "ASPI",
+      "entry_price": 6.0,
+      "current_price": 5.28,
+      "pnl_pct": -12.0,
+      "signal_date": "2026-03-04",
+      "theme": "Nuclear Fuel"
+    },
+    {
+      "ticker": "HIVE",
+      "entry_price": 2.1,
+      "current_price": 2.13,
+      "pnl_pct": 1.4285714285714235,
+      "signal_date": "2026-03-04",
+      "theme": "Crypto Miner and Datacentres"
+    },
+    {
+      "ticker": "BAND",
+      "entry_price": 16.55,
+      "current_price": 15.23,
+      "pnl_pct": -7.975830815709973,
+      "signal_date": "2026-03-08",
+      "theme": "AI Voice CPaaS Infrastructure"
     }
   ],
-  "big_wins": [],
-  "home_runs": [],
+  "big_wins": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    }
+  ],
+  "home_runs": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    }
+  ],
   "exit_signals": []
 }

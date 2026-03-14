@@ -2547,6 +2547,74 @@ def validate_tweet(
                     )
                     break
 
+    # Step 13: Theme consistency — verify sector labels match portfolio theme
+    if portfolio and found_tickers:
+        SECTOR_KEYWORDS = {
+            "biotech": ["biotech", "biopharma", "pharmaceutical", "drug trial", "fda approval"],
+            "fintech": ["fintech", "financial technology", "banking tech", "neobank"],
+            "ai": ["artificial intelligence", "ai infrastructure", "machine learning", "ai chip"],
+            "drone": ["drone", "uav", "evtol", "urban air mobility", "aviation tech"],
+            "nuclear": ["nuclear", "uranium", "reactor", "fission", "nuclear fuel"],
+            "quantum": ["quantum computing", "quantum tech"],
+            "crypto": ["crypto", "blockchain", "bitcoin", "defi", "web3"],
+            "solar": ["solar", "renewable energy", "clean energy", "wind power"],
+            "semiconductor": ["semiconductor", "chip maker", "chip manufacturer", "wafer fab"],
+            "cybersecurity": ["cybersecurity", "cyber security", "infosec"],
+            "space": ["space", "satellite", "orbital", "launch vehicle"],
+            "cannabis": ["cannabis", "marijuana", "weed stock"],
+            "ev": ["electric vehicle", "ev maker", "ev play", "charging network"],
+        }
+
+        portfolio_themes = {row['ticker']: row.get('theme', '').lower() for row in portfolio}
+
+        for ticker in found_tickers:
+            expected_theme = portfolio_themes.get(ticker, '')
+            if not expected_theme:
+                continue
+
+            # Check each sector keyword group against tweet text
+            for sector, keywords in SECTOR_KEYWORDS.items():
+                for kw in keywords:
+                    if kw in text_lower:
+                        # Does this sector match the ticker's actual theme?
+                        theme_matches = (
+                            sector in expected_theme
+                            or any(k in expected_theme for k in keywords)
+                        )
+                        if not theme_matches:
+                            failures.append(
+                                f"step13_theme: ${ticker} theme is '{expected_theme}' "
+                                f"but tweet references '{sector}' sector"
+                            )
+                        break  # Only need one keyword match per sector group
+
+    # Step 13b: Raw price validation — verify mentioned prices are close to actual
+    if portfolio and found_tickers:
+        price_mentions = re.findall(r'\$(\d+\.?\d{0,2})\b', text)
+        if price_mentions and len(found_tickers) == 1:
+            # Only validate when tweet references a single ticker (avoids ambiguity)
+            ticker = list(found_tickers)[0]
+            for row in portfolio:
+                if row['ticker'] == ticker:
+                    current = float(row.get('current_price') or 0)
+                    entry = float(row.get('entry_price') or 0)
+                    if current > 0:
+                        for price_str in price_mentions:
+                            mentioned = float(price_str)
+                            if mentioned > 1.0:  # Skip $0.xx prices (likely not stock prices)
+                                # Allow entry price, current price, or highest close
+                                highest = float(row.get('highest_close') or 0)
+                                valid_prices = [p for p in [current, entry, highest] if p > 0]
+                                if valid_prices and not any(
+                                    abs(mentioned - vp) / vp <= 0.25 for vp in valid_prices
+                                ):
+                                    failures.append(
+                                        f"step13b_price: ${ticker} mentioned at ${mentioned:.2f} "
+                                        f"but actual prices are entry=${entry:.2f}, "
+                                        f"current=${current:.2f}, high=${highest:.2f}"
+                                    )
+                    break
+
     # Step 14: Winner framing — block defeatist language (NEW — PRD D29)
     defeatist_patterns = [
         r"rough (?:week|day|month)",

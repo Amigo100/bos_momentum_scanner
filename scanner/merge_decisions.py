@@ -179,7 +179,7 @@ def merge_signals(tech: dict, decisions: dict) -> dict:
 
         # Determine final_decision from verdict
         verdict = pos.get("verdict", pos.get("dd_verdict", ""))
-        if verdict in ("STRONG BUY", "STRONG_BUY"):
+        if verdict in ("BUY", "STRONG BUY", "STRONG_BUY"):
             final_decision = "PASS"
         elif verdict in ("SPEC BUY", "SPEC_BUY", "SPECULATIVE BUY"):
             final_decision = "CONSIDER"

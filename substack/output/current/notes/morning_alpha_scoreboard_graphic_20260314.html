@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .card { width: 680px; margin: 0 auto; padding: 32px; background: #ffffff; }
+  .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 2px solid #1a1a1a; padding-bottom: 12px; }
+  .title { font-size: 18px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.3px; }
+  .date { font-size: 13px; color: #6b6b6b; }
+  .bars { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { width: 100px; font-size: 14px; font-weight: 600; color: #1a1a1a; text-align: right; }
+  .bar-track { flex: 1; height: 36px; background: #f5f5f5; border-radius: 4px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 14px; font-weight: 700; color: #fff; min-width: 60px; }
+  .bar-fill.positive { background: #16a34a; }
+  .bar-fill.negative { background: #dc2626; }
+  .bar-fill.neutral { background: #9ca3af; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .stat { text-align: center; padding: 12px; background: #f9fafb; border-radius: 6px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .stat-value.green { color: #16a34a; }
+  .stat-label { font-size: 11px; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .footer { font-size: 11px; color: #9ca3af; text-align: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
+  .positions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .pos { display: flex; justify-content: space-between; padding: 6px 10px; font-size: 13px; border-radius: 4px; background: #f9fafb; }
+  .pos-ticker { font-weight: 700; }
+  .pos-pnl { font-weight: 600; }
+  .pos-pnl.up { color: #16a34a; }
+  .pos-pnl.down { color: #dc2626; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <span class="title">ALPHA SCOREBOARD</span>
+    <span class="date">Week 11 — March 14, 2026</span>
+  </div>
+
+  <div class="bars">
+    <div class="bar-row">
+      <span class="bar-label">Portfolio</span>
+      <div class="bar-track">
+        <div class="bar-fill positive" style="width: 88%;">+44.2%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">SPY</span>
+      <div class="bar-track">
+        <div class="bar-fill negative" style="width: 8%;">-2.0%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">QQQ</span>
+      <div class="bar-track">
+        <div class="bar-fill negative" style="width: 6%;">-1.3%</div>
+      </div>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">IWM</span>
+      <div class="bar-track">
+        <div class="bar-fill negative" style="width: 10%;">-3.1%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value green">+46.2%</div>
+      <div class="stat-label">Alpha vs SPY</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">6 / 8</div>
+      <div class="stat-label">Winners</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value green">2</div>
+      <div class="stat-label">100%+ Gains</div>
+    </div>
+  </div>
+
+  <div class="positions">
+    <div class="pos"><span class="pos-ticker">$SOFI</span><span class="pos-pnl up">+135.6%</span></div>
+    <div class="pos"><span class="pos-ticker">$TMDX</span><span class="pos-pnl up">+101.3%</span></div>
+    <div class="pos"><span class="pos-ticker">$AMD</span><span class="pos-pnl up">+61.2%</span></div>
+    <div class="pos"><span class="pos-ticker">$EVTL</span><span class="pos-pnl up">+35.3%</span></div>
+    <div class="pos"><span class="pos-ticker">$NVDA</span><span class="pos-pnl up">+22.1%</span></div>
+    <div class="pos"><span class="pos-ticker">$HIVE</span><span class="pos-pnl up">+8.6%</span></div>
+    <div class="pos"><span class="pos-ticker">$ASPI</span><span class="pos-pnl down">-2.5%</span></div>
+    <div class="pos"><span class="pos-ticker">$BAND</span><span class="pos-pnl down">-8.0%</span></div>
+  </div>
+
+  <div class="footer">Sterling Signals — Not financial advice. Informational only.</div>
+</div>
+</body>
+</html>

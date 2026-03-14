@@ -1,40 +1,32 @@
 {
-  "date": "2026-03-14",
-  "day": "saturday",
-  "generated_at": "2026-03-14T13:05:55.475222+00:00",
-  "source": "watchdog_fallback",
-  "decision_reason": "Cowork missed \u2014 watchdog fallback ran",
-  "post": {
-    "category": "none",
-    "file": null,
-    "title": null
-  },
-  "notes": [
-    {
-      "slot": 1,
-      "type": "ALPHA_SCOREBOARD",
-      "time_et": "08:30",
-      "time_label": "morning",
-      "file": "notes/morning_alpha_scoreboard_20260314.html"
+    "date": "2026-03-14",
+    "day": "saturday",
+    "generated_at": "2026-03-14T07:15:00",
+    "source": "cowork",
+    "decision_reason": "Saturday → Tools & Tech: Finviz Screener (user-generated post + carousel). Notes: ALPHA_SCOREBOARD + COMPANION_NOTE + WINNER_RECEIPT.",
+    "post": {
+        "category": "tools_and_tech",
+        "subcategory": "screeners",
+        "file": null,
+        "title": "Tools & Tech: Finviz — The Free Screener Every Active Investor Needs",
+        "status": "MISSING"
     },
-    {
-      "slot": 2,
-      "type": "COMPANION_NOTE",
-      "time_et": "12:30",
-      "time_label": "midday",
-      "file": "notes/midday_companion_note_20260314.html"
+    "visual": {
+        "type": "carousel",
+        "series": "INVESTOR TOOLKIT",
+        "file": null,
+        "status": "MISSING"
     },
-    {
-      "slot": 3,
-      "type": "WINNER_RECEIPT",
-      "time_et": "17:00",
-      "time_label": "evening",
-      "file": "notes/evening_winner_receipt_20260314.html"
-    }
-  ],
-  "visual": {
-    "type": "none",
-    "file": null
-  },
-  "tweets_generated": 5
+    "notes": [
+        {"slot": 1, "type": "ALPHA_SCOREBOARD", "time_et": "08:30", "time_label": "morning", "file": "notes/morning_alpha_scoreboard_20260314.html", "graphic": "notes/morning_alpha_scoreboard_graphic_20260314.png"},
+        {"slot": 2, "type": "COMPANION_NOTE", "time_et": "12:30", "time_label": "midday", "file": "notes/midday_companion_note_20260314.html"},
+        {"slot": 3, "type": "WINNER_RECEIPT", "time_et": "17:00", "time_label": "evening", "file": "notes/evening_winner_receipt_20260314.html"}
+    ],
+    "reminders": [
+        {"time_et": "08:30", "action": "Post morning ALPHA_SCOREBOARD note + graphic", "file": "notes/morning_alpha_scoreboard_20260314.html"},
+        {"time_et": "12:30", "action": "Post companion note + publish Tools & Tech post (GENERATE FIRST in claude.ai)", "file": "notes/midday_companion_note_20260314.html"},
+        {"time_et": "17:00", "action": "Post evening WINNER_RECEIPT note", "file": "notes/evening_winner_receipt_20260314.html"}
+    ],
+    "tweets_generated": 6,
+    "new_signals": []
 }

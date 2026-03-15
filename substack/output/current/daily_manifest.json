@@ -1,40 +1,19 @@
 {
-  "date": "2026-03-14",
-  "day": "saturday",
-  "generated_at": "2026-03-14T13:05:55.475222+00:00",
-  "source": "watchdog_fallback",
-  "decision_reason": "Cowork missed \u2014 watchdog fallback ran",
-  "post": {
-    "category": "none",
-    "file": null,
-    "title": null
-  },
-  "notes": [
-    {
-      "slot": 1,
-      "type": "ALPHA_SCOREBOARD",
-      "time_et": "08:30",
-      "time_label": "morning",
-      "file": "notes/morning_alpha_scoreboard_20260314.html"
-    },
-    {
-      "slot": 2,
-      "type": "COMPANION_NOTE",
-      "time_et": "12:30",
-      "time_label": "midday",
-      "file": "notes/midday_companion_note_20260314.html"
-    },
-    {
-      "slot": 3,
-      "type": "WINNER_RECEIPT",
-      "time_et": "17:00",
-      "time_label": "evening",
-      "file": "notes/evening_winner_receipt_20260314.html"
-    }
-  ],
-  "visual": {
-    "type": "none",
-    "file": null
-  },
-  "tweets_generated": 5
+    "date": "2026-03-15",
+    "day": "sunday",
+    "generated_at": "2026-03-15T08:00:00",
+    "source": "cowork",
+    "decision_reason": "Sunday → Notes only (2 notes). No post, no visual. Weekly plan confirms no Sunday content. NVDA GTC catalyst tomorrow.",
+    "post": null,
+    "visual": null,
+    "notes": [
+        {"slot": 1, "type": "DATA_INSIGHT", "time_et": "08:30", "time_label": "morning", "file": "notes/morning_data_insight_20260315.html", "graphic": "notes/morning_data_insight_graphic_20260315.png"},
+        {"slot": 2, "type": "READER_QUESTION", "time_et": "12:30", "time_label": "midday", "file": "notes/midday_reader_question_20260315.html"}
+    ],
+    "reminders": [
+        {"time_et": "08:30", "action": "Post morning DATA_INSIGHT note + portfolio snapshot graphic", "file": "notes/morning_data_insight_20260315.html"},
+        {"time_et": "12:30", "action": "Post midday READER_QUESTION note (averaging down myth)", "file": "notes/midday_reader_question_20260315.html"}
+    ],
+    "tweets_generated": 5,
+    "new_signals": []
 }

@@ -796,6 +796,8 @@ def main() -> int:
                         help="Verify Twitter credentials for all accounts (no posting)")
     parser.add_argument("--live-queue", action="store_true",
                         help="Use live content queue (default behavior, kept for workflow compat)")
+    parser.add_argument("--reset-failed", action="store_true",
+                        help="Reset failed items back to pending for retry (use after fixing API issues)")
     args = parser.parse_args()
 
     print("\n" + "═" * 60)
@@ -826,6 +828,39 @@ def main() -> int:
 
         print()
         return 0 if all_ok else 1
+
+    # ── Reset-failed mode: reset failed items back to pending ──
+    if args.reset_failed:
+        queue_file = LIVE_QUEUE_FILE
+        queue = load_queue(queue_file)
+
+        if args.account == "all":
+            try:
+                from config import TWITTER_ACCOUNTS
+                account_keys = list(TWITTER_ACCOUNTS.keys())
+            except ImportError:
+                account_keys = ['main']
+        else:
+            account_keys = [args.account]
+
+        total_reset = 0
+        for account_key in account_keys:
+            target_variant = LIVE_ACCOUNT_MAP.get(account_key, "variant_1")
+            reset_count = 0
+            for item in queue:
+                if item.get('account') == target_variant and item.get('status') == 'failed':
+                    item['status'] = 'pending'
+                    item.pop('error', None)
+                    reset_count += 1
+            print(f"  🔄 {account_key} ({target_variant}): reset {reset_count} failed → pending")
+            total_reset += reset_count
+
+        if total_reset > 0:
+            save_queue(queue, queue_file)
+            print(f"\n  💾 Saved {total_reset} reset items to {queue_file}")
+        else:
+            print(f"\n  ✓ No failed items to reset")
+        return 0
 
     if args.account == "all":
         # Post to all accounts sequentially with staggered delays

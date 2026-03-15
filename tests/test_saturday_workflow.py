@@ -97,6 +97,33 @@ def sample_tech_data() -> dict:
                 "risk_factors": [],
                 "reasoning": "",
             },
+            {
+                "symbol": "BAND",
+                "price": 12.50,
+                "tier": "T2",
+                "quality_tier": 2,
+                "beta": 1.85,
+                "uc": 15.3,
+                "uc_rising": True,
+                "uc_rising_above": True,
+                "rsi14": 55.2,
+                "macd_cross_up": True,
+                "hma_pivot_low": True,
+                "hma_pivot_high": False,
+                "hma_slope_rising": True,
+                "buy_signal": True,
+                "exd_signal": False,
+                "return_20d": 6.1,
+                "banker": 15.3,
+                "theme": "",
+                "theme_score": 0,
+                "final_decision": "TECHNICAL_ONLY",
+                "conviction": 0,
+                "catalyst_summary": "",
+                "bullish_factors": [],
+                "risk_factors": [],
+                "reasoning": "",
+            },
         ],
         "sell_signals": [],
         "assessed_signals": [],
@@ -203,6 +230,41 @@ def sample_decisions() -> dict:
                 "gate_bear_case": "Profitability unproven",
                 "gate_math": "6x forward rev → $24-26",
             },
+            {
+                "symbol": "BAND",
+                "price": 12.50,
+                "verdict": "BUY",
+                "dd_verdict": "BUY",
+                "conviction": 7,
+                "dd_conviction": 7,
+                "theme": "Grid Infrastructure",
+                "theme_score": 7.5,
+                "theme_verdict": "GOOD FIT",
+                "theme_classification": "PRIME",
+                "tier": "T2",
+                "quality_tier": 2,
+                "dd_elevator_pitch": "Bandwidth Inc — CPaaS with enterprise expansion.",
+                "dd_why_now": "Enterprise deal pipeline accelerating.",
+                "dd_the_math": "5x forward revenue implies $18-20.",
+                "dd_bear_case": "Competition from Twilio.",
+                "dd_risk_to_monitor": "Q1 2026 earnings.",
+                "dd_action": "Buy Monday at ~$12.50.",
+                "dd_key_catalyst": "Q1 2026 earnings",
+                "dd_fatal_flaw": "",
+                "catalyst_summary": "Enterprise pipeline expansion, CPaaS demand growing",
+                "variant_perception": "Enterprise TAM underestimated.",
+                "bullish_factors": ["Enterprise growth 30%+", "Pipeline expansion"],
+                "risk_factors": ["Twilio competition", "Churn risk"],
+                "kill_switch": "Enterprise churn above 5%",
+                "position_size": "15%",
+                "position_size_pct": 0.15,
+                "sizing_gear": "recommended",
+                "valuation_regime": "GROWTH",
+                "gate_verdict": "BUY",
+                "gate_catalyst": "Enterprise pipeline",
+                "gate_bear_case": "Twilio competition",
+                "gate_math": "5x forward rev → $18-20",
+            },
         ],
         "exits": [],
         "no_go": [
@@ -268,7 +330,7 @@ class TestMergeDecisions:
             "position_size_pct",
         ]
 
-        assert len(merged["buy_signals"]) == 2
+        assert len(merged["buy_signals"]) == 3
         for sig in merged["buy_signals"]:
             for field in required_signal_fields:
                 assert field in sig, \
@@ -313,6 +375,35 @@ class TestMergeDecisions:
         assert theme["classification"] == "PRIME"
         assert theme["composite_score"] == 8.1
         assert "primary_etfs" in theme
+
+    def test_verdict_to_final_decision_mapping(self, sample_tech_data, sample_decisions):
+        """Verdict values correctly map to final_decision in merged output."""
+        from scanner.merge_decisions import merge_signals
+
+        merged = merge_signals(sample_tech_data, sample_decisions)
+
+        # ETON: "STRONG_BUY" → PASS (in pass_signals)
+        pass_symbols = [s["symbol"] for s in merged["pass_signals"]]
+        assert "ETON" in pass_symbols, \
+            f"STRONG_BUY should map to PASS, ETON not in pass_signals: {pass_symbols}"
+
+        eton = next(s for s in merged["pass_signals"] if s["symbol"] == "ETON")
+        assert eton["final_decision"] == "PASS"
+
+        # BAND: "BUY" → PASS (in pass_signals) — tests the recently fixed case
+        assert "BAND" in pass_symbols, \
+            f"BUY should map to PASS, BAND not in pass_signals: {pass_symbols}"
+
+        band = next(s for s in merged["pass_signals"] if s["symbol"] == "BAND")
+        assert band["final_decision"] == "PASS"
+
+        # RELY: "SPEC_BUY" → CONSIDER (in consider_signals)
+        consider_symbols = [s["symbol"] for s in merged["consider_signals"]]
+        assert "RELY" in consider_symbols, \
+            f"SPEC_BUY should map to CONSIDER, RELY not in consider_signals: {consider_symbols}"
+
+        rely = next(s for s in merged["consider_signals"] if s["symbol"] == "RELY")
+        assert rely["final_decision"] == "CONSIDER"
 
     def test_nogo_and_watchlist_in_assessed(self, sample_tech_data, sample_decisions):
         """no_go and watchlist entries appear in assessed_signals."""
@@ -423,7 +514,7 @@ class TestValidation:
         assert "week_start" in schedule
         assert "week_end" in schedule
         assert "market_context" in schedule
-        assert len(schedule["new_positions"]) == 2
+        assert len(schedule["new_positions"]) == 3
         assert schedule["new_positions"][0]["symbol"] == "ETON"
 
 

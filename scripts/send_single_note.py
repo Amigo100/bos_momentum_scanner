@@ -251,7 +251,7 @@ def send_morning_bundle(target_date: date, dry_run: bool = False) -> bool:
     # Determine post title
     post_title = None
     if manifest:
-        post_info = manifest.get("post", {})
+        post_info = manifest.get("post") or {}
         post_title = post_info.get("title")
     if not post_title and post_path:
         post_title = post_path.stem.replace("_", " ").title()
@@ -283,7 +283,7 @@ def send_morning_bundle(target_date: date, dry_run: bool = False) -> bool:
         sections += _section_card("Today's Article", article_html, "#3B82F6")
 
     # ─── Section 3: Today's Visual ───────────────────────────────────
-    if manifest and manifest.get("visual", {}).get("type"):
+    if manifest and (manifest.get("visual") or {}).get("type"):
         vtype = manifest["visual"]["type"].title()
         badge = _status_badge(visual_path is not None)
         visual_html = f'<p style="color: #CBD5E1; font-size: 14px; margin: 0 0 4px 0;">{vtype}</p><p style="margin: 0;">{badge}</p>'

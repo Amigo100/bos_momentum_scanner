@@ -2,9 +2,9 @@
 Fallback Content Generator — Watchdog API-Based Fallback
 
 Runs in GitHub Actions when Cowork fails to deliver daily content.
-Generates 2-3 Substack notes + 3-5 tweets using Claude API (Sonnet).
+Generates 2-3 Substack notes using Claude API (Sonnet).
 
-Skips: long-form posts, animated diagrams, carousels.
+Skips: long-form posts, animated diagrams, carousels, tweets.
 These require Cowork's full context window and sequential prompting.
 
 Usage:
@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from config.output_paths import SUBSTACK_OUTPUT, COWORK_QUEUE_FILE
+from config.output_paths import SUBSTACK_OUTPUT
 from config.banned_terms import validate_content
 from substack.constants import NOTE_TYPE_MATRIX
 
@@ -45,9 +45,9 @@ NOTES_DIR = SUBSTACK_OUTPUT / "current" / "notes"
 MANIFEST_PATH = SUBSTACK_OUTPUT / "current" / "daily_manifest.json"
 
 TIME_LABEL_MAP = {
-    "08:30 ET": "morning",
-    "12:30 ET": "midday",
-    "17:00 ET": "evening",
+    "08:00 AEDT": "morning",
+    "12:00 AEDT": "midday",
+    "20:00 AEDT": "evening",
 }
 
 NOTE_HTML_TEMPLATE = """<!DOCTYPE html>
@@ -77,43 +77,16 @@ APPROVED ALTERNATIVES:
 
 SIGNAL COLOURS: GREEN = buy, RED = exit, CONSIDER = watchlist.
 
+NOTE TYPES:
+- SCANNER: What the screening system found. Funnel stats, rejection stories, signal counts.
+- POSITION: Portfolio performance. Winners, losers, alpha snapshots.
+- MARKET: Events connected to positions. Force mapping, catalyst flags.
+- EDUCATION: Standalone investing concepts. Research findings, methodology insights.
+- PROMO: Tease upcoming posts or briefings. Create curiosity without giving away content.
+
 CRITICAL: Do NOT quote specific current prices — the data may be several days old. Reference themes, positions, and system metrics instead. Lead with a specific data point or number.
 
-OUTPUT: Write 150-280 words of flowing HTML paragraphs (no headers, no bullet lists). Use <b>$TICKER</b> for bold tickers. Use <br><br> between paragraphs. Do NOT include the outer template div or footer — just the inner content paragraphs."""
-
-TWEET_SYSTEM_PROMPT = """You are the social media engine for Sterling Signals, a momentum trading newsletter.
-
-VOICE: Sharp, data-driven, no fluff. Each tweet must stand alone as valuable content.
-
-RULES:
-- Each tweet MUST be ≤ 280 characters
-- Use $TICKER format for stock references
-- BANNED: HMA, RSI, MACD, Banker, trailing stop, conviction score, tier 1/2/3, UK ISA, GMT
-- Use: "institutional accumulation", "structural pivot", "cleared all gates", "capital preservation"
-- Signal colours: GREEN = buy, RED = exit
-- Do NOT quote specific current prices — data may be stale
-- No hashtags unless they're a ticker ($AAPL)
-- No emojis except signal indicators
-
-CATEGORIES (pick the best fit for each tweet):
-- SIGNAL_ALERT: Scanner signal detected
-- RECEIPT: Portfolio win showcase
-- MARKET_COMMENTARY: Market conditions
-- THEME_CATALYST: Breaking theme catalyst
-- EDUCATIONAL: Trading methodology lessons
-- SUBSTACK_TEASER: Today's note topic teaser
-- ENGAGEMENT: Community question or discussion
-
-ACCOUNTS (assign each tweet to the best-fit persona):
-- variant_1 (Alex/Analyst): SIGNAL_ALERT, RECEIPT, TECHNICAL_ANALYSIS
-- variant_2 (Rozalia/Teacher): EDUCATIONAL, THEME_CATALYST, SUBSTACK_TEASER
-- variant_3 (James/Trader): MARKET_COMMENTARY, RECEIPT, ENGAGEMENT
-
-Return ONLY a JSON array. Each object must have exactly these keys:
-  "text": the tweet text (≤280 chars),
-  "category": one of the categories above,
-  "account": "variant_1" or "variant_2" or "variant_3"
-"""
+OUTPUT: Write 50-150 words of flowing HTML paragraphs (no headers, no bullet lists). Use <b>$TICKER</b> for bold tickers. Use <br><br> between paragraphs. Do NOT include the outer template div or footer — just the inner content paragraphs."""
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -125,7 +98,7 @@ def load_data() -> dict:
     """Load portfolio, signals, and equity data from repo files.
 
     Returns dict with portfolio_summary, signals_summary, equity_summary strings,
-    plus raw data for manifest/tweet generation.
+    plus raw data for manifest generation.
     Gracefully handles missing files.
     """
     data = {
@@ -148,7 +121,8 @@ def load_data() -> dict:
             if open_pos:
                 lines = [
                     f"  {p['ticker']}: entry ${p.get('entry_price', '?')}, "
-                    f"theme: {p.get('theme', 'N/A')}"
+                    f"theme: {p.get('theme', 'N/A')}, "
+                    f"force: {p.get('structural_force', 'N/A')}"
                     for p in open_pos
                 ]
                 data["portfolio_summary"] = (
@@ -226,16 +200,16 @@ def build_context_string(data: dict) -> str:
 def get_note_slots(day: str) -> list:
     """Get today's note slots from NOTE_TYPE_MATRIX.
 
-    Returns list of dicts with slot, type, time, time_label.
+    Returns list of dicts with slot, type, time_aedt, time_label.
     """
     slots = NOTE_TYPE_MATRIX.get(day, [])
     result = []
     for s in slots:
-        time_str = s.get("time", "08:30 ET")
+        time_str = s.get("time", "08:00 AEDT")
         result.append({
             "slot": s["slot"],
             "type": s["type"],
-            "time_et": time_str.replace(" ET", ""),
+            "time_aedt": time_str.replace(" AEDT", ""),
             "time_label": TIME_LABEL_MAP.get(time_str, "morning"),
         })
     return result
@@ -283,7 +257,7 @@ def generate_note(
     user_prompt = (
         f"Generate a {note_type} note for {day.capitalize()}.\n\n"
         f"{context}\n\n"
-        f"Write the note as inner HTML paragraphs (150-280 words). "
+        f"Write the note as inner HTML paragraphs (50-150 words). "
         f"Lead with a specific data point or number from the context."
     )
 
@@ -346,7 +320,7 @@ def generate_notes(client, day: str, context: str, date_str: str, dry_run: bool)
             notes_meta.append({
                 "slot": slot_info["slot"],
                 "type": note_type,
-                "time_et": slot_info["time_et"],
+                "time_aedt": slot_info["time_aedt"],
                 "time_label": time_label,
                 "file": f"notes/{filename}",
                 "filepath": filename,
@@ -366,7 +340,7 @@ def generate_notes(client, day: str, context: str, date_str: str, dry_run: bool)
         notes_meta.append({
             "slot": slot_info["slot"],
             "type": note_type,
-            "time_et": slot_info["time_et"],
+            "time_aedt": slot_info["time_aedt"],
             "time_label": time_label,
             "file": f"notes/{filename}",
             "filepath": filename,
@@ -377,121 +351,12 @@ def generate_notes(client, day: str, context: str, date_str: str, dry_run: bool)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TWEET GENERATION
-# ═══════════════════════════════════════════════════════════════════════════════
-
-
-def generate_tweets(client, day: str, context: str, date_str: str, dry_run: bool) -> int:
-    """Generate 3-5 tweets and write to cowork queue.
-
-    Returns number of tweets generated.
-    """
-    if dry_run:
-        print("  Tweets: SKIPPED (dry run)")
-        return 0
-
-    user_prompt = (
-        f"Generate 3-5 tweets for {day.capitalize()}.\n\n"
-        f"{context}\n\n"
-        f"Return ONLY a JSON array — no markdown fences, no explanation. "
-        f"Each tweet must be ≤ 280 characters. Spread tweets across all 3 accounts."
-    )
-
-    try:
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=2000,
-            system=TWEET_SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": user_prompt}],
-        )
-    except Exception as e:
-        print(f"  Tweet generation API error: {e}")
-        return 0
-
-    raw = ""
-    for block in response.content:
-        if hasattr(block, "text"):
-            raw += block.text
-
-    cost = (
-        response.usage.input_tokens * 3.0 / 1_000_000
-        + response.usage.output_tokens * 15.0 / 1_000_000
-    )
-
-    # Parse JSON from response (strip code fences if present)
-    cleaned = re.sub(r'^```json?\s*', '', raw.strip())
-    cleaned = re.sub(r'\s*```$', '', cleaned)
-
-    try:
-        tweets_raw = json.loads(cleaned)
-    except json.JSONDecodeError:
-        # Try extracting JSON array from response
-        match = re.search(r'\[.*\]', cleaned, re.DOTALL)
-        if match:
-            try:
-                tweets_raw = json.loads(match.group())
-            except json.JSONDecodeError:
-                print(f"  Could not parse tweet JSON from response")
-                return 0
-        else:
-            print(f"  No JSON array found in tweet response")
-            return 0
-
-    if not isinstance(tweets_raw, list):
-        print(f"  Tweet response is not a list")
-        return 0
-
-    now_iso = datetime.now(timezone.utc).isoformat()
-
-    # Build queue items
-    queue_items = []
-    for i, tweet in enumerate(tweets_raw[:5], 1):
-        text = tweet.get("text", "").strip()
-        if not text or len(text) > 280:
-            continue
-
-        # Validate banned terms
-        is_valid, violations = validate_content(text)
-        if not is_valid:
-            print(f"    Tweet {i} has banned terms: {violations[:2]} — skipping")
-            continue
-
-        # Extract primary ticker
-        ticker_match = re.search(r'\$([A-Z]{2,5})', text)
-        primary_ticker = f"${ticker_match.group(1)}" if ticker_match else None
-
-        queue_items.append({
-            "id": f"watchdog_{date_str}_{i:03d}",
-            "text": text,
-            "category": tweet.get("category", "MARKET_COMMENTARY"),
-            "account": tweet.get("account", "variant_1"),
-            "ticker": primary_ticker,
-            "thread": False,
-            "status": "pending",
-            "created_at": now_iso,
-            "source": "watchdog",
-        })
-
-    if not queue_items:
-        print(f"  No valid tweets generated")
-        return 0
-
-    # Write to cowork queue (replace — watchdog owns the queue when it runs)
-    COWORK_QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(COWORK_QUEUE_FILE, "w") as f:
-        json.dump(queue_items, f, indent=2)
-
-    print(f"  Tweets: {len(queue_items)} written to cowork queue (${cost:.4f})")
-    return len(queue_items)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
 # MANIFESTS
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
 def write_manifests(
-    day: str, date_str: str, notes_meta: list, tweet_count: int
+    day: str, date_str: str, notes_meta: list,
 ) -> None:
     """Write daily_manifest.json and notes/notes_manifest.json."""
     now_iso = datetime.now(timezone.utc).isoformat()
@@ -508,14 +373,13 @@ def write_manifests(
             {
                 "slot": n["slot"],
                 "type": n["type"],
-                "time_et": n["time_et"],
+                "time_aedt": n["time_aedt"],
                 "time_label": n["time_label"],
                 "file": n["file"],
             }
             for n in notes_meta
         ],
         "visual": {"type": "none", "file": None},
-        "tweets_generated": tweet_count,
     }
 
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -532,7 +396,7 @@ def write_manifests(
             {
                 "slot": n["slot"],
                 "type": n["type"],
-                "time_et": n["time_et"],
+                "time_aedt": n["time_aedt"],
                 "time_label": n["time_label"],
                 "filepath": n.get("filepath", ""),
             }
@@ -585,7 +449,7 @@ def main():
     slots = get_note_slots(day)
     print(f"\n  Note slots for {day}: {len(slots)}")
     for s in slots:
-        print(f"    Slot {s['slot']}: {s['type']} @ {s['time_et']}")
+        print(f"    Slot {s['slot']}: {s['type']} @ {s['time_aedt']}")
 
     if args.dry_run:
         print("\n  DRY RUN — no API calls, no file writes")
@@ -606,17 +470,13 @@ def main():
     print("\n  Generating notes...")
     notes_meta = generate_notes(client, day, context, date_str, args.dry_run)
 
-    # Generate tweets
-    print("\n  Generating tweets...")
-    tweet_count = generate_tweets(client, day, context, date_str, args.dry_run)
-
     # Write manifests
     print("\n  Writing manifests...")
-    write_manifests(day, date_str, notes_meta, tweet_count)
+    write_manifests(day, date_str, notes_meta)
 
     # Summary
     print("\n" + "=" * 70)
-    print(f"  COMPLETE: {len(notes_meta)} notes, {tweet_count} tweets")
+    print(f"  COMPLETE: {len(notes_meta)} notes")
     print(f"  Source: watchdog_fallback")
     print("=" * 70)
 

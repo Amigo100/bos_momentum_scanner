@@ -199,6 +199,7 @@ class Trade:
     position_size_pct: float = 0.0   # % of equity allocated (from conviction tier)
     position_dollars: float = 0.0    # Dollar amount allocated
     sizing_gear: str = ""            # conservative / recommended / aggressive
+    structural_force: str = ""       # Structural force (e.g. AI Infrastructure, Defence Spending)
 
     # Calculated fields (not stored in CSV, computed on load)
     current_price: float = 0.0
@@ -313,6 +314,7 @@ class Trade:
             'position_size_pct': f"{self.position_size_pct:.1f}" if self.position_size_pct > 0 else "",
             'position_dollars': f"{self.position_dollars:.0f}" if self.position_dollars > 0 else "",
             'sizing_gear': self.sizing_gear,
+            'structural_force': self.structural_force,
         }
     
     @classmethod
@@ -335,6 +337,7 @@ class Trade:
             position_size_pct=float(row.get('position_size_pct') or 0),
             position_dollars=float(row.get('position_dollars') or 0),
             sizing_gear=row.get('sizing_gear', ''),
+            structural_force=row.get('structural_force', ''),
         )
 
 
@@ -631,7 +634,7 @@ class PortfolioManager:
     CSV_FIELDNAMES = [
         'ticker', 'status', 'entry_date', 'entry_price', 'exit_date', 'exit_price',
         'highest_close', 'theme', 'tier', 'signal_type', 'conviction', 'notes', 'stop_pct',
-        'position_size_pct', 'position_dollars', 'sizing_gear'
+        'position_size_pct', 'position_dollars', 'sizing_gear', 'structural_force'
     ]
     
     def __init__(self, portfolio_file: Optional[Path] = None):
@@ -705,7 +708,8 @@ class PortfolioManager:
     def add_trade(self, ticker: str, entry_price: float, theme: str = "",
                   tier: str = "", signal_type: str = "PASS", conviction: int = 0,
                   notes: str = "", position_size_pct: float = 0.0,
-                  position_dollars: float = 0.0, sizing_gear: str = "") -> Trade:
+                  position_dollars: float = 0.0, sizing_gear: str = "",
+                  structural_force: str = "") -> Trade:
         """Add a new trade to the portfolio."""
 
         # Check if already exists as open position
@@ -728,6 +732,7 @@ class PortfolioManager:
             position_size_pct=position_size_pct,
             position_dollars=position_dollars,
             sizing_gear=sizing_gear,
+            structural_force=structural_force,
         )
 
         self.trades.append(trade)
@@ -748,8 +753,9 @@ class PortfolioManager:
             position_size_pct=getattr(stock, 'position_size_pct', 0.0),
             position_dollars=getattr(stock, 'position_dollars', 0.0),
             sizing_gear=getattr(stock, 'sizing_gear', ''),
+            structural_force=getattr(stock, 'structural_force', ''),
         )
-    
+
     def flag_exit(self, ticker: str, exit_price: float, reason: str = "Manual exit") -> Optional[Trade]:
         """Flag a trade as exited."""
         trade = self.get_open_position(ticker)

@@ -188,12 +188,12 @@ def _build_email_body(
         note_count = len(notes_data)
         for n in notes_data:
             time_label = n.get("time_label", "")
-            time_et = n.get("time_et", "?")
+            time_display = n.get("time_aedt") or n.get("time_et", "?")
             ntype = n.get("type", "?")
             nfile = n.get("file", "")
             filename = Path(nfile).name if nfile else "—"
             notes_info.append({
-                "display": f"📌 {time_et} ET — {ntype}",
+                "display": f"📌 {time_display} AEDT — {ntype}",
                 "filename": filename,
                 "time_label": time_label,
             })

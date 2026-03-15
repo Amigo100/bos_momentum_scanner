@@ -197,8 +197,8 @@ class TestAttachmentCollection:
         manifest = {
             "post": {"category": "none", "file": None},
             "notes": [
-                {"slot": 1, "type": "MARKET_SNAPSHOT", "file": "notes/note_1_market_20260309.html"},
-                {"slot": 2, "type": "SIGNAL_TRACKING", "file": "notes/note_2_signal_20260309.html"},
+                {"slot": 1, "type": "MARKET", "file": "notes/note_1_market_20260309.html"},
+                {"slot": 2, "type": "SCANNER", "file": "notes/note_2_signal_20260309.html"},
             ],
             "visual": {"type": "none", "file": None},
         }
@@ -281,8 +281,8 @@ class TestEmailBody:
         manifest = {
             "post": {"category": "ticker_deep_dive", "title": "NVDA Deep Dive"},
             "notes": [
-                {"slot": 1, "type": "MARKET_SNAPSHOT", "time_et": "08:30"},
-                {"slot": 2, "type": "SIGNAL_TRACKING", "time_et": "12:30"},
+                {"slot": 1, "type": "MARKET", "time_aedt": "08:00"},
+                {"slot": 2, "type": "SCANNER", "time_aedt": "12:00"},
             ],
             "visual": {"type": "diagram", "file": "diagram.html"},
         }
@@ -292,8 +292,9 @@ class TestEmailBody:
         assert "NVDA Deep Dive" in html
         assert "Diagram" in html
         assert "3 HTML file(s)" in html
-        assert "MARKET_SNAPSHOT" in html
-        assert "08:30 ET" in html
+        assert "MARKET" in html
+        assert "08:00" in html
+        assert "AEDT" in html
 
     def test_body_without_manifest(self):
         """Email body works without manifest."""
@@ -316,9 +317,7 @@ class TestConstants:
         """HANDBOOK_SECTION_MAP has all expected category keys."""
         from substack.constants import HANDBOOK_SECTION_MAP
 
-        expected = {"ticker_deep_dive", "educational", "theme_rotation",
-                    "performance_review", "trade_alert_entry", "trade_alert_exit",
-                    "daily_notes"}
+        expected = {"tuesday_deep_dive", "thursday_education", "ad_hoc"}
         assert set(HANDBOOK_SECTION_MAP.keys()) == expected
 
     def test_note_type_matrix_covers_all_days(self):

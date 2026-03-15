@@ -7,9 +7,9 @@ Sets up macOS launchd plists that send reminder emails at posting times.
 Each reminder emails the specific HTML file you need to paste into Substack.
 
 Creates 3 plists in ~/Library/LaunchAgents/:
-  com.sterling.reminder.morning.plist  → 08:15 ET (15 min before 08:30 post)
-  com.sterling.reminder.midday.plist   → 12:15 ET (15 min before 12:30 post)
-  com.sterling.reminder.evening.plist  → 16:45 ET (15 min before 17:00 post)
+  com.sterling.reminder.morning.plist  → 07:45 AEDT (15 min before 08:00 post)
+  com.sterling.reminder.midday.plist   → 11:45 AEDT (15 min before 12:00 post)
+  com.sterling.reminder.evening.plist  → 19:45 AEDT (15 min before 20:00 post)
 
 Each runs: python3 -m scripts.send_slot_reminder --slot {slot}
 
@@ -46,24 +46,24 @@ PLIST_DIR = Path.home() / "Library" / "LaunchAgents"
 LOG_DIR = Path.home() / "Library" / "Logs"
 
 # Reminder schedule: 15 minutes before each posting slot
-# Times are in LOCAL time (ET for the user's timezone)
+# Times are in LOCAL time (AEDT — Australia/Sydney)
 SLOTS = {
     "morning": {
-        "hour": 8,
-        "minute": 15,
-        "post_time": "08:30 ET",
+        "hour": 7,
+        "minute": 45,
+        "post_time": "08:00 AEDT",
         "description": "Morning note reminder",
     },
     "midday": {
-        "hour": 12,
-        "minute": 15,
-        "post_time": "12:30 ET",
+        "hour": 11,
+        "minute": 45,
+        "post_time": "12:00 AEDT",
         "description": "Midday note/post reminder",
     },
     "evening": {
-        "hour": 16,
+        "hour": 19,
         "minute": 45,
-        "post_time": "17:00 ET",
+        "post_time": "20:00 AEDT",
         "description": "Evening note reminder",
     },
 }
@@ -233,9 +233,9 @@ def install():
 ╚════════════════════════════════════════════════════════════╝
 
   Schedule (15 min before each posting slot):
-    📋 08:15 → Morning note    (post at 08:30 ET)
-    📋 12:15 → Midday note     (post at 12:30 ET)
-    📋 16:45 → Evening note    (post at 17:00 ET)
+    📋 07:45 → Morning note    (post at 08:00 AEDT)
+    📋 11:45 → Midday note     (post at 12:00 AEDT)
+    📋 19:45 → Evening note    (post at 20:00 AEDT)
 
   Each reminder emails:
     • Subject line with slot + content type
@@ -370,9 +370,9 @@ Usage:
   python3 -m scripts.setup_reminders test morning       # Test specific slot
 
 Schedule (fires 15 min before posting time):
-  08:15 local → Morning note    (post at 08:30 ET)
-  12:15 local → Midday note     (post at 12:30 ET)
-  16:45 local → Evening note    (post at 17:00 ET)
+  07:45 local → Morning note    (post at 08:00 AEDT)
+  11:45 local → Midday note     (post at 12:00 AEDT)
+  19:45 local → Evening note    (post at 20:00 AEDT)
 
 Each reminder:
   • Reads today's daily_manifest.json

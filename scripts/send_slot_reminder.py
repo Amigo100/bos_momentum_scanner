@@ -26,9 +26,9 @@ from config.output_paths import SUBSTACK_OUTPUT
 CURRENT = SUBSTACK_OUTPUT / "current"
 
 SLOT_TIMES = {
-    "morning": "08:30 ET",
-    "midday": "12:30 ET",
-    "evening": "17:00 ET",
+    "morning": "08:00 AEDT",
+    "midday": "12:00 AEDT",
+    "evening": "20:00 AEDT",
 }
 
 SLOT_NUMBERS = {

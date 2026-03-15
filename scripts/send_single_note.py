@@ -43,9 +43,9 @@ CAROUSELS_DIR = SUBSTACK_OUTPUT / "current" / "carousels"
 CURRENT_DIR = SUBSTACK_OUTPUT / "current"
 
 SLOT_CONFIG = {
-    "morning": {"time": "08:30", "emoji": "\u2600\ufe0f"},   # ☀️
-    "midday": {"time": "12:30", "emoji": "\U0001f4dd"},      # 📝
-    "evening": {"time": "17:00", "emoji": "\U0001f319"},      # 🌙
+    "morning": {"time": "08:00 AEDT", "emoji": "\u2600\ufe0f"},   # ☀️
+    "midday": {"time": "12:00 AEDT", "emoji": "\U0001f4dd"},      # 📝
+    "evening": {"time": "20:00 AEDT", "emoji": "\U0001f319"},      # 🌙
 }
 
 
@@ -205,15 +205,15 @@ def send_slot(slot: str, target_date: date, dry_run: bool = False) -> bool:
         print(f"  Found graphic: {graphic_path.name}")
 
     # Build email
-    subject = f"{cfg['emoji']} Sterling Signals — {slot.title()} note ready ({cfg['time']} ET)"
+    subject = f"{cfg['emoji']} Sterling Signals — {slot.title()} note ready ({cfg['time']})"
 
     note_html = note_path.read_text(errors="replace")
     instructions = '<p style="color: #CBD5E1; font-size: 14px; margin: 0;">Open the attached HTML → Select All → Copy → Paste into Substack Notes → Publish</p>'
-    body_sections = _section_card(f"{slot.title()} Note — {cfg['time']} ET", instructions, "#22C55E")
+    body_sections = _section_card(f"{slot.title()} Note — {cfg['time']}", instructions, "#22C55E")
 
     body_html = _html_wrapper(
         f"{cfg['emoji']} {slot.title()} Note Ready",
-        f"{target_date.strftime('%A, %B %d')} — {cfg['time']} ET",
+        f"{target_date.strftime('%A, %B %d')} — {cfg['time']}",
         body_sections,
     )
 
@@ -270,7 +270,7 @@ def send_morning_bundle(target_date: date, dry_run: bool = False) -> bool:
     for s, c in SLOT_CONFIG.items():
         n = _find_note_for_slot(s, date_str)
         status = f'<span style="color: #4ADE80;">{n.name}</span>' if n else '<span style="color: #94A3B8;">—</span>'
-        schedule_rows += f'<tr><td style="color: #C9A84C; padding: 4px 12px 4px 0; font-size: 14px;">{c["emoji"]} {c["time"]} ET</td><td style="color: #CBD5E1; font-size: 14px;">{s.title()}</td><td style="font-size: 13px;">{status}</td></tr>'
+        schedule_rows += f'<tr><td style="color: #C9A84C; padding: 4px 12px 4px 0; font-size: 14px;">{c["emoji"]} {c["time"]}</td><td style="color: #CBD5E1; font-size: 14px;">{s.title()}</td><td style="font-size: 13px;">{status}</td></tr>'
 
     schedule_html = f'<table style="width: 100%;">{schedule_rows}</table>'
     sections = _section_card("Today's Schedule", schedule_html)

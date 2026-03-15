@@ -1,10 +1,13 @@
-# Sterling Signals — Content Prompt Handbook v7.1
+# Sterling Signals: Content Prompt Handbook v8.0
 
-> **Multi-prompt sequential system for Opus 4.6**
-> Each post uses 2-3 prompts in sequence within a single claude.ai chat.
-> Every post produces a companion Substack Note for the Notes feed.
+> **Filename retained as `content_prompt_handbook_v7_0.md` for backward
+> compatibility with Cowork path references. Content version: v8.0.**
+
+> **Multi-prompt sequential system for Opus 4.6.**
+> Each post uses 2-3 prompts in sequence within a single Claude.ai chat.
 > Prompts specify which mode to use: Research, Extended Thinking, or Standard.
-> Last updated: March 2026
+> Saturday's newsletter is produced by Prompt 11 in the Sterling Prompt
+> Library during the Friday analysis session. It is NOT in this handbook.
 
 ---
 
@@ -12,897 +15,1150 @@
 
 ### What This Handbook Covers
 
-This handbook produces **Sunday–Wednesday posts, a Thursday carousel, and ad-hoc trade alerts.**
+Two post types produced in dedicated Claude.ai sessions:
+- **Tuesday deep dive:** scanner-driven, produced Monday
+- **Thursday education:** 4-week rotation, produced Wednesday
 
-**Saturday's newsletter** ("The Weekly Screening") is produced by **Prompt 11** in the Sterling Prompt Library during the Friday analysis session — NOT from this handbook. The newsletter previews the week ahead, hints at signals (without naming tickers), and updates the portfolio.
+Saturday's "The Weekly Screening" comes from Prompt 11 in the analysis
+session. The carousels and Tools & Tech content from v7 are discontinued.
 
-If no analysis session ran, use the **Performance Review Fallback** at the end.
+### Workflow
 
-### Sunday Workflow
-
-The Sunday Cowork planner reads Friday's decisions.json, the portfolio, and scanner data. It plans the week and prints prompt kits. You then produce all heavy content in one claude.ai batch session.
-
-1. Open the Cowork planner output (printed inline or emailed)
-2. For each post (Sun trade alert, Tue Sector Watch, Wed Investor Lessons):
-   open a **new** claude.ai chat
-3. Attach the files listed in the kit (this handbook + banned_terms.py minimum)
-4. Paste the portfolio context block first
-5. Paste each prompt in sequence — **wait for the full response before pasting the next**
-6. The final prompt produces both the article HTML AND a companion note
-7. For Thursday's Tools & Tech carousel: open a separate chat with carousel-guide.docx + carousel-series-templates.md attached
-8. Save all outputs to the repo paths listed in the kit, git push
+1. Cowork's Sunday Mode A produces a **context package** for each post.
+   This contains all data from the analysis session that the Claude.ai
+   chat needs: decisions.json entries, signal history, financial metrics,
+   rejection narratives, force context.
+2. Open a **new** Claude.ai chat for each post.
+3. Attach `config/voice_rules.md`.
+4. Paste the context package first.
+5. Paste each prompt in sequence. **Wait for the full response before
+   pasting the next prompt.**
+6. The final prompt produces complete HTML ready for Substack.
 
 ### Choosing Your Mode
 
-Each prompt specifies which mode produces the best results. Toggle these in claude.ai before pasting the prompt.
+Toggle these in Claude.ai before pasting each prompt.
 
 | Mode | Toggle | Best For | Why |
 |------|--------|----------|-----|
-| **Research** | Research button ON | Data gathering — financial filings, ETF flows, institutional data, tool reviews | Systematically searches 20+ sources, produces cited findings with links. Produces richer research than standard web search. |
-| **Extended Thinking** | Default with Opus 4.6 | Analysis, valuation, synthesis, topic discovery | Deep reasoning with internal chain-of-thought. Best for multi-step calculations, probability weighting, connecting disparate data. |
-| **Standard** | Default | Writing articles, companion notes, single-pass trade alerts | Focused output generation. No overhead from search or extended reasoning. |
+| **Research** | Research button ON | Data gathering: financials, 13F filings, ETF flows, news, insider transactions | Searches 20+ sources systematically. Produces cited findings with links. Far richer than standard web search. |
+| **Extended Thinking** | Default with Opus 4.6 | Analysis, valuation, synthesis, long-form writing | Deep reasoning with internal chain-of-thought. Best for multi-step calculations, connecting data, and writing complete articles with narrative coherence. |
 
-**The pattern:** Research mode gathers data → Extended Thinking analyses it → Standard mode writes from it. This three-stage pipeline consistently produces the richest output.
+**The pattern:** Research mode gathers and verifies data. Extended
+Thinking analyses it, builds the narrative, and writes the article.
 
-### Content Types & Series Names
+### Content Types
 
-| Series | Day | Prompts | Modes | Format |
-|--------|-----|---------|-------|--------|
-| **The Weekly Screening** | Saturday | Prompt 11 (analysis session) | — | Long-form newsletter |
-| **🟢 Trade Alert** | Sunday | 3 or 4 (Research → Analysis → Write) | Research → Extended → Standard | Long-form post |
-| **Portfolio Spotlight** | Sunday (no-signal weeks) | 3 (Research → Analysis → Write) | Research → Extended → Standard | Long-form post |
-| **Position Update** | Within Sunday post | — | — | Section within Trade Alert |
-| **Sector Watch** | Tuesday | 2 (Research → Write) | Research → Standard | Long-form post |
-| **Investor Lessons** | Wednesday | 3 (Discover → Research → Write) | Extended → Research → Standard | Long-form post |
-| **Tools & Tech** | Thursday | 1 (Research → Write) | Research | Carousel (Note, not article) |
-
-**Ad-hoc (any day, replaces scheduled content):**
-
-| Series | Trigger | Prompts |
-|--------|---------|---------|
-| **🟢 GREEN Signal** (mid-week) | New entry outside analysis session | 1 (Standard) |
-| **Position Update** (standalone) | Exit outside Sunday cycle | 1 (Standard) |
+| Post | Day | Produced | Prompts | Modes |
+|------|-----|----------|---------|-------|
+| **Tuesday deep dive** | Tuesday ~1pm AEDT | Written Monday | 2-3 (Research, Analysis, Write) | Research, Extended, Extended |
+| **Thursday education** | Thursday ~1pm AEDT | Written Wednesday | 2-3 (Research/Discover, Write) | Research or Extended, Extended |
+| **Ad-hoc trade alert** | Any day | Same day | 1 | Extended |
+| **Ad-hoc position exit** | Any day | Same day | 1 | Extended |
+| **Performance fallback** | Saturday (no session) | Friday or Saturday | 2 (Research, Write) | Research, Extended |
 
 ### Title Format
 
-| Type | Title Pattern | Example |
-|------|--------------|---------|
-| Newsletter | "The Weekly Screening — Week [N]: [Forward-looking hook]" | "The Weekly Screening — Week 12: CPI Tuesday, Eyes on Defence" |
-| Trade Alert (1 signal) | "🟢 Trade Alert: $TICKER at $PRICE — [Theme]" | "🟢 Trade Alert: $ASTS at $22.80 — Space & Defence" |
-| Trade Alert (2 signals) | "🟢 Trade Alert: $TICK1 & $TICK2 — This Week's Entries" | "🟢 Trade Alert: $ASTS & $BAND — Two Signals, One Theme" |
-| Portfolio Spotlight | "Portfolio Spotlight: $TICKER — [Hook from strongest finding]" | "Portfolio Spotlight: $TMDX — +99% in 8 Weeks" |
-| Position Update (standalone) | "Position Update: $TICKER — [Outcome]" | "Position Update: $VNET — Systematic Exit" |
-| Sector Watch | "Sector Watch: [Theme] ([Score]/10)" | "Sector Watch: Defence Technology (8.4/10)" |
-| Investor Lessons | "Investor Lessons: [Specific, Surprising Topic]" | "Investor Lessons: Druckenmiller's Biggest Bet Was 100% of His Fund" |
-| Tools & Tech | "Tools & Tech: [Tool] — [Hook]" | "Tools & Tech: Finviz — The Free Screener That Finds Our Signals" |
-
-### Weekly Calendar
-
-**Signal weeks (1-2 new GREEN signals from Friday's session):**
-
-| Day | Content | Visual | Format |
-|-----|---------|--------|--------|
-| Saturday | **The Weekly Screening** (newsletter — hints at signal sector, doesn't name ticker) | — | Long-form post |
-| Sunday | **🟢 Trade Alert:** Full deep dive on signal(s) + brief exit notes if closing positions | Animated diagram | Long-form post |
-| Monday | Notes only (3) | Note graphic | — |
-| Tuesday | **Sector Watch:** Theme related to a portfolio holding (NOT the signal's theme if possible) | Carousel | Long-form post |
-| Wednesday | **Investor Lessons:** Case study, principle, or legendary investor (standalone) | — | Long-form post |
-| Thursday | **Tools & Tech:** Tool demo carousel (posted as a Note, not an article) | Carousel | Note |
-| Friday | Notes only (3) | Note graphic | — |
-
-**No-signal weeks:**
-
-| Day | Content |
-|-----|---------|
-| Saturday | **The Weekly Screening** (includes "Why We Passed" framing) |
-| Sunday | **Portfolio Spotlight:** Deep dive on best-performing holding — "Is the thesis still intact?" |
-| Tuesday | **Sector Watch:** Highest-rated theme |
-| Wednesday | **Investor Lessons:** Standalone educational |
-| Thursday | **Tools & Tech:** Carousel in Notes |
-
-**Weekly output:** 4 long-form posts (Sat, Sun, Tue, Wed) + 1 carousel (Thu) + 19 notes + 35-49 tweets
-
-Ad-hoc trade alerts (🟢 GREEN Signal / Position Update) can publish any day and REPLACE whatever was scheduled.
+| Type | Pattern | Example |
+|------|---------|---------|
+| Deep dive (new signal) | "$TICKER: [Thesis Hook with Number]" | "$VYGR: Gene Therapy Platforms, Pharma Deal Flow at $800M, and a 500% Institutional Bet" |
+| Deep dive (position update) | "$TICKER: [What Changed]" | "$AMPX: +56% in 10 Days, Director Selling $5.9M, and What We Do Next" |
+| Deep dive (sector/force) | "[Force Name]: [Specific Hook]" | "The Nuclear Fuel Supply Chain: $188 SWU Prices, a Russian Ban, and Where $ASPI Fits" |
+| Deep dive (watchlist) | "On Our Radar: [N] Stocks the System is Watching" | "On Our Radar: Three Stocks That Almost Cleared the Gate" |
+| Education (methodology) | "[Number]-Based Hook About the System" | "1,817 Stocks In, 1 Out: How the Five-Stage Filter Chain Works" |
+| Education (research) | "[Counterintuitive Finding]" | "Past Earnings Growth Does Not Predict Future Multibagger Returns" |
+| Education (free tool) | "[Resource Name]: [Value Prop]" | "The Structural Forces Status Board: Updated Weekly, Always Free" |
+| Education (investor lesson) | "[Specific Lesson from Real Example]" | "45% Dilution in Two Years: Why We Walked Away from a Defence Stock with 23% Short Interest" |
 
 ---
 
-## 🟢 GREEN Signal — Mid-Week Trade Alert (1 Prompt)
+## Tuesday Deep Dive
 
-**Use this ONLY for mid-week entries** — when a position is entered outside the normal Friday analysis → Sunday trade alert cycle (e.g., a stop-loss re-entry, an exceptional setup on Tuesday).
+### Priority 1: New Signal (3 Prompts)
 
-For signals from the Friday analysis session, use the **Sunday Trade Alert** section below — it provides a more comprehensive deep-dive format.
+The scanner produced a new buy signal. Saturday's briefing announced the
+entry. This article delivers the complete thesis: what the company does,
+why now, the numbers, the bear case, and exactly how we manage the
+position. This is the flagship analytical content and should match the
+depth and quality of the SKBL article.
 
-### Prompt
-
-**MODE: Standard**
-
-```
-Read the attached context document for portfolio data, theme analysis, and marketing rules.
-
-NEW POSITION: {TICKER}
-
-Web search for:
-- Current stock price (verify against your entry)
-- Recent news and catalysts (past 2 weeks)
-- Most recent quarterly earnings: revenue beat/miss, guidance direction
-- Sector/theme performance this month
-
-Cross-reference with the context document's theme analysis — does this align with a top-rated theme?
-
-TITLE: "🟢 GREEN Signal: ${TICKER} at $[PRICE] — [Theme Name]"
-
-Write the trade alert AND a companion note as complete HTML.
-
-═══ TRADE ALERT (400-800 words) ═══
-
-Use the white-background Editorial theme (specs in Quick Reference).
-
-1. Signal Header — 🟢 GREEN SIGNAL: ${TICKER} at $[PRICE]. Company name. Theme. Entry date.
-2. Why This Company — What it does. What structural trend it's riding. 2-3 sentences.
-3. What Triggered the Signal — Approved terms only: structural pivot confirmation, momentum confirmed, institutional accumulation patterns. What made this pass when 99%+ didn't?
-4. The Setup — 3-5 specific data points from web search: revenue trajectory, margin direction, institutional activity, catalyst dates.
-5. What We're Watching — The specific metric, date, or event that confirms or invalidates.
-6. Risk — One sentence risk. One sentence why we took it anyway.
-7. Footer — "Every GREEN signal documented with entry price and reasoning: https://sterlingsignals.substack.com"
-
-Include [CHART: {TICKER}] placeholder.
-
-═══ COMPANION NOTE (150-280 words) ═══
-
-Lead with: "$TICKER at $[PRICE]. GREEN signal confirmed."
-Show the funnel: "1,817 screened. This was one of [N] that passed."
-One sentence on the theme.
-End with: "Full signal analysis — entry reasoning, theme, and risk — just published."
-Then: "Not financial advice. Informational only."
-
-Format as self-contained HTML note (see Quick Reference for note template).
-
-Label outputs: [TRADE ALERT HTML] and [COMPANION NOTE].
-
-VOICE: Decisive. Short sentences. "We're entering $TICKER at $X. Here's why." Not "After careful analysis, we believe this presents an opportunity."
-```
-
----
-
-## Position Update — Trade Alert Exit (1 Prompt)
-
-### Prompt
-
-**MODE: Standard**
-
-```
-Read the attached context document for portfolio data and marketing rules.
-
-CLOSING POSITION: {TICKER}
-
-Look up entry price and P&L in the context document. Web search for current price and recalculate.
-
-Also search for: recent news, current state of the theme/sector.
-
-CRITICAL FRAMING:
-- Profitable (any gain): Lead with the return. "$TICKER closed at $X. +Y% in Z weeks from our $ENTRY entry."
-- Profitable 15%+: The system worked. Show it.
-- At a loss or small gain: DO NOT state the P&L number. Frame: "Our systematic exit discipline triggered on $TICKER." Focus on thesis change. NEVER use "loss", "stopped out", "down", "negative."
-
-TITLE:
-- If profitable: "Position Update: $TICKER — +Y% in Z Weeks"
-- If not profitable: "Position Update: $TICKER — Systematic Exit"
-
-Write the exit alert AND companion note as complete HTML.
-
-═══ EXIT ALERT (400-800 words) ═══
-
-White-background Editorial theme.
-
-1. Trade Header — Title from above with entry/exit prices (if profitable) or just the exit framing
-2. The Exit — What changed? What did the system see?
-3. What Changed — Specifics from web search
-4. The Lesson — One thing this trade teaches about our process
-5. What's Next — Redeploying capital or being patient?
-6. Footer — "Every entry and exit documented: https://sterlingsignals.substack.com"
-
-Include [CHART: {TICKER}].
-
-═══ COMPANION NOTE (150-280 words) ═══
-
-If profitable: Lead with the P&L. "$TICKER closed. +Y% in Z weeks from our $ENTRY entry."
-If exit discipline: Lead with the discipline angle. "Systematic exit on $TICKER. The thesis changed — here's what happened."
-End with: "Full exit analysis just published."
-Then: "Not financial advice. Informational only."
-
-Label: [EXIT ALERT HTML] and [COMPANION NOTE].
-
-VOICE: Measured. An exit is a decision, not an apology.
-```
-
----
-
-## 🟢 Sunday Trade Alert (3-4 Prompts) — Sunday
-
-**The flagship post of the week.** Saturday's newsletter hinted at the signal's sector without naming the ticker. Sunday's trade alert delivers the full reveal: ticker, price, complete analysis, valuation, and price targets.
-
-This is the GREEN Signal announcement AND the Deep Dive merged into one comprehensive article. Readers who saw Saturday's hint have been waiting for this.
-
-**Three variants:**
-- **1 signal:** 3-prompt sequential (Research → Analysis → Write)
-- **2 signals:** 4-prompt sequential (Research A → Research B → Analysis both → Write combined)
-- **0 signals (Portfolio Spotlight):** 3-prompt sequential on best-performing holding
-
-### Variant A: Single Signal (3 Prompts)
-
-#### Prompt 1 of 3 — Research
+#### Prompt 1 of 3: Research
 
 **MODE: Research mode ON**
 
 ```
-You are researching $TICKER for a Trade Alert article. This is the signal
-that Saturday's newsletter hinted at — readers are expecting the full reveal.
-Produce structured financial data — NOT prose, NOT an article.
+You are researching $[TICKER] for a deep dive article on Sterling
+Signals. This stock was entered at $[PRICE] after clearing our
+five-stage screening process. Saturday's briefing announced the entry.
+This article delivers the complete thesis.
 
-CONTEXT:
-- Entry price: $[ENTRY] | Current: $[CURRENT]
-- Theme: [THEME NAME] ([SCORE]/10)
-- Saturday's newsletter said: "[exact hint text from newsletter]"
+CONTEXT PACKAGE (from Cowork — pasted above this prompt):
+[The context package contains the full decisions.json entry, signal
+history trail, gate data, and bear case from our analysis session.
+Use this as your foundation, then SUPPLEMENT with fresh research below.]
 
-RESEARCH TASK 1 — FINANCIAL BASELINE
+RESEARCH TASK 1: FINANCIAL BASELINE
 
-Search specifically for:
+Search SEC EDGAR for the most recent 10-Q or 10-K for $[TICKER]:
+A) Revenue by segment for the last 8 quarters. Present as a TABLE with
+   quarter-over-quarter and year-over-year growth rates.
+B) Gross margin, operating margin, net margin per quarter (8 quarters).
+   TABLE format.
+C) Free cash flow: operating cash flow minus capex, trailing 4 quarters.
+D) Balance sheet: cash and equivalents, total debt, current ratio.
+E) Shares outstanding now vs 12 months ago. Calculate dilution percentage.
+F) Any convertible notes, warrants, or upcoming maturities. Dates and
+   dollar amounts.
 
-A) SEC EDGAR — most recent 10-Q or 10-K filing for $TICKER:
-   - Revenue by segment for the last 8 quarters. TABLE with QoQ and YoY growth.
-   - Gross margin, operating margin, net margin per quarter (8 quarters) — TABLE
-   - Free cash flow: operating cash flow minus capex, trailing 4 quarters
-   - Balance sheet: cash + equivalents, total debt, current ratio
-   - Shares outstanding now vs 12 months ago. Dilution %.
+RESEARCH TASK 2: RECENT DEVELOPMENTS
 
-B) Most recent earnings call or press release:
-   - Revenue beat/miss vs consensus ($ and %)
-   - Guidance raised, lowered, or maintained?
-   - Key CEO/CFO quote about forward outlook (exact quote with source)
-   - Segment-specific guidance or new product announcements
+Search for the most recent earnings call or press release:
+A) Revenue beat/miss vs consensus (dollar amount and percentage).
+B) Guidance: raised, lowered, maintained. Specific numbers.
+C) Key CEO/CFO quote about forward outlook (exact quote with source).
+D) Segment-specific guidance or new product announcements.
 
-C) Institutional ownership:
-   - Latest 13F filings mentioning $TICKER
-   - Net institutional buying or selling ($ amount, last quarter)
-   - 2-3 notable funds that entered or exited (name + position size)
-   - Short interest % of float — current vs 3 months ago
+RESEARCH TASK 3: INSTITUTIONAL AND INSIDER ACTIVITY
 
-D) Recent catalysts (last 30 days):
-   - FDA decisions, regulatory rulings, contracts
-   - Analyst upgrades/downgrades — firm, old PT, new PT
-   - Insider buying/selling — name, title, shares, $ (Form 4)
-   - Partnerships, acquisitions, product launches
+A) Latest 13F filings mentioning $[TICKER]:
+   - Net institutional buying or selling (dollar amount, last quarter)
+   - 2-3 notable funds that entered or exited (fund name, position size,
+     percentage change)
+B) Short interest: current percentage of float vs 3 months ago.
+C) Insider transactions (Form 4): names, titles, shares, dollar amounts,
+   dates. Flag any patterns (cluster buying/selling, 10b5-1 plan context).
 
-RESEARCH TASK 2 — FORWARD REVENUE BUILD (next 12 months)
+RESEARCH TASK 4: COMPETITIVE LANDSCAPE
 
-For EACH revenue segment:
-- Known contracts/backlog with $ values and delivery dates
-- Pipeline items with probability weights
-- Pricing trends: ASP, ARPU, contract values — direction + evidence
-- TAM and SAM with penetration rate
-- Headwinds: competition, regulation, funding dependency
+A) Name the 3-5 closest competitors or peer companies.
+B) For each peer: market cap, revenue, EV/Revenue or EV/EBITDA, growth
+   rate. Present as a comparison TABLE.
+C) What is $[TICKER]'s specific competitive advantage? Search for moat
+   evidence: patents, switching costs, network effects, regulatory
+   barriers, cost advantages.
+D) What is the biggest competitive threat and from whom?
 
-Build LOW / MID / HIGH per segment. Cite every assumption.
+RESEARCH TASK 5: CATALYST CALENDAR
 
-OUTPUT: Structured tables with citations. Flag gaps. Do NOT write yet.
+Build a timeline of specific upcoming events:
+A) Next earnings date and consensus expectations.
+B) Regulatory decisions (FDA, DOE, DOD, FCC) with specific dates.
+C) Contract awards, partnership milestones, product launches.
+D) Industry events, conferences, or policy decisions.
+E) Any known lock-up expirations or secondary offering windows.
+
+OUTPUT: Structured tables with citations. Flag any data gaps. Flag any
+findings that contradict the context package thesis. Do NOT write the
+article yet.
 ```
 
-#### Prompt 2 of 3 — Analysis
+#### Prompt 2 of 3: Analysis
 
 **MODE: Extended Thinking ON, Research mode OFF**
 
 ```
-Using your research, build a complete financial analysis. Use extended
-thinking — show working, not just conclusions.
+Using your research and the context package data, build a complete
+financial analysis. Use extended thinking to show your working at every
+step. The analysis must be rigorous enough that a professional investor
+would find it credible.
 
-ANALYSIS TASK 1 — MARGIN & EARNINGS PROJECTION
+ANALYSIS TASK 1: MARGIN AND EARNINGS PROJECTION
 
-Bear/base/bull for next 12 months:
+Build bear/base/bull scenarios for the next 12 months:
 
 | Metric | Bear | Base | Bull |
 |--------|------|------|------|
 | Total revenue ($M) | | | |
-| Revenue growth (YoY %) | | | |
-| Gross margin (%) | | | |
-| Operating margin (%) | | | |
+| Revenue growth YoY % | | | |
+| Gross margin % | | | |
+| Operating margin % | | | |
 | EPS ($) | | | |
 | FCF/share ($) | | | |
 
-One driving assumption per scenario:
-- Bear: "[specific failure]"
-- Base: "[specific continuation]"
+For each scenario, state the ONE driving assumption:
+- Bear: "[specific failure mode with trigger]"
+- Base: "[continuation of current trajectory]"
 - Bull: "[specific catalyst + date]"
 
-ANALYSIS TASK 2 — VALUATION TRIANGULATION (4 methods, full working)
+Use segment-level build-up, not top-down guesses. Show the maths for
+each segment.
 
-METHOD A — Historical Multiple Range: P/E and EV/EBITDA over 3 years. Apply to bear/base/bull earnings.
-METHOD B — DCF: Your FCF projections. 10Y Treasury + 5% risk premium. Show calculation.
-METHOD C — Peer-Relative: 4-6 named peers. Compare P/E, EV/Revenue, EV/EBITDA (table).
-METHOD D — Catalyst-Adjusted: 3-5 binary events with probability % and $ impact each.
+ANALYSIS TASK 2: VALUATION TRIANGULATION (4 methods, full working)
 
-ANALYSIS TASK 3 — SYNTHESIS
+METHOD A: Historical Multiple Range
+$[TICKER]'s P/E and EV/EBITDA over the last 3 years. Apply to your
+bear/base/bull earnings. Show the calculation.
 
-Weight methods by company type (state which weighting and why).
-Bear/base/bull targets with probability weights (NOT default 25/50/25).
-Expected value. Risk/reward ratio.
-Three assumptions most likely wrong — which direction and by how much.
+METHOD B: Discounted Cash Flow
+Your FCF projections, 5-year explicit period + terminal. Discount rate:
+10Y Treasury + 5% equity risk premium. Show every step. Sensitivity
+table on discount rate and terminal growth.
 
-OUTPUT: Tables with working. Do NOT write yet.
+METHOD C: Peer-Relative Valuation
+Use the peer comparison table from your research. Apply median peer
+multiples (P/E, EV/Revenue, EV/EBITDA) to $[TICKER]'s projected
+financials. TABLE required.
+
+METHOD D: Catalyst-Adjusted
+Identify 3-5 binary events from the catalyst calendar. For each:
+probability percentage and dollar impact on the stock price. Present
+as a probability-weighted expected value.
+
+ANALYSIS TASK 3: SYNTHESIS
+
+Weight the four methods by company type (state which weighting and why;
+e.g., pre-revenue companies weight DCF and catalyst-adjusted more heavily).
+
+Produce bear/base/bull 12-month price targets with probability weights.
+Do NOT default to 25/50/25. Assign probabilities based on the specific
+assumptions.
+
+Calculate: expected value, risk/reward ratio from current entry price,
+and the three assumptions most likely to be wrong (and in which direction).
+
+Cross-check your targets against the context package targets (from the
+analysis session). If they diverge by more than 15%, explain why.
+
+OUTPUT: Tables with full working. Do NOT write the article yet.
 ```
 
-#### Prompt 3 of 3 — Article + Companion Note
-
-**MODE: Standard**
-
-```
-Write the Trade Alert article and companion note using ALL research and
-analysis from this conversation.
-
-Saturday's newsletter hinted at this signal in the [THEME] space. This
-article is the reveal — the first time readers see the ticker.
-
-TITLE: "🟢 Trade Alert: $TICKER at $[PRICE] — [Theme Name]"
-
-═══ ARTICLE (1,200-1,800 words) ═══
-
-White-background Editorial theme (680px, inline CSS).
-
-STRUCTURE:
-1. THE REVEAL — "We're entering $TICKER at $[PRICE]." Decisive. What the
-   company does in one sentence. Theme connection. This is the moment
-   Saturday's readers have been waiting for.
-
-2. WHY THIS COMPANY — What makes it unique. Structural advantage. 2-3
-   paragraphs with specific data from your research.
-
-3. WHAT TRIGGERED THE SIGNAL — Approved terms: structural pivot confirmation,
-   momentum confirmed, institutional accumulation. What made this pass when
-   99%+ didn't? Include [SCAN_FUNNEL] placeholder.
-
-4. THE NUMBERS — Revenue trajectory, margins, balance sheet. HTML TABLE with
-   quarterly data required — not just prose. Show the reader the trend.
-
-5. 12-MONTH PRICE TARGETS — Three colour-coded cards:
-   - Bear (red-tinted, #fdf6f4): price, probability %, driving assumption
-   - Base (blue-tinted, #f4f7fa): price, probability %, driving assumption
-   - Bull (green-tinted, #f4faf5): price, probability %, driving assumption
-   - Below: Expected value + Risk/reward ratio
-
-6. BEAR CASE — Three assumptions most likely wrong. Specific and honest.
-
-7. KEY RISK — One metric, date, or event that invalidates.
-
-8. OUR POSITION — Entry price, position size rationale, exit trigger.
-
-9. WHAT WE'RE WATCHING — Next catalyst, next data point, what confirms.
-
-[If also closing a position this week, add before footer:]
-10. ALSO THIS WEEK: EXITING $TICKER2 — 3-4 sentences: what changed, P&L
-    if profitable, discipline framing if not. Brief — this isn't the focus.
-
-11. FOOTER — "Every signal, every entry, every exit — documented weekly:
-    https://sterlingsignals.substack.com"
-
-[CHART: TICKER] placeholder after section 3 or 4.
-
-═══ QUALITY CHECK ═══
-- Does section 4 have an HTML table with quarterly numbers?
-- Do sections 5-6 use specific numbers from your analysis?
-- Is the article 1,200-1,800 words?
-- Does section 1 feel like a REVEAL, not a dry announcement?
-
-═══ COMPANION NOTE (150-280 words) ═══
-
-This is the moment: name the ticker for the first time in the Notes feed.
-
-"$TICKER at $[PRICE]. GREEN signal confirmed."
-Funnel stat: "1,817 screened. This was one of [N] that passed."
-ONE surprising finding from your research (not the price targets).
-
-⛔ ANTI-SPOILER: Max ONE price target (base case). Never bear/base/bull together.
-
-End with: "Full analysis with price targets just published."
-Then: "Not financial advice. Informational only."
-
-Label: [ARTICLE HTML] and [COMPANION NOTE].
-
-VOICE: The energy of "we've been waiting to tell you about this one." Decisive,
-not tentative. This is the best post of the week — it should read like it.
-```
-
-### Variant B: Two Signals (4 Prompts)
-
-#### Prompt 1a of 4 — Research Signal 1
-
-**MODE: Research mode ON**
-
-Same as Variant A Prompt 1, but for $TICKER1 only.
-
-#### Prompt 1b of 4 — Research Signal 2
-
-**MODE: Research mode ON**
-
-Same research tasks, now for $TICKER2. State: "This is the second signal
-from this week's screening. Research this independently — do not blend with
-the previous ticker's analysis."
-
-#### Prompt 2 of 4 — Analysis (Both Tickers)
-
-**MODE: Extended Thinking ON, Research mode OFF**
-
-```
-Analyse BOTH tickers from your research. Build separate valuations for each.
-
-For $TICKER1:
-[Same Analysis Tasks 1-3 as Variant A]
-
-For $TICKER2:
-[Same Analysis Tasks 1-3 as Variant A]
-
-COMPARISON:
-- Which has better risk/reward?
-- Which has nearer-term catalysts?
-- Are they correlated (same theme) or diversifying?
-
-OUTPUT: Separate tables for each. Do NOT write yet.
-```
-
-#### Prompt 3 of 4 — Combined Article + Companion Note
-
-**MODE: Standard**
-
-```
-Write a combined Trade Alert covering both signals.
-
-TITLE: "🟢 Trade Alert: $TICKER1 & $TICKER2 — This Week's Entries"
-
-═══ ARTICLE (1,800-2,400 words) ═══
-
-STRUCTURE:
-1. THE REVEAL — "Two stocks cleared all gates this week. Here's the full
-   analysis on both." Name both tickers and prices.
-
-2-8. [SIGNAL 1: Full analysis using same structure as Variant A sections 2-8]
-
-── DIVIDER ──
-
-9-15. [SIGNAL 2: Full analysis — same structure, independent sections]
-
-16. HEAD TO HEAD — Quick comparison table: ticker, price, risk/reward,
-    nearest catalyst, theme overlap. Helps readers who can only buy one.
-
-17. EXITS (if applicable) — Brief section on any positions closing.
-
-18. FOOTER
-
-═══ COMPANION NOTE (150-280 words) ═══
-
-"Two signals this week. $TICKER1 at $[PRICE] and $TICKER2 at $[PRICE]."
-ONE surprising finding from either research set.
-"Full analysis with price targets on both just published."
-
-Label: [ARTICLE HTML] and [COMPANION NOTE].
-```
-
-### Variant C: No Signals — Portfolio Spotlight (3 Prompts)
-
-**Use when the Friday session produced no new GREEN signals.** The Sunday
-post becomes a thesis refresh on the best-performing holding.
-
-#### Prompt 1 of 3 — Research
-
-**MODE: Research mode ON**
-
-```
-No new signals this week. We're refreshing the thesis on our best performer.
-
-TICKER: $TICKER
-Entry: $[ENTRY] | Current: $[CURRENT] | P&L: +[X]% in [N] days
-Theme: [THEME NAME]
-
-Research question: "Is the thesis that drove our entry still intact? What's
-changed since we entered, and does the risk/reward still favour holding?"
-
-[Same Research Tasks 1-2 as Variant A, but framed as thesis refresh:
-- What's changed since entry? (new contracts, earnings, regulatory)
-- Has institutional ownership increased or decreased since our entry?
-- Any new risks that didn't exist at entry?
-- Forward revenue build: has the trajectory improved or weakened?]
-
-OUTPUT: Structured tables with citations. Flag what changed vs entry thesis.
-```
-
-#### Prompt 2 of 3 — Analysis
+#### Prompt 3 of 3: Write the Article
 
 **MODE: Extended Thinking ON**
 
-Same analysis structure as Variant A Prompt 2, but with additional section:
-
 ```
-[Same Analysis Tasks 1-3]
+Write the complete deep dive article using ALL research and analysis
+from this conversation. This should be 2,500-3,500 words of the highest
+quality analytical writing. Use extended thinking to plan the narrative
+arc before writing.
 
-ANALYSIS TASK 4 — THESIS REVIEW
+Read the attached voice_rules.md. These rules are non-negotiable:
+- No em dashes anywhere (use colons, periods, semicolons)
+- No AI/LLM references
+- No technical indicator names
+- Structural forces, not micro themes
+- Specific numbers for every claim
+- Vary sentence length deliberately
 
-Compare current state to entry thesis:
-- What we expected at entry vs what actually happened
-- Has conviction increased, decreased, or held?
-- Updated exit trigger (has it changed?)
-- Should we add to this position, hold, or begin trimming?
+TITLE: "$[TICKER]: [Thesis hook with at least one specific number]"
 
-Be honest. If the thesis is weakening, say so.
-```
+OUTPUT: Complete, self-contained HTML document.
 
-#### Prompt 3 of 3 — Article + Companion Note
+Use the Sterling Signals design system:
+- DM Serif Display for headings, DM Sans for body, JetBrains Mono for
+  data tables
+- Max-width 780px, padding 40px 24px
+- Colour palette: navy #0a1628, blue #1a3a5c / #2563eb, slate #334155 /
+  #64748b, green #16a34a, red #dc2626
+- Tables: #0f2440 header with white text, alternating #fff/#f8fafc rows,
+  monospace for numbers
+- Stat grid at the top (entry price, structural force, conviction tier,
+  next catalyst)
+- Price target cards: Bear (red-tinted #fdf6f4), Base (blue #f4f7fa),
+  Bull (green #f4faf5)
 
-**MODE: Standard**
+ARTICLE STRUCTURE:
 
-```
-Write the Portfolio Spotlight article and companion note.
+PREVIEW LINE: 1-2 sentences for the email/feed preview. Must contain a
+number that creates curiosity. This is the first thing subscribers see.
 
-TITLE: "Portfolio Spotlight: $TICKER — [Hook from strongest finding]"
-Example: "Portfolio Spotlight: $TMDX — +99% in 8 Weeks. Are We Still Holding?"
+TABLE OF CONTENTS: linked section list.
 
-═══ ARTICLE (1,000-1,500 words) ═══
+1. THE THESIS IN ONE SENTENCE
+   A single sentence capturing the entire investment thesis. It should be
+   quotable, specific, and memorable.
 
-STRUCTURE:
-1. THE HOOK — "$TICKER at $[CURRENT], up [X]% from our $[ENTRY] entry
-   [N] days ago." Why is this worth a deep look right now?
+2. WHAT THIS COMPANY DOES (200-300 words)
+   Plain-language explanation of the business model. Assume the reader has
+   never heard of this company. Explain what it does, how it makes money,
+   and why that matters. No jargon without immediate explanation.
 
-2. THE ORIGINAL THESIS — What we saw at entry. Why we entered.
+3. WHY NOW (300-400 words)
+   What changed to create this opportunity. The structural force driving
+   capital flows. The specific trigger or catalyst that made the screening
+   system flag this stock at this moment. How the macro environment creates
+   tailwinds. This section must make the reader feel the urgency of the
+   timing without resorting to hype.
 
-3. WHAT'S CHANGED — New data since entry. Earnings, contracts, institutional
-   moves. Be specific — table of what we expected vs what happened.
+4. THE NUMBERS (400-500 words)
+   Revenue trajectory with an HTML TABLE of quarterly data (minimum 4
+   quarters). Margin analysis showing the trend. Balance sheet assessment.
+   Peer comparison TABLE (3-5 peers with market cap, revenue, growth,
+   multiples). The narrative here is data-driven: let the tables tell the
+   story, with prose connecting the dots between data points.
 
-4. THE NUMBERS — Updated financials. HTML table with quarterly data.
+5. WHAT WE THINK IT'S WORTH (300-400 words)
+   Three colour-coded price target cards (Bear/Base/Bull) with:
+   - Target price
+   - Probability weight (not 25/50/25 unless justified)
+   - Driving assumption (one sentence)
+   - Valuation method used
 
-5. UPDATED PRICE TARGETS — Refreshed bear/base/bull with new data.
+   Below the cards: expected value calculation and risk/reward ratio from
+   entry price.
 
-6. BEAR CASE — What could go wrong from HERE (not from entry).
+6. THE BEAR CASE (200-300 words)
+   This is NOT a throwaway section. It is the section that builds trust
+   with sophisticated readers. Present the bear case as if you were SHORT
+   this stock. Name the specific risks. What data point kills the thesis?
+   What does the competition look like? What is the worst realistic
+   12-month outcome?
 
-7. OUR DECISION — Hold, add, or trim? Exit trigger update.
+7. HOW WE ARE PLAYING IT (150-200 words)
+   Entry price. Position tier and what that means for sizing relative to
+   the portfolio. The structural force this maps to. Specific exit criteria:
+   price level, fundamental trigger, time-based review. What confirms the
+   thesis. What disconfirms it.
 
-8. FOOTER
+8. WHAT HAPPENS NEXT (100-150 words)
+   The next catalyst with a specific date. What we are watching. What the
+   reader should watch. This section pulls the reader forward to the next
+   Saturday briefing update.
 
-═══ COMPANION NOTE ═══
+FOOTER:
+"Every screening result. Every entry. Every exit.
+sterlingsignals.substack.com"
 
-"$TICKER: +[X]% in [N] days. Is the thesis still intact?"
-ONE updated finding. Don't reveal the hold/add/trim decision — make them read.
+"Not financial advice. Informational and educational content only.
+Past performance does not guarantee future results."
 
-Label: [ARTICLE HTML] and [COMPANION NOTE].
+QUALITY CHECK (verify before outputting):
+- Does the preview line contain a specific number?
+- Does section 4 have at least TWO HTML tables (quarterly + peer comp)?
+- Does section 5 have three distinct price targets with non-default
+  probability weights?
+- Does section 6 feel like it was written by a sceptic, not a bull?
+- Is the article 2,500-3,500 words?
+- Are there ZERO em dashes in the entire output?
+- Are there ZERO technical indicator names?
+- Does section 8 name a specific date for the next catalyst?
+- Does the stat grid at the top show entry price, force, tier, and
+  next catalyst?
 ```
 
 ---
 
-## Sector Watch (2 Prompts) — Tuesday
+### Priority 2: Position Update (2 Prompts)
 
-**The newsletter named this theme and scored it.** This post delivers the depth behind the score.
+A held position had a material development: earnings, FDA decision,
+analyst action, or a move exceeding 10%. Saturday's briefing flagged it.
+This article provides the full analysis of what changed and what we do.
 
-### Prompt 1 of 2 — Research & Validate
+#### Prompt 1 of 2: Research the Development
 
 **MODE: Research mode ON**
 
 ```
-You are researching the [THEME NAME] sector ([SCORE]/10) for a Sector Watch article. Produce structured research data — NOT an article.
+You are researching a material development on $[TICKER] for a position
+update deep dive on Sterling Signals.
+
+CONTEXT PACKAGE (pasted above):
+[Contains original entry data, P&L, structural force mapping, and the
+material development summary from Cowork.]
+
+RESEARCH TASK 1: THE DEVELOPMENT
+
+Search for comprehensive coverage of [the specific event]:
+A) Primary source: the earnings release, FDA letter, press release,
+   or SEC filing. Exact numbers.
+B) Analyst reactions: upgrades/downgrades with old/new price targets.
+   Name the firms.
+C) Market reaction: price move on the day, volume vs average.
+D) Management commentary: direct quotes from earnings calls, press
+   conferences, or interviews.
+
+RESEARCH TASK 2: UPDATED FINANCIALS
+
+A) If earnings: full quarterly breakdown. Revenue by segment, margins,
+   EPS, guidance. Compare to consensus and prior quarter. TABLE.
+B) Updated balance sheet: cash, debt, any changes.
+C) Updated institutional activity since the development.
+
+RESEARCH TASK 3: THESIS COMPARISON
+
+Compare the current state to what the context package shows as the
+original entry thesis:
+A) Which specific elements of the thesis have been validated?
+B) Which elements have been challenged or invalidated?
+C) Has the competitive landscape changed?
+D) Are there new risks that did not exist at entry?
+
+OUTPUT: Structured tables. Explicit thesis comparison. Do NOT write yet.
+```
+
+#### Prompt 2 of 2: Write the Update
+
+**MODE: Extended Thinking ON**
+
+```
+Write the position update article using all research from this
+conversation and the context package data. 2,000-2,500 words.
+
+Read voice_rules.md. No em dashes. No AI references. No indicator names.
+
+TITLE: "$[TICKER]: [What Changed, with a Number]"
+
+Complete HTML, Sterling Signals design system.
+
+STRUCTURE:
+
+PREVIEW LINE.
+TABLE OF CONTENTS.
+
+1. THE ORIGINAL THESIS (200-300 words)
+   What we said when we entered. Entry price, structural force, conviction.
+   The key catalysts we identified. The bear case we acknowledged. Include
+   a stat grid showing entry data.
+
+2. WHAT HAPPENED (300-400 words)
+   The material development presented factually. Numbers from your research.
+   What the market did in response.
+
+3. THESIS CHECK (300-400 words)
+   Structured comparison: what we predicted vs what occurred. TABLE format
+   with columns: "At Entry" | "Now" | "Status" (Validated/Challenged/
+   Unchanged). Be specific about which elements held and which did not.
+
+4. UPDATED NUMBERS (200-300 words)
+   Revised financials if the development changes the projection. Updated
+   valuation. How the risk/reward has shifted since entry. Updated peer
+   comparison if relevant.
+
+5. WHAT WE ARE DOING (150-200 words)
+   Holding, adding, trimming, or exiting. The specific reasoning. Updated
+   exit criteria if applicable. What we watch next.
+
+FOOTER and QUALITY CHECK per Priority 1 standards.
+```
+
+---
+
+### Priority 3-5: Sector, Force, or Watchlist Analysis (2 Prompts)
+
+No new signal and no material development. The topic is determined by
+Cowork's priority logic: subscriber request (P3), force deep dive (P4),
+or watchlist analysis (P5).
+
+#### Prompt 1 of 2: Research
+
+**MODE: Research mode ON**
+
+```
+You are researching [TOPIC] for a deep dive on Sterling Signals.
+
+CONTEXT PACKAGE (pasted above):
+[Contains portfolio positions in this force/sector, watchlisted stocks,
+force context from Prompt 2, and signal history for relevant tickers.]
+
+RESEARCH TASK 1: STRUCTURAL FORCE ASSESSMENT
+
+Search for the current state of the [FORCE NAME] structural force:
+A) Capital flows: relevant ETF inflows/outflows (name 3-5 ETFs, dollar
+   amounts, last 3 months). TABLE.
+B) Government policy: bills, budgets, executive orders, regulatory
+   decisions with dollar amounts and timelines. Specific legislation
+   or rule names.
+C) Industry data: market size, growth rate, projections from named
+   sources (IEA, Gartner, McKinsey, government agencies).
+D) Recent institutional positioning: 13F trends across the sector.
+
+RESEARCH TASK 2: COMPANY-LEVEL DATA
+
+For EACH company discussed (portfolio positions + watchlisted stocks):
+A) Current price, market cap, EV.
+B) Most recent quarterly revenue, growth rate, margin.
+C) Key competitive differentiator in one sentence.
+D) Next catalyst with date.
+E) If watchlisted: what price level or event would trigger our entry.
+
+RESEARCH TASK 3: RISKS AND COUNTER-THESIS
+
+A) What would reverse the capital flows into this force?
+B) Specific policy or regulatory risk.
+C) Valuation concern: is the sector expensive relative to history?
+D) Crowding: is the trade becoming consensus?
+
+OUTPUT: Structured tables. Citations. Do NOT write yet.
+```
+
+#### Prompt 2 of 2: Write the Analysis
+
+**MODE: Extended Thinking ON**
+
+```
+Write the analysis using all research and the context package.
+2,000-3,000 words. Complete HTML.
+
+Read voice_rules.md. Same constraints as all other posts.
+
+TITLE: "[Force or Sector]: [Specific Hook with a Number]"
+
+STRUCTURE:
+
+PREVIEW LINE.
+TABLE OF CONTENTS.
+
+1. THE STRUCTURAL FORCE (200-300 words)
+   The macro thesis. Why this force exists and why capital is flowing.
+   Key data points. Current status. What changed recently. This section
+   should make a reader who has never heard of this force understand why
+   it matters.
+
+2. THE LANDSCAPE (500-600 words)
+   Key companies mapped across the force. How they relate to each other.
+   Competitive dynamics. Where our holdings fit. For watchlisted stocks:
+   what each offers and what prevents entry today.
+   Include a TABLE: ticker, market cap, revenue, growth, multiple, our
+   status (held/watchlisted/rejected).
+
+3. THE DATA (300-400 words)
+   Industry data, ETF flows, earnings trends, regulatory timeline.
+   Tables where they clarify. This section is evidence: specific numbers
+   from your research that either support or challenge the thesis.
+
+4. HOW WE ARE POSITIONED (200-300 words)
+   What we hold in this force and why. Current P&L on each position.
+   What we do not hold and why. What would change our positioning.
+   Forward catalysts to watch with dates.
+
+FOOTER and QUALITY CHECK per Priority 1 standards.
+```
+
+---
+
+### Quality Gate (All Tuesday Variants)
+
+Before publishing, verify every item:
+
+- [ ] Preview line contains a specific number and compels the open
+- [ ] Table of contents present and linked
+- [ ] At least one HTML data table with real numbers
+- [ ] No technical indicator names (HMA, MACD, RSI, Banker, UC, MCDX)
+- [ ] No em dashes anywhere in the entire document
+- [ ] No AI/LLM references (Claude, AI-powered, machine learning)
+- [ ] Positions mapped to structural forces, not micro themes
+- [ ] Bear case is specific, fair, and reads like a sceptic wrote it
+- [ ] Exit criteria are explicit (for signal and update deep dives)
+- [ ] Key insight placed toward the end of the article
+- [ ] Ends with a specific forward catalyst and date
+- [ ] Numbers from the context package match numbers in the article
+- [ ] Stat grid at top with entry price, force, tier, next catalyst
+- [ ] Word count: 2,000-3,500 depending on variant
+
+---
+
+## Thursday Education
+
+### Always Free, 4-Week Rotation
+
+The growth engine. These posts attract new subscribers through Substack's
+algorithm. They must have standalone value: a reader who does not follow
+the portfolio should still find the post worth their time.
+
+### Week A: Methodology (2 Prompts)
+
+How the screening system works. The five-stage filter chain. Why the
+rejection rate matters. Position sizing philosophy. The structural forces
+framework. NEVER reveal specific indicator names.
+
+#### Prompt 1 of 2: Structure and Data
+
+**MODE: Extended Thinking ON**
+
+```
+You are planning a methodology post for Sterling Signals.
+
+CONTEXT PACKAGE (pasted above):
+[Contains scanner stats, funnel numbers, rejection examples from
+signal_history_rows.csv.]
+
+TOPIC: [Specific topic from Cowork, e.g., "how the five-stage filter
+chain works" or "why we size positions by tier" or "the structural
+forces framework"]
+
+Using extended thinking, plan the article:
+
+1. What is the single most surprising or counterintuitive claim you
+   can make about this topic? This becomes the opening line.
+
+2. What specific data from the context package makes this concrete?
+   Pull exact numbers: tickers scanned, rejection rates, tier breakdown,
+   specific stocks rejected and why.
+
+3. What is the narrative arc? The reader should go from "I didn't know
+   this" to "now I understand the logic" to "I can see why this works"
+   to "I want to apply this thinking."
+
+4. What is the key insight that should go near the end to reward
+   readers who finish the full article?
+
+5. Is there a natural connection to a current portfolio position? If
+   yes, note it. If forcing it, skip it.
+
+OUTPUT: Structured outline with data points, opening hook, and narrative
+arc. Do NOT write the article yet.
+```
+
+#### Prompt 2 of 2: Write
+
+**MODE: Extended Thinking ON**
+
+```
+Write the methodology article using your outline and the context package.
+1,500-2,000 words. HTML or clean Markdown.
+
+Read voice_rules.md. All constraints apply.
+
+CRITICAL: You are explaining HOW the system thinks without revealing
+WHAT specific tools it uses. Describe outcomes: "the system identifies
+momentum inflections," "institutional accumulation signals," "trend
+acceleration confirmed." Never: "HMA pivot low," "MACD cross-up,"
+"Banker indicator."
+
+TITLE: "[Number-Based Hook About the System]"
+
+STRUCTURE:
+
+PREVIEW LINE: a concrete claim or number that hooks.
+
+TABLE OF CONTENTS.
+
+OPENING: Start with the most surprising data point. Not "today we
+explain our system." Instead: "Last Friday, 1,817 stocks entered our
+screening process. 1,816 were rejected. Here is how."
+
+BODY: Build from the general to the specific. Start with the overall
+philosophy (why systematic screening outperforms discretionary picking),
+then walk through the specific process, using real data from the context
+package at every stage. Each section should leave the reader smarter.
+
+Include at least one TABLE showing the funnel (stages, counts, rejection
+rates). If relevant, include a comparison table (e.g., our system vs
+typical retail approach).
+
+PORTFOLIO CONNECTION: If natural, show how a specific position
+illustrates the methodology. If forced, skip entirely.
+
+CLOSING: The key insight. Then: what this means for subscribers (why
+following a system matters, what they should watch for in our upcoming
+posts).
+
+QUALITY CHECK:
+- [ ] Opens with a surprising number, not preamble
+- [ ] Explains the system without revealing any indicator names
+- [ ] Uses real data from the context package (specific counts, tickers)
+- [ ] At least one table
+- [ ] A reader who does not follow the portfolio finds this valuable
+- [ ] No em dashes, AI references, or indicator names
+- [ ] 1,500-2,000 words
+```
+
+---
+
+### Week B: Investment Education (2 Prompts)
+
+Research on multibagger characteristics. Momentum studies. Academic
+findings applied to the system's framework. The goal is to teach a
+genuine investing concept through specific data.
+
+#### Prompt 1 of 2: Research
+
+**MODE: Research mode ON**
+
+```
+You are researching [TOPIC] for an education post on Sterling Signals.
+
+CONTEXT PACKAGE (pasted above):
+[Contains the specific concept or finding to cover, relevant data
+points from the system.]
+
+TOPIC: [e.g., "academic research on multibagger stock characteristics"
+or "why momentum strategies work and when they fail" or "how structural
+forces differ from sector rotation"]
+
+RESEARCH TASKS:
+
+A) Find the primary academic or practitioner source:
+   - Author, institution, publication date, methodology
+   - Key finding stated as a specific number or statistic
+   - Sample size and time period studied
+
+B) Find 2-3 supporting or contradicting sources:
+   - Do other studies confirm or challenge this finding?
+   - What is the base rate of success?
+   - What are the known limitations?
+
+C) Find the counterintuitive angle:
+   - What does this finding say that contradicts conventional wisdom?
+   - What would most retail investors get wrong about this topic?
+
+D) Find specific examples:
+   - 2-3 real companies or historical events that illustrate the finding
+   - Specific returns, dates, and outcomes
+
+OUTPUT: Structured research with citations. The counterintuitive finding
+is the most important element. Do NOT write yet.
+```
+
+#### Prompt 2 of 2: Write
+
+**MODE: Extended Thinking ON**
+
+```
+Write the education article. 1,500-2,000 words. HTML or Markdown.
+
+Read voice_rules.md.
+
+TITLE: "[The Counterintuitive Finding as a Claim]"
+Example: "Past Earnings Growth Does Not Predict Future Multibagger Returns"
+
+STRUCTURE:
+
+PREVIEW LINE: the counterintuitive finding in 1-2 sentences.
+
+TABLE OF CONTENTS.
+
+1. THE CLAIM (100-150 words)
+   State the finding directly. Do not hedge. "A study of 464 stocks that
+   returned 1,000%+ found that..." This should feel like a claim worth
+   arguing about.
+
+2. THE EVIDENCE (400-500 words)
+   The research methodology, sample, and findings. Specific numbers
+   throughout. Include at least one TABLE showing key data. Present
+   the evidence as if making a case to a sceptical investor.
+
+3. WHY THIS MATTERS FOR STOCK SELECTION (300-400 words)
+   What does this finding imply for how investors should screen for
+   stocks? What popular approaches does it invalidate? What does it
+   validate? This is where the finding connects to practical investing.
+
+4. THE EXCEPTION (200-250 words)
+   When does this finding NOT apply? Name a specific counter-example
+   or limitation. This section builds credibility: it shows the analysis
+   is honest, not a sales pitch for one idea.
+
+5. CONNECTION TO OUR SYSTEM (100-200 words, ONLY if natural)
+   If the finding directly relates to how our screening system works,
+   explain the connection. "This is why our system screens for X rather
+   than Y." If no natural connection exists, SKIP THIS SECTION ENTIRELY.
+
+6. THE TAKEAWAY (100-150 words)
+   One concrete insight the reader can apply. What should they look for
+   or stop doing? End with a forward look connecting to upcoming content.
+
+QUALITY CHECK:
+- [ ] The title makes a specific, surprising claim
+- [ ] Section 2 cites at least one named source with methodology
+- [ ] Section 4 presents a genuine exception, not a strawman
+- [ ] If section 5 exists, the connection is organic
+- [ ] Standalone value for non-portfolio readers
+- [ ] No em dashes, AI references, or indicator names
+- [ ] 1,500-2,000 words
+```
+
+---
+
+### Week C: Free Tool or Resource (2 Prompts)
+
+A permanent lead magnet. Something subscribers bookmark and return to.
+The Screener equivalent for Sterling Signals: a scanner funnel summary,
+a structural forces status board, a "how to read our updates" guide, or
+a watchlist framework.
+
+#### Prompt 1 of 2: Build the Resource
+
+**MODE: Extended Thinking ON**
+
+```
+You are building a free resource for Sterling Signals subscribers.
+
+CONTEXT PACKAGE (pasted above):
+[Contains the data needed to build the resource: scanner stats, force
+data, portfolio data, etc.]
+
+RESOURCE: [Specific resource from Cowork, e.g., "structural forces
+status board" or "how to read our portfolio updates" or "the weekly
+scanner funnel explained"]
+
+Using the context package data, build the complete resource:
+1. What data does this resource present?
+2. What format makes it most useful? (Table, guide, reference card)
+3. What makes this worth bookmarking? What would make someone return?
+4. How does this resource improve over time? (Updated weekly, expanded)
+
+BUILD: The complete resource content with all data filled in. Use real
+numbers from the context package. If this is a status board, populate
+it. If this is a guide, write the full guide.
+
+OUTPUT: Complete resource content, ready to be wrapped in an article.
+```
+
+#### Prompt 2 of 2: Write the Article Around It
+
+**MODE: Extended Thinking ON**
+
+```
+Write the article that frames and presents the resource. 1,200-1,800
+words. HTML.
+
+Read voice_rules.md.
+
+TITLE: "[Resource Name]: [Value Proposition]"
+
+STRUCTURE:
+
+PREVIEW LINE.
+
+1. WHAT THIS IS AND WHY IT EXISTS (150-200 words)
+   Brief context. What problem this solves. Why we are giving it away.
+
+2. THE RESOURCE (main body, 600-1,000 words)
+   The complete resource from Prompt 1, formatted as HTML with styled
+   tables, callout boxes, and clear structure. This is the content people
+   bookmark.
+
+3. HOW TO USE IT (150-200 words)
+   Practical guidance. What to check weekly. What changes mean.
+
+4. WHAT IS COMING (100 words)
+   How this resource connects to the rest of Sterling Signals. What
+   subscribers get beyond this free resource.
+
+FOOTER.
+
+This should be permanently useful. A subscriber who finds this post
+six months from now should still get value from it.
+```
+
+---
+
+### Week D: Investor Lessons (3 Prompts)
+
+Real examples from our screening process. A stock we rejected and why.
+A capital structure trap. A turnaround that failed. The lesson is taught
+through a specific, real story with specific numbers.
+
+#### Prompt 1 of 3: Select the Story
+
+**MODE: Extended Thinking ON**
+
+```
+Today is an Investor Lessons post. I want to teach through a real
+example from our screening process.
+
+CONTEXT PACKAGE (pasted above):
+[Contains signal_history_rows.csv entries for rejected stocks, their
+rejection reasons, and portfolio parallels.]
+
+From the context package, identify 2-3 candidate stories. For each:
+
+1. The stock and what happened (rejected, failed at which stage, why)
+2. The lesson it teaches (stated as a specific, surprising claim)
+3. The hook: one number that would make someone stop scrolling
+4. Is this timely? (Connected to a recent market event or a common
+   investor mistake?)
+5. Does it connect naturally to a portfolio position that AVOIDED this
+   trap? (If so, note it. If not, the story stands on its own.)
+
+Recommend your top choice and explain why it teaches the most valuable
+lesson.
+```
+
+#### Prompt 2 of 3: Research the Example
+
+**MODE: Research mode ON**
+
+```
+Research [SELECTED STOCK] to build the full story.
+
+Search for:
+A) The company's recent financials: revenue trend, margins, cash flow.
+   Enough to understand the business.
+B) The specific issue our system identified (from the context package
+   rejection reason). Verify with public data:
+   - If dilution: shares outstanding history, warrant details, placement
+     prices and dates
+   - If competitive deterioration: competitor moves, market share data
+   - If capital structure: debt schedule, covenant details, maturity dates
+   - If turnaround failure: management history, prior promises vs results
+C) What happened AFTER we rejected it (if data available):
+   - Did the stock decline? By how much?
+   - Did the risk materialise?
+   - Or did it rally (and if so, does our rejection still look correct
+     given the risk we identified)?
+D) The broader pattern: is this a common trap? How often do stocks with
+   this profile fail?
+
+OUTPUT: Structured findings. The goal is to tell a specific story with
+specific numbers that teaches a general principle.
+```
+
+#### Prompt 3 of 3: Write the Lesson
+
+**MODE: Extended Thinking ON**
+
+```
+Write the investor lesson. 1,500-2,000 words. HTML.
+
+Read voice_rules.md.
+
+TITLE: "[Specific Detail]: [The Lesson in Plain Language]"
+Example: "45% Dilution in Two Years: Why We Walked Away from a Defence
+Stock with 23% Short Interest"
+
+STRUCTURE:
+
+PREVIEW LINE: the most surprising number from the story.
+
+TABLE OF CONTENTS.
+
+1. THE SETUP (200-300 words)
+   What made this stock look attractive. The surface-level case: sector
+   tailwind, short interest, momentum signals. Make the reader understand
+   why someone WOULD buy this. The lesson has no power if the reader
+   does not first believe the stock looked good.
+
+2. WHAT WE FOUND (400-500 words)
+   The forensic discovery. Walk through it step by step: what data we
+   pulled, what it showed, why it changed the picture. This is the
+   educational core. Specific numbers at every step. Tables if they
+   clarify.
+
+3. THE DECISION (150-200 words)
+   We walked away. State it plainly. No self-congratulation. Just the
+   facts: the system identified this risk, the risk exceeded our
+   threshold, the position was not entered.
+
+4. THE BROADER PATTERN (300-400 words)
+   Is this a common trap? How often do stocks with this profile fail?
+   What should investors look for to avoid it? Generalise the specific
+   example into a principle.
+
+5. IN OUR PORTFOLIO (100-200 words, ONLY if natural)
+   If a current holding avoided this exact trap, show the comparison.
+   "Our [TICKER] has [specific metric that is the opposite of the trap]."
+   If nothing connects naturally, SKIP.
+
+6. THE TAKEAWAY (100-150 words)
+   One concrete thing the reader can check on any stock they own or are
+   considering. End with a forward look.
+
+QUALITY CHECK:
+- [ ] Section 1 makes the reader believe the stock looked good
+- [ ] Section 2 uses specific numbers from the research
+- [ ] Section 4 generalises into a reusable principle
+- [ ] If section 5 exists, the connection is genuine
+- [ ] The title names the specific detail, not a vague concept
+- [ ] No em dashes, AI references, indicator names
+- [ ] 1,500-2,000 words
+```
+
+---
+
+### Quality Gate (All Thursday Variants)
+
+- [ ] Opens with a hook, not preamble
+- [ ] Teaches something genuinely useful and specific
+- [ ] Every claim backed by a specific number or named source
+- [ ] Connection to Sterling Signals system is organic, not forced
+- [ ] No indicator names, em dashes, or AI references
+- [ ] Standalone value: non-portfolio readers find it worth their time
+- [ ] Ends with an actionable takeaway, not "thanks for reading"
+- [ ] All data from the context package, not invented
+- [ ] 1,200-2,000 words depending on variant
+
+---
+
+## Ad-Hoc Prompts
+
+These cover situations outside the normal Tuesday/Thursday rhythm.
+They can publish any day and replace whatever was scheduled.
+
+### Mid-Week Trade Alert (1 Prompt)
+
+**When:** A position is entered outside the normal Friday analysis
+session (e.g., an intra-week exceptional setup, a stop-loss re-entry
+at a better level). For signals from the Friday analysis, use the
+Tuesday deep dive Priority 1 sequence above.
+
+**MODE: Extended Thinking ON**
+
+```
+Read the attached voice_rules.md.
+
+NEW POSITION: $[TICKER] at $[PRICE]
 
 CONTEXT:
-- Theme score: [SCORE]/10 (from this week's screening)
-- Our positions in this theme: [list tickers with entry prices and P&L]
-- [If newsletter mentioned this theme]: "Saturday's newsletter named this theme and gave a surface summary. This post goes DEEP — ETF flows, 13F data, policy catalysts."
+- Entry date: [date]
+- Structural force: [force name]
+- Reason for entry: [brief thesis from the user]
 
-RESEARCH TASK 1 — ETF FLOWS
-Search for:
-- The 3-5 largest ETFs in this sector by AUM (name them)
-- Monthly net inflows/outflows for each in dollars (last 3 months)
-- Any record flow months in the last 6 months
-- Compare to broad market flows (SPY, QQQ inflows in same period)
+Web search for:
+- Current stock price (verify against entry)
+- Recent news and catalysts (past 2 weeks)
+- Most recent quarterly earnings: revenue beat/miss, guidance
+- 13F institutional activity (recent quarter)
+- Short interest as percentage of float
 
-RESEARCH TASK 2 — INSTITUTIONAL POSITIONING
-Search for:
-- Recent 13F filings from major funds mentioning stocks in this theme
-- Name 2-3 specific funds and their positions (fund, ticker, shares, change)
-- Is hedge fund concentration in this sector rising or falling vs 12 months ago?
-- Any activist positions or notable new entrants
-
-RESEARCH TASK 3 — POLICY & REGULATORY CATALYSTS
-Search for:
-- Government bills, executive orders, or budget allocations with $ amounts and timeline
-- Regulatory decisions pending (FDA, DOE, DOD, FCC) with specific dates
-- International policy (EU, China) that affects US companies in this theme
-- Any upcoming congressional hearings or committee votes
-
-RESEARCH TASK 4 — EARNINGS EVIDENCE
-- Which companies in this theme reported recently? Beat or miss?
-- Average revenue beat rate for theme stocks vs S&P 500 average
-- Guidance trends: are theme companies raising or lowering?
-- Any notable guidance quotes
-
-RESEARCH TASK 5 — OUR POSITIONS
-For every portfolio position in this theme:
-- Ticker, entry price, current price (from web search), P&L %
-- Days held, original thesis, what's changed since entry
-
-RESEARCH TASK 6 — RISKS
-- Crowding signals: is the theme's main ETF overbought? (RSI context)
-- Policy reversal risk: what would undo the bullish catalyst?
-- Valuation: are theme stocks expensive relative to history?
-- What specific event would make you SELL the theme?
-
-OUTPUT: Structured research with citations. No article yet.
-```
-
-### Prompt 2 of 2 — Article + Companion Note
-
-**MODE: Standard**
-
-```
-Write the article and companion note using your research.
-
-TITLE: "Sector Watch: [Theme Name] ([Score]/10)"
-
-═══ ARTICLE (800-1,200 words) ═══
-
-White-background Editorial theme with teal accents:
-- Theme score card: teal (#0d9488) left border, #f0fdfa background
-- Data callouts: rounded cards, #f8fafc background, #e2e8f0 border
-
-Open with: "[Theme] scored [X]/10 in this week's screening." Or reference the newsletter: "We named [Theme] as our top-rated sector on Saturday. Here's the data behind that score."
+Write a trade alert as complete HTML (1,200-1,800 words).
+Sterling Signals design system (780px, navy/blue/slate palette).
 
 STRUCTURE:
-1. Why This Theme, Why Now — Lead with the strongest data point from your research. Not a summary — one number that commands attention.
-2. The Investment Thesis — Structural dynamics. Multi-year story. Why does this theme have staying power?
-3. The Evidence — ETF flows, institutional moves, earnings, catalysts. NUMBERS from your research — not vague statements. Include at least one stat card or callout box.
-4. Our Positions — Every position in this theme with entry prices and P&L. HTML table format. If no positions: "We're watching but haven't found a setup that clears all gates."
-5. Risks — What would make this wrong? Be specific. Name the event, the date, the mechanism.
-6. What We're Watching — Upcoming events with specific dates and what they mean.
-7. Stocks Positioned — 3-5 stocks in this theme (including ours), with current price and one-line thesis each.
-8. Footer — "We score themes weekly across 1,800 stocks: https://sterlingsignals.substack.com"
 
-═══ QUALITY CHECK ═══
-- Does section 3 cite specific dollar amounts for ETF flows? Not just "money is flowing in."
-- Does section 4 have an HTML table with entry prices and P&L?
-- Does section 6 list dates, not just "upcoming catalysts"?
+PREVIEW LINE: 1-2 sentences with a specific number.
 
-═══ COMPANION NOTE (150-280 words) ═══
+1. THE SIGNAL: "$[TICKER] at $[PRICE]. GREEN signal confirmed." What
+   the company does in one sentence. Structural force connection.
 
-Lead with the most compelling data point:
-- "$800M flowed into defence ETFs this month. Here's why."
-- "3 of our 5 positions sit in one theme. It just scored 8.4/10."
+2. WHY THIS COMPANY: What makes it unique. Structural advantage. 2-3
+   paragraphs with specific data from your search.
 
-Don't summarise the article. Give ONE data point that makes a reader want the full picture.
+3. WHAT TRIGGERED THE SIGNAL: Use approved terms only: structural
+   pivot confirmation, momentum confirmed, institutional accumulation
+   patterns. What made this pass when 99%+ are rejected? Include funnel
+   context.
 
-End with: "Full sector analysis just published."
-Then: "Not financial advice. Informational only."
+4. THE SETUP: 4-6 specific data points from your search. Revenue
+   trajectory, margin direction, institutional activity, upcoming
+   catalysts. At least one HTML TABLE.
 
-Label: [ARTICLE HTML] and [COMPANION NOTE].
+5. BEAR CASE: The specific risk. What data point kills the thesis.
+   What the worst realistic 12-month outcome looks like.
 
-VOICE: Opinionated. "Capital is flowing into defence. The data is clear." Contractions. No filler. No hedging into nothing.
+6. HOW WE ARE PLAYING IT: Entry price, position sizing rationale,
+   structural force, specific exit criteria.
+
+7. WHAT WE ARE WATCHING: Next catalyst with date. What confirms or
+   invalidates.
+
+FOOTER.
+
+VOICE: Decisive. "We are entering $[TICKER] at $[PRICE]. Here is why."
+Not "After careful analysis, we believe this presents an opportunity."
 ```
 
----
+### Standalone Position Exit (1 Prompt)
 
-## Investor Lessons (3 Prompts) — Wednesday
+**When:** A position is exited outside the normal Saturday briefing
+cycle (e.g., stop triggered mid-week, thesis broken by news event).
 
-**Series identity:** Case studies, legendary investors, investing principles,
-market mechanics, and behavioural finance. These posts stand on their own —
-a portfolio connection is welcome when natural but NEVER forced.
-
-**Subcategory rotation** (check last 4 Wednesdays' manifests, pick least-recently-used):
-
-| Subcategory | Examples |
-|---|---|
-| Case Study | Enron, GameStop, Nvidia's pivot, LTCM, Tesla short squeeze |
-| Legendary Investor | Buffett, Druckenmiller, Lynch, Soros, Dalio, Cathie Wood |
-| Investing Principle | Stop losses, position sizing, risk/reward, momentum vs value |
-| Market Mechanics | Short squeezes, 13F analysis, options flow, index rebalancing |
-| Behavioural Finance | Loss aversion, anchoring, FOMO, recency bias, disposition effect |
-
-### Prompt 1 of 3 — Discover Topic
-
-**MODE: Extended Thinking**
+**MODE: Extended Thinking ON**
 
 ```
-Today is an Investor Lessons post. Subcategory: [SELECTED BY ROTATION].
+Read the attached voice_rules.md.
 
-Generate 3 topic candidates. For EACH:
-- The topic stated as a specific, surprising claim (not generic)
-- The hook stat — one number that would make someone stop scrolling
-- What makes this timely? (Why this week — a market event, a position
-  milestone, something in the news?)
-- Shareability: would someone repost this? What's the quotable insight?
+CLOSING POSITION: $[TICKER]
 
-If any topic has a natural portfolio connection, note it — but do NOT
-force one. "Druckenmiller concentrated into one trade" is a great topic
-whether or not we can connect it to our portfolio.
+CONTEXT:
+- Entry price: $[ENTRY] on [date]
+- Current/exit price: $[EXIT]
+- P&L: [calculate]
+- Structural force: [force]
+- Exit reason: [brief from user]
 
-Recommend your top choice. Explain why it beats the alternatives.
-```
+Web search for: recent news on $[TICKER], current sector conditions.
 
-### Prompt 2 of 3 — Research
+Write a position exit article (800-1,200 words, HTML).
 
-**MODE: Research mode ON**
+CRITICAL FRAMING:
+- Profitable (any gain): Lead with the return. Show the numbers.
+- At a loss or small gain: Lead with the discipline angle. "Our
+  systematic exit discipline triggered on $[TICKER]." Focus on the
+  thesis change. NEVER use "loss," "stopped out," "down."
 
-```
-Research [SELECTED TOPIC] thoroughly.
-
-SEARCH FOR:
-
-A) The original source:
-   - The shareholder letter, interview, academic paper, SEC filing, book chapter
-   - Specific dates, returns, drawdowns, position sizes, dollar amounts
-   - Direct quotes from primary sources
-
-B) Specific numbers that make the story compelling:
-   - Returns, timeframes, drawdowns, AUM, position sizes
-   - The more specific, the more credible
-
-C) Counter-evidence:
-   - When did this principle fail? Name a specific case.
-   - Is this survivorship bias?
-   - What's the base rate of success?
-
-D) One stat that contradicts common wisdom:
-   - The counterintuitive finding that hooks the article
-
-E) OPTIONAL — Portfolio connection (only if natural):
-   - If one of our positions genuinely illustrates this principle,
-     note the ticker, entry, P&L, and how it connects
-   - If nothing connects naturally, skip this. Do NOT force it.
-
-OUTPUT: Structured research with citations. No article yet.
-```
-
-### Prompt 3 of 3 — Write
-
-**MODE: Standard**
-
-```
-Write the article and companion note.
-
-TITLE: "Investor Lessons: [Specific, Surprising Topic]"
-
-═══ ARTICLE (800-1,200 words) ═══
-
-White-background Editorial theme.
+TITLE:
+- If profitable: "$[TICKER]: +[Y]% in [Z] Weeks"
+- If not profitable: "$[TICKER]: Systematic Exit, Thesis Changed"
 
 STRUCTURE:
-1. THE HOOK — Most surprising number or claim. One sentence.
-2. THE STORY — Narrative, not bullet points. Tell it like a story.
-3. THE EVIDENCE — Studies, data, specific numbers with citations.
-   Include at least one table or data comparison.
-4. [OPTIONAL] IN OUR PORTFOLIO — Only if a natural connection exists
-   from your research. Name the ticker, entry, P&L. If nothing connects
-   naturally, SKIP this section entirely. A forced connection is worse
-   than no connection.
-5. THE EXCEPTION — When does this fail? Specific counter-example.
-6. THE TAKEAWAY — One concrete thing the reader can do THIS WEEK.
-7. FOOTER — "We study the best to build a better system: https://sterlingsignals.substack.com"
 
-═══ QUALITY CHECK ═══
-- Does section 2 tell a STORY (narrative) not just list facts?
-- Does section 3 cite at least one source with a specific number?
-- If section 4 exists, is the portfolio connection genuine or forced?
-  If forced, DELETE it.
+PREVIEW LINE.
 
-═══ COMPANION NOTE (150-280 words) ═══
+1. THE EXIT: Entry price, exit price, P&L (if positive), days held.
+   What changed. One paragraph.
 
-Lead with the hook stat. Create curiosity.
+2. THE ORIGINAL THESIS: What we saw at entry. The structural force.
+   The catalysts we identified.
 
-End with: "Full analysis just published."
-Then: "Not financial advice. Informational only."
+3. WHAT CHANGED: Specifics from your search. What new information
+   invalidated or shifted the thesis.
 
-Label: [ARTICLE HTML] and [COMPANION NOTE].
+4. THE LESSON: One thing this trade teaches about our process. Be
+   specific: "This is why we set exit triggers at entry, not after
+   the fact."
 
-VOICE: Enthusiasm backed by evidence. Not professorial. Not clickbait.
+5. WHAT IS NEXT: Redeploying capital or waiting? Which structural
+   forces look strongest?
+
+FOOTER.
+
+VOICE: Measured. An exit is a decision, not an apology. Show the
+process working regardless of outcome.
 ```
 
----
+### Performance Review Fallback (2 Prompts)
 
-## Tools & Tech (1 Prompt) — Thursday Carousel
+**When:** No analysis session was run that week (travel, holiday, etc.)
+and the Saturday briefing was not produced via Prompt 11. Use this to
+produce a performance-focused newsletter as a substitute.
 
-**Series identity:** A carousel posted as a Substack Note (NOT a long-form
-article). Shows a specific tool, demonstrated on a real ticker.
-
-**This is lighter content by design.** Thursday is sandwiched between
-Wednesday's Investor Lessons post and Friday's notes — a carousel provides
-visual variety without article fatigue.
-
-**Subcategory rotation** (check last 4 Thursdays' manifests):
-
-| Subcategory | Example Tools |
-|---|---|
-| Screeners & Scanners | Finviz, TradingView screener, EDGAR full-text |
-| Charting Platforms | TradingView setup, indicator configuration |
-| Data & Research | Koyfin, Simply Wall St, Macrotrends, FRED, Quiver Quant |
-| Portfolio Management | Position sizing calculators, correlation matrices |
-| AI & Automation | Claude for 10-K analysis, Perplexity for earnings |
-| Free vs Paid | "Free tools that replace $500/year subscriptions" |
-
-### Prompt — Research + Carousel Data
+#### Prompt 1 of 2: Gather Fresh Data
 
 **MODE: Research mode ON**
 
 ```
-Research [TOOL NAME] for a Tools & Tech carousel. Demo on $TICKER.
+No analysis session was run this week. We need a performance-focused
+newsletter using portfolio data and web search only.
 
-SEARCH FOR:
-- Official site, pricing, free tier limitations
-- What problem it solves, who it's for
-- Specific workflow on $TICKER: what screens, what data, what insights
-- 2-3 alternatives and how this compares
-- Limitations and gotchas
+Read portfolio.csv and equity_curve.csv for current positions.
 
-Then generate carousel data JSON for a 5-slide INVESTOR TOOLKIT carousel:
+RESEARCH:
 
-Slide 1 (DARK): Tool name + the problem it solves
-  Hook stat: "Bloomberg costs $25K/year. This does 80% of the job for free."
+MARKET: Web search for current prices and weekly/YTD returns for SPY,
+QQQ, IWM. VIX current level. Major market events this week.
 
-Slide 2 (LIGHT): What it does in plain English. 2-3 short paragraphs.
+PORTFOLIO: Web search for current prices of ALL open positions in
+portfolio.csv. Recalculate P&L from entry prices. Present as a TABLE:
+Ticker | Entry | Current | P&L% | Structural Force | Days Held.
 
-Slide 3 (LIGHT): 4 stat cards showing what the tool found on $TICKER.
-  Each card: number + label + source. Real data from your research.
+THEMES: For each structural force represented in the portfolio, search
+for any developments this week: policy changes, earnings from related
+companies, regulatory decisions.
 
-Slide 4 (LIGHT): Two-column — "FREE TIER" vs "PAID ($X/mo)" or comparison
-  with 2 alternatives.
+NEXT WEEK: Earnings dates for tickers in the portfolio. Fed meetings,
+economic data releases, sector-specific events.
 
-Slide 5 (DARK): 3-4 numbered setup steps. URL included. Sterling Signals
-  verdict: "We use this for [specific purpose]."
-
-Output the JSON following the schema in carousel-data-schema.json.
-Also output a brief companion note (100-150 words) for posting alongside
-the carousel in Substack Notes.
+OUTPUT: Structured tables with all data. Flag any positions that moved
+more than 5% this week.
 ```
 
-**Files to attach:** carousel-guide.docx + carousel-series-templates.md + banned_terms.py
+#### Prompt 2 of 2: Write the Newsletter
 
-**After generation:** Run `node substack/tools/carousel-generator.js [json_file]`
-
-**Save to:** `substack/output/current/carousels/carousel_tools_{YYYYMMDD}.pptx`
-
----
-
-## Performance Review — FALLBACK ONLY
-
-**Use ONLY when no analysis session was run that week.** Saturday's newsletter normally comes from Prompt 11 in the analysis session.
-
-### Prompt 1 of 2 — Gather Fresh Data
-
-**MODE: Research mode ON**
+**MODE: Extended Thinking ON**
 
 ```
-Read the attached context document. No analysis session was run this week, so we're producing the newsletter from the context document alone.
+Write "The Weekly Screening" newsletter using the data above.
+2,000-2,500 words. Complete HTML. Sterling Signals design system.
 
-Web search for current data:
+Read voice_rules.md.
 
-MARKET: SPY, QQQ, IWM — current price, week change, YTD return. VIX current. Major events this week.
-PORTFOLIO: Current prices for ALL open positions. Recalculate P&L from entry prices in context document.
-THEMES: Status of our tracked themes — any catalysts this week?
-NEXT WEEK: Earnings dates for tickers in our themes. Fed/data releases. Sector catalysts.
+TITLE: "The Weekly Screening: Week [N]: [Forward-looking hook]"
 
-Present everything in structured tables. Flag any significant changes from context document data.
-```
+Follow the standard briefing structure from Prompt 11:
+1. The Headline (performance snapshot, key event)
+2. The Forces at Work (structural forces with available data)
+3. The Portfolio (full P&L table, winners, losers, alpha)
+4. The Screening (no new scan this week: use "selectivity" framing.
+   "No analysis session this week. Our existing positions continue to
+   compound. Here is where we stand.")
+5. The Week Ahead (calendar from your research)
+6. The Bottom Line (synthesis, Tuesday/Thursday preview)
 
-### Prompt 2 of 2 — Newsletter + Companion Note
+FOOTER.
 
-**MODE: Standard**
-
-```
-Write "The Weekly Screening" newsletter and companion note.
-
-TITLE: "The Weekly Screening — Week [N]: [Hook]"
-
-Follow the same structure as the analysis session newsletter (sections 1-9 from Prompt 11), but use the context document data + your fresh web search data.
-
-Since there was no new analysis session, section 4 (New Signals) should either:
-- Reference any signals from LAST week's session if still relevant
-- Or run "Why We Passed" framing about selectivity
-
-Include a "Coming This Week" section previewing midweek content.
-
-Produce companion note (ALPHA_SCOREBOARD type — lead with strongest portfolio number vs benchmark).
-
-White-background HTML with stat cards, funnel, portfolio table (same specs as Prompt 11).
-
-Label: [NEWSLETTER HTML] and [COMPANION NOTE].
+The newsletter should feel complete even without a fresh scan. The
+portfolio update and week ahead sections carry the issue.
 ```
 
 ---
@@ -910,148 +1166,94 @@ Label: [NEWSLETTER HTML] and [COMPANION NOTE].
 ## Quick Reference
 
 ### Signal Branding
-- **"GREEN signal"** for buy signals
+
+- **"GREEN signal"** for buy entries
 - NEVER: TEAL, PASS, VIOLET, AMBER, STRONG BUY, SPEC BUY
 
 ### Banned Terms
 
-**Indicators:** HMA, Hull Moving Average, RSI, MACD, KDJ, VWAP, Banker, UC, Undercurrent, BoS, ExD, Beta >= 1.5, compound exit, 20% trailing stop
+**Indicators:** HMA, Hull Moving Average, RSI, MACD, KDJ, VWAP, Banker,
+UC, Undercurrent, BoS, ExD, Beta >= 1.5, compound exit, 20% trailing stop
 
-**System internals:** Gatekeeper, Investment Gate, Deep DD, 5-gate, Tier 1/2/3, conviction score, conviction 1-10, profit lock, tiered stop, gear shift, price cap, $25 cap, kill switch, STRONG BUY, SPEC BUY, NO GO
+**System internals:** Gatekeeper, Investment Gate, Deep DD, 5-gate,
+Tier 1/2/3, conviction score, conviction 1-10, profit lock, tiered stop,
+gear shift, price cap, $25 cap, kill switch, STRONG BUY, SPEC BUY, NO GO
 
-**Old branding:** TEAL/VIOLET/AMBER/PASS signal, Capital Preservation Protocol
+**AI-sounding:** "Let's dive in," "Here's the thing," "It's worth noting,"
+"Interestingly enough," "In today's market," "Let me break this down,"
+"The bottom line is"
 
 **Geography:** UK ISA, GMT, BST, Roth IRA, PDT, 401k
-
-**Vague:** "interesting setups", "keep an eye on", "stay tuned", "more to come", "picks and shovels"
-
-**AI-sounding:** "Let's dive in", "Here's the thing", "It's worth noting", "Interestingly enough", "In today's market", "Let me break this down", "The bottom line is", "This is what X looks like", "That's the power of Y"
 
 ### Approved Alternatives
 
 | Instead of... | Use... |
 |---|---|
 | HMA/Banker/UC | "our screening system" |
-| Entry signal | "momentum confirmed", "structural pivot confirmation" |
+| Entry signal | "momentum confirmed," "structural pivot confirmation" |
 | Banker/UC rising | "institutional accumulation patterns" |
 | Stop hit | "systematic exit discipline" |
-| Gatekeeper | "cleared all gates" |
-| Conviction 8-10 | "Extremely Bullish" |
+| Gatekeeper | "cleared all screening stages" |
+| Conviction 8-10 | "high conviction" |
 | TEAL/PASS | "GREEN signal" |
-| Tier 1/2/3 | "high conviction" |
 
-### Portfolio Display
-- **15%+ gain:** Showcase with entry price and P&L%
-- **Under 15% positive:** Include in tables, no spotlight
-- **Negative:** Acknowledge honestly. State facts. Never say "loss."
-- **Performance Reviews:** ALL positions with entry prices
-- **Notes:** Spotlight 15%+ only. Red positions in PORTFOLIO_UPDATE/MARKET_SNAPSHOT only.
+### Portfolio Display Rules
 
-### HTML Specs (White Background)
+- **15%+ gain:** Showcase with entry price and P&L percentage
+- **Under 15%:** Include in tables, no spotlight narrative
+- **Negative P&L:** Acknowledge honestly. State facts. Never "loss."
+- **All positions:** Always show in portfolio tables. Never hide.
 
-**Editorial Theme** (all posts)
-- Background: `#ffffff` | Max-width: `680px` | Padding: `40px 24px`
-- Headings: `Georgia, serif` | `#1a1a1a` | h1: 28px, h2: 22px, h3: 18px
-- Body: system sans-serif | 16px | line-height 1.7 | `#2d2d2d`
-- Dividers: `1px solid #e8e4df`
-- Price targets: Bear (`#fdf6f4`, `#dc2626` border), Base (`#f4f7fa`, `#2563eb`), Bull (`#f4faf5`, `#16a34a`)
-- Tables: `#f8f7f5` header, `#fafaf8` alt rows, `#e8e4df` borders
-- Callout: 3px left `#3d5a80`, bg `#f4f7fa`
-- Positive: `#2e5e3e` | Negative: `#a04030`
-- Stat cards: inline-block `#f8f7f5`, 28px bold number, 12px label
-- Funnel: stepped bars, green→amber→red borders
+### HTML Design System
 
-**Teal accents** (Sector Watch): `#0d9488` borders, `#f0fdfa` highlights
+**Fonts:**
+- DM Serif Display (headings: h1 42px, h2 28px)
+- DM Sans (body: 17px, weight 400/500/600/700)
+- JetBrains Mono (data tables, ticker symbols)
 
-**Note template:**
-```html
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 680px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.6; font-size: 16px;">
-[content]
-<p style="color: #6b6b6b; font-size: 13px; margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0ddd8;">Not financial advice. Informational only.</p>
-</div>
-```
+**Layout:** max-width 780px, margin 0 auto, padding 40px 24px
+
+**Colours:**
+Navy: #0a1628, #0f2440, #1a3a5c
+Blue: #2563eb (links), #3b82f6, #60a5fa, #dbeafe (light bg)
+Slate: #0f172a (headings), #334155 (body), #64748b (muted)
+Green: #16a34a (positive P&L, READY badges)
+Red: #dc2626 (negative P&L)
+Amber: #d97706 (warnings, APPROACHING)
+
+**Tables:**
+Header: bg #0f2440, color #fff, font-size 13px, uppercase
+Rows: alternating #fff / #f8fafc, border-bottom 1px #e2e8f0
+Ticker column: JetBrains Mono, weight 600
+
+**Stat grid (top of post):**
+Flex row, gap 16px. Box: bg #f1f5f9, border-radius 8px, padding 16px.
+Number: 24px weight 700 #0f2440. Label: 12px uppercase #64748b.
+
+**Price target cards:**
+Bear: bg #fdf6f4, border-left 4px #dc2626
+Base: bg #f4f7fa, border-left 4px #2563eb
+Bull: bg #f4faf5, border-left 4px #16a34a
 
 ### Visual Placeholders
-- `[CHART: TICKER]` — TradingView chart screenshot
-- `[SCAN_FUNNEL]` — Screening funnel (design for 680px screenshot)
-- `[THEME_SCORES]` — Theme cards
-- `[WINNERS_TABLE]` — Portfolio table (design for 680px screenshot)
 
----
-
-## Companion Note Strategy (Summary)
-
-Every post gets a companion note. The note is NOT a summary — it's a HOOK.
-
-| Post Type | Hook Strategy | End With |
-|---|---|---|
-| 🟢 GREEN Signal | Ticker + price + funnel rejection rate | "Full signal analysis just published." |
-| Position Update | P&L outcome (if winner) or discipline angle | "Full exit analysis just published." |
-| Deep Dive | Most surprising research finding (one number) | "Full analysis with price targets just published." |
-| Sector Watch | Strongest ETF flow or institutional data point | "Full sector analysis just published." |
-| The Edge | Most counterintuitive stat | "Full analysis just published." |
-| Investor Lessons | Most surprising principle + portfolio connection | "Full analysis just published." |
-| Tools & Tech | What the tool found on our ticker | "Full walkthrough with setup guide just published." |
-| The Weekly Screening | Portfolio's strongest number vs benchmark | "Full breakdown in this week's newsletter." |
-
-### What Makes a Good Hook
-
-BAD: "We just published our weekly deep dive on $ASTS."
-GOOD: "$ASTS has $265M cash, zero debt, and a patent portfolio 47 deep. Our base case puts it at $38. It's trading at $22.80."
-
-BAD: "New sector analysis on Defence."
-GOOD: "$800M flowed into defence ETFs in February alone. Our three defence positions are up a combined 72%."
-
-BAD: "This week's newsletter is out."
-GOOD: "1,817 stocks screened. 3 survived. Portfolio at +34% vs SPY +12%. Full breakdown in today's newsletter."
-
-BAD: "New article about stop losses."
-GOOD: "Our stop loss on $VNET saved us $1,200 in 48 hours. Here's the math of systematic exits."
-
-BAD: "We reviewed a free analysis tool."
-GOOD: "I ran $LUNR through Finviz. It flagged institutional ownership jumped 16% in one quarter. Free."
-
-The hook gives ONE number that creates curiosity. The post delivers the full story.
+- `[CHART: TICKER]` for TradingView chart screenshots
+- `[SCAN_FUNNEL]` for screening funnel graphic
+- `[WINNERS_TABLE]` for portfolio table graphic
 
 ---
 
 ## Prompt Count Summary
 
-| Day | Series | Prompts | Modes | Time |
-|-----|--------|---------|-------|------|
-| Saturday | The Weekly Screening | Prompt 11 (analysis session) | — | Built into session |
-| Sunday (signals) | 🟢 Trade Alert (1 signal) | 3 | Research → Extended → Standard | ~20 min |
-| Sunday (signals) | 🟢 Trade Alert (2 signals) | 4 | Research × 2 → Extended → Standard | ~30 min |
-| Sunday (no signals) | Portfolio Spotlight | 3 | Research → Extended → Standard | ~20 min |
-| Tuesday | Sector Watch | 2 | Research → Standard | ~12 min |
-| Wednesday | Investor Lessons | 3 | Extended → Research → Standard | ~18 min |
-| Thursday | Tools & Tech (carousel) | 1 | Research | ~8 min |
-| Ad-hoc | GREEN Signal (mid-week) | 1 | Standard | ~5 min |
-| Ad-hoc | Position Update (standalone) | 1 | Standard | ~5 min |
-
-**Sunday batch total:** ~60-90 min for Sunday post + Tue + Wed + Thu carousel + all companion notes + visual assets
-
----
-
-## v7.1 Change Log
-
-| Change | Rationale |
-|---|---|
-| **Saturday newsletter restructured** | "Week Ahead" format: leads with catalyst calendar, hints at signals without naming tickers, creates anticipation for Sunday. Prompt 11 rewritten in Sterling Prompt Library. |
-| **Sunday Trade Alert (NEW)** | Merges GREEN Signal + Deep Dive into one comprehensive article. 3-4 prompt sequence. Supports 1 signal, 2 signals, or no-signal (Portfolio Spotlight) variants. |
-| **Position exits folded into Sunday** | No separate Position Update posts during normal weeks. Exits get a brief section within the Sunday Trade Alert. Standalone Position Update kept for ad-hoc mid-week exits only. |
-| **Investor Lessons: portfolio connection optional** | Forced connections produced strained content. Now: if natural, include it. If not, skip. Quality over formula. |
-| **Tools & Tech: carousel only** | Tool reviews are visual by nature. A 5-slide carousel is a better format than an 800-word article. Reduces weekly post count, increases variety. Posted as a Note, not an article. |
-| **Weekly calendar: 4 posts + 1 carousel** | Sat newsletter, Sun trade alert, Tue Sector Watch, Wed Investor Lessons, Thu carousel. Fewer posts, more depth, less repetition. |
-| **Anti-concentration rules** | Max 2 posts per ticker. Sector Watch theme must differ from Sunday's signal theme. Tools demo on a different ticker. |
-| **Tuesday moved to Sector Watch, Wednesday to Investor Lessons** | Sector Watch benefits from fresh Monday market data. Investor Lessons midweek provides educational variety. |
-| **The Edge removed** | Absorbed into Investor Lessons. Five educational formats (Case Study, Legendary Investor, Investing Principle, Market Mechanics, Behavioural Finance) provide more variety than Edge + Lessons as separate series. |
-
-### v7.0 Changes (preserved)
-
-| Change | Rationale |
-|---|---|
-| **Mode annotations on every prompt** | Research mode for data gathering, Extended Thinking for analysis, Standard for writing. Using the right mode at each stage is the single biggest quality lever. |
-| **Specific research instructions** | "Search SEC EDGAR for 10-Q revenue by segment" beats "search for financial data." Specificity produces tables; vagueness produces prose. |
-| **Quality checks on every writing prompt** | "Does section 4 contain an actual HTML table?" catches thin output before it ships. |
-| **5-post weekly calendar** | All v6.2 changes preserved: tiered architecture, series names, companion notes, trade alerts, position update framing, anti-AI rules. |
+| Post | Prompts | Modes | Est. Time |
+|------|---------|-------|-----------|
+| Tuesday: new signal deep dive | 3 | Research, Extended, Extended | ~25 min |
+| Tuesday: position update | 2 | Research, Extended | ~18 min |
+| Tuesday: sector/force/watchlist | 2 | Research, Extended | ~20 min |
+| Thursday: methodology | 2 | Extended, Extended | ~15 min |
+| Thursday: education | 2 | Research, Extended | ~18 min |
+| Thursday: free tool | 2 | Extended, Extended | ~15 min |
+| Thursday: investor lessons | 3 | Extended, Research, Extended | ~20 min |
+| Ad-hoc: mid-week trade alert | 1 | Extended | ~10 min |
+| Ad-hoc: standalone exit | 1 | Extended | ~8 min |
+| Fallback: performance review | 2 | Research, Extended | ~15 min |

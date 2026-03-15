@@ -94,7 +94,7 @@ def _collect_attachments_from_manifest(
     base = SUBSTACK_OUTPUT / "current"
 
     # Post file
-    post_info = manifest.get("post", {})
+    post_info = manifest.get("post") or {}
     post_file = post_info.get("file")
     if post_file:
         post_path = base / post_file if not Path(post_file).is_absolute() else Path(post_file)
@@ -119,7 +119,7 @@ def _collect_attachments_from_manifest(
                 print(f"    ✓ Note {slot} ({ntype}): {note_path.name} ({size_kb}KB)")
 
     # Diagram HTML (not MP4)
-    visual = manifest.get("visual", {})
+    visual = manifest.get("visual") or {}
     visual_file = visual.get("file")
     if visual_file:
         visual_path = base / visual_file if not Path(visual_file).is_absolute() else Path(visual_file)
@@ -178,7 +178,7 @@ def _build_email_body(
     notes_info = []
 
     if manifest:
-        post_info = manifest.get("post", {})
+        post_info = manifest.get("post") or {}
         post_category = post_info.get("category", "none").replace("_", " ").title()
         post_title = post_info.get("title")
         if post_category.lower() == "None":
@@ -198,7 +198,7 @@ def _build_email_body(
                 "time_label": time_label,
             })
 
-        visual = manifest.get("visual", {})
+        visual = manifest.get("visual") or {}
         visual_type = visual.get("type", "none").title()
 
     # Build HTML

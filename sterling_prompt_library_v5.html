@@ -434,7 +434,7 @@ tr:nth-child(even) td {
 <tr><td>8</td><td>CRO portfolio review</td><td>Extended Thinking</td><td>~7 min</td></tr>
 <tr><td>9</td><td>Exception analysis (if needed)</td><td>Research + ET</td><td>~15 min</td></tr>
 <tr><td>10</td><td>Sell signal review</td><td>Extended Thinking</td><td>~5 min</td></tr>
-<tr><td><strong>11</strong></td><td><strong>The Weekly Screening (newsletter)</strong></td><td>Extended Thinking</td><td>~8 min</td></tr>
+<tr><td><strong>11</strong></td><td><strong>The Weekly Screening (newsletter)</strong></td><td>11A: Web Search, 11B: Extended Thinking</td><td>~15 min</td></tr>
 <tr><td>12</td><td>decisions.json export</td><td>Standard</td><td>~3 min</td></tr>
 </table>
 
@@ -609,7 +609,7 @@ NEXT FRIDAY
 <tr><td>7</td><td>Adversarial Verdict</td><td>(Prompt 6 data in memory)</td><td>Driver-adapted valuation, analyst sanity check, steelmanned bear case, position management plan, verdict</td><td>Challenge bear case, check method match, accept/reject</td></tr>
 <tr><td>8</td><td>CRO Portfolio Review</td><td>(full session in memory)</td><td>7-review audit, per-stock approve/adjust/remove, session quality</td><td>Final approve/override</td></tr>
 <tr><td>9</td><td>Off-System Exception</td><td>Ticker flagged as DRIFT</td><td>Probability-weighted 12mo target, exception score, approve/deny</td><td>Accept exception or deny</td></tr>
-<tr><td>11</td><td>Newsletter HTML</td><td>(session decisions in memory)</td><td>Complete HTML newsletter</td><td>Save to repo</td></tr>
+<tr><td>11</td><td>Newsletter HTML (2 prompts: data refresh + write)</td><td>(session decisions in memory)</td><td>Complete HTML newsletter (3,000-3,500 words)</td><td>Save to repo</td></tr>
 <tr><td>10</td><td>Sell Signal Review</td><td>Holdings with ExD flags</td><td>Hold/trim/exit per position</td><td>Execute exits</td></tr>
 <tr><td>MW</td><td>Mid-Week Catalyst</td><td>Holdings list</td><td>Upcoming events within 10 trading days</td><td>Adjust positions if needed</td></tr>
 <tr><td>12</td><td>JSON Export</td><td>(session decisions in memory)</td><td>decisions.json + signal_history rows</td><td>Save to repo</td></tr>
@@ -1768,7 +1768,7 @@ SIGNAL HISTORY (for cross-session theme tracking)
 
 [PASTE or ATTACH: signal_history.csv — the running log of all scanner signals
 and their theme classifications from recent sessions. Format:
-date,ticker,price,tier,theme,composite_score,system_fit,advanced,session_verdict]
+date,ticker,price,tier,theme,structural_force,composite_score,system_fit,advanced,session_verdict]
 
 (If no history exists yet, paste &quot;No signal history — first session&quot;)
 
@@ -5958,218 +5958,296 @@ For any EXIT recommendation, also say:
     <div class="section-body collapsible">
         <div class="guidance-note">
 <p><strong>When:</strong> After Prompt 8 (and 9/10 if triggered). Final content prompt before Prompt 12 export.</p>
-<p><strong>Key change (v2):</strong> The newsletter is now FORWARD-LOOKING. It leads with what's happening next week — catalysts, events, data releases — especially those affecting tickers we hold. The screening results and portfolio update support the forward view. Signal names are NEVER revealed — only the sector/theme is hinted at, with a promise that the full trade alert drops Sunday.</p>
-<p><strong>Structure shift:</strong> OLD: Funnel → Signals (named) → Themes → Portfolio → Coming This Week. NEW: Week Ahead (catalysts) → Portfolio Update → Signal Hint (sector only) → Themes → Funnel → Sunday Preview.</p>
-<p><strong>Why:</strong> The old newsletter front-loaded what happened (backward-looking). Readers had already seen signal announcements by Saturday. The new format gives readers a reason to open the email: "What do I need to know for next week?" The signal hint creates genuine anticipation for Sunday's trade alert.</p>
-<p><strong>Output:</strong> <code class="inline">newsletter.html</code> + one companion Substack Note. White background HTML.</p>
+<p><strong>Two-prompt sequence:</strong> Prompt 11A gathers fresh price data and next week's calendar via web search. Prompt 11B writes the full 3,000-3,500 word briefing using session context + fresh data. Splitting ensures Claude's full thinking budget goes into the writing, not split between research and composition.</p>
+<p><strong>Key change (v3):</strong> The newsletter is 3,000-3,500 words (up from 1,200-1,800). It leads with a headline, then covers ALL structural forces from this session's Prompt 2, weaving macro context through the forces rather than as a separate section. The screening section focuses on rejection stories as educational content. Signal tickers ARE now announced in the Saturday briefing (entry price, force, one-sentence thesis). The full deep dive follows on Tuesday.</p>
+<p><strong>Structure:</strong> Headline &#x2192; Forces at Work (macro woven in) &#x2192; Portfolio (full P&amp;L, honest losers) &#x2192; The Screening (rejections + signal announcements) &#x2192; Week Ahead &#x2192; Bottom Line + Tue/Thu content preview.</p>
+<p><strong>Why:</strong> The expanded format gives subscribers a complete weekly briefing worth opening every Saturday. The forces-first structure means every macro data point connects to a portfolio position. Rejection stories in the screening section are the most valuable educational content and differentiate us from newsletters that only showcase winners. Announcing signals (not hiding them) builds trust and drives anticipation for Tuesday's deep dive.</p>
+<p><strong>Output:</strong> <code class="inline">newsletter.html</code> only. Notes are handled by Cowork, not this prompt.</p>
 </div>
 <div class="prompt-block" id="prompt-11-newsletter-html-code-0">
 <div class="prompt-header">
-    <span class="prompt-label">📋 Prompt Text — Copy and paste into Claude.ai</span>
+    <span class="prompt-label">&#x1F4CB; Prompt 11A &#x2014; Data Refresh (paste first)</span>
     <button class="copy-btn" onclick="copyPrompt('prompt-11-newsletter-html-code-0')">Copy</button>
 </div>
-<pre class="prompt-text">Based on our analysis session, produce &quot;The Weekly Screening&quot; newsletter as a
-complete, self-contained HTML document, plus one companion Substack Note.
+<pre class="prompt-text">Before we write the newsletter, I need fresh market data. Use web search
+for everything below. Present results as structured tables only &#x2014; do NOT
+write any article text yet.
 
-Use the decisions we made in this session for all content.
+DATA REFRESH 1: PORTFOLIO PRICES
 
-FRESHNESS CHECK: Use web search to get current prices for:
-- SPY, QQQ, IWM &mdash; current price and weekly/YTD performance
-- VIX current level
-- All portfolio positions &mdash; recalculate P&amp;L if prices moved since session start
+Web search the current price for every OPEN position in our portfolio.
+For each position, present:
 
-Also web search for NEXT WEEK&#x27;S CALENDAR:
-- Economic data releases (CPI, PPI, jobs, GDP, Fed minutes) with exact dates
-- Earnings dates for any ticker in our portfolio or watchlist
-- Fed speeches or FOMC-related events
-- Congressional hearings, regulatory decisions, or policy votes relevant to our themes
-- Sector-specific events: FDA decision dates, DOE funding, DOD contract awards
-- Any options expiration, index rebalancing, or quad witching dates
+| Ticker | Entry Price | Current Price | P&amp;L % | Days Held |
 
-=================================================================
-MARKETING RULES
-=================================================================
+Recalculate P&amp;L from the entry prices we discussed in this session.
+Flag any position that moved more than 3% since session start.
 
-Signal branding: &quot;GREEN signal&quot; only. NEVER: TEAL, PASS, VIOLET, AMBER, STRONG BUY, SPEC BUY, NO GO.
+Also get: SPY, QQQ, IWM current price and weekly/YTD performance. VIX.
 
-Banned terms: HMA, Banker, UC, Undercurrent, BoS, RSI, MACD, KDJ, ExD, VWAP,
-Gatekeeper, Investment Gate, Deep DD, 5-gate, Tier 1/2/3, conviction scores,
-price cap, kill switch, valuation regime.
+DATA REFRESH 2: NEXT WEEK&#x27;S CALENDAR
 
-Banned AI phrases: &quot;Let&#x27;s dive in&quot;, &quot;Here&#x27;s the thing&quot;, &quot;It&#x27;s worth noting&quot;,
-&quot;Interestingly enough&quot;, &quot;In today&#x27;s market&quot;, &quot;The bottom line is&quot;.
+Search for all market-moving events in the coming week:
 
-Approved: &quot;our screening system&quot;, &quot;momentum confirmed&quot;, &quot;structural pivot
-confirmation&quot;, &quot;institutional accumulation patterns&quot;, &quot;systematic exit discipline&quot;,
-&quot;GREEN signal&quot; (buys), &quot;system exit&quot; (sells).
-Conviction: &quot;Extremely Bullish&quot; / &quot;Bullish&quot; / &quot;Watching&quot; &mdash; NEVER numbers.
+A) Economic data releases: CPI, PPI, jobs report, GDP, Fed minutes,
+   ISM, retail sales, housing data. Exact dates and times (ET).
+   Consensus expectations where available.
+
+B) Earnings: any ticker in our portfolio or watchlist reporting. Exact
+   date, pre/post market, consensus revenue and EPS.
+
+C) Fed: FOMC meetings, Fed speeches, dot plot updates. Names and dates.
+
+D) Regulatory and policy: congressional hearings, FDA decision dates,
+   DOE funding announcements, DOD contract awards, CMMC deadlines,
+   trade policy actions. Anything relevant to our structural forces.
+
+E) Market structure: options expiration, index rebalancing, quad
+   witching, lock-up expirations for any held or watchlisted stock.
+
+Present as a chronological table:
+| Date | Time (ET) | Event | Our Exposure | Impact |
+
+DATA REFRESH 3: FORCE-LEVEL DEVELOPMENTS
+
+For each structural force we identified in Prompt 2 of this session,
+search for any developments in the past 7 days that we did not cover
+during the analysis:
+- New legislation, executive orders, or budget allocations
+- Major contract awards or industry deals
+- ETF flow data if available (weekly inflows/outflows for relevant ETFs)
+- Analyst or institutional calls on the sector
+
+Present as: Force | Development | Date | Relevance to Portfolio
+
+OUTPUT: Three structured tables. Flag anything that changes the picture
+from our analysis session. Do NOT write any newsletter text.</pre>
+</div>
+
+<div class="prompt-block" id="prompt-11-newsletter-html-code-1">
+<div class="prompt-header">
+    <span class="prompt-label">&#x1F4CB; Prompt 11B &#x2014; Write the Newsletter (paste after reviewing 11A)</span>
+    <button class="copy-btn" onclick="copyPrompt('prompt-11-newsletter-html-code-1')">Copy</button>
+</div>
+<pre class="prompt-text">Now write &quot;The Weekly Screening&quot; newsletter using ALL data from this
+analysis session plus your fresh data from 11A. This is a 3,000-3,500
+word briefing. Use extended thinking to plan the narrative arc before
+writing.
+
+Read config/voice_rules.md if attached. Critical rules:
+- No em dashes anywhere. Colons, periods, semicolons.
+- No AI/LLM references. This is &quot;our screening system.&quot;
+- No technical indicator names (HMA, MACD, RSI, Banker, UC, MCDX, KDJ).
+- Structural forces from Prompt 2, not micro themes from the scanner.
+- Specific numbers for every claim. Never &quot;strong growth.&quot;
+- Vary sentence length. No triple parallel constructions.
+
+Signal branding: &quot;GREEN signal&quot; only. NEVER: TEAL, PASS, VIOLET, AMBER.
+Conviction: &quot;Extremely Bullish&quot; / &quot;Bullish&quot; / &quot;Watching.&quot; NEVER numbers.
+Approved terms: &quot;our screening system,&quot; &quot;momentum confirmed,&quot; &quot;structural
+pivot confirmation,&quot; &quot;institutional accumulation patterns,&quot; &quot;systematic
+exit discipline,&quot; &quot;GREEN signal&quot; (buys), &quot;system exit&quot; (sells).
 
 Portfolio display (HONEST TRANSPARENCY):
 - 15%+ gain: Showcase with entry price and P&amp;L%
-- Under 15% positive: Include in table, no spotlight
-- Negative: Acknowledge honestly. &quot;$ANET at $85.50, down from $89.00 entry &mdash;
-  thesis intact.&quot; NEVER say &quot;loss&quot;, &quot;stopped out&quot;, &quot;down&quot; as framing.
+- Under 15%: Include in table, no spotlight
+- Negative P&amp;L: Acknowledge honestly. State facts. NEVER say &quot;loss,&quot;
+  &quot;stopped out,&quot; or &quot;down&quot; as framing.
 - Show ALL positions in the portfolio table.
 
 =================================================================
-NEWSLETTER STRUCTURE &mdash; &quot;THE WEEKLY SCREENING&quot; (1,200-1,800 words)
+NEWSLETTER STRUCTURE &#x2014; &quot;THE WEEKLY SCREENING&quot; (3,000-3,500 words)
 =================================================================
 
-Before writing, decide: What is the most important thing a reader needs to
-know heading into next week? Lead with it.
+Before writing, decide: What is the most important thing a reader needs
+to know heading into next week? Lead with it.
 
-TITLE: &quot;The Weekly Screening &mdash; Week [N]: [2-4 word forward-looking hook]&quot;
+TITLE: &quot;The Weekly Screening &#x2014; Week [N]: [2-4 word forward-looking hook]&quot;
 Examples:
-- &quot;The Weekly Screening &mdash; Week 12: CPI Tuesday, Eyes on Defence&quot;
-- &quot;The Weekly Screening &mdash; Week 12: Earnings Season Begins&quot;
-- &quot;The Weekly Screening &mdash; Week 12: New Signal Incoming&quot;
+- &quot;The Weekly Screening &#x2014; Week 12: CPI Tuesday, Eyes on Defence&quot;
+- &quot;The Weekly Screening &#x2014; Week 12: New Signal in Nuclear&quot;
+- &quot;The Weekly Screening &#x2014; Week 12: Portfolio Hits +40% Alpha&quot;
 
-── SECTION 1: THE WEEK AHEAD (lead section &mdash; this is why readers open the email)
+&#x2500;&#x2500; PREVIEW LINE (shown under title in email/feed &#x2014; must compel the open)
 
-Open with: &quot;Here&#x27;s what matters next week.&quot;
+1-2 sentences containing a specific number. This is the first thing
+subscribers see before deciding to open the email.
 
-Present the 5-8 most important events that could move our portfolio or the
-broader market. For EACH event:
-- Exact date and time (ET) if known
-- What it is and why it matters
-- Which of our holdings (if any) are directly affected
-- What to watch for (the number or outcome that changes the picture)
+&#x2500;&#x2500; TABLE OF CONTENTS (linked section list)
 
-Format as a visual calendar/timeline &mdash; not a paragraph. Use styled HTML cards
-or a table with dates in the left column and events in the right. This section
-should feel like a professional briefing, not a blog post.
+&#x2500;&#x2500; SECTION 1: THE HEADLINE (100-150 words)
 
-If a portfolio ticker has earnings next week, flag it prominently:
-&quot;⚡ $ETON reports Tuesday after close. Consensus: $X revenue. Our thesis
-depends on [specific metric]. We&#x27;re watching for [specific outcome].&quot;
+What mattered most this week. Performance snapshot in one sentence.
+The stakes for the coming week. Open with a data point, not preamble.
+Do NOT open with &quot;This week&quot; or &quot;Welcome back.&quot;
 
-── SECTION 2: PORTFOLIO UPDATE
+&#x2500;&#x2500; SECTION 2: THE FORCES AT WORK (500-700 words)
 
-&quot;Here&#x27;s where we stand heading into the week.&quot;
+Cover ALL structural forces identified in Prompt 2 of this session.
+This is the analytical core of the briefing. For each force:
 
-ALL positions in a table: Ticker | Entry | Current | P&amp;L% | Theme | Days Held
-Lead narrative with the strongest performer. Acknowledge any under pressure.
-One sentence on portfolio vs SPY vs QQQ (alpha or underperformance &mdash; be honest).
+- Current status (from Prompt 2) and the key data point this week
+- Which portfolio positions are exposed to this force. Name them with
+  current P&amp;L from the 11A data refresh.
+- Any catalyst update or status change since last week
+- Macro context woven THROUGH the force, not as a separate section.
+  If CPI data matters, explain it through the force it affects. If
+  oil prices moved, connect it to the Nuclear Renaissance or Grid
+  Modernisation force.
+
+For forces with no portfolio exposure: brief status update (2-3
+sentences) and what would need to change for deployment.
+
+This section replaces the old separate &quot;Macro Picture&quot; and &quot;Themes
+This Week&quot; sections. Everything is unified through the forces lens.
+
+&#x2500;&#x2500; SECTION 3: THE PORTFOLIO (400-500 words)
+
+Full P&amp;L table with LIVE prices from 11A:
+Ticker | Entry | Current | P&amp;L% | Structural Force | Days Held
+
+Then narrative:
+- WINNERS: 2-3 sentences per strong performer. What is driving gains.
+  Specific catalysts or data points.
+- UNDER PRESSURE: Honest assessment of any position with negative P&amp;L.
+  State the original thesis, whether it is intact, what data point
+  would change our view, and the portfolio-level impact (position size
+  times drawdown = portfolio impact).
+- NEW ENTRIES (if this session produced GREEN signals): Announce with
+  ticker, entry price, structural force, conviction level (Extremely
+  Bullish / Bullish), and a 2-3 sentence thesis summary. End with:
+  &quot;Full deep dive on Tuesday.&quot;
+- EXITS (if any positions closed): Explain with ticker, exit price,
+  original thesis, what changed, and final P&amp;L.
+
+End with: &quot;Every position tracked from entry date. No revisions.&quot;
 
 Include [WINNERS_TABLE] placeholder.
 
-── SECTION 3: SIGNAL PREVIEW (only if this session produced GREEN signals)
+&#x2500;&#x2500; SECTION 4: THE SCREENING (500-700 words &#x2014; the most valuable section)
 
-⛔ CRITICAL: Do NOT name the ticker. Only hint at the sector/theme.
+This section educates readers through the rejection stories. It is the
+section that differentiates Sterling Signals from newsletters that only
+showcase their winners.
 
-If signals exist:
-&quot;This week&#x27;s screening found [N] stock(s) that cleared all gates. [It sits /
-They sit] in the [THEME NAME] space &mdash; a sector we&#x27;ve been tracking since [context].
+Funnel visualization:
+[N] scanned &#x2192; [N] passed momentum confirmation &#x2192; [N] theme-confirmed
+&#x2192; [N] cleared the Investment Gate &#x2192; [N] GREEN signal(s)
 
-Full trade alert with entry price, valuation, and price targets drops tomorrow
-(Sunday). Don&#x27;t miss it.&quot;
+State the rejection rate: &quot;99.X% eliminated.&quot;
 
-This creates genuine anticipation. The reader must come back Sunday to learn
-which stock. If you name the ticker here, the Sunday trade alert loses its hook.
+REJECTION STORIES (2-3 paragraphs): Stocks that were screened and
+rejected during this session. Each as a narrative paragraph explaining:
+- What looked good on the surface (the sector tailwind, the momentum)
+- What the deep analysis uncovered (the dilution, the competitive
+  deterioration, the balance sheet risk)
+- Why the system said no
 
-If NO signals:
-&quot;1,817 stocks scanned this week. None cleared all gates. That&#x27;s the system
-working &mdash; selectivity IS the edge. We break down what came close and why we
-passed in Wednesday&#x27;s Investor Lessons.&quot;
+These should read as investing lessons, not data dumps. The reader
+should finish each rejection story understanding something about stock
+analysis they did not understand before.
 
-Include [SCAN_FUNNEL] placeholder either way &mdash; the funnel visual is core brand.
+Watchlist: briefly mention any stocks added to the watchlist with
+what price level or catalyst would trigger entry.
 
-── SECTION 4: THEMES THIS WEEK
+Include [SCAN_FUNNEL] placeholder.
 
-Top 2-3 themes by score. For each:
-- Theme name and score (e.g., &quot;Defence Technology: 8.4/10&quot;)
-- One sentence on why it scored well &mdash; specific catalyst or flow
-- Tease midweek content: &quot;Full sector analysis in Tuesday&#x27;s Sector Watch.&quot;
+&#x2500;&#x2500; SECTION 5: THE WEEK AHEAD (300-400 words)
 
-DO NOT deep-dive any theme here. These are 2-3 sentence teasers only.
+Calendar of market-moving events from your 11A data refresh. For EACH
+event that affects the portfolio or our structural forces:
+- Exact date and time (ET)
+- What it is and consensus expectation
+- Which of our holdings are directly affected
+- What outcome would change our positioning
 
-Include [THEME_SCORES] placeholder.
+Format as styled HTML cards with date badges:
+- General events: #f4f7fa bg, #3d5a80 left border
+- Portfolio-affecting events: #fdf6f4 bg, #dc2626 left border
+- Earnings for held positions: #f4faf5 bg, #16a34a left border
 
-── SECTION 5: THE SCREENING &mdash; THIS WEEK&#x27;S FUNNEL
+Flag portfolio earnings prominently:
+&quot;&#x26A1; $TICKER reports [day] [pre/post market]. Consensus: $X revenue.
+Our thesis depends on [metric]. We are watching for [outcome].&quot;
 
-&quot;Every week, our system screens [N] stocks across [N] themes. Here&#x27;s this
-week&#x27;s pipeline.&quot;
+&#x2500;&#x2500; SECTION 6: THE BOTTOM LINE (100-150 words)
 
-Scanned &#x2192; passed technical gates &#x2192; theme-confirmed &#x2192; GREEN signal.
-Include the rejection stats &mdash; &quot;99.7% eliminated&quot; is powerful branding.
+Synthesis. What the portfolio&#x27;s structural positioning means in the
+current environment. The primary risk this week. Market regime stance.
 
-This section is shorter than in the old format &mdash; the funnel is a brand element,
-not the lead story anymore.
+End with content preview:
+&quot;Tuesday: [deep dive topic]. Thursday: [education topic].&quot;
 
-── SECTION 6: WHAT&#x27;S COMING THIS WEEK (specific content preview)
+&#x2500;&#x2500; SECTION 7: FOOTER
 
-&quot;Here&#x27;s what we&#x27;re publishing this week:&quot;
+&quot;Every screening result. Every entry. Every exit.
+sterlingsignals.substack.com&quot;
 
-| Day | Content |
-|-----|---------|
-| Sunday | 🟢 Trade Alert &mdash; full analysis on this week&#x27;s signal (or: Portfolio Spotlight on $TICKER) |
-| Tuesday | Sector Watch: [Theme Name] |
-| Wednesday | Investor Lessons: [Topic hint] |
-| Thursday | Tools &amp; Tech: [Tool] (carousel in Notes) |
-
-Be specific. Name the theme, hint at the lesson topic, name the tool.
-This gives readers 4 reasons to come back next week.
-
-── SECTION 7: FOOTER
-
-&quot;Every GREEN signal, every entry, every exit &mdash; before Monday&#x27;s open:
-https://sterlingsignals.substack.com&quot;
+&quot;Not financial advice. Informational and educational content only.
+Past performance does not guarantee future results.&quot;
 
 =================================================================
-HTML FORMAT &mdash; WHITE BACKGROUND
+HTML FORMAT &#x2014; STERLING SIGNALS DESIGN SYSTEM
 =================================================================
 
-Complete self-contained HTML with all styles in a &lt;style&gt; block.
+Complete self-contained HTML with all styles inline or in a &lt;style&gt; block.
 
-- Background: #ffffff | Max-width: 680px | Padding: 40px 24px
-- Headings: Georgia serif, #1a1a1a | h1: 28px, h2: 20px
-- Body: system sans-serif 16px, line-height 1.7, #2d2d2d
-- Section dividers: 1px solid #e8e4df
+Font imports:
+  DM Serif Display (headings)
+  DM Sans (body, weights 400/500/600/700)
+  JetBrains Mono (data tables, tickers)
+
+Layout:
+  max-width: 780px | margin: 0 auto | padding: 40px 24px
+
+Colour palette:
+  Navy: #0a1628 (darkest), #0f2440, #1a3a5c
+  Blue: #2563eb (links/accents), #3b82f6, #60a5fa, #dbeafe (light bg)
+  Slate: #0f172a (headings), #334155 (body), #64748b (muted)
+  Green: #16a34a (positive P&amp;L)
+  Red: #dc2626 (negative P&amp;L)
+  Amber: #d97706 (warnings)
+
+Typography:
+  h1: DM Serif Display, 42px, color #0f172a
+  h2: DM Serif Display, 28px, color #0f2440, border-bottom 2px #dbeafe
+  h3: DM Sans, 20px, weight 700, color #1a3a5c
+  Body: DM Sans, 17px, line-height 1.7, color #334155
 
 Components:
-- Week Ahead calendar: styled cards with date badges (#f4f7fa bg, #3d5a80 left
-  border for general events, #dc2626 border for portfolio-affecting events,
-  #16a34a border for earnings we hold)
-- Stat cards: inline-block #f8f7f5, 28px bold number, 12px uppercase label
-- Screening funnel: stepped bars, green&#x2192;amber&#x2192;red left borders
-- Theme cards: teal (#0d9488) left border, #f0fdfa bg, score + one-line thesis
-- Portfolio table: #f8f7f5 header, #fafaf8 alt rows, green/red P&amp;L column
-- Signal preview: #fef9e7 bg (warm hint), dashed border, no ticker named
-- Coming This Week: #fafaf8 bg, light left border, day + topic
+- Stat grid (top): flex row, bg #f1f5f9, border-radius 8px. Numbers:
+  24px weight 700, labels: 12px uppercase #64748b
+- Portfolio table: #0f2440 header with white text, alternating #fff /
+  #f8fafc rows, JetBrains Mono for tickers and numbers, green/red P&amp;L
+- Screening funnel: stepped bars with green&#x2192;amber&#x2192;red left borders
+- Force cards: left border coloured by force status. READY: #16a34a.
+  APPROACHING: #d97706. Content: force name, status badge, key metric,
+  portfolio positions mapped.
+- Week Ahead cards: date badges, colour-coded borders (general #3d5a80,
+  portfolio-affecting #dc2626, earnings #16a34a)
+- Signal announcement (if GREEN signals): #f4faf5 bg, #16a34a left
+  border. Ticker, entry price, force, thesis. &quot;Full deep dive Tuesday.&quot;
 
-VOICE: Forward-looking weekly briefing. &quot;Here&#x27;s what matters next week&quot; not
-&quot;Here&#x27;s what happened this week.&quot; Numbers first. Honest about red positions.
-No filler. Contractions. The reader should finish this thinking &quot;I need to
-check back Sunday and Tuesday.&quot;
+VOICE: This is the weekly briefing for a serious investor. Numbers
+first. Honest about both wins and losses. Forward-looking. The reader
+should finish thinking: &quot;I know exactly where this portfolio stands and
+what matters next week. I need to read Tuesday&#x27;s deep dive.&quot;
 
 =================================================================
-COMPANION NOTE
+QUALITY CHECK (verify before outputting)
 =================================================================
 
-Also produce ONE companion Substack Note (150-280 words) for the Notes feed.
+- Is the article 3,000-3,500 words?
+- Does every structural force from Prompt 2 appear in Section 2?
+- Does the portfolio table use LIVE prices from 11A (not session-start prices)?
+- Are new entries ANNOUNCED with ticker, price, and force (not hidden)?
+- Does Section 4 contain at least 2 rejection narratives with specific reasons?
+- Are there ZERO em dashes in the entire document?
+- Are there ZERO technical indicator names?
+- Does the Week Ahead section have specific dates from 11A?
+- Does the Bottom Line preview Tuesday and Thursday content?
 
-Lead with the strongest forward-looking hook:
-- &quot;CPI drops Tuesday. $ETON reports Wednesday. And we have a new signal in the
-  defence space. Here&#x27;s what to watch.&quot;
-- &quot;1,817 screened. [N] survived. Trade alert drops tomorrow. Full preview in
-  today&#x27;s newsletter.&quot;
-- &quot;Portfolio at +34% vs SPY +12%. Plus: what&#x27;s coming next week and why it matters.&quot;
-
-Do NOT name signal tickers in the note either &mdash; maintain the Sunday reveal.
-
-End with: &quot;Full preview in this week&#x27;s newsletter.&quot;
-Then: &quot;Not financial advice. Informational only.&quot;
-
-Note format:
-&lt;div style=&quot;font-family: -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, Roboto,
-Arial, sans-serif; max-width: 680px; margin: 0 auto; padding: 20px;
-color: #1a1a1a; line-height: 1.6; font-size: 16px;&quot;&gt;
-[content]
-&lt;p style=&quot;color: #6b6b6b; font-size: 13px; margin-top: 16px; padding-top: 12px;
-border-top: 1px solid #e0ddd8;&quot;&gt;Not financial advice. Informational only.&lt;/p&gt;
-&lt;/div&gt;
-
-Label: [NEWSLETTER HTML] and [COMPANION NOTE].</pre>
+Label output: [NEWSLETTER HTML].</pre>
 </div>
 <div class="section-text">
 <p>---</p>
@@ -6574,7 +6652,7 @@ tracking database used in Prompt 3 (for avoiding repeat analysis and tracking fo
 
 Output format — one row per ticker that was ANALYSED this session (not just passes):</pre>
 </div>
-<div class="section-text"><p>date,ticker,price,tier,theme,composite_score,system_fit,advanced,session_verdict</p></div>
+<div class="section-text"><p>date,ticker,price,tier,theme,structural_force,composite_score,system_fit,advanced,session_verdict</p></div>
 <div class="prompt-block" id="prompt-12-structured-export-decisions-json-code-1">
 <div class="prompt-header">
     <span class="prompt-label">📋 Prompt Text — Copy and paste into Claude.ai</span>
@@ -6583,10 +6661,10 @@ Output format — one row per ticker that was ANALYSED this session (not just pa
 <pre class="prompt-text">
 Example rows:</pre>
 </div>
-<div class="section-text"><p>2026-03-07,NGNE,24.50,T2,rare_disease_biotech,7.60,MODERATE,yes,PASS</p>
-<p>2026-03-07,LRMR,3.20,T1,rare_disease_biotech,7.70,MODERATE,yes,PASS</p>
-<p>2026-03-07,CCCC,8.50,T3,china_consumer,6.80,POOR,no,FAIL</p>
-<p>2026-03-07,ABCD,5.10,T2,quantum_computing,5.20,POOR,no,FAIL</p></div>
+<div class="section-text"><p>2026-03-07,NGNE,24.50,T2,rare_disease_biotech,Biotech Capital Cycle,7.60,MODERATE,yes,PASS</p>
+<p>2026-03-07,LRMR,3.20,T1,rare_disease_biotech,Biotech Capital Cycle,7.70,MODERATE,yes,PASS</p>
+<p>2026-03-07,CCCC,8.50,T3,china_consumer,,6.80,POOR,no,FAIL</p>
+<p>2026-03-07,ABCD,5.10,T2,quantum_computing,AI Infrastructure,5.20,POOR,no,FAIL</p></div>
 <div class="prompt-block" id="prompt-12-structured-export-decisions-json-code-2">
 <div class="prompt-header">
     <span class="prompt-label">📋 Prompt Text — Copy and paste into Claude.ai</span>
@@ -6594,11 +6672,14 @@ Example rows:</pre>
 </div>
 <pre class="prompt-text">
 Include ALL tickers from Prompt 3 — passes AND rejections. The theme column is the
-micro-theme assigned during discovery (Prompt 3). The composite_score is the theme&#x27;s
-score from Prompt 4 (same score for all tickers in the same theme). This builds a
-complete picture of what themes the scanner is catching across weeks, even for stocks
-that didn&#x27;t advance. The user appends these rows to their running signal_history.csv
-file between sessions.</pre>
+micro-theme assigned during discovery (Prompt 3). The structural_force column is the
+name of the Prompt 2 structural force this stock&#x27;s theme aligns with (from the wave
+alignment map in Prompt 3 or theme quality assessment in Prompt 4). Leave empty if
+no force alignment exists. The composite_score is the theme&#x27;s score from Prompt 4
+(same score for all tickers in the same theme). This builds a complete picture of what
+themes and forces the scanner is catching across weeks, even for stocks that didn&#x27;t
+advance. The user appends these rows to their running signal_history.csv file between
+sessions.</pre>
 </div>
 <div class="section-text">
 <p>---</p>

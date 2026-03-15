@@ -105,8 +105,8 @@ def was_ticker_covered(
     Args:
         ticker: Stock symbol, e.g. ``"ASTS"`` (case-insensitive, ``$`` prefix
             is stripped automatically).
-        content_type: One of ``"deep_dive"``, ``"green_signal"``,
-            ``"position_update"``, ``"sector_watch"``, or ``"performance_review"``.
+        content_type: One of ``"deep_dive"``, ``"education"``,
+            or ``"weekly_briefing"``.
         days: Lookback window (default 21 — 3 weeks for Deep Dives,
             use 7 for signal/exit posts).
 
@@ -154,7 +154,7 @@ def was_ticker_covered(
 
 
 def was_theme_covered(theme_name: str, days: int = 14) -> Optional[Dict]:
-    """Check if a theme had a Sector Watch post in the last *days* days.
+    """Check if a theme had a deep dive post in the last *days* days.
 
     Args:
         theme_name: Theme name, e.g. ``"AI Infrastructure"``
@@ -172,7 +172,7 @@ def was_theme_covered(theme_name: str, days: int = 14) -> Optional[Dict]:
         post = m.get("post") or {}
         category = (post.get("category") or "").lower()
 
-        if category != "sector_watch":
+        if category != "deep_dive":
             continue
 
         title = (post.get("title") or "").lower()

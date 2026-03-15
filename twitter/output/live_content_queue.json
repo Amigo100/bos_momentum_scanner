@@ -1,43 +1,5 @@
 [
   {
-    "id": "live_20260308_162900_v1",
-    "text": "$NGNE at $22.17. Entry was $20.50. FDA rare disease framework lands while we're positioned \u2014 regulatory catalyst meets existing momentum. Gene therapy thesis validated.",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "$NGNE",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NGNE_20260308_2029.png",
-    "scheduled_time": "2026-03-08T16:29:00.263332-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.3%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-08T20:29:00.263331+00:00",
-    "cost_usd": 0.005995,
-    "skip_reason": "Stale: 144h old"
-  },
-  {
-    "id": "live_20260308_162900_v2",
-    "text": "$ETON holding $16.80 as the FDA rolls out its rare disease gene therapy framework. This is the regulatory shift we positioned for \u2014 individualized therapies getting a clearer path to approval.",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "$ETON",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ETON_20260308_2029.png",
-    "scheduled_time": "2026-03-08T16:29:00.263332-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.3%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-08T20:29:00.263331+00:00",
-    "cost_usd": 0.005995,
-    "skip_reason": "Stale: 144h old"
-  },
-  {
     "id": "live_20260309_075428_v1",
     "text": "$TMDX holding $68.50 while tech craters. Medtech showing relative strength in the storm. Worth watching at the open. NFA",
     "category": "SIGNAL_ALERT",
@@ -211,13 +173,14 @@
     "primary_ticker": "SOFI",
     "chart_recommended": true,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
     "generated_at": "2026-03-10T07:00:00-04:00",
     "context_snapshot": {
       "market_mood": "selective regime"
     },
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260315_1438.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260315_2031.png",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260310_004",
@@ -226,12 +189,13 @@
     "primary_ticker": "BAND",
     "chart_recommended": false,
     "account": "variant_2",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
     "generated_at": "2026-03-10T07:00:00-04:00",
     "context_snapshot": {
       "market_mood": "selective regime"
-    }
+    },
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "cowork_20260310_005",
@@ -885,9 +849,11 @@
     "primary_ticker": null,
     "chart_recommended": false,
     "account": "variant_3",
-    "status": "pending",
+    "status": "posted",
     "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00"
+    "generated_at": "2026-03-12T08:18:30-04:00",
+    "posted_at": "2026-03-15T20:52:11.245801",
+    "tweet_id": "2033285150528672095"
   },
   {
     "id": "cowork_20260312_005",
@@ -932,7 +898,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-12T12:30:00-04:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260315_1438.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260315_2031.png"
   },
   {
     "id": "cowork_dev_20260313_001",
@@ -944,7 +910,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-13T12:40:18.673781+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260315_1438.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260315_2031.png"
   },
   {
     "id": "cowork_20260313_001",
@@ -1088,7 +1054,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260315_1438.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260315_2031.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1097,16 +1063,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260315_1438.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260315_2031.png",
     "scheduled_time": "2026-03-15T10:38:06.036283-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.61%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-15T14:38:06.036281+00:00",
-    "cost_usd": 0.017676
+    "cost_usd": 0.017676,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260315_103806_v2",
@@ -1115,16 +1082,17 @@
     "primary_ticker": "AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260315_1438.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260315_2031.png",
     "scheduled_time": "2026-03-15T10:38:06.036283-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.61%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-15T14:38:06.036281+00:00",
-    "cost_usd": 0.017676
+    "cost_usd": 0.017676,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "watchdog_20260315_001",
@@ -1180,5 +1148,41 @@
     "status": "pending",
     "created_at": "2026-03-15T13:06:46.845962+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260315_163142_v1",
+    "text": "$EVTL at $4.20. Setup invalidated below $4.50 entry. FDA warning letters to telehealth GLP-1 firms shift regulatory risk. Exit executed.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260315_2032.png",
+    "scheduled_time": "2026-03-15T16:31:42.977791-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-15T20:31:42.977790+00:00",
+    "cost_usd": 0.017518
+  },
+  {
+    "id": "live_20260315_163142_v2",
+    "text": "Markets red.\n$SOFI green at $17.76.\nFintech holding while everything bleeds.\nRelative strength tells the story.",
+    "category": "TRENDING_TAKE",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260315_2031.png",
+    "scheduled_time": "2026-03-15T16:31:42.977791-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-15T20:31:42.977790+00:00",
+    "cost_usd": 0.017518
   }
 ]

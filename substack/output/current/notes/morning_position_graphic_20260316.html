@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f5f3ef; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+  .card { width: 680px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 28px 32px 20px; }
+  .header h1 { color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .header .subtitle { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+  .stats-row { display: flex; gap: 12px; padding: 20px 32px; background: #0f2440; }
+  .stat-box { flex: 1; text-align: center; padding: 14px 8px; background: #162d4a; border-radius: 8px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #fff; }
+  .stat-value.green { color: #16a34a; }
+  .stat-value.red { color: #dc2626; }
+  .stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .positions { padding: 20px 32px 12px; }
+  .positions h2 { font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 6px; border-bottom: 1px solid #e2e0dc; }
+  th:nth-child(n+3) { text-align: right; }
+  td { padding: 10px 6px; border-bottom: 1px solid #f0eeea; color: #1a1a1a; }
+  td:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+  .ticker { font-weight: 700; color: #0a1628; }
+  .force { font-size: 12px; color: #64748b; }
+  .pnl-pos { color: #16a34a; font-weight: 600; }
+  .pnl-neg { color: #dc2626; font-weight: 600; }
+  .benchmarks { padding: 16px 32px; background: #f8f7f5; }
+  .benchmarks h2 { font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .bench-row { display: flex; align-items: center; margin-bottom: 8px; }
+  .bench-label { width: 100px; font-size: 13px; color: #334155; }
+  .bench-bar-bg { flex: 1; height: 18px; background: #e2e0dc; border-radius: 4px; position: relative; overflow: hidden; }
+  .bench-bar { height: 100%; border-radius: 4px; }
+  .bench-bar.portfolio { background: #2563eb; }
+  .bench-bar.spy { background: #dc2626; }
+  .bench-bar.qqq { background: #d97706; }
+  .bench-value { width: 70px; text-align: right; font-size: 13px; font-weight: 600; margin-left: 8px; }
+  .footer { padding: 16px 32px; text-align: center; border-top: 1px solid #e2e0dc; }
+  .footer .brand { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; }
+  .footer .disclaimer { font-size: 10px; color: #b0ada8; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>Portfolio Snapshot</h1>
+    <div class="subtitle">Monday, March 16, 2026 &bull; 8 Positions &bull; 5 Structural Forces</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value green">+32.6%</div>
+      <div class="stat-label">Total Return</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value green">+35.5pp</div>
+      <div class="stat-label">Alpha vs S&P</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">5 / 8</div>
+      <div class="stat-label">Positive</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">27.19</div>
+      <div class="stat-label">VIX</div>
+    </div>
+  </div>
+  <div class="positions">
+    <h2>Open Positions</h2>
+    <table>
+      <thead>
+        <tr><th>Ticker</th><th>Force</th><th>Entry</th><th>Current</th><th>P&L</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="ticker">$SOFI</td><td class="force">Financial Infra</td><td>$7.90</td><td>$18.72</td><td class="pnl-pos">+136.7%</td></tr>
+        <tr><td class="ticker">$TMDX</td><td class="force">Biotech Capital</td><td>$65.00</td><td>$123.48</td><td class="pnl-pos">+89.9%</td></tr>
+        <tr><td class="ticker">$AMD</td><td class="force">AI Infrastructure</td><td>$120.00</td><td>$193.39</td><td class="pnl-pos">+61.2%</td></tr>
+        <tr><td class="ticker">$NVDA</td><td class="force">AI Infrastructure</td><td>$150.00</td><td>$180.25</td><td class="pnl-pos">+20.2%</td></tr>
+        <tr><td class="ticker">$HIVE</td><td class="force">AI Infrastructure</td><td>$2.10</td><td>$2.08</td><td class="pnl-neg">-1.0%</td></tr>
+        <tr><td class="ticker">$ASPI</td><td class="force">Nuclear Renais.</td><td>$6.00</td><td>$5.28</td><td class="pnl-neg">-12.0%</td></tr>
+        <tr><td class="ticker">$BAND</td><td class="force">AI Infrastructure</td><td>$16.55</td><td>$15.23</td><td class="pnl-neg">-8.0%</td></tr>
+        <tr><td class="ticker">$EVTL</td><td class="force">Defence Spending</td><td>$4.50</td><td>$3.77</td><td class="pnl-neg">-16.2%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="benchmarks">
+    <h2>vs Benchmarks (Since Feb 22)</h2>
+    <div class="bench-row">
+      <div class="bench-label">Portfolio</div>
+      <div class="bench-bar-bg"><div class="bench-bar portfolio" style="width: 85%;"></div></div>
+      <div class="bench-value" style="color: #16a34a;">+32.6%</div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">S&P 500</div>
+      <div class="bench-bar-bg"><div class="bench-bar spy" style="width: 5%;"></div></div>
+      <div class="bench-value" style="color: #dc2626;">-2.95%</div>
+    </div>
+    <div class="bench-row">
+      <div class="bench-label">QQQ</div>
+      <div class="bench-bar-bg"><div class="bench-bar qqq" style="width: 5%;"></div></div>
+      <div class="bench-value" style="color: #d97706;">-1.28%</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="brand">STERLING SIGNALS</div>
+    <div class="disclaimer">Not financial advice. Informational only.</div>
+  </div>
+</div>
+</body>
+</html>

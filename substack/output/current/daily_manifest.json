@@ -1,19 +1,33 @@
 {
-    "date": "2026-03-15",
-    "day": "sunday",
-    "generated_at": "2026-03-15T08:00:00",
+    "date": "2026-03-16",
+    "day": "monday",
+    "generated_at": "2026-03-16T08:00:00+11:00",
     "source": "cowork",
-    "decision_reason": "Sunday → Notes only (2 notes). No post, no visual. Weekly plan confirms no Sunday content. NVDA GTC catalyst tomorrow.",
+    "decision_reason": "Monday: POSITION (honest loser $ASPI), MARKET (NVDA GTC catalyst), EDUCATION (methodology philosophy). Portfolio snapshot visual card.",
     "post": null,
-    "visual": null,
+    "visual": {
+        "type": "portfolio_snapshot_card",
+        "file": "notes/morning_position_graphic_20260316.html"
+    },
     "notes": [
-        {"slot": 1, "type": "DATA_INSIGHT", "time_et": "08:30", "time_label": "morning", "file": "notes/morning_data_insight_20260315.html", "graphic": "notes/morning_data_insight_graphic_20260315.png"},
-        {"slot": 2, "type": "READER_QUESTION", "time_et": "12:30", "time_label": "midday", "file": "notes/midday_reader_question_20260315.html"}
+        {"slot": 1, "type": "POSITION", "sub_variant": "honest_loser", "time_aedt": "08:00", "file": "notes/morning_position_20260316.html", "graphic": "notes/morning_position_graphic_20260316.html"},
+        {"slot": 2, "type": "MARKET", "sub_variant": "catalyst_flag", "time_aedt": "12:00", "file": "notes/midday_market_20260316.html"},
+        {"slot": 3, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "time_aedt": "20:00", "file": "notes/evening_education_20260316.html"}
     ],
     "reminders": [
-        {"time_et": "08:30", "action": "Post morning DATA_INSIGHT note + portfolio snapshot graphic", "file": "notes/morning_data_insight_20260315.html"},
-        {"time_et": "12:30", "action": "Post midday READER_QUESTION note (averaging down myth)", "file": "notes/midday_reader_question_20260315.html"}
+        {"time_aedt": "08:00", "action": "Post morning POSITION note (honest loser $ASPI) + portfolio snapshot graphic", "file": "notes/morning_position_20260316.html"},
+        {"time_aedt": "12:00", "action": "Post midday MARKET note (NVDA GTC catalyst flag)", "file": "notes/midday_market_20260316.html"},
+        {"time_aedt": "20:00", "action": "Post evening EDUCATION note (methodology philosophy)", "file": "notes/evening_education_20260316.html"}
     ],
-    "tweets_generated": 5,
+    "price_check": {
+        "SOFI": {"entry": 7.90, "live": 18.72, "pnl_pct": 136.7},
+        "EVTL": {"entry": 4.50, "live": 3.77, "pnl_pct": -16.2},
+        "NVDA": {"entry": 150.00, "live": 180.25, "pnl_pct": 20.2},
+        "AMD": {"entry": 120.00, "live": 193.39, "pnl_pct": 61.2},
+        "TMDX": {"entry": 65.00, "live": 123.48, "pnl_pct": 89.9},
+        "ASPI": {"entry": 6.00, "live": 5.28, "pnl_pct": -12.0},
+        "HIVE": {"entry": 2.10, "live": 2.08, "pnl_pct": -1.0},
+        "BAND": {"entry": 16.55, "live": 15.23, "pnl_pct": -8.0}
+    },
     "new_signals": []
 }

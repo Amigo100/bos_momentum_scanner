@@ -1,24 +1,5 @@
 [
   {
-    "id": "live_20260309_140813_v1",
-    "text": "$NVDA at $179.35. Entry was $150. Nvidia commits $4B to silicon photonics pivot \u2014 copper interconnects viable through 2028 but data center buildout accelerating the transition timeline.",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "$NVDA",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260309_1808.png",
-    "scheduled_time": "2026-03-09T14:08:13.867654-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-2.0%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-09T18:08:13.867653+00:00",
-    "cost_usd": 0.006517,
-    "skip_reason": "Stale: 123h old"
-  },
-  {
     "id": "live_20260309_155712_v1",
     "text": "$EVTL setup invalidated at $4.05. Entry was $4.50. When momentum breaks, the system cuts. Protecting capital > holding hope. On to the next setup.",
     "category": "SELL_SIGNAL",
@@ -371,9 +352,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-12T13:15:56.327308+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260312_005",
@@ -625,9 +607,10 @@
     "account": "variant_1",
     "ticker": "$BAND",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-13T13:13:33.857391+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260313_002",
@@ -826,7 +809,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-12T12:30:00-04:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1454.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1832.png"
   },
   {
     "id": "cowork_dev_20260313_001",
@@ -838,7 +821,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-13T12:40:18.673781+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_1454.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_1832.png"
   },
   {
     "id": "cowork_20260313_001",
@@ -904,9 +887,11 @@
     "primary_ticker": "",
     "chart_recommended": false,
     "account": "variant_3",
-    "status": "pending",
+    "status": "posted",
     "source": "cowork",
-    "generated_at": "2026-03-13T07:00:00-04:00"
+    "generated_at": "2026-03-13T07:00:00-04:00",
+    "posted_at": "2026-03-16T18:53:06.250780",
+    "tweet_id": "2033617570150883330"
   },
   {
     "id": "cowork_20260314_001",
@@ -984,7 +969,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1454.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1832.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1124,16 +1109,17 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260316_1454.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260316_1832.png",
     "scheduled_time": "2026-03-16T09:58:55.259203-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.6%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-16T13:58:55.259201+00:00",
-    "cost_usd": 0.017283
+    "cost_usd": 0.017283,
+    "skip_reason": "Stale: 5h old"
   },
   {
     "id": "watchdog_20260316_001",
@@ -1197,7 +1183,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260316_1454.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260316_1832.png",
     "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1215,7 +1201,7 @@
     "primary_ticker": "$TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260316_1454.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260316_1833.png",
     "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1233,7 +1219,7 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_1454.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_1833.png",
     "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1243,5 +1229,41 @@
     },
     "generated_at": "2026-03-16T14:54:39.555558+00:00",
     "cost_usd": 0.017303
+  },
+  {
+    "id": "live_20260316_143244_v1",
+    "text": "FDA just dropped a hammer on 30 telehealth firms over compounded GLP-1 marketing. This creates regulatory pressure on the obesity telehealth model \u2014 exactly what caught $EVTL's eVTOL sector in tariff crossfire. When policy shifts, themes pivot fast.",
+    "category": "THEME_CATALYST",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_1833.png",
+    "scheduled_time": "2026-03-16T14:32:44.406661-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.00%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T18:32:44.406660+00:00",
+    "cost_usd": 0.017247
+  },
+  {
+    "id": "live_20260316_143244_v2",
+    "text": "$NVDA ripping into GTC.\nEntry $150, now $184.70.\nAI hype cycle just warming up.\nWatching $200 breakout.",
+    "category": "TRENDING_TAKE",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1832.png",
+    "scheduled_time": "2026-03-16T14:32:44.406661-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.00%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T18:32:44.406660+00:00",
+    "cost_usd": 0.017247
   }
 ]

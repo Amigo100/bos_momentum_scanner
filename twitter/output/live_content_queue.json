@@ -1,63 +1,5 @@
 [
   {
-    "id": "live_20260309_104225_v1",
-    "text": "$BAND at $17.80 cleared all 5 filters 11h ago. Entry $16.55. Cybersecurity theme strengthening. 1,279 stocks scanned today, this was the only survivor. Signal scarcity speaks volumes.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "BAND",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260309_1442.png",
-    "scheduled_time": "2026-03-09T10:42:25.252677-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-2.0%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-09T14:42:25.252676+00:00",
-    "cost_usd": 0.006466,
-    "skip_reason": "Stale: 126h old"
-  },
-  {
-    "id": "live_20260309_104225_v2",
-    "text": "$TMDX tested $63.50 today. We're holding from $65 but the invalidation level is $58. Medtech's showing relative strength through the oil shock, but if this breaks support, the setup changes.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$TMDX",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260309_1442.png",
-    "scheduled_time": "2026-03-09T10:42:25.252677-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-2.0%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-09T14:42:25.252676+00:00",
-    "cost_usd": 0.006466,
-    "skip_reason": "Stale: 126h old"
-  },
-  {
-    "id": "live_20260309_104225_v3",
-    "text": "$AMD holding above $145 after pullback from $220 high. Entry was $120, still up +83% on the position. Watching how it handles this level.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260309_1442.png",
-    "scheduled_time": "2026-03-09T10:42:25.252677-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-2.0%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-09T14:42:25.252676+00:00",
-    "cost_usd": 0.006466,
-    "posted_at": "2026-03-09T15:02:46.087773",
-    "tweet_id": "2031022888481079401"
-  },
-  {
     "id": "live_20260309_140813_v1",
     "text": "$NVDA at $179.35. Entry was $150. Nvidia commits $4B to silicon photonics pivot \u2014 copper interconnects viable through 2028 but data center buildout accelerating the transition timeline.",
     "category": "THEME_CATALYST",
@@ -321,9 +263,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-11T13:15:46.840332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260311_104040_v1",
@@ -390,9 +333,10 @@
     "account": "variant_1",
     "ticker": "$BAND",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-12T13:15:56.327308+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260312_002",
@@ -882,7 +826,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-12T12:30:00-04:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1358.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1454.png"
   },
   {
     "id": "cowork_dev_20260313_001",
@@ -894,7 +838,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-13T12:40:18.673781+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_1359.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_1454.png"
   },
   {
     "id": "cowork_20260313_001",
@@ -936,9 +880,11 @@
     "primary_ticker": "SOFI",
     "chart_recommended": false,
     "account": "variant_3",
-    "status": "pending",
+    "status": "posted",
     "source": "cowork",
-    "generated_at": "2026-03-13T07:00:00-04:00"
+    "generated_at": "2026-03-13T07:00:00-04:00",
+    "posted_at": "2026-03-16T15:15:08.071841",
+    "tweet_id": "2033562716195979398"
   },
   {
     "id": "cowork_20260313_005",
@@ -1038,7 +984,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1358.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_1454.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1178,7 +1124,7 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260316_1359.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260316_1454.png",
     "scheduled_time": "2026-03-16T09:58:55.259203-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1243,5 +1189,59 @@
     "status": "pending",
     "created_at": "2026-03-16T13:27:20.447019+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260316_105439_v1",
+    "text": "$VYGR at $4.38. Entry $4.45, down 1.6% since scanner flagged it 37 hours ago. BBB gene therapy platform thesis unchanged despite noise in rare disease names.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260316_1454.png",
+    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T14:54:39.555558+00:00",
+    "cost_usd": 0.017303
+  },
+  {
+    "id": "live_20260316_105439_v2",
+    "text": "What separates conviction from gambling? $TMDX up 93.6% from $65 entry while markets chop. We sized it for volatility from day one \u2014 uncomfortable swings don't become account-threatening when position sizing matches thesis strength.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$TMDX",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260316_1454.png",
+    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T14:54:39.555558+00:00",
+    "cost_usd": 0.017303
+  },
+  {
+    "id": "live_20260316_105439_v3",
+    "text": "$EVTL at $3.77 \u2014 down from $4.50 entry but immunotherapy theme still has institutional attention.\n\nDrone tech names showing relative strength even on red days. Setup stays valid above $3.20.",
+    "category": "TRENDING_TAKE",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_1454.png",
+    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T14:54:39.555558+00:00",
+    "cost_usd": 0.017303
   }
 ]

@@ -1,124 +1,124 @@
 {
-  "timestamp": "2026-03-16T20:00:00Z",
+  "timestamp": "2026-03-16T22:30:00Z",
   "market_snapshot": {
-    "spy_move": "+0.9%",
-    "qqq_move": "+1.1%",
-    "iwm_move": "+1.3%",
-    "vix": "24.0",
+    "spy_move": "+0.88%",
+    "qqq_move": "+1.07%",
+    "iwm_move": "+1.29%",
+    "vix": "23.51",
     "market_mood": "volatile",
-    "headline": "US stocks rebound amid Middle East tensions easing and anticipation for Nvidia GTC conference, though oil surge and Fed meeting loom."
+    "headline": "US stocks rebound as oil prices ease from $100+ highs amid Middle East tensions and anticipation for Fed meeting and Nvidia GTC conference."
   },
   "portfolio_movers": [
     {
       "ticker": "$NVDA",
-      "move": "+2.3%",
-      "price": "$184.47",
-      "context": "Gains ahead of GTC AI conference keynote, reinforcing AI leadership"
-    },
-    {
-      "ticker": "$AMD",
-      "move": "+1.8%",
-      "price": "$198.08",
-      "context": "Riding AI chip demand wave with Nvidia event spotlight"
-    },
-    {
-      "ticker": "$VYGR",
-      "move": "-1.3%",
-      "price": "$4.40",
-      "context": "Recent scanner signal but dips on broader biotech volatility"
-    },
-    {
-      "ticker": "$EVTL",
-      "move": "-1.0%",
-      "price": "$3.98",
-      "context": "Defense additive manufacturing theme pressured by geopolitical oil risks"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "+1.5%",
-      "price": "$3.25",
-      "context": "Bitcoin mining diversification into AI data centers boosts sentiment"
+      "move": "+1.65%",
+      "price": "$183.22",
+      "context": "Gains ahead of GTC AI conference keynote, highlighting new AI platforms and robotics advancements"
     },
     {
       "ticker": "$SOFI",
-      "move": "+0.5%",
-      "price": "$8.45",
-      "context": "Mild uptick on fintech stability amid market rebound"
+      "move": "-0.73%",
+      "price": "$17.63",
+      "context": "Slight pullback in fintech amid broader market volatility from geopolitical risks"
+    },
+    {
+      "ticker": "$VYGR",
+      "move": "+5.2%",
+      "price": "$5.12",
+      "context": "Recent scanner PASS signal on gene therapy platform momentum, up on biotech sector rotation"
+    },
+    {
+      "ticker": "$AMD",
+      "move": "+1.2%",
+      "price": "$145.80",
+      "context": "Semiconductor lift from AI hype pre-Nvidia event"
+    },
+    {
+      "ticker": "$EVTL",
+      "move": "-1.5%",
+      "price": "$3.75",
+      "context": "Defense additive manufacturing theme pressured by tariff uncertainties"
     },
     {
       "ticker": "$TMDX",
-      "move": "-0.2%",
-      "price": "$85.20",
-      "context": "Telehealth GLP-1 regulatory warnings create sector caution"
+      "move": "+2.1%",
+      "price": "$122.00",
+      "context": "Healthcare equipment up on infrastructure spending optimism"
     },
     {
       "ticker": "$ASPI",
       "move": "+0.8%",
-      "price": "$6.45",
-      "context": "Photonic interconnect play benefits from AI infrastructure buzz"
+      "price": "$6.48",
+      "context": "Photonic interconnect steady amid AI/semiconductor buzz"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "+3.4%",
+      "price": "$2.45",
+      "context": "Crypto mining gains on nuclear energy tailwinds for data centers"
     },
     {
       "ticker": "$BAND",
       "move": "-0.5%",
-      "price": "$15.80",
-      "context": "Quiet amid infrastructure spending delays from geopolitics"
+      "price": "$16.20",
+      "context": "Bandwidth infrastructure flat amid copper price volatility"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
       "status": "breaking",
-      "detail": "Nvidia GTC conference kicks off with new VR200 chips announced, 3x performance boost for AI training amid $650B hyperscaler capex"
+      "detail": "Nvidia GTC conference starts today with Jensen Huang keynote, unveiling Dynamo 1.0 and Isaac GR00T robots, targeting $1T revenue by 2027"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "US-Israel escalation against Iran boosts defense stocks as Strait of Hormuz disruptions raise geopolitical risks"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Chip stocks rally on AI demand, Nvidia and AMD lead with focus on data center infrastructure"
+      "detail": "Pre-GTC AI hype lifts chipmakers amid supply chain tariff concerns"
     },
     {
       "theme": "copper",
-      "status": "active",
-      "detail": "Demand surges for AI data centers, EVs, and grids; prices up on $7.5T energy infrastructure spend forecast"
-    },
-    {
-      "theme": "defense",
-      "status": "breaking",
-      "detail": "Middle East tensions drive military drone and additive manufacturing needs, antimony and copper critical minerals in spotlight"
+      "status": "quiet",
+      "detail": "Futures stable after recent volatility from infrastructure bill delays and China stimulus hopes"
     },
     {
       "theme": "nuclear",
       "status": "active",
-      "detail": "AI power demands push SMR tech and uranium; grid upgrades essential for data centers"
+      "detail": "Rising energy demands from AI data centers spotlight nuclear as clean power alternative"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "quiet",
+      "detail": "Tariff resets and court rulings create uncertainty for spending bills"
     },
     {
       "theme": "glp-1 obesity telehealth",
       "status": "quiet",
-      "detail": "FDA warning letters to 30 telehealth firms for misleading compounded GLP-1 ads create compliance risks"
+      "detail": "FDA warnings to 30 telehealth firms for misleading compounded GLP-1 drug ads earlier in March"
     },
     {
-      "theme": "infrastructure",
+      "theme": "bbb gene therapy platform",
       "status": "active",
-      "detail": "Geopolitical oil shocks highlight need for grid and energy upgrades tied to AI and defense"
+      "detail": "Lantern Pharma AI platforms show 94.1% BBB penetration accuracy for cancer drugs"
     },
     {
       "theme": "bladder cancer immunotherapy",
       "status": "quiet",
-      "detail": "Ongoing Phase 2b trials for NMIBC therapies advance, full enrollment expected H1 2026"
-    },
-    {
-      "theme": "bbb gene therapy platform",
-      "status": "quiet",
-      "detail": "Voyager Therapeutics advances tau-targeted CNS pipeline with 2026 catalysts"
+      "detail": "Ongoing research in botulinum toxin effects on biomarkers, no major breaks"
     },
     {
       "theme": "defence additive manufacturing",
       "status": "active",
-      "detail": "Boom in military drones increases demand for additive tech in defense supply chains"
+      "detail": "Geopolitical tensions accelerate 3D printing for defense components"
     },
     {
       "theme": "photonic interconnect",
-      "status": "active",
-      "detail": "Silicon photonics key for AI data center traffic; optical components in focus"
+      "status": "quiet",
+      "detail": "Tied to AI/semicon growth but no specific news today"
     }
   ],
   "theme_tickers": [
@@ -127,108 +127,38 @@
       "tickers": [
         {
           "symbol": "$NVDA",
-          "price": "$184.47",
-          "context": "AI chip leader with GTC announcements"
+          "price": "$183.22",
+          "context": "AI chip leader, GTC event catalyst"
         },
         {
           "symbol": "$AMD",
-          "price": "$198.08",
-          "context": "Competitor gaining in AI training market"
+          "price": "$145.80",
+          "context": "Competitor in AI GPUs"
         },
         {
           "symbol": "$PLTR",
           "price": "$45.20",
-          "context": "AI software for defense and enterprise"
+          "context": "AI software platform"
+        },
+        {
+          "symbol": "$MSFT",
+          "price": "$420.50",
+          "context": "Azure AI cloud services"
+        },
+        {
+          "symbol": "$GOOGL",
+          "price": "$168.90",
+          "context": "Google DeepMind AI research"
+        },
+        {
+          "symbol": "$TSLA",
+          "price": "$391.54",
+          "context": "AI in autonomous driving"
         },
         {
           "symbol": "$SMCI",
           "price": "$850.00",
-          "context": "AI server hardware provider"
-        },
-        {
-          "symbol": "$MU",
-          "price": "$445.97",
-          "context": "Memory chips critical for AI workloads"
-        },
-        {
-          "symbol": "$TSM",
-          "price": "$175.00",
-          "context": "Foundry for AI semiconductors"
-        }
-      ]
-    },
-    {
-      "theme": "semiconductors",
-      "tickers": [
-        {
-          "symbol": "$NVDA",
-          "price": "$184.47",
-          "context": "Dominant GPU for AI"
-        },
-        {
-          "symbol": "$AMD",
-          "price": "$198.08",
-          "context": "CPU/GPU challenger"
-        },
-        {
-          "symbol": "$AVGO",
-          "price": "$1,450.00",
-          "context": "Networking chips for data centers"
-        },
-        {
-          "symbol": "$TSM",
-          "price": "$175.00",
-          "context": "Advanced node manufacturing"
-        },
-        {
-          "symbol": "$MU",
-          "price": "$445.97",
-          "context": "DRAM for AI memory"
-        },
-        {
-          "symbol": "$ARM",
-          "price": "$140.00",
-          "context": "IP for low-power AI chips"
-        },
-        {
-          "symbol": "$MRVL",
-          "price": "$75.00",
-          "context": "Custom AI accelerators"
-        }
-      ]
-    },
-    {
-      "theme": "copper",
-      "tickers": [
-        {
-          "symbol": "$FCX",
-          "price": "$52.30",
-          "context": "Major copper producer for AI and EVs"
-        },
-        {
-          "symbol": "$SCCO",
-          "price": "$120.50",
-          "context": "Southern Copper operations scaling"
-        },
-        {
-          "symbol": "$CPER",
-          "price": "$28.40",
-          "context": "Copper ETF tracking futures"
-        },
-        {
-          "symbol": "$NRED",
-          "price": "$0.60",
-          "context": "Near Copper Mountain exploration"
-        },
-        {
-          "symbol": "$TECK",
-          "price": "$45.00",
-          "context": "Diversified with copper focus"
-        },
-        {
-          "symbol": "$UAMY",
-          "price": "$0.45",
-          "context": "Antimony-copper alloy for defense"
+          "context": "AI server hardware"
         }
       ]
     },
@@ -237,38 +167,78 @@
       "tickers": [
         {
           "symbol": "$LMT",
-          "price": "$450.00",
-          "context": "Drones and missile systems"
+          "price": "$520.30",
+          "context": "Lockheed Martin, major defense contractor"
         },
         {
           "symbol": "$RTX",
-          "price": "$95.00",
-          "context": "Additive manufacturing in aerospace"
+          "price": "$115.40",
+          "context": "Raytheon missiles and systems"
         },
         {
           "symbol": "$NOC",
-          "price": "$460.00",
-          "context": "Defense tech for Middle East ops"
+          "price": "$480.10",
+          "context": "Northrop Grumman aerospace"
         },
         {
           "symbol": "$GD",
-          "price": "$280.00",
-          "context": "Military infrastructure contracts"
+          "price": "$285.70",
+          "context": "General Dynamics submarines"
         },
         {
           "symbol": "$BA",
-          "price": "$190.00",
-          "context": "Additive parts for fighters"
+          "price": "$210.50",
+          "context": "Boeing military aircraft"
         },
         {
           "symbol": "$LHX",
-          "price": "$220.00",
-          "context": "C4ISR systems for drones"
+          "price": "$225.80",
+          "context": "L3Harris electronics"
         },
         {
-          "symbol": "$KTOS",
-          "price": "$22.50",
-          "context": "Unmanned systems growth"
+          "symbol": "$TXT",
+          "price": "$95.20",
+          "context": "Textron drones"
+        }
+      ]
+    },
+    {
+      "theme": "semiconductors",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$183.22",
+          "context": "GPU dominance"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$145.80",
+          "context": "CPU/GPU chips"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$175.60",
+          "context": "Taiwan Semi foundry"
+        },
+        {
+          "symbol": "$INTC",
+          "price": "$38.40",
+          "context": "Intel processors"
+        },
+        {
+          "symbol": "$QCOM",
+          "price": "$185.30",
+          "context": "Qualcomm mobile chips"
+        },
+        {
+          "symbol": "$TXN",
+          "price": "$195.70",
+          "context": "Texas Instruments analog"
+        },
+        {
+          "symbol": "$MU",
+          "price": "$112.50",
+          "context": "Micron memory"
         }
       ]
     },
@@ -276,34 +246,34 @@
       "theme": "nuclear",
       "tickers": [
         {
-          "symbol": "$CEG",
-          "price": "$210.00",
-          "context": "Largest US nuclear operator"
+          "symbol": "$CCJ",
+          "price": "$48.20",
+          "context": "Cameco uranium producer"
         },
         {
-          "symbol": "$CCJ",
-          "price": "$45.00",
-          "context": "Uranium mining for reactors"
+          "symbol": "$NEE",
+          "price": "$82.10",
+          "context": "NextEra nuclear utilities"
+        },
+        {
+          "symbol": "$CEG",
+          "price": "$185.40",
+          "context": "Constellation Energy nuclear ops"
+        },
+        {
+          "symbol": "$BWXT",
+          "price": "$105.80",
+          "context": "BWX Technologies nuclear components"
         },
         {
           "symbol": "$SMR",
           "price": "$12.50",
-          "context": "Small modular reactors for AI power"
+          "context": "NuScale small modular reactors"
         },
         {
-          "symbol": "$OKLO",
-          "price": "$8.00",
-          "context": "Advanced nuclear tech startup"
-        },
-        {
-          "symbol": "$BWXT",
-          "price": "$95.00",
-          "context": "Nuclear components supplier"
-        },
-        {
-          "symbol": "$NEE",
-          "price": "$75.00",
-          "context": "Renewables with nuclear assets"
+          "symbol": "$URNM",
+          "price": "$28.70",
+          "context": "Uranium ETF"
         }
       ]
     },
@@ -312,108 +282,28 @@
       "tickers": [
         {
           "symbol": "$HIMS",
-          "price": "$22.00",
-          "context": "Telehealth GLP-1 provider under FDA scrutiny"
+          "price": "$22.40",
+          "context": "Hims & Hers telehealth weight loss"
         },
         {
           "symbol": "$LLY",
-          "price": "$850.00",
-          "context": "Mounjaro originator amid compounded warnings"
+          "price": "$890.50",
+          "context": "Eli Lilly Mounjaro/Zepbound"
         },
         {
           "symbol": "$NVO",
-          "price": "$140.00",
-          "context": "Ozempic leader facing telehealth competition"
+          "price": "$135.20",
+          "context": "Novo Nordisk Ozempic/Wegovy"
         },
         {
           "symbol": "$TEVA",
-          "price": "$18.50",
-          "context": "Generic GLP-1 developments"
+          "price": "$19.80",
+          "context": "Teva generics and telehealth"
         },
         {
-          "symbol": "$VKTX",
-          "price": "$85.00",
-          "context": "Oral GLP-1 pipeline"
-        },
-        {
-          "symbol": "$DNTH",
-          "price": "$15.00",
-          "context": "Obesity telehealth platform"
-        }
-      ]
-    },
-    {
-      "theme": "infrastructure",
-      "tickers": [
-        {
-          "symbol": "$ETN",
-          "price": "$320.00",
-          "context": "Grid and power management for AI"
-        },
-        {
-          "symbol": "$GEV",
-          "price": "$180.00",
-          "context": "$150B backlog in energy infrastructure"
-        },
-        {
-          "symbol": "$CAT",
-          "price": "$380.00",
-          "context": "Heavy machinery for upgrades"
-        },
-        {
-          "symbol": "$J",
-          "price": "$150.00",
-          "context": "Industrial supplies for grids"
-        },
-        {
-          "symbol": "$VMC",
-          "price": "$260.00",
-          "context": "Materials for energy projects"
-        },
-        {
-          "symbol": "$EME",
-          "price": "$380.00",
-          "context": "Engineering for data centers"
-        },
-        {
-          "symbol": "$PWR",
-          "price": "$240.00",
-          "context": "Transmission line builder"
-        }
-      ]
-    },
-    {
-      "theme": "bladder cancer immunotherapy",
-      "tickers": [
-        {
-          "symbol": "$IBRX",
-          "price": "$6.50",
-          "context": "Anktiva Phase 2b for NMIBC advancing"
-        },
-        {
-          "symbol": "$BNTX",
-          "price": "$95.00",
-          "context": "mRNA immunotherapy pipeline"
-        },
-        {
-          "symbol": "$ONCY",
-          "price": "$1.20",
-          "context": "Pelareorep for advanced cancers"
-        },
-        {
-          "symbol": "$MAIA",
-          "price": "$3.00",
-          "context": "THIO for bladder trials"
-        },
-        {
-          "symbol": "$ACRV",
-          "price": "$8.50",
-          "context": "Precision oncology platform"
-        },
-        {
-          "symbol": "$GTBP",
-          "price": "$3.50",
-          "context": "NK cell engagers for solid tumors"
+          "symbol": "$VTRS",
+          "price": "$12.30",
+          "context": "Viatris compounded drugs"
         }
       ]
     },
@@ -422,198 +312,105 @@
       "tickers": [
         {
           "symbol": "$VYGR",
-          "price": "$4.40",
-          "context": "Tau-targeted CNS gene therapy catalysts 2026"
+          "price": "$5.12",
+          "context": "Voyager Therapeutics BBB tech"
         },
         {
-          "symbol": "$REGN",
-          "price": "$1,050.00",
-          "context": "Librevant BBB platform for neurology"
+          "symbol": "$LTRN",
+          "price": "$6.80",
+          "context": "Lantern Pharma AI BBB platforms"
         },
         {
-          "symbol": "$VRNA",
-          "price": "$45.00",
-          "context": "BBB shuttle tech for brain delivery"
+          "symbol": "$SRPT",
+          "price": "$145.90",
+          "context": "Sarepta gene therapy"
         },
         {
-          "symbol": "$ALNY",
-          "price": "$240.00",
-          "context": "Patisiran gene silencing with BBB focus"
+          "symbol": "$VKTX",
+          "price": "$85.40",
+          "context": "Viking Therapeutics neuro gene"
         },
         {
-          "symbol": "$BIIB",
-          "price": "$230.00",
-          "context": "Neurology gene therapies advancing"
-        },
-        {
-          "symbol": "$DNLI",
-          "price": "$25.00",
-          "context": "TRACTr platform for CNS delivery"
-        }
-      ]
-    },
-    {
-      "theme": "defence additive manufacturing",
-      "tickers": [
-        {
-          "symbol": "$KTOS",
-          "price": "$22.50",
-          "context": "3D printed drone components"
-        },
-        {
-          "symbol": "$ADDM",
-          "price": "$15.00",
-          "context": "Additive tech for military parts"
-        },
-        {
-          "symbol": "$XOM",
-          "price": "$115.00",
-          "context": "Materials for defense printing"
-        },
-        {
-          "symbol": "$VJET",
-          "price": "$1.20",
-          "context": "3D systems for aerospace"
-        },
-        {
-          "symbol": "$SSYS",
-          "price": "$12.00",
-          "context": "Industrial additive manufacturing"
-        },
-        {
-          "symbol": "$MTOR",
-          "price": "$18.00",
-          "context": "Metal 3D printing for defense"
-        },
-        {
-          "symbol": "$HON",
-          "price": "$210.00",
-          "context": "Aerospace additive solutions"
-        }
-      ]
-    },
-    {
-      "theme": "photonic interconnect",
-      "tickers": [
-        {
-          "symbol": "$ASPI",
-          "price": "$6.45",
-          "context": "Silicon photonics for AI data centers"
-        },
-        {
-          "symbol": "$LITE",
-          "price": "$65.00",
-          "context": "Optical components leader"
-        },
-        {
-          "symbol": "$CIEN",
-          "price": "$50.00",
-          "context": "Optical networking systems"
-        },
-        {
-          "symbol": "$COHR",
-          "price": "$75.00",
-          "context": "Laser tech for interconnects"
-        },
-        {
-          "symbol": "$POET",
-          "price": "$4.50",
-          "context": "Integrated photonics circuits"
-        },
-        {
-          "symbol": "$AAOI",
-          "price": "$15.00",
-          "context": "Fiber optics for hyperscalers"
-        },
-        {
-          "symbol": "$AYRO",
-          "price": "$2.50",
-          "context": "Photonics in AV tech"
+          "symbol": "$BLUE",
+          "price": "$2.10",
+          "context": "bluebird bio gene therapy"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "AI chips Nvidia GTC",
-    "Copper supercycle AI demand",
-    "Bitcoin miners AI diversification",
-    "Defense drones antimony",
-    "Nuclear SMR for data centers"
+    "Nvidia GTC AI",
+    "Iran war oil spike",
+    "Fed hold rates",
+    "Tariff court ruling",
+    "Semicon rotation",
+    "Defense stocks surge"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "AI chips Nvidia GTC",
+      "trending_topic": "Nvidia GTC AI",
       "matching_theme": "AI",
       "our_positions": [
         "$NVDA",
-        "$AMD",
-        "$HIVE",
-        "$ASPI"
+        "$AMD"
       ],
-      "context": "FinTwit buzzing over Nvidia VR200 chips and AI infrastructure, overlaps with our semis and photonic holdings"
+      "context": "FinTwit hyped on Huang keynote and AI revenue targets, boosting our semicon holdings"
     },
     {
-      "trending_topic": "Copper supercycle AI demand",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "Discussions on copper for AI grids and EVs, potential infrastructure play but no direct positions"
-    },
-    {
-      "trending_topic": "Defense drones antimony",
+      "trending_topic": "Iran war oil spike",
       "matching_theme": "defense",
       "our_positions": [
-        "$EVTL"
+        "$EVTL",
+        "$ASPI"
       ],
-      "context": "Trending on military tech boom amid Middle East tensions, ties to our additive manufacturing position"
+      "context": "Geopolitical escalation drives defense additive manufacturing buzz, potential tailwind for EVTL"
     },
     {
-      "trending_topic": "Nuclear SMR for data centers",
+      "trending_topic": "Semicon rotation",
+      "matching_theme": "semiconductors",
+      "our_positions": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "context": "Shift from big tech to chips on GTC news, aligns with our AI/semicon exposure"
+    },
+    {
+      "trending_topic": "Nuclear for AI data centers",
       "matching_theme": "nuclear",
-      "our_positions": [],
-      "context": "AI power needs drive nuclear talk, aligns with infrastructure theme but no holdings"
-    },
-    {
-      "trending_topic": "Bitcoin miners AI diversification",
-      "matching_theme": "AI",
       "our_positions": [
         "$HIVE"
       ],
-      "context": "Miners shifting to AI data centers, direct overlap with our HIVE position outperforming"
+      "context": "Discussions on energy needs for AI lift nuclear plays, benefiting HIVE mining ops"
     }
   ],
   "news_events": [
     {
-      "event": "Fed FOMC meeting March 18",
-      "impact": "Rates held at 3.50-3.75%, dot plot signals caution on cuts amid oil surge",
+      "event": "Fed FOMC meeting March 17-18",
+      "impact": "Expected rate hold at 3.50-3.75% amid oil surge and stagflation fears",
       "relevance": "high"
     },
     {
       "event": "Nvidia GTC AI conference starts",
-      "impact": "New chip announcements boost AI/semiconductor sentiment",
+      "impact": "New AI platforms announced, potential catalyst for tech rally",
       "relevance": "high"
     },
     {
-      "event": "Middle East tensions/Iran conflict",
-      "impact": "Oil above $100/barrel, inflationary pressure and defense boost",
+      "event": "US-Israel Iran conflict escalation",
+      "impact": "Oil at $93 after $106 peak, Hormuz risks boost defense/energy",
       "relevance": "high"
     },
     {
-      "event": "FDA warns 30 telehealth firms on GLP-1",
-      "impact": "Regulatory risks for obesity telehealth, compliance crackdown",
+      "event": "Supreme Court tariff ruling aftermath",
+      "impact": "10-15% baseline tariffs enacted under Section 122, 150-day limit",
       "relevance": "medium"
     },
     {
-      "event": "Supreme Court tariff ruling delay",
-      "impact": "Uncertainty on trade policies, potential inflation from tariffs",
+      "event": "FDA GLP-1 telehealth warnings",
+      "impact": "Crackdown on misleading ads affects obesity drug access",
       "relevance": "medium"
-    },
-    {
-      "event": "Micron earnings post-market",
-      "impact": "AI memory demand insights, key for semis theme",
-      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-03-16T20:00:19.211547+00:00",
+  "gathered_at": "2026-03-16T22:30:50.644322+00:00",
   "is_market_hours": false,
-  "is_extended_hours": true
+  "is_extended_hours": false
 }

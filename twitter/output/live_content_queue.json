@@ -699,9 +699,10 @@
     "primary_ticker": "BAND",
     "chart_recommended": false,
     "account": "variant_2",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00"
+    "generated_at": "2026-03-12T08:18:30-04:00",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "cowork_20260312_003",
@@ -710,9 +711,10 @@
     "primary_ticker": "SOFI",
     "chart_recommended": false,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00"
+    "generated_at": "2026-03-12T08:18:30-04:00",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260312_004",
@@ -772,7 +774,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-12T12:30:00-04:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2000.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2231.png"
   },
   {
     "id": "cowork_dev_20260313_001",
@@ -784,7 +786,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-13T12:40:18.673781+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_2000.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_2231.png"
   },
   {
     "id": "cowork_20260313_001",
@@ -919,9 +921,11 @@
     "primary_ticker": "SOFI",
     "chart_recommended": false,
     "account": "variant_3",
-    "status": "pending",
+    "status": "posted",
     "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00"
+    "generated_at": "2026-03-14T01:13:41.405119+00:00",
+    "posted_at": "2026-03-16T22:51:43.070230",
+    "tweet_id": "2033677619225379109"
   },
   {
     "id": "cowork_dev_20260314_001",
@@ -933,7 +937,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2000.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2231.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1204,16 +1208,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_2000.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_2231.png",
     "scheduled_time": "2026-03-16T14:32:44.406661-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.00%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-16T18:32:44.406660+00:00",
-    "cost_usd": 0.017247
+    "cost_usd": 0.017247,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260316_143244_v2",
@@ -1222,16 +1227,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2000.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260316_2231.png",
     "scheduled_time": "2026-03-16T14:32:44.406661-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.00%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-16T18:32:44.406660+00:00",
-    "cost_usd": 0.017247
+    "cost_usd": 0.017247,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260316_160038_v1",
@@ -1240,7 +1246,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_2000.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_2231.png",
     "scheduled_time": "2026-03-16T16:00:38.583610-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1258,7 +1264,7 @@
     "primary_ticker": "SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_2000.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260316_2231.png",
     "scheduled_time": "2026-03-16T16:00:38.583610-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1268,5 +1274,23 @@
     },
     "generated_at": "2026-03-16T20:00:38.583609+00:00",
     "cost_usd": 0.017635
+  },
+  {
+    "id": "live_20260316_183119_v1",
+    "text": "$VYGR at $4.45. BBB gene therapy platform cleared all 5 gates. Entry confirmed on institutional accumulation signal.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260316_2231.png",
+    "scheduled_time": "2026-03-16T18:31:19.431992-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.88%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-16T22:31:19.431991+00:00",
+    "cost_usd": 0.017688
   }
 ]

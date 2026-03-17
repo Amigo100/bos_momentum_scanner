@@ -755,9 +755,10 @@
     "primary_ticker": "NVDA",
     "chart_recommended": false,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-13T07:00:00-04:00"
+    "generated_at": "2026-03-13T07:00:00-04:00",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260313_006",
@@ -814,9 +815,10 @@
     "primary_ticker": null,
     "chart_recommended": false,
     "account": "variant_2",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00"
+    "generated_at": "2026-03-14T01:13:41.405119+00:00",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "cowork_20260314_005",
@@ -852,7 +854,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_1814.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_2231.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1292,9 +1294,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-17T13:26:18.319861+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-17T22:51:41.585836",
+    "tweet_id": "2034040000736608290"
   },
   {
     "id": "watchdog_20260317_003",
@@ -1336,16 +1340,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_1814.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_2231.png",
     "scheduled_time": "2026-03-17T10:49:51.201929-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.49%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-17T14:49:51.201928+00:00",
-    "cost_usd": 0.017004
+    "cost_usd": 0.017004,
+    "skip_reason": "Stale: 8h old"
   },
   {
     "id": "live_20260317_104951_v2",
@@ -1354,16 +1359,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260317_1814.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260317_2231.png",
     "scheduled_time": "2026-03-17T10:49:51.201929-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.49%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-17T14:49:51.201928+00:00",
-    "cost_usd": 0.017004
+    "cost_usd": 0.017004,
+    "skip_reason": "Stale: 8h old"
   },
   {
     "id": "live_20260317_141425_v1",
@@ -1372,15 +1378,70 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_1814.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_2231.png",
     "scheduled_time": "2026-03-17T14:14:25.757068-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.49%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-17T18:14:25.757067+00:00",
-    "cost_usd": 0.017703
+    "cost_usd": 0.017703,
+    "skip_reason": "Stale: 5h old"
+  },
+  {
+    "id": "live_20260317_183120_v1",
+    "text": "$VYGR at $5.48. Scanner flagged 69 hours ago at $4.45. Gene therapy platform thesis validating on bladder cancer immunotherapy momentum. Chart attached.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260317_2231.png",
+    "scheduled_time": "2026-03-17T18:31:20.122985-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.5%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-17T22:31:20.122984+00:00",
+    "cost_usd": 0.017411
+  },
+  {
+    "id": "live_20260317_183120_v2",
+    "text": "$NVDA holding $182.65 while SPY bleeds. GTC conference positioning means institutions are loaded pre-catalyst. We're up 21.8% from $150 entry \u2014 that's what relative strength looks like in real time.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_2231.png",
+    "scheduled_time": "2026-03-17T18:31:20.122985-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.5%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-17T22:31:20.122984+00:00",
+    "cost_usd": 0.017411
+  },
+  {
+    "id": "live_20260317_183120_v3",
+    "text": "$SOFI entry $7.90, now $32.00. +305.1% on the fintech thesis. Win more than you lose.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_2231.png",
+    "scheduled_time": "2026-03-17T18:31:20.122985-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.5%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-17T22:31:20.122984+00:00",
+    "cost_usd": 0.017411
   }
 ]

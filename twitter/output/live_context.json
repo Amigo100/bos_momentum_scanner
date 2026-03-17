@@ -1,64 +1,70 @@
 {
-  "timestamp": "2026-03-17T12:00:00Z",
+  "timestamp": "2026-03-17T13:00:00Z",
   "market_snapshot": {
-    "spy_move": "+1.01%",
-    "qqq_move": "+1.22%",
-    "iwm_move": "+0.94%",
-    "vix": "23.62",
+    "spy_move": "+0.9%",
+    "qqq_move": "+1.2%",
+    "iwm_move": "+0.8%",
+    "vix": "22.1",
     "market_mood": "bullish",
-    "headline": "US stocks rally sharply amid AI enthusiasm from Nvidia GTC and despite rising geopolitical tensions in Middle East"
+    "headline": "US stocks rebound with Nasdaq leading gains amid easing macro pressures and anticipation for Fed meeting."
   },
   "portfolio_movers": [
     {
+      "ticker": "$SOFI",
+      "move": "+1.4%",
+      "price": "$17.87",
+      "context": "fintech sector recovery on broader market rebound"
+    },
+    {
       "ticker": "$NVDA",
-      "move": "+1.65%",
-      "price": "$183.22",
-      "context": "Nvidia GTC keynote announces $1T AI chip demand forecast by 2027, boosting semiconductors"
+      "move": "+1.6%",
+      "price": "$183.19",
+      "context": "AI chip demand persists ahead of GTC conference"
     },
     {
       "ticker": "$AMD",
-      "move": "+1.65%",
-      "price": "$196.58",
-      "context": "Riding Nvidia AI momentum as key competitor in GPU market"
+      "move": "+1.1%",
+      "price": "$165.20",
+      "context": "semiconductors lift on tech rally"
     },
     {
-      "ticker": "$SOFI",
-      "move": "+0.59%",
-      "price": "$17.68",
-      "context": "Modest gains in fintech amid broader market rally"
+      "ticker": "$TMDX",
+      "move": "+0.5%",
+      "price": "$125.50",
+      "context": "medtech steady despite recent volatility"
     },
     {
       "ticker": "$VYGR",
       "move": "+2.5%",
-      "price": "$4.56",
-      "context": "Recent scanner PASS signal on gene therapy platform developments"
+      "price": "$5.20",
+      "context": "gene therapy momentum from scanner signal"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
-      "status": "breaking",
-      "detail": "Nvidia forecasts $1T AI chip demand by 2027 at GTC conference, driving sector surge"
+      "status": "active",
+      "detail": "AI stocks rally ahead of NVIDIA GTC conference March 16-19"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Semiconductor stocks up on Nvidia announcements and strong demand outlook"
+      "detail": "sector up on tech rebound and tariff uncertainty"
     },
     {
       "theme": "defense",
-      "status": "active",
-      "detail": "Geopolitical escalation in Middle East boosts defense spending expectations"
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "status": "quiet",
-      "detail": "FDA issues 30 warning letters to telehealth firms for compounded GLP-1 marketing violations"
+      "status": "breaking",
+      "detail": "Middle East escalation boosts defense spending expectations"
     },
     {
       "theme": "copper",
       "status": "quiet",
-      "detail": "Tariff uncertainties impacting industrial metals pricing"
+      "detail": "stable amid infrastructure bill delays"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "active",
+      "detail": "new spending proposals tied to geopolitics"
     }
   ],
   "theme_tickers": [
@@ -67,33 +73,33 @@
       "tickers": [
         {
           "symbol": "$NVDA",
-          "price": "$183.22",
-          "context": "AI chip leader with $1T demand forecast"
+          "price": "$183.19",
+          "context": "AI leader with GTC event catalyst"
         },
         {
           "symbol": "$AMD",
-          "price": "$196.58",
-          "context": "GPU competitor benefiting from AI boom"
+          "price": "$165.20",
+          "context": "competitor in AI chips"
         },
         {
           "symbol": "$MSFT",
           "price": "$420.50",
-          "context": "AI integration in cloud services"
+          "context": "AI integration in cloud"
         },
         {
           "symbol": "$GOOGL",
-          "price": "$185.20",
-          "context": "AI advancements in search and cloud"
-        },
-        {
-          "symbol": "$TSM",
-          "price": "$175.80",
-          "context": "Key AI chip foundry"
+          "price": "$185.30",
+          "context": "AI advancements in search"
         },
         {
           "symbol": "$PLTR",
           "price": "$28.40",
-          "context": "AI data analytics platform"
+          "context": "AI software for defense"
+        },
+        {
+          "symbol": "$SMCI",
+          "price": "$950.00",
+          "context": "AI server hardware"
         }
       ]
     },
@@ -102,38 +108,38 @@
       "tickers": [
         {
           "symbol": "$NVDA",
-          "price": "$183.22",
-          "context": "Dominant in AI GPUs"
+          "price": "$183.19",
+          "context": "GPU dominance"
         },
         {
           "symbol": "$AMD",
-          "price": "$196.58",
-          "context": "High-performance computing chips"
+          "price": "$165.20",
+          "context": "CPU and GPU player"
         },
         {
           "symbol": "$TSM",
           "price": "$175.80",
-          "context": "Advanced semiconductor manufacturing"
+          "context": "foundry leader"
         },
         {
           "symbol": "$INTC",
-          "price": "$35.60",
-          "context": "US chipmaker facing AI competition"
+          "price": "$35.20",
+          "context": "US chipmaker recovery"
+        },
+        {
+          "symbol": "$ASML",
+          "price": "$1375.56",
+          "context": "lithography equipment"
         },
         {
           "symbol": "$QCOM",
-          "price": "$182.10",
-          "context": "Mobile and AI semiconductors"
+          "price": "$185.00",
+          "context": "mobile semiconductors"
         },
         {
-          "symbol": "$AVGO",
-          "price": "$1650.00",
-          "context": "Semiconductor design for AI and networking"
-        },
-        {
-          "symbol": "$MU",
-          "price": "$95.20",
-          "context": "Memory chips critical for AI training"
+          "symbol": "$TXN",
+          "price": "$195.40",
+          "context": "analog chips"
         }
       ]
     },
@@ -143,90 +149,123 @@
         {
           "symbol": "$LMT",
           "price": "$520.30",
-          "context": "Major defense contractor amid Middle East tensions"
+          "context": "major defense contractor"
         },
         {
           "symbol": "$RTX",
-          "price": "$110.50",
-          "context": "Missile and aerospace systems"
+          "price": "$115.60",
+          "context": "missiles and aerospace"
         },
         {
           "symbol": "$NOC",
-          "price": "$480.70",
-          "context": "Aerospace and defense electronics"
+          "price": "$480.90",
+          "context": "aerospace and defense"
         },
         {
           "symbol": "$GD",
-          "price": "$285.40",
-          "context": "Combat vehicles and systems"
+          "price": "$295.20",
+          "context": "systems integration"
         },
         {
           "symbol": "$BA",
-          "price": "$195.80",
-          "context": "Military aircraft manufacturer"
+          "price": "$220.50",
+          "context": "military aircraft"
         },
         {
           "symbol": "$LHX",
-          "price": "$240.10",
-          "context": "Defense IT and communications"
+          "price": "$250.80",
+          "context": "missile defense"
+        },
+        {
+          "symbol": "$HII",
+          "price": "$280.10",
+          "context": "shipbuilding"
+        }
+      ]
+    },
+    {
+      "theme": "infrastructure",
+      "tickers": [
+        {
+          "symbol": "$CAT",
+          "price": "$380.40",
+          "context": "heavy machinery"
+        },
+        {
+          "symbol": "$VMC",
+          "price": "$410.20",
+          "context": "construction materials"
+        },
+        {
+          "symbol": "$ETN",
+          "price": "$320.50",
+          "context": "electrical equipment"
+        },
+        {
+          "symbol": "$J",
+          "price": "$155.30",
+          "context": "industrial conglomerate"
+        },
+        {
+          "symbol": "$PH",
+          "price": "$520.90",
+          "context": "construction machinery"
+        },
+        {
+          "symbol": "$CSWI",
+          "price": "$280.70",
+          "context": "water and infrastructure"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "Nvidia GTC AI boom",
-    "Tariff impacts on semis",
-    "Middle East geopolitics defense"
+    "NVDA GTC",
+    "Middle East conflict stocks",
+    "Fed rate hold",
+    "tariff impacts",
+    "AI rotation"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "Nvidia GTC AI boom",
+      "trending_topic": "NVDA GTC",
       "matching_theme": "AI",
       "our_positions": [
         "$NVDA",
         "$AMD"
       ],
-      "context": "FinTwit hyped over Nvidia's $1T AI forecast, overlapping with our semiconductor holdings"
+      "context": "FinTwit hyped for AI announcements driving semiconductor momentum"
     },
     {
-      "trending_topic": "Tariff impacts on semis",
-      "matching_theme": "semiconductors",
-      "our_positions": [
-        "$NVDA",
-        "$AMD"
-      ],
-      "context": "Discussions on new US tariffs affecting chip supply chains, relevant to portfolio semis exposure"
-    },
-    {
-      "trending_topic": "Middle East geopolitics defense",
+      "trending_topic": "defense surge",
       "matching_theme": "defense",
       "our_positions": [],
-      "context": "Buzz around conflict escalation boosting defense stocks, no direct portfolio overlap"
+      "context": "Geopolitical tensions in Middle East sparking defense stock buys"
     }
   ],
   "news_events": [
     {
       "event": "Fed FOMC meeting March 17-18",
-      "impact": "Expected to hold rates at 3.50-3.75% amid geopolitical risks",
+      "impact": "expected rate hold at 3.50-3.75% amid geopolitics",
       "relevance": "high"
     },
     {
-      "event": "US imposes 10% universal import tariffs",
-      "impact": "Renews trade uncertainties, potential inflation from supply chain disruptions",
+      "event": "Middle East escalation US-Israel vs Iran",
+      "impact": "oil prices up, defense boost, inflation risks",
       "relevance": "high"
     },
     {
-      "event": "Middle East conflict escalation",
-      "impact": "Oil prices surging, boosting defense and energy themes",
+      "event": "Supreme Court tariff ruling and new 10% import levy",
+      "impact": "trade uncertainty, potential supply chain shifts",
       "relevance": "medium"
     },
     {
-      "event": "Nvidia GTC conference",
-      "impact": "AI chip demand forecast to $1T by 2027, lifting tech stocks",
+      "event": "NVIDIA GTC AI conference March 16-19",
+      "impact": "AI sector catalysts for tech stocks",
       "relevance": "high"
     }
   ],
-  "gathered_at": "2026-03-17T12:00:32.071449+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": true
+  "gathered_at": "2026-03-17T13:55:30.458525+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

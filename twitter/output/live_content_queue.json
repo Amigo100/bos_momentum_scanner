@@ -693,10 +693,11 @@
     "primary_ticker": "SOFI",
     "chart_recommended": true,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
     "generated_at": "2026-03-13T12:40:18.673781+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_1355.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_1449.png",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260313_001",
@@ -728,9 +729,10 @@
     "primary_ticker": "TMDX",
     "chart_recommended": false,
     "account": "variant_2",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-13T07:00:00-04:00"
+    "generated_at": "2026-03-13T07:00:00-04:00",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "cowork_20260313_004",
@@ -848,7 +850,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_1355.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_1449.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -1021,9 +1023,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-16T13:27:20.447019+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.95%']"
   },
   {
     "id": "watchdog_20260316_003",
@@ -1217,7 +1220,7 @@
     "primary_ticker": "$TMDX",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260317_1356.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260317_1450.png",
     "scheduled_time": "2026-03-17T08:00:54.450901-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1235,7 +1238,7 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260317_1356.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260317_1450.png",
     "scheduled_time": "2026-03-17T09:55:50.292403-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1253,7 +1256,7 @@
     "primary_ticker": "AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260317_1356.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260317_1450.png",
     "scheduled_time": "2026-03-17T09:55:50.292403-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1318,5 +1321,41 @@
     "status": "pending",
     "created_at": "2026-03-17T13:26:18.319861+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260317_104951_v1",
+    "text": "$SOFI holding $17 support while SPY consolidates pre-Fed. Entry was $7.90 \u2014 fintech thesis playing out exactly as called.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260317_1449.png",
+    "scheduled_time": "2026-03-17T10:49:51.201929-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.49%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-17T14:49:51.201928+00:00",
+    "cost_usd": 0.017004
+  },
+  {
+    "id": "live_20260317_104951_v2",
+    "text": "$EVTL down 11.6% from entry.\nDrone tech lagging today.\nWatching for reversal signals.\nNFA",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260317_1450.png",
+    "scheduled_time": "2026-03-17T10:49:51.201929-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.49%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-17T14:49:51.201928+00:00",
+    "cost_usd": 0.017004
   }
 ]

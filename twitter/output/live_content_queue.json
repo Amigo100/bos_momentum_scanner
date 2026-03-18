@@ -61,44 +61,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260311_104040_v1",
-    "text": "Why is $AMD holding strength while markets chop? Because AI conference cycles matter. We're in from $120, now $206.32. GTC next week means institutional positioning starts now \u2014 not during the headlines.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$AMD",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260312_1341.png",
-    "scheduled_time": "2026-03-11T10:40:40.386163-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.21%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-11T14:40:40.386162+00:00",
-    "cost_usd": 0.015772,
-    "skip_reason": "Stale: 23h old"
-  },
-  {
-    "id": "live_20260311_104040_v2",
-    "text": "$EVTL at $4.08.\nEntry was $4.50.\nDown 9.3% but position sized right.\nCash is a position too.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260312_1341.png",
-    "scheduled_time": "2026-03-11T10:40:40.386163-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.21%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-11T14:40:40.386162+00:00",
-    "cost_usd": 0.015772,
-    "skip_reason": "Stale: 23h old"
-  },
-  {
     "id": "live_20260312_094121_v1",
     "text": "$EVTL at $4.00.\nEntry was $4.50.\nBiotech catching momentum.\nPosition sized for volatility.",
     "category": "ENGAGEMENT",
@@ -771,9 +733,10 @@
     "primary_ticker": "TMDX",
     "chart_recommended": false,
     "account": "variant_1",
-    "status": "pending",
+    "status": "failed",
     "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00"
+    "generated_at": "2026-03-14T01:13:41.405119+00:00",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_20260314_006",
@@ -798,7 +761,7 @@
     "status": "pending",
     "source": "cowork",
     "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260318_1358.png"
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260318_1602.png"
   },
   {
     "id": "live_20260315_103806_v1",
@@ -880,9 +843,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-15T13:06:46.845962+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260315_005",
@@ -1401,7 +1365,7 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260318_1358.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260318_1602.png",
     "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1419,7 +1383,7 @@
     "primary_ticker": "TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260318_1358.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260318_1602.png",
     "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1437,16 +1401,18 @@
     "primary_ticker": "AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260318_1358.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260318_1602.png",
     "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.9%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-18T13:58:16.796817+00:00",
-    "cost_usd": 0.01705
+    "cost_usd": 0.01705,
+    "posted_at": "2026-03-18T16:22:38.508201",
+    "tweet_id": "2034304480280506410"
   },
   {
     "id": "watchdog_20260318_001",
@@ -1502,5 +1468,23 @@
     "status": "pending",
     "created_at": "2026-03-18T13:27:16.287456+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260318_120212_v1",
+    "text": "$EVTL holding strong in the drone tech theme while SPY chops sideways. When sector rotation happens, the names with momentum stay resilient. Entry was $4.50. Thesis intact.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260318_1602.png",
+    "scheduled_time": "2026-03-18T12:02:12.952798-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.47%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-18T16:02:12.952796+00:00",
+    "cost_usd": 0.01716
   }
 ]

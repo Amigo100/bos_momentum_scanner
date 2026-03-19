@@ -61,26 +61,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260312_094121_v1",
-    "text": "$EVTL at $4.00.\nEntry was $4.50.\nBiotech catching momentum.\nPosition sized for volatility.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260312_1810.png",
-    "scheduled_time": "2026-03-12T09:41:21.252141-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.42%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T13:41:21.252139+00:00",
-    "cost_usd": 0.016331,
-    "posted_at": "2026-03-12T18:30:21.059358",
-    "tweet_id": "2032162291962020159"
-  },
-  {
     "id": "watchdog_20260312_001",
     "text": "\ud83d\udfe2 $BAND signal confirmed. AI Voice CPaaS infrastructure seeing institutional accumulation as enterprise demand accelerates. Scanner shows structural pivot with all technical gates cleared.",
     "category": "SIGNAL_ALERT",
@@ -491,92 +471,6 @@
     "generated_at": "2026-03-13T18:01:30.409647+00:00",
     "cost_usd": 0.015961,
     "skip_reason": "Stale: 27h old"
-  },
-  {
-    "id": "cowork_20260312_001",
-    "text": "$BAND at $16.31. 0.7x forward revenue. Guiding 16% growth with 29% EBITDA expansion. Cheapest name in CPaaS.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "BAND",
-    "chart_recommended": false,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "cowork_20260312_002",
-    "text": "Why do most screeners show Bandwidth as fairly valued? They include $225M in operating leases as debt, inflating enterprise value by 35%. Strip those out and $BAND trades at a discount to every CPaaS peer. The lesson: always check what the screener counts as debt.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "BAND",
-    "chart_recommended": false,
-    "account": "variant_2",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "cowork_20260312_003",
-    "text": "$SOFI at $18.25. Entry $7.90. +131% in 18 days. Fintech thesis intact.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "chart_recommended": false,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "cowork_20260312_004",
-    "text": "VIX at 29.5\nSPY flat YTD\nOur names? +131%, +100%, +68%\nRelative strength > everything",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": null,
-    "chart_recommended": false,
-    "account": "variant_3",
-    "status": "posted",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "posted_at": "2026-03-15T20:52:11.245801",
-    "tweet_id": "2033285150528672095"
-  },
-  {
-    "id": "cowork_20260312_005",
-    "text": "What happens when a company owns the only independent Tier-1 voice network in CPaaS and trades cheaper than every peer? We ran the full valuation \u2014 bear case, base case, and the math on what re-rating looks like. Deep Dive on $BAND dropping today on Sterling Signals.",
-    "category": "SUBSTACK_TEASER",
-    "primary_ticker": "BAND",
-    "chart_recommended": false,
-    "account": "variant_2",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "cowork_20260312_006",
-    "text": "AI voice agents growing 340% YoY\n$BAND owns the pipes\nQ1 earnings April \u2014 the number to watch\nNFA",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "BAND",
-    "chart_recommended": false,
-    "account": "variant_3",
-    "status": "posted",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "posted_at": "2026-03-16T14:19:18.099258",
-    "tweet_id": "2033548665412018651"
-  },
-  {
-    "id": "cowork_20260312_007",
-    "text": "$TMDX at $129.74. Entry $65.00. +99.6% in 9 days. Approaching triple digits.",
-    "category": "RECEIPT",
-    "primary_ticker": "TMDX",
-    "chart_recommended": false,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T08:18:30-04:00",
-    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "cowork_dev_20260312_001",
@@ -1234,9 +1128,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-17T13:26:18.319861+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.95%']"
   },
   {
     "id": "watchdog_20260317_005",
@@ -1606,7 +1501,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1156.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1346.png",
     "scheduled_time": "2026-03-19T07:56:17.450207-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1624,16 +1519,17 @@
     "primary_ticker": "$ASPI",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260319_1156.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260319_1346.png",
     "scheduled_time": "2026-03-19T07:56:17.450207-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-19T11:56:17.450206+00:00",
-    "cost_usd": 0.01727
+    "cost_usd": 0.01727,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260319_075617_v3",
@@ -1642,15 +1538,126 @@
     "primary_ticker": "TMDX",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1156.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1347.png",
     "scheduled_time": "2026-03-19T07:56:17.450207-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-19T11:56:17.450206+00:00",
-    "cost_usd": 0.01727
+    "cost_usd": 0.01727,
+    "posted_at": "2026-03-19T14:07:12.951890",
+    "tweet_id": "2034632787081191875"
+  },
+  {
+    "id": "live_20260319_094649_v1",
+    "text": "$SOFI entry $7.90, high $32.00. +305.1% on the fintech play. Consolidation after a 4x run is healthy. Invalidation $15.50.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260319_1347.png",
+    "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.72%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T13:46:49.608966+00:00",
+    "cost_usd": 0.017427
+  },
+  {
+    "id": "live_20260319_094649_v2",
+    "text": "$EVTL down 2.5% while defense spending headlines multiply. Markets panic first, think later. Drone tech thesis unchanged\u2014geopolitical tailwinds accelerating. Entry $4.50, watching $3.50 support.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1347.png",
+    "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.72%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T13:46:49.608966+00:00",
+    "cost_usd": 0.017427
+  },
+  {
+    "id": "live_20260319_094649_v3",
+    "text": "$AMD holding $145.\nEntry $120. Up 62.4%.\nChips down but thesis intact.\nNFA \ud83c\udfaf",
+    "category": "RECEIPT",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260319_1347.png",
+    "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.72%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T13:46:49.608966+00:00",
+    "cost_usd": 0.017427
+  },
+  {
+    "id": "watchdog_20260319_001",
+    "text": "\ud83d\udfe2 SIGNAL: $VYGR cleared all gates. BBB Gene Therapy Platform theme showing institutional accumulation patterns. Blood-brain barrier represents the largest unmet need in CNS therapeutics.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-19T13:20:14.236086+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260319_002",
+    "text": "Portfolio update: +32.58% vs SPY -2.95% = 35.53% alpha. 9 positions across AI, biotech, fintech themes. Capital preservation rules kept us selective during October volatility.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-19T13:20:14.236086+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260319_003",
+    "text": "BBB Gene Therapy Platform hits PRIME status. The blood-brain barrier has blocked CNS drug delivery for decades. New delivery mechanisms could unlock trillion-dollar neurological markets.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-19T13:20:14.236086+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260319_004",
+    "text": "Small-cap momentum setup is the strongest since 2016: earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating into year-end.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-19T13:20:14.236086+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260319_005",
+    "text": "Why do 90% of CNS drugs fail? The blood-brain barrier. Companies cracking this code represent structural pivots in neuroscience. Today's Substack explores the winners emerging.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-19T13:20:14.236086+00:00",
+    "source": "watchdog"
   }
 ]

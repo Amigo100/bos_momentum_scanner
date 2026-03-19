@@ -1325,9 +1325,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-18T13:27:16.287456+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260318_002",
@@ -1501,7 +1502,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1346.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1442.png",
     "scheduled_time": "2026-03-19T07:56:17.450207-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1558,7 +1559,7 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260319_1347.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260319_1442.png",
     "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1576,16 +1577,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1347.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1442.png",
     "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.72%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-19T13:46:49.608966+00:00",
-    "cost_usd": 0.017427
+    "cost_usd": 0.017427,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260319_094649_v3",
@@ -1594,16 +1596,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260319_1347.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260319_1442.png",
     "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.72%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-19T13:46:49.608966+00:00",
-    "cost_usd": 0.017427
+    "cost_usd": 0.017427,
+    "posted_at": "2026-03-19T15:02:52.830627",
+    "tweet_id": "2034646795612217822"
   },
   {
     "id": "watchdog_20260319_001",
@@ -1659,5 +1663,41 @@
     "status": "pending",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260319_104226_v1",
+    "text": "$TMDX holding $64.30 while organ transplantation names consolidate. FDA-approved platforms with revenue find support when speculative names bleed. Entry $65 \u2014 thesis intact through volatility.",
+    "category": "THEME_CATALYST",
+    "primary_ticker": "TMDX",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1442.png",
+    "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.4%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T14:42:26.335484+00:00",
+    "cost_usd": 0.017447
+  },
+  {
+    "id": "live_20260319_104226_v2",
+    "text": "$EVTL testing support at $4.40.\nEntry $4.50, down 2.4%.\nDrone tech volatility is noise.\nWatching defense spending catalysts.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1442.png",
+    "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.4%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T14:42:26.335484+00:00",
+    "cost_usd": 0.017447
   }
 ]

@@ -473,19 +473,6 @@
     "skip_reason": "Stale: 27h old"
   },
   {
-    "id": "cowork_dev_20260312_001",
-    "text": "$NVDA drops $2B into Nebius for AI cloud scale-up. GTC 2026 keynote March 16 \u2014 Vera Rubin platform reveal expected. We hold from $150, now $186 (+24%). Positioning into the catalyst.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "NVDA",
-    "chart_recommended": true,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-12T12:30:00-04:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260317_1355.png",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
     "id": "cowork_dev_20260313_001",
     "text": "$SOFI CEO Noto just bought $1M of stock on the open market \u2014 first purchase in over a year. Shares down 4% on the day. When the CEO buys into weakness with personal capital, pay attention. We hold from $7.90. NFA.",
     "category": "MARKET_COMMENTARY",
@@ -1362,9 +1349,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-18T13:27:16.287456+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.95%']"
   },
   {
     "id": "watchdog_20260318_005",
@@ -1502,16 +1490,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1442.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1809.png",
     "scheduled_time": "2026-03-19T07:56:17.450207-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-19T11:56:17.450206+00:00",
-    "cost_usd": 0.01727
+    "cost_usd": 0.01727,
+    "skip_reason": "Stale: 7h old"
   },
   {
     "id": "live_20260319_075617_v2",
@@ -1559,16 +1548,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260319_1442.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260319_1809.png",
     "scheduled_time": "2026-03-19T09:46:49.608967-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.72%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-19T13:46:49.608966+00:00",
-    "cost_usd": 0.017427
+    "cost_usd": 0.017427,
+    "skip_reason": "Stale: 5h old"
   },
   {
     "id": "live_20260319_094649_v2",
@@ -1627,9 +1617,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.95%']"
   },
   {
     "id": "watchdog_20260319_003",
@@ -1638,9 +1629,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260319_004",
@@ -1671,7 +1663,7 @@
     "primary_ticker": "TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1442.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1809.png",
     "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1689,7 +1681,7 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1442.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1810.png",
     "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1699,5 +1691,41 @@
     },
     "generated_at": "2026-03-19T14:42:26.335484+00:00",
     "cost_usd": 0.017447
+  },
+  {
+    "id": "live_20260319_140947_v1",
+    "text": "What happens when drone tech gets caught in a selloff? $EVTL down 1.2% to $12.45 while defense spending bills advance. Short-term noise vs long-term catalyst \u2014 that's where conviction gets tested.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1810.png",
+    "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T18:09:47.676537+00:00",
+    "cost_usd": 0.017348
+  },
+  {
+    "id": "live_20260319_140947_v2",
+    "text": "$NVDA barely flinching.\nDown 0.5% while SPY bleeds.\nEntry $150, holding $182.\nRelative strength in chaos.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260319_1810.png",
+    "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T18:09:47.676537+00:00",
+    "cost_usd": 0.017348
   }
 ]

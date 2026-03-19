@@ -124,101 +124,6 @@
     "tweet_id": "2032429310062239861"
   },
   {
-    "id": "live_20260312_141001_v1",
-    "text": "$HIVE entry $2.10, current $2.10. Bitcoin safe-haven flows driving volume spike. Position flat but geopolitical tailwinds building.",
-    "category": "RECEIPT",
-    "primary_ticker": "$HIVE",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260312_1810.png",
-    "scheduled_time": "2026-03-12T14:10:01.301313-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.1%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T18:10:01.301311+00:00",
-    "cost_usd": 0.015549,
-    "skip_reason": "Stale: 51h old"
-  },
-  {
-    "id": "live_20260312_141001_v2",
-    "text": "$NVDA at $194.\nAI chip names under pressure.\nPalantir partnership catalyst loading.\nWatching $185 support closely.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260312_2223.png",
-    "scheduled_time": "2026-03-12T14:10:01.301313-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.1%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T18:10:01.301311+00:00",
-    "cost_usd": 0.015549,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260312_155755_v1",
-    "text": "$SOFI holding $17.67 while indices sell off. Up +305.1% from $7.90 entry. Fintech names showing relative strength \u2014 that's where institutions rotate during volatility.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260312_1958.png",
-    "scheduled_time": "2026-03-12T15:57:55.455301-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T19:57:55.455300+00:00",
-    "cost_usd": 0.015692,
-    "skip_reason": "Stale: 49h old"
-  },
-  {
-    "id": "live_20260312_155755_v2",
-    "text": "Why does $EVTL hold $4.01 when the market's panicking? Because we knew the bizav thesis had downtrend risk from the start. Position sizing for volatility means red days don't wreck accounts. That's the edge.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260312_1958.png",
-    "scheduled_time": "2026-03-12T15:57:55.455301-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T19:57:55.455300+00:00",
-    "cost_usd": 0.015692,
-    "skip_reason": "Stale: 49h old"
-  },
-  {
-    "id": "live_20260312_155755_v3",
-    "text": "$HIVE at $2.04.\nEntry was $2.10.\nOil surge hitting risk assets.\nCash is a position.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260313_1151.png",
-    "scheduled_time": "2026-03-12T15:57:55.455301-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-12T19:57:55.455300+00:00",
-    "cost_usd": 0.015692,
-    "skip_reason": "Stale: 16h old"
-  },
-  {
     "id": "live_20260312_182347_v1",
     "text": "$BAND at $17.08. Entry $16.55. Cybersecurity CPaaS demand driving 3.2% move today. Position holding despite broader market weakness.",
     "category": "RECEIPT",
@@ -1606,9 +1511,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260319_002",
@@ -1641,9 +1547,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-19T20:20:08.505183",
+    "tweet_id": "2034726637338550422"
   },
   {
     "id": "watchdog_20260319_005",
@@ -1652,9 +1560,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-19T13:20:14.236086+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260319_104226_v1",
@@ -1663,16 +1572,17 @@
     "primary_ticker": "TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1809.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260319_1959.png",
     "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.4%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-19T14:42:26.335484+00:00",
-    "cost_usd": 0.017447
+    "cost_usd": 0.017447,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260319_104226_v2",
@@ -1681,16 +1591,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1810.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1959.png",
     "scheduled_time": "2026-03-19T10:42:26.335486-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.4%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-19T14:42:26.335484+00:00",
-    "cost_usd": 0.017447
+    "cost_usd": 0.017447,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260319_140947_v1",
@@ -1699,7 +1610,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1810.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1959.png",
     "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1717,7 +1628,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260319_1810.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260319_1959.png",
     "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1727,5 +1638,59 @@
     },
     "generated_at": "2026-03-19T18:09:47.676537+00:00",
     "cost_usd": 0.017348
+  },
+  {
+    "id": "live_20260319_155946_v1",
+    "text": "$VYGR at $3.76, down 16.2% from $4.45 entry. Gene therapy sector under pressure but blood-brain barrier platform thesis unchanged. Invalidation at $3.20.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260319_1959.png",
+    "scheduled_time": "2026-03-19T15:59:46.520473-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.7%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T19:59:46.520471+00:00",
+    "cost_usd": 0.017322
+  },
+  {
+    "id": "live_20260319_155946_v2",
+    "text": "What happens when quality names get caught in sector rotation? $NVDA entry $150, now $178.64. Up 19.1% while the broader market bleeds. That's the difference between conviction and trading noise.",
+    "category": "RECEIPT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260319_1959.png",
+    "scheduled_time": "2026-03-19T15:59:46.520473-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.7%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T19:59:46.520471+00:00",
+    "cost_usd": 0.017322
+  },
+  {
+    "id": "live_20260319_155946_v3",
+    "text": "$EVTL setup invalidated.\nEntry $4.50, now $3.72.\nDown 17.3%.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_1959.png",
+    "scheduled_time": "2026-03-19T15:59:46.520473-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.7%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-19T19:59:46.520471+00:00",
+    "cost_usd": 0.017322
   }
 ]

@@ -186,25 +186,6 @@
     "tweet_id": "2033196152825561142"
   },
   {
-    "id": "live_20260313_140130_v1",
-    "text": "$EVTL down to $4.01.\nEntry was $4.50.\nSmall-cap chop in the selloff.\nPosition size keeps this manageable.",
-    "category": "RECEIPT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1801.png",
-    "scheduled_time": "2026-03-13T14:01:30.409648-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.51%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-13T18:01:30.409647+00:00",
-    "cost_usd": 0.015961,
-    "skip_reason": "Stale: 27h old"
-  },
-  {
     "id": "cowork_20260314_001",
     "text": "$SOFI at $18.61. +135.6% from $7.90 entry. $1B quarterly revenue. CEO buying $1M in shares. Thesis intact.",
     "category": "RECEIPT",
@@ -1575,9 +1556,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-20T13:13:51.389217+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.95%']"
   },
   {
     "id": "watchdog_20260320_003",
@@ -1598,9 +1580,10 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-20T13:13:51.389217+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260320_005",
@@ -1620,7 +1603,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260320_1437.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260320_1802.png",
     "scheduled_time": "2026-03-20T10:37:24.739927-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1630,5 +1613,60 @@
     },
     "generated_at": "2026-03-20T14:37:24.739925+00:00",
     "cost_usd": 0.017626
+  },
+  {
+    "id": "live_20260320_140248_v1",
+    "text": "$SOFI at $17.08. +0.5% while SPY drops 1.12%. Entry $7.90, up 116.2%. Fintech decoupling from oil-driven selloff.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260320_1802.png",
+    "scheduled_time": "2026-03-20T14:02:48.592553-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.12%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-20T18:02:48.592552+00:00",
+    "cost_usd": 0.017614,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260320_140248_v2",
+    "text": "$EVTL from $4.50 entry now at $7.00. +55.6% on the drone play while SPY chops sideways. Position sizing lets you hold through sector rotation noise without flinching.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260320_1802.png",
+    "scheduled_time": "2026-03-20T14:02:48.592553-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.12%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-20T18:02:48.592552+00:00",
+    "cost_usd": 0.017614
+  },
+  {
+    "id": "live_20260320_140248_v3",
+    "text": "$NVDA breaking support.\nEntry $150, now $175.74.\nExport ban noise invalidating.\nTrimming 30%. NFA",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260320_1802.png",
+    "scheduled_time": "2026-03-20T14:02:48.592553-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.12%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-20T18:02:48.592552+00:00",
+    "cost_usd": 0.017614
   }
 ]

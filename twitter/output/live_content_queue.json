@@ -186,44 +186,6 @@
     "tweet_id": "2033196152825561142"
   },
   {
-    "id": "live_20260313_103615_v1",
-    "text": "$TMDX at $150.00. +130.8% from $65.00 entry. Organ preservation tech catching institutional flows as healthcare innovation narrative builds.",
-    "category": "RECEIPT",
-    "primary_ticker": "TMDX",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260313_1801.png",
-    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.1%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-13T14:36:15.300565+00:00",
-    "cost_usd": 0.015813,
-    "skip_reason": "Stale: 30h old"
-  },
-  {
-    "id": "live_20260313_103615_v2",
-    "text": "$EVTL down 14% from entry.\nAviation theme choppy.\nCash is a position.\nWaiting for confirmation.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260313_1801.png",
-    "scheduled_time": "2026-03-13T10:36:15.300567-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.1%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-13T14:36:15.300565+00:00",
-    "cost_usd": 0.015813,
-    "skip_reason": "Stale: 30h old"
-  },
-  {
     "id": "live_20260313_140130_v1",
     "text": "$EVTL down to $4.01.\nEntry was $4.50.\nSmall-cap chop in the selloff.\nPosition size keeps this manageable.",
     "category": "RECEIPT",
@@ -1581,16 +1543,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260320_1339.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260320_1437.png",
     "scheduled_time": "2026-03-20T09:39:08.119909-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.6%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-20T13:39:08.119907+00:00",
-    "cost_usd": 0.017436
+    "cost_usd": 0.017436,
+    "posted_at": "2026-03-20T14:57:41.276498",
+    "tweet_id": "2035007876205310323"
   },
   {
     "id": "watchdog_20260320_001",
@@ -1599,9 +1563,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-20T13:13:51.389217+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260320_002",
@@ -1621,9 +1586,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-03-20T13:13:51.389217+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "skip_reason": "Too similar (83%) to tweet posted at 2026-03-19T20:20:08.505183"
   },
   {
     "id": "watchdog_20260320_004",
@@ -1646,5 +1612,23 @@
     "status": "pending",
     "created_at": "2026-03-20T13:13:51.389217+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260320_103724_v1",
+    "text": "$NVDA photonics play loading.\n$4B optical sector bet.\nAI compute scaling past copper limits.\nWatching $178 hold.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260320_1437.png",
+    "scheduled_time": "2026-03-20T10:37:24.739927-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.46%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-20T14:37:24.739925+00:00",
+    "cost_usd": 0.017626
   }
 ]

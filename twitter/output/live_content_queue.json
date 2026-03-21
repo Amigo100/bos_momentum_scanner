@@ -1711,16 +1711,17 @@
     "primary_ticker": "TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260321_1434.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260321_2029.png",
     "scheduled_time": "2026-03-21T10:34:25.018887-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-1.51%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-21T14:34:25.018885+00:00",
-    "cost_usd": 0.017705
+    "cost_usd": 0.017705,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260321_103425_v2",
@@ -1729,16 +1730,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260321_1434.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260321_2029.png",
     "scheduled_time": "2026-03-21T10:34:25.018887-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.51%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-03-21T14:34:25.018885+00:00",
-    "cost_usd": 0.017705
+    "cost_usd": 0.017705,
+    "posted_at": "2026-03-21T20:49:27.505069",
+    "tweet_id": "2035458790007493076"
   },
   {
     "id": "watchdog_20260321_001",
@@ -1795,5 +1798,60 @@
     "status": "pending",
     "created_at": "2026-03-21T13:03:12.312159+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260321_162901_v1",
+    "text": "$VYGR at $4.50. +1.2% while market drops 1.5%. BridgeBio 2026 milestones include NDA for gene therapy programs. Rare disease thesis advancing.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260321_2029.png",
+    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.51%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-21T20:29:01.042333+00:00",
+    "cost_usd": 0.017881,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260321_162901_v2",
+    "text": "$EVTL from $4.50 entry down to $4.20 today. Setup invalidated below $4.00. Here's the lesson: win more than you lose. We caught $SOFI at $7.90, now $16.90 despite the selloff. That's the edge.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260321_2029.png",
+    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.51%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-21T20:29:01.042333+00:00",
+    "cost_usd": 0.017881
+  },
+  {
+    "id": "live_20260321_162901_v3",
+    "text": "$NVDA testing $175 support.\nEntry $150. Up 15% still.\nExport noise \u2260 broken thesis.\nWatching closely.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260321_2029.png",
+    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.51%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-21T20:29:01.042333+00:00",
+    "cost_usd": 0.017881
   }
 ]

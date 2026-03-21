@@ -186,92 +186,6 @@
     "tweet_id": "2033196152825561142"
   },
   {
-    "id": "cowork_20260314_001",
-    "text": "$SOFI at $18.61. +135.6% from $7.90 entry. $1B quarterly revenue. CEO buying $1M in shares. Thesis intact.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "chart_recommended": false,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "cowork_20260314_002",
-    "text": "Why do most investors sell their winners at +30%? Because they confuse volatility with risk. $TMDX is up +101% from $65 in 11 days \u2014 not because it was a lucky pick, but because systematic screening identified structural momentum before the crowd noticed. That's the difference between gambling and a process.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "TMDX",
-    "chart_recommended": false,
-    "account": "variant_2",
-    "status": "blocked",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "block_reason": "BLOCKED: Tweet too long (309 chars)"
-  },
-  {
-    "id": "cowork_20260314_003",
-    "text": "Portfolio: +44.2%\nSPY: -2.0%\nQQQ: -1.3%\n\nAlpha doesn't come from luck. NFA",
-    "category": "RECEIPT",
-    "primary_ticker": null,
-    "chart_recommended": false,
-    "account": "variant_3",
-    "status": "blocked",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "block_reason": "BLOCKED: Negative P&L in tweet: ['-2.0%', '-1.3%']"
-  },
-  {
-    "id": "cowork_20260314_004",
-    "text": "1,265 stocks scanned this week. 11 signals. 1 cleared all gates. Most investors run one screener and call it research \u2014 full walkthrough of how to build a real watchlist using free tools dropping today on Substack.",
-    "category": "SUBSTACK_TEASER",
-    "primary_ticker": null,
-    "chart_recommended": false,
-    "account": "variant_2",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "cowork_20260314_005",
-    "text": "$TMDX at $130.85. +101.3% from $65 entry. No competitor at scale in organ transplant logistics. Structural momentum confirmed.",
-    "category": "RECEIPT",
-    "primary_ticker": "TMDX",
-    "chart_recommended": false,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "cowork_20260314_006",
-    "text": "Two 100%+ winners same month.\n$SOFI +135%. $TMDX +101%.\nSelection > timing.\nSave this.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "chart_recommended": false,
-    "account": "variant_3",
-    "status": "posted",
-    "source": "cowork",
-    "generated_at": "2026-03-14T01:13:41.405119+00:00",
-    "posted_at": "2026-03-16T22:51:43.070230",
-    "tweet_id": "2033677619225379109"
-  },
-  {
-    "id": "cowork_dev_20260314_001",
-    "text": "$NVDA GTC 2026 starts Monday. Jensen Huang keynote 11am PT. 39,000 attendees. Cantor: \"On the cusp of regaining confidence.\" We hold from $150, now $180 (+20%). ByteDance just ordered 36,000 B200 chips for a $2.5B cluster. Demand is real.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "NVDA",
-    "chart_recommended": true,
-    "account": "variant_1",
-    "status": "failed",
-    "source": "cowork",
-    "generated_at": "2026-03-14T13:31:07.120989+00:00",
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260318_1832.png",
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
     "id": "live_20260315_103806_v1",
     "text": "$VYGR at $4.45. BBB gene therapy platform. Watching for validation signals on the delivery mechanism breakthrough. NFA",
     "category": "SIGNAL_ALERT",
@@ -1720,16 +1634,18 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260320_2227.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260321_1434.png",
     "scheduled_time": "2026-03-20T15:54:58.778905-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.12%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-20T19:54:58.778904+00:00",
-    "cost_usd": 0.017697
+    "cost_usd": 0.017697,
+    "posted_at": "2026-03-21T14:54:51.505170",
+    "tweet_id": "2035369552419467451"
   },
   {
     "id": "live_20260320_182733_v1",
@@ -1757,16 +1673,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260320_2227.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260321_1434.png",
     "scheduled_time": "2026-03-20T18:27:33.701076-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-1.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-20T22:27:33.701074+00:00",
-    "cost_usd": 0.017619
+    "cost_usd": 0.017619,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260320_182733_v3",
@@ -1775,15 +1692,108 @@
     "primary_ticker": "$ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260320_2227.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260321_1434.png",
     "scheduled_time": "2026-03-20T18:27:33.701076-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-20T22:27:33.701074+00:00",
-    "cost_usd": 0.017619
+    "cost_usd": 0.017619,
+    "skip_reason": "Stale: 16h old"
+  },
+  {
+    "id": "live_20260321_103425_v1",
+    "text": "$TMDX holding $64.40 while SPY bleeds. Entry was $65 \u2014 still up 130% from actual cost basis. Relative strength shows up when the tape gets choppy.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "TMDX",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260321_1434.png",
+    "scheduled_time": "2026-03-21T10:34:25.018887-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.51%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-21T14:34:25.018885+00:00",
+    "cost_usd": 0.017705
+  },
+  {
+    "id": "live_20260321_103425_v2",
+    "text": "$AMD down but not out.\nEntry $120, sitting $118.\nTariff noise \u2260 thesis break.\nHolding through volatility.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260321_1434.png",
+    "scheduled_time": "2026-03-21T10:34:25.018887-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.51%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-21T14:34:25.018885+00:00",
+    "cost_usd": 0.017705
+  },
+  {
+    "id": "watchdog_20260321_001",
+    "text": "$VYGR cleared all gates on our BBB gene therapy scanner. Blood-brain barrier platforms solving the $100B+ neurological disease puzzle. Signal strength: institutional accumulation pattern forming.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-03-21T13:03:12.312159+00:00",
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "watchdog_20260321_002",
+    "text": "Weekend read: Why the 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening + 25-year relative valuation discount + institutional rotation = opportunity.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-21T13:03:12.312159+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260321_003",
+    "text": "Portfolio alpha: +26.97% vs SPY. 9 positions across AI chips, nuclear fuel, gene therapy, drone tech. Momentum follows structure \u2014 we position before the crowd arrives.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-21T13:03:12.312159+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260321_004",
+    "text": "Blood-brain barrier gene therapy platforms represent one of biotech's final frontiers. $100B+ addressable market for neurological diseases that current therapies can't touch. Theme status: PRIME.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-21T13:03:12.312159+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260321_005",
+    "text": "Capital preservation rule: Never fight institutional flows. When scanner signals align with structural pivot points, we follow the smart money. Risk management isn't defensive \u2014 it's offensive positioning.",
+    "category": "EDUCATIONAL",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-21T13:03:12.312159+00:00",
+    "source": "watchdog"
   }
 ]

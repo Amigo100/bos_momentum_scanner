@@ -1,7 +1,7 @@
 {
-  "date": "2026-03-21",
-  "day": "saturday",
-  "generated_at": "2026-03-21T13:03:12.312818+00:00",
+  "date": "2026-03-22",
+  "day": "sunday",
+  "generated_at": "2026-03-22T13:05:16.361768+00:00",
   "source": "watchdog_fallback",
   "decision_reason": "Cowork missed \u2014 watchdog fallback ran",
   "post": {
@@ -12,24 +12,17 @@
   "notes": [
     {
       "slot": 1,
-      "type": "ALPHA_SCOREBOARD",
+      "type": "DATA_INSIGHT",
       "time_et": "08:30",
       "time_label": "morning",
-      "file": "notes/morning_alpha_scoreboard_20260321.html"
+      "file": "notes/morning_data_insight_20260322.html"
     },
     {
       "slot": 2,
-      "type": "COMPANION_NOTE",
+      "type": "READER_QUESTION",
       "time_et": "12:30",
       "time_label": "midday",
-      "file": "notes/midday_companion_note_20260321.html"
-    },
-    {
-      "slot": 3,
-      "type": "WINNER_RECEIPT",
-      "time_et": "17:00",
-      "time_label": "evening",
-      "file": "notes/evening_winner_receipt_20260321.html"
+      "file": "notes/midday_reader_question_20260322.html"
     }
   ],
   "visual": {

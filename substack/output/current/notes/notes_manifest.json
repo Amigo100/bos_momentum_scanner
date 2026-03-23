@@ -1,21 +1,28 @@
 {
-  "generated_at": "2026-03-22T13:05:16.361768+00:00",
-  "target_date": "-2-0-2-6-0-3-2-2-",
-  "day": "sunday",
+  "generated_at": "2026-03-23T13:22:13.757610+00:00",
+  "target_date": "-2-0-2-6-0-3-2-3-",
+  "day": "monday",
   "notes": [
     {
       "slot": 1,
-      "type": "DATA_INSIGHT",
+      "type": "MARKET_SNAPSHOT",
       "time_et": "08:30",
       "time_label": "morning",
-      "filepath": "morning_data_insight_20260322.html"
+      "filepath": "morning_market_snapshot_20260323.html"
     },
     {
       "slot": 2,
-      "type": "READER_QUESTION",
+      "type": "SIGNAL_TRACKING",
       "time_et": "12:30",
       "time_label": "midday",
-      "filepath": "midday_reader_question_20260322.html"
+      "filepath": "midday_signal_tracking_20260323.html"
+    },
+    {
+      "slot": 3,
+      "type": "PORTFOLIO_UPDATE",
+      "time_et": "17:00",
+      "time_label": "evening",
+      "filepath": "evening_portfolio_update_20260323.html"
     }
   ]
 }

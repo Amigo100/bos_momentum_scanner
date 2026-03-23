@@ -308,63 +308,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260316_105439_v1",
-    "text": "$VYGR at $4.38. Entry $4.45, down 1.6% since scanner flagged it 37 hours ago. BBB gene therapy platform thesis unchanged despite noise in rare disease names.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260316_2000.png",
-    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.6%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-16T14:54:39.555558+00:00",
-    "cost_usd": 0.017303,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260316_105439_v2",
-    "text": "What separates conviction from gambling? $TMDX up 93.6% from $65 entry while markets chop. We sized it for volatility from day one \u2014 uncomfortable swings don't become account-threatening when position sizing matches thesis strength.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$TMDX",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260316_2000.png",
-    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.6%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-16T14:54:39.555558+00:00",
-    "cost_usd": 0.017303,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260316_105439_v3",
-    "text": "$EVTL at $3.77 \u2014 down from $4.50 entry but immunotherapy theme still has institutional attention.\n\nDrone tech names showing relative strength even on red days. Setup stays valid above $3.20.",
-    "category": "TRENDING_TAKE",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260316_2000.png",
-    "scheduled_time": "2026-03-16T10:54:39.555560-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.6%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-16T14:54:39.555558+00:00",
-    "cost_usd": 0.017303,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
     "id": "live_20260316_143244_v1",
     "text": "FDA just dropped a hammer on 30 telehealth firms over compounded GLP-1 marketing. This creates regulatory pressure on the obesity telehealth model \u2014 exactly what caught $EVTL's eVTOL sector in tariff crossfire. When policy shifts, themes pivot fast.",
     "category": "THEME_CATALYST",
@@ -1837,9 +1780,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-22T13:05:16.361088+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260322_004",
@@ -1871,16 +1815,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260323_1450.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260323_1811.png",
     "scheduled_time": "2026-03-23T08:00:18.061888-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-1.12%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-23T12:00:18.061886+00:00",
-    "cost_usd": 0.017374
+    "cost_usd": 0.017374,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260323_080018_v2",
@@ -1889,16 +1834,18 @@
     "primary_ticker": "$TMDX",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260323_1450.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260323_1811.png",
     "scheduled_time": "2026-03-23T08:00:18.061888-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.12%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-23T12:00:18.061886+00:00",
-    "cost_usd": 0.017374
+    "cost_usd": 0.017374,
+    "posted_at": "2026-03-23T18:31:34.157689",
+    "tweet_id": "2036148865070407905"
   },
   {
     "id": "live_20260323_105041_v1",
@@ -1907,7 +1854,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260323_1450.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260323_1811.png",
     "scheduled_time": "2026-03-23T10:50:41.585902-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1972,5 +1919,23 @@
     "status": "pending",
     "created_at": "2026-03-23T13:22:13.756989+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260323_141110_v1",
+    "text": "$ASPI up 1.5% while market bleeds.\nDefense additive manufacturing.\nIran tensions = tailwind.\nWatching $7.80 hold.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260323_1811.png",
+    "scheduled_time": "2026-03-23T14:11:10.045398-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-23T18:11:10.045397+00:00",
+    "cost_usd": 0.019284
   }
 ]

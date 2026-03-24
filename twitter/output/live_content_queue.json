@@ -1823,16 +1823,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260324_1452.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260324_1813.png",
     "scheduled_time": "2026-03-24T09:55:30.584638-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.63%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-24T13:55:30.584637+00:00",
-    "cost_usd": 0.017605
+    "cost_usd": 0.017605,
+    "posted_at": "2026-03-24T18:34:16.408704",
+    "tweet_id": "2036511933436657961"
   },
   {
     "id": "watchdog_20260324_001",
@@ -1864,9 +1866,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-24T13:26:18.511917+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260324_004",
@@ -1875,9 +1878,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-24T13:26:18.511917+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260324_005",
@@ -1897,7 +1901,7 @@
     "primary_ticker": "$TMDX",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260324_1452.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260324_1814.png",
     "scheduled_time": "2026-03-24T10:52:18.596691-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -1907,5 +1911,59 @@
     },
     "generated_at": "2026-03-24T14:52:18.596690+00:00",
     "cost_usd": 0.017373
+  },
+  {
+    "id": "live_20260324_141353_v1",
+    "text": "When gene therapy dips on sector noise, zoom out to the thesis level. $VYGR's BBB platform hasn't changed \u2014 regulatory caution is temporary, blood-brain barrier solutions are permanent. Setup invalidates below $3.20.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260324_1814.png",
+    "scheduled_time": "2026-03-24T14:13:53.421082-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.15%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-24T18:13:53.421081+00:00",
+    "cost_usd": 0.017197
+  },
+  {
+    "id": "live_20260324_141353_v2",
+    "text": "What happens when semis hold in volatility? $AMD entry $120, now $204.08 \u2014 up 70.1% while geopolitics shake energy costs. The difference between conviction and gambling is position sizing. That's the edge.",
+    "category": "RECEIPT",
+    "primary_ticker": "$AMD",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260324_1813.png",
+    "scheduled_time": "2026-03-24T14:13:53.421082-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.15%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-24T18:13:53.421081+00:00",
+    "cost_usd": 0.017197
+  },
+  {
+    "id": "live_20260324_141353_v3",
+    "text": "Drone sector pullback creating entries.\n\n$EVTL now $2.92 from $4.50 \u2014 defense manufacturing thesis intact, just waiting for institutional buyers to step back in.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260324_1814.png",
+    "scheduled_time": "2026-03-24T14:13:53.421082-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.15%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-24T18:13:53.421081+00:00",
+    "cost_usd": 0.017197
   }
 ]

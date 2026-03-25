@@ -370,64 +370,6 @@
     "tweet_id": "2034273286230536236"
   },
   {
-    "id": "live_20260318_095816_v1",
-    "text": "$VYGR at $3.78. Entry was $4.45. Platform validated through blood-brain barrier delivery mechanism. Thesis intact despite pullback.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260318_1832.png",
-    "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.9%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-18T13:58:16.796817+00:00",
-    "cost_usd": 0.01705,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260318_095816_v2",
-    "text": "$TMDX holding while SPY rotates. Organ preservation tech doesn't follow cyclical patterns \u2014 hospitals need it regardless. Entry $65.00, now $150.00. Medtech conviction plays differently than momentum.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "TMDX",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260318_1832.png",
-    "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.9%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-18T13:58:16.796817+00:00",
-    "cost_usd": 0.01705,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260318_095816_v3",
-    "text": "$AMD trimmed position.\nEntry $120, exit $220.\n+83.3% on the chip run.\nWin more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260318_1602.png",
-    "scheduled_time": "2026-03-18T09:58:16.796818-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.9%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-18T13:58:16.796817+00:00",
-    "cost_usd": 0.01705,
-    "posted_at": "2026-03-18T16:22:38.508201",
-    "tweet_id": "2034304480280506410"
-  },
-  {
     "id": "watchdog_20260318_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates \u2014 institutional accumulation building in BBB Gene Therapy Platform. Blood-brain barrier bypass represents massive TAM expansion for neurological treatments. Scanner confirms structural pivot at $4.45.",
     "category": "SIGNAL_ALERT",
@@ -1942,16 +1884,17 @@
     "primary_ticker": "$TMDX",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260325_1354.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260325_1453.png",
     "scheduled_time": "2026-03-25T09:54:14.835810-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.4%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-25T13:54:14.835808+00:00",
-    "cost_usd": 0.01731
+    "cost_usd": 0.01731,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260325_095414_v3",
@@ -1960,16 +1903,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260325_1354.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260325_1453.png",
     "scheduled_time": "2026-03-25T09:54:14.835810-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.4%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-25T13:54:14.835808+00:00",
-    "cost_usd": 0.01731
+    "cost_usd": 0.01731,
+    "posted_at": "2026-03-25T15:13:29.940932",
+    "tweet_id": "2036823794979897726"
   },
   {
     "id": "watchdog_20260325_001",
@@ -1978,9 +1923,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-25T13:25:19.981155+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260325_002",
@@ -2014,5 +1960,59 @@
     "status": "pending",
     "created_at": "2026-03-25T13:25:19.981155+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260325_105304_v1",
+    "text": "$SOFI at $16.70, down 2.62% today. Entry was $7.90 \u2014 still up 111% despite tariff noise. Fintech thesis intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260325_1453.png",
+    "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.69%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T14:53:04.411213+00:00",
+    "cost_usd": 0.017505
+  },
+  {
+    "id": "live_20260325_105304_v2",
+    "text": "Why do some gene therapy names dip while the sector lifts? $EVTL down 40% from entry at $4.50, now $2.70. The lesson: sector momentum doesn't rescue weak fundamentals. Position sizing saved us here.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260325_1453.png",
+    "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.69%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T14:53:04.411213+00:00",
+    "cost_usd": 0.017505
+  },
+  {
+    "id": "live_20260325_105304_v3",
+    "text": "$NVDA setup invalidated.\nEntry $150. Sold $180.98.\n+20.7% banked.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260325_1453.png",
+    "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.69%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T14:53:04.411213+00:00",
+    "cost_usd": 0.017505
   }
 ]

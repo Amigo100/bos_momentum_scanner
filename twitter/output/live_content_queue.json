@@ -432,25 +432,6 @@
     "tweet_id": "2034363955326656547"
   },
   {
-    "id": "live_20260318_120212_v1",
-    "text": "$EVTL holding strong in the drone tech theme while SPY chops sideways. When sector rotation happens, the names with momentum stay resilient. Entry was $4.50. Thesis intact.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260318_1958.png",
-    "scheduled_time": "2026-03-18T12:02:12.952798-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.47%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-18T16:02:12.952796+00:00",
-    "cost_usd": 0.01716,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
     "id": "live_20260318_143211_v1",
     "text": "$EVTL down 2% on tariff noise.\nDefense theme still intact.\nAdditive manufacturing > traditional.\nWatching closely.",
     "category": "ENGAGEMENT",
@@ -1935,9 +1916,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-25T13:25:19.981155+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-25T18:51:19.621588",
+    "tweet_id": "2036878613597806666"
   },
   {
     "id": "watchdog_20260325_003",
@@ -1946,9 +1929,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-25T13:25:19.981155+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260325_005",
@@ -1968,16 +1952,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260325_1453.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260325_1831.png",
     "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.69%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-25T14:53:04.411213+00:00",
-    "cost_usd": 0.017505
+    "cost_usd": 0.017505,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260325_105304_v2",
@@ -1986,7 +1971,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260325_1453.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260325_1831.png",
     "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2004,7 +1989,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260325_1453.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260325_1831.png",
     "scheduled_time": "2026-03-25T10:53:04.411215-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2014,5 +1999,59 @@
     },
     "generated_at": "2026-03-25T14:53:04.411213+00:00",
     "cost_usd": 0.017505
+  },
+  {
+    "id": "live_20260325_143100_v1",
+    "text": "$SOFI at $16.81. Entry $7.90, now up 112.7%. Fintech holding while broader market chops. Thesis intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260325_1831.png",
+    "scheduled_time": "2026-03-25T14:31:00.305544-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.58%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T18:31:00.305541+00:00",
+    "cost_usd": 0.017578
+  },
+  {
+    "id": "live_20260325_143100_v2",
+    "text": "What happens when gene therapy dips on sector rotation, not fundamentals? $EVTL down 2.5% to $4.20 today, but the platform thesis hasn't changed. Volatility tests conviction \u2014 that's when position sizing proves its worth.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260325_1831.png",
+    "scheduled_time": "2026-03-25T14:31:00.305544-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.58%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T18:31:00.305541+00:00",
+    "cost_usd": 0.017578
+  },
+  {
+    "id": "live_20260325_143100_v3",
+    "text": "$NVDA pushing through.\nEntry $150. Now $179.18.\nAI chip demand won't quit.\nUp 19.4% \ud83c\udfaf",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260325_1831.png",
+    "scheduled_time": "2026-03-25T14:31:00.305544-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.58%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-25T18:31:00.305541+00:00",
+    "cost_usd": 0.017578
   }
 ]

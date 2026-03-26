@@ -493,45 +493,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260319_140947_v1",
-    "text": "What happens when drone tech gets caught in a selloff? $EVTL down 1.2% to $12.45 while defense spending bills advance. Short-term noise vs long-term catalyst \u2014 that's where conviction gets tested.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260319_2226.png",
-    "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.74%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-19T18:09:47.676537+00:00",
-    "cost_usd": 0.017348,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260319_140947_v2",
-    "text": "$NVDA barely flinching.\nDown 0.5% while SPY bleeds.\nEntry $150, holding $182.\nRelative strength in chaos.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260319_2226.png",
-    "scheduled_time": "2026-03-19T14:09:47.676538-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.74%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-19T18:09:47.676537+00:00",
-    "cost_usd": 0.017348,
-    "posted_at": "2026-03-19T22:47:04.566961",
-    "tweet_id": "2034763613932519493"
-  },
-  {
     "id": "live_20260319_155946_v1",
     "text": "$VYGR at $3.76, down 16.2% from $4.45 entry. Gene therapy sector under pressure but blood-brain barrier platform thesis unchanged. Invalidation at $3.20.",
     "category": "EDUCATIONAL",
@@ -1975,16 +1936,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260326_1603.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260326_1836.png",
     "scheduled_time": "2026-03-26T10:57:05.958587-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-26T14:57:05.958586+00:00",
-    "cost_usd": 0.017683
+    "cost_usd": 0.017683,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260326_105705_v2",
@@ -1993,16 +1955,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260326_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260326_1836.png",
     "scheduled_time": "2026-03-26T10:57:05.958587-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-26T14:57:05.958586+00:00",
-    "cost_usd": 0.017683
+    "cost_usd": 0.017683,
+    "posted_at": "2026-03-26T18:56:20.598153",
+    "tweet_id": "2037242263483691130"
   },
   {
     "id": "live_20260326_120355_v1",
@@ -2011,7 +1975,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260326_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260326_1836.png",
     "scheduled_time": "2026-03-26T12:03:55.223345-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2029,7 +1993,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260326_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260326_1836.png",
     "scheduled_time": "2026-03-26T12:03:55.223345-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2039,5 +2003,23 @@
     },
     "generated_at": "2026-03-26T16:03:55.223343+00:00",
     "cost_usd": 0.017077
+  },
+  {
+    "id": "live_20260326_143557_v1",
+    "text": "$SOFI broke through $16 resistance \u2014 entry was $7.90, now testing $32 highs. Fintech consolidation creating support at $15. Setup invalidates below $14.",
+    "category": "TECHNICAL_ANALYSIS",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260326_1836.png",
+    "scheduled_time": "2026-03-26T14:35:57.494351-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.64%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-26T18:35:57.494349+00:00",
+    "cost_usd": 0.017701
   }
 ]

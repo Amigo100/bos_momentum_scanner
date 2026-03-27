@@ -554,25 +554,6 @@
     "tweet_id": "2035087821980028949"
   },
   {
-    "id": "live_20260320_103724_v1",
-    "text": "$NVDA photonics play loading.\n$4B optical sector bet.\nAI compute scaling past copper limits.\nWatching $178 hold.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260320_1955.png",
-    "scheduled_time": "2026-03-20T10:37:24.739927-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.46%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-20T14:37:24.739925+00:00",
-    "cost_usd": 0.017626,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "live_20260320_140248_v1",
     "text": "$SOFI at $17.08. +0.5% while SPY drops 1.12%. Entry $7.90, up 116.2%. Fintech decoupling from oil-driven selloff.",
     "category": "RECEIPT",
@@ -1898,16 +1879,18 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260327_1349.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260327_1444.png",
     "scheduled_time": "2026-03-27T09:49:16.254681-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.51%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-27T13:49:16.254680+00:00",
-    "cost_usd": 0.017646
+    "cost_usd": 0.017646,
+    "posted_at": "2026-03-27T15:04:25.686497",
+    "tweet_id": "2037546287894077813"
   },
   {
     "id": "watchdog_20260327_001",
@@ -1939,9 +1922,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-27T13:20:38.314425+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-4.96%']"
   },
   {
     "id": "watchdog_20260327_004",
@@ -1964,5 +1948,23 @@
     "status": "pending",
     "created_at": "2026-03-27T13:20:38.314425+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260327_104415_v1",
+    "text": "Voyager drops $20M on BBB tech.\nCNS delivery unlocked.\n$EVTL watching for defense momentum.\nPlatform plays matter.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260327_1444.png",
+    "scheduled_time": "2026-03-27T10:44:15.500657-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-27T14:44:15.500655+00:00",
+    "cost_usd": 0.017658
   }
 ]

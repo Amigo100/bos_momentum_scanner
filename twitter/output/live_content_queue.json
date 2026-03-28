@@ -615,63 +615,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260321_162901_v1",
-    "text": "$VYGR at $4.50. +1.2% while market drops 1.5%. BridgeBio 2026 milestones include NDA for gene therapy programs. Rare disease thesis advancing.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260321_2029.png",
-    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.51%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-21T20:29:01.042333+00:00",
-    "cost_usd": 0.017881,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260321_162901_v2",
-    "text": "$EVTL from $4.50 entry down to $4.20 today. Setup invalidated below $4.00. Here's the lesson: win more than you lose. We caught $SOFI at $7.90, now $16.90 despite the selloff. That's the edge.",
-    "category": "RECEIPT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260322_1435.png",
-    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.51%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-21T20:29:01.042333+00:00",
-    "cost_usd": 0.017881,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
-    "id": "live_20260321_162901_v3",
-    "text": "$NVDA testing $175 support.\nEntry $150. Up 15% still.\nExport noise \u2260 broken thesis.\nWatching closely.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260322_1435.png",
-    "scheduled_time": "2026-03-21T16:29:01.042335-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.51%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-21T20:29:01.042333+00:00",
-    "cost_usd": 0.017881,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
     "id": "live_20260322_103536_v1",
     "text": "$VYGR at $3.85. Entry $4.45, down 13.5% on gene therapy sector rotation. BBB platform thesis unchanged \u2014 FDA framework intact. Invalidation at $3.20.",
     "category": "TECHNICAL_ANALYSIS",
@@ -1827,16 +1770,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260328_1439.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260328_2034.png",
     "scheduled_time": "2026-03-28T10:38:53.533215-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.7%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-28T14:38:53.533213+00:00",
-    "cost_usd": 0.01753
+    "cost_usd": 0.01753,
+    "posted_at": "2026-03-28T20:54:16.250223",
+    "tweet_id": "2037996716369055987"
   },
   {
     "id": "watchdog_20260328_001",
@@ -1868,9 +1813,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-28T13:08:13.400037+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-6.82%']"
   },
   {
     "id": "watchdog_20260328_004",
@@ -1891,8 +1837,45 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-28T13:08:13.400037+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260328_163402_v1",
+    "text": "$VYGR at $6.80. +2.5% while markets bleed. Gene therapy thesis holding through volatility. Invalidation $4.20.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260328_2034.png",
+    "scheduled_time": "2026-03-28T16:34:02.600228-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.40%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-28T20:34:02.600227+00:00",
+    "cost_usd": 0.017212
+  },
+  {
+    "id": "live_20260328_163402_v2",
+    "text": "$BAND setup invalidated.\nEntry $16.55, exit $16.86.\nSmall win beats holding dead weight.\nCash is a position. NFA",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260328_2034.png",
+    "scheduled_time": "2026-03-28T16:34:02.600228-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.40%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-28T20:34:02.600227+00:00",
+    "cost_usd": 0.017212
   }
 ]

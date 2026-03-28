@@ -1,33 +1,27 @@
 {
-    "date": "2026-03-16",
-    "day": "monday",
-    "generated_at": "2026-03-16T08:00:00+11:00",
-    "source": "cowork",
-    "decision_reason": "Monday: POSITION (honest loser $ASPI), MARKET (NVDA GTC catalyst), EDUCATION (methodology philosophy). Portfolio snapshot visual card.",
-    "post": null,
-    "visual": {
-        "type": "portfolio_snapshot_card",
-        "file": "notes/morning_position_graphic_20260316.html"
+    "date": "2026-03-18",
+    "day": "wednesday",
+    "generated_at": "2026-03-18T07:00:00+11:00",
+    "decision_reason": "Wednesday Mode B: 3 notes (1 fresh MARKET, 2 batch). Structural forces heatmap card generated.",
+    "post": {
+        "type": "none",
+        "status": "no_post_scheduled",
+        "publish_time_aedt": null
     },
     "notes": [
-        {"slot": 1, "type": "POSITION", "sub_variant": "honest_loser", "time_aedt": "08:00", "file": "notes/morning_position_20260316.html", "graphic": "notes/morning_position_graphic_20260316.html"},
-        {"slot": 2, "type": "MARKET", "sub_variant": "catalyst_flag", "time_aedt": "12:00", "file": "notes/midday_market_20260316.html"},
-        {"slot": 3, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "time_aedt": "20:00", "file": "notes/evening_education_20260316.html"}
+        {"slot": 1, "type": "MARKET", "sub_variant": "force_status", "time_aedt": "08:00", "time_label": "morning", "file": "notes/morning_market_20260318.html", "graphic": "notes/morning_market_graphic_20260318.html", "source": "live", "ticker_focus": "ASPI", "force": "Nuclear Renaissance"},
+        {"slot": 2, "type": "EDUCATION", "sub_variant": "concept_explainer", "time_aedt": "12:00", "time_label": "midday", "file": "notes/batch_education_concept.html", "source": "batch_6"},
+        {"slot": 3, "type": "SCANNER", "sub_variant": "rejection_story", "time_aedt": "20:00", "time_label": "evening", "file": "notes/batch_scanner_rejection.html", "source": "batch_2"}
     ],
-    "reminders": [
-        {"time_aedt": "08:00", "action": "Post morning POSITION note (honest loser $ASPI) + portfolio snapshot graphic", "file": "notes/morning_position_20260316.html"},
-        {"time_aedt": "12:00", "action": "Post midday MARKET note (NVDA GTC catalyst flag)", "file": "notes/midday_market_20260316.html"},
-        {"time_aedt": "20:00", "action": "Post evening EDUCATION note (methodology philosophy)", "file": "notes/evening_education_20260316.html"}
-    ],
-    "price_check": {
-        "SOFI": {"entry": 7.90, "live": 18.72, "pnl_pct": 136.7},
-        "EVTL": {"entry": 4.50, "live": 3.77, "pnl_pct": -16.2},
-        "NVDA": {"entry": 150.00, "live": 180.25, "pnl_pct": 20.2},
-        "AMD": {"entry": 120.00, "live": 193.39, "pnl_pct": 61.2},
-        "TMDX": {"entry": 65.00, "live": 123.48, "pnl_pct": 89.9},
-        "ASPI": {"entry": 6.00, "live": 5.28, "pnl_pct": -12.0},
-        "HIVE": {"entry": 2.10, "live": 2.08, "pnl_pct": -1.0},
-        "BAND": {"entry": 16.55, "live": 15.23, "pnl_pct": -8.0}
+    "visual_card": {
+        "type": "structural_forces_heatmap",
+        "file": "notes/morning_market_graphic_20260318.html",
+        "attached_to_slot": 1
     },
-    "new_signals": []
+    "freshness_gate": {
+        "prices_checked": true,
+        "tickers_searched": ["SOFI", "EVTL", "NVDA", "AMD", "TMDX", "ASPI", "HIVE", "BAND"],
+        "significant_moves": {"HIVE": "+9.6%", "EVTL": "+5.6%"},
+        "batch_notes_affected": "none"
+    }
 }

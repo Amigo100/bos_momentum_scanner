@@ -1,10 +1,43 @@
 {
-    "generated_at": "2026-03-16T08:00:00+11:00",
-    "target_date": "2026-03-16",
-    "day": "monday",
+    "generated_at": "2026-03-18T07:00:00+11:00",
+    "target_date": "2026-03-18",
+    "day": "wednesday",
     "notes": [
-        {"slot": 1, "type": "POSITION", "sub_variant": "honest_loser", "time_aedt": "08:00", "time_label": "morning", "filepath": "morning_position_20260316.html", "graphic": "morning_position_graphic_20260316.html", "ticker_focus": "ASPI"},
-        {"slot": 2, "type": "MARKET", "sub_variant": "catalyst_flag", "time_aedt": "12:00", "time_label": "midday", "filepath": "midday_market_20260316.html", "ticker_focus": "NVDA"},
-        {"slot": 3, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "time_aedt": "20:00", "time_label": "evening", "filepath": "evening_education_20260316.html"}
+        {
+            "slot": 1,
+            "type": "MARKET",
+            "sub_variant": "force_status",
+            "time_aedt": "08:00",
+            "time_label": "morning",
+            "filepath": "morning_market_20260318.html",
+            "graphic": "morning_market_graphic_20260318.html",
+            "ticker_focus": "ASPI",
+            "force": "Nuclear Renaissance",
+            "source": "live",
+            "freshness_gate": true,
+            "live_prices_used": {"ASPI": 5.28}
+        },
+        {
+            "slot": 2,
+            "type": "EDUCATION",
+            "sub_variant": "concept_explainer",
+            "time_aedt": "12:00",
+            "time_label": "midday",
+            "filepath": "batch_education_concept.html",
+            "source": "batch_6",
+            "freshness_gate": false,
+            "validation": "passed"
+        },
+        {
+            "slot": 3,
+            "type": "SCANNER",
+            "sub_variant": "rejection_story",
+            "time_aedt": "20:00",
+            "time_label": "evening",
+            "filepath": "batch_scanner_rejection.html",
+            "source": "batch_2",
+            "freshness_gate": false,
+            "validation": "passed"
+        }
     ]
 }

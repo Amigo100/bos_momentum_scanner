@@ -615,45 +615,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260322_103536_v1",
-    "text": "$VYGR at $3.85. Entry $4.45, down 13.5% on gene therapy sector rotation. BBB platform thesis unchanged \u2014 FDA framework intact. Invalidation at $3.20.",
-    "category": "TECHNICAL_ANALYSIS",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260322_1435.png",
-    "scheduled_time": "2026-03-22T10:35:36.568505-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.51%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-22T14:35:36.568504+00:00",
-    "cost_usd": 0.017692,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260322_103536_v2",
-    "text": "$AMD holding $178.\nEntry $120. Now +83%.\nSemis weak but thesis strong.\nWatching closely. NFA",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260323_1200.png",
-    "scheduled_time": "2026-03-22T10:35:36.568505-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-1.51%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-22T14:35:36.568504+00:00",
-    "cost_usd": 0.017692,
-    "posted_at": "2026-03-23T12:20:37.377694",
-    "tweet_id": "2036055513260081384"
-  },
-  {
     "id": "watchdog_20260322_001",
     "text": "$VYGR cleared all gates Sunday morning. BBB Gene Therapy Platform theme showing institutional accumulation patterns. Blood-brain barrier delivery mechanisms creating structural competitive moats in CNS therapeutics.",
     "category": "SIGNAL_ALERT",
@@ -1802,9 +1763,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-28T13:08:13.400037+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-29T15:00:27.919867",
+    "tweet_id": "2038270066681164023"
   },
   {
     "id": "watchdog_20260328_003",
@@ -1849,16 +1812,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260328_2034.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260329_1440.png",
     "scheduled_time": "2026-03-28T16:34:02.600228-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.40%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-28T20:34:02.600227+00:00",
-    "cost_usd": 0.017212
+    "cost_usd": 0.017212,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260328_163402_v2",
@@ -1867,15 +1831,97 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260328_2034.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260329_1440.png",
     "scheduled_time": "2026-03-28T16:34:02.600228-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.40%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-28T20:34:02.600227+00:00",
-    "cost_usd": 0.017212
+    "cost_usd": 0.017212,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260329_104008_v1",
+    "text": "$VYGR at $4.59. Gene therapy platform cleared scanner Friday. BBB delivery mechanism differentiates from peer approaches.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260329_1440.png",
+    "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.7%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-29T14:40:08.868519+00:00",
+    "cost_usd": 0.017438
+  },
+  {
+    "id": "live_20260329_104008_v2",
+    "text": "$EVTL at $4.37, still holding support at $4.20.\n\nDrone tech theme showing relative strength while broader market pulls back.\n\nWatching for continuation above $4.50 entry level.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260329_1440.png",
+    "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.7%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-29T14:40:08.868519+00:00",
+    "cost_usd": 0.017438
+  },
+  {
+    "id": "watchdog_20260329_002",
+    "text": "$VYGR cleared all gates this week - BBB Gene Therapy Platform theme hitting PRIME status. When institutional accumulation meets structural pivot points, the scanner doesn't lie. \ud83d\udfe2",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-29T13:09:16.767266+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260329_003",
+    "text": "Portfolio alpha: +23.05% vs SPY. When you align with institutional flows rather than fight them, the edge compounds. 8 positions across AI, nuclear, biotech, fintech - diversified momentum capture.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-29T13:09:16.767266+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260329_004",
+    "text": "Sunday study: Why BBB Gene Therapy Platform just hit PRIME while GLP-1 Obesity Telehealth remains INVESTABLE. The difference between structural breakouts and noise - tomorrow's deep dive unpacks the methodology.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-03-29T13:09:16.767266+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260329_005",
+    "text": "Question for the community: When small-caps are trading at 25-year relative discount but earnings are broadening - do you chase the rotation or wait for confirmation? How are you positioning for this setup?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-29T13:09:16.767266+00:00",
+    "source": "watchdog"
   }
 ]

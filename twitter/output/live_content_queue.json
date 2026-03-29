@@ -1850,16 +1850,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260329_1440.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260329_2035.png",
     "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.7%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-29T14:40:08.868519+00:00",
-    "cost_usd": 0.017438
+    "cost_usd": 0.017438,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260329_104008_v2",
@@ -1868,16 +1869,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260329_1440.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260329_2035.png",
     "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.7%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-29T14:40:08.868519+00:00",
-    "cost_usd": 0.017438
+    "cost_usd": 0.017438,
+    "posted_at": "2026-03-29T20:55:27.588092",
+    "tweet_id": "2038359403716567105"
   },
   {
     "id": "watchdog_20260329_002",
@@ -1923,5 +1926,60 @@
     "status": "pending",
     "created_at": "2026-03-29T13:09:16.767266+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260329_163504_v1",
+    "text": "$SOFI from $7.90 entry \u2192 $32.00 high. +305% on the fintech play. System found it, discipline held it. NFA",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260329_2035.png",
+    "scheduled_time": "2026-03-29T16:35:04.421807-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.4%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-29T20:35:04.421805+00:00",
+    "cost_usd": 0.017417
+  },
+  {
+    "id": "live_20260329_163504_v2",
+    "text": "What separates conviction from gambling? $EVTL down 54% from entry, but position sizing kept it from being account-threatening. When drone tech volatility hits, risk management is the only edge that matters. That's the lesson.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260329_2035.png",
+    "scheduled_time": "2026-03-29T16:35:04.421807-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.4%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-29T20:35:04.421805+00:00",
+    "cost_usd": 0.017417,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260329_163504_v3",
+    "text": "$HIVE setup invalidated.\nEntry $2.10, stop hit $1.82.\nCrypto mining exposure too volatile.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260329_2035.png",
+    "scheduled_time": "2026-03-29T16:35:04.421807-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.4%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-29T20:35:04.421805+00:00",
+    "cost_usd": 0.017417
   }
 ]

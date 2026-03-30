@@ -738,25 +738,6 @@
     "tweet_id": "2036461180475085178"
   },
   {
-    "id": "live_20260323_141110_v1",
-    "text": "$ASPI up 1.5% while market bleeds.\nDefense additive manufacturing.\nIran tensions = tailwind.\nWatching $7.80 hold.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260323_2230.png",
-    "scheduled_time": "2026-03-23T14:11:10.045398-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-23T18:11:10.045397+00:00",
-    "cost_usd": 0.019284,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
     "id": "live_20260323_183013_v1",
     "text": "$HIVE from $2.10 entry to $6.00 high. +185.7% on the crypto mining play. AI datacenter demand thesis validating across the sector.",
     "category": "RECEIPT",
@@ -1936,16 +1917,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260330_1457.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260330_1813.png",
     "scheduled_time": "2026-03-30T10:06:33.331660-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.74%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-30T14:06:33.331658+00:00",
-    "cost_usd": 0.016953
+    "cost_usd": 0.016953,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260330_100633_v2",
@@ -1985,9 +1967,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-03-30T13:48:37.996669+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-03-30T18:33:54.927876",
+    "tweet_id": "2038686171178447140"
   },
   {
     "id": "watchdog_20260330_003",
@@ -2049,7 +2033,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260330_1458.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260330_1813.png",
     "scheduled_time": "2026-03-30T10:57:55.716418-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2059,5 +2043,24 @@
     },
     "generated_at": "2026-03-30T14:57:55.716417+00:00",
     "cost_usd": 0.017238
+  },
+  {
+    "id": "live_20260330_141335_v1",
+    "text": "VIX 31 panic? $EVTL still holding relative strength at drone tech's inflection point. When macro chaos hits, watch which names refuse to break support \u2014 that's where institutional conviction sits. This is the test.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260330_1813.png",
+    "scheduled_time": "2026-03-30T14:13:35.068242-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.67%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-30T18:13:35.068240+00:00",
+    "cost_usd": 0.017437,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

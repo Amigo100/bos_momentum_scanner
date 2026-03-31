@@ -738,45 +738,6 @@
     "tweet_id": "2036461180475085178"
   },
   {
-    "id": "live_20260324_095530_v1",
-    "text": "What separates conviction from gambling? Position sizing. $TMDX entry at $65, now $109.91 \u2014 up 69.1% while medtech bleeds today. When you size positions to survive pullbacks, you can hold through wins. That's the edge.",
-    "category": "RECEIPT",
-    "primary_ticker": "$TMDX",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260324_1452.png",
-    "scheduled_time": "2026-03-24T09:55:30.584638-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.63%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-24T13:55:30.584637+00:00",
-    "cost_usd": 0.017605,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260324_095530_v2",
-    "text": "$AMD breaking higher.\nEntry $120. Now $202.61.\nSemis leading while SPY red.\nRelative strength matters. NFA",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260324_1813.png",
-    "scheduled_time": "2026-03-24T09:55:30.584638-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.63%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-24T13:55:30.584637+00:00",
-    "cost_usd": 0.017605,
-    "posted_at": "2026-03-24T18:34:16.408704",
-    "tweet_id": "2036511933436657961"
-  },
-  {
     "id": "watchdog_20260324_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation across multiple names. When therapeutic breakthroughs align with technical breakouts, momentum follows.",
     "category": "SIGNAL_ALERT",
@@ -1955,9 +1916,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-03-30T13:48:37.996669+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-6.82%']"
   },
   {
     "id": "watchdog_20260330_005",
@@ -2055,15 +2017,109 @@
     "primary_ticker": "$ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260330_2233.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260331_1407.png",
     "scheduled_time": "2026-03-30T18:33:42.140526-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.69%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-30T22:33:42.140525+00:00",
-    "cost_usd": 0.017183
+    "cost_usd": 0.017183,
+    "posted_at": "2026-03-31T14:27:43.703666",
+    "tweet_id": "2038986603465425010"
+  },
+  {
+    "id": "live_20260331_100730_v1",
+    "text": "$VYGR at $4.15. BBB gene therapy platform now 94.1% accurate in predictions. AI-driven drug delivery crossing blood-brain barrier. Theme intact.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260331_1407.png",
+    "scheduled_time": "2026-03-31T10:07:30.643963-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.09%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-31T14:07:30.643962+00:00",
+    "cost_usd": 0.017433
+  },
+  {
+    "id": "live_20260331_100730_v2",
+    "text": "$EVTL setup invalidated.\n$4.50 entry, now $2.15.\nDefense rotation didn't hold.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260331_1407.png",
+    "scheduled_time": "2026-03-31T10:07:30.643963-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.09%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-31T14:07:30.643962+00:00",
+    "cost_usd": 0.017433
+  },
+  {
+    "id": "watchdog_20260331_001",
+    "text": "\ud83d\udfe2 $VYGR scanner signal confirmed. Blood-brain barrier gene therapy hitting structural pivot as institutional accumulation builds. Theme catalyst: BBB platform addressing $100B+ neurological market.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-31T13:47:51.998834+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260331_002",
+    "text": "Portfolio alpha +23.05% vs SPY -6.82% proves momentum methodology works in volatile markets. Key: themes with structural catalysts + disciplined entry gates. Capital preservation first, profits follow.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-31T13:47:51.998834+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260331_003",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening beyond mega-caps, 25-year relative valuation discount, institutional rotation accelerating. Most favorable structural environment in 8 years.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "skipped",
+    "created_at": "2026-03-31T13:47:51.998834+00:00",
+    "source": "watchdog",
+    "skip_reason": "Too similar (75%) to tweet posted at 2026-03-30T18:33:54.927876"
+  },
+  {
+    "id": "watchdog_20260331_004",
+    "text": "BBB gene therapy platform theme hitting PRIME status. $VYGR leading as neurological drug delivery breakthrough gains institutional recognition. Cleared all gates for momentum acceleration.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-31T13:47:51.998834+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260331_005",
+    "text": "8 open positions across AI chips, fintech, nuclear fuel, crypto mining themes. Diversified momentum portfolio capturing institutional rotation into growth sectors. NAV: $43,446, up 16.23%.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-03-31T13:47:51.998834+00:00",
+    "source": "watchdog"
   }
 ]

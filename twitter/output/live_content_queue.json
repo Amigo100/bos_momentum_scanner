@@ -799,25 +799,6 @@
     "tweet_id": "2036808987253903724"
   },
   {
-    "id": "live_20260324_105218_v1",
-    "text": "$TMDX pullback to $110.96.\nEntry $65. Still up 70.7%.\nMedtech dip \u2260 thesis break.\nWatching $105 support.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$TMDX",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260324_2228.png",
-    "scheduled_time": "2026-03-24T10:52:18.596691-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.64%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-24T14:52:18.596690+00:00",
-    "cost_usd": 0.017373,
-    "skip_reason": "Stale: 8h old"
-  },
-  {
     "id": "live_20260324_141353_v1",
     "text": "When gene therapy dips on sector noise, zoom out to the thesis level. $VYGR's BBB platform hasn't changed \u2014 regulatory caution is temporary, blood-brain barrier solutions are permanent. Setup invalidates below $3.20.",
     "category": "EDUCATIONAL",
@@ -2037,16 +2018,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260331_1407.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260331_1455.png",
     "scheduled_time": "2026-03-31T10:07:30.643963-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.09%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-31T14:07:30.643962+00:00",
-    "cost_usd": 0.017433
+    "cost_usd": 0.017433,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260331_100730_v2",
@@ -2055,16 +2037,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260331_1407.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260331_1455.png",
     "scheduled_time": "2026-03-31T10:07:30.643963-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+1.09%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-03-31T14:07:30.643962+00:00",
-    "cost_usd": 0.017433
+    "cost_usd": 0.017433,
+    "posted_at": "2026-03-31T15:15:37.416395",
+    "tweet_id": "2038998656876240915"
   },
   {
     "id": "watchdog_20260331_001",
@@ -2107,9 +2091,10 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-31T13:47:51.998834+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260331_005",
@@ -2121,5 +2106,59 @@
     "status": "pending",
     "created_at": "2026-03-31T13:47:51.998834+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260331_105513_v1",
+    "text": "$SOFI from $7.90 to $32.00 high. +305.1% on the fintech play. System found it, discipline held it. NFA",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260331_1455.png",
+    "scheduled_time": "2026-03-31T10:55:13.912524-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-31T14:55:13.912522+00:00",
+    "cost_usd": 0.017196
+  },
+  {
+    "id": "live_20260331_105513_v2",
+    "text": "Entry $4.50. High $7.00. $EVTL delivered 55.6% while defense spending was still warming up. Position sizing on conviction themes compounds faster than chasing momentum after the run.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260331_1455.png",
+    "scheduled_time": "2026-03-31T10:55:13.912524-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-31T14:55:13.912522+00:00",
+    "cost_usd": 0.017196
+  },
+  {
+    "id": "live_20260331_105513_v3",
+    "text": "$NVDA breaking $170.\nMRVL partnership catalyst.\nAI interconnect theme heating.\nWatching closely.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260331_1455.png",
+    "scheduled_time": "2026-03-31T10:55:13.912524-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-03-31T14:55:13.912522+00:00",
+    "cost_usd": 0.017196
   }
 ]

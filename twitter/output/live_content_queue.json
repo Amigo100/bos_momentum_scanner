@@ -799,64 +799,6 @@
     "tweet_id": "2036808987253903724"
   },
   {
-    "id": "live_20260325_095414_v1",
-    "text": "$VYGR at $4.10. Entry was $4.45, down 7.9%. Gene therapy sector dipped on volatility, not fundamentals. BBB platform thesis unchanged. Setup invalidates below $3.80.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260325_1354.png",
-    "scheduled_time": "2026-03-25T09:54:14.835810-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.4%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-25T13:54:14.835808+00:00",
-    "cost_usd": 0.01731,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260325_095414_v2",
-    "text": "What separates noise from signal? $TMDX entry at $65, now $107.85 \u2014 up 65.9% while medtech wobbles on geopolitical jitters. Organ transplant innovation doesn't stop for market mood swings. That's conviction.",
-    "category": "RECEIPT",
-    "primary_ticker": "$TMDX",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_TMDX_20260325_1453.png",
-    "scheduled_time": "2026-03-25T09:54:14.835810-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.4%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-25T13:54:14.835808+00:00",
-    "cost_usd": 0.01731,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260325_095414_v3",
-    "text": "$AMD holding strength.\nEntry $120. Now $205.37.\nUp 80.3% while Nasdaq bleeds.\nSemis > fear. NFA",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260325_1453.png",
-    "scheduled_time": "2026-03-25T09:54:14.835810-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.4%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-25T13:54:14.835808+00:00",
-    "cost_usd": 0.01731,
-    "posted_at": "2026-03-25T15:13:29.940932",
-    "tweet_id": "2036823794979897726"
-  },
-  {
     "id": "watchdog_20260325_001",
     "text": "$VYGR cleared all gates this morning. BBB gene therapy platform showing institutional accumulation as the sector rotates into specialized biotech plays. Green signal confirmed.",
     "category": "SIGNAL_ALERT",
@@ -2029,9 +1971,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-03-31T13:47:51.998834+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260331_105513_v1",
@@ -2097,16 +2040,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260331_2233.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260401_1412.png",
     "scheduled_time": "2026-03-31T18:33:16.377598-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.27%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-31T22:33:16.377597+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "skip_reason": "Stale: 16h old"
   },
   {
     "id": "live_20260331_183316_v2",
@@ -2115,16 +2059,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260331_2233.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260401_1412.png",
     "scheduled_time": "2026-03-31T18:33:16.377598-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.27%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-31T22:33:16.377597+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260331_183316_v3",
@@ -2133,15 +2078,90 @@
     "primary_ticker": "$ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260331_2233.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260401_1412.png",
     "scheduled_time": "2026-03-31T18:33:16.377598-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+1.27%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-03-31T22:33:16.377597+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "posted_at": "2026-04-01T14:32:46.260469",
+    "tweet_id": "2039350260175192358"
+  },
+  {
+    "id": "live_20260401_101226_v1",
+    "text": "$EVTL on my radar.\nDefense tech cooling off.\nWatching for theme reversal.\nDYOR",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260401_1412.png",
+    "scheduled_time": "2026-04-01T10:12:26.695735-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-01T14:12:26.695734+00:00",
+    "cost_usd": 0.016892
+  },
+  {
+    "id": "watchdog_20260401_001",
+    "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation as sector rotation accelerates into biotech platforms with proven delivery mechanisms.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-01T13:50:21.382332+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260401_002",
+    "text": "Small-cap momentum setup is the most favorable since 2016. 25-year relative valuation discount + earnings broadening + institutional rotation = structural pivot in progress.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-01T13:50:21.382332+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260401_003",
+    "text": "BBB Gene Therapy platforms represent a paradigm shift \u2014 crossing the blood-brain barrier was biotech's impossible problem for decades. Now it's an investable theme with multiple shots on goal.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-01T13:50:21.382332+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260401_004",
+    "text": "Portfolio alpha sits at 23% vs SPY's -6.82% decline. Eight open positions spanning AI infrastructure, biotech platforms, and financial technology. Capital preservation through momentum selection.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-01T13:50:21.382332+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260401_005",
+    "text": "The scanner is lighting up across biotech platforms \u2014 BBB Gene Therapy, GLP-1 Obesity Telehealth, Bladder Cancer Immunotherapy all showing PRIME signals. Healthcare innovation accelerating.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-01T13:50:21.382332+00:00",
+    "source": "watchdog"
   }
 ]

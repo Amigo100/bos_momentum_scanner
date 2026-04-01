@@ -2072,9 +2072,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-01T13:50:21.382332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-01T18:31:46.185758",
+    "tweet_id": "2039410406880424254"
   },
   {
     "id": "watchdog_20260401_003",
@@ -2095,9 +2097,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-04-01T13:50:21.382332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-6.82%']"
   },
   {
     "id": "watchdog_20260401_005",
@@ -2106,9 +2109,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-01T13:50:21.382332+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260401_120350_v1",
@@ -2117,7 +2121,7 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260401_1603.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260401_1811.png",
     "scheduled_time": "2026-04-01T12:03:50.005229-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2135,7 +2139,7 @@
     "primary_ticker": "NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260401_1603.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260401_1811.png",
     "scheduled_time": "2026-04-01T12:03:50.005229-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2145,5 +2149,41 @@
     },
     "generated_at": "2026-04-01T16:03:50.005228+00:00",
     "cost_usd": 0.016956
+  },
+  {
+    "id": "live_20260401_141133_v1",
+    "text": "Gene therapy isn't just hype \u2014 it's FDA-validated science. $VYGR's BBB platform hits 94.1% accuracy targeting genetic diseases most drugs can't reach. enGene BLA filing 2026 = institutional validation coming.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260401_1811.png",
+    "scheduled_time": "2026-04-01T14:11:33.794863-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-01T18:11:33.794861+00:00",
+    "cost_usd": 0.017474
+  },
+  {
+    "id": "live_20260401_141133_v2",
+    "text": "Why did we enter $NVDA at $150 when everyone said semis were dead? Because institutional flows don't lie. Now $182.65, +21.8%. The lesson: momentum confirmation beats narrative every time.",
+    "category": "RECEIPT",
+    "primary_ticker": "NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260401_1811.png",
+    "scheduled_time": "2026-04-01T14:11:33.794863-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-01T18:11:33.794861+00:00",
+    "cost_usd": 0.017474
   }
 ]

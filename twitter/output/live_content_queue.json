@@ -908,45 +908,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260326_143557_v1",
-    "text": "$SOFI broke through $16 resistance \u2014 entry was $7.90, now testing $32 highs. Fintech consolidation creating support at $15. Setup invalidates below $14.",
-    "category": "TECHNICAL_ANALYSIS",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260326_2228.png",
-    "scheduled_time": "2026-03-26T14:35:57.494351-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.64%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-26T18:35:57.494349+00:00",
-    "cost_usd": 0.017701,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
-    "id": "live_20260326_182811_v1",
-    "text": "BTC pullback took $HIVE with it. Exited $1.93 from $2.10 entry. Crypto miner thesis intact, but risk management comes first.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260327_1349.png",
-    "scheduled_time": "2026-03-26T18:28:11.355226-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.64%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-26T22:28:11.355224+00:00",
-    "cost_usd": 0.017587,
-    "posted_at": "2026-03-27T14:09:36.572161",
-    "tweet_id": "2037532492333506983"
-  },
-  {
     "id": "live_20260327_094916_v1",
     "text": "Markets selling off but $EVTL holding +2.48% while SPY drops. Gene therapy platform decoupling from macro noise. Conviction plays show their strength in volatility.",
     "category": "MARKET_COMMENTARY",
@@ -2055,9 +2016,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-02T13:28:40.735489+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-02T22:50:14.799428",
+    "tweet_id": "2039837842646692128"
   },
   {
     "id": "watchdog_20260402_003",
@@ -2078,9 +2041,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-04-02T13:28:40.735489+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-6.82%']"
   },
   {
     "id": "watchdog_20260402_005",
@@ -2100,15 +2064,52 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260402_1811.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260402_2230.png",
     "scheduled_time": "2026-04-02T14:11:02.114798-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-1.2%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-04-02T18:11:02.114797+00:00",
-    "cost_usd": 0.017643
+    "cost_usd": 0.017643,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260402_182958_v1",
+    "text": "What happens when fintech stays green while oil shocks markets? $SOFI holding $15.20 today shows you what conviction looks like. Not every name bleeds when SPY does \u2014 that's the whole point of thematic screening.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "SOFI",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260402_2230.png",
+    "scheduled_time": "2026-04-02T18:29:58.276369-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-02T22:29:58.276367+00:00",
+    "cost_usd": 0.017489
+  },
+  {
+    "id": "live_20260402_182958_v2",
+    "text": "$HIVE down 1.8% to $2.05.\nBitcoin correlation bites.\nCash is a position.\nWaiting for confirmation.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260402_2230.png",
+    "scheduled_time": "2026-04-02T18:29:58.276369-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-02T22:29:58.276367+00:00",
+    "cost_usd": 0.017489
   }
 ]

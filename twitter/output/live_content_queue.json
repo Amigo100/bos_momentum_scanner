@@ -2101,16 +2101,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260401_2236.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260402_1401.png",
     "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260401_183621_v2",
@@ -2119,16 +2120,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260401_2236.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260402_1401.png",
     "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260401_183621_v3",
@@ -2137,15 +2139,90 @@
     "primary_ticker": "$ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260401_2236.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260402_1401.png",
     "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526
+    "cost_usd": 0.017526,
+    "posted_at": "2026-04-02T14:21:24.665461",
+    "tweet_id": "2039709789282816094"
+  },
+  {
+    "id": "live_20260402_100103_v1",
+    "text": "$EVTL +2.5% to $5.20.\nGene therapy catching momentum.\nBridgeBio news lifting sector.\nWatching closely. NFA",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260402_1401.png",
+    "scheduled_time": "2026-04-02T10:01:03.770412-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.40%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-02T14:01:03.770411+00:00",
+    "cost_usd": 0.017549
+  },
+  {
+    "id": "watchdog_20260402_001",
+    "text": "$VYGR cleared all gates today. BBB Gene Therapy Platform theme showing institutional accumulation as biotech rotation accelerates. Scanner confirms structural pivot underway.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-02T13:28:40.735489+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260402_002",
+    "text": "Small-cap momentum setup most favorable since 2016: earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. Capital preservation remains key as geopolitical risks persist.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-02T13:28:40.735489+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260402_003",
+    "text": "Why BBB Gene Therapy platforms matter: brain delivery breakthrough technology creates massive moats in CNS therapeutics. Today's note explores the competitive landscape and key catalysts ahead.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-02T13:28:40.735489+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260402_004",
+    "text": "Portfolio update: 16.23% vs SPY -6.82%. Alpha generation comes from theme identification before institutional rotation, not after. Discipline in position sizing and exit execution.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-02T13:28:40.735489+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260402_005",
+    "text": "Question for momentum traders: How do you balance theme conviction with geopolitical tail risks? Iran situation reminds us why capital preservation frameworks matter in uncertain times.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-02T13:28:40.735489+00:00",
+    "source": "watchdog"
   }
 ]

@@ -970,45 +970,6 @@
     "tweet_id": "2037625073666773189"
   },
   {
-    "id": "live_20260327_141228_v1",
-    "text": "VIX at 27 triggers sector rotation \u2014 smallcaps feeling it. $EVTL holding $6.20 while drone peers sold off. Relative strength in volatility separates conviction plays from weak hands.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260327_1957.png",
-    "scheduled_time": "2026-03-27T14:12:28.766896-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.9%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T18:12:28.766892+00:00",
-    "cost_usd": 0.017726,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260327_155722_v1",
-    "text": "$EVTL down 2.5% to $4.38.\nFDA warning letters hit telehealth.\nCompounded GLP-1 crackdown.\nWatching $4.20 support closely.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260327_2230.png",
-    "scheduled_time": "2026-03-27T15:57:22.244188-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.9%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T19:57:22.244187+00:00",
-    "cost_usd": 0.017897,
-    "posted_at": "2026-03-27T22:50:54.500610",
-    "tweet_id": "2037663681299804633"
-  },
-  {
     "id": "live_20260327_183044_v1",
     "text": "$SOFI red today but still +305% from $7.90 entry.\n\nWhen quality names dip on macro noise, that's when conviction earns its keep.\n\nFintech thesis intact.",
     "category": "ENGAGEMENT",
@@ -2173,9 +2134,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-03T13:17:15.463680+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-03T20:18:35.438588",
+    "tweet_id": "2040162064983785895"
   },
   {
     "id": "live_20260403_103626_v1",
@@ -2184,16 +2147,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1803.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1958.png",
     "scheduled_time": "2026-04-03T10:36:26.168188-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T14:36:26.168186+00:00",
-    "cost_usd": 0.016836
+    "cost_usd": 0.016836,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260403_140329_v1",
@@ -2240,7 +2204,7 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260403_1803.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260403_1958.png",
     "scheduled_time": "2026-04-03T14:03:29.973214-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2250,5 +2214,61 @@
     },
     "generated_at": "2026-04-03T18:03:29.973213+00:00",
     "cost_usd": 0.01749
+  },
+  {
+    "id": "live_20260403_155812_v1",
+    "text": "$EVTL at $4.20. Down 7% intraday but entry was $4.50 \u2014 only 7% from cost basis during VIX 24.5. Position sizing prevents panic.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1958.png",
+    "scheduled_time": "2026-04-03T15:58:12.278608-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T19:58:12.278606+00:00",
+    "cost_usd": 0.017606,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260403_155812_v2",
+    "text": "$SOFI holding +1.5% while SPY bleeds and VIX hits 24.5. Entry $7.90, now $15.85. When fintech names with institutional momentum move, they don't need the market's permission. Theme strength > macro noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "SOFI",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260403_1958.png",
+    "scheduled_time": "2026-04-03T15:58:12.278608-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T19:58:12.278606+00:00",
+    "cost_usd": 0.017606,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260403_155812_v3",
+    "text": "$HIVE entry $2.10.\nNow $2.05.\nFlat in a volatile tape.\nCrypto names decoupling.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260403_1958.png",
+    "scheduled_time": "2026-04-03T15:58:12.278608-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T19:58:12.278606+00:00",
+    "cost_usd": 0.017606
   }
 ]

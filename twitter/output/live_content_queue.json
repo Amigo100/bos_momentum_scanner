@@ -970,26 +970,6 @@
     "tweet_id": "2037625073666773189"
   },
   {
-    "id": "live_20260327_183044_v1",
-    "text": "$SOFI red today but still +305% from $7.90 entry.\n\nWhen quality names dip on macro noise, that's when conviction earns its keep.\n\nFintech thesis intact.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260328_1438.png",
-    "scheduled_time": "2026-03-27T18:30:44.249474-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.4%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T22:30:44.249472+00:00",
-    "cost_usd": 0.017501,
-    "posted_at": "2026-03-28T14:59:10.341939",
-    "tweet_id": "2037907353174155636"
-  },
-  {
     "id": "live_20260328_103853_v1",
     "text": "$EVTL setup invalidated at $4.20.\n\nGLP-1 regulatory shift changed the thesis. Win more than you lose \u2014 that's the game.\n\n$SOFI, $NVDA, $AMD still printing.",
     "category": "ENGAGEMENT",
@@ -2204,16 +2184,18 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260403_1958.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260403_2231.png",
     "scheduled_time": "2026-04-03T14:03:29.973214-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T18:03:29.973213+00:00",
-    "cost_usd": 0.01749
+    "cost_usd": 0.01749,
+    "posted_at": "2026-04-03T22:51:17.617515",
+    "tweet_id": "2040200493696483595"
   },
   {
     "id": "live_20260403_155812_v1",
@@ -2260,7 +2242,7 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260403_1958.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260403_2231.png",
     "scheduled_time": "2026-04-03T15:58:12.278608-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2270,5 +2252,42 @@
     },
     "generated_at": "2026-04-03T19:58:12.278606+00:00",
     "cost_usd": 0.017606
+  },
+  {
+    "id": "live_20260403_183103_v1",
+    "text": "What happens when crypto miners face a risk-off tape? $HIVE down 1.8% to $2.05 \u2014 not breaking, just testing conviction. When VIX hits 25, quality names don't collapse. They consolidate. That's the difference between a thesis and a gamble.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$HIVE",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260403_2231.png",
+    "scheduled_time": "2026-04-03T18:31:03.938135-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.13%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T22:31:03.938134+00:00",
+    "cost_usd": 0.017281,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260403_183103_v2",
+    "text": "$SOFI green while markets bleed.\n$15.85 holding support.\nFintech resilience >>> panic.\nCash flow matters in chaos.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260403_2231.png",
+    "scheduled_time": "2026-04-03T18:31:03.938135-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.13%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T22:31:03.938134+00:00",
+    "cost_usd": 0.017281
   }
 ]

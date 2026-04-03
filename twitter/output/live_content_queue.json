@@ -908,45 +908,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260327_094916_v1",
-    "text": "Markets selling off but $EVTL holding +2.48% while SPY drops. Gene therapy platform decoupling from macro noise. Conviction plays show their strength in volatility.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260327_1349.png",
-    "scheduled_time": "2026-03-27T09:49:16.254681-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.51%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T13:49:16.254680+00:00",
-    "cost_usd": 0.017646,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260327_094916_v2",
-    "text": "$AMD +1.09% in a sea of red.\nEntry $120. Now $205.85.\nSemis tanking but this one holds.\nRelative strength speaks.",
-    "category": "RECEIPT",
-    "primary_ticker": "$AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260327_1444.png",
-    "scheduled_time": "2026-03-27T09:49:16.254681-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.51%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T13:49:16.254680+00:00",
-    "cost_usd": 0.017646,
-    "posted_at": "2026-03-27T15:04:25.686497",
-    "tweet_id": "2037546287894077813"
-  },
-  {
     "id": "watchdog_20260327_001",
     "text": "$VYGR GREEN signal detected. BBB Gene Therapy Platform theme showing institutional accumulation after clearing all gates. Entry conditions met for structural pivot setup.",
     "category": "SIGNAL_ALERT",
@@ -2162,16 +2123,18 @@
     "primary_ticker": "NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260403_1341.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260403_1436.png",
     "scheduled_time": "2026-04-03T09:41:45.941595-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.75%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T13:41:45.941593+00:00",
-    "cost_usd": 0.01743
+    "cost_usd": 0.01743,
+    "posted_at": "2026-04-03T14:56:43.151987",
+    "tweet_id": "2040081063020761489"
   },
   {
     "id": "watchdog_20260403_001",
@@ -2203,9 +2166,10 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-03T13:17:15.463680+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260403_004",
@@ -2214,9 +2178,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-03T13:17:15.463680+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260403_005",
@@ -2228,5 +2193,23 @@
     "status": "pending",
     "created_at": "2026-04-03T13:17:15.463680+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260403_103626_v1",
+    "text": "$EVTL down to $2.28.\nDefense theme still active.\nMiddle East escalation = fresh catalyst.\nWatching closely.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1436.png",
+    "scheduled_time": "2026-04-03T10:36:26.168188-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.11%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T14:36:26.168186+00:00",
+    "cost_usd": 0.016836
   }
 ]

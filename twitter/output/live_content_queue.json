@@ -970,25 +970,6 @@
     "tweet_id": "2037625073666773189"
   },
   {
-    "id": "live_20260327_104415_v1",
-    "text": "Voyager drops $20M on BBB tech.\nCNS delivery unlocked.\n$EVTL watching for defense momentum.\nPlatform plays matter.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260327_1957.png",
-    "scheduled_time": "2026-03-27T10:44:15.500657-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.74%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-27T14:44:15.500655+00:00",
-    "cost_usd": 0.017658,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "live_20260327_141228_v1",
     "text": "VIX at 27 triggers sector rotation \u2014 smallcaps feeling it. $EVTL holding $6.20 while drone peers sold off. Relative strength in volatility separates conviction plays from weak hands.",
     "category": "MARKET_COMMENTARY",
@@ -2155,9 +2136,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-03T13:17:15.463680+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-03T18:23:51.179737",
+    "tweet_id": "2040133190233567640"
   },
   {
     "id": "watchdog_20260403_003",
@@ -2201,7 +2184,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1436.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1803.png",
     "scheduled_time": "2026-04-03T10:36:26.168188-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2211,5 +2194,61 @@
     },
     "generated_at": "2026-04-03T14:36:26.168186+00:00",
     "cost_usd": 0.016836
+  },
+  {
+    "id": "live_20260403_140329_v1",
+    "text": "$SOFI from $7.90 to $32.00 high. Entry October, now +305.1%. Fintech conviction holding while SPY consolidates.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260403_1803.png",
+    "scheduled_time": "2026-04-03T14:03:29.973214-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T18:03:29.973213+00:00",
+    "cost_usd": 0.01749,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260403_140329_v2",
+    "text": "$EVTL from $4.50 entry, now $4.20 \u2014 down 7% in drone sector rotation. Position sizing means a 7% pullback on one ticker doesn't break the portfolio. This is why you build for volatility, not hope it never comes.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1803.png",
+    "scheduled_time": "2026-04-03T14:03:29.973214-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T18:03:29.973213+00:00",
+    "cost_usd": 0.01749,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260403_140329_v3",
+    "text": "$BAND setup invalidated.\nBroke support at $16.55.\nEnergy spike hitting margins.\nCash is a position.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260403_1803.png",
+    "scheduled_time": "2026-04-03T14:03:29.973214-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T18:03:29.973213+00:00",
+    "cost_usd": 0.01749
   }
 ]

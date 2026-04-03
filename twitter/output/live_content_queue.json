@@ -2123,15 +2123,110 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260403_1158.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260403_1341.png",
     "scheduled_time": "2026-04-03T07:58:39.992357-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.06%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T11:58:39.992355+00:00",
-    "cost_usd": 0.017427
+    "cost_usd": 0.017427,
+    "posted_at": "2026-04-03T14:02:06.193700",
+    "tweet_id": "2040067318080778458"
+  },
+  {
+    "id": "live_20260403_094145_v1",
+    "text": "What happens when gene therapy names catch momentum during a choppy tape? $EVTL +2.5% to $12.50 while VIX sits at 24.5. Pipeline updates > market noise. That's sector rotation at work.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260403_1341.png",
+    "scheduled_time": "2026-04-03T09:41:45.941595-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.75%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T13:41:45.941593+00:00",
+    "cost_usd": 0.01743,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260403_094145_v2",
+    "text": "$NVDA entry $150.\nNow $182.65.\n+21.8% while markets whip.\nAI chip demand > volatility.",
+    "category": "RECEIPT",
+    "primary_ticker": "NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260403_1341.png",
+    "scheduled_time": "2026-04-03T09:41:45.941595-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.75%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-03T13:41:45.941593+00:00",
+    "cost_usd": 0.01743
+  },
+  {
+    "id": "watchdog_20260403_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation as biotech rotation accelerates. Scanner confirming momentum shift in specialty pharma subsector.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-03T13:17:15.463680+00:00",
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "watchdog_20260403_002",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening beyond mega-cap, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is underway.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-03T13:17:15.463680+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260403_003",
+    "text": "BBB Gene Therapy Platform emerges as PRIME theme \u2014 blood-brain barrier delivery represents the next frontier in precision medicine. $VYGR leading this transformation with breakthrough technology.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-03T13:17:15.463680+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260403_004",
+    "text": "Portfolio alpha: +23.05% vs SPY. 8 positions across AI infrastructure, biotech innovation, nuclear fuel cycle. Capital preservation through theme rotation as market structure shifts favor momentum.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-03T13:17:15.463680+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260403_005",
+    "text": "What's driving small-cap outperformance after years of underperformance? Earnings growth broadening, valuations at 25-year discount, institutional flows rotating. Technical and fundamental alignment.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-03T13:17:15.463680+00:00",
+    "source": "watchdog"
   }
 ]

@@ -970,26 +970,6 @@
     "tweet_id": "2037625073666773189"
   },
   {
-    "id": "live_20260328_103853_v1",
-    "text": "$EVTL setup invalidated at $4.20.\n\nGLP-1 regulatory shift changed the thesis. Win more than you lose \u2014 that's the game.\n\n$SOFI, $NVDA, $AMD still printing.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260328_2034.png",
-    "scheduled_time": "2026-03-28T10:38:53.533215-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-1.7%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-28T14:38:53.533213+00:00",
-    "cost_usd": 0.01753,
-    "posted_at": "2026-03-28T20:54:16.250223",
-    "tweet_id": "2037996716369055987"
-  },
-  {
     "id": "watchdog_20260328_001",
     "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing structural pivot as institutional accumulation accelerates. Entry $4.45 \u2014 signal confirmed on volume expansion.",
     "category": "SIGNAL_ALERT",
@@ -2242,16 +2222,18 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260403_2231.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260404_1439.png",
     "scheduled_time": "2026-04-03T15:58:12.278608-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T19:58:12.278606+00:00",
-    "cost_usd": 0.017606
+    "cost_usd": 0.017606,
+    "posted_at": "2026-04-04T15:00:07.481927",
+    "tweet_id": "2040444307619131742"
   },
   {
     "id": "live_20260403_183103_v1",
@@ -2279,15 +2261,98 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260403_2231.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260404_1439.png",
     "scheduled_time": "2026-04-03T18:31:03.938135-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-1.13%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-03T22:31:03.938134+00:00",
-    "cost_usd": 0.017281
+    "cost_usd": 0.017281,
+    "skip_reason": "Stale: 16h old"
+  },
+  {
+    "id": "live_20260404_103942_v1",
+    "text": "$VYGR entry $4.45, current $3.96. Down 11% but FDA framework news validates thesis. Gene therapy platform advances on regulatory clarity.",
+    "category": "RECEIPT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260404_1439.png",
+    "scheduled_time": "2026-04-04T10:39:42.998576-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.06%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-04T14:39:42.998575+00:00",
+    "cost_usd": 0.017526,
+    "error": "503 Service Unavailable\nService Unavailable"
+  },
+  {
+    "id": "live_20260404_103942_v2",
+    "text": "$EVTL down 49% from entry.\nGene therapy volatility.\nStill holding support.\nCash is a position too.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260404_1439.png",
+    "scheduled_time": "2026-04-04T10:39:42.998576-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.06%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-04T14:39:42.998575+00:00",
+    "cost_usd": 0.017526
+  },
+  {
+    "id": "watchdog_20260404_001",
+    "text": "$VYGR cleared all gates on Friday. BBB Gene Therapy Platform theme showing institutional accumulation as CNS delivery barriers fall. Entry zone active at $4.45 \u2014 structural pivot in neurodegenerative treatments unfolding.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-04T13:09:06.054314+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260404_002",
+    "text": "Small-cap momentum structure mirrors 2016 setup: earnings broadening beyond mega-cap, 25-year relative valuation discount, institutional rotation accelerating. Patience required as geopolitical noise creates short-term volatility.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-04T13:09:06.054314+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260404_003",
+    "text": "Portfolio lesson: Theme diversification across AI chips, fintech, gene therapy, and defense tech. When one theme cools, another heats up. Capital preservation through uncorrelated exposure vectors \u2014 not sector concentration.",
+    "category": "EDUCATIONAL",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-04T13:09:06.054314+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260404_004",
+    "text": "8 positions generating 25.59% alpha vs SPY. $NVDA $AMD semiconductor exposure balanced with $ASPI nuclear fuel and $VYGR gene therapy. Momentum rotation favoring quality small-cap themes over passive indexing.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": "$NVDA",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-04T13:09:06.054314+00:00",
+    "source": "watchdog"
   }
 ]

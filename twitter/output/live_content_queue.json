@@ -1031,45 +1031,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260329_104008_v1",
-    "text": "$VYGR at $4.59. Gene therapy platform cleared scanner Friday. BBB delivery mechanism differentiates from peer approaches.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260329_2035.png",
-    "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.7%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-29T14:40:08.868519+00:00",
-    "cost_usd": 0.017438,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260329_104008_v2",
-    "text": "$EVTL at $4.37, still holding support at $4.20.\n\nDrone tech theme showing relative strength while broader market pulls back.\n\nWatching for continuation above $4.50 entry level.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260329_2035.png",
-    "scheduled_time": "2026-03-29T10:40:08.868520-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.7%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-29T14:40:08.868519+00:00",
-    "cost_usd": 0.017438,
-    "posted_at": "2026-03-29T20:55:27.588092",
-    "tweet_id": "2038359403716567105"
-  },
-  {
     "id": "watchdog_20260329_002",
     "text": "$VYGR cleared all gates this week - BBB Gene Therapy Platform theme hitting PRIME status. When institutional accumulation meets structural pivot points, the scanner doesn't lie. \ud83d\udfe2",
     "category": "SIGNAL_ALERT",
@@ -2293,9 +2254,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-04T13:09:06.054314+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-05T15:01:31.518212",
+    "tweet_id": "2040807048607117561"
   },
   {
     "id": "watchdog_20260404_003",
@@ -2316,9 +2279,10 @@
     "account": "variant_1",
     "ticker": "$NVDA",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-04T13:09:06.054314+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "live_20260404_163418_v1",
@@ -2327,15 +2291,90 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260404_2034.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260405_1441.png",
     "scheduled_time": "2026-04-04T16:34:18.713194-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-04T20:34:18.713192+00:00",
-    "cost_usd": 0.017252
+    "cost_usd": 0.017252,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260405_104115_v1",
+    "text": "Gene therapy names like $VYGR teach patience. BBB platform with 94.1% accuracy targeting neurological diseases \u2014 thesis doesn't change on short-term noise. Invalidation $3.50.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260405_1441.png",
+    "scheduled_time": "2026-04-05T10:41:15.877793-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-05T14:41:15.877791+00:00",
+    "cost_usd": 0.017667
+  },
+  {
+    "id": "watchdog_20260405_001",
+    "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation across multiple names. When the scanner lights up GREEN on a Sunday, Monday often delivers.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-05T13:11:06.370393+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260405_002",
+    "text": "Small-cap momentum setup is the strongest since 2016. Earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating. The structural pivot is real.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-05T13:11:06.370393+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260405_003",
+    "text": "BBB Gene Therapy Platform theme hits PRIME status. These blood-brain barrier breakthroughs could unlock massive addressable markets previously considered untreatable. Science is becoming investable.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-05T13:11:06.370393+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260405_004",
+    "text": "Portfolio alpha: +25.59% vs SPY -3.63%. Capital preservation during market weakness, then aggressive deployment when themes align. This is how momentum works in practice.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-05T13:11:06.370393+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260405_005",
+    "text": "Five themes on scanner watch: BBB Gene Therapy, GLP-1 Telehealth, Bladder Cancer Immunotherapy, Defence Additive Manufacturing, Photonic Interconnect. Theme convergence creates the biggest moves.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-05T13:11:06.370393+00:00",
+    "source": "watchdog"
   }
 ]

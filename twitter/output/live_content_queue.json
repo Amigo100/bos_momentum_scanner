@@ -1080,45 +1080,6 @@
     "tweet_id": "2038624013027610956"
   },
   {
-    "id": "live_20260330_100633_v1",
-    "text": "$VYGR at $3.98. Down 10.6% from entry but holding above Friday's scanner confirmation at $3.85. Gene therapy theme intact until break below.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260330_1813.png",
-    "scheduled_time": "2026-03-30T10:06:33.331660-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.74%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-30T14:06:33.331658+00:00",
-    "cost_usd": 0.016953,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260330_100633_v2",
-    "text": "$EVTL watching closely.\nHolding $2.15 vs $4.50 entry.\nDrone tech theme needs confirmation.\nCash is a position.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260330_1458.png",
-    "scheduled_time": "2026-03-30T10:06:33.331660-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.74%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-30T14:06:33.331658+00:00",
-    "cost_usd": 0.016953,
-    "posted_at": "2026-03-30T15:18:15.677227",
-    "tweet_id": "2038636932717265060"
-  },
-  {
     "id": "watchdog_20260330_001",
     "text": "\ud83d\udfe2 Scanner flagging $VYGR at structural pivot \u2014 BBB Gene Therapy Platform theme showing institutional accumulation patterns. Position sized for capital preservation while theme momentum builds.",
     "category": "SIGNAL_ALERT",
@@ -2272,9 +2233,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-05T13:11:06.370393+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260405_002",
@@ -2331,7 +2293,7 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260406_1351.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260406_1440.png",
     "scheduled_time": "2026-04-06T09:51:04.222940-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2349,16 +2311,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260406_1351.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260406_1440.png",
     "scheduled_time": "2026-04-06T09:51:04.222940-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T13:51:04.222939+00:00",
-    "cost_usd": 0.017092
+    "cost_usd": 0.017092,
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260406_001",
@@ -2389,9 +2352,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-06T13:23:47.356097+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260406_004",
@@ -2414,5 +2378,41 @@
     "status": "pending",
     "created_at": "2026-04-06T13:23:47.356097+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260406_104046_v1",
+    "text": "What happens when a drone tech name pulls back during sector volatility? $EVTL down to $2.30 from $4.50 entry. The defense thesis hasn't changed \u2014 just the market's attention span. Invalidation matters more than daily noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260406_1440.png",
+    "scheduled_time": "2026-04-06T10:40:46.803860-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-06T14:40:46.803858+00:00",
+    "cost_usd": 0.017197
+  },
+  {
+    "id": "live_20260406_104046_v2",
+    "text": "$NVDA holding $182.65.\nEntry was $150.\n+21.8% while market chops.\nAI demand > geopolitics.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260406_1440.png",
+    "scheduled_time": "2026-04-06T10:40:46.803860-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-06T14:40:46.803858+00:00",
+    "cost_usd": 0.017197
   }
 ]

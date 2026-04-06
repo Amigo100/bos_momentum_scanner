@@ -1142,64 +1142,6 @@
     "tweet_id": "2038751627771822525"
   },
   {
-    "id": "live_20260330_141335_v1",
-    "text": "VIX 31 panic? $EVTL still holding relative strength at drone tech's inflection point. When macro chaos hits, watch which names refuse to break support \u2014 that's where institutional conviction sits. This is the test.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260330_1813.png",
-    "scheduled_time": "2026-03-30T14:13:35.068242-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.67%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-30T18:13:35.068240+00:00",
-    "cost_usd": 0.017437,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260330_183342_v1",
-    "text": "$EVTL from $4.50 entry, now $7.00. +55.6% on the drone tech play. Position sizing keeps temporary pullbacks from mattering while the thesis develops.",
-    "category": "RECEIPT",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260330_2233.png",
-    "scheduled_time": "2026-03-30T18:33:42.140526-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.69%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-30T22:33:42.140525+00:00",
-    "cost_usd": 0.017183,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260330_183342_v2",
-    "text": "$ASPI holding $4.22.\nDefense additive play.\nSmall-cap resilience in chaos.\nWatching closely.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260331_1407.png",
-    "scheduled_time": "2026-03-30T18:33:42.140526-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.69%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-03-30T22:33:42.140525+00:00",
-    "cost_usd": 0.017183,
-    "posted_at": "2026-03-31T14:27:43.703666",
-    "tweet_id": "2038986603465425010"
-  },
-  {
     "id": "live_20260331_100730_v1",
     "text": "$VYGR at $4.15. BBB gene therapy platform now 94.1% accurate in predictions. AI-driven drug delivery crossing blood-brain barrier. Theme intact.",
     "category": "EDUCATIONAL",
@@ -2294,9 +2236,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-06T13:23:47.356097+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "503 Service Unavailable\nService Unavailable"
   },
   {
     "id": "watchdog_20260406_002",
@@ -2340,9 +2283,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-06T13:23:47.356097+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-06T22:55:09.633774",
+    "tweet_id": "2041288630673543297"
   },
   {
     "id": "live_20260406_104046_v1",
@@ -2370,16 +2315,17 @@
     "primary_ticker": "NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260406_1812.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260406_2234.png",
     "scheduled_time": "2026-04-06T10:40:46.803860-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.34%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T14:40:46.803858+00:00",
-    "cost_usd": 0.017197
+    "cost_usd": 0.017197,
+    "skip_reason": "Stale: 8h old"
   },
   {
     "id": "live_20260406_141246_v1",
@@ -2388,16 +2334,17 @@
     "primary_ticker": "$AMD",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260406_1813.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260406_2234.png",
     "scheduled_time": "2026-04-06T14:12:46.079285-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T18:12:46.079283+00:00",
-    "cost_usd": 0.017093
+    "cost_usd": 0.017093,
+    "skip_reason": "Stale: 5h old"
   },
   {
     "id": "live_20260406_141246_v2",
@@ -2406,16 +2353,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260406_1812.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260406_2234.png",
     "scheduled_time": "2026-04-06T14:12:46.079285-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T18:12:46.079283+00:00",
-    "cost_usd": 0.017093
+    "cost_usd": 0.017093,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260406_141246_v3",
@@ -2424,15 +2372,70 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260406_1813.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260406_2234.png",
     "scheduled_time": "2026-04-06T14:12:46.079285-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.11%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T18:12:46.079283+00:00",
-    "cost_usd": 0.017093
+    "cost_usd": 0.017093,
+    "skip_reason": "Stale: 5h old"
+  },
+  {
+    "id": "live_20260406_183443_v1",
+    "text": "$VYGR at $3.97. BBB gene therapy platform with 94.1% accuracy targeting neurological diseases. Entry $4.45, down 10.8% but thesis unchanged \u2014 FDA framework supports rare disease approvals.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260406_2234.png",
+    "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.44%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-06T22:34:43.432996+00:00",
+    "cost_usd": 0.017227
+  },
+  {
+    "id": "live_20260406_183443_v2",
+    "text": "What happens when photonic networking stocks pull back during sector rotation? $BAND is testing support at $16.42 after running +10.3% from entry. The AI interconnect thesis hasn't changed \u2014 just market noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$BAND",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260406_2234.png",
+    "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.44%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-06T22:34:43.432996+00:00",
+    "cost_usd": 0.017227
+  },
+  {
+    "id": "live_20260406_183443_v3",
+    "text": "$SOFI ripping today.\n$7.90 entry \u2192 $16.27 now.\nFintech names waking up.\nConsumer lending data strong.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260406_2235.png",
+    "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.44%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-06T22:34:43.432996+00:00",
+    "cost_usd": 0.017227
   }
 ]

@@ -2272,9 +2272,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-04-06T13:23:47.356097+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-3.63%']"
   },
   {
     "id": "watchdog_20260406_005",
@@ -2391,16 +2392,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260406_2234.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260407_1406.png",
     "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.44%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T22:34:43.432996+00:00",
-    "cost_usd": 0.017227
+    "cost_usd": 0.017227,
+    "skip_reason": "Stale: 16h old"
   },
   {
     "id": "live_20260406_183443_v2",
@@ -2409,16 +2411,17 @@
     "primary_ticker": "$BAND",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260406_2234.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260407_1407.png",
     "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.44%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T22:34:43.432996+00:00",
-    "cost_usd": 0.017227
+    "cost_usd": 0.017227,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260406_183443_v3",
@@ -2427,15 +2430,79 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260406_2235.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260407_1407.png",
     "scheduled_time": "2026-04-06T18:34:43.432997-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.44%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-06T22:34:43.432996+00:00",
-    "cost_usd": 0.017227
+    "cost_usd": 0.017227,
+    "posted_at": "2026-04-07T14:27:12.557936",
+    "tweet_id": "2041523187339431957"
+  },
+  {
+    "id": "live_20260407_100654_v1",
+    "text": "$EVTL pullback to $2.36.\nSmall-cap chop, not thesis break.\nDefense theme still strong.\nWatching support levels. DYOR",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260407_1407.png",
+    "scheduled_time": "2026-04-07T10:06:54.576722-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.6%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-07T14:06:54.576721+00:00",
+    "cost_usd": 0.017324
+  },
+  {
+    "id": "watchdog_20260407_001",
+    "text": "\ud83d\udfe2 $VYGR scanner signal detected \u2014 BBB Gene Therapy Platform theme showing institutional accumulation after clearing all structural gates. Entry zone active.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-07T13:44:36.792240+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260407_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-07T13:44:36.792240+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260407_003",
+    "text": "BBB Gene Therapy Platform elevated to PRIME status \u2014 breakthrough treatments bypassing blood-brain barrier represent paradigm shift in neurological disease treatment. $VYGR leading.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-07T13:44:36.792240+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260407_004",
+    "text": "Portfolio delivering 25.59% alpha vs SPY \u2014 capital preservation during broad market weakness while capturing momentum in structural growth themes. 8 positions active.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-07T13:44:36.792240+00:00",
+    "source": "watchdog"
   }
 ]

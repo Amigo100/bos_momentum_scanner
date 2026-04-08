@@ -1263,64 +1263,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260401_183621_v1",
-    "text": "$SOFI from $7.90 to $32.00. +305% while fintech peers fade. Position sizing discipline = holding through the noise.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260402_1401.png",
-    "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260401_183621_v2",
-    "text": "What happens when gene therapy buzz hits a volatile tape? $EVTL +1.2% to $4.20 today while SPY chops. The sector rotation is real, but remember \u2014 volatility tests conviction. Position sizing matters more than price action on any single day.",
-    "category": "RECEIPT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260402_1401.png",
-    "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260401_183621_v3",
-    "text": "$ASPI pullback to $5.90.\nTariff noise hitting defense.\nWatching $5.50 support.\nThesis needs reconfirmation.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260402_1401.png",
-    "scheduled_time": "2026-04-01T18:36:21.520805-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-01T22:36:21.520803+00:00",
-    "cost_usd": 0.017526,
-    "posted_at": "2026-04-02T14:21:24.665461",
-    "tweet_id": "2039709789282816094"
-  },
-  {
     "id": "live_20260402_100103_v1",
     "text": "$EVTL +2.5% to $5.20.\nGene therapy catching momentum.\nBridgeBio news lifting sector.\nWatching closely. NFA",
     "category": "SIGNAL_ALERT",
@@ -2479,9 +2421,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-04-08T13:46:58.839453+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-3.63%']"
   },
   {
     "id": "watchdog_20260408_005",
@@ -2490,9 +2433,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-08T13:46:58.839453+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-08T22:57:19.657081",
+    "tweet_id": "2042013951806873909"
   },
   {
     "id": "live_20260408_120850_v1",
@@ -2501,16 +2446,17 @@
     "primary_ticker": "$HIVE",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_1847.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_2237.png",
     "scheduled_time": "2026-04-08T12:08:50.746963-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+2.46%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-08T16:08:50.746962+00:00",
-    "cost_usd": 0.017403
+    "cost_usd": 0.017403,
+    "skip_reason": "Stale: 7h old"
   },
   {
     "id": "live_20260408_120850_v2",
@@ -2519,16 +2465,17 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260408_1847.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260408_2237.png",
     "scheduled_time": "2026-04-08T12:08:50.746963-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+2.46%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-08T16:08:50.746962+00:00",
-    "cost_usd": 0.017403
+    "cost_usd": 0.017403,
+    "skip_reason": "Stale: 7h old"
   },
   {
     "id": "live_20260408_144743_v1",
@@ -2537,16 +2484,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260408_1847.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260408_2237.png",
     "scheduled_time": "2026-04-08T14:47:43.531727-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+2.55%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-08T18:47:43.531726+00:00",
-    "cost_usd": 0.017419
+    "cost_usd": 0.017419,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260408_144743_v2",
@@ -2574,15 +2522,34 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_1847.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_2237.png",
     "scheduled_time": "2026-04-08T14:47:43.531727-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+2.55%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-08T18:47:43.531726+00:00",
-    "cost_usd": 0.017419
+    "cost_usd": 0.017419,
+    "skip_reason": "Stale: 4h old"
+  },
+  {
+    "id": "live_20260408_183706_v1",
+    "text": "$SOFI from $7.90 to $32.00. +305.1% and counting. Ceasefire unwinds geopolitical risk \u2014 fintech names ripping on relief rally.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260408_2237.png",
+    "scheduled_time": "2026-04-08T18:37:06.206987-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+2.69%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-08T22:37:06.206985+00:00",
+    "cost_usd": 0.017563
   }
 ]

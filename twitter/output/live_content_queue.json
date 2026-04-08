@@ -1263,44 +1263,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260401_141133_v1",
-    "text": "Gene therapy isn't just hype \u2014 it's FDA-validated science. $VYGR's BBB platform hits 94.1% accuracy targeting genetic diseases most drugs can't reach. enGene BLA filing 2026 = institutional validation coming.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260401_2236.png",
-    "scheduled_time": "2026-04-01T14:11:33.794863-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-01T18:11:33.794861+00:00",
-    "cost_usd": 0.017474,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
-    "id": "live_20260401_141133_v2",
-    "text": "Why did we enter $NVDA at $150 when everyone said semis were dead? Because institutional flows don't lie. Now $182.65, +21.8%. The lesson: momentum confirmation beats narrative every time.",
-    "category": "RECEIPT",
-    "primary_ticker": "NVDA",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260401_2236.png",
-    "scheduled_time": "2026-04-01T14:11:33.794863-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-01T18:11:33.794861+00:00",
-    "cost_usd": 0.017474,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
     "id": "live_20260401_183621_v1",
     "text": "$SOFI from $7.90 to $32.00. +305% while fintech peers fade. Position sizing discipline = holding through the noise.",
     "category": "RECEIPT",
@@ -2480,9 +2442,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-08T13:46:58.839453+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260408_002",
@@ -2491,9 +2454,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-08T13:46:58.839453+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-08T19:07:59.425207",
+    "tweet_id": "2041956237072310451"
   },
   {
     "id": "watchdog_20260408_003",
@@ -2536,7 +2501,7 @@
     "primary_ticker": "$HIVE",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_1609.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_1847.png",
     "scheduled_time": "2026-04-08T12:08:50.746963-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2554,7 +2519,7 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260408_1609.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260408_1847.png",
     "scheduled_time": "2026-04-08T12:08:50.746963-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2564,5 +2529,60 @@
     },
     "generated_at": "2026-04-08T16:08:50.746962+00:00",
     "cost_usd": 0.017403
+  },
+  {
+    "id": "live_20260408_144743_v1",
+    "text": "Fintech conviction plays paying off: $SOFI hit $32.00 from our $7.90 entry. Over 300% when you let the winners run. Risk-on rotation confirms the thesis.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260408_1847.png",
+    "scheduled_time": "2026-04-08T14:47:43.531727-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+2.55%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-08T18:47:43.531726+00:00",
+    "cost_usd": 0.017419
+  },
+  {
+    "id": "live_20260408_144743_v2",
+    "text": "$EVTL +55.6% from $4.50 entry despite recent pullback. Drone tech thesis intact\u2014geopolitical tailwinds don't move in straight lines. Win more than you lose.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260408_1847.png",
+    "scheduled_time": "2026-04-08T14:47:43.531727-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+2.55%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-08T18:47:43.531726+00:00",
+    "cost_usd": 0.017419,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260408_144743_v3",
+    "text": "$HIVE new signal at $2.50.\nCrypto mining play up 5.2%.\nBitcoin bouncing, oil crashing.\nRisk-on rotation starting. \ud83c\udfaf",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260408_1847.png",
+    "scheduled_time": "2026-04-08T14:47:43.531727-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+2.55%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-08T18:47:43.531726+00:00",
+    "cost_usd": 0.017419
   }
 ]

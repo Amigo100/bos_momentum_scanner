@@ -1558,26 +1558,6 @@
     "tweet_id": "2041288630673543297"
   },
   {
-    "id": "live_20260407_100654_v1",
-    "text": "$EVTL pullback to $2.36.\nSmall-cap chop, not thesis break.\nDefense theme still strong.\nWatching support levels. DYOR",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260407_1500.png",
-    "scheduled_time": "2026-04-07T10:06:54.576722-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.6%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-07T14:06:54.576721+00:00",
-    "cost_usd": 0.017324,
-    "posted_at": "2026-04-07T15:21:09.663326",
-    "tweet_id": "2041536764519612467"
-  },
-  {
     "id": "watchdog_20260407_001",
     "text": "\ud83d\udfe2 $VYGR scanner signal detected \u2014 BBB Gene Therapy Platform theme showing institutional accumulation after clearing all structural gates. Entry zone active.",
     "category": "SIGNAL_ALERT",
@@ -2474,9 +2454,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-13T13:55:08.683291+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260413_002",
@@ -2485,9 +2466,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-13T13:55:08.683291+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-14T14:38:08.417566",
+    "tweet_id": "2044062654373756960"
   },
   {
     "id": "watchdog_20260413_003",
@@ -2518,16 +2501,17 @@
     "primary_ticker": "$ASPI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260413_2241.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260414_1417.png",
     "scheduled_time": "2026-04-13T18:41:02.976392-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.02%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-13T22:41:02.976390+00:00",
-    "cost_usd": 0.017162
+    "cost_usd": 0.017162,
+    "skip_reason": "Stale: 16h old"
   },
   {
     "id": "live_20260413_184102_v2",
@@ -2555,15 +2539,126 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260413_2241.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260414_1417.png",
     "scheduled_time": "2026-04-13T18:41:02.976392-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.02%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-13T22:41:02.976390+00:00",
-    "cost_usd": 0.017162
+    "cost_usd": 0.017162,
+    "skip_reason": "Stale: 16h old"
+  },
+  {
+    "id": "live_20260414_101748_v1",
+    "text": "$VYGR at $4.45. Gene therapy platform with BBB penetration tech. Watching for BLA timeline catalyst to validate thesis.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260414_1417.png",
+    "scheduled_time": "2026-04-14T10:17:48.796798-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-14T14:17:48.796796+00:00",
+    "cost_usd": 0.017334
+  },
+  {
+    "id": "live_20260414_101748_v2",
+    "text": "$AMD holding green while chip stocks sold off today. When the sector rotates, the names with data center exposure separate from the pack. Institutional money doesn't chase\u2014it positions before the move validates.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "AMD",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260414_1418.png",
+    "scheduled_time": "2026-04-14T10:17:48.796798-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-14T14:17:48.796796+00:00",
+    "cost_usd": 0.017334,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260414_101748_v3",
+    "text": "$EVTL pullback to $4.20.\nDrone sector consolidating.\nSetup intact unless breaks $3.90.\nCash is a position too.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260414_1418.png",
+    "scheduled_time": "2026-04-14T10:17:48.796798-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-14T14:17:48.796796+00:00",
+    "cost_usd": 0.017334
+  },
+  {
+    "id": "watchdog_20260414_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation. When biotech structural pivots align with scanner validation, we execute.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-14T13:59:40.456938+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260414_002",
+    "text": "Small-cap momentum setup mirrors 2016: earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is happening in real-time.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-14T13:59:40.456938+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260414_003",
+    "text": "Why we track theme momentum: $ASPI (Nuclear Fuel), $EVTL (Drone Tech), $BAND (AI Voice Infrastructure) \u2014 each represents structural shifts driving multi-month trends. Themes create alpha.",
+    "category": "EDUCATIONAL",
+    "account": "variant_2",
+    "ticker": "$ASPI",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-14T13:59:40.456938+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260414_004",
+    "text": "Portfolio alpha: +26.23% vs SPY. Capital preservation meets momentum capture \u2014 when structural themes align with scanner validation, the math works.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-14T13:59:40.456938+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260414_005",
+    "text": "Today's scanner themes: BBB Gene Therapy (PRIME), GLP-1 Obesity Telehealth (INVESTABLE), Defense Additive Manufacturing (INVESTABLE). Which structural pivot catches your attention?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-14T13:59:40.456938+00:00",
+    "source": "watchdog"
   }
 ]

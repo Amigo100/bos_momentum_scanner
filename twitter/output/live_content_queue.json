@@ -1608,25 +1608,6 @@
     "tweet_id": "2041651466755014740"
   },
   {
-    "id": "live_20260407_110052_v1",
-    "text": "$VYGR at $3.85. Up 3.2% while market bleeds. Gene therapy thesis intact.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260407_1831.png",
-    "scheduled_time": "2026-04-07T11:00:52.969857-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-07T15:00:52.969855+00:00",
-    "cost_usd": 0.01734,
-    "error": "503 Service Unavailable\nService Unavailable"
-  },
-  {
     "id": "live_20260407_143127_v1",
     "text": "$VYGR at $3.94. Entry $4.45, down 11.5% but holding above gene therapy platform avg today. BBB thesis intact despite volatility.",
     "category": "RECEIPT",
@@ -2479,9 +2460,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "blocked",
     "created_at": "2026-04-13T13:55:08.683291+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "block_reason": "BLOCKED: Negative P&L in tweet: ['-0.16%']"
   },
   {
     "id": "watchdog_20260413_005",
@@ -2490,9 +2472,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-13T13:55:08.683291+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-14T16:22:20.456842",
+    "tweet_id": "2044088877242298440"
   },
   {
     "id": "live_20260413_184102_v1",
@@ -2558,7 +2542,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260414_1417.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260414_1602.png",
     "scheduled_time": "2026-04-14T10:17:48.796798-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2595,7 +2579,7 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260414_1418.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260414_1602.png",
     "scheduled_time": "2026-04-14T10:17:48.796798-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2635,9 +2619,10 @@
     "account": "variant_2",
     "ticker": "$ASPI",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-14T13:59:40.456938+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260414_004",
@@ -2660,5 +2645,41 @@
     "status": "pending",
     "created_at": "2026-04-14T13:59:40.456938+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260414_120204_v1",
+    "text": "$SOFI at $32.00. +305.1% from $7.90 entry. Fintech recovery thesis confirmed while market chops.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260414_1602.png",
+    "scheduled_time": "2026-04-14T12:02:04.106072-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-14T16:02:04.106070+00:00",
+    "cost_usd": 0.017214
+  },
+  {
+    "id": "live_20260414_120204_v2",
+    "text": "$BAND lagging today.\nDown 2% at $16.20.\nStill up from entry.\nCash is a position.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260414_1602.png",
+    "scheduled_time": "2026-04-14T12:02:04.106072-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-14T16:02:04.106070+00:00",
+    "cost_usd": 0.017214
   }
 ]

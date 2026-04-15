@@ -1608,45 +1608,6 @@
     "tweet_id": "2041651466755014740"
   },
   {
-    "id": "live_20260408_100759_v1",
-    "text": "$VYGR at $3.95. Entry was $4.45 on BBB gene therapy thesis. Down 11% but holding daily support zone. Position sizing matters\u2014uncomfortable pullbacks don't break accounts when risk is managed right.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260408_1608.png",
-    "scheduled_time": "2026-04-08T10:07:59.770384-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+2.7%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-08T14:07:59.770383+00:00",
-    "cost_usd": 0.01758,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260408_100759_v2",
-    "text": "$EVTL bouncing +1.2% to $4.80.\nDrone theme rotation lifting boats.\nDown from $4.50 entry but holding.\nTheme's still cooking.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260408_1608.png",
-    "scheduled_time": "2026-04-08T10:07:59.770384-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+2.7%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-08T14:07:59.770383+00:00",
-    "cost_usd": 0.01758,
-    "posted_at": "2026-04-08T16:29:09.178952",
-    "tweet_id": "2041916262683496599"
-  },
-  {
     "id": "watchdog_20260408_001",
     "text": "$VYGR clearing all gates on our BBB gene therapy scanner. Structural pivot confirmed as institutional accumulation builds momentum across the biotech complex.",
     "category": "SIGNAL_ALERT",
@@ -2521,9 +2482,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-14T13:59:40.456938+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260414_005",
@@ -2532,9 +2494,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-14T13:59:40.456938+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-15T14:31:58.758781",
+    "tweet_id": "2044423491739324872"
   },
   {
     "id": "live_20260414_120204_v1",
@@ -2600,16 +2564,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260414_2243.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260415_1411.png",
     "scheduled_time": "2026-04-14T18:43:19.680139-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.18%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-14T22:43:19.680137+00:00",
-    "cost_usd": 0.017471
+    "cost_usd": 0.017471,
+    "skip_reason": "Stale: 16h old"
   },
   {
     "id": "live_20260414_184319_v2",
@@ -2618,15 +2583,108 @@
     "primary_ticker": "ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260414_2243.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260415_1411.png",
     "scheduled_time": "2026-04-14T18:43:19.680139-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.18%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-14T22:43:19.680137+00:00",
-    "cost_usd": 0.017471
+    "cost_usd": 0.017471,
+    "skip_reason": "Stale: 16h old"
+  },
+  {
+    "id": "live_20260415_101146_v1",
+    "text": "$SOFI from $7.90 to $32.00 teaches the compounding lesson. Entry looked reasonable. Exit at +305% looked greedy. But letting conviction plays run is how portfolios actually grow. Sometimes the \"risky\" play is cutting winners too early.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260415_1411.png",
+    "scheduled_time": "2026-04-15T10:11:46.157636-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.12%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-15T14:11:46.157634+00:00",
+    "cost_usd": 0.016882
+  },
+  {
+    "id": "live_20260415_101146_v2",
+    "text": "$EVTL consolidating nicely.\nEntry $4.50, ran to $7.00.\nDrone sector catching breath.\nWatching for reentry zone.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260415_1411.png",
+    "scheduled_time": "2026-04-15T10:11:46.157636-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.12%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-15T14:11:46.157634+00:00",
+    "cost_usd": 0.016882
+  },
+  {
+    "id": "watchdog_20260415_001",
+    "text": "\ud83d\udfe2 $VYGR scanner hit - BBB gene therapy platform cleared all gates. Institutional accumulation building at $4.45 entry zone. This theme just shifted to PRIME status.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-15T13:53:25.946803+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260415_002",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening, 25-year relative discount, institutional rotation accelerating. The next 6-18 months favor selectivity over indexing.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-15T13:53:25.946803+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260415_003",
+    "text": "BBB gene therapy platforms are structural pivots in drug delivery. Traditional therapies can't cross the blood-brain barrier - these platforms solve a $100B+ addressable problem.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-15T13:53:25.946803+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260415_004",
+    "text": "Portfolio alpha: +26.23% vs SPY's -0.16%. Capital preservation through theme selection and momentum scanning beats passive indexing when structural shifts accelerate.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-15T13:53:25.946803+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260415_005",
+    "text": "Iran tensions creating volatility, but the underlying small-cap rotation thesis remains intact. Quality momentum names with institutional backing weather macro noise better.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-15T13:53:25.946803+00:00",
+    "source": "watchdog"
   }
 ]

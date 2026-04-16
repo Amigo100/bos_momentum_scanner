@@ -2665,9 +2665,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-16T14:01:59.453370+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260416_002",
@@ -2676,9 +2677,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-04-16T14:01:59.453370+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "skip_reason": "Too similar (73%) to tweet posted at 2026-04-15T22:59:49.034060"
   },
   {
     "id": "watchdog_20260416_003",
@@ -2721,7 +2723,7 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260416_1617.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260416_1844.png",
     "scheduled_time": "2026-04-16T12:17:01.752616-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2731,5 +2733,60 @@
     },
     "generated_at": "2026-04-16T16:17:01.752614+00:00",
     "cost_usd": 0.017383
+  },
+  {
+    "id": "live_20260416_144454_v1",
+    "text": "$EVTL at $3.30. Down 26.7% from $4.50 entry. eVTOL theme hasn't confirmed yet. Setup invalidated below $2.90.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260416_1845.png",
+    "scheduled_time": "2026-04-16T14:44:54.664077-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-16T18:44:54.664076+00:00",
+    "cost_usd": 0.017502
+  },
+  {
+    "id": "live_20260416_144454_v2",
+    "text": "Fintech catching real institutional flow. $SOFI entry $7.90 \u2192 $32.00 high. +305% since December. SEC rule changes validated the entire thesis.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260416_1844.png",
+    "scheduled_time": "2026-04-16T14:44:54.664077-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-16T18:44:54.664076+00:00",
+    "cost_usd": 0.017502,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260416_144454_v3",
+    "text": "$BAND trimmed at $18.05.\nEntry $16.55, ran +9.1%.\nPhotonic buzz fading.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260416_1845.png",
+    "scheduled_time": "2026-04-16T14:44:54.664077-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.1%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-16T18:44:54.664076+00:00",
+    "cost_usd": 0.017502
   }
 ]

@@ -2701,9 +2701,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-16T14:01:59.453370+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260416_005",
@@ -2712,9 +2713,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-16T14:01:59.453370+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-16T22:58:26.550233",
+    "tweet_id": "2044913335288664095"
   },
   {
     "id": "live_20260416_121701_v1",
@@ -2723,16 +2726,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260416_1844.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260416_2238.png",
     "scheduled_time": "2026-04-16T12:17:01.752616-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.15%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-16T16:17:01.752614+00:00",
-    "cost_usd": 0.017383
+    "cost_usd": 0.017383,
+    "skip_reason": "Stale: 7h old"
   },
   {
     "id": "live_20260416_144454_v1",
@@ -2741,16 +2745,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260416_1845.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260416_2238.png",
     "scheduled_time": "2026-04-16T14:44:54.664077-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.1%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-16T18:44:54.664076+00:00",
-    "cost_usd": 0.017502
+    "cost_usd": 0.017502,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260416_144454_v2",
@@ -2778,15 +2783,53 @@
     "primary_ticker": "BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260416_1845.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260416_2238.png",
     "scheduled_time": "2026-04-16T14:44:54.664077-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.1%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-16T18:44:54.664076+00:00",
-    "cost_usd": 0.017502
+    "cost_usd": 0.017502,
+    "skip_reason": "Stale: 4h old"
+  },
+  {
+    "id": "live_20260416_183807_v1",
+    "text": "$VYGR entry $4.45, now $4.45. Flat on entry, but BBB gene therapy platform advances keep the thesis intact. Some plays take time to develop.",
+    "category": "RECEIPT",
+    "primary_ticker": "VYGR",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260416_2238.png",
+    "scheduled_time": "2026-04-16T18:38:07.224523-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.15%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-16T22:38:07.224522+00:00",
+    "cost_usd": 0.017539,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260416_183807_v2",
+    "text": "$ASPI setup invalidated.\nEntry $6.00, trimmed $5.11.\nDefense additive thesis intact but price broke support.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260416_2238.png",
+    "scheduled_time": "2026-04-16T18:38:07.224523-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.15%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-16T22:38:07.224522+00:00",
+    "cost_usd": 0.017539
   }
 ]

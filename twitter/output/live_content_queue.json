@@ -2853,9 +2853,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-17T13:44:31.727586+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-17T18:33:24.052714",
+    "tweet_id": "2045209023264313481"
   },
   {
     "id": "watchdog_20260417_003",
@@ -2876,9 +2878,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-17T13:44:31.727586+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260417_005",
@@ -2898,7 +2901,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260417_1448.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260417_1813.png",
     "scheduled_time": "2026-04-17T10:48:13.341927-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -2908,5 +2911,42 @@
     },
     "generated_at": "2026-04-17T14:48:13.341925+00:00",
     "cost_usd": 0.017274
+  },
+  {
+    "id": "live_20260417_141310_v1",
+    "text": "What happens when you size a position correctly and the thesis validates? $EVTL taught us this lesson the hard way. Entry $4.50, currently $4.20. Down 6.7%, but position sizing means it's noise, not damage. That's the edge between discipline and panic.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260417_1813.png",
+    "scheduled_time": "2026-04-17T14:13:10.887828-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.68%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-17T18:13:10.887827+00:00",
+    "cost_usd": 0.017398,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260417_141310_v2",
+    "text": "Photonics theme cooled off \u2014 trimmed $BAND at $15.80 from $16.55 entry. Optical surge stalled. Setup no longer valid. Win more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260417_1813.png",
+    "scheduled_time": "2026-04-17T14:13:10.887828-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.68%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-17T18:13:10.887827+00:00",
+    "cost_usd": 0.017398
   }
 ]

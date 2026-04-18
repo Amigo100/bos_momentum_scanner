@@ -1780,26 +1780,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260411_104150_v1",
-    "text": "$EVTL rebounding +1.7%.\nDefense infra talks heating up.\neVTOL names waking up.\nWatching this one close.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260411_2035.png",
-    "scheduled_time": "2026-04-11T10:41:50.484379-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.17%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-11T14:41:50.484377+00:00",
-    "cost_usd": 0.017396,
-    "posted_at": "2026-04-11T20:56:06.065644",
-    "tweet_id": "2043070607168786685"
-  },
-  {
     "id": "watchdog_20260411_001",
     "text": "Small-cap momentum setup hasn't looked this favorable since 2016. Earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating. The structural foundation is being laid for sustained outperformance.",
     "category": "MARKET_COMMENTARY",
@@ -2922,15 +2902,92 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260417_2236.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260418_1448.png",
     "scheduled_time": "2026-04-17T18:36:44.639241-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.3%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-17T22:36:44.639239+00:00",
-    "cost_usd": 0.01746
+    "cost_usd": 0.01746,
+    "posted_at": "2026-04-18T15:08:30.027619",
+    "tweet_id": "2045519845580534037"
+  },
+  {
+    "id": "live_20260418_104816_v1",
+    "text": "$EVTL holding strength.\nVascular therapy theme waking up.\nEntry $4.50, sitting $4.75.\nDYOR \ud83c\udfaf",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260418_1448.png",
+    "scheduled_time": "2026-04-18T10:48:16.379484-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.68%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-18T14:48:16.379483+00:00",
+    "cost_usd": 0.01744
+  },
+  {
+    "id": "watchdog_20260418_001",
+    "text": "Small-cap momentum setup hasn't been this favorable since 2016. 25-year relative valuation discount + institutional rotation accelerating + earnings broadening = structural pivot point. The next 6-18 months could define the cycle.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-18T13:15:16.165612+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260418_002",
+    "text": "$VYGR cleared all gates again \u2014 BBB Gene Therapy Platform theme showing institutional accumulation. When biotech momentum aligns with structural catalysts, the moves can be explosive. Capital preservation first, then size up.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-18T13:15:16.165612+00:00",
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "watchdog_20260418_003",
+    "text": "Portfolio up 49.77% vs SPY's 4.35% \u2014 that's 45.42% alpha. Not luck. Not gambling. Systematic momentum capture across 8 themes: fintech, semiconductors, nuclear fuel, gene therapy. Discipline beats discretion every time.",
+    "category": "RECEIPT",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-18T13:15:16.165612+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260418_004",
+    "text": "Scanning 5 prime themes today: BBB Gene Therapy, GLP-1 Telehealth, Bladder Cancer Immunotherapy, Defence Additive Manufacturing, Photonic Interconnect. When institutional money finds momentum, retail follows. Position accordingly.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-18T13:15:16.165612+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260418_005",
+    "text": "Weekend question: What's harder \u2014 finding the right entry or knowing when to exit? Most traders obsess over entries but ignore position management. The pros know: entries get you in, exits make you money.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-18T13:15:16.165612+00:00",
+    "source": "watchdog"
   }
 ]

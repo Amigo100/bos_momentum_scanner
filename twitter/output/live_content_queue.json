@@ -1842,25 +1842,6 @@
     "tweet_id": "2043433754555773255"
   },
   {
-    "id": "live_20260412_104738_v1",
-    "text": "$EVTL pullback to $2.34.\nDrone tech consolidating near support.\nDefense theme still loading.\nWatching for reversal.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260412_2039.png",
-    "scheduled_time": "2026-04-12T10:47:38.275657-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.11%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-12T14:47:38.275655+00:00",
-    "cost_usd": 0.017499,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "watchdog_20260412_001",
     "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening, 25-year valuation discount, institutional rotation accelerating. The structural pivot is real \u2014 but geopolitical noise creates temporary windows for those who can see through it.",
     "category": "MARKET_COMMENTARY",
@@ -2904,9 +2885,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-18T13:15:16.165612+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260418_002",
@@ -2962,15 +2944,109 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260418_2039.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260419_1448.png",
     "scheduled_time": "2026-04-18T16:39:03.095016-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+1.20%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-18T20:39:03.095014+00:00",
-    "cost_usd": 0.017556
+    "cost_usd": 0.017556,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260419_104834_v1",
+    "text": "$AMD from $120.00 to $278.39. +132.0% riding the AI inference chip wave. The thesis was simple: broadening beyond NVDA meant AMD captures the overflow. Patience pays.",
+    "category": "RECEIPT",
+    "primary_ticker": "AMD",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260419_1448.png",
+    "scheduled_time": "2026-04-19T10:48:34.440776-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.68%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-19T14:48:34.440775+00:00",
+    "cost_usd": 0.017537,
+    "error": "403 Forbidden"
+  },
+  {
+    "id": "live_20260419_104834_v2",
+    "text": "$EVTL setup invalidated.\nEntry $4.50, closed $2.99.\nVertical farming theme didn't deliver.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260419_1448.png",
+    "scheduled_time": "2026-04-19T10:48:34.440776-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.68%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-19T14:48:34.440775+00:00",
+    "cost_usd": 0.017537
+  },
+  {
+    "id": "watchdog_20260419_001",
+    "text": "Sunday scanner shows $VYGR cleared all gates again. BBB Gene Therapy Platform theme strengthening across the board. When institutional accumulation meets structural pivot, momentum follows.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-19T13:15:15.561407+00:00",
+    "source": "watchdog",
+    "error": "403 Forbidden"
+  },
+  {
+    "id": "watchdog_20260419_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. Capital preservation still paramount until confirmed.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-19T13:15:15.561407+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260419_003",
+    "text": "Portfolio update: 8 positions across themes from Nuclear Fuel to BBB Gene Therapy. 49.77% return vs SPY's 4.35%. Alpha speaks louder than predictions.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-19T13:15:15.561407+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260419_004",
+    "text": "BBB Gene Therapy Platform hitting PRIME status. When breakthrough science meets favorable market structure, momentum traders take notice. Theme catalyst developing.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-19T13:15:15.561407+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260419_005",
+    "text": "Sunday question: What's harder - finding the right entry or knowing when to exit? The scanner finds momentum, but risk management determines survival.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-19T13:15:15.561407+00:00",
+    "source": "watchdog"
   }
 ]

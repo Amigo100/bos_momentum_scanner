@@ -1891,45 +1891,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260413_101424_v1",
-    "text": "$VYGR at $3.89. Gene therapy platform play. BBB delivery advancing CNS drug pipelines. Watching $4.45 reclaim.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260413_2241.png",
-    "scheduled_time": "2026-04-13T10:14:24.638648-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.33%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-13T14:14:24.638647+00:00",
-    "cost_usd": 0.017227,
-    "skip_reason": "Stale: 9h old"
-  },
-  {
-    "id": "live_20260413_101424_v2",
-    "text": "$EVTL setup invalidated.\nEntry $4.50, now $2.32.\nWin more than you lose.\nCash is a position.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260413_2241.png",
-    "scheduled_time": "2026-04-13T10:14:24.638648-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.33%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-13T14:14:24.638647+00:00",
-    "cost_usd": 0.017227,
-    "posted_at": "2026-04-13T23:01:22.824510",
-    "tweet_id": "2043826910728237369"
-  },
-  {
     "id": "watchdog_20260413_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45. BBB Gene Therapy Platform theme showing institutional accumulation. Scanner confirming structural pivot into biotech momentum.",
     "category": "SIGNAL_ALERT",
@@ -2996,9 +2957,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-19T13:15:15.561407+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-20T14:39:25.863968",
+    "tweet_id": "2046237306466521340"
   },
   {
     "id": "watchdog_20260419_003",
@@ -3042,16 +3005,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260419_2040.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_1419.png",
     "scheduled_time": "2026-04-19T16:39:53.593703-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.68%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-19T20:39:53.593702+00:00",
-    "cost_usd": 0.017328
+    "cost_usd": 0.017328,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260419_163953_v2",
@@ -3060,15 +3024,90 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260419_2040.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_1419.png",
     "scheduled_time": "2026-04-19T16:39:53.593703-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.68%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-19T20:39:53.593702+00:00",
-    "cost_usd": 0.017328
+    "cost_usd": 0.017328,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260420_101913_v1",
+    "text": "$EVTL setup invalidated.\nEntry $4.50, exit $3.00.\nDrone thesis weakened.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260420_1419.png",
+    "scheduled_time": "2026-04-20T10:19:13.338556-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-20T14:19:13.338554+00:00",
+    "cost_usd": 0.017249
+  },
+  {
+    "id": "watchdog_20260420_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform showing institutional accumulation as blood-brain barrier plays gain momentum. Theme PRIME status confirmed.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-20T13:57:39.446431+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260420_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-20T13:57:39.446431+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260420_003",
+    "text": "BBB Gene Therapy Platform hits PRIME status this week. When the blood-brain barrier becomes permeable to treatment, entire disease categories shift from untreatable to addressable.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-20T13:57:39.446431+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260420_004",
+    "text": "Portfolio NAV: $55,985 (+49.77%) vs SPY (+4.35%) = 45.42% alpha. 8 positions across AI infrastructure, nuclear fuel, gene therapy, and fintech themes showing structural momentum.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-20T13:57:39.446431+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260420_005",
+    "text": "Capital preservation isn't about avoiding risk \u2014 it's about understanding when small-cap structural pivots create asymmetric reward-to-risk ratios. Today's note explores the setup.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-20T13:57:39.446431+00:00",
+    "source": "watchdog"
   }
 ]

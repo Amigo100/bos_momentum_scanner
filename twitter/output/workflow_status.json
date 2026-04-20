@@ -1,15 +1,5 @@
 [
   {
-    "workflow": "friday_scan",
-    "run_id": 23364099301,
-    "status": "success",
-    "started_at": "2026-03-20T21:55:29Z",
-    "completed_at": "2026-03-20T21:55:29Z",
-    "duration_seconds": 0,
-    "error": null,
-    "trigger": "schedule"
-  },
-  {
     "workflow": "live_tweet",
     "run_id": 23365057703,
     "status": "success",
@@ -1465,6 +1455,21 @@
     "status": "success",
     "started_at": "2026-04-20T14:39:26Z",
     "completed_at": "2026-04-20T14:39:26Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule",
+    "account_results": {
+      "account1": 1,
+      "account2": 1,
+      "account3": 0
+    }
+  },
+  {
+    "workflow": "live_tweet",
+    "run_id": 24676741264,
+    "status": "success",
+    "started_at": "2026-04-20T16:22:32Z",
+    "completed_at": "2026-04-20T16:22:32Z",
     "duration_seconds": 0,
     "error": null,
     "trigger": "schedule",

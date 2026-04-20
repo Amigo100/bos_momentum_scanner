@@ -1941,63 +1941,6 @@
     "tweet_id": "2044088877242298440"
   },
   {
-    "id": "live_20260413_184102_v1",
-    "text": "$ASPI at $6.19. +3.2% today. Defense manufacturing theme rotating capital on Iran tensions. Position entered $6.00.",
-    "category": "RECEIPT",
-    "primary_ticker": "$ASPI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260414_1417.png",
-    "scheduled_time": "2026-04-13T18:41:02.976392-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+1.02%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-13T22:41:02.976390+00:00",
-    "cost_usd": 0.017162,
-    "skip_reason": "Stale: 16h old"
-  },
-  {
-    "id": "live_20260413_184102_v2",
-    "text": "What happens when fintech names break consolidation during positive economic prints? $SOFI up 2.77% to $16.67 while many are still waiting for 'the perfect entry.' We entered at $7.90. That's why early positioning matters.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$SOFI",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260413_2241.png",
-    "scheduled_time": "2026-04-13T18:41:02.976392-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+1.02%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-13T22:41:02.976390+00:00",
-    "cost_usd": 0.017162,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260413_184102_v3",
-    "text": "$HIVE +4.1% today.\nCrypto mining meets AI data.\nEntry $2.10, now $2.19.\nTheme just getting started.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260414_1417.png",
-    "scheduled_time": "2026-04-13T18:41:02.976392-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+1.02%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-13T22:41:02.976390+00:00",
-    "cost_usd": 0.017162,
-    "skip_reason": "Stale: 16h old"
-  },
-  {
     "id": "live_20260414_101748_v1",
     "text": "$VYGR at $4.45. Gene therapy platform with BBB penetration tech. Watching for BLA timeline catalyst to validate thesis.",
     "category": "EDUCATIONAL",
@@ -3077,9 +3020,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-04-20T13:57:39.446431+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "skip_reason": "Too similar (87%) to tweet posted at 2026-04-20T14:39:25.863968"
   },
   {
     "id": "watchdog_20260420_003",
@@ -3124,16 +3068,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_1835.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_2241.png",
     "scheduled_time": "2026-04-20T12:02:22.277935-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.21%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-20T16:02:22.277933+00:00",
-    "cost_usd": 0.017215
+    "cost_usd": 0.017215,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260420_143533_v1",
@@ -3142,15 +3087,71 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_1835.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_2241.png",
     "scheduled_time": "2026-04-20T14:35:33.548193-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-20T18:35:33.548192+00:00",
-    "cost_usd": 0.017204
+    "cost_usd": 0.017204,
+    "skip_reason": "Stale: 4h old"
+  },
+  {
+    "id": "live_20260420_184105_v1",
+    "text": "$SOFI from $7.90 to $32.00. +305.1% on the fintech play. Thesis intact through the noise.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260420_2241.png",
+    "scheduled_time": "2026-04-20T18:41:05.661757-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-20T22:41:05.661756+00:00",
+    "cost_usd": 0.017313
+  },
+  {
+    "id": "live_20260420_184105_v2",
+    "text": "What happens when a drone thesis meets supply chain reality? $EVTL down 36.4% from entry teaches the lesson every trader needs \u2014 not every setup survives volatility. Exit signals exist for exactly this reason.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260420_2241.png",
+    "scheduled_time": "2026-04-20T18:41:05.661757-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-20T22:41:05.661756+00:00",
+    "cost_usd": 0.017313,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260420_184105_v3",
+    "text": "$ASPI closed below $5.50 support \u2014 setup invalidated after a 140% run from $6. Win more than you lose. Moving capital to stronger setups.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260420_2241.png",
+    "scheduled_time": "2026-04-20T18:41:05.661757-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-20T22:41:05.661756+00:00",
+    "cost_usd": 0.017313
   }
 ]

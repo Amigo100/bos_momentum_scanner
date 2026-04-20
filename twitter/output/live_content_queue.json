@@ -3045,16 +3045,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260420_1602.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260420_1835.png",
     "scheduled_time": "2026-04-20T10:19:13.338556-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-20T14:19:13.338554+00:00",
-    "cost_usd": 0.017249
+    "cost_usd": 0.017249,
+    "posted_at": "2026-04-20T18:55:47.880117",
+    "tweet_id": "2046301822604759399"
   },
   {
     "id": "watchdog_20260420_001",
@@ -3098,9 +3100,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-20T13:57:39.446431+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260420_005",
@@ -3121,7 +3124,7 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_1602.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_1835.png",
     "scheduled_time": "2026-04-20T12:02:22.277935-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3131,5 +3134,23 @@
     },
     "generated_at": "2026-04-20T16:02:22.277933+00:00",
     "cost_usd": 0.017215
+  },
+  {
+    "id": "live_20260420_143533_v1",
+    "text": "$NVDA from $150 to $200.65.\n+33.8% on AI chip surge.\nData center contracts stacking.\nThesis intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_1835.png",
+    "scheduled_time": "2026-04-20T14:35:33.548193-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.2%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-20T18:35:33.548192+00:00",
+    "cost_usd": 0.017204
   }
 ]

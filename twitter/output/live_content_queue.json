@@ -3106,16 +3106,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260420_2241.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260421_1414.png",
     "scheduled_time": "2026-04-20T18:41:05.661757-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-20T22:41:05.661756+00:00",
-    "cost_usd": 0.017313
+    "cost_usd": 0.017313,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260420_184105_v2",
@@ -3143,15 +3144,80 @@
     "primary_ticker": "ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260420_2241.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260421_1414.png",
     "scheduled_time": "2026-04-20T18:41:05.661757-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-20T22:41:05.661756+00:00",
-    "cost_usd": 0.017313
+    "cost_usd": 0.017313,
+    "posted_at": "2026-04-21T14:34:59.631982",
+    "tweet_id": "2046598577267363874"
+  },
+  {
+    "id": "live_20260421_101446_v1",
+    "text": "$EVTL bouncing at $5.10.\nGene therapy sector catching bids.\nWatching for confirmation.\nNFA",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260421_1414.png",
+    "scheduled_time": "2026-04-21T10:14:46.362417-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.33%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-21T14:14:46.362415+00:00",
+    "cost_usd": 0.017389
+  },
+  {
+    "id": "watchdog_20260421_001",
+    "text": "\ud83d\udfe2 SIGNAL ALERT: $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme firing on multiple catalysts. Institutional accumulation pattern confirmed across the entire theme complex.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-21T13:57:55.080468+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260421_002",
+    "text": "The small-cap setup is the most favorable since 2016. Earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating. This is structural, not cyclical.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-21T13:57:55.080468+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260421_003",
+    "text": "BBB Gene Therapy Platform just hit PRIME status in our scanner. When biotech themes reach this classification, the structural pivot typically drives 3-6 month momentum cycles. $VYGR leading the charge.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-21T13:57:55.080468+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260421_005",
+    "text": "Today's Substack dives deep into why small-cap momentum setups like this only appear every 6-8 years. The convergence of valuation, earnings, and flows creates multi-quarter alpha opportunities.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-21T13:57:55.080468+00:00",
+    "source": "watchdog"
   }
 ]

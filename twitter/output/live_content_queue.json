@@ -3100,9 +3100,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-21T13:57:55.080468+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden"
   },
   {
     "id": "watchdog_20260421_003",
@@ -3135,16 +3136,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260421_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260421_1840.png",
     "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.19%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-21T16:04:43.766910+00:00",
-    "cost_usd": 0.017067
+    "cost_usd": 0.017067,
+    "error": "403 Forbidden"
   },
   {
     "id": "live_20260421_120443_v2",
@@ -3153,7 +3155,26 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260421_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260421_1840.png",
+    "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.19%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-21T16:04:43.766910+00:00",
+    "cost_usd": 0.017067,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260421_120443_v3",
+    "text": "$BAND holding $16.20.\nPhotonic interconnect theme quiet.\nWatching for volume spike.\nDYOR",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260421_1841.png",
     "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3165,21 +3186,21 @@
     "cost_usd": 0.017067
   },
   {
-    "id": "live_20260421_120443_v3",
-    "text": "$BAND holding $16.20.\nPhotonic interconnect theme quiet.\nWatching for volume spike.\nDYOR",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$BAND",
+    "id": "live_20260421_144050_v1",
+    "text": "$NVDA at $200.37.\nEntry $150. Up 33.6%.\nAI chip backlogs = runway.\nSemis on 14-day streak.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260421_1604.png",
-    "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260421_1841.png",
+    "scheduled_time": "2026-04-21T14:40:50.455434-04:00",
     "status": "pending",
     "context_snapshot": {
-      "spy_at_generation": "-0.19%",
+      "spy_at_generation": "-1.4%",
       "market_mood": "volatile",
       "context_stale": false
     },
-    "generated_at": "2026-04-21T16:04:43.766910+00:00",
-    "cost_usd": 0.017067
+    "generated_at": "2026-04-21T18:40:50.455433+00:00",
+    "cost_usd": 0.017508
   }
 ]

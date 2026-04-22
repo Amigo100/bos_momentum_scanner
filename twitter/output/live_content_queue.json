@@ -3212,9 +3212,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-22T13:58:17.914091+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260422_005",
@@ -3223,9 +3224,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-22T13:58:17.914091+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-22T19:00:02.754718",
+    "tweet_id": "2047027667933765843"
   },
   {
     "id": "live_20260422_120248_v1",
@@ -3253,7 +3256,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260422_1602.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260422_1839.png",
     "scheduled_time": "2026-04-22T12:02:48.152975-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3263,5 +3266,41 @@
     },
     "generated_at": "2026-04-22T16:02:48.152974+00:00",
     "cost_usd": 0.017152
+  },
+  {
+    "id": "live_20260422_143950_v1",
+    "text": "$EVTL down 40.4% from $4.50 entry. Setup invalidated below support. Win more than you lose \u2014 that's systematic trading. Moving capital to higher-conviction drone plays.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260422_1839.png",
+    "scheduled_time": "2026-04-22T14:39:50.349879-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.70%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-22T18:39:50.349878+00:00",
+    "cost_usd": 0.017311
+  },
+  {
+    "id": "live_20260422_143950_v2",
+    "text": "$SOFI at $18.95.\nEarnings April 29.\nEntry was $7.90.\nFintech breakout holding strong.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260422_1840.png",
+    "scheduled_time": "2026-04-22T14:39:50.349879-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.70%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-22T18:39:50.349878+00:00",
+    "cost_usd": 0.017311
   }
 ]

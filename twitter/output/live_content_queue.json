@@ -3238,16 +3238,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260422_2245.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260423_1418.png",
     "scheduled_time": "2026-04-22T18:45:00.971104-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.05%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-22T22:45:00.971102+00:00",
-    "cost_usd": 0.017406
+    "cost_usd": 0.017406,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260422_184500_v2",
@@ -3267,5 +3268,116 @@
     "generated_at": "2026-04-22T22:45:00.971102+00:00",
     "cost_usd": 0.017406,
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260423_101822_v1",
+    "text": "$VYGR at $4.13. Gene therapy platform cleared scanner at $4.45. BBB delivery mechanism thesis intact. Invalidation below $3.80.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260423_1418.png",
+    "scheduled_time": "2026-04-23T10:18:22.586654-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.7%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-23T14:18:22.586653+00:00",
+    "cost_usd": 0.017538
+  },
+  {
+    "id": "live_20260423_101822_v2",
+    "text": "Why is $AMD outperforming $NVDA today? Because the market's finally pricing in valuation. AMD +132.0% from our $120 entry vs NVDA +34.5% from $150. Same AI tailwind, better multiple. That's the edge.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "AMD",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260423_1418.png",
+    "scheduled_time": "2026-04-23T10:18:22.586654-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.7%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-23T14:18:22.586653+00:00",
+    "cost_usd": 0.017538,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260423_101822_v3",
+    "text": "Can't win every trade.\n\n$SOFI +305%. $AMD +132%. $HIVE +186%. $ASPI +140%.\n\nThat's the portfolio that matters.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260423_1418.png",
+    "scheduled_time": "2026-04-23T10:18:22.586654-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.7%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-23T14:18:22.586653+00:00",
+    "cost_usd": 0.017538,
+    "error": "403 Forbidden\nPosts are limited to a maximum of one cashtag ($SYMBOL). Please remove additional cashtags and try again."
+  },
+  {
+    "id": "watchdog_20260423_001",
+    "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation as biotech rotation accelerates into year-end. Position sizing reflects elevated volatility in small-cap biotech.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-23T13:59:58.773134+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260423_002",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation beginning. Capital preservation remains priority amid geopolitical noise.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-23T13:59:58.773134+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260423_003",
+    "text": "BBB Gene Therapy Platform moves to PRIME status. When breakthrough medical technologies achieve clinical validation, the institutional money follows. $VYGR represents pure-play exposure to this structural shift.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-23T13:59:58.773134+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260423_004",
+    "text": "Portfolio alpha now 45.42% vs SPY's 4.35%. Eight themes running simultaneously: AI infrastructure, nuclear fuel cycle, crypto mining infrastructure, and biotech breakthrough platforms. Momentum broadening beyond tech.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-23T13:59:58.773134+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260423_005",
+    "text": "Question for momentum traders: How do you balance position sizing when multiple themes reach PRIME status simultaneously? Risk management becomes critical when opportunity set expands this rapidly.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-23T13:59:58.773134+00:00",
+    "source": "watchdog"
   }
 ]

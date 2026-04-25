@@ -2248,25 +2248,6 @@
     "tweet_id": "2045970718366790111"
   },
   {
-    "id": "live_20260418_163903_v1",
-    "text": "$NVDA sitting $198.43.\nEntry $150.00, up 34.5%.\nAI chip demand relentless.\nThesis validating.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260419_1448.png",
-    "scheduled_time": "2026-04-18T16:39:03.095016-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+1.20%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-18T20:39:03.095014+00:00",
-    "cost_usd": 0.017556,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
     "id": "live_20260419_104834_v1",
     "text": "$AMD from $120.00 to $278.39. +132.0% riding the AI inference chip wave. The thesis was simple: broadening beyond NVDA meant AMD captures the overflow. Patience pays.",
     "category": "RECEIPT",
@@ -3179,9 +3160,10 @@
     "account": "variant_1",
     "ticker": "$NVDA",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-24T13:51:05.318244+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260424_183713_v1",
@@ -3229,16 +3211,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260425_1451.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260425_2040.png",
     "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.34%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-25T14:51:46.570938+00:00",
-    "cost_usd": 0.017314
+    "cost_usd": 0.017314,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260425_105146_v2",
@@ -3247,16 +3230,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260425_1451.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260425_2040.png",
     "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.34%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-25T14:51:46.570938+00:00",
-    "cost_usd": 0.017314
+    "cost_usd": 0.017314,
+    "posted_at": "2026-04-25T21:00:56.352544",
+    "tweet_id": "2048145254839206398"
   },
   {
     "id": "watchdog_20260425_002",
@@ -3302,5 +3287,42 @@
     "status": "pending",
     "created_at": "2026-04-25T13:18:35.380188+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260425_164042_v1",
+    "text": "$SOFI from $7.90 \u2192 $32.00 high. +305.1% on the fintech thesis. Q1 earnings April 29 \u2014 momentum still intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260425_2040.png",
+    "scheduled_time": "2026-04-25T16:40:42.060256-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-25T20:40:42.060254+00:00",
+    "cost_usd": 0.017215
+  },
+  {
+    "id": "live_20260425_164042_v2",
+    "text": "What happens when a position drops 47% from entry? If you sized correctly, it's a learning experience \u2014 not portfolio damage. $EVTL down but account intact. That's the difference between conviction and overexposure.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260425_2040.png",
+    "scheduled_time": "2026-04-25T16:40:42.060256-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-25T20:40:42.060254+00:00",
+    "cost_usd": 0.017215,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

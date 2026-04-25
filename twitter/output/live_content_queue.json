@@ -2187,26 +2187,6 @@
     "tweet_id": "2045275363194839466"
   },
   {
-    "id": "live_20260418_104816_v1",
-    "text": "$EVTL holding strength.\nVascular therapy theme waking up.\nEntry $4.50, sitting $4.75.\nDYOR \ud83c\udfaf",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260418_2039.png",
-    "scheduled_time": "2026-04-18T10:48:16.379484-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.68%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-18T14:48:16.379483+00:00",
-    "cost_usd": 0.01744,
-    "posted_at": "2026-04-18T20:59:13.050514",
-    "tweet_id": "2045608106860962293"
-  },
-  {
     "id": "watchdog_20260418_001",
     "text": "Small-cap momentum setup hasn't been this favorable since 2016. 25-year relative valuation discount + institutional rotation accelerating + earnings broadening = structural pivot point. The next 6-18 months could define the cycle.",
     "category": "MARKET_COMMENTARY",
@@ -3162,9 +3142,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-24T13:51:05.318244+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260424_002",
@@ -3228,15 +3209,98 @@
     "primary_ticker": "HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260424_2237.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260425_1451.png",
     "scheduled_time": "2026-04-24T18:37:13.515606-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.5%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-24T22:37:13.515604+00:00",
-    "cost_usd": 0.017406
+    "cost_usd": 0.017406,
+    "posted_at": "2026-04-25T15:12:02.543337",
+    "tweet_id": "2048057451996496308"
+  },
+  {
+    "id": "live_20260425_105146_v1",
+    "text": "$VYGR at $4.59. Gene therapy catalyst alignment with bladder cancer BLA plans confirmed. When BBB platform plays cluster around regulatory milestones, that's not coincidence \u2014 that's institutional positioning.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260425_1451.png",
+    "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-25T14:51:46.570938+00:00",
+    "cost_usd": 0.017314
+  },
+  {
+    "id": "live_20260425_105146_v2",
+    "text": "$EVTL down 2.5% today.\nDrone tech volatility.\nPosition sized right? Not even a dent.\nConviction vs exposure \u2014 the difference between sleep and stress.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260425_1451.png",
+    "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-25T14:51:46.570938+00:00",
+    "cost_usd": 0.017314
+  },
+  {
+    "id": "watchdog_20260425_002",
+    "text": "Small-cap momentum environment hasn't been this favorable since 2016. Earnings broadening, 25-year valuation discount, institutional rotation accelerating. Portfolio up 54.47% vs SPY's 4.91%.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-25T13:18:35.380188+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260425_003",
+    "text": "BBB gene therapy platforms represent the next frontier in precision medicine. Blood-brain barrier delivery mechanisms solving previously untreatable neurological conditions. Science becoming investable.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-04-25T13:18:35.380188+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260425_004",
+    "text": "Weekend portfolio review: 8 positions across AI chips, nuclear fuel, drone tech, crypto mining. Each position backed by structural trends, not hype. Momentum follows fundamentals.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-25T13:18:35.380188+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260425_005",
+    "text": "Question for momentum traders: When institutional accumulation meets 25-year relative value discount, how do you size positions for maximum capture while protecting downside?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-04-25T13:18:35.380188+00:00",
+    "source": "watchdog"
   }
 ]

@@ -2310,44 +2310,6 @@
     "tweet_id": "2046263254125773146"
   },
   {
-    "id": "live_20260419_163953_v1",
-    "text": "$VYGR at $4.13. EQT Foundation grants validate CNS delivery thesis. BBB gene therapy momentum building across sector.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260420_1419.png",
-    "scheduled_time": "2026-04-19T16:39:53.593703-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.68%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-19T20:39:53.593702+00:00",
-    "cost_usd": 0.017328,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260419_163953_v2",
-    "text": "$NVDA pushing $201.68.\nAI data center wave.\nEntry $150.00, sitting +34.5%.\nDYOR \ud83c\udfaf",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_1419.png",
-    "scheduled_time": "2026-04-19T16:39:53.593703-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.68%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-19T20:39:53.593702+00:00",
-    "cost_usd": 0.017328,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
     "id": "live_20260420_101913_v1",
     "text": "$EVTL setup invalidated.\nEntry $4.50, exit $3.00.\nDrone thesis weakened.\nWin more than you lose.",
     "category": "SELL_SIGNAL",
@@ -3249,9 +3211,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-25T13:18:35.380188+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-26T21:00:22.653354",
+    "tweet_id": "2048507501960982667"
   },
   {
     "id": "live_20260425_164042_v1",
@@ -3298,16 +3262,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260426_1453.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260426_2040.png",
     "scheduled_time": "2026-04-26T10:53:41.058289-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.3%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-04-26T14:53:41.058287+00:00",
-    "cost_usd": 0.017346
+    "cost_usd": 0.017346,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "watchdog_20260426_001",
@@ -3327,9 +3292,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-26T13:19:41.742657+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260426_004",
@@ -3352,5 +3318,41 @@
     "status": "pending",
     "created_at": "2026-04-26T13:19:41.742657+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260426_164009_v1",
+    "text": "$VYGR at $3.79. Gene therapy sector volatility is expected pre-catalyst. Position sized for this exact scenario \u2014 entry $4.45, watching $3.50 support.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260426_2040.png",
+    "scheduled_time": "2026-04-26T16:40:09.714871-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-26T20:40:09.714869+00:00",
+    "cost_usd": 0.017334
+  },
+  {
+    "id": "live_20260426_164009_v2",
+    "text": "$NVDA +2.5% today.\nAI chips leading the rally.\nSemis at 14% market cap.\nMost overbought ever \ud83c\udfaf",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260426_2040.png",
+    "scheduled_time": "2026-04-26T16:40:09.714871-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.34%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-26T20:40:09.714869+00:00",
+    "cost_usd": 0.017334
   }
 ]

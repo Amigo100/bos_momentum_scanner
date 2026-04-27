@@ -2370,25 +2370,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260420_143533_v1",
-    "text": "$NVDA from $150 to $200.65.\n+33.8% on AI chip surge.\nData center contracts stacking.\nThesis intact.",
-    "category": "RECEIPT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260420_2241.png",
-    "scheduled_time": "2026-04-20T14:35:33.548193-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.2%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-20T18:35:33.548192+00:00",
-    "cost_usd": 0.017204,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
     "id": "live_20260420_184105_v1",
     "text": "$SOFI from $7.90 to $32.00. +305.1% on the fintech play. Thesis intact through the noise.",
     "category": "RECEIPT",
@@ -3349,16 +3330,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260427_1620.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260427_1851.png",
     "scheduled_time": "2026-04-27T10:34:12.474012-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.2%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-27T14:34:12.474010+00:00",
-    "cost_usd": 0.01728
+    "cost_usd": 0.01728,
+    "posted_at": "2026-04-27T19:11:27.570216",
+    "tweet_id": "2048842479265599922"
   },
   {
     "id": "watchdog_20260427_001",
@@ -3367,9 +3350,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-27T14:09:26.851079+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260427_002",
@@ -3423,7 +3407,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260427_1620.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260427_1851.png",
     "scheduled_time": "2026-04-27T12:20:14.000283-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3433,5 +3417,24 @@
     },
     "generated_at": "2026-04-27T16:20:14.000282+00:00",
     "cost_usd": 0.017359
+  },
+  {
+    "id": "live_20260427_145116_v1",
+    "text": "Why does drone tech volatility shake out weak hands? Because position sizing matters more than being right. $EVTL down 1.2% on sector noise, but it's 2% of the portfolio \u2014 uncomfortable, not catastrophic. That's how you survive the chop.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260427_1851.png",
+    "scheduled_time": "2026-04-27T14:51:16.154214-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.15%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-27T18:51:16.154212+00:00",
+    "cost_usd": 0.017293,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

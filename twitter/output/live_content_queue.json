@@ -2418,64 +2418,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260421_120443_v1",
-    "text": "$VYGR at $4.60. +3.5% today on gene therapy momentum. BBB delivery platform for CNS disorders \u2014 watching $5.00 resistance.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260421_1840.png",
-    "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.19%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-21T16:04:43.766910+00:00",
-    "cost_usd": 0.017067,
-    "error": "403 Forbidden"
-  },
-  {
-    "id": "live_20260421_120443_v2",
-    "text": "$EVTL down on sector pressure, not fundamentals. Drone tech names getting caught in macro noise. The lesson: conviction plays need room to breathe through volatility they didn't create.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260421_1840.png",
-    "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.19%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-21T16:04:43.766910+00:00",
-    "cost_usd": 0.017067,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260421_120443_v3",
-    "text": "$BAND holding $16.20.\nPhotonic interconnect theme quiet.\nWatching for volume spike.\nDYOR",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$BAND",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260421_2236.png",
-    "scheduled_time": "2026-04-21T12:04:43.766912-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.19%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-21T16:04:43.766910+00:00",
-    "cost_usd": 0.017067,
-    "posted_at": "2026-04-21T22:57:09.503103",
-    "tweet_id": "2046724951139619139"
-  },
-  {
     "id": "live_20260421_144050_v1",
     "text": "$NVDA at $200.37.\nEntry $150. Up 33.6%.\nAI chip backlogs = runway.\nSemis on 14-day streak.",
     "category": "SIGNAL_ALERT",
@@ -3449,16 +3391,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260428_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260428_1647.png",
     "scheduled_time": "2026-04-28T12:04:22.363948-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.55%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-28T16:04:22.363946+00:00",
-    "cost_usd": 0.017434
+    "cost_usd": 0.017434,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260428_120422_v2",
@@ -3486,16 +3429,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260428_1604.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260428_1647.png",
     "scheduled_time": "2026-04-28T12:04:22.363948-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.55%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-04-28T16:04:22.363946+00:00",
-    "cost_usd": 0.017434
+    "cost_usd": 0.017434,
+    "posted_at": "2026-04-28T17:08:04.440934",
+    "tweet_id": "2049173815855337672"
   },
   {
     "id": "watchdog_20260428_001",
@@ -3526,9 +3471,10 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-28T14:27:53.963030+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260428_004",
@@ -3551,5 +3497,41 @@
     "status": "pending",
     "created_at": "2026-04-28T14:27:53.963030+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260428_124746_v1",
+    "text": "$VYGR at $3.77. Entry $4.45, down 15.3% but +3.2% today on gene therapy platform momentum. enGene bladder cancer BLA catalysts 2026.",
+    "category": "RECEIPT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260428_1647.png",
+    "scheduled_time": "2026-04-28T12:47:46.797874-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.55%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-28T16:47:46.797872+00:00",
+    "cost_usd": 0.017436
+  },
+  {
+    "id": "live_20260428_124746_v2",
+    "text": "$EVTL down 2.1% to $4.20.\nDrone tech sector chop.\nPosition sized at 2%.\nNot sweating it.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260428_1648.png",
+    "scheduled_time": "2026-04-28T12:47:46.797874-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.55%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-28T16:47:46.797872+00:00",
+    "cost_usd": 0.017436
   }
 ]

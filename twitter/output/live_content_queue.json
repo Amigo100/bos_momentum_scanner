@@ -3341,9 +3341,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-04-27T14:09:26.851079+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-04-28T13:29:15.146944",
+    "tweet_id": "2049118748318072963"
   },
   {
     "id": "live_20260427_122014_v1",
@@ -3390,16 +3392,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260427_2252.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260428_1309.png",
     "scheduled_time": "2026-04-27T18:52:22.296061-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-04-27T22:52:22.296059+00:00",
-    "cost_usd": 0.016508
+    "cost_usd": 0.016508,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260427_185222_v2",
@@ -3408,15 +3411,52 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260427_2252.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260428_1309.png",
     "scheduled_time": "2026-04-27T18:52:22.296061-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-04-27T22:52:22.296059+00:00",
-    "cost_usd": 0.016508
+    "cost_usd": 0.016508,
+    "skip_reason": "Stale: 15h old"
+  },
+  {
+    "id": "live_20260428_090859_v1",
+    "text": "$VYGR at $4.59. Entry $4.45, recent scanner signal cleared all gates. BBB gene therapy platform advancements driving institutional interest.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260428_1309.png",
+    "scheduled_time": "2026-04-28T09:08:59.214985-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.4%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-28T13:08:59.214983+00:00",
+    "cost_usd": 0.017371
+  },
+  {
+    "id": "live_20260428_090859_v2",
+    "text": "$EVTL down 4.2% on sector noise.\nPosition sized at 2%.\nSetup still valid above $2.20.\nCash is a position too.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260428_1309.png",
+    "scheduled_time": "2026-04-28T09:08:59.214985-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.4%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-04-28T13:08:59.214983+00:00",
+    "cost_usd": 0.017371
   }
 ]

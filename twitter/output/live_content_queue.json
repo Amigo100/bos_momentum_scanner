@@ -2418,25 +2418,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260422_101546_v1",
-    "text": "Gene therapy rotation heating up. $VYGR cleared at $4.45 on BBB platform momentum \u2014 bladder cancer BLA timeline aligns with enGene's 2026 catalyst window.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260422_1415.png",
-    "scheduled_time": "2026-04-22T10:15:46.279355-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-22T14:15:46.279353+00:00",
-    "cost_usd": 0.017642,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "watchdog_20260422_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation as structural pivot develops. This sector has been dormant for 18 months \u2014 early movers positioning ahead of clinical catalysts.",
     "category": "SIGNAL_ALERT",
@@ -3567,16 +3548,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260429_1304.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260429_1438.png",
     "scheduled_time": "2026-04-29T09:04:32.461433-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-04-29T13:04:32.461432+00:00",
-    "cost_usd": 0.016913
+    "cost_usd": 0.016913,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260429_090432_v2",
@@ -3585,15 +3567,36 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260429_1304.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260429_1438.png",
     "scheduled_time": "2026-04-29T09:04:32.461433-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-04-29T13:04:32.461432+00:00",
-    "cost_usd": 0.016913
+    "cost_usd": 0.016913,
+    "posted_at": "2026-04-29T14:58:18.458798",
+    "tweet_id": "2049503546920333619"
+  },
+  {
+    "id": "live_20260429_103806_v1",
+    "text": "Position sizing lets you hold conviction without sweating short-term noise. $EVTL at 2% allocation \u2014 sized to weather volatility while the thesis plays out. This week's newsletter breaks down the math that keeps you in winning trades.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260429_1438.png",
+    "scheduled_time": "2026-04-29T10:38:06.790571-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-04-29T14:38:06.790569+00:00",
+    "cost_usd": 0.016662,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

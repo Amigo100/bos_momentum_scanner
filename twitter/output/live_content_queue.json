@@ -2541,25 +2541,6 @@
     "tweet_id": "2047685472869343538"
   },
   {
-    "id": "live_20260424_101342_v1",
-    "text": "$VYGR at $3.91. Down 12.1% from $4.45 entry but gene therapy thesis unchanged. Setup invalidated below $3.50 support.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260424_2237.png",
-    "scheduled_time": "2026-04-24T10:13:42.284585-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.26%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-24T14:13:42.284583+00:00",
-    "cost_usd": 0.017501,
-    "skip_reason": "Stale: 9h old"
-  },
-  {
     "id": "watchdog_20260424_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB gene therapy platform with 40% structural pivot breakout. Blood-brain barrier delivery represents trillion-dollar addressable market shift.",
     "category": "SIGNAL_ALERT",
@@ -3528,9 +3509,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-04-30T14:11:37.047858+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260430_005",
@@ -3551,16 +3533,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260501_1400.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260501_1448.png",
     "scheduled_time": "2026-05-01T10:00:48.457432-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-01T14:00:48.457430+00:00",
-    "cost_usd": 0.016722
+    "cost_usd": 0.016722,
+    "posted_at": "2026-05-01T15:08:10.921681",
+    "tweet_id": "2050230808078930239"
   },
   {
     "id": "watchdog_20260501_001",
@@ -3602,9 +3586,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-01T13:40:49.278639+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260501_005",
@@ -3616,5 +3601,23 @@
     "status": "pending",
     "created_at": "2026-05-01T13:40:49.278639+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260501_104800_v1",
+    "text": "$VYGR entry $4.45. Current $3.72. Blood-brain barrier gene therapy platform with Parkinson's and Huntington's catalysts pending. Setup holds above $3.20.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260501_1448.png",
+    "scheduled_time": "2026-05-01T10:48:00.141841-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-01T14:48:00.141839+00:00",
+    "cost_usd": 0.016818
   }
 ]

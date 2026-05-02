@@ -2590,84 +2590,6 @@
     "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
-    "id": "live_20260424_183713_v1",
-    "text": "What separates conviction from gambling? $EVTL down 47% from entry \u2014 uncomfortable, yes. But position sizing means it's a learning experience, not portfolio damage. When volatility hits eVTOL names, capital preservation beats stubborn hope.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260424_2237.png",
-    "scheduled_time": "2026-04-24T18:37:13.515606-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-24T22:37:13.515604+00:00",
-    "cost_usd": 0.017406,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260424_183713_v2",
-    "text": "$HIVE entry $2.10 \u2192 now $6.00.\n\n+185.7% on the crypto miner play while Bitcoin consolidates.\n\nQuiet strength pays.",
-    "category": "RECEIPT",
-    "primary_ticker": "HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260425_1451.png",
-    "scheduled_time": "2026-04-24T18:37:13.515606-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.5%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-24T22:37:13.515604+00:00",
-    "cost_usd": 0.017406,
-    "posted_at": "2026-04-25T15:12:02.543337",
-    "tweet_id": "2048057451996496308"
-  },
-  {
-    "id": "live_20260425_105146_v1",
-    "text": "$VYGR at $4.59. Gene therapy catalyst alignment with bladder cancer BLA plans confirmed. When BBB platform plays cluster around regulatory milestones, that's not coincidence \u2014 that's institutional positioning.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260425_2040.png",
-    "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.34%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-25T14:51:46.570938+00:00",
-    "cost_usd": 0.017314,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
-    "id": "live_20260425_105146_v2",
-    "text": "$EVTL down 2.5% today.\nDrone tech volatility.\nPosition sized right? Not even a dent.\nConviction vs exposure \u2014 the difference between sleep and stress.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260425_2040.png",
-    "scheduled_time": "2026-04-25T10:51:46.570939-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.34%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-25T14:51:46.570938+00:00",
-    "cost_usd": 0.017314,
-    "posted_at": "2026-04-25T21:00:56.352544",
-    "tweet_id": "2048145254839206398"
-  },
-  {
     "id": "watchdog_20260425_002",
     "text": "Small-cap momentum environment hasn't been this favorable since 2016. Earnings broadening, 25-year valuation discount, institutional rotation accelerating. Portfolio up 54.47% vs SPY's 4.91%.",
     "category": "MARKET_COMMENTARY",
@@ -3553,9 +3475,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-01T13:40:49.278639+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260501_002",
@@ -3564,9 +3487,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-01T13:40:49.278639+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-02T15:17:16.754351",
+    "tweet_id": "2050595485568700862"
   },
   {
     "id": "watchdog_20260501_003",
@@ -3598,9 +3523,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-01T13:40:49.278639+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260501_104800_v1",
@@ -3609,15 +3535,89 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260501_1448.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260502_1457.png",
     "scheduled_time": "2026-05-01T10:48:00.141841-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-01T14:48:00.141839+00:00",
-    "cost_usd": 0.016818
+    "cost_usd": 0.016818,
+    "skip_reason": "Stale: 24h old"
+  },
+  {
+    "id": "live_20260502_105710_v1",
+    "text": "$VYGR at $3.76. Blood-brain barrier gene therapy platform targeting Parkinson's and Huntington's. Phase 2 readouts expected Q2. Entry $4.45, monitoring support at $3.50.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260502_1457.png",
+    "scheduled_time": "2026-05-02T10:57:10.514115-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-02T14:57:10.514114+00:00",
+    "cost_usd": 0.016718
+  },
+  {
+    "id": "watchdog_20260502_001",
+    "text": "Weekend review: 8 positions across transformative themes \u2014 from BBB gene therapy to nuclear fuel. Small-cap momentum setup mirrors 2016 conditions. Institutional rotation accelerating into overlooked sectors.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-02T13:25:00.083193+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260502_002",
+    "text": "$VYGR cleared all gates on Friday \u2014 BBB gene therapy platform showing institutional accumulation. When biotech names break structural resistance with volume, the moves can be explosive.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-02T13:25:00.083193+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260502_003",
+    "text": "The blood-brain barrier has protected our brains for millions of years. Now companies like $VYGR are engineering ways through it to deliver gene therapies directly to the brain. Revolutionary medicine meets investable momentum.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-02T13:25:00.083193+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260502_004",
+    "text": "Portfolio alpha: 61.55% vs SPY. The key isn't predicting \u2014 it's positioning in themes with structural tailwinds and following price action signals. When momentum aligns with fundamentals, magic happens.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-02T13:25:00.083193+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260502_005",
+    "text": "Question for the community: Which emerging theme has you most excited for 2025? Nuclear renaissance, AI infrastructure, gene therapy breakthroughs, or something else entirely?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-02T13:25:00.083193+00:00",
+    "source": "watchdog"
   }
 ]

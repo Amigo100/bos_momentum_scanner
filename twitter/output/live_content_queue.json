@@ -3392,16 +3392,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260507_1804.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260507_1917.png",
     "scheduled_time": "2026-05-07T12:45:07.131130-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+1.46%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-07T16:45:07.131128+00:00",
-    "cost_usd": 0.016966
+    "cost_usd": 0.016966,
+    "posted_at": "2026-05-07T19:37:41.330094",
+    "tweet_id": "2052472958766236057"
   },
   {
     "id": "watchdog_20260507_001",
@@ -3410,9 +3412,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-07T14:30:34.156730+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260507_003",
@@ -3433,9 +3436,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-07T14:30:34.156730+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260507_005",
@@ -3455,7 +3459,7 @@
     "primary_ticker": "NVDA",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260507_1804.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260507_1917.png",
     "scheduled_time": "2026-05-07T14:04:38.103853-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3473,7 +3477,7 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260507_1804.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260507_1917.png",
     "scheduled_time": "2026-05-07T14:04:38.103853-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -3483,5 +3487,41 @@
     },
     "generated_at": "2026-05-07T18:04:38.103851+00:00",
     "cost_usd": 0.016976
+  },
+  {
+    "id": "live_20260507_151719_v1",
+    "text": "$AMD at $360.54. Entry $120.00 \u2192 +200.5%. MI300 accelerator demand thesis confirming across hyperscalers.",
+    "category": "RECEIPT",
+    "primary_ticker": "AMD",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260507_1917.png",
+    "scheduled_time": "2026-05-07T15:17:19.982865-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.19%",
+      "market_mood": "bullish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-07T19:17:19.982863+00:00",
+    "cost_usd": 0.017242
+  },
+  {
+    "id": "live_20260507_151719_v2",
+    "text": "$HIVE from $2.10 \u2192 $2.17.\nCrypto mining pivoting to AI hosting.\nEnergy arbitrage play paying off.\nNFA \ud83c\udfaf",
+    "category": "RECEIPT",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260507_1917.png",
+    "scheduled_time": "2026-05-07T15:17:19.982865-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.19%",
+      "market_mood": "bullish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-07T19:17:19.982863+00:00",
+    "cost_usd": 0.017242
   }
 ]

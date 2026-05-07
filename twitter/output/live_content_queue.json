@@ -2813,45 +2813,6 @@
     "tweet_id": "2049266481041444891"
   },
   {
-    "id": "live_20260430_103253_v1",
-    "text": "$VYGR at $3.68. Gene therapy platform targeting BBB penetration. Rare disease catalysts pending. Setup holds above $3.20.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260430_1432.png",
-    "scheduled_time": "2026-04-30T10:32:53.409789-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-04-30T14:32:53.409787+00:00",
-    "cost_usd": 0.016836,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260430_103253_v2",
-    "text": "$BAND setup invalidated below $16.55.\nWin more than you lose.\nMoving on.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "BAND",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260430_1433.png",
-    "scheduled_time": "2026-04-30T10:32:53.409789-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-04-30T14:32:53.409787+00:00",
-    "cost_usd": 0.016836,
-    "posted_at": "2026-04-30T14:53:04.501847",
-    "tweet_id": "2049864618403631432"
-  },
-  {
     "id": "watchdog_20260430_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation. Blood-brain barrier delivery mechanism creates structural moat in CNS therapeutics space.",
     "category": "SIGNAL_ALERT",
@@ -3350,16 +3311,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260507_1315.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260507_1645.png",
     "scheduled_time": "2026-05-07T09:15:32.654039-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-07T13:15:32.654038+00:00",
-    "cost_usd": 0.016557
+    "cost_usd": 0.016557,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260506_001",
@@ -3379,9 +3341,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-06T14:29:48.750436+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-07T17:05:17.581519",
+    "tweet_id": "2052434607396491508"
   },
   {
     "id": "watchdog_20260506_003",
@@ -3402,9 +3366,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-06T14:29:48.750436+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260506_005",
@@ -3415,6 +3380,68 @@
     "thread": false,
     "status": "pending",
     "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "live_20260507_124507_v1",
+    "text": "$EVTL pullback today.\nDrone sector volatility is real.\nDefense thesis intact.\nAdding on weakness.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260507_1645.png",
+    "scheduled_time": "2026-05-07T12:45:07.131130-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.46%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-07T16:45:07.131128+00:00",
+    "cost_usd": 0.016966
+  },
+  {
+    "id": "watchdog_20260507_001",
+    "text": "$VYGR cleared all gates on scanner - BBB gene therapy platform showing institutional accumulation into prime positioning. Theme momentum building across sector with pipeline developments accelerating.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-07T14:30:34.156730+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260507_003",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening beyond mega-cap, 25-year relative valuation discount, institutional rotation accelerating. Capital preservation matters while riding this.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-07T14:30:34.156730+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260507_004",
+    "text": "BBB gene therapy hitting PRIME status while GLP-1 obesity telehealth moves to INVESTABLE. Biotech themes gaining institutional traction - today's Substack breaks down the positioning framework.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-07T14:30:34.156730+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260507_005",
+    "text": "Portfolio spanning AI chips to gene therapy, crypto miners to drone tech - 8 themes, 8 positions, all showing structural pivot characteristics. Diversified momentum at work.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-07T14:30:34.156730+00:00",
     "source": "watchdog"
   }
 ]

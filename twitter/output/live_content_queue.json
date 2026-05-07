@@ -2813,81 +2813,6 @@
     "tweet_id": "2049266481041444891"
   },
   {
-    "id": "live_20260429_103806_v1",
-    "text": "Position sizing lets you hold conviction without sweating short-term noise. $EVTL at 2% allocation \u2014 sized to weather volatility while the thesis plays out. This week's newsletter breaks down the math that keeps you in winning trades.",
-    "category": "SUBSTACK_TEASER",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260429_1438.png",
-    "scheduled_time": "2026-04-29T10:38:06.790571-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-04-29T14:38:06.790569+00:00",
-    "cost_usd": 0.016662,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260429_145809_v1_thread",
-    "text": "Crypto mining meets AI compute. (1/2)",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "HIVE",
-    "account": "variant_3",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-04-29T14:58:09.731348-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-29T18:58:09.731347+00:00",
-    "cost_usd": 0.01852,
-    "is_thread": true,
-    "thread_tweets": [
-      {
-        "text": "Crypto mining meets AI compute. (1/2)",
-        "number": 1,
-        "tweet_id": "2049568954377555991",
-        "posted_at": "2026-04-29T19:18:12.609688"
-      },
-      {
-        "text": "$HIVE from $2.10 to $2.23.\nSmall gain. Big theme.\nWatching $3.50 breakout. (2/2)",
-        "number": 2,
-        "tweet_id": "2049568959532282322",
-        "posted_at": "2026-04-29T19:18:13.853813"
-      }
-    ],
-    "thread_status": "complete",
-    "posted_at": "2026-04-29T19:18:13.853832",
-    "tweet_id": "2049568954377555991"
-  },
-  {
-    "id": "live_20260430_090334_v1",
-    "text": "$EVTL setup invalidated below $3.50.\nEntry $4.50, now $2.24.\nDefense budget cycles shift.\nCash is a position.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260430_1303.png",
-    "scheduled_time": "2026-04-30T09:03:34.129317-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-04-30T13:03:34.129315+00:00",
-    "cost_usd": 0.01698,
-    "posted_at": "2026-04-30T13:23:40.482038",
-    "tweet_id": "2049842120005926983"
-  },
-  {
     "id": "live_20260430_103253_v1",
     "text": "$VYGR at $3.68. Gene therapy platform targeting BBB penetration. Rare disease catalysts pending. Setup holds above $3.20.",
     "category": "EDUCATIONAL",
@@ -3362,9 +3287,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-04T14:17:09.107498+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260504_005",
@@ -3373,9 +3299,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-04T14:17:09.107498+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-07T13:35:39.033520",
+    "tweet_id": "2052381849289416819"
   },
   {
     "id": "live_20260505_103757_v1",
@@ -3403,15 +3331,90 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260506_1310.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260507_1315.png",
     "scheduled_time": "2026-05-06T09:10:15.637131-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-06T13:10:15.637129+00:00",
-    "cost_usd": 0.017215
+    "cost_usd": 0.017215,
+    "skip_reason": "Stale: 24h old"
+  },
+  {
+    "id": "live_20260507_091532_v1",
+    "text": "Why do 99% of gene therapies fail to cross the blood-brain barrier but $VYGR's platform could change Parkinson's treatment? Because BBB delivery is neuroscience's hardest problem. Phase 2 data Q3 2026 will tell us if this works.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260507_1315.png",
+    "scheduled_time": "2026-05-07T09:15:32.654039-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-07T13:15:32.654038+00:00",
+    "cost_usd": 0.016557
+  },
+  {
+    "id": "watchdog_20260506_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45. BBB Gene Therapy Platform theme showing institutional accumulation as biotech momentum accelerates. Scanner confirms structural pivot.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260506_002",
+    "text": "The small-cap momentum setup is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. This is structural, not cyclical.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260506_003",
+    "text": "Portfolio alpha at 61.55% vs SPY's 5.90%. When you combine systematic scanning with disciplined capital preservation, outlier returns become repeatable. Process over predictions.",
+    "category": "RECEIPT",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260506_004",
+    "text": "BBB Gene Therapy Platform hits PRIME status. Blood-brain barrier breakthrough technologies are attracting serious institutional money as neurological treatment pipelines expand rapidly.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260506_005",
+    "text": "8 active positions spanning AI chips to gene therapy. Diversification isn't about asset classes \u2014 it's about capturing multiple momentum waves simultaneously while managing drawdown risk.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-06T14:29:48.750436+00:00",
+    "source": "watchdog"
   }
 ]

@@ -2874,26 +2874,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260501_100048_v1",
-    "text": "$EVTL closing below $3.50 \u2014 theme rotation out of defense plays this week.\n\nWin more than you lose. Moving on.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260501_1448.png",
-    "scheduled_time": "2026-05-01T10:00:48.457432-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-01T14:00:48.457430+00:00",
-    "cost_usd": 0.016722,
-    "posted_at": "2026-05-01T15:08:10.921681",
-    "tweet_id": "2050230808078930239"
-  },
-  {
     "id": "watchdog_20260501_001",
     "text": "\ud83d\udfe2 $VYGR triggered institutional accumulation signal. Blood-brain barrier gene therapy platform cleared all gates. Theme: BBB Gene Therapy Platform (PRIME).",
     "category": "SIGNAL_ALERT",
@@ -2954,25 +2934,6 @@
     "created_at": "2026-05-01T13:40:49.278639+00:00",
     "source": "watchdog",
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260501_104800_v1",
-    "text": "$VYGR entry $4.45. Current $3.72. Blood-brain barrier gene therapy platform with Parkinson's and Huntington's catalysts pending. Setup holds above $3.20.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260502_1457.png",
-    "scheduled_time": "2026-05-01T10:48:00.141841-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-01T14:48:00.141839+00:00",
-    "cost_usd": 0.016818,
-    "skip_reason": "Stale: 24h old"
   },
   {
     "id": "live_20260502_105710_v1",
@@ -3537,16 +3498,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260507_2301.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260508_1611.png",
     "scheduled_time": "2026-05-07T19:01:20.633716-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.19%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-07T23:01:20.633715+00:00",
-    "cost_usd": 0.017331
+    "cost_usd": 0.017331,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260507_190120_v2",
@@ -3555,15 +3517,109 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260507_2301.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260508_1611.png",
     "scheduled_time": "2026-05-07T19:01:20.633716-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+1.19%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-07T23:01:20.633715+00:00",
-    "cost_usd": 0.017331
+    "cost_usd": 0.017331,
+    "posted_at": "2026-05-08T16:31:21.150920",
+    "tweet_id": "2052788453608215024"
+  },
+  {
+    "id": "live_20260508_121104_v1",
+    "text": "$VYGR at $4.17. Blood-brain barrier gene therapy platform. 47 programs targeting Parkinson's, Alzheimer's. Voyager Therapeutics data readout 2027.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260508_1611.png",
+    "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-08T16:11:04.934372+00:00",
+    "cost_usd": 0.016738
+  },
+  {
+    "id": "live_20260508_121104_v2",
+    "text": "$EVTL consolidating.\nDefense contracts pending.\nDrone sector rotating back.\nWatching closely.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260508_1611.png",
+    "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-08T16:11:04.934372+00:00",
+    "cost_usd": 0.016738
+  },
+  {
+    "id": "watchdog_20260508_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45. BBB Gene Therapy Platform theme showing institutional accumulation across multiple names. Blood-brain barrier delivery mechanisms becoming critical infrastructure for next-gen therapeutics.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-08T14:04:23.289817+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260508_002",
+    "text": "Small-cap momentum setup hasn't looked this favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is here \u2014 question is execution.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-08T14:04:23.289817+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260508_003",
+    "text": "BBB Gene Therapy Platform elevated to PRIME status. When the market realizes central nervous system drug delivery is the next pharmaceutical frontier, early positioning in validated platforms becomes critical.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-08T14:04:23.289817+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260508_004",
+    "text": "Portfolio update: 8 active positions spanning AI infrastructure, nuclear fuel, gene therapy platforms. 67.44% return vs SPY's 5.90% \u2014 61.55% alpha from thematic momentum execution.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-08T14:04:23.289817+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260508_005",
+    "text": "Capital preservation isn't about avoiding risk \u2014 it's about understanding which risks the market hasn't priced yet. Today's note explores how theme validation creates asymmetric opportunity structures.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-08T14:04:23.289817+00:00",
+    "source": "watchdog"
   }
 ]

@@ -3537,16 +3537,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260508_1611.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260508_1854.png",
     "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-08T16:11:04.934372+00:00",
-    "cost_usd": 0.016738
+    "cost_usd": 0.016738,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260508_121104_v2",
@@ -3555,16 +3556,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260508_1611.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260508_1854.png",
     "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-08T16:11:04.934372+00:00",
-    "cost_usd": 0.016738
+    "cost_usd": 0.016738,
+    "posted_at": "2026-05-08T19:14:53.031179",
+    "tweet_id": "2052829607619915808"
   },
   {
     "id": "watchdog_20260508_001",
@@ -3618,8 +3621,27 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-08T14:04:23.289817+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260508_145439_v1",
+    "text": "$NVDA from $150 entry.\nNow $215.29.\nAI chip demand isn't slowing.\nLetting winners run.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260508_1854.png",
+    "scheduled_time": "2026-05-08T14:54:39.430103-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-08T18:54:39.430101+00:00",
+    "cost_usd": 0.016715
   }
 ]

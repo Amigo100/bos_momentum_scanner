@@ -2936,25 +2936,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260502_105710_v1",
-    "text": "$VYGR at $3.76. Blood-brain barrier gene therapy platform targeting Parkinson's and Huntington's. Phase 2 readouts expected Q2. Entry $4.45, monitoring support at $3.50.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260503_1456.png",
-    "scheduled_time": "2026-05-02T10:57:10.514115-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-02T14:57:10.514114+00:00",
-    "cost_usd": 0.016718,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "watchdog_20260502_001",
     "text": "Weekend review: 8 positions across transformative themes \u2014 from BBB gene therapy to nuclear fuel. Small-cap momentum setup mirrors 2016 conditions. Institutional rotation accelerating into overlooked sectors.",
     "category": "MARKET_COMMENTARY",
@@ -3613,9 +3594,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-08T14:04:23.289817+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260508_005",
@@ -3655,16 +3637,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260508_2256.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260509_2046.png",
     "scheduled_time": "2026-05-08T18:56:01.351060-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-08T22:56:01.351059+00:00",
-    "cost_usd": 0.016618
+    "cost_usd": 0.016618,
+    "skip_reason": "Stale: 22h old"
   },
   {
     "id": "live_20260508_185601_v2",
@@ -3673,15 +3656,91 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260508_2256.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260509_2046.png",
     "scheduled_time": "2026-05-08T18:56:01.351060-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-08T22:56:01.351059+00:00",
-    "cost_usd": 0.016618
+    "cost_usd": 0.016618,
+    "posted_at": "2026-05-09T21:06:22.458881",
+    "tweet_id": "2053220053039120498"
+  },
+  {
+    "id": "live_20260509_164612_v1",
+    "text": "$NVDA momentum continuing.\nEntry $150. Now $215.20.\nBlackwell orders stacking.\nDYOR",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260509_2046.png",
+    "scheduled_time": "2026-05-09T16:46:12.658567-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-09T20:46:12.658566+00:00",
+    "cost_usd": 0.01677
+  },
+  {
+    "id": "watchdog_20260509_001",
+    "text": "$VYGR cleared all gates again \u2014 BBB gene therapy platform showing institutional accumulation patterns. When biotech momentum ignites with structural positioning, the moves compress years of value creation into months.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260509_002",
+    "text": "Small-cap momentum environment mirrors 2016 setup: earnings broadening beyond mega-cap, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is happening beneath surface volatility.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260509_003",
+    "text": "BBB gene therapy platforms represent the next frontier \u2014 blood-brain barrier penetration unlocks previously untreatable neurological conditions. Market finally recognizing the addressable patient population expansion.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260509_004",
+    "text": "Portfolio alpha of 79% demonstrates what happens when you align with structural momentum rather than fighting it. Capital preservation during drawdowns, aggressive deployment during confirmed breakouts.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260509_005",
+    "text": "Which theme catalyst has the highest probability of institutional adoption acceleration over next 6 months: BBB gene therapy, GLP-1 telehealth expansion, or photonic interconnect deployment?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog"
   }
 ]

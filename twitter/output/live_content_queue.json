@@ -2998,25 +2998,6 @@
     "tweet_id": "2051292184473969118"
   },
   {
-    "id": "live_20260503_105631_v1",
-    "text": "Position sizing isn't about avoiding pullbacks \u2014 it's about riding winners through volatility. $SOFI pulled back 8% last month, now sits at $32 (+305% from $7.90 entry). That's the difference between sizing for conviction vs sizing for comfort.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260503_2045.png",
-    "scheduled_time": "2026-05-03T10:56:31.602359-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-03T14:56:31.602357+00:00",
-    "cost_usd": 0.016626,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "watchdog_20260503_001",
     "text": "The structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The gates are opening for the next cycle.",
     "category": "MARKET_COMMENTARY",
@@ -3676,16 +3657,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260509_2046.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260510_1500.png",
     "scheduled_time": "2026-05-09T16:46:12.658567-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-09T20:46:12.658566+00:00",
-    "cost_usd": 0.01677
+    "cost_usd": 0.01677,
+    "posted_at": "2026-05-10T15:20:18.238322",
+    "tweet_id": "2053495349373759738"
   },
   {
     "id": "watchdog_20260509_001",
@@ -3694,9 +3677,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-09T13:39:21.757072+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260509_002",
@@ -3741,6 +3725,116 @@
     "thread": false,
     "status": "pending",
     "created_at": "2026-05-09T13:39:21.757072+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "live_20260510_105958_v1",
+    "text": "Gene therapy platforms like $VYGR need 3 things: blood-brain barrier delivery tech, CNS pipeline depth, and binary catalyst timing. Voyager's Tracer Capsid data drops Q2 2026. That's when thesis validates or dies. Entry $4.45.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260510_1500.png",
+    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-10T14:59:58.926636+00:00",
+    "cost_usd": 0.017385
+  },
+  {
+    "id": "live_20260510_105958_v2",
+    "text": "$HIVE from $2.10 to $6.00. +185.7% on the crypto mining + datacenter thesis. Bitcoin rally creating massive demand for mining capacity. System found it, discipline held it.",
+    "category": "RECEIPT",
+    "primary_ticker": "HIVE",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260510_1500.png",
+    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-10T14:59:58.926636+00:00",
+    "cost_usd": 0.017385,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260510_105958_v3",
+    "text": "$ASPI setup invalidated.\nExit $5.38 from $6.00 entry.\nPhotonic interconnect theme still valid.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260510_1500.png",
+    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-10T14:59:58.926636+00:00",
+    "cost_usd": 0.017385
+  },
+  {
+    "id": "watchdog_20260510_001",
+    "text": "Sunday scan highlights: BBB Gene Therapy Platform theme hits PRIME status. $VYGR cleared all gates for institutional accumulation. Defense Additive Manufacturing and Photonic Interconnect both showing INVESTABLE momentum patterns.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-10T13:41:44.675708+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260510_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. Capital preservation remains key.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-10T13:41:44.675708+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260510_003",
+    "text": "BBB Gene Therapy represents a structural pivot in neurological drug delivery. Blood-brain barrier penetration has been the holy grail for CNS therapeutics. Watch how institutional money flows into this theme.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-10T13:41:44.675708+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260510_004",
+    "text": "Portfolio update: 8 active positions spanning AI infrastructure, nuclear fuel, crypto mining, and gene therapy. Diversified theme exposure with disciplined capital allocation. Alpha generation through momentum capture.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-10T13:41:44.675708+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260510_005",
+    "text": "Sunday question: What's your biggest challenge in momentum trading? Timing entries, managing exits, or identifying emerging themes before institutional accumulation begins? Drop your thoughts below.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-10T13:41:44.675708+00:00",
     "source": "watchdog"
   }
 ]

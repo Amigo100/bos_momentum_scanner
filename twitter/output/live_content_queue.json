@@ -3060,25 +3060,6 @@
     "tweet_id": "2051677813565161559"
   },
   {
-    "id": "live_20260503_164517_v1",
-    "text": "$VYGR cleared all gates at $4.45. Currently $3.76, monitoring support at $3.50. Gene therapy platform targeting Parkinson's and Huntington's. Phase 2 readouts expected Q2.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260504_1305.png",
-    "scheduled_time": "2026-05-03T16:45:17.060243-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-03T20:45:17.060241+00:00",
-    "cost_usd": 0.016776,
-    "skip_reason": "Stale: 17h old"
-  },
-  {
     "id": "live_20260504_090527_v1",
     "text": "$VYGR entry $4.45, currently $3.76. Gene therapy platform targeting Parkinson's and Huntington's. Phase 2 readouts expected Q2. Monitoring support at $3.50.",
     "category": "EDUCATIONAL",
@@ -3689,9 +3670,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-09T13:39:21.757072+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-10T21:12:36.748909",
+    "tweet_id": "2053584011012788274"
   },
   {
     "id": "watchdog_20260509_003",
@@ -3712,9 +3695,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-09T13:39:21.757072+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260509_005",
@@ -3734,16 +3718,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260510_1500.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260510_2052.png",
     "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-10T14:59:58.926636+00:00",
-    "cost_usd": 0.017385
+    "cost_usd": 0.017385,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "live_20260510_105958_v2",
@@ -3771,16 +3756,17 @@
     "primary_ticker": "$ASPI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260510_1500.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260510_2052.png",
     "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-10T14:59:58.926636+00:00",
-    "cost_usd": 0.017385
+    "cost_usd": 0.017385,
+    "skip_reason": "Stale: 6h old"
   },
   {
     "id": "watchdog_20260510_001",
@@ -3811,9 +3797,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-10T13:41:44.675708+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260510_004",
@@ -3836,5 +3823,41 @@
     "status": "pending",
     "created_at": "2026-05-10T13:41:44.675708+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260510_165220_v1",
+    "text": "$AMD at $455.19. Entry $120. +279.3% on the AI memory expansion thesis. Data center orders stacking.",
+    "category": "RECEIPT",
+    "primary_ticker": "$AMD",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260510_2052.png",
+    "scheduled_time": "2026-05-10T16:52:20.207074-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "bullish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-10T20:52:20.207073+00:00",
+    "cost_usd": 0.017203
+  },
+  {
+    "id": "live_20260510_165220_v2",
+    "text": "$SOFI setup invalidated.\nFintech rotation hurts.\nStill +305.1% from $7.90.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260510_2052.png",
+    "scheduled_time": "2026-05-10T16:52:20.207074-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.8%",
+      "market_mood": "bullish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-10T20:52:20.207073+00:00",
+    "cost_usd": 0.017203
   }
 ]

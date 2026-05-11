@@ -1,406 +1,70 @@
 {
-  "timestamp": "2026-05-10T14:00:00Z",
+  "timestamp": "2026-05-11T16:25:00.779944+00:00",
   "market_snapshot": {
-    "spy_move": "+0.8%",
-    "qqq_move": "+2.3%",
-    "iwm_move": "+0.5%",
-    "vix": "17.2",
-    "market_mood": "bullish",
-    "headline": "US markets hit record highs driven by AI optimism and tech earnings, with S&P 500 up 0.8% and Nasdaq surging 2.3% on semiconductor strength."
+    "spy_move": "N/A",
+    "qqq_move": "N/A",
+    "iwm_move": "N/A",
+    "vix": "N/A",
+    "market_mood": "unknown",
+    "headline": "Market data unavailable \u2014 using portfolio context only"
   },
   "portfolio_movers": [
     {
-      "ticker": "$NVDA",
-      "move": "+1.8%",
-      "price": "$215.20",
-      "context": "AI infrastructure demand pushes Nvidia to new highs amid broader semiconductor rally"
-    },
-    {
-      "ticker": "$AMD",
-      "move": "+11.4%",
-      "price": "$455.19",
-      "context": "Semiconductor re-rating on AI memory and GPU expansion"
-    },
-    {
       "ticker": "$SOFI",
-      "move": "-1.6%",
-      "price": "$15.75",
-      "context": "Fintech sector lags broader market amid tariff concerns"
-    },
-    {
-      "ticker": "$VYGR",
-      "move": "+2.3%",
-      "price": "$4.05",
-      "context": "Recent scanner signal on gene therapy platform developments"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $7.90"
     },
     {
       "ticker": "$EVTL",
-      "move": "+4.9%",
-      "price": "$2.81",
-      "context": "Defense additive manufacturing ties to AI infrastructure buildout"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $4.50"
     },
     {
-      "ticker": "$HIVE",
-      "move": "+7.7%",
-      "price": "$61.20",
-      "context": "Nuclear and AI data center energy demand boosts crypto mining pivot"
+      "ticker": "$NVDA",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $150.00"
+    },
+    {
+      "ticker": "$AMD",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $120.00"
     },
     {
       "ticker": "$ASPI",
-      "move": "+0.5%",
-      "price": "$N/A",
-      "context": "Quiet trading in photonic interconnect space"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $6.00"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $2.10"
     },
     {
       "ticker": "$BAND",
-      "move": "-0.2%",
-      "price": "$N/A",
-      "context": "Infrastructure software steady amid grid upgrade talks"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $16.55"
+    },
+    {
+      "ticker": "$VYGR",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $4.45"
     }
   ],
-  "theme_activity": [
-    {
-      "theme": "AI",
-      "status": "breaking",
-      "detail": "Semiconductor supercycle broadens beyond NVDA to memory and equipment makers on agentic AI demand"
-    },
-    {
-      "theme": "semiconductors",
-      "status": "active",
-      "detail": "SOX index up 51% YTD on AI infrastructure capex exceeding $700B"
-    },
-    {
-      "theme": "nuclear",
-      "status": "active",
-      "detail": "Hyperscalers sign 10GW+ nuclear PPAs for AI data centers, uranium deficit tightens supply"
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "status": "active",
-      "detail": "AI-built telehealth platforms hit $1.8B revenue, genetic tests for GLP-1 response launching 2026"
-    },
-    {
-      "theme": "bbb gene therapy platform",
-      "status": "quiet",
-      "detail": "BridgeBio updates pipeline, Voyager Tracer Capsids advance CNS delivery"
-    },
-    {
-      "theme": "defense",
-      "status": "active",
-      "detail": "US arms to Taiwan and Indo-Pacific tensions boost additive manufacturing and optical sectors"
-    },
-    {
-      "theme": "copper",
-      "status": "quiet",
-      "detail": "AI data center buildout supports demand, but no major moves today"
-    },
-    {
-      "theme": "infrastructure",
-      "status": "active",
-      "detail": "Grid upgrades for AI power needs, FERC Order 1920 mandates long-term planning"
-    },
-    {
-      "theme": "photonic interconnect",
-      "status": "active",
-      "detail": "Optical stocks rally on AI networking shortages"
-    }
-  ],
-  "theme_tickers": [
-    {
-      "theme": "AI",
-      "tickers": [
-        {
-          "symbol": "$NVDA",
-          "price": "$215.20",
-          "context": "GPU leader in AI training"
-        },
-        {
-          "symbol": "$AMD",
-          "price": "$455.19",
-          "context": "CPU and AI accelerators"
-        },
-        {
-          "symbol": "$PLTR",
-          "price": "$N/A",
-          "context": "AI software for defense"
-        },
-        {
-          "symbol": "$MU",
-          "price": "$746.81",
-          "context": "AI memory demand"
-        },
-        {
-          "symbol": "$AVGO",
-          "price": "$N/A",
-          "context": "Custom AI silicon"
-        },
-        {
-          "symbol": "$INTC",
-          "price": "$N/A",
-          "context": "Foundry expansion for AI chips"
-        }
-      ]
-    },
-    {
-      "theme": "semiconductors",
-      "tickers": [
-        {
-          "symbol": "$NVDA",
-          "price": "$215.20",
-          "context": "AI GPU dominance"
-        },
-        {
-          "symbol": "$AMD",
-          "price": "$455.19",
-          "context": "Competitive AI chips"
-        },
-        {
-          "symbol": "$TSM",
-          "price": "$N/A",
-          "context": "Leading foundry"
-        },
-        {
-          "symbol": "$AMAT",
-          "price": "$N/A",
-          "context": "Equipment for AI fab"
-        },
-        {
-          "symbol": "$LRCX",
-          "price": "$N/A",
-          "context": "Semicon equipment boom"
-        },
-        {
-          "symbol": "$ASML",
-          "price": "$N/A",
-          "context": "EUV lithography for advanced nodes"
-        }
-      ]
-    },
-    {
-      "theme": "nuclear",
-      "tickers": [
-        {
-          "symbol": "$CEG",
-          "price": "$N/A",
-          "context": "Nuclear fleet extensions"
-        },
-        {
-          "symbol": "$VST",
-          "price": "$N/A",
-          "context": "Power generation for data centers"
-        },
-        {
-          "symbol": "$OKLO",
-          "price": "$N/A",
-          "context": "SMR developer"
-        },
-        {
-          "symbol": "$SMR",
-          "price": "$N/A",
-          "context": "Small modular reactors"
-        },
-        {
-          "symbol": "$CCJ",
-          "price": "$N/A",
-          "context": "Uranium producer"
-        },
-        {
-          "symbol": "$LEU",
-          "price": "$N/A",
-          "context": "Uranium enrichment"
-        }
-      ]
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "tickers": [
-        {
-          "symbol": "$HIMS",
-          "price": "$N/A",
-          "context": "Telehealth GLP-1 provider"
-        },
-        {
-          "symbol": "$TELO",
-          "price": "$N/A",
-          "context": "Obesity treatment platform"
-        },
-        {
-          "symbol": "$NVO",
-          "price": "$N/A",
-          "context": "GLP-1 drug leader"
-        },
-        {
-          "symbol": "$LLY",
-          "price": "$N/A",
-          "context": "Mounjaro obesity blockbuster"
-        },
-        {
-          "symbol": "$MEDP",
-          "price": "$N/A",
-          "context": "Medifast weight management"
-        }
-      ]
-    },
-    {
-      "theme": "defense",
-      "tickers": [
-        {
-          "symbol": "$LMT",
-          "price": "$N/A",
-          "context": "Major defense contractor"
-        },
-        {
-          "symbol": "$RTX",
-          "price": "$N/A",
-          "context": "Missiles and aerospace"
-        },
-        {
-          "symbol": "$NOC",
-          "price": "$N/A",
-          "context": "Space and defense systems"
-        },
-        {
-          "symbol": "$GD",
-          "price": "$N/A",
-          "context": "Additive manufacturing in defense"
-        },
-        {
-          "symbol": "$BA",
-          "price": "$N/A",
-          "context": "Military aircraft"
-        },
-        {
-          "symbol": "$LHX",
-          "price": "$N/A",
-          "context": "C4ISR technologies"
-        }
-      ]
-    },
-    {
-      "theme": "infrastructure",
-      "tickers": [
-        {
-          "symbol": "$ETN",
-          "price": "$N/A",
-          "context": "Grid hardware for AI power"
-        },
-        {
-          "symbol": "$GEV",
-          "price": "$N/A",
-          "context": "Transmission equipment"
-        },
-        {
-          "symbol": "$PWR",
-          "price": "$N/A",
-          "context": "Utility construction"
-        },
-        {
-          "symbol": "$CAT",
-          "price": "$N/A",
-          "context": "Heavy machinery for buildout"
-        },
-        {
-          "symbol": "$J",
-          "price": "$N/A",
-          "context": "Steel for infrastructure"
-        }
-      ]
-    },
-    {
-      "theme": "photonic interconnect",
-      "tickers": [
-        {
-          "symbol": "$COHR",
-          "price": "$N/A",
-          "context": "Laser optics for AI networking"
-        },
-        {
-          "symbol": "$AAOI",
-          "price": "$N/A",
-          "context": "Optical transceivers"
-        },
-        {
-          "symbol": "$FN",
-          "price": "$N/A",
-          "context": "Fiber optics components"
-        },
-        {
-          "symbol": "$CRDO",
-          "price": "$N/A",
-          "context": "High-speed connectivity"
-        },
-        {
-          "symbol": "$LITE",
-          "price": "$N/A",
-          "context": "Optical engines"
-        }
-      ]
-    }
-  ],
-  "fintwit_trending": [
-    "AI infrastructure energy bottleneck",
-    "semiconductor supercycle",
-    "nuclear for data centers",
-    "GLP-1 telehealth boom",
-    "optical interconnect rally"
-  ],
-  "fintwit_theme_overlaps": [
-    {
-      "trending_topic": "AI energy bottleneck",
-      "matching_theme": "nuclear",
-      "our_positions": [
-        "$HIVE"
-      ],
-      "context": "FinTwit highlights nuclear PPAs for AI, overlaps with HIVE's pivot to data center power"
-    },
-    {
-      "trending_topic": "semiconductor supercycle",
-      "matching_theme": "semiconductors",
-      "our_positions": [
-        "$NVDA",
-        "$AMD"
-      ],
-      "context": "Broadening AI chip demand re-rates NVDA and AMD, FinTwit notes $3.8T market cap add"
-    },
-    {
-      "trending_topic": "optical sector breakout",
-      "matching_theme": "photonic interconnect",
-      "our_positions": [
-        "$ASPI"
-      ],
-      "context": "AI networking shortages boost optics, ASPI positioned for interconnect growth"
-    },
-    {
-      "trending_topic": "GLP-1 AI telehealth",
-      "matching_theme": "glp-1 obesity telehealth",
-      "our_positions": [],
-      "context": "Solo AI-built platforms hit $1B revenue, no direct positions but theme active"
-    }
-  ],
-  "news_events": [
-    {
-      "event": "Fed holds rates at 3.50-3.75%",
-      "impact": "cautious stance on inflation from energy shocks and tariffs",
-      "relevance": "high"
-    },
-    {
-      "event": "US tariffs restructured post-Supreme Court ruling",
-      "impact": "10% global surcharge enacted, potential 15% hike",
-      "relevance": "high"
-    },
-    {
-      "event": "Geopolitical tensions in Middle East",
-      "impact": "Oil at $120/barrel, inflation risks elevated",
-      "relevance": "medium"
-    },
-    {
-      "event": "AI capex surge",
-      "impact": "$700B hyperscaler spending on infrastructure",
-      "relevance": "high"
-    }
-  ],
-  "gathered_at": "2026-05-10T20:52:03.377752+00:00",
-  "is_market_hours": false,
-  "is_extended_hours": false,
-  "context_stale": true
+  "theme_activity": [],
+  "theme_tickers": [],
+  "fintwit_trending": [],
+  "fintwit_theme_overlaps": [],
+  "news_events": [],
+  "fallback_mode": true,
+  "gathered_at": "2026-05-11T16:25:00.780131+00:00",
+  "is_market_hours": true,
+  "is_extended_hours": false
 }

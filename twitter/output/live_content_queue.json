@@ -3060,55 +3060,6 @@
     "tweet_id": "2051677813565161559"
   },
   {
-    "id": "live_20260504_090527_v1",
-    "text": "$VYGR entry $4.45, currently $3.76. Gene therapy platform targeting Parkinson's and Huntington's. Phase 2 readouts expected Q2. Monitoring support at $3.50.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260505_1438.png",
-    "scheduled_time": "2026-05-04T09:05:27.806829-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-04T13:05:27.806827+00:00",
-    "cost_usd": 0.016677,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260504_103900_v1_thread",
-    "text": "Portfolio check.\nGreen all week. (1/2)",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "HIVE",
-    "account": "variant_3",
-    "chart_recommended": false,
-    "chart_path": null,
-    "scheduled_time": "2026-05-04T10:39:00.971409-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-04T14:39:00.971407+00:00",
-    "cost_usd": 0.018782,
-    "is_thread": true,
-    "thread_tweets": [
-      {
-        "text": "Portfolio check.\nGreen all week. (1/2)",
-        "number": 1
-      },
-      {
-        "text": "$HIVE from $2.10 to $2.54.\nCrypto miners catching bids.\nDatacentre play still early.\nHolding. (2/2)",
-        "number": 2
-      }
-    ],
-    "skip_reason": "Stale: 24h old"
-  },
-  {
     "id": "watchdog_20260504_001",
     "text": "\ud83d\udfe2 $VYGR GREEN signal confirmed. BBB Gene Therapy Platform theme showing institutional accumulation as blood-brain barrier breakthrough momentum accelerates into year-end positioning.",
     "category": "SIGNAL_ALERT",
@@ -3707,9 +3658,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-09T13:39:21.757072+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-11T16:45:30.944039",
+    "tweet_id": "2053879181864562812"
   },
   {
     "id": "live_20260510_105958_v1",
@@ -3775,9 +3728,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-10T13:41:44.675708+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260510_002",
@@ -3831,16 +3785,17 @@
     "primary_ticker": "$AMD",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260510_2052.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260511_1625.png",
     "scheduled_time": "2026-05-10T16:52:20.207074-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-10T20:52:20.207073+00:00",
-    "cost_usd": 0.017203
+    "cost_usd": 0.017203,
+    "skip_reason": "Stale: 20h old"
   },
   {
     "id": "live_20260510_165220_v2",
@@ -3849,15 +3804,108 @@
     "primary_ticker": "SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260510_2052.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260511_1625.png",
     "scheduled_time": "2026-05-10T16:52:20.207074-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.8%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-10T20:52:20.207073+00:00",
-    "cost_usd": 0.017203
+    "cost_usd": 0.017203,
+    "skip_reason": "Stale: 20h old"
+  },
+  {
+    "id": "live_20260511_122514_v1",
+    "text": "$VYGR at $4.09. Entry $4.45, down 8.1%. Blood-brain barrier gene therapy thesis needs more time. Position sizing prevents account damage.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260511_1625.png",
+    "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-11T16:25:14.895326+00:00",
+    "cost_usd": 0.016674
+  },
+  {
+    "id": "live_20260511_122514_v2",
+    "text": "$EVTL setup broke.\nEntry $4.50, now $2.77.\nDrone sector rotating out.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260511_1625.png",
+    "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-11T16:25:14.895326+00:00",
+    "cost_usd": 0.016674
+  },
+  {
+    "id": "watchdog_20260511_001",
+    "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation as biotech rotation accelerates. Position sized for capital preservation with structural upside.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-11T15:25:42.728699+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260511_002",
+    "text": "Small-cap momentum setup is the strongest since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is here.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-11T15:25:42.728699+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260511_003",
+    "text": "When themes converge with technicals, magic happens. BBB Gene Therapy Platform hitting PRIME status as breakthrough therapies gain regulatory momentum. Today's note dives deep into the catalyst timeline.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-11T15:25:42.728699+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260511_004",
+    "text": "Portfolio alpha now 79.01% vs SPY while maintaining capital preservation discipline. 8 open positions across AI, biotech, and defense themes. Momentum without the madness.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-11T15:25:42.728699+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260511_005",
+    "text": "Question for momentum traders: Do you size positions based on theme strength or technical setup quality? The best setups require both, but one usually leads. What's your priority?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-11T15:25:42.728699+00:00",
+    "source": "watchdog"
   }
 ]

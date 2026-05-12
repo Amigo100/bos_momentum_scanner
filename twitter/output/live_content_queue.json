@@ -3896,9 +3896,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-11T15:25:42.728699+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-12T19:40:53.970996",
+    "tweet_id": "2054285706525114518"
   },
   {
     "id": "live_20260512_091912_v1",
@@ -3945,16 +3947,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260512_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260512_1920.png",
     "scheduled_time": "2026-05-12T12:13:18.555452-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.83%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-12T16:13:18.555450+00:00",
-    "cost_usd": 0.017106
+    "cost_usd": 0.017106,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260512_121318_v2",
@@ -3963,7 +3966,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260512_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260512_1920.png",
     "scheduled_time": "2026-05-12T12:13:18.555452-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4026,7 +4029,7 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260512_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260512_1920.png",
     "scheduled_time": "2026-05-12T14:22:23.414613-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4044,7 +4047,7 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260512_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260512_1920.png",
     "scheduled_time": "2026-05-12T14:22:23.414613-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4054,5 +4057,41 @@
     },
     "generated_at": "2026-05-12T18:22:23.414612+00:00",
     "cost_usd": 0.017334
+  },
+  {
+    "id": "live_20260512_152034_v1",
+    "text": "$VYGR at $4.45. Scanner flagged this BBB gene therapy platform play. CNS delivery validation driving volume. Watching for confirmation above $4.80. Invalidation below $4.20.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1920.png",
+    "scheduled_time": "2026-05-12T15:20:34.147847-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.42%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-12T19:20:34.147845+00:00",
+    "cost_usd": 0.017461
+  },
+  {
+    "id": "live_20260512_152034_v2",
+    "text": "Setup invalidated on $NVDA at $215.20.\n\nLocked +43.5% from $150 entry. Win more than you lose \u2014 that's the game.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260512_1920.png",
+    "scheduled_time": "2026-05-12T15:20:34.147847-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.42%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-12T19:20:34.147845+00:00",
+    "cost_usd": 0.017461
   }
 ]

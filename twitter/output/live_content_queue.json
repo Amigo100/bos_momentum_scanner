@@ -3740,9 +3740,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-10T13:41:44.675708+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-12T13:39:24.741386",
+    "tweet_id": "2054194735309365655"
   },
   {
     "id": "watchdog_20260510_003",
@@ -3763,9 +3765,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-10T13:41:44.675708+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260510_005",
@@ -3823,16 +3826,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260511_1625.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1319.png",
     "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-11T16:25:14.895326+00:00",
-    "cost_usd": 0.016674
+    "cost_usd": 0.016674,
+    "skip_reason": "Stale: 21h old"
   },
   {
     "id": "live_20260511_122514_v2",
@@ -3841,16 +3845,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260511_1625.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260512_1319.png",
     "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-11T16:25:14.895326+00:00",
-    "cost_usd": 0.016674
+    "cost_usd": 0.016674,
+    "skip_reason": "Stale: 21h old"
   },
   {
     "id": "watchdog_20260511_001",
@@ -3907,5 +3912,41 @@
     "status": "pending",
     "created_at": "2026-05-11T15:25:42.728699+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260512_091912_v1",
+    "text": "When position sizing matters: $VYGR platform thesis needs capsid data catalysts. Entry $4.45, current $4.12. The lesson? Gene therapy plays require pipeline milestones before scaling conviction. Invalidation $3.80.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1319.png",
+    "scheduled_time": "2026-05-12T09:19:12.722002-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.25%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-12T13:19:12.722000+00:00",
+    "cost_usd": 0.017269
+  },
+  {
+    "id": "live_20260512_091912_v2",
+    "text": "Defense rotation shifting fast \u2014 $ASPI at $6.22 from $6.00 entry invalidates the setup. Win more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260512_1319.png",
+    "scheduled_time": "2026-05-12T09:19:12.722002-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.25%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-12T13:19:12.722000+00:00",
+    "cost_usd": 0.017269
   }
 ]

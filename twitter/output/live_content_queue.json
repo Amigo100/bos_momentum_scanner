@@ -4092,16 +4092,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1613.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1824.png",
     "scheduled_time": "2026-05-13T09:36:43.697022-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-13T13:36:43.697021+00:00",
-    "cost_usd": 0.016764
+    "cost_usd": 0.016764,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260513_121352_v1",
@@ -4110,16 +4111,18 @@
     "primary_ticker": "EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260513_1613.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260513_1824.png",
     "scheduled_time": "2026-05-13T12:13:52.257596-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.42%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-13T16:13:52.257594+00:00",
-    "cost_usd": 0.016994
+    "cost_usd": 0.016994,
+    "posted_at": "2026-05-13T18:44:12.116459",
+    "tweet_id": "2054633825515266428"
   },
   {
     "id": "watchdog_20260513_001",
@@ -4176,5 +4179,42 @@
     "status": "pending",
     "created_at": "2026-05-13T14:48:21.634170+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260513_142358_v1",
+    "text": "Position sizing separates conviction from hope. $EVTL at breakeven from $4.50 entry \u2014 flat position, zero emotion. Meanwhile $AMD +279.3% and $SOFI +305.1% more than offset any flat trades. That's the edge.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260513_1824.png",
+    "scheduled_time": "2026-05-13T14:23:58.160048-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.64%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-13T18:23:58.160047+00:00",
+    "cost_usd": 0.016822,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260513_142358_v2",
+    "text": "$NVDA holding above $215.\nEntry $150. Now $227.36.\nAI capex wave just starting.\nNFA \ud83c\udfaf",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260513_1824.png",
+    "scheduled_time": "2026-05-13T14:23:58.160048-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.64%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-13T18:23:58.160047+00:00",
+    "cost_usd": 0.016822
   }
 ]

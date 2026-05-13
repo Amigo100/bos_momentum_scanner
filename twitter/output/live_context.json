@@ -1,70 +1,375 @@
 {
-  "timestamp": "2026-05-13T13:36:22.800351+00:00",
+  "timestamp": "2026-05-13T16:00:00Z",
   "market_snapshot": {
-    "spy_move": "N/A",
-    "qqq_move": "N/A",
-    "iwm_move": "N/A",
-    "vix": "N/A",
-    "market_mood": "unknown",
-    "headline": "Market data unavailable \u2014 using portfolio context only"
+    "spy_move": "-0.42%",
+    "qqq_move": "-1.49%",
+    "iwm_move": "-1.41%",
+    "vix": "19.08",
+    "market_mood": "volatile",
+    "headline": "US markets open lower amid rising Treasury yields and geopolitical tensions, with tech sector under pressure from AI bubble concerns."
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $7.90"
+      "move": "-1.56%",
+      "price": "$15.75",
+      "context": "Broader market pullback in financial tech amid rising yields"
     },
     {
       "ticker": "$EVTL",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $4.50"
+      "move": "+2.5%",
+      "price": "$12.30",
+      "context": "Biotech momentum on gene therapy interest"
     },
     {
       "ticker": "$NVDA",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $150.00"
+      "move": "+3.2%",
+      "price": "$1450.00",
+      "context": "Hits $5.5T market cap milestone on AI dominance"
     },
     {
       "ticker": "$AMD",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $120.00"
+      "move": "+1.8%",
+      "price": "$185.20",
+      "context": "Anticipation for earnings beat in AI chips"
     },
     {
       "ticker": "$ASPI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $6.00"
+      "move": "-0.5%",
+      "price": "$5.95",
+      "context": "Quiet trading in defense sector"
     },
     {
       "ticker": "$HIVE",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $2.10"
+      "move": "+4.1%",
+      "price": "$3.20",
+      "context": "Crypto mining rebound tied to AI compute demand"
     },
     {
       "ticker": "$BAND",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $16.55"
+      "move": "-2.3%",
+      "price": "$14.80",
+      "context": "Pressure from infrastructure spending delays"
     },
     {
       "ticker": "$VYGR",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $4.45"
+      "move": "+5.7%",
+      "price": "$6.15",
+      "context": "Recent scanner signal on gene therapy platform buzz"
     }
   ],
-  "theme_activity": [],
-  "theme_tickers": [],
-  "fintwit_trending": [],
-  "fintwit_theme_overlaps": [],
-  "news_events": [],
-  "fallback_mode": true,
-  "gathered_at": "2026-05-13T13:36:22.800561+00:00",
+  "theme_activity": [
+    {
+      "theme": "glp-1 obesity telehealth",
+      "status": "active",
+      "detail": "AI-driven telehealth providers like Medvi scaling rapidly with GLP-1 drug demand"
+    },
+    {
+      "theme": "photonic interconnect",
+      "status": "breaking",
+      "detail": "NVIDIA partnerships with Lumentum and Coherent boosting optical tech for AI data centers"
+    },
+    {
+      "theme": "AI",
+      "status": "breaking",
+      "detail": "NVIDIA reaches $5.5T cap; Burry shorts AI stocks amid bubble fears"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "active",
+      "detail": "AMD earnings anticipation; strong demand for AI chips from hyperscalers"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Rivian CEO's Mind Robotics raises $400M for AI-powered manufacturing bots"
+    },
+    {
+      "theme": "copper",
+      "status": "quiet",
+      "detail": "Stable amid broader commodity pressures from tariffs"
+    }
+  ],
+  "theme_tickers": [
+    {
+      "theme": "glp-1 obesity telehealth",
+      "tickers": [
+        {
+          "symbol": "$HIMS",
+          "price": "$22.50",
+          "context": "Telehealth platform expanding GLP-1 offerings"
+        },
+        {
+          "symbol": "$LLY",
+          "price": "$950.00",
+          "context": "Leader in obesity drugs like Mounjaro"
+        },
+        {
+          "symbol": "$NVO",
+          "price": "$140.00",
+          "context": "Wegovy producer dominating GLP-1 market"
+        },
+        {
+          "symbol": "$TEVA",
+          "price": "$18.20",
+          "context": "Generic GLP-1 alternatives"
+        },
+        {
+          "symbol": "$VTRS",
+          "price": "$12.80",
+          "context": "Compounded weight-loss drug supplier"
+        }
+      ]
+    },
+    {
+      "theme": "photonic interconnect",
+      "tickers": [
+        {
+          "symbol": "$LITE",
+          "price": "$85.40",
+          "context": "Optical components for AI data transfer"
+        },
+        {
+          "symbol": "$COHR",
+          "price": "$95.60",
+          "context": "Laser tech for high-speed interconnects"
+        },
+        {
+          "symbol": "$AAOI",
+          "price": "$28.70",
+          "context": "Applied optical imaging for photonics"
+        },
+        {
+          "symbol": "$GLW",
+          "price": "$42.10",
+          "context": "Fiber optic infrastructure provider"
+        },
+        {
+          "symbol": "$ACIA",
+          "price": "$75.30",
+          "context": "High-speed connectivity solutions"
+        },
+        {
+          "symbol": "$CIEN",
+          "price": "$55.90",
+          "context": "Optical networking equipment"
+        }
+      ]
+    },
+    {
+      "theme": "AI",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$1450.00",
+          "context": "AI chip leader hitting record valuation"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$185.20",
+          "context": "Competitor in AI GPUs with hyperscaler wins"
+        },
+        {
+          "symbol": "$PLTR",
+          "price": "$32.50",
+          "context": "AI software for data analytics"
+        },
+        {
+          "symbol": "$MRVL",
+          "price": "$78.40",
+          "context": "Networking chips for AI scaling"
+        },
+        {
+          "symbol": "$AVGO",
+          "price": "$1750.00",
+          "context": "Semiconductors powering AI infrastructure"
+        },
+        {
+          "symbol": "$CRWV",
+          "price": "$45.80",
+          "context": "AI cloud provider partnered with NVIDIA"
+        },
+        {
+          "symbol": "$IREN",
+          "price": "$12.60",
+          "context": "Energy-efficient AI data centers"
+        }
+      ]
+    },
+    {
+      "theme": "semiconductors",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$1450.00",
+          "context": "Dominant in AI accelerators"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$185.20",
+          "context": "EPYC and MI series for data centers"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$185.00",
+          "context": "Foundry for advanced AI chips"
+        },
+        {
+          "symbol": "$INTC",
+          "price": "$35.20",
+          "context": "Recovering with AI foundry push"
+        },
+        {
+          "symbol": "$AVGO",
+          "price": "$1750.00",
+          "context": "Custom AI silicon designs"
+        },
+        {
+          "symbol": "$MU",
+          "price": "$135.40",
+          "context": "Memory chips critical for AI training"
+        },
+        {
+          "symbol": "$AXTI",
+          "price": "$96.32",
+          "context": "Indium phosphide wafers for AI photonics"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$RTX",
+          "price": "$115.80",
+          "context": "Missile and aerospace systems"
+        },
+        {
+          "symbol": "$LMT",
+          "price": "$580.00",
+          "context": "F-35 and defense tech leader"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "$475.30",
+          "context": "Missile defense and space systems"
+        },
+        {
+          "symbol": "$GD",
+          "price": "$295.40",
+          "context": "Submarines and combat vehicles"
+        },
+        {
+          "symbol": "$BA",
+          "price": "$185.20",
+          "context": "Military aircraft and drones"
+        },
+        {
+          "symbol": "$LHX",
+          "price": "$235.60",
+          "context": "C4ISR and missile tech"
+        }
+      ]
+    },
+    {
+      "theme": "copper",
+      "tickers": [
+        {
+          "symbol": "$FCX",
+          "price": "$52.80",
+          "context": "Major copper producer with mining ops"
+        },
+        {
+          "symbol": "$SCCO",
+          "price": "$125.40",
+          "context": "Southern Copper operations"
+        },
+        {
+          "symbol": "$CPER",
+          "price": "$28.70",
+          "context": "Copper ETF tracking futures"
+        },
+        {
+          "symbol": "$NEM",
+          "price": "$48.50",
+          "context": "Diversified with copper exposure"
+        },
+        {
+          "symbol": "$CCJ",
+          "price": "$45.20",
+          "context": "Copper in uranium mining portfolio"
+        }
+      ]
+    }
+  ],
+  "fintwit_trending": [
+    "NVDA $5.5T milestone",
+    "AI bubble short by Burry",
+    "AMD earnings anticipation",
+    "GLP-1 telehealth boom"
+  ],
+  "fintwit_theme_overlaps": [
+    {
+      "trending_topic": "NVDA $5.5T milestone",
+      "matching_theme": "AI",
+      "our_positions": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "context": "FinTwit exploding over NVIDIA's historic valuation amid AI hype"
+    },
+    {
+      "trending_topic": "AMD earnings anticipation",
+      "matching_theme": "semiconductors",
+      "our_positions": [
+        "$AMD"
+      ],
+      "context": "Buzz on potential beat from AI chip demand and hyperscaler deals"
+    },
+    {
+      "trending_topic": "AI bubble short by Burry",
+      "matching_theme": "AI",
+      "our_positions": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "context": "Debate on $1B short against PLTR and NVDA signaling overvaluation risks"
+    },
+    {
+      "trending_topic": "GLP-1 telehealth boom",
+      "matching_theme": "glp-1 obesity telehealth",
+      "our_positions": [],
+      "context": "AI-powered platforms like Medvi scaling to billion-dollar revenues"
+    }
+  ],
+  "news_events": [
+    {
+      "event": "NVIDIA hits $5.5T market cap",
+      "impact": "fuels AI sector rally but raises bubble concerns",
+      "relevance": "high"
+    },
+    {
+      "event": "US 30-year Treasury yield above 5%",
+      "impact": "pressures growth stocks and raises borrowing costs",
+      "relevance": "high"
+    },
+    {
+      "event": "Mind Robotics raises $400M",
+      "impact": "boosts AI in defense manufacturing",
+      "relevance": "medium"
+    },
+    {
+      "event": "Geopolitical tensions and tariffs",
+      "impact": "potential inflation from Iran war scenario and trade disputes",
+      "relevance": "high"
+    },
+    {
+      "event": "Fed transition to Warsh eyed",
+      "impact": "hawkish shift possible with political influence",
+      "relevance": "medium"
+    }
+  ],
+  "gathered_at": "2026-05-13T16:13:28.146185+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

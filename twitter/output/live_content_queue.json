@@ -3991,9 +3991,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-12T14:37:57.805644+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260512_005",
@@ -4002,9 +4003,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-12T14:37:57.805644+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-13T16:34:01.372725",
+    "tweet_id": "2054601065325007348"
   },
   {
     "id": "live_20260512_142223_v1",
@@ -4089,7 +4092,7 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1336.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1613.png",
     "scheduled_time": "2026-05-13T09:36:43.697022-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4099,5 +4102,79 @@
     },
     "generated_at": "2026-05-13T13:36:43.697021+00:00",
     "cost_usd": 0.016764
+  },
+  {
+    "id": "live_20260513_121352_v1",
+    "text": "$EVTL invalidated below $3.90.\nEntry $4.50, exit $2.61.\nDrone play gave it back.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260513_1613.png",
+    "scheduled_time": "2026-05-13T12:13:52.257596-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.42%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-13T16:13:52.257594+00:00",
+    "cost_usd": 0.016994
+  },
+  {
+    "id": "watchdog_20260513_001",
+    "text": "$VYGR scanner signal: BBB Gene Therapy Platform theme showing structural pivot above key resistance. Institutional accumulation pattern emerging as biotech rotation accelerates into year-end.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-13T14:48:21.634170+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260513_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. Perfect storm brewing.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-13T14:48:21.634170+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260513_003",
+    "text": "Blood-brain barrier gene therapy represents one of biotech's final frontiers. When breakthrough platforms emerge with institutional backing, the runway can be extraordinary. Focus on execution risk vs reward.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-13T14:48:21.634170+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260513_004",
+    "text": "Portfolio update: 87.40% return vs SPY's 8.39% delivers 79.01% alpha. Eight positions across AI, biotech, nuclear, and fintech themes. Capital preservation meets aggressive growth targeting.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-13T14:48:21.634170+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260513_005",
+    "text": "Question: When small-cap valuations hit 25-year discount levels while earnings broaden, what's your primary risk management focus? Position sizing or sector diversification?",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-13T14:48:21.634170+00:00",
+    "source": "watchdog"
   }
 ]

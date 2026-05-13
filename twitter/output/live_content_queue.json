@@ -3122,25 +3122,6 @@
     "tweet_id": "2052381849289416819"
   },
   {
-    "id": "live_20260506_091015_v1",
-    "text": "$VYGR at $3.90. Blood-brain barrier gene therapy platform. Parkinson's and Huntington's programs advancing. Phase 2 data expected Q3 2026.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260507_1315.png",
-    "scheduled_time": "2026-05-06T09:10:15.637131-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.8%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-06T13:10:15.637129+00:00",
-    "cost_usd": 0.017215,
-    "skip_reason": "Stale: 24h old"
-  },
-  {
     "id": "live_20260507_091532_v1",
     "text": "Why do 99% of gene therapies fail to cross the blood-brain barrier but $VYGR's platform could change Parkinson's treatment? Because BBB delivery is neuroscience's hardest problem. Phase 2 data Q3 2026 will tell us if this works.",
     "category": "EDUCATIONAL",
@@ -3966,16 +3947,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260512_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260513_1336.png",
     "scheduled_time": "2026-05-12T12:13:18.555452-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.83%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-12T16:13:18.555450+00:00",
-    "cost_usd": 0.017106
+    "cost_usd": 0.017106,
+    "posted_at": "2026-05-13T13:57:00.459323",
+    "tweet_id": "2054561550694744549"
   },
   {
     "id": "watchdog_20260512_001",
@@ -3984,9 +3967,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-12T14:37:57.805644+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260512_003",
@@ -4029,16 +4013,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260512_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260513_1336.png",
     "scheduled_time": "2026-05-12T14:22:23.414613-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-12T18:22:23.414612+00:00",
-    "cost_usd": 0.017334
+    "cost_usd": 0.017334,
+    "skip_reason": "Stale: 20h old"
   },
   {
     "id": "live_20260512_142223_v2",
@@ -4047,16 +4032,17 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260512_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260513_1336.png",
     "scheduled_time": "2026-05-12T14:22:23.414613-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-12T18:22:23.414612+00:00",
-    "cost_usd": 0.017334
+    "cost_usd": 0.017334,
+    "skip_reason": "Stale: 20h old"
   },
   {
     "id": "live_20260512_152034_v1",
@@ -4065,16 +4051,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1336.png",
     "scheduled_time": "2026-05-12T15:20:34.147847-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.42%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-05-12T19:20:34.147845+00:00",
-    "cost_usd": 0.017461
+    "cost_usd": 0.017461,
+    "skip_reason": "Stale: 19h old"
   },
   {
     "id": "live_20260512_152034_v2",
@@ -4083,15 +4070,34 @@
     "primary_ticker": "NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260512_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260513_1336.png",
     "scheduled_time": "2026-05-12T15:20:34.147847-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.42%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-05-12T19:20:34.147845+00:00",
-    "cost_usd": 0.017461
+    "cost_usd": 0.017461,
+    "skip_reason": "Stale: 19h old"
+  },
+  {
+    "id": "live_20260513_093643_v1",
+    "text": "$VYGR at $4.17. BBB gene therapy platform targeting neurological diseases. Entry $4.45, watching invalidation at $3.90. NFA.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260513_1336.png",
+    "scheduled_time": "2026-05-13T09:36:43.697022-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-13T13:36:43.697021+00:00",
+    "cost_usd": 0.016764
   }
 ]

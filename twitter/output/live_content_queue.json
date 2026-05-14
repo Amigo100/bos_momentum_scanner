@@ -3184,26 +3184,6 @@
     "tweet_id": "2052454635856880126"
   },
   {
-    "id": "live_20260507_124507_v1",
-    "text": "$EVTL pullback today.\nDrone sector volatility is real.\nDefense thesis intact.\nAdding on weakness.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260507_1917.png",
-    "scheduled_time": "2026-05-07T12:45:07.131130-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.46%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-07T16:45:07.131128+00:00",
-    "cost_usd": 0.016966,
-    "posted_at": "2026-05-07T19:37:41.330094",
-    "tweet_id": "2052472958766236057"
-  },
-  {
     "id": "watchdog_20260507_001",
     "text": "$VYGR cleared all gates on scanner - BBB gene therapy platform showing institutional accumulation into prime positioning. Theme momentum building across sector with pipeline developments accelerating.",
     "category": "SIGNAL_ALERT",
@@ -4308,16 +4288,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260514_1606.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260514_1656.png",
     "scheduled_time": "2026-05-14T12:06:11.613236-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-14T16:06:11.613233+00:00",
-    "cost_usd": 0.017317
+    "cost_usd": 0.017317,
+    "posted_at": "2026-05-14T17:17:04.115551",
+    "tweet_id": "2054974285622452467"
   },
   {
     "id": "watchdog_20260514_001",
@@ -4326,9 +4308,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-14T14:28:21.947688+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260514_002",
@@ -4348,9 +4331,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-14T14:28:21.947688+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260514_004",
@@ -4373,5 +4357,41 @@
     "status": "pending",
     "created_at": "2026-05-14T14:28:21.947688+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260514_125651_v1",
+    "text": "$HIVE from $2.10 entry to $6.00. +185.7% while crypto miners rotate back into favor. Risk-on thesis confirming.",
+    "category": "RECEIPT",
+    "primary_ticker": "HIVE",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260514_1656.png",
+    "scheduled_time": "2026-05-14T12:56:51.311189-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.56%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-14T16:56:51.311187+00:00",
+    "cost_usd": 0.0171
+  },
+  {
+    "id": "live_20260514_125651_v2",
+    "text": "$NVDA climbing.\nIn at $150, now $211.50.\nAI demand = real.\nThis run has legs.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260514_1657.png",
+    "scheduled_time": "2026-05-14T12:56:51.311189-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.56%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-14T16:56:51.311187+00:00",
+    "cost_usd": 0.0171
   }
 ]

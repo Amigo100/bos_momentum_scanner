@@ -3232,45 +3232,6 @@
     "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
-    "id": "live_20260507_140438_v1",
-    "text": "$NVDA at $208.27. Entry $150.00 \u2192 +38.8%. AI chip demand thesis confirming.",
-    "category": "RECEIPT",
-    "primary_ticker": "NVDA",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260507_2301.png",
-    "scheduled_time": "2026-05-07T14:04:38.103853-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+1.19%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-07T18:04:38.103851+00:00",
-    "cost_usd": 0.016976,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260507_140438_v2",
-    "text": "$SOFI flat while tech rips.\nIn from $7.90. Now $16.28.\nFintech rotation coming.\nPatience pays.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260507_2301.png",
-    "scheduled_time": "2026-05-07T14:04:38.103853-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.19%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-07T18:04:38.103851+00:00",
-    "cost_usd": 0.016976,
-    "posted_at": "2026-05-07T23:21:36.540926",
-    "tweet_id": "2052529310058024998"
-  },
-  {
     "id": "live_20260507_151719_v1",
     "text": "$AMD at $360.54. Entry $120.00 \u2192 +200.5%. MI300 accelerator demand thesis confirming across hyperscalers.",
     "category": "RECEIPT",
@@ -4320,9 +4281,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-14T14:28:21.947688+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-14T18:36:22.159265",
+    "tweet_id": "2054994242678772038"
   },
   {
     "id": "watchdog_20260514_003",
@@ -4343,9 +4306,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-14T14:28:21.947688+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260514_005",
@@ -4365,7 +4329,7 @@
     "primary_ticker": "HIVE",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260514_1656.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260514_1816.png",
     "scheduled_time": "2026-05-14T12:56:51.311189-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4383,7 +4347,7 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260514_1657.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260514_1816.png",
     "scheduled_time": "2026-05-14T12:56:51.311189-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4393,5 +4357,41 @@
     },
     "generated_at": "2026-05-14T16:56:51.311187+00:00",
     "cost_usd": 0.0171
+  },
+  {
+    "id": "live_20260514_141606_v1",
+    "text": "$SOFI from $7.90 entry to $32.00 high. +305.1% on the fintech health thesis. GLP-1 telehealth expansion validating the play.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260514_1816.png",
+    "scheduled_time": "2026-05-14T14:16:06.386044-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.95%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-14T18:16:06.386042+00:00",
+    "cost_usd": 0.017529
+  },
+  {
+    "id": "live_20260514_141606_v2",
+    "text": "$AMD climbing.\nEntry $120, now $455.19.\nData center gains = real.\n+279.3% while sector consolidates.",
+    "category": "RECEIPT",
+    "primary_ticker": "AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260514_1816.png",
+    "scheduled_time": "2026-05-14T14:16:06.386044-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.95%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-14T18:16:06.386042+00:00",
+    "cost_usd": 0.017529
   }
 ]

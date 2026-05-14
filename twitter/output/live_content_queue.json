@@ -4168,9 +4168,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-13T14:48:21.634170+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260513_005",
@@ -4179,9 +4180,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-13T14:48:21.634170+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-14T13:33:16.438706",
+    "tweet_id": "2054917966181900404"
   },
   {
     "id": "live_20260513_142358_v1",
@@ -4209,16 +4212,17 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260513_1918.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260514_1313.png",
     "scheduled_time": "2026-05-13T14:23:58.160048-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.64%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-13T18:23:58.160047+00:00",
-    "cost_usd": 0.016822
+    "cost_usd": 0.016822,
+    "skip_reason": "Stale: 19h old"
   },
   {
     "id": "live_20260513_151852_v1",
@@ -4227,16 +4231,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260513_1919.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260514_1313.png",
     "scheduled_time": "2026-05-13T15:18:52.442768-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.64%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-13T19:18:52.442766+00:00",
-    "cost_usd": 0.017321
+    "cost_usd": 0.017321,
+    "skip_reason": "Stale: 18h old"
   },
   {
     "id": "live_20260513_151852_v2",
@@ -4245,15 +4250,34 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260513_1919.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260514_1313.png",
     "scheduled_time": "2026-05-13T15:18:52.442768-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.64%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-13T19:18:52.442766+00:00",
-    "cost_usd": 0.017321
+    "cost_usd": 0.017321,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260514_091301_v1",
+    "text": "$ASPI breaking out.\nDefense additive rumors.\nEntry $6.00, now $7.80.\nContract news loading. \ud83c\udfaf",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260514_1313.png",
+    "scheduled_time": "2026-05-14T09:13:01.165578-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-14T13:13:01.165577+00:00",
+    "cost_usd": 0.017433
   }
 ]

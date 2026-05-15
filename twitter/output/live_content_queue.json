@@ -3232,45 +3232,6 @@
     "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
-    "id": "live_20260507_190120_v1",
-    "text": "$NVDA at $207.83. Entry $150.00 \u2192 +38.6%. Earnings beat + AI chip demand confirming the thesis across hyperscalers.",
-    "category": "RECEIPT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260508_1611.png",
-    "scheduled_time": "2026-05-07T19:01:20.633716-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+1.19%",
-      "market_mood": "bullish",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-07T23:01:20.633715+00:00",
-    "cost_usd": 0.017331,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260507_190120_v2",
-    "text": "$HIVE stopped out.\nEntry $2.10. Exit $2.17.\nSmall win. Moving on.\nWin more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260508_1611.png",
-    "scheduled_time": "2026-05-07T19:01:20.633716-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.19%",
-      "market_mood": "bullish",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-07T23:01:20.633715+00:00",
-    "cost_usd": 0.017331,
-    "posted_at": "2026-05-08T16:31:21.150920",
-    "tweet_id": "2052788453608215024"
-  },
-  {
     "id": "live_20260508_121104_v1",
     "text": "$VYGR at $4.17. Blood-brain barrier gene therapy platform. 47 programs targeting Parkinson's, Alzheimer's. Voyager Therapeutics data readout 2027.",
     "category": "EDUCATIONAL",
@@ -4312,16 +4273,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260514_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260515_1312.png",
     "scheduled_time": "2026-05-14T12:56:51.311189-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.56%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-14T16:56:51.311187+00:00",
-    "cost_usd": 0.0171
+    "cost_usd": 0.0171,
+    "posted_at": "2026-05-15T13:33:09.097117",
+    "tweet_id": "2055280322942792134"
   },
   {
     "id": "live_20260514_141606_v1",
@@ -4330,16 +4293,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260514_1920.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260515_1312.png",
     "scheduled_time": "2026-05-14T14:16:06.386044-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.95%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-14T18:16:06.386042+00:00",
-    "cost_usd": 0.017529
+    "cost_usd": 0.017529,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260514_141606_v2",
@@ -4348,16 +4312,17 @@
     "primary_ticker": "AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260514_1921.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260515_1312.png",
     "scheduled_time": "2026-05-14T14:16:06.386044-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.95%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-14T18:16:06.386042+00:00",
-    "cost_usd": 0.017529
+    "cost_usd": 0.017529,
+    "skip_reason": "Stale: 19h old"
   },
   {
     "id": "live_20260514_152048_v1",
@@ -4366,16 +4331,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260514_1921.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260515_1312.png",
     "scheduled_time": "2026-05-14T15:20:48.486400-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.56%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-14T19:20:48.486399+00:00",
-    "cost_usd": 0.017388
+    "cost_usd": 0.017388,
+    "skip_reason": "Stale: 18h old"
   },
   {
     "id": "live_20260514_152048_v2",
@@ -4384,15 +4350,53 @@
     "primary_ticker": "BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260514_1921.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260515_1312.png",
     "scheduled_time": "2026-05-14T15:20:48.486400-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.56%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-14T19:20:48.486399+00:00",
-    "cost_usd": 0.017388
+    "cost_usd": 0.017388,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260515_091241_v1",
+    "text": "$HIVE holding $2.05 support. Crypto miners are volatile by nature \u2014 that's why we set clear levels. Entry $2.10, watching for follow-through or invalidation.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "HIVE",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260515_1313.png",
+    "scheduled_time": "2026-05-15T09:12:41.806981-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.96%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-15T13:12:41.806980+00:00",
+    "cost_usd": 0.017446,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260515_091241_v2",
+    "text": "$ASPI grinding higher.\nDefense noise building.\nEntry $6.00, now $6.50.\nGeopolitics = tailwind.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$ASPI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260515_1313.png",
+    "scheduled_time": "2026-05-15T09:12:41.806981-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.96%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-15T13:12:41.806980+00:00",
+    "cost_usd": 0.017446
   }
 ]

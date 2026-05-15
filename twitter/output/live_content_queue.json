@@ -3232,45 +3232,6 @@
     "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
-    "id": "live_20260508_121104_v1",
-    "text": "$VYGR at $4.17. Blood-brain barrier gene therapy platform. 47 programs targeting Parkinson's, Alzheimer's. Voyager Therapeutics data readout 2027.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260508_1854.png",
-    "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-08T16:11:04.934372+00:00",
-    "cost_usd": 0.016738,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260508_121104_v2",
-    "text": "$EVTL consolidating.\nDefense contracts pending.\nDrone sector rotating back.\nWatching closely.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260508_1854.png",
-    "scheduled_time": "2026-05-08T12:11:04.934373-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-08T16:11:04.934372+00:00",
-    "cost_usd": 0.016738,
-    "posted_at": "2026-05-08T19:14:53.031179",
-    "tweet_id": "2052829607619915808"
-  },
-  {
     "id": "watchdog_20260508_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45. BBB Gene Therapy Platform theme showing institutional accumulation across multiple names. Blood-brain barrier delivery mechanisms becoming critical infrastructure for next-gen therapeutics.",
     "category": "SIGNAL_ALERT",
@@ -4446,16 +4407,18 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260515_1445.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260515_1648.png",
     "scheduled_time": "2026-05-15T10:44:58.562289-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.14%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-05-15T14:44:58.562287+00:00",
-    "cost_usd": 0.017249
+    "cost_usd": 0.017249,
+    "posted_at": "2026-05-15T17:08:42.627747",
+    "tweet_id": "2055334570107498666"
   },
   {
     "id": "watchdog_20260515_001",
@@ -4464,9 +4427,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-15T14:21:17.245689+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260515_002",
@@ -4486,9 +4450,10 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-15T14:21:17.245689+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260515_004",
@@ -4511,5 +4476,23 @@
     "status": "pending",
     "created_at": "2026-05-15T14:21:17.245689+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260515_124832_v1",
+    "text": "Fintech expansion delivered. $SOFI from $7.90 to $32 = +305%. CEO insider buying signaled this move months ago.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260515_1648.png",
+    "scheduled_time": "2026-05-15T12:48:32.972912-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.14%",
+      "market_mood": "bearish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-15T16:48:32.972911+00:00",
+    "cost_usd": 0.017094
   }
 ]

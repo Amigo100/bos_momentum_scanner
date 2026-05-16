@@ -3293,26 +3293,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260509_164612_v1",
-    "text": "$NVDA momentum continuing.\nEntry $150. Now $215.20.\nBlackwell orders stacking.\nDYOR",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260510_1500.png",
-    "scheduled_time": "2026-05-09T16:46:12.658567-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-09T20:46:12.658566+00:00",
-    "cost_usd": 0.01677,
-    "posted_at": "2026-05-10T15:20:18.238322",
-    "tweet_id": "2053495349373759738"
-  },
-  {
     "id": "watchdog_20260509_001",
     "text": "$VYGR cleared all gates again \u2014 BBB gene therapy platform showing institutional accumulation patterns. When biotech momentum ignites with structural positioning, the moves compress years of value creation into months.",
     "category": "SIGNAL_ALERT",
@@ -4507,16 +4487,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_1602.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_2050.png",
     "scheduled_time": "2026-05-16T12:02:06.070696-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-1.24%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-16T16:02:06.070695+00:00",
-    "cost_usd": 0.017362
+    "cost_usd": 0.017362,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260516_120206_v2",
@@ -4525,16 +4506,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260516_1602.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260516_2050.png",
     "scheduled_time": "2026-05-16T12:02:06.070696-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-1.24%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-16T16:02:06.070695+00:00",
-    "cost_usd": 0.017362
+    "cost_usd": 0.017362,
+    "posted_at": "2026-05-16T21:10:20.277846",
+    "tweet_id": "2055757765558374844"
   },
   {
     "id": "watchdog_20260516_001",
@@ -4591,5 +4574,60 @@
     "created_at": "2026-05-16T13:45:09.523762+00:00",
     "source": "watchdog",
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260516_165006_v1",
+    "text": "$VYGR at $4.65. Entry $4.45, now +4.5%. BBB gene therapy platform validating on Lunai's $20M acquisition and Fractyl's GLP-1 trial data. Fresh signal, fresh move.",
+    "category": "RECEIPT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_2050.png",
+    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-16T20:50:06.667018+00:00",
+    "cost_usd": 0.017452
+  },
+  {
+    "id": "live_20260516_165006_v2",
+    "text": "Defense names like $EVTL are doing what quality setups do in choppy markets \u2014 they just sit there. Down 43% from entry but holding $4.55 support while tech bleeds. Sometimes the best trade is patience. Setup invalidates below $4.00.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260516_2050.png",
+    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-16T20:50:06.667018+00:00",
+    "cost_usd": 0.017452,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260516_165006_v3",
+    "text": "$NVDA pullback = noise.\nEntry $150, sitting $225.\nAI thesis hasn't changed.\nCash the position if it matters.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260516_2050.png",
+    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-16T20:50:06.667018+00:00",
+    "cost_usd": 0.017452
   }
 ]

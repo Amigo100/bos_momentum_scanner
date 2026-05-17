@@ -3355,63 +3355,6 @@
     "tweet_id": "2053879181864562812"
   },
   {
-    "id": "live_20260510_105958_v1",
-    "text": "Gene therapy platforms like $VYGR need 3 things: blood-brain barrier delivery tech, CNS pipeline depth, and binary catalyst timing. Voyager's Tracer Capsid data drops Q2 2026. That's when thesis validates or dies. Entry $4.45.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260510_2052.png",
-    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.8%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-10T14:59:58.926636+00:00",
-    "cost_usd": 0.017385,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
-    "id": "live_20260510_105958_v2",
-    "text": "$HIVE from $2.10 to $6.00. +185.7% on the crypto mining + datacenter thesis. Bitcoin rally creating massive demand for mining capacity. System found it, discipline held it.",
-    "category": "RECEIPT",
-    "primary_ticker": "HIVE",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260510_1500.png",
-    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.8%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-10T14:59:58.926636+00:00",
-    "cost_usd": 0.017385,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260510_105958_v3",
-    "text": "$ASPI setup invalidated.\nExit $5.38 from $6.00 entry.\nPhotonic interconnect theme still valid.\nWin more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260510_2052.png",
-    "scheduled_time": "2026-05-10T10:59:58.926637-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.8%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-10T14:59:58.926636+00:00",
-    "cost_usd": 0.017385,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "watchdog_20260510_001",
     "text": "Sunday scan highlights: BBB Gene Therapy Platform theme hits PRIME status. $VYGR cleared all gates for institutional accumulation. Defense Additive Manufacturing and Photonic Interconnect both showing INVESTABLE momentum patterns.",
     "category": "SIGNAL_ALERT",
@@ -4526,9 +4469,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-16T13:45:09.523762+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-17T16:23:05.180179",
+    "tweet_id": "2056047864380551402"
   },
   {
     "id": "watchdog_20260516_002",
@@ -4537,9 +4482,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-16T13:45:09.523762+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260516_003",
@@ -4582,16 +4528,17 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_2050.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260517_1602.png",
     "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-16T20:50:06.667018+00:00",
-    "cost_usd": 0.017452
+    "cost_usd": 0.017452,
+    "skip_reason": "Stale: 20h old"
   },
   {
     "id": "live_20260516_165006_v2",
@@ -4619,15 +4566,90 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260516_2050.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260517_1602.png",
     "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-16T20:50:06.667018+00:00",
-    "cost_usd": 0.017452
+    "cost_usd": 0.017452,
+    "skip_reason": "Stale: 20h old"
+  },
+  {
+    "id": "live_20260517_120252_v1",
+    "text": "$EVTL testing $2.55 support.\neVTOL volatility continues.\nFlight milestones vs sector pressure.\nWatching closely.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260517_1603.png",
+    "scheduled_time": "2026-05-17T12:02:52.632972-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-1.24%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-17T16:02:52.632971+00:00",
+    "cost_usd": 0.017531
+  },
+  {
+    "id": "watchdog_20260517_001",
+    "text": "Sunday scanner check: $VYGR cleared all gates again. BBB Gene Therapy Platform theme showing institutional accumulation patterns. When structural pivots align with FDA catalyst windows, momentum builds fast.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-17T13:44:11.458740+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260517_002",
+    "text": "The 6-18 month structural setup for small-cap momentum is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. Capital flows where growth lives.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-17T13:44:11.458740+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260517_003",
+    "text": "Why we focus on theme catalysts over individual stock stories: When Defense Additive Manufacturing or Photonic Interconnect themes turn INVESTABLE, multiple stocks move together. Ride the wave, not the droplet.",
+    "category": "EDUCATIONAL",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-17T13:44:11.458740+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260517_004",
+    "text": "Portfolio update: 8 positions across Nuclear Fuel, AI Infrastructure, BBB Gene Therapy. 86.37% return vs SPY's 8.62%. When you catch structural pivots early, compounding does the heavy lifting.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-17T13:44:11.458740+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260517_005",
+    "text": "Tomorrow's note dives deep into why GLP-1 Obesity Telehealth just hit INVESTABLE status. The regulatory landscape shifted, institutional flows are building, and three names cleared our momentum gates.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-17T13:44:11.458740+00:00",
+    "source": "watchdog"
   }
 ]

@@ -4688,9 +4688,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-18T15:45:44.529743+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260518_003",
@@ -4756,16 +4757,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_1913.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_2259.png",
     "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-18T19:13:44.331520+00:00",
-    "cost_usd": 0.01738
+    "cost_usd": 0.01738,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260518_151344_v2",
@@ -4774,15 +4776,36 @@
     "primary_ticker": "SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260518_1913.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260518_2259.png",
     "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-18T19:13:44.331520+00:00",
-    "cost_usd": 0.01738
+    "cost_usd": 0.01738,
+    "posted_at": "2026-05-18T23:19:37.083360",
+    "tweet_id": "2056515075565932966"
+  },
+  {
+    "id": "live_20260518_185927_v1",
+    "text": "$EVTL from $4.50 to $7.00 high \u2014 +55.6% on the defense play. Additive manufacturing for military doesn't vanish because of a red month. Win more than you lose.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_2259.png",
+    "scheduled_time": "2026-05-18T18:59:27.080497-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.07%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T22:59:27.080496+00:00",
+    "cost_usd": 0.017282,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

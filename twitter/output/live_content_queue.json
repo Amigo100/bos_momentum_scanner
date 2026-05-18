@@ -4630,16 +4630,17 @@
     "primary_ticker": "HIVE",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260518_1819.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260518_1913.png",
     "scheduled_time": "2026-05-18T12:43:24.615506-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-18T16:43:24.615504+00:00",
-    "cost_usd": 0.017133
+    "cost_usd": 0.017133,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260518_124324_v2",
@@ -4723,9 +4724,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-18T15:45:44.529743+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260518_141948_v1",
@@ -4734,15 +4736,53 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_1819.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_1913.png",
     "scheduled_time": "2026-05-18T14:19:48.881711-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.3%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-18T18:19:48.881709+00:00",
-    "cost_usd": 0.017163
+    "cost_usd": 0.017163,
+    "posted_at": "2026-05-18T19:33:57.433790",
+    "tweet_id": "2056458286182879318"
+  },
+  {
+    "id": "live_20260518_151344_v1",
+    "text": "$EVTL at $2.44. Down 45.8% from $4.50 entry. Defense additive manufacturing thesis intact but setup invalidated below support. Win more than you lose.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_1913.png",
+    "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T19:13:44.331520+00:00",
+    "cost_usd": 0.01738
+  },
+  {
+    "id": "live_20260518_151344_v2",
+    "text": "$SOFI stablecoin launch on Solana.\nEntry $7.90. High $32.00.\n+305.1% on fintech thesis.\nWatching $16 resistance break.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260518_1913.png",
+    "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T19:13:44.331520+00:00",
+    "cost_usd": 0.01738
   }
 ]

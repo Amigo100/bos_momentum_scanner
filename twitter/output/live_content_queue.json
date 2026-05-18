@@ -3417,44 +3417,6 @@
     "tweet_id": "2054238565043933457"
   },
   {
-    "id": "live_20260511_122514_v1",
-    "text": "$VYGR at $4.09. Entry $4.45, down 8.1%. Blood-brain barrier gene therapy thesis needs more time. Position sizing prevents account damage.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1319.png",
-    "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-11T16:25:14.895326+00:00",
-    "cost_usd": 0.016674,
-    "skip_reason": "Stale: 21h old"
-  },
-  {
-    "id": "live_20260511_122514_v2",
-    "text": "$EVTL setup broke.\nEntry $4.50, now $2.77.\nDrone sector rotating out.\nWin more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260512_1319.png",
-    "scheduled_time": "2026-05-11T12:25:14.895328-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "N/A",
-      "market_mood": "unknown",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-11T16:25:14.895326+00:00",
-    "cost_usd": 0.016674,
-    "skip_reason": "Stale: 21h old"
-  },
-  {
     "id": "watchdog_20260511_001",
     "text": "$VYGR cleared all gates this morning. BBB Gene Therapy Platform theme showing institutional accumulation as biotech rotation accelerates. Position sized for capital preservation with structural upside.",
     "category": "SIGNAL_ALERT",
@@ -4606,9 +4568,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-17T13:44:11.458740+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260517_005",
@@ -4648,7 +4611,7 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260518_1441.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260518_1643.png",
     "scheduled_time": "2026-05-18T10:41:25.337324-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -4658,5 +4621,106 @@
     },
     "generated_at": "2026-05-18T14:41:25.337322+00:00",
     "cost_usd": 0.017296
+  },
+  {
+    "id": "live_20260518_124324_v1",
+    "text": "$HIVE from $2.10 to $6.00. +185.7% on the crypto mining and datacenter play. Thesis intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "HIVE",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260518_1643.png",
+    "scheduled_time": "2026-05-18T12:43:24.615506-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T16:43:24.615504+00:00",
+    "cost_usd": 0.017133
+  },
+  {
+    "id": "live_20260518_124324_v2",
+    "text": "Defense names like $EVTL test conviction during sector rotation. Down 46.2% from entry but the eVTOL manufacturing contracts and DOD partnerships haven't changed. When fundamentals hold and price pulls back, that's when patient capital separates from noise traders.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_1643.png",
+    "scheduled_time": "2026-05-18T12:43:24.615506-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T16:43:24.615504+00:00",
+    "cost_usd": 0.017133,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260518_124324_v3",
+    "text": "$NVDA holding $221 from $150 entry.\n\nAI chip thesis intact. May 20 earnings = next catalyst.\n\nUp 47% while broader tech consolidates.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260518_1643.png",
+    "scheduled_time": "2026-05-18T12:43:24.615506-04:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "-0.3%",
+      "market_mood": "volatile",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-18T16:43:24.615504+00:00",
+    "cost_usd": 0.017133,
+    "posted_at": "2026-05-18T17:03:41.427534",
+    "tweet_id": "2056420470271152593"
+  },
+  {
+    "id": "watchdog_20260518_001",
+    "text": "\ud83d\udfe2 $VYGR scanner confirmation: Blood-brain barrier gene therapy platform cleared all gates. Structural pivot active as institutional accumulation builds in rare disease biotech. Entry zone live.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-18T15:45:44.529743+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260518_003",
+    "text": "BBB Gene Therapy Platform theme elevated to PRIME status. When rare disease biotechs with breakthrough mechanisms start moving, the runway extends for months. $VYGR leading the charge.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-18T15:45:44.529743+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260518_004",
+    "text": "Small-cap setup mirrors 2016: earnings broadening \u2713, 25-year valuation discount \u2713, institutional rotation accelerating \u2713. The structural pieces are aligning for sustained momentum.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-18T15:45:44.529743+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260518_005",
+    "text": "Defense Additive Manufacturing and Photonic Interconnect themes both hit INVESTABLE status. Innovation clusters forming as geopolitical tensions drive infrastructure spending priorities.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-18T15:45:44.529743+00:00",
+    "source": "watchdog"
   }
 ]

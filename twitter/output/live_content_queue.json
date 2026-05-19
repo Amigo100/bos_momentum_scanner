@@ -4839,16 +4839,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_1927.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_2301.png",
     "scheduled_time": "2026-05-19T14:22:31.706752-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.07%",
       "market_mood": "volatile",
       "context_stale": true
     },
     "generated_at": "2026-05-19T18:22:31.706750+00:00",
-    "cost_usd": 0.017573
+    "cost_usd": 0.017573,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260519_152742_v1",
@@ -4857,15 +4858,54 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_1927.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_2301.png",
     "scheduled_time": "2026-05-19T15:27:42.812160-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.4%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-05-19T19:27:42.812158+00:00",
-    "cost_usd": 0.017532
+    "cost_usd": 0.017532,
+    "posted_at": "2026-05-19T23:21:15.101335",
+    "tweet_id": "2056877874628481249"
+  },
+  {
+    "id": "live_20260519_190104_v1",
+    "text": "What happens when drone tech names get caught in a broader selloff? $EVTL down to $2.35 from $4.50 entry. Uncomfortable? Sure. But defense spending bills don't stop because of one red week. That's the difference between noise and invalidation.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_2301.png",
+    "scheduled_time": "2026-05-19T19:01:04.321850-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.67%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-19T23:01:04.321848+00:00",
+    "cost_usd": 0.017425,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260519_190104_v2",
+    "text": "$BAND breaking resistance.\nEntry $16.55. Now $53.88.\nAI voice platform consolidating gains.\nDYOR \ud83c\udfaf",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260519_2301.png",
+    "scheduled_time": "2026-05-19T19:01:04.321850-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.67%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-19T23:01:04.321848+00:00",
+    "cost_usd": 0.017425
   }
 ]

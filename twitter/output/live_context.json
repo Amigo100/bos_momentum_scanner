@@ -1,118 +1,103 @@
 {
-  "timestamp": "2026-05-19T19:30:00Z",
+  "timestamp": "2026-05-19T23:00:00Z",
   "market_snapshot": {
-    "spy_move": "-0.4%",
-    "qqq_move": "-0.5%",
-    "iwm_move": "+0.7%",
-    "vix": "17.8",
-    "market_mood": "volatile",
-    "headline": "Broad selloff in tech amid geopolitical tensions and copper weakness, small caps hold up"
+    "spy_move": "-0.67%",
+    "qqq_move": "-0.84%",
+    "iwm_move": "-1.01%",
+    "vix": "18.06",
+    "market_mood": "bearish",
+    "headline": "S&P 500 and Nasdaq post third straight loss as rising yields and pre-NVDA earnings caution weigh on tech"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "-3.3%",
-      "price": "$15.19",
-      "context": "Broader fintech pullback on macro uncertainty"
+      "move": "-3.06%",
+      "price": "$15.23",
+      "context": "Broader tech selloff and risk-off sentiment"
     },
     {
       "ticker": "$EVTL",
-      "move": "-4.3%",
+      "move": "-4.32%",
       "price": "$2.33",
-      "context": "eVTOL sector volatility on funding concerns"
+      "context": "Aerospace/defense names hit in market pullback"
     },
     {
       "ticker": "$NVDA",
-      "move": "flat",
-      "price": "$222.26",
-      "context": "Holding steady ahead of earnings; AI demand intact"
+      "move": "-0.77%",
+      "price": "$220.61",
+      "context": "Pre-earnings consolidation ahead of tomorrow's report"
     },
     {
       "ticker": "$AMD",
-      "move": "-4.7%",
-      "price": "$401.30",
-      "context": "AI chip rotation pressure"
+      "move": "-1.33%",
+      "price": "$222.32",
+      "context": "Semis dragged lower with Nasdaq"
     },
     {
       "ticker": "$ASPI",
-      "move": "-3.2%",
-      "price": "$6.12",
-      "context": "Nuclear fuel supply deals offset by sector dip"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "No fresh price action noted"
     },
     {
       "ticker": "$HIVE",
-      "move": "-9.2%",
-      "price": "$3.14",
-      "context": "Crypto mining volatility"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "No fresh price action noted"
     },
     {
       "ticker": "$BAND",
-      "move": "-4.1%",
-      "price": "$53.68",
-      "context": "AI voice/comms momentum cooling"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "No fresh price action noted"
     },
     {
       "ticker": "$VYGR",
-      "move": "+0.7%",
-      "price": "$3.56",
-      "context": "Gene therapy platform buzz on recent scanner signal"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Recent scanner PASS/CONSIDER signals; watch for follow-through"
     }
   ],
   "theme_activity": [
     {
-      "theme": "copper",
-      "status": "active",
-      "detail": "Futures down 1.8% to ~$6.20/lb on China demand worries and risk-off mood"
-    },
-    {
       "theme": "AI",
       "status": "active",
-      "detail": "Chip rotation from NVDA to AMD/INTC; earnings focus building"
+      "detail": "NVDA earnings tomorrow driving pre-report caution; semis under pressure"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Broad pullback but long-term AI buildout intact"
+      "detail": "AMD and NVDA both lower in broad tech weakness"
+    },
+    {
+      "theme": "copper",
+      "status": "active",
+      "detail": "Futures down ~1.8% to $6.19/lb amid risk-off mood and Middle East tensions"
     },
     {
       "theme": "defense",
       "status": "quiet",
-      "detail": "Steady on budget increases; additive manufacturing tailwinds"
+      "detail": "No major moves; SpaceX IPO chatter on X but limited overlap"
     },
     {
-      "theme": "nuclear",
-      "status": "active",
-      "detail": "HALEU supply deals for ASPI; sector index near highs"
-    },
-    {
-      "theme": "bbb gene therapy platform",
+      "theme": "bladder cancer immunotherapy",
       "status": "breaking",
-      "detail": "Voyager and peers advancing BBB-crossing AAV tech for CNS"
+      "detail": "enGene (ENGN) shares cratered on updated pivotal data showing lower CR rates"
     },
     {
       "theme": "glp-1 obesity telehealth",
       "status": "quiet",
-      "detail": "Compounding and DTC access expansions ongoing"
+      "detail": "Ongoing AI-telehealth plays like Medvi highlighted but no new catalysts"
     },
     {
-      "theme": "bladder cancer immunotherapy",
+      "theme": "nuclear",
       "status": "quiet",
-      "detail": "TAR-200 and ANKTIVA data updates"
-    },
-    {
-      "theme": "defence additive manufacturing",
-      "status": "active",
-      "detail": "DoD budget up 83% YoY for AM projects"
-    },
-    {
-      "theme": "photonic interconnect",
-      "status": "breaking",
-      "detail": "IonQ photonic milestone; silicon photonics 400Gb/s progress"
+      "detail": "Geopolitical nuclear tensions (Iran, Arctic) but no direct stock moves"
     },
     {
       "theme": "infrastructure",
       "status": "quiet",
-      "detail": "Ongoing BIL/IRA project flow"
+      "detail": "No specific news; copper weakness may indirectly pressure related names"
     }
   ],
   "theme_tickers": [
@@ -122,52 +107,27 @@
         {
           "symbol": "$FCX",
           "price": "$42.50",
-          "context": "Major US copper producer"
+          "context": "Major copper producer; futures weakness hits miners"
         },
         {
           "symbol": "$SCCO",
           "price": "$92.00",
-          "context": "Southern Copper"
-        },
-        {
-          "symbol": "$BHP",
-          "price": "$55.20",
-          "context": "Global miner with AI data center exposure"
+          "context": "Southern Copper; exposed to price volatility"
         }
       ]
     },
     {
-      "theme": "AI",
+      "theme": "bladder cancer immunotherapy",
       "tickers": [
         {
-          "symbol": "$AVGO",
-          "price": "$425.00",
-          "context": "AI networking leader"
+          "symbol": "$ENGN",
+          "price": "$1.50",
+          "context": "enGene; 83% drop on pivotal data update"
         },
         {
-          "symbol": "$MU",
-          "price": "$125.00",
-          "context": "Memory for AI servers"
-        },
-        {
-          "symbol": "$INTC",
-          "price": "$32.00",
-          "context": "CPU/AI chip rotation play"
-        }
-      ]
-    },
-    {
-      "theme": "semiconductors",
-      "tickers": [
-        {
-          "symbol": "$TSM",
-          "price": "$175.00",
-          "context": "Foundry for AI chips"
-        },
-        {
-          "symbol": "$KLAC",
-          "price": "$780.00",
-          "context": "Semiconductor equipment"
+          "symbol": "$ANIX",
+          "price": "$3.20",
+          "context": "Anixa; CAR-T/gene therapy plays in oncology"
         }
       ]
     },
@@ -175,14 +135,34 @@
       "theme": "defense",
       "tickers": [
         {
-          "symbol": "$LMT",
-          "price": "$527.00",
-          "context": "Defense prime"
+          "symbol": "$KTOS",
+          "price": "$54.32",
+          "context": "Kratos; raised 2026 outlook"
         },
         {
-          "symbol": "$RTX",
-          "price": "$177.00",
-          "context": "Aerospace/defense"
+          "symbol": "$LMT",
+          "price": "$640.00",
+          "context": "Lockheed; on sale per analysts"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "$480.00",
+          "context": "Northrop Grumman; missile defense exposure"
+        }
+      ]
+    },
+    {
+      "theme": "AI",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$220.61",
+          "context": "Earnings tomorrow"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$222.32",
+          "context": "Semiconductor peer"
         }
       ]
     },
@@ -191,138 +171,63 @@
       "tickers": [
         {
           "symbol": "$CCJ",
-          "price": "$103.00",
-          "context": "Uranium producer"
+          "price": "$65.00",
+          "context": "Cameco; uranium/nuclear fuel"
         },
         {
-          "symbol": "$OKLO",
-          "price": "$55.00",
-          "context": "SMR developer"
-        },
-        {
-          "symbol": "$NNE",
-          "price": "$22.50",
-          "context": "Nano nuclear tech"
-        }
-      ]
-    },
-    {
-      "theme": "bbb gene therapy platform",
-      "tickers": [
-        {
-          "symbol": "$VYGR",
-          "price": "$3.56",
-          "context": "BBB-crossing AAV platform"
-        },
-        {
-          "symbol": "$SGMO",
-          "price": "$1.20",
-          "context": "STACC-BBB platform"
-        },
-        {
-          "symbol": "$ABEO",
-          "price": "$5.80",
-          "context": "CNS gene therapy"
-        }
-      ]
-    },
-    {
-      "theme": "defence additive manufacturing",
-      "tickers": [
-        {
-          "symbol": "$GE",
-          "price": "$286.00",
-          "context": "3D printing for defense"
-        },
-        {
-          "symbol": "$HXL",
-          "price": "$48.00",
-          "context": "Aerospace composites/AM"
-        }
-      ]
-    },
-    {
-      "theme": "photonic interconnect",
-      "tickers": [
-        {
-          "symbol": "$IONQ",
-          "price": "$18.50",
-          "context": "Photonic quantum interconnects"
-        },
-        {
-          "symbol": "$LITE",
-          "price": "$52.00",
-          "context": "Optical components for AI data centers"
+          "symbol": "$NEE",
+          "price": "$78.00",
+          "context": "NextEra; nuclear power operator"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "copper selloff",
-    "AI chip rotation",
-    "NVDA earnings watch",
-    "nuclear fuel deals",
-    "photonic quantum milestone"
+    "NVDA earnings",
+    "SpaceX IPO",
+    "copper decline",
+    "AI multiples compression",
+    "defense contracts"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "copper selloff",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "FinTwit noting China demand weakness and risk-off pressure"
-    },
-    {
-      "trending_topic": "AI chip rotation",
+      "trending_topic": "NVDA earnings",
       "matching_theme": "AI",
       "our_positions": [
-        "$NVDA",
-        "$AMD"
+        "$NVDA"
       ],
-      "context": "Shift from NVDA to AMD/INTC/MU on CPU/memory demand"
+      "context": "FinTwit focused on tomorrow's print and potential AI multiple reset"
     },
     {
-      "trending_topic": "nuclear fuel deals",
-      "matching_theme": "nuclear",
-      "our_positions": [
-        "$ASPI"
-      ],
-      "context": "ASPI/Quantum Leap HALEU MOUs buzzing"
-    },
-    {
-      "trending_topic": "photonic quantum milestone",
-      "matching_theme": "photonic interconnect",
+      "trending_topic": "copper decline",
+      "matching_theme": "copper",
       "our_positions": [],
-      "context": "IonQ AFRL-backed photonic interconnect news"
+      "context": "Risk-off selling in futures amid geopolitics; watch for infrastructure/defense ripple"
     }
   ],
   "news_events": [
     {
-      "event": "Geopolitical tensions (Iran/Middle East)",
-      "impact": "Risk-off, higher energy prices, copper weakness",
+      "event": "NVDA earnings tomorrow",
+      "impact": "High beta semis and AI names in focus; pre-report caution evident",
       "relevance": "high"
     },
     {
-      "event": "Copper futures at 1-week low",
-      "impact": "China demand concerns + macro uncertainty",
+      "event": "enGene bladder cancer data update",
+      "impact": "Pivotal CR rates lower than prior; stock -83%",
       "relevance": "high"
     },
     {
-      "event": "NVDA earnings approaching",
-      "impact": "AI sector focus; potential volatility",
-      "relevance": "high"
-    },
-    {
-      "event": "IonQ photonic interconnect milestone",
-      "impact": "Quantum networking progress for AI/data centers",
+      "event": "Copper futures -1.8%",
+      "impact": "Risk-off mood and Middle East tensions",
       "relevance": "medium"
     },
     {
-      "event": "ASPI nuclear fuel supply MOUs",
-      "impact": "HALEU positioning for reactors",
-      "relevance": "medium"
+      "event": "Rising bond yields",
+      "impact": "Third straight day of losses for major indices",
+      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-05-19T19:27:22.157509+00:00",
-  "is_market_hours": true,
+  "gathered_at": "2026-05-19T23:00:41.683900+00:00",
+  "is_market_hours": false,
   "is_extended_hours": false
 }

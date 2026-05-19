@@ -3479,44 +3479,6 @@
     "tweet_id": "2054285706525114518"
   },
   {
-    "id": "live_20260512_091912_v1",
-    "text": "When position sizing matters: $VYGR platform thesis needs capsid data catalysts. Entry $4.45, current $4.12. The lesson? Gene therapy plays require pipeline milestones before scaling conviction. Invalidation $3.80.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260512_1822.png",
-    "scheduled_time": "2026-05-12T09:19:12.722002-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.25%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-12T13:19:12.722000+00:00",
-    "cost_usd": 0.017269,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
-    "id": "live_20260512_091912_v2",
-    "text": "Defense rotation shifting fast \u2014 $ASPI at $6.22 from $6.00 entry invalidates the setup. Win more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260512_1822.png",
-    "scheduled_time": "2026-05-12T09:19:12.722002-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.25%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-12T13:19:12.722000+00:00",
-    "cost_usd": 0.017269,
-    "skip_reason": "Stale: 5h old"
-  },
-  {
     "id": "live_20260512_121318_v1",
     "text": "$EVTL entry $4.50, now $7.00. +55.6% on the drone tech play. Defense spending headlines moved it, setup validated at resistance. Win more than you lose.",
     "category": "RECEIPT",
@@ -4845,5 +4807,24 @@
     "generated_at": "2026-05-19T00:06:12.476128+00:00",
     "cost_usd": 0.017138,
     "error": "403 Forbidden"
+  },
+  {
+    "id": "live_20260519_100942_v1",
+    "text": "$VYGR at $3.43. BBB gene therapy platform \u2014 watching for confirmation before adding. Entry discipline > chasing signals. Sometimes the best trade is the one you don't take yet.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260519_1409.png",
+    "scheduled_time": "2026-05-19T10:09:42.299202-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.07%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-19T14:09:42.299200+00:00",
+    "cost_usd": 0.017453,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   }
 ]

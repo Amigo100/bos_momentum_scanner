@@ -1,138 +1,208 @@
 {
-  "timestamp": "2026-05-19T00:05:00Z",
+  "timestamp": "2026-05-19T14:15:00Z",
   "market_snapshot": {
     "spy_move": "-0.07%",
-    "qqq_move": "-0.45%",
-    "iwm_move": "-0.61%",
-    "vix": "17.82",
+    "qqq_move": "-0.51%",
+    "iwm_move": "-0.65%",
+    "vix": "17.98",
     "market_mood": "mixed",
-    "headline": "US indices mixed with tech weakness amid geopolitics and tariff uncertainty"
+    "headline": "Chip stocks weigh on Nasdaq as NVDA pre-earnings pullback continues amid quiet macro backdrop"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "-0.42%",
-      "price": "$15.55",
-      "context": "down on broader market pullback, still well above entry $7.90"
+      "move": "-0.61%",
+      "price": "$15.71",
+      "context": "Fintech sector rotation pressure; recent scanner signal on $VYGR not extending to SOFI"
     },
     {
       "ticker": "$EVTL",
-      "move": "N/A",
+      "move": "flat",
       "price": "N/A",
-      "context": "no fresh price action noted"
+      "context": "No fresh news; topics tweeted avoid repeat"
     },
     {
       "ticker": "$NVDA",
-      "move": "-1.3%",
-      "price": "$229.76",
-      "context": "tech sector laggard, down on memory chip capacity concerns"
+      "move": "-1.33%",
+      "price": "$222.32",
+      "context": "Pre-earnings caution; earnings after bell May 20"
     },
     {
       "ticker": "$AMD",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "mentioned in FinTwit but no specific move"
+      "move": "-0.73%",
+      "price": "$420.99",
+      "context": "Semiconductor sector weakness mirroring NVDA"
     },
     {
       "ticker": "$ASPI",
-      "move": "N/A",
+      "move": "flat",
       "price": "N/A",
-      "context": "no fresh price action noted"
+      "context": "No specific moves noted"
     },
     {
       "ticker": "$HIVE",
-      "move": "N/A",
+      "move": "flat",
       "price": "N/A",
-      "context": "no fresh price action noted"
+      "context": "No specific moves noted"
     },
     {
       "ticker": "$BAND",
-      "move": "N/A",
+      "move": "flat",
       "price": "N/A",
-      "context": "no fresh price action noted"
+      "context": "No specific moves noted"
     },
     {
       "ticker": "$VYGR",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "recent scanner PASS/CONSIDER signal, no price update"
+      "move": "-6.24%",
+      "price": "$3.53",
+      "context": "Recent scanner PASS/CONSIDER signal; biotech volatility"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
       "status": "active",
-      "detail": "tech weakness on memory chip capacity concerns weighing on NVDA/AMD"
+      "detail": "NVDA earnings tomorrow; sector down but long-term data center demand intact"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Seagate and Micron comments highlight supply constraints amid surging demand"
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "status": "breaking",
-      "detail": "GLP-1 gene therapy enters first human trial; AI telehealth players like Medvi scaling rapidly"
-    },
-    {
-      "theme": "bladder cancer immunotherapy",
-      "status": "active",
-      "detail": "FDA approves MRD-guided Tecentriq use in bladder cancer with Natera CDx"
-    },
-    {
-      "theme": "copper",
-      "status": "quiet",
-      "detail": "no major moves noted"
-    },
-    {
-      "theme": "defense",
-      "status": "quiet",
-      "detail": "no major moves noted"
+      "detail": "PHLX Semi Index down 0.6% on profit-taking; NVDA/AMD leading weakness"
     },
     {
       "theme": "nuclear",
+      "status": "breaking",
+      "detail": "Trump executive orders accelerating reactor approvals and fuel supply; stocks like OKLO surging"
+    },
+    {
+      "theme": "copper",
+      "status": "active",
+      "detail": "Futures at ~$6.22/lb (near highs) on AI/data center + defense/infra demand"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Additive manufacturing and copper-intensive systems gaining from geopolitics and spending"
+    },
+    {
+      "theme": "infrastructure",
       "status": "quiet",
-      "detail": "no major moves noted"
+      "detail": "Copper and defense overlap supporting steady demand"
+    },
+    {
+      "theme": "photonic interconnect",
+      "status": "quiet",
+      "detail": "No breaking news; tied to AI infra long-term"
+    },
+    {
+      "theme": "defence additive manufacturing",
+      "status": "active",
+      "detail": "Defense contracts and copper AM parts for cooling/electronics"
+    },
+    {
+      "theme": "glp-1 obesity telehealth",
+      "status": "quiet",
+      "detail": "Gene therapy trials advancing but no major moves"
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "status": "quiet",
+      "detail": "Pipeline updates but low visibility"
+    },
+    {
+      "theme": "bbb gene therapy platform",
+      "status": "quiet",
+      "detail": "Early trials noted but no catalyst"
     }
   ],
   "theme_tickers": [
     {
-      "theme": "glp-1 obesity telehealth",
+      "theme": "copper",
       "tickers": [
         {
-          "symbol": "$HIMS",
-          "price": "$N/A",
-          "context": "major telehealth GLP-1 player"
+          "symbol": "$FCX",
+          "price": "$60.41",
+          "context": "Largest US copper miner"
         },
         {
-          "symbol": "$EPRX",
-          "price": "$N/A",
-          "context": "GLP-1 focused biotech"
+          "symbol": "$SCCO",
+          "price": "$184.30",
+          "context": "Southern Copper"
         },
         {
-          "symbol": "$FRAC",
-          "price": "$N/A",
-          "context": "Fractyl Health gene therapy for GLP-1"
+          "symbol": "$CENX",
+          "price": "$18.50",
+          "context": "Aluminum/copper exposure"
+        },
+        {
+          "symbol": "$HL",
+          "price": "$6.20",
+          "context": "Hecla Mining copper"
+        },
+        {
+          "symbol": "$TRQ",
+          "price": "$42.10",
+          "context": "Turquoise Hill copper"
         }
       ]
     },
     {
-      "theme": "bladder cancer immunotherapy",
+      "theme": "nuclear",
       "tickers": [
         {
-          "symbol": "$NTRA",
-          "price": "$N/A",
-          "context": "Signatera CDx for bladder cancer"
+          "symbol": "$OKLO",
+          "price": "$28.50",
+          "context": "Advanced reactors; post-EO surge"
         },
         {
-          "symbol": "$RHHBY",
-          "price": "$N/A",
-          "context": "Tecentriq developer"
+          "symbol": "$SMR",
+          "price": "$15.80",
+          "context": "Small modular reactors"
         },
         {
-          "symbol": "$ENGE",
-          "price": "$N/A",
-          "context": "enGene bladder cancer gene therapy"
+          "symbol": "$BWXT",
+          "price": "$112.40",
+          "context": "Nuclear components"
+        },
+        {
+          "symbol": "$LEU",
+          "price": "$45.20",
+          "context": "Uranium enrichment"
+        },
+        {
+          "symbol": "$CCJ",
+          "price": "$52.75",
+          "context": "Cameco uranium"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "$485.00",
+          "context": "Lockheed Martin"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$112.30",
+          "context": "Raytheon additive/defense"
+        },
+        {
+          "symbol": "$KTOS",
+          "price": "$28.90",
+          "context": "Drone/additive manufacturing"
+        },
+        {
+          "symbol": "$AVAV",
+          "price": "$175.60",
+          "context": "AeroVironment defense"
+        },
+        {
+          "symbol": "$HII",
+          "price": "$245.00",
+          "context": "Huntington Ingalls shipbuilding"
         }
       ]
     },
@@ -141,18 +211,28 @@
       "tickers": [
         {
           "symbol": "$NVDA",
-          "price": "$229.76",
-          "context": "AI leader down on sector concerns"
+          "price": "$222.32",
+          "context": "AI leader pre-earnings"
         },
         {
           "symbol": "$AMD",
-          "price": "$N/A",
-          "context": "AI chip competitor"
+          "price": "$420.99",
+          "context": "AI GPUs"
         },
         {
           "symbol": "$AVGO",
-          "price": "$N/A",
-          "context": "AI infrastructure play"
+          "price": "$1650.00",
+          "context": "Semiconductor AI"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$175.40",
+          "context": "TSMC AI foundry"
+        },
+        {
+          "symbol": "$ARM",
+          "price": "$128.50",
+          "context": "AI chip design"
         }
       ]
     },
@@ -160,72 +240,85 @@
       "theme": "semiconductors",
       "tickers": [
         {
+          "symbol": "$NVDA",
+          "price": "$222.32",
+          "context": "Market leader"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$420.99",
+          "context": "Competitor"
+        },
+        {
+          "symbol": "$INTC",
+          "price": "$31.20",
+          "context": "US chipmaker"
+        },
+        {
+          "symbol": "$QCOM",
+          "price": "$165.80",
+          "context": "Mobile/AI semis"
+        },
+        {
           "symbol": "$MU",
-          "price": "$N/A",
-          "context": "memory chip maker down 6%"
-        },
-        {
-          "symbol": "$TSM",
-          "price": "$N/A",
-          "context": "foundry leader"
-        },
-        {
-          "symbol": "$ASML",
-          "price": "$N/A",
-          "context": "lithography equipment"
+          "price": "$118.90",
+          "context": "Memory for AI"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "$AMD",
-    "$NVDA",
-    "$HIVE",
-    "$GME",
-    "$FCX"
+    "NVDA earnings",
+    "nuclear Trump EOs",
+    "copper AI demand",
+    "semiconductor pullback",
+    "defense spending"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "$AMD AIStock",
-      "matching_theme": "AI",
-      "our_positions": [
-        "$NVDA",
-        "$AMD"
-      ],
-      "context": "FinTwit highlighting AMD alongside NVDA in AI trading discussions"
+      "trending_topic": "nuclear Trump EOs",
+      "matching_theme": "nuclear",
+      "our_positions": [],
+      "context": "FinTwit buzzing on OKLO surge and reactor approvals; overlaps defense/infra"
     },
     {
-      "trending_topic": "$HIVE",
+      "trending_topic": "copper AI demand",
+      "matching_theme": "copper",
+      "our_positions": [],
+      "context": "Linked to data centers and defense additive manufacturing"
+    },
+    {
+      "trending_topic": "NVDA earnings",
       "matching_theme": "AI",
       "our_positions": [
-        "$HIVE"
+        "$NVDA"
       ],
-      "context": "FinTwit mentions $HIVE in market update threads"
+      "context": "Pre-earnings chatter; avoid repeat tweet per guidelines"
     }
   ],
   "news_events": [
     {
-      "event": "GLP-1 gene therapy first human trial",
-      "impact": "positive for gene therapy platforms",
+      "event": "NVDA earnings after bell May 20",
+      "impact": "Potential AI sector catalyst or further rotation",
       "relevance": "high"
     },
     {
-      "event": "FDA MRD-guided Tecentriq approval for bladder cancer",
-      "impact": "boost for immunotherapy diagnostics",
+      "event": "Trump nuclear executive orders",
+      "impact": "Accelerates reactor deployment and fuel supply; nuclear stocks rallying",
       "relevance": "high"
     },
     {
-      "event": "tech/memory chip capacity concerns",
-      "impact": "pressure on semiconductor names",
-      "relevance": "high"
-    },
-    {
-      "event": "geopolitics/tariffs uncertainty",
-      "impact": "mixed market mood",
+      "event": "Copper near record highs",
+      "impact": "Driven by AI infra, defense, and electrification demand",
       "relevance": "medium"
+    },
+    {
+      "event": "Semiconductor profit-taking",
+      "impact": "PHLX index down; NVDA/AMD leading pullback ahead of earnings",
+      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-05-19T00:05:55.817495+00:00",
-  "is_market_hours": false,
+  "gathered_at": "2026-05-19T14:09:10.649572+00:00",
+  "is_market_hours": true,
   "is_extended_hours": false
 }

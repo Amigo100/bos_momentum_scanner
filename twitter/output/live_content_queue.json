@@ -4807,5 +4807,43 @@
     "generated_at": "2026-05-18T22:59:27.080496+00:00",
     "cost_usd": 0.017282,
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260518_200612_v1",
+    "text": "$SOFI entry $7.90, high $32.00. +305% on the fintech thesis while SPY bleeds. Decoupling from broader market weakness.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260519_0006.png",
+    "scheduled_time": "2026-05-18T20:06:12.476129-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.07%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-19T00:06:12.476128+00:00",
+    "cost_usd": 0.017138,
+    "error": "403 Forbidden"
+  },
+  {
+    "id": "live_20260518_200612_v2",
+    "text": "$EVTL pullback testing conviction.\nEntry $4.50. Now $2.43.\nDefense spending bill advancing.\nWatching closely.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_0006.png",
+    "scheduled_time": "2026-05-18T20:06:12.476129-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.07%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-19T00:06:12.476128+00:00",
+    "cost_usd": 0.017138,
+    "error": "403 Forbidden"
   }
 ]

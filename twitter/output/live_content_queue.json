@@ -4897,15 +4897,35 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260519_2301.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260520_0006.png",
     "scheduled_time": "2026-05-19T19:01:04.321850-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.67%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-05-19T23:01:04.321848+00:00",
-    "cost_usd": 0.017425
+    "cost_usd": 0.017425,
+    "posted_at": "2026-05-20T00:26:26.387974",
+    "tweet_id": "2056894279797154272"
+  },
+  {
+    "id": "live_20260519_200614_v1",
+    "text": "$EVTL down to $2.35.\nEntry was $4.50.\nDefense rotation testing patience.\nWatching invalidation closely.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260520_0006.png",
+    "scheduled_time": "2026-05-19T20:06:14.366871-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "quiet",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-20T00:06:14.366869+00:00",
+    "cost_usd": 0.017498
   }
 ]

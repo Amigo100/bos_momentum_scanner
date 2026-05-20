@@ -1,118 +1,298 @@
 {
-  "timestamp": "2026-05-19T23:00:00Z",
+  "timestamp": "2026-05-20T00:00:00Z",
   "market_snapshot": {
-    "spy_move": "-0.67%",
-    "qqq_move": "-0.84%",
-    "iwm_move": "-1.01%",
-    "vix": "18.06",
-    "market_mood": "bearish",
-    "headline": "S&P 500 and Nasdaq post third straight loss as rising yields and pre-NVDA earnings caution weigh on tech"
+    "spy_move": "-0.1%",
+    "qqq_move": "-0.2%",
+    "iwm_move": "-0.1%",
+    "vix": "18.1",
+    "market_mood": "quiet",
+    "headline": "Futures flat ahead of NVDA earnings; tech weakness persists on memory chip concerns"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "-3.06%",
+      "move": "-3.1%",
       "price": "$15.23",
-      "context": "Broader tech selloff and risk-off sentiment"
+      "context": "Broader fintech pullback amid rate uncertainty"
     },
     {
       "ticker": "$EVTL",
-      "move": "-4.32%",
+      "move": "-4.3%",
       "price": "$2.33",
-      "context": "Aerospace/defense names hit in market pullback"
+      "context": "Aerospace sector rotation, low volume"
     },
     {
       "ticker": "$NVDA",
-      "move": "-0.77%",
-      "price": "$220.61",
-      "context": "Pre-earnings consolidation ahead of tomorrow's report"
+      "move": "-1.4%",
+      "price": "$220.00",
+      "context": "Pre-earnings consolidation; Q1 FY27 results due after close today"
     },
     {
       "ticker": "$AMD",
-      "move": "-1.33%",
-      "price": "$222.32",
-      "context": "Semis dragged lower with Nasdaq"
+      "move": "-2.5%",
+      "price": "$105.00",
+      "context": "Memory semis dragged lower with MU/Seagate weakness"
     },
     {
       "ticker": "$ASPI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "No fresh price action noted"
+      "move": "+1.8%",
+      "price": "$6.11",
+      "context": "Nuclear theme holding amid defense spending chatter"
     },
     {
       "ticker": "$HIVE",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "No fresh price action noted"
+      "move": "-4.6%",
+      "price": "$3.30",
+      "context": "Crypto miners volatile on Bitcoin dip"
     },
     {
       "ticker": "$BAND",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "No fresh price action noted"
+      "move": "-1.2%",
+      "price": "$16.35",
+      "context": "Quiet session, no new catalysts"
     },
     {
       "ticker": "$VYGR",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Recent scanner PASS/CONSIDER signals; watch for follow-through"
+      "move": "-1.1%",
+      "price": "$3.49",
+      "context": "Gene therapy names mixed; recent scanner PASS/CONSIDER noted"
     }
   ],
   "theme_activity": [
     {
       "theme": "AI",
       "status": "active",
-      "detail": "NVDA earnings tomorrow driving pre-report caution; semis under pressure"
+      "detail": "NVDA earnings tonight; memory chip selloff (MU/Seagate) pressuring semis"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "AMD and NVDA both lower in broad tech weakness"
-    },
-    {
-      "theme": "copper",
-      "status": "active",
-      "detail": "Futures down ~1.8% to $6.19/lb amid risk-off mood and Middle East tensions"
-    },
-    {
-      "theme": "defense",
-      "status": "quiet",
-      "detail": "No major moves; SpaceX IPO chatter on X but limited overlap"
-    },
-    {
-      "theme": "bladder cancer immunotherapy",
-      "status": "breaking",
-      "detail": "enGene (ENGN) shares cratered on updated pivotal data showing lower CR rates"
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "status": "quiet",
-      "detail": "Ongoing AI-telehealth plays like Medvi highlighted but no new catalysts"
+      "detail": "Tech weakness on factory build concerns; rotation into optics/photonics"
     },
     {
       "theme": "nuclear",
       "status": "quiet",
-      "detail": "Geopolitical nuclear tensions (Iran, Arctic) but no direct stock moves"
+      "detail": "Steady interest in small modular reactors amid energy demand for AI data centers"
+    },
+    {
+      "theme": "defense",
+      "status": "quiet",
+      "detail": "Additive manufacturing and geopolitics (Iran tariffs) in background"
+    },
+    {
+      "theme": "copper",
+      "status": "quiet",
+      "detail": "Futures down ~2% to $6.16/lb on risk-off sentiment"
+    },
+    {
+      "theme": "photonic interconnect",
+      "status": "breaking",
+      "detail": "AI data center optics emerging as next bottleneck; NVDA-linked names in focus"
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "status": "active",
+      "detail": "enGene (ENGN) updated LEGEND trial data: 54% CR rate, BLA filing targeted H2 2026"
+    },
+    {
+      "theme": "glp-1 obesity telehealth",
+      "status": "quiet",
+      "detail": "AI-driven telehealth plays like Medvi gaining traction but no major moves"
+    },
+    {
+      "theme": "bbb gene therapy platform",
+      "status": "quiet",
+      "detail": "Fractyl GLP-1 gene therapy first-in-human trial advancing"
+    },
+    {
+      "theme": "defence additive manufacturing",
+      "status": "quiet",
+      "detail": "3D printing names (DDD, PRLB) steady on aerospace/defense tailwinds"
     },
     {
       "theme": "infrastructure",
       "status": "quiet",
-      "detail": "No specific news; copper weakness may indirectly pressure related names"
+      "detail": "No fresh catalysts; copper/infra overlap muted"
     }
   ],
   "theme_tickers": [
+    {
+      "theme": "AI",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$220.00",
+          "context": "Earnings tonight"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "$105.00",
+          "context": "AI GPU competitor"
+        },
+        {
+          "symbol": "$AVGO",
+          "price": "$185.00",
+          "context": "Networking/AI semis"
+        },
+        {
+          "symbol": "$TSM",
+          "price": "$175.00",
+          "context": "Foundry leader"
+        },
+        {
+          "symbol": "$LITE",
+          "price": "$95.00",
+          "context": "Photonics/optics play"
+        },
+        {
+          "symbol": "$COHR",
+          "price": "$82.00",
+          "context": "Laser/photonics for AI"
+        },
+        {
+          "symbol": "$CRDO",
+          "price": "$28.50",
+          "context": "High-speed connectivity"
+        }
+      ]
+    },
+    {
+      "theme": "semiconductors",
+      "tickers": [
+        {
+          "symbol": "$MU",
+          "price": "$105.00",
+          "context": "Memory chip weakness"
+        },
+        {
+          "symbol": "$INTC",
+          "price": "$22.00",
+          "context": "Foundry turnaround"
+        },
+        {
+          "symbol": "$QCOM",
+          "price": "$165.00",
+          "context": "CPU/AI ASIC push"
+        },
+        {
+          "symbol": "$AMAT",
+          "price": "$195.00",
+          "context": "Semi equipment"
+        },
+        {
+          "symbol": "$LRCX",
+          "price": "$920.00",
+          "context": "Etch leader"
+        }
+      ]
+    },
+    {
+      "theme": "nuclear",
+      "tickers": [
+        {
+          "symbol": "$OKLO",
+          "price": "$28.00",
+          "context": "SMR leader"
+        },
+        {
+          "symbol": "$SMR",
+          "price": "$18.50",
+          "context": "Small modular reactors"
+        },
+        {
+          "symbol": "$CEG",
+          "price": "$185.00",
+          "context": "Nuclear operator"
+        },
+        {
+          "symbol": "$LEU",
+          "price": "$42.00",
+          "context": "Uranium enrichment"
+        },
+        {
+          "symbol": "$NNE",
+          "price": "$32.00",
+          "context": "Nuclear energy"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "$465.00",
+          "context": "Prime contractor"
+        },
+        {
+          "symbol": "$RTX",
+          "price": "$105.00",
+          "context": "Aerospace/defense"
+        },
+        {
+          "symbol": "$KTOS",
+          "price": "$28.00",
+          "context": "Drone/additive mfg"
+        },
+        {
+          "symbol": "$PLTR",
+          "price": "$42.00",
+          "context": "Defense software"
+        }
+      ]
+    },
     {
       "theme": "copper",
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "$42.50",
-          "context": "Major copper producer; futures weakness hits miners"
+          "price": "$42.00",
+          "context": "Largest US copper miner"
         },
         {
           "symbol": "$SCCO",
-          "price": "$92.00",
-          "context": "Southern Copper; exposed to price volatility"
+          "price": "$105.00",
+          "context": "Southern Copper"
+        },
+        {
+          "symbol": "$RIO",
+          "price": "$62.00",
+          "context": "Diversified miner"
+        },
+        {
+          "symbol": "$BHP",
+          "price": "$55.00",
+          "context": "Global copper exposure"
+        }
+      ]
+    },
+    {
+      "theme": "photonic interconnect",
+      "tickers": [
+        {
+          "symbol": "$LITE",
+          "price": "$95.00",
+          "context": "Optical components leader"
+        },
+        {
+          "symbol": "$COHR",
+          "price": "$82.00",
+          "context": "Lasers for AI data centers"
+        },
+        {
+          "symbol": "$AAOI",
+          "price": "$18.00",
+          "context": "Transceivers"
+        },
+        {
+          "symbol": "$CIEN",
+          "price": "$52.00",
+          "context": "Networking optics"
+        },
+        {
+          "symbol": "$GFS",
+          "price": "$42.00",
+          "context": "Co-packaged optics push"
         }
       ]
     },
@@ -121,73 +301,69 @@
       "tickers": [
         {
           "symbol": "$ENGN",
-          "price": "$1.50",
-          "context": "enGene; 83% drop on pivotal data update"
+          "price": "$12.50",
+          "context": "enGene LEGEND trial update"
         },
         {
-          "symbol": "$ANIX",
-          "price": "$3.20",
-          "context": "Anixa; CAR-T/gene therapy plays in oncology"
+          "symbol": "$JNJ",
+          "price": "$155.00",
+          "context": "Bladder cancer leader"
+        },
+        {
+          "symbol": "$ASTL",
+          "price": "$8.20",
+          "context": "Immunotherapy plays"
         }
       ]
     },
     {
-      "theme": "defense",
+      "theme": "defence additive manufacturing",
       "tickers": [
         {
-          "symbol": "$KTOS",
-          "price": "$54.32",
-          "context": "Kratos; raised 2026 outlook"
+          "symbol": "$DDD",
+          "price": "$3.00",
+          "context": "3D printing for defense"
         },
         {
-          "symbol": "$LMT",
-          "price": "$640.00",
-          "context": "Lockheed; on sale per analysts"
+          "symbol": "$PRLB",
+          "price": "$72.00",
+          "context": "Proto Labs"
         },
         {
-          "symbol": "$NOC",
-          "price": "$480.00",
-          "context": "Northrop Grumman; missile defense exposure"
+          "symbol": "$SSYS",
+          "price": "$8.50",
+          "context": "Stratasys"
+        },
+        {
+          "symbol": "$DM",
+          "price": "$4.80",
+          "context": "Desktop Metal"
         }
       ]
     },
     {
-      "theme": "AI",
+      "theme": "infrastructure",
       "tickers": [
         {
-          "symbol": "$NVDA",
-          "price": "$220.61",
-          "context": "Earnings tomorrow"
+          "symbol": "$PWR",
+          "price": "$285.00",
+          "context": "Infrastructure builder"
         },
         {
-          "symbol": "$AMD",
-          "price": "$222.32",
-          "context": "Semiconductor peer"
-        }
-      ]
-    },
-    {
-      "theme": "nuclear",
-      "tickers": [
-        {
-          "symbol": "$CCJ",
-          "price": "$65.00",
-          "context": "Cameco; uranium/nuclear fuel"
-        },
-        {
-          "symbol": "$NEE",
-          "price": "$78.00",
-          "context": "NextEra; nuclear power operator"
+          "symbol": "$FLR",
+          "price": "$42.00",
+          "context": "Engineering/construction"
         }
       ]
     }
   ],
   "fintwit_trending": [
     "NVDA earnings",
-    "SpaceX IPO",
-    "copper decline",
-    "AI multiples compression",
-    "defense contracts"
+    "AI optics/photonics",
+    "memory chip selloff",
+    "nuclear energy demand",
+    "copper dip",
+    "enGene bladder cancer data"
   ],
   "fintwit_theme_overlaps": [
     {
@@ -196,38 +372,57 @@
       "our_positions": [
         "$NVDA"
       ],
-      "context": "FinTwit focused on tomorrow's print and potential AI multiple reset"
+      "context": "FinTwit buzzing pre-earnings; watch Q2 guide and margins"
     },
     {
-      "trending_topic": "copper decline",
-      "matching_theme": "copper",
+      "trending_topic": "AI optics/photonics",
+      "matching_theme": "photonic interconnect",
       "our_positions": [],
-      "context": "Risk-off selling in futures amid geopolitics; watch for infrastructure/defense ripple"
+      "context": "Emerging as next AI bottleneck; LITE/COHR in focus"
+    },
+    {
+      "trending_topic": "nuclear energy demand",
+      "matching_theme": "nuclear",
+      "our_positions": [
+        "$ASPI"
+      ],
+      "context": "AI data center power needs driving interest"
+    },
+    {
+      "trending_topic": "enGene bladder cancer data",
+      "matching_theme": "bladder cancer immunotherapy",
+      "our_positions": [],
+      "context": "Updated LEGEND results: 54% CR, BLA in H2 2026"
     }
   ],
   "news_events": [
     {
-      "event": "NVDA earnings tomorrow",
-      "impact": "High beta semis and AI names in focus; pre-report caution evident",
+      "event": "NVDA Q1 FY27 earnings after close",
+      "impact": "High expectations on Blackwell ramp; potential volatility",
       "relevance": "high"
     },
     {
-      "event": "enGene bladder cancer data update",
-      "impact": "Pivotal CR rates lower than prior; stock -83%",
+      "event": "enGene LEGEND trial update",
+      "impact": "54% complete response in bladder cancer; BLA filing H2 2026",
       "relevance": "high"
     },
     {
-      "event": "Copper futures -1.8%",
-      "impact": "Risk-off mood and Middle East tensions",
+      "event": "Memory semis weakness (MU/Seagate)",
+      "impact": "Pressuring AMD/NVDA peers on factory concerns",
       "relevance": "medium"
     },
     {
-      "event": "Rising bond yields",
-      "impact": "Third straight day of losses for major indices",
-      "relevance": "high"
+      "event": "Copper futures -2% on risk-off",
+      "impact": "China demand soft; infra theme muted",
+      "relevance": "low"
+    },
+    {
+      "event": "Geopolitics/tariffs (Iran, Middle East)",
+      "impact": "Background pressure on defense/infra",
+      "relevance": "medium"
     }
   ],
-  "gathered_at": "2026-05-19T23:00:41.683900+00:00",
+  "gathered_at": "2026-05-20T00:05:54.363969+00:00",
   "is_market_hours": false,
   "is_extended_hours": false
 }

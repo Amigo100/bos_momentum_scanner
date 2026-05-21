@@ -3652,44 +3652,6 @@
     "tweet_id": "2055010552997449905"
   },
   {
-    "id": "live_20260514_152048_v1",
-    "text": "$EVTL at $4.62, +2.5% on defense momentum. Entry was $4.50 \u2014 flat position, but geopolitical tensions favor the thesis. Watching $5.20 breakout.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260515_1312.png",
-    "scheduled_time": "2026-05-14T15:20:48.486400-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.56%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-14T19:20:48.486399+00:00",
-    "cost_usd": 0.017388,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
-    "id": "live_20260514_152048_v2",
-    "text": "$BAND at $16.35, just under entry.\n\nWatching for confirmation before adding. NFA",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "BAND",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260515_1312.png",
-    "scheduled_time": "2026-05-14T15:20:48.486400-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.56%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-14T19:20:48.486399+00:00",
-    "cost_usd": 0.017388,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
     "id": "live_20260515_091241_v1",
     "text": "$HIVE holding $2.05 support. Crypto miners are volatile by nature \u2014 that's why we set clear levels. Entry $2.10, watching for follow-through or invalidation.",
     "category": "MARKET_COMMENTARY",
@@ -5036,9 +4998,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-21T15:41:09.866062+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260521_005",
@@ -5047,9 +5010,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-21T15:41:09.866062+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-21T19:49:13.435981",
+    "tweet_id": "2057549292194439238"
   },
   {
     "id": "live_20260521_141833_v1",
@@ -5058,7 +5023,7 @@
     "primary_ticker": "EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260521_1818.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260521_1929.png",
     "scheduled_time": "2026-05-21T14:18:33.934316-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5095,7 +5060,7 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260521_1818.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260521_1929.png",
     "scheduled_time": "2026-05-21T14:18:33.934316-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5105,5 +5070,23 @@
     },
     "generated_at": "2026-05-21T18:18:33.934315+00:00",
     "cost_usd": 0.017416
+  },
+  {
+    "id": "live_20260521_152900_v1",
+    "text": "$SOFI holding $15.68.\nEntry $7.90. Up 98.5%.\nRisk-on tape = fintech strength.\nRelative winners win again.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260521_1929.png",
+    "scheduled_time": "2026-05-21T15:29:00.976403-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+1.08%",
+      "market_mood": "bullish",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-21T19:29:00.976401+00:00",
+    "cost_usd": 0.017453
   }
 ]

@@ -5018,16 +5018,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260520_2213.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260521_0007.png",
     "scheduled_time": "2026-05-20T15:42:40.146781-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.2%",
       "market_mood": "mixed",
       "context_stale": true
     },
     "generated_at": "2026-05-20T19:42:40.146780+00:00",
-    "cost_usd": 0.017494
+    "cost_usd": 0.017494,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260520_181311_v1",
@@ -5067,5 +5068,25 @@
     "cost_usd": 0.017287,
     "posted_at": "2026-05-20T22:33:25.148633",
     "tweet_id": "2057228223981732055"
+  },
+  {
+    "id": "live_20260520_200741_v1",
+    "text": "$HIVE sitting at $3.87.\nEntry $2.10. Bitcoin mining.\nFull breakdown in newsletter.\nLink in bio.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260521_0007.png",
+    "scheduled_time": "2026-05-20T20:07:41.073251-04:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "+1.08%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-21T00:07:41.073249+00:00",
+    "cost_usd": 0.01707,
+    "posted_at": "2026-05-21T00:27:51.451593",
+    "tweet_id": "2057257024316924146"
   }
 ]

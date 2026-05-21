@@ -3590,26 +3590,6 @@
     "tweet_id": "2054917966181900404"
   },
   {
-    "id": "live_20260514_091301_v1",
-    "text": "$ASPI breaking out.\nDefense additive rumors.\nEntry $6.00, now $7.80.\nContract news loading. \ud83c\udfaf",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$ASPI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260514_1606.png",
-    "scheduled_time": "2026-05-14T09:13:01.165578-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-14T13:13:01.165577+00:00",
-    "cost_usd": 0.017433,
-    "posted_at": "2026-05-14T16:26:29.194415",
-    "tweet_id": "2054961556178317464"
-  },
-  {
     "id": "live_20260514_120611_v1",
     "text": "$VYGR entry $4.45, currently $4.32. BBB gene therapy platform advancing CNS delivery. Watching BBB-crossing capsid data for momentum confirmation.",
     "category": "EDUCATIONAL",
@@ -5088,5 +5068,24 @@
     "cost_usd": 0.01707,
     "posted_at": "2026-05-21T00:27:51.451593",
     "tweet_id": "2057257024316924146"
+  },
+  {
+    "id": "live_20260521_102108_v1",
+    "text": "$VYGR at $3.53. BBB gene therapy platform with FDA orphan drug status. Watching $4.00 resistance.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260521_1421.png",
+    "scheduled_time": "2026-05-21T10:21:08.278405-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+1.1%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-21T14:21:08.278403+00:00",
+    "cost_usd": 0.017422,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   }
 ]

@@ -5094,9 +5094,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-22T14:50:46.713876+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-22T19:35:33.716758",
+    "tweet_id": "2057908241904845120"
   },
   {
     "id": "watchdog_20260522_003",
@@ -5117,9 +5119,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-22T14:50:46.713876+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260522_005",
@@ -5139,7 +5142,7 @@
     "primary_ticker": "$ASPI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260522_1815.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260522_1915.png",
     "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5176,7 +5179,7 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_1815.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_1915.png",
     "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5186,5 +5189,60 @@
     },
     "generated_at": "2026-05-22T18:15:16.554707+00:00",
     "cost_usd": 0.016795
+  },
+  {
+    "id": "live_20260522_151515_v1",
+    "text": "$EVTL entry $4.50, now $2.67. Down 40.7%. Defense thesis challenged but invalidation level remains $2.00. Position sized at 4% portfolio allocation \u2014 uncomfortable, not catastrophic. Risk management is the edge.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260522_1915.png",
+    "scheduled_time": "2026-05-22T15:15:15.286775-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T19:15:15.286773+00:00",
+    "cost_usd": 0.01685
+  },
+  {
+    "id": "live_20260522_151515_v2",
+    "text": "What separates portfolio damage from learning moments? Position sizing. $NVDA down 10% from peak at $215.20? Still up 43.5% from entry. When you size properly, pullbacks become buying opportunities, not panic attacks.",
+    "category": "RECEIPT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260522_1915.png",
+    "scheduled_time": "2026-05-22T15:15:15.286775-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T19:15:15.286773+00:00",
+    "cost_usd": 0.01685,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260522_151515_v3",
+    "text": "$AMD at $467.78.\nEntry $120. Up 289%.\nPullbacks happen.\nSize matters more than timing.\nNFA",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260522_1915.png",
+    "scheduled_time": "2026-05-22T15:15:15.286775-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T19:15:15.286773+00:00",
+    "cost_usd": 0.01685
   }
 ]

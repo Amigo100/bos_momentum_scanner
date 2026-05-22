@@ -3714,63 +3714,6 @@
     "tweet_id": "2055685281378886139"
   },
   {
-    "id": "live_20260515_185310_v1",
-    "text": "$VYGR at $4.05. +2.27% while SPY drops 1.2%. Gene therapy names holding strength in the selloff.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_1602.png",
-    "scheduled_time": "2026-05-15T18:53:10.103407-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-15T22:53:10.103405+00:00",
-    "cost_usd": 0.017612,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260515_185310_v2",
-    "text": "Why is $NVDA down 3.6% while bond yields spike? Because AI valuations were priced for perfection, and perfection doesn't survive $1 trillion market wipeouts. The thesis hasn't changed \u2014 the multiple compression has. Entry $150, still holding at $225.32.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$NVDA",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260515_2253.png",
-    "scheduled_time": "2026-05-15T18:53:10.103407-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-15T22:53:10.103405+00:00",
-    "cost_usd": 0.017612,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260515_185310_v3",
-    "text": "$SOFI green in a bloodbath.\nEntry $7.90, now $8.50.\nFintech holding while tech burns.\nRelative strength matters.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260516_1602.png",
-    "scheduled_time": "2026-05-15T18:53:10.103407-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.2%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-15T22:53:10.103405+00:00",
-    "cost_usd": 0.017612,
-    "skip_reason": "Stale: 17h old"
-  },
-  {
     "id": "live_20260516_120206_v1",
     "text": "$VYGR at $3.86. Down 8.96% today but BBB gene therapy platform thesis unchanged. Volatility \u2260 invalidation. Setup holds above $3.20.",
     "category": "EDUCATIONAL",
@@ -5131,9 +5074,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-22T14:50:46.713876+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-22T23:17:57.940562",
+    "tweet_id": "2057964211628560421"
   },
   {
     "id": "live_20260522_141516_v1",
@@ -5142,16 +5087,17 @@
     "primary_ticker": "$ASPI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260522_1915.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260522_2257.png",
     "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-22T18:15:16.554707+00:00",
-    "cost_usd": 0.016795
+    "cost_usd": 0.016795,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260522_141516_v2",
@@ -5179,16 +5125,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_1915.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_2257.png",
     "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-22T18:15:16.554707+00:00",
-    "cost_usd": 0.016795
+    "cost_usd": 0.016795,
+    "skip_reason": "Stale: 5h old"
   },
   {
     "id": "live_20260522_151515_v1",
@@ -5197,16 +5144,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260522_1915.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260522_2257.png",
     "scheduled_time": "2026-05-22T15:15:15.286775-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-22T19:15:15.286773+00:00",
-    "cost_usd": 0.01685
+    "cost_usd": 0.01685,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260522_151515_v2",
@@ -5234,15 +5182,71 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260522_1915.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260522_2257.png",
     "scheduled_time": "2026-05-22T15:15:15.286775-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-05-22T19:15:15.286773+00:00",
-    "cost_usd": 0.01685
+    "cost_usd": 0.01685,
+    "skip_reason": "Stale: 4h old"
+  },
+  {
+    "id": "live_20260522_185739_v1",
+    "text": "$NVDA at $215.33. Entry $150.00. Jensen's Blackwell ramp accelerating into Q2 datacenters. Chip demand relentless. Invalidation below $135.",
+    "category": "TECHNICAL_ANALYSIS",
+    "primary_ticker": "$NVDA",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260522_2257.png",
+    "scheduled_time": "2026-05-22T18:57:39.197817-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T22:57:39.197816+00:00",
+    "cost_usd": 0.016826
+  },
+  {
+    "id": "live_20260522_185739_v2",
+    "text": "Why did $SOFI double while the market went sideways? Because fintech rotations reward platforms with real deposit growth, not just hype. We caught it at $7.90 \u2014 now $15.62. The thesis was consumer banking consolidation, and it's still early.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_2257.png",
+    "scheduled_time": "2026-05-22T18:57:39.197817-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T22:57:39.197816+00:00",
+    "cost_usd": 0.016826,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260522_185739_v3",
+    "text": "$AMD from $120 \u2192 $467.51.\nMI300 ramping hard.\nTaiwan capacity = tailwind.\nFull breakdown in newsletter.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260522_2257.png",
+    "scheduled_time": "2026-05-22T18:57:39.197817-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T22:57:39.197816+00:00",
+    "cost_usd": 0.016826
   }
 ]

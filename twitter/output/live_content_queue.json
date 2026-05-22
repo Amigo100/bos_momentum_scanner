@@ -5081,16 +5081,18 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260521_2205.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_0002.png",
     "scheduled_time": "2026-05-21T15:29:00.976403-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+1.08%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-21T19:29:00.976401+00:00",
-    "cost_usd": 0.017453
+    "cost_usd": 0.017453,
+    "posted_at": "2026-05-22T00:22:47.898439",
+    "tweet_id": "2057618139068690844"
   },
   {
     "id": "live_20260521_180511_v1",
@@ -5099,16 +5101,17 @@
     "primary_ticker": "EVTL",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260521_2205.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260522_0002.png",
     "scheduled_time": "2026-05-21T18:05:11.116191-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+1.08%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-21T22:05:11.116189+00:00",
-    "cost_usd": 0.017422
+    "cost_usd": 0.017422,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260521_180511_v2",
@@ -5136,7 +5139,7 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260521_2205.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260522_0002.png",
     "scheduled_time": "2026-05-21T18:05:11.116191-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5146,5 +5149,23 @@
     },
     "generated_at": "2026-05-21T22:05:11.116189+00:00",
     "cost_usd": 0.017422
+  },
+  {
+    "id": "live_20260521_200231_v1",
+    "text": "$NVDA at $223.47. Entry $150.00. Up 46.3% on AI chip demand and China sales optimism. Thesis validating.",
+    "category": "RECEIPT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260522_0002.png",
+    "scheduled_time": "2026-05-21T20:02:31.488473-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.2%",
+      "market_mood": "quiet",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-22T00:02:31.488471+00:00",
+    "cost_usd": 0.016983
   }
 ]

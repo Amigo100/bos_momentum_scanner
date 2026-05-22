@@ -3714,25 +3714,6 @@
     "tweet_id": "2055685281378886139"
   },
   {
-    "id": "live_20260515_124832_v1",
-    "text": "Fintech expansion delivered. $SOFI from $7.90 to $32 = +305%. CEO insider buying signaled this move months ago.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260515_2253.png",
-    "scheduled_time": "2026-05-15T12:48:32.972912-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.14%",
-      "market_mood": "bearish",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-15T16:48:32.972911+00:00",
-    "cost_usd": 0.017094,
-    "skip_reason": "Stale: 6h old"
-  },
-  {
     "id": "live_20260515_185310_v1",
     "text": "$VYGR at $4.05. +2.27% while SPY drops 1.2%. Gene therapy names holding strength in the selloff.",
     "category": "MARKET_COMMENTARY",
@@ -5081,16 +5062,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260522_1616.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260522_1815.png",
     "scheduled_time": "2026-05-22T12:16:06.878261-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-05-22T16:16:06.878259+00:00",
-    "cost_usd": 0.016745
+    "cost_usd": 0.016745,
+    "posted_at": "2026-05-22T18:35:33.703147",
+    "tweet_id": "2057893141961728031"
   },
   {
     "id": "watchdog_20260522_001",
@@ -5099,9 +5082,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-22T14:50:46.713876+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260522_002",
@@ -5147,5 +5131,60 @@
     "status": "pending",
     "created_at": "2026-05-22T14:50:46.713876+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260522_141516_v1",
+    "text": "$ASPI at $5.54. Entry $6.00. Small modular reactor demand building \u2014 utilities planning 2026 deployments. Watching $7.50 resistance. Invalidation below $4.80.",
+    "category": "TECHNICAL_ANALYSIS",
+    "primary_ticker": "$ASPI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260522_1815.png",
+    "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T18:15:16.554707+00:00",
+    "cost_usd": 0.016795
+  },
+  {
+    "id": "live_20260522_141516_v2",
+    "text": "$EVTL from $4.50 to $7.00 high. +55.6% on the drone play. Position sizing lets you hold through volatility without sweating the account. Win more than you lose.",
+    "category": "RECEIPT",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260522_1815.png",
+    "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T18:15:16.554707+00:00",
+    "cost_usd": 0.016795,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260522_141516_v3",
+    "text": "$SOFI back above $15.\nEntry $7.90. Up 97%.\nFintech rotation real.\nStop at $12.60.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_1815.png",
+    "scheduled_time": "2026-05-22T14:15:16.554708-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-05-22T18:15:16.554707+00:00",
+    "cost_usd": 0.016795
   }
 ]

@@ -1,211 +1,70 @@
 {
-  "timestamp": "2026-05-22T00:00:00Z",
+  "timestamp": "2026-05-22T16:15:39.527028+00:00",
   "market_snapshot": {
-    "spy_move": "+0.2%",
-    "qqq_move": "+0.4%",
-    "iwm_move": "+0.1%",
-    "vix": "17.4",
-    "market_mood": "quiet",
-    "headline": "Markets hold near records with AI/nuclear power demand lifting semis and energy names amid subdued volatility"
+    "spy_move": "N/A",
+    "qqq_move": "N/A",
+    "iwm_move": "N/A",
+    "vix": "N/A",
+    "market_mood": "unknown",
+    "headline": "Market data unavailable \u2014 using portfolio context only"
   },
   "portfolio_movers": [
     {
+      "ticker": "$SOFI",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $7.90"
+    },
+    {
+      "ticker": "$EVTL",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $4.50"
+    },
+    {
       "ticker": "$NVDA",
-      "move": "+1.3%",
-      "price": "$223.47",
-      "context": "AI chip demand and China sales optimism"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $150.00"
     },
     {
       "ticker": "$AMD",
-      "move": "+0.8%",
-      "price": "$118.50",
-      "context": "Semiconductor momentum on AI infrastructure spend"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $120.00"
     },
     {
-      "ticker": "$SOFI",
-      "move": "-0.3%",
-      "price": "$15.65",
-      "context": "Fintech lending growth offset by credit cost concerns"
+      "ticker": "$ASPI",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $6.00"
+    },
+    {
+      "ticker": "$HIVE",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $2.10"
+    },
+    {
+      "ticker": "$BAND",
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $16.55"
     },
     {
       "ticker": "$VYGR",
-      "move": "flat",
-      "price": "$4.45",
-      "context": "Recent scanner signal but no major catalyst today"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Portfolio position, entry $4.45"
     }
   ],
-  "theme_activity": [
-    {
-      "theme": "AI",
-      "status": "active",
-      "detail": "Hyperscalers $600-750B 2026 capex driving semis and power needs"
-    },
-    {
-      "theme": "nuclear",
-      "status": "breaking",
-      "detail": "Big Tech deals for SMRs to power AI data centers; Southeast Asia revisiting nuclear plans"
-    },
-    {
-      "theme": "semiconductors",
-      "status": "active",
-      "detail": "TSM and INTC in focus on domestic manufacturing and AI chips"
-    },
-    {
-      "theme": "copper",
-      "status": "active",
-      "detail": "Futures near $6.30/lb on infrastructure and AI grid demand"
-    },
-    {
-      "theme": "defense",
-      "status": "quiet",
-      "detail": "Additive manufacturing summit highlights 3D printing for military readiness"
-    },
-    {
-      "theme": "infrastructure",
-      "status": "quiet",
-      "detail": "Electrical grid upgrades tied to AI power surge"
-    },
-    {
-      "theme": "photonic interconnect",
-      "status": "quiet",
-      "detail": "AIM Photonics recognized for US manufacturing in DoD report"
-    }
-  ],
-  "theme_tickers": [
-    {
-      "theme": "copper",
-      "tickers": [
-        {
-          "symbol": "$FCX",
-          "price": "$48.20",
-          "context": "Major copper producer benefiting from grid/AI demand"
-        },
-        {
-          "symbol": "$SCCO",
-          "price": "$112.50",
-          "context": "Southern Copper on strong pricing"
-        }
-      ]
-    },
-    {
-      "theme": "nuclear",
-      "tickers": [
-        {
-          "symbol": "$CEG",
-          "price": "$285.00",
-          "context": "Constellation Energy on Microsoft Three Mile Island deal"
-        },
-        {
-          "symbol": "$OKLO",
-          "price": "$82.00",
-          "context": "SMR play backed by Altman/OpenAI"
-        },
-        {
-          "symbol": "$SMR",
-          "price": "$32.40",
-          "context": "NuScale small modular reactors"
-        }
-      ]
-    },
-    {
-      "theme": "AI",
-      "tickers": [
-        {
-          "symbol": "$NVDA",
-          "price": "$223.47",
-          "context": "AI chip leader"
-        },
-        {
-          "symbol": "$AMD",
-          "price": "$118.50",
-          "context": "AI GPU competitor"
-        },
-        {
-          "symbol": "$INTC",
-          "price": "$118.50",
-          "context": "Foundry turnaround and domestic semis push"
-        }
-      ]
-    },
-    {
-      "theme": "defense",
-      "tickers": [
-        {
-          "symbol": "$PLTR",
-          "price": "$42.80",
-          "context": "AI defense software"
-        },
-        {
-          "symbol": "$RKLB",
-          "price": "$28.50",
-          "context": "Space/defense launch"
-        }
-      ]
-    },
-    {
-      "theme": "infrastructure",
-      "tickers": [
-        {
-          "symbol": "$WCC",
-          "price": "$322.40",
-          "context": "Electrical infrastructure for grid upgrades"
-        }
-      ]
-    }
-  ],
-  "fintwit_trending": [
-    "AI data center power",
-    "nuclear SMR deals",
-    "semiconductor foundry",
-    "copper breakout",
-    "TSM breakout"
-  ],
-  "fintwit_theme_overlaps": [
-    {
-      "trending_topic": "nuclear SMR deals",
-      "matching_theme": "nuclear",
-      "our_positions": [],
-      "context": "FinTwit buzzing on Big Tech (MSFT, GOOG, AMZN) nuclear pacts for AI power"
-    },
-    {
-      "trending_topic": "AI data center power",
-      "matching_theme": "AI",
-      "our_positions": [
-        "$NVDA",
-        "$AMD"
-      ],
-      "context": "Momentum on hyperscaler capex and energy tie-in"
-    },
-    {
-      "trending_topic": "copper breakout",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "Futures near record highs on China stimulus and AI grid needs"
-    }
-  ],
-  "news_events": [
-    {
-      "event": "Big Tech nuclear deals for AI data centers",
-      "impact": "Boost to nuclear and power infrastructure names",
-      "relevance": "high"
-    },
-    {
-      "event": "Copper futures holding near $6.30/lb",
-      "impact": "Supports miners on AI/infra demand",
-      "relevance": "medium"
-    },
-    {
-      "event": "Semiconductor momentum on domestic manufacturing",
-      "impact": "Positive for $AMD, $NVDA, $INTC",
-      "relevance": "high"
-    },
-    {
-      "event": "AIM Photonics DoD recognition",
-      "impact": "Tailwind for photonic interconnect theme",
-      "relevance": "low"
-    }
-  ],
-  "gathered_at": "2026-05-22T00:02:04.676106+00:00",
-  "is_market_hours": false,
+  "theme_activity": [],
+  "theme_tickers": [],
+  "fintwit_trending": [],
+  "fintwit_theme_overlaps": [],
+  "news_events": [],
+  "fallback_mode": true,
+  "gathered_at": "2026-05-22T16:15:39.527080+00:00",
+  "is_market_hours": true,
   "is_extended_hours": false
 }

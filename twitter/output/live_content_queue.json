@@ -3714,45 +3714,6 @@
     "tweet_id": "2055685281378886139"
   },
   {
-    "id": "live_20260516_120206_v1",
-    "text": "$VYGR at $3.86. Down 8.96% today but BBB gene therapy platform thesis unchanged. Volatility \u2260 invalidation. Setup holds above $3.20.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260516_2050.png",
-    "scheduled_time": "2026-05-16T12:02:06.070696-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-1.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-16T16:02:06.070695+00:00",
-    "cost_usd": 0.017362,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260516_120206_v2",
-    "text": "$EVTL quiet at $4.35.\nDefense manufacturing stable.\nMarket chaos \u2260 thesis broken.\nWatching.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260516_2050.png",
-    "scheduled_time": "2026-05-16T12:02:06.070696-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-1.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-16T16:02:06.070695+00:00",
-    "cost_usd": 0.017362,
-    "posted_at": "2026-05-16T21:10:20.277846",
-    "tweet_id": "2055757765558374844"
-  },
-  {
     "id": "watchdog_20260516_001",
     "text": "Small-cap momentum setup hasn't looked this good since 2016. Earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating. The structural pivot is real.",
     "category": "MARKET_COMMENTARY",
@@ -5259,16 +5220,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260523_0007.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260523_1606.png",
     "scheduled_time": "2026-05-22T20:07:35.744355-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.55%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-23T00:07:35.744353+00:00",
-    "cost_usd": 0.017585
+    "cost_usd": 0.017585,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260522_200735_v2",
@@ -5296,15 +5258,109 @@
     "primary_ticker": "BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260523_0007.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260523_1606.png",
     "scheduled_time": "2026-05-22T20:07:35.744355-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.55%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-23T00:07:35.744353+00:00",
-    "cost_usd": 0.017585
+    "cost_usd": 0.017585,
+    "posted_at": "2026-05-23T16:26:17.717391",
+    "tweet_id": "2058222998897954896"
+  },
+  {
+    "id": "live_20260523_120603_v1",
+    "text": "$SOFI at $15.62. Entry $7.90, up 97.7%. Dilution noise on X but financing growth thesis hasn't broken. Risk-on tape favors fintech rotation.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260523_1606.png",
+    "scheduled_time": "2026-05-23T12:06:03.536685-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-23T16:06:03.536684+00:00",
+    "cost_usd": 0.01761
+  },
+  {
+    "id": "live_20260523_120603_v2",
+    "text": "$NVDA pullback to $215.33.\nEntry $150. Still up 43.6%.\nAI infra spend = relentless.\nNFA",
+    "category": "RECEIPT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260523_1606.png",
+    "scheduled_time": "2026-05-23T12:06:03.536685-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-23T16:06:03.536684+00:00",
+    "cost_usd": 0.01761
+  },
+  {
+    "id": "watchdog_20260523_001",
+    "text": "$VYGR cleared all gates this week \u2014 BBB gene therapy platform showing institutional accumulation patterns. When structural pivots align with emerging biotech themes, momentum traders pay attention.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-23T13:49:30.433361+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260523_002",
+    "text": "Small-cap momentum setup hasn't looked this favorable since 2016. Earnings broadening beyond mega-cap, 25-year relative valuation discount, and institutional rotation accelerating. Capital preservation first, but the tide is turning.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-23T13:49:30.433361+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260523_003",
+    "text": "BBB gene therapy platforms represent one of biotech's most undervalued structural opportunities. Blood-brain barrier crossing technology could unlock trillion-dollar neurological markets previously deemed untreatable.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-23T13:49:30.433361+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260523_004",
+    "text": "Portfolio alpha: 95.31% vs SPY. Eight themes in play from AI chips to gene therapy. When you combine systematic scanning with disciplined position sizing, the math works in your favor over time.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-23T13:49:30.433361+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260523_005",
+    "text": "Weekend question: What's the biggest misconception retail traders have about momentum investing? I'll share the most common trap I see in Monday's note.",
+    "category": "ENGAGEMENT",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-23T13:49:30.433361+00:00",
+    "source": "watchdog"
   }
 ]

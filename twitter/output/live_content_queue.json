@@ -3776,63 +3776,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260516_165006_v1",
-    "text": "$VYGR at $4.65. Entry $4.45, now +4.5%. BBB gene therapy platform validating on Lunai's $20M acquisition and Fractyl's GLP-1 trial data. Fresh signal, fresh move.",
-    "category": "RECEIPT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260517_1602.png",
-    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-16T20:50:06.667018+00:00",
-    "cost_usd": 0.017452,
-    "skip_reason": "Stale: 20h old"
-  },
-  {
-    "id": "live_20260516_165006_v2",
-    "text": "Defense names like $EVTL are doing what quality setups do in choppy markets \u2014 they just sit there. Down 43% from entry but holding $4.55 support while tech bleeds. Sometimes the best trade is patience. Setup invalidates below $4.00.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260516_2050.png",
-    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-16T20:50:06.667018+00:00",
-    "cost_usd": 0.017452,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260516_165006_v3",
-    "text": "$NVDA pullback = noise.\nEntry $150, sitting $225.\nAI thesis hasn't changed.\nCash the position if it matters.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260517_1602.png",
-    "scheduled_time": "2026-05-16T16:50:06.667020-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.5%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-16T20:50:06.667018+00:00",
-    "cost_usd": 0.017452,
-    "skip_reason": "Stale: 20h old"
-  },
-  {
     "id": "live_20260517_120252_v1",
     "text": "$EVTL testing $2.55 support.\neVTOL volatility continues.\nFlight milestones vs sector pressure.\nWatching closely.",
     "category": "ENGAGEMENT",
@@ -5278,16 +5221,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260523_1606.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260523_2055.png",
     "scheduled_time": "2026-05-23T12:06:03.536685-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-23T16:06:03.536684+00:00",
-    "cost_usd": 0.01761
+    "cost_usd": 0.01761,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260523_120603_v2",
@@ -5296,16 +5240,18 @@
     "primary_ticker": "$NVDA",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260523_1606.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260523_2055.png",
     "scheduled_time": "2026-05-23T12:06:03.536685-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-23T16:06:03.536684+00:00",
-    "cost_usd": 0.01761
+    "cost_usd": 0.01761,
+    "posted_at": "2026-05-23T21:15:20.222022",
+    "tweet_id": "2058295738577363191"
   },
   {
     "id": "watchdog_20260523_001",
@@ -5359,8 +5305,45 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-23T13:49:30.433361+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260523_165503_v1",
+    "text": "$EVTL pulled back from $7.00 but Walmart and Hyundai partnerships don't expire with price action. When commercial contracts validate the thesis, volatility tests position sizing \u2014 not conviction.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260523_2055.png",
+    "scheduled_time": "2026-05-23T16:55:03.374975-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-23T20:55:03.374974+00:00",
+    "cost_usd": 0.017346
+  },
+  {
+    "id": "live_20260523_165503_v2",
+    "text": "$AMD from $120 \u2192 $467.51.\nUp 289.6% on MI300 ramp.\nTaiwan AI plant expansion.\nChip demand relentless.",
+    "category": "RECEIPT",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260523_2055.png",
+    "scheduled_time": "2026-05-23T16:55:03.374975-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-23T20:55:03.374974+00:00",
+    "cost_usd": 0.017346
   }
 ]

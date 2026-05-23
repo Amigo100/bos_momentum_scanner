@@ -1,71 +1,260 @@
 {
-  "timestamp": "2026-05-22T16:15:39.527028+00:00",
+  "timestamp": "2026-05-23T00:10:00Z",
   "market_snapshot": {
-    "spy_move": "N/A",
-    "qqq_move": "N/A",
-    "iwm_move": "N/A",
-    "vix": "N/A",
-    "market_mood": "unknown",
-    "headline": "Market data unavailable \u2014 using portfolio context only"
+    "spy_move": "+0.55%",
+    "qqq_move": "+0.19%",
+    "iwm_move": "+0.66%",
+    "vix": "16.7",
+    "market_mood": "bullish",
+    "headline": "Broad gains with small caps and Dow leading; NVDA pulls back amid ongoing AI momentum"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $7.90"
+      "move": "-0.2%",
+      "price": "$15.62",
+      "context": "Near session lows after volatile range; fintech exposure to rate-sensitive lending"
     },
     {
       "ticker": "$EVTL",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $4.50"
+      "context": "No fresh price data; monitor for eVTOL/defense additive mfg overlap"
     },
     {
       "ticker": "$NVDA",
-      "move": "N/A",
-      "price": "N/A",
-      "context": "Portfolio position, entry $150.00"
+      "move": "-1.9%",
+      "price": "$215.33",
+      "context": "Pullback from recent highs; still dominant in AI/semiconductors theme"
     },
     {
       "ticker": "$AMD",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $120.00"
+      "context": "No specific update; AI/semiconductor peer to NVDA"
     },
     {
       "ticker": "$ASPI",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $6.00"
+      "context": "Nuclear theme exposure; no fresh moves"
     },
     {
       "ticker": "$HIVE",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $2.10"
+      "context": "Bitcoin/AI-adjacent; limited data"
     },
     {
       "ticker": "$BAND",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $16.55"
+      "context": "No specific update"
     },
     {
       "ticker": "$VYGR",
       "move": "N/A",
       "price": "N/A",
-      "context": "Portfolio position, entry $4.45"
+      "context": "Recent scanner PASS/CONSIDER; gene therapy/bladder cancer immunotherapy relevance"
     }
   ],
-  "theme_activity": [],
-  "theme_tickers": [],
-  "fintwit_trending": [],
-  "fintwit_theme_overlaps": [],
-  "news_events": [],
-  "fallback_mode": true,
-  "gathered_at": "2026-05-22T22:57:29.364833+00:00",
+  "theme_activity": [
+    {
+      "theme": "copper",
+      "status": "active",
+      "detail": "Futures +1.37% to ~$6.38/lb on supply tightness and industrial demand"
+    },
+    {
+      "theme": "AI",
+      "status": "active",
+      "detail": "Continued sector strength despite NVDA dip; defense AI integration noted"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "active",
+      "detail": "Broad gains supporting AI theme"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Pentagon budget tailwinds and AI-defense crossover"
+    },
+    {
+      "theme": "nuclear",
+      "status": "quiet",
+      "detail": "Limited fresh catalysts"
+    },
+    {
+      "theme": "glp-1 obesity telehealth",
+      "status": "breaking",
+      "detail": "Gene therapy GLP-1 trials advancing; telehealth AI plays scaling"
+    },
+    {
+      "theme": "bbb gene therapy platform",
+      "status": "breaking",
+      "detail": "First-in-human GLP-1 gene therapy trial authorization"
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "status": "active",
+      "detail": "Ongoing clinical progress in oncolytic immunotherapies"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "quiet",
+      "detail": "No major updates"
+    },
+    {
+      "theme": "photonic interconnect",
+      "status": "quiet",
+      "detail": "No major updates"
+    },
+    {
+      "theme": "defence additive manufacturing",
+      "status": "quiet",
+      "detail": "No major updates"
+    }
+  ],
+  "theme_tickers": [
+    {
+      "theme": "copper",
+      "tickers": [
+        {
+          "symbol": "$FCX",
+          "price": "$60.41",
+          "context": "Largest US copper miner"
+        },
+        {
+          "symbol": "$SCCO",
+          "price": "$184.30",
+          "context": "Southern Copper"
+        }
+      ]
+    },
+    {
+      "theme": "AI/semiconductors",
+      "tickers": [
+        {
+          "symbol": "$NVDA",
+          "price": "$215.33",
+          "context": "AI leader"
+        },
+        {
+          "symbol": "$AMD",
+          "price": "N/A",
+          "context": "AI/semiconductor peer"
+        },
+        {
+          "symbol": "$AVGO",
+          "price": "$414.14",
+          "context": "Semiconductor/AI exposure"
+        }
+      ]
+    },
+    {
+      "theme": "defense",
+      "tickers": [
+        {
+          "symbol": "$LMT",
+          "price": "N/A",
+          "context": "Major defense contractor"
+        },
+        {
+          "symbol": "$NOC",
+          "price": "N/A",
+          "context": "Defense/aerospace"
+        },
+        {
+          "symbol": "$GD",
+          "price": "N/A",
+          "context": "Defense exposure"
+        }
+      ]
+    },
+    {
+      "theme": "nuclear",
+      "tickers": [
+        {
+          "symbol": "$ASPI",
+          "price": "N/A",
+          "context": "Nuclear theme play"
+        }
+      ]
+    },
+    {
+      "theme": "glp-1/gene therapy",
+      "tickers": [
+        {
+          "symbol": "$LLY",
+          "price": "N/A",
+          "context": "GLP-1 leader"
+        },
+        {
+          "symbol": "$NVO",
+          "price": "N/A",
+          "context": "GLP-1 leader"
+        }
+      ]
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "tickers": [
+        {
+          "symbol": "CGON",
+          "price": "N/A",
+          "context": "Bladder cancer oncolytic immunotherapy"
+        }
+      ]
+    }
+  ],
+  "fintwit_trending": [
+    "$AMD",
+    "$AI stocks",
+    "$CRWD",
+    "$PCLA",
+    "GLP-1/peptide narrative",
+    "defense AI"
+  ],
+  "fintwit_theme_overlaps": [
+    {
+      "trending_topic": "GLP-1/peptide narrative",
+      "matching_theme": "glp-1 obesity telehealth",
+      "our_positions": [],
+      "context": "FinTwit highlighting exploding GLP-1 demand and peptide/biohacking shift"
+    },
+    {
+      "trending_topic": "$AMD AI stocks",
+      "matching_theme": "AI/semiconductors",
+      "our_positions": [
+        "$AMD",
+        "$NVDA"
+      ],
+      "context": "Ongoing AI momentum discussions"
+    }
+  ],
+  "news_events": [
+    {
+      "event": "GLP-1 gene therapy first human trial authorized",
+      "impact": "Potential one-time treatment disrupting chronic dosing; positive for gene therapy platforms",
+      "relevance": "high"
+    },
+    {
+      "event": "Copper futures surge on supply/demand",
+      "impact": "Tailwind for copper theme and infrastructure",
+      "relevance": "high"
+    },
+    {
+      "event": "Pentagon budget/AI-defense crossover",
+      "impact": "Boost to defense and AI themes",
+      "relevance": "medium"
+    },
+    {
+      "event": "NVDA pullback amid broader gains",
+      "impact": "Profit-taking in AI leader; watch for continuation",
+      "relevance": "high"
+    }
+  ],
+  "gathered_at": "2026-05-23T00:07:21.161844+00:00",
   "is_market_hours": false,
-  "is_extended_hours": false,
-  "context_stale": true
+  "is_extended_hours": false
 }

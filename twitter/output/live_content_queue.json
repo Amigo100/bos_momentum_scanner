@@ -3837,25 +3837,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260517_165403_v1",
-    "text": "$NVDA down but thesis alive.\nEntry $150, now $225.\n+50% in the chop.\nSemis rotation \u2260 theme death.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260518_1441.png",
-    "scheduled_time": "2026-05-17T16:54:03.040669-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-1.24%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-17T20:54:03.040667+00:00",
-    "cost_usd": 0.017415,
-    "skip_reason": "Stale: 18h old"
-  },
-  {
     "id": "live_20260518_104125_v1",
     "text": "Why do 11.2% dips shake out retail but not institutions? Because Lunai just committed $20M to $VYGR's BBB platform for CNS delivery. Price is noise when conviction names add strategic capital. Thesis > volatility.",
     "category": "EDUCATIONAL",
@@ -5278,9 +5259,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-23T13:49:30.433361+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260523_005",
@@ -5339,16 +5321,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260524_1605.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260524_2057.png",
     "scheduled_time": "2026-05-24T12:05:43.705492-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-24T16:05:43.705491+00:00",
-    "cost_usd": 0.017095
+    "cost_usd": 0.017095,
+    "skip_reason": "Stale: 5h old"
   },
   {
     "id": "live_20260524_120543_v2",
@@ -5357,16 +5340,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260524_1605.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260524_2057.png",
     "scheduled_time": "2026-05-24T12:05:43.705492-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-24T16:05:43.705491+00:00",
-    "cost_usd": 0.017095
+    "cost_usd": 0.017095,
+    "posted_at": "2026-05-24T21:17:25.828349",
+    "tweet_id": "2058658653343981743"
   },
   {
     "id": "watchdog_20260524_001",
@@ -5397,9 +5382,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-24T13:47:26.500338+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260524_004",
@@ -5422,5 +5408,41 @@
     "status": "pending",
     "created_at": "2026-05-24T13:47:26.500338+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260524_165712_v1",
+    "text": "SPY grinding higher but $SOFI outpacing it by 98.5% from $7.90 entry. CEO share purchases signal confidence. Consumer credit expansion thesis playing out exactly as mapped.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260524_2057.png",
+    "scheduled_time": "2026-05-24T16:57:12.433560-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-24T20:57:12.433558+00:00",
+    "cost_usd": 0.01742
+  },
+  {
+    "id": "live_20260524_165712_v2",
+    "text": "$AMD ripping +3.99%.\n$120 entry. Now $467.51.\nSemis rotating to the winners.\nMomentum > noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260524_2057.png",
+    "scheduled_time": "2026-05-24T16:57:12.433560-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-24T20:57:12.433558+00:00",
+    "cost_usd": 0.01742
   }
 ]

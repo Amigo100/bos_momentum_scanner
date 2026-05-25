@@ -5360,9 +5360,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-24T13:47:26.500338+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260524_002",
@@ -5371,9 +5372,10 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-24T13:47:26.500338+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "skip_reason": "Too similar (73%) to tweet posted at 2026-05-24T16:25:57.945726"
   },
   {
     "id": "watchdog_20260524_003",
@@ -5416,16 +5418,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260524_2057.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_1420.png",
     "scheduled_time": "2026-05-24T16:57:12.433560-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-24T20:57:12.433558+00:00",
-    "cost_usd": 0.01742
+    "cost_usd": 0.01742,
+    "skip_reason": "Stale: 18h old"
   },
   {
     "id": "live_20260524_165712_v2",
@@ -5434,15 +5437,53 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260524_2057.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260525_1420.png",
     "scheduled_time": "2026-05-24T16:57:12.433560-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-24T20:57:12.433558+00:00",
-    "cost_usd": 0.01742
+    "cost_usd": 0.01742,
+    "skip_reason": "Stale: 18h old"
+  },
+  {
+    "id": "live_20260525_102023_v1",
+    "text": "CEO buying $SOFI shares at $15.62. We're still holding from $7.90 \u2014 up 97.7%. When insiders buy during pullbacks, that's usually a tell.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_1420.png",
+    "scheduled_time": "2026-05-25T10:20:23.188198-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-25T14:20:23.188196+00:00",
+    "cost_usd": 0.017067
+  },
+  {
+    "id": "live_20260525_102023_v2",
+    "text": "$NVDA pulling back after +50% from $150 isn't weakness \u2014 it's consolidation. Winners pause before the next leg. Watching $215 support hold before adding.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260525_1420.png",
+    "scheduled_time": "2026-05-25T10:20:23.188198-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-25T14:20:23.188196+00:00",
+    "cost_usd": 0.017067,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

@@ -1,79 +1,79 @@
 {
-  "timestamp": "2026-05-25T20:00:00Z",
+  "timestamp": "2026-05-25T23:00:00Z",
   "market_snapshot": {
     "spy_move": "+0.37%",
     "qqq_move": "+0.19%",
-    "iwm_move": "+0.58%",
-    "vix": "16.59",
+    "iwm_move": "mixed (small caps referenced in context)",
+    "vix": "16.70",
     "market_mood": "bullish",
-    "headline": "US indices higher with futures pointing to record highs; VIX subdued amid risk-on sentiment"
+    "headline": "Broad market up modestly with tech leadership; VIX subdued at 16.7 amid AI/infra focus"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
       "move": "-0.19%",
       "price": "$15.62",
-      "context": "Near session lows; fintech sector mixed"
+      "context": "Near recent highs but down slightly; avoid repeat tweet"
     },
     {
       "ticker": "$NVDA",
-      "move": "-1.90%",
+      "move": "flat to -1.9% intraday ref",
       "price": "$215.33",
-      "context": "Pullback from recent highs; AI leader still dominant"
+      "context": "Dominates S&P weighting; AI infra narrative strong"
     },
     {
       "ticker": "$AMD",
-      "move": "+0.85%",
-      "price": "$120.00 approx (entry ref)",
-      "context": "Semis mixed but holding support"
+      "move": "+3.99%",
+      "price": "$467.51",
+      "context": "Strong move; avoid repeat tweet"
     },
     {
       "ticker": "$VYGR",
-      "move": "N/A (recent signal)",
-      "price": "N/A",
-      "context": "Recent scanner PASS/CONSIDER; gene therapy theme"
+      "move": "+3.4%",
+      "price": "$3.81",
+      "context": "Recent scanner PASS/CONSIDER; gene therapy theme lift"
     }
   ],
   "theme_activity": [
     {
-      "theme": "copper",
-      "status": "active",
-      "detail": "Futures up ~1.3-1.4% to ~$6.38/lb on AI data center demand and supply concerns"
-    },
-    {
       "theme": "AI",
       "status": "active",
-      "detail": "Continued capex focus; NVDA/AMD in focus despite minor pullback"
+      "detail": "NVDA/AMD strength; hyperscaler capex driving semis"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Mixed moves; photonics interconnect gaining attention for data centers"
-    },
-    {
-      "theme": "defense",
-      "status": "quiet",
-      "detail": "Steady; additive manufacturing tailwinds from policy"
-    },
-    {
-      "theme": "infrastructure",
-      "status": "active",
-      "detail": "Supported by grid/AI power needs"
+      "detail": "AMD +4%, AVGO steady; AI chip demand resilient"
     },
     {
       "theme": "nuclear",
       "status": "active",
-      "detail": "Rising interest tied to AI power demands"
+      "detail": "NNE MOU with Supermicro for AI data centers; OKLO +1.2%"
     },
     {
       "theme": "photonic interconnect",
-      "status": "breaking",
-      "detail": "Emerging FinTwit buzz on optical solutions for AI scaling"
+      "status": "active",
+      "detail": "Nvidia backs copper short-term but photonics push for AI scale"
     },
     {
-      "theme": "defence additive manufacturing",
+      "theme": "copper",
+      "status": "active",
+      "detail": "Nvidia comments highlight ongoing need; FCX ~$62"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "RKLB +8% surge; additive mfg/defense overlap"
+    },
+    {
+      "theme": "infrastructure",
       "status": "quiet",
-      "detail": "Policy support noted in 3D printing/defense overlap"
+      "detail": "Steady backdrop for power/grid plays"
+    },
+    {
+      "theme": "defense additive manufacturing",
+      "status": "quiet",
+      "detail": "NIST funding mentions; limited immediate moves"
     }
   ],
   "theme_tickers": [
@@ -82,68 +82,18 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "$60+ range (recent context)",
-          "context": "Major US copper producer"
+          "price": "$61.99",
+          "context": "Largest US copper miner"
         },
         {
           "symbol": "$SCCO",
-          "price": "$180+ range",
+          "price": "$179.67",
           "context": "Southern Copper"
         },
         {
-          "symbol": "$BHP",
-          "price": "N/A specific",
-          "context": "Diversified miner with copper exposure"
-        },
-        {
-          "symbol": "$RIO",
-          "price": "N/A specific",
-          "context": "Rio Tinto copper ops"
-        },
-        {
-          "symbol": "$TECK",
-          "price": "N/A specific",
-          "context": "Teck Resources"
-        },
-        {
-          "symbol": "$PWR",
-          "price": "N/A specific",
-          "context": "Quanta Services infrastructure/copper play"
-        }
-      ]
-    },
-    {
-      "theme": "photonic interconnect",
-      "tickers": [
-        {
-          "symbol": "$LITE",
-          "price": "High YTD gains noted",
-          "context": "Lumentum optical components"
-        },
-        {
-          "symbol": "$COHR",
-          "price": "Strong performer",
-          "context": "Coherent lasers/optics"
-        },
-        {
-          "symbol": "$FN",
-          "price": "N/A specific",
-          "context": "Fabrinet optical packaging"
-        },
-        {
-          "symbol": "$AAOI",
-          "price": "Strong YTD",
-          "context": "Applied Optoelectronics transceivers"
-        },
-        {
-          "symbol": "$CIEN",
-          "price": "N/A specific",
-          "context": "Ciena networking"
-        },
-        {
-          "symbol": "$MRVL",
-          "price": "N/A specific",
-          "context": "Marvell silicon photonics"
+          "symbol": "$COPX",
+          "price": "$83.35",
+          "context": "Copper miners ETF"
         }
       ]
     },
@@ -151,133 +101,115 @@
       "theme": "nuclear",
       "tickers": [
         {
-          "symbol": "$CCJ",
-          "price": "~$105",
-          "context": "Cameco uranium"
+          "symbol": "$OKLO",
+          "price": "$65.88",
+          "context": "Advanced nuclear; +1.2%"
         },
         {
-          "symbol": "$OKLO",
-          "price": "~$65",
-          "context": "Oklo advanced nuclear"
+          "symbol": "$SMR",
+          "price": "N/A (ref ~$20-30 range prior)",
+          "context": "Small modular reactors"
         },
         {
           "symbol": "$NNE",
-          "price": "~$27",
-          "context": "Nano Nuclear microreactors"
-        },
-        {
-          "symbol": "$BWXT",
-          "price": "~$202",
-          "context": "BWX Technologies nuclear components"
+          "price": "N/A (recent MOU focus)",
+          "context": "Microreactors for AI data centers"
         },
         {
           "symbol": "$CEG",
-          "price": "N/A specific",
-          "context": "Constellation Energy operator"
+          "price": "$294.07",
+          "context": "Constellation Energy"
         }
       ]
     },
     {
-      "theme": "defence additive manufacturing",
+      "theme": "defense",
       "tickers": [
         {
-          "symbol": "$DDD",
-          "price": "~$3.15",
-          "context": "3D Systems aerospace/defense"
+          "symbol": "$RKLB",
+          "price": "$135.76",
+          "context": "+8.2% surge; space/defense"
         },
         {
-          "symbol": "$PRLB",
-          "price": "~$71",
-          "context": "Proto Labs"
-        },
-        {
-          "symbol": "$GE",
-          "price": "N/A specific",
-          "context": "GE Aerospace additive"
-        },
-        {
-          "symbol": "$SSYS",
-          "price": "~$9",
-          "context": "Stratasys"
+          "symbol": "$PLTR",
+          "price": "$136.88",
+          "context": "Defense tech/AI analytics"
         }
       ]
     },
     {
-      "theme": "infrastructure",
+      "theme": "AI/semiconductors",
       "tickers": [
         {
-          "symbol": "$STRL",
-          "price": "~$733",
-          "context": "Sterling Infrastructure"
+          "symbol": "$NVDA",
+          "price": "$215.33",
+          "context": "AI leader; 8% S&P weight"
         },
         {
-          "symbol": "$EME",
-          "price": "N/A specific",
-          "context": "EMCOR electrical/mech"
+          "symbol": "$AMD",
+          "price": "$467.51",
+          "context": "+4% move"
         },
         {
-          "symbol": "$FIX",
-          "price": "N/A specific",
-          "context": "Comfort Systems"
+          "symbol": "$AVGO",
+          "price": "$414.14",
+          "context": "AI semis/custom chips"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "copper breakout/AI demand",
-    "NVDA dividends/AI capex",
-    "optics/photonics for data centers",
-    "nuclear power for AI",
-    "semiconductor equipment"
+    "$NVDA AI infrastructure stack",
+    "Nuclear for AI data centers",
+    "Quantum/Aerospace themes",
+    "Semis momentum (AMD/AVGO)",
+    "$RKLB surge"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "copper breakout",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "FinTwit highlighting AI data center copper intensity; futures rallying"
-    },
-    {
-      "trending_topic": "photonics/optics supercycle",
-      "matching_theme": "photonic interconnect",
-      "our_positions": [],
-      "context": "Buzz on optical interconnects for AI scaling; overlaps semiconductors/AI"
-    },
-    {
-      "trending_topic": "nuclear for AI power",
+      "trending_topic": "Nuclear for AI data centers",
       "matching_theme": "nuclear",
       "our_positions": [],
-      "context": "Rising discussion on nuclear to meet data center energy needs"
+      "context": "NNE Supermicro MOU; OKLO active; overlaps AI power demand"
+    },
+    {
+      "trending_topic": "$NVDA AI stack",
+      "matching_theme": "AI",
+      "our_positions": [
+        "$NVDA"
+      ],
+      "context": "Power semis, robotics; FinTwit highlighting ecosystem plays"
+    },
+    {
+      "trending_topic": "Defense/space momentum",
+      "matching_theme": "defense",
+      "our_positions": [],
+      "context": "$RKLB +8%; additive mfg/defense synergy"
     }
   ],
   "news_events": [
     {
-      "event": "Copper futures rally on AI demand",
-      "impact": "Structural deficit narrative strengthening; positive for miners/infra",
+      "event": "Nvidia CEO on copper vs photonics",
+      "impact": "Copper dominates near-term interconnects; photonics for scale",
       "relevance": "high"
     },
     {
-      "event": "Fed minutes/tariffs uncertainty",
-      "impact": "Inflation risks noted but markets shrug; risk-on persists",
-      "relevance": "medium"
-    },
-    {
-      "event": "AI capex and data center buildout",
-      "impact": "Drives copper, photonics, nuclear, power infrastructure demand",
+      "event": "NNE MOU with Supermicro",
+      "impact": "Nuclear microreactors for AI data centers",
       "relevance": "high"
     },
     {
-      "event": "GLP-1 telehealth expansions (Novo partnerships)",
-      "impact": "Theme activity; potential for $HIMS, $RO etc.",
+      "event": "RKLB surge",
+      "impact": "Defense/space momentum",
       "relevance": "medium"
     },
     {
-      "event": "Bladder cancer immunotherapy updates (e.g., ImmunityBio)",
-      "impact": "Steady theme progress",
-      "relevance": "low"
+      "event": "Tariffs/geopolitics backdrop",
+      "impact": "Ongoing supply chain/tariff risks",
+      "relevance": "medium"
     }
   ],
-  "gathered_at": "2026-05-25T19:04:46.366342+00:00",
-  "is_market_hours": true,
+  "gathered_at": "2026-05-25T22:58:26.377129+00:00",
+  "is_market_hours": false,
   "is_extended_hours": false
 }

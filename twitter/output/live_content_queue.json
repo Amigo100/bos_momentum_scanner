@@ -3886,45 +3886,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260518_151344_v1",
-    "text": "$EVTL at $2.44. Down 45.8% from $4.50 entry. Defense additive manufacturing thesis intact but setup invalidated below support. Win more than you lose.",
-    "category": "RECEIPT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_2259.png",
-    "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "-0.3%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-18T19:13:44.331520+00:00",
-    "cost_usd": 0.01738,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
-    "id": "live_20260518_151344_v2",
-    "text": "$SOFI stablecoin launch on Solana.\nEntry $7.90. High $32.00.\n+305.1% on fintech thesis.\nWatching $16 resistance break.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260518_2259.png",
-    "scheduled_time": "2026-05-18T15:13:44.331521-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.3%",
-      "market_mood": "volatile",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-18T19:13:44.331520+00:00",
-    "cost_usd": 0.01738,
-    "posted_at": "2026-05-18T23:19:37.083360",
-    "tweet_id": "2056515075565932966"
-  },
-  {
     "id": "live_20260518_185927_v1",
     "text": "$EVTL from $4.50 to $7.00 high \u2014 +55.6% on the defense play. Additive manufacturing for military doesn't vanish because of a red month. Win more than you lose.",
     "category": "RECEIPT",
@@ -5464,9 +5425,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-25T15:20:30.513810+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260525_004",
@@ -5506,16 +5468,18 @@
     "primary_ticker": "SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_1905.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_2258.png",
     "scheduled_time": "2026-05-25T14:07:57.432790-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-25T18:07:57.432789+00:00",
-    "cost_usd": 0.016958
+    "cost_usd": 0.016958,
+    "posted_at": "2026-05-25T23:18:59.804110",
+    "tweet_id": "2059051634379083824"
   },
   {
     "id": "live_20260525_150503_v1",
@@ -5524,16 +5488,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_1905.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_2258.png",
     "scheduled_time": "2026-05-25T15:05:03.904006-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-25T19:05:03.904004+00:00",
-    "cost_usd": 0.017086
+    "cost_usd": 0.017086,
+    "skip_reason": "Stale: 4h old"
   },
   {
     "id": "live_20260525_150503_v2",
@@ -5542,15 +5507,34 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260525_1905.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260525_2258.png",
     "scheduled_time": "2026-05-25T15:05:03.904006-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-25T19:05:03.904004+00:00",
-    "cost_usd": 0.017086
+    "cost_usd": 0.017086,
+    "skip_reason": "Stale: 4h old"
+  },
+  {
+    "id": "live_20260525_185846_v1",
+    "text": "$BAND from $16.55 to $61.39.\n+270.9% run complete.\nTrimming here.\nLocking in the win.",
+    "category": "RECEIPT",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260525_2258.png",
+    "scheduled_time": "2026-05-25T18:58:46.546952-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-25T22:58:46.546950+00:00",
+    "cost_usd": 0.01717
   }
 ]

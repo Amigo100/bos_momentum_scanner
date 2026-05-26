@@ -3886,25 +3886,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260519_100942_v1",
-    "text": "$VYGR at $3.43. BBB gene therapy platform \u2014 watching for confirmation before adding. Entry discipline > chasing signals. Sometimes the best trade is the one you don't take yet.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260519_1409.png",
-    "scheduled_time": "2026-05-19T10:09:42.299202-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.07%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-19T14:09:42.299200+00:00",
-    "cost_usd": 0.017453,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "live_20260519_124454_v1",
     "text": "Rate-sensitive fintech play delivered exactly what we anticipated.\n\n$SOFI entry $7.90 \u2192 $32.00 high. 305.1% and counting. NFA",
     "category": "RECEIPT",
@@ -5527,15 +5508,36 @@
     "primary_ticker": "HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260526_0006.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260526_1413.png",
     "scheduled_time": "2026-05-25T20:06:42.936188-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-26T00:06:42.936186+00:00",
-    "cost_usd": 0.017476
+    "cost_usd": 0.017476,
+    "posted_at": "2026-05-26T14:33:07.867899",
+    "tweet_id": "2059281683745268091"
+  },
+  {
+    "id": "live_20260526_101257_v1",
+    "text": "$VYGR at $3.77. Blood-brain barrier gene therapy platform with IV CNS delivery. ASGCT catalyst mid-2025. Setup invalidated below $3.50.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260526_1413.png",
+    "scheduled_time": "2026-05-26T10:12:57.856872-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.65%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-26T14:12:57.856870+00:00",
+    "cost_usd": 0.017517,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   }
 ]

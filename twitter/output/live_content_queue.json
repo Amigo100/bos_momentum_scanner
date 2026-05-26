@@ -3886,63 +3886,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260518_185927_v1",
-    "text": "$EVTL from $4.50 to $7.00 high \u2014 +55.6% on the defense play. Additive manufacturing for military doesn't vanish because of a red month. Win more than you lose.",
-    "category": "RECEIPT",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260518_2259.png",
-    "scheduled_time": "2026-05-18T18:59:27.080497-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.07%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-18T22:59:27.080496+00:00",
-    "cost_usd": 0.017282,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260518_200612_v1",
-    "text": "$SOFI entry $7.90, high $32.00. +305% on the fintech thesis while SPY bleeds. Decoupling from broader market weakness.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260519_0006.png",
-    "scheduled_time": "2026-05-18T20:06:12.476129-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.07%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-19T00:06:12.476128+00:00",
-    "cost_usd": 0.017138,
-    "error": "403 Forbidden"
-  },
-  {
-    "id": "live_20260518_200612_v2",
-    "text": "$EVTL pullback testing conviction.\nEntry $4.50. Now $2.43.\nDefense spending bill advancing.\nWatching closely.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_0006.png",
-    "scheduled_time": "2026-05-18T20:06:12.476129-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.07%",
-      "market_mood": "mixed",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-19T00:06:12.476128+00:00",
-    "cost_usd": 0.017138,
-    "error": "403 Forbidden"
-  },
-  {
     "id": "live_20260519_100942_v1",
     "text": "$VYGR at $3.43. BBB gene therapy platform \u2014 watching for confirmation before adding. Entry discipline > chasing signals. Sometimes the best trade is the one you don't take yet.",
     "category": "EDUCATIONAL",
@@ -5526,15 +5469,73 @@
     "primary_ticker": "$BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260525_2258.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260526_0006.png",
     "scheduled_time": "2026-05-25T18:58:46.546952-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.37%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-25T22:58:46.546950+00:00",
-    "cost_usd": 0.01717
+    "cost_usd": 0.01717,
+    "posted_at": "2026-05-26T00:26:59.479249",
+    "tweet_id": "2059068745746698617"
+  },
+  {
+    "id": "live_20260525_200642_v1",
+    "text": "$SOFI at $15.62. Entered $7.90 \u2014 up 97.7%. When CEO buys shares at your current price, thesis remains intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260526_0006.png",
+    "scheduled_time": "2026-05-25T20:06:42.936188-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-26T00:06:42.936186+00:00",
+    "cost_usd": 0.017476,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260525_200642_v2",
+    "text": "$EVTL at $2.62. Down from $4.50 entry but Walmart and Hyundai partnerships don't expire on red days. Setup invalidates below $2.00 \u2014 until then, conviction holds.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260526_0006.png",
+    "scheduled_time": "2026-05-25T20:06:42.936188-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-26T00:06:42.936186+00:00",
+    "cost_usd": 0.017476,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260525_200642_v3",
+    "text": "$HIVE trimming half.\n$2.10 entry to $6.00.\n+185.7% banked.\nLetting rest run. NFA",
+    "category": "RECEIPT",
+    "primary_ticker": "HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260526_0006.png",
+    "scheduled_time": "2026-05-25T20:06:42.936188-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.37%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-26T00:06:42.936186+00:00",
+    "cost_usd": 0.017476
   }
 ]

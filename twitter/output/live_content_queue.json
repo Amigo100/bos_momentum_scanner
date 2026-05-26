@@ -5589,15 +5589,35 @@
     "primary_ticker": "SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260526_1935.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260526_2207.png",
     "scheduled_time": "2026-05-26T15:35:16.149468-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.5%",
       "market_mood": "bullish",
       "context_stale": true
     },
     "generated_at": "2026-05-26T19:35:16.149466+00:00",
-    "cost_usd": 0.017558
+    "cost_usd": 0.017558,
+    "posted_at": "2026-05-26T22:27:41.854822",
+    "tweet_id": "2059401112201879929"
+  },
+  {
+    "id": "live_20260526_180732_v1",
+    "text": "$AMD riding the chip wave.\n$120 entry now climbing.\nSemis participating hard.\nNasdaq futures +1.65% \ud83c\udfaf",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260526_2207.png",
+    "scheduled_time": "2026-05-26T18:07:32.352324-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.6%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-26T22:07:32.352323+00:00",
+    "cost_usd": 0.017447
   }
 ]

@@ -5525,9 +5525,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-27T15:59:11.519139+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-27T18:58:31.630152",
+    "tweet_id": "2059710861149688082"
   },
   {
     "id": "watchdog_20260527_003",
@@ -5548,9 +5550,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-27T15:59:11.519139+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260527_005",
@@ -5571,7 +5574,7 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260527_1657.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260527_1838.png",
     "scheduled_time": "2026-05-27T12:57:24.971504-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5581,5 +5584,42 @@
     },
     "generated_at": "2026-05-27T16:57:24.971503+00:00",
     "cost_usd": 0.017429
+  },
+  {
+    "id": "live_20260527_143819_v1",
+    "text": "Why did $EVTL drop 38% despite Walmart partnerships and defense milestones? The newsletter breaks down when fundamentals matter vs when price action overrides \u2014 and what we're watching for re-entry.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260527_1838.png",
+    "scheduled_time": "2026-05-27T14:38:19.019416-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-27T18:38:19.019414+00:00",
+    "cost_usd": 0.017367,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260527_143819_v2",
+    "text": "$NVDA $212 but watching.\nEntry $150, up 41.8%.\nRotation happening.\nSaturday breakdown covers next move.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260527_1838.png",
+    "scheduled_time": "2026-05-27T14:38:19.019416-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.1%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-27T18:38:19.019414+00:00",
+    "cost_usd": 0.017367
   }
 ]

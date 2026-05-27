@@ -1,106 +1,89 @@
 {
-  "timestamp": "2026-05-26T22:00:00Z",
+  "timestamp": "2026-05-27T00:00:00Z",
   "market_snapshot": {
     "spy_move": "+0.6%",
     "qqq_move": "+1.2%",
-    "iwm_move": "+0.5%",
+    "iwm_move": "+1.9%",
     "vix": "16.7",
     "market_mood": "bullish",
-    "headline": "Tech-led rally with Nasdaq futures up 1.65% as AI momentum and copper strength offset geopolitics"
+    "headline": "Tech and small-caps lead as copper surges on AI/defense demand amid geopolitical easing"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
       "move": "+2.3%",
       "price": "$15.98",
-      "context": "Strong volume and fintech momentum; recent all-time highs discussed"
+      "context": "Strong session close; fintech momentum"
     },
     {
       "ticker": "$NVDA",
       "move": "-0.2%",
       "price": "$214.86",
-      "context": "Consolidating near $215 after recent pullback; AI demand intact"
+      "context": "Consolidating near highs after recent volatility"
     },
     {
       "ticker": "$AMD",
-      "move": "+1.5%",
-      "price": "$~120-130 range (est. from sector)",
-      "context": "Semis participating in tech rally"
+      "move": "flat",
+      "price": "~$120-130 range (recent data limited)",
+      "context": "Semis mixed with NVDA"
     },
     {
       "ticker": "$VYGR",
-      "move": "+2.9%",
-      "price": "$3.60",
-      "context": "Recent scanner PASS/CONSIDER; gene therapy/BBB platform relevance"
-    },
-    {
-      "ticker": "$HIVE",
-      "move": "N/A (avoid repeat)",
-      "price": "N/A",
-      "context": "Recent tweet topic - skip"
-    },
-    {
-      "ticker": "$EVTL",
-      "move": "N/A (avoid repeat)",
-      "price": "N/A",
-      "context": "Recent tweet topic - skip"
+      "move": "scanner PASS/CONSIDER",
+      "price": "N/A recent",
+      "context": "Gene therapy theme active"
     }
   ],
   "theme_activity": [
     {
       "theme": "copper",
-      "status": "active",
-      "detail": "Futures at ~$6.40/lb (+0.5-1.4% recent); AI data center demand + geopolitics (Iran talks) driving moves; supply concerns from acid shortages"
+      "status": "breaking",
+      "detail": "Copper at ~$6.40/lb (+0.8% today, +35% YTD) on AI data center + defense + grid demand; supply shortfalls highlighted"
     },
     {
       "theme": "AI",
       "status": "active",
-      "detail": "Tech rally led by semis/photonics; data center power/copper demand surging"
+      "detail": "Data center capex driving copper/photonics demand; NVDA/AMD in focus"
+    },
+    {
+      "theme": "defense",
+      "status": "active",
+      "detail": "Additive manufacturing tailwinds; geopolitics (Iran talks) supportive"
     },
     {
       "theme": "semiconductors",
       "status": "active",
-      "detail": "Broad participation in Nasdaq gains; MU, AMD highlighted in chatter"
+      "detail": "NVDA/AMD consolidation but AI demand intact"
     },
     {
       "theme": "nuclear",
-      "status": "active",
-      "detail": "AI power demand spotlight; SMRs and uranium names in focus alongside copper"
+      "status": "quiet",
+      "detail": "Steady interest in energy transition"
     },
     {
-      "theme": "defense",
-      "status": "quiet",
-      "detail": "Additive manufacturing/photonics overlap with lasers for directed energy"
+      "theme": "infrastructure",
+      "status": "active",
+      "detail": "Overlaps with copper/grid buildout"
     },
     {
       "theme": "photonic interconnect",
       "status": "active",
-      "detail": "AI infrastructure buildout driving optical components; strong YTD performers"
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "status": "breaking",
-      "detail": "GLP-1 gene therapy enters first human trials (Fractyl RJVA-001); one-time pancreatic delivery vs chronic dosing"
-    },
-    {
-      "theme": "bladder cancer immunotherapy",
-      "status": "active",
-      "detail": "ImmunityBio sBLA acceptance for ANKTIVA in papillary disease; PDUFA Jan 2027"
+      "detail": "AI optical networking growth story emerging"
     },
     {
       "theme": "bbb gene therapy platform",
-      "status": "quiet",
-      "detail": "VYGR TRACER platform in focus for neurological delivery; limited new catalysts"
+      "status": "active",
+      "detail": "VYGR scanner signal; sector mentions"
     },
     {
-      "theme": "infrastructure",
+      "theme": "glp-1 obesity telehealth",
       "status": "quiet",
-      "detail": "Tied to copper/AI power buildout"
+      "detail": "Policy/price pressure noted earlier"
     },
     {
-      "theme": "defence additive manufacturing",
+      "theme": "bladder cancer immunotherapy",
       "status": "quiet",
-      "detail": "Laser/photonics defense applications noted"
+      "detail": "IBRX updates in past but low current buzz"
     }
   ],
   "theme_tickers": [
@@ -109,73 +92,63 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "~$42-45 (est.)",
-          "context": "Largest US copper miner; direct AI/data center play"
+          "price": "~$60",
+          "context": "Largest US copper miner"
         },
         {
           "symbol": "$SCCO",
-          "price": "~$90-100 (est.)",
-          "context": "Southern Copper; major producer"
-        },
-        {
-          "symbol": "$BHP",
-          "price": "~$55-60 (est.)",
-          "context": "Diversified miner with copper exposure"
-        },
-        {
-          "symbol": "$RIO",
-          "price": "~$65-70 (est.)",
-          "context": "Rio Tinto copper assets"
+          "price": "~$184",
+          "context": "Southern Copper"
         },
         {
           "symbol": "$TECK",
-          "price": "~$45-50 (est.)",
-          "context": "Teck Resources copper focus"
+          "price": "N/A recent",
+          "context": "Teck Resources"
+        },
+        {
+          "symbol": "$BHP",
+          "price": "N/A recent",
+          "context": "BHP Group"
+        },
+        {
+          "symbol": "$RIO",
+          "price": "N/A recent",
+          "context": "Rio Tinto"
         },
         {
           "symbol": "$COPX",
-          "price": "~$45-50 (est.)",
+          "price": "ETF",
           "context": "Global Copper ETF"
-        },
-        {
-          "symbol": "$PWR",
-          "price": "~$300+ (est.)",
-          "context": "Quanta Services; infrastructure/copper wiring"
         }
       ]
     },
     {
-      "theme": "nuclear",
+      "theme": "defense additive manufacturing",
       "tickers": [
         {
-          "symbol": "$CEG",
-          "price": "~$200+ (est.)",
-          "context": "Constellation Energy; AI data center power deals"
+          "symbol": "$DDD",
+          "price": "~$3.15",
+          "context": "3D Systems; A&D momentum"
         },
         {
-          "symbol": "$SMR",
-          "price": "~$20-25 (est.)",
-          "context": "NuScale Power SMRs"
+          "symbol": "$PRLB",
+          "price": "~$71",
+          "context": "Proto Labs"
         },
         {
-          "symbol": "$OKLO",
-          "price": "~$15-20 (est.)",
-          "context": "Oklo advanced nuclear; Altman-backed"
+          "symbol": "$SSYS",
+          "price": "~$9",
+          "context": "Stratasys"
         },
         {
-          "symbol": "$LEU",
-          "price": "~$80-100 (est.)",
-          "context": "Centrus Energy; HALEU enrichment"
+          "symbol": "$VLD",
+          "price": "N/A recent",
+          "context": "Velo3D"
         },
         {
-          "symbol": "$CCJ",
-          "price": "~$50-55 (est.)",
-          "context": "Cameco uranium leader"
-        },
-        {
-          "symbol": "$TLN",
-          "price": "~$100+ (est.)",
-          "context": "Talen Energy; data center adjacency"
+          "symbol": "$GE",
+          "price": "N/A recent",
+          "context": "GE Aerospace; 3D printing in engines"
         }
       ]
     },
@@ -184,53 +157,53 @@
       "tickers": [
         {
           "symbol": "$LITE",
-          "price": "~$80-90 (est.)",
-          "context": "Lumentum; EML lasers/CPO for AI"
+          "price": "~$947 (recent high)",
+          "context": "Lumentum; AI optical"
         },
         {
           "symbol": "$COHR",
-          "price": "~$70-80 (est.)",
-          "context": "Coherent; transceivers/lasers"
-        },
-        {
-          "symbol": "$AAOI",
-          "price": "~$140+ (est.)",
-          "context": "Applied Optoelectronics; massive YTD on AI orders"
-        },
-        {
-          "symbol": "$FN",
-          "price": "~$250+ (est.)",
-          "context": "Fabrinet; contract manufacturing for optics"
-        },
-        {
-          "symbol": "$LASR",
-          "price": "~$70+ (est.)",
-          "context": "nLight; defense/industrial lasers"
+          "price": "~$377",
+          "context": "Coherent"
         },
         {
           "symbol": "$IPGP",
-          "price": "~$80-90 (est.)",
-          "context": "IPG Photonics; industrial lasers"
+          "price": "~$119",
+          "context": "IPG Photonics"
+        },
+        {
+          "symbol": "$LASR",
+          "price": "N/A recent",
+          "context": "nLight"
+        },
+        {
+          "symbol": "$MRVL",
+          "price": "N/A recent",
+          "context": "Marvell; NVLink/optical"
         }
       ]
     },
     {
-      "theme": "bladder cancer immunotherapy",
+      "theme": "nuclear",
       "tickers": [
         {
-          "symbol": "$IBRX",
-          "price": "~$5-8 (est.)",
-          "context": "ImmunityBio; ANKTIVA lead; recent sBLA acceptance"
-        }
-      ]
-    },
-    {
-      "theme": "glp-1 obesity telehealth",
-      "tickers": [
+          "symbol": "$CCJ",
+          "price": "~$106-109",
+          "context": "Cameco"
+        },
         {
-          "symbol": "Private/Fractyl (not public)",
-          "price": "N/A",
-          "context": "RJVA-001 gene therapy trial; watch for public proxies in gene therapy"
+          "symbol": "$CEG",
+          "price": "N/A recent",
+          "context": "Constellation Energy"
+        },
+        {
+          "symbol": "$OKLO",
+          "price": "~$70",
+          "context": "Oklo"
+        },
+        {
+          "symbol": "$BWXT",
+          "price": "~$203",
+          "context": "BWX Technologies"
         }
       ]
     },
@@ -239,81 +212,91 @@
       "tickers": [
         {
           "symbol": "$VYGR",
-          "price": "$3.60",
-          "context": "Voyager TRACER BBB-crossing platform; recent scanner signal"
-        },
-        {
-          "symbol": "$NTLA",
-          "price": "~$15-20 (est.)",
-          "context": "Intellia; in vivo gene editing"
+          "price": "N/A recent",
+          "context": "Voyager Therapeutics (portfolio)"
         },
         {
           "symbol": "$CRSP",
-          "price": "~$50-60 (est.)",
+          "price": "N/A recent",
           "context": "CRISPR Therapeutics"
+        },
+        {
+          "symbol": "$SRPT",
+          "price": "N/A recent",
+          "context": "Sarepta"
+        },
+        {
+          "symbol": "$TSHA",
+          "price": "~$5.5",
+          "context": "Taysha Gene Therapies"
+        }
+      ]
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "tickers": [
+        {
+          "symbol": "$IBRX",
+          "price": "N/A recent",
+          "context": "ImmunityBio; Anktiva bladder focus"
+        },
+        {
+          "symbol": "$MRK",
+          "price": "~$120",
+          "context": "Merck; Keytruda"
+        },
+        {
+          "symbol": "$AZN",
+          "price": "N/A recent",
+          "context": "AstraZeneca"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "MU surge on analyst upgrades",
-    "AI semis momentum",
-    "copper breakout on data center demand",
-    "nuclear/AI power theme",
-    "quantum and nuclear setups",
-    "photonics/AI optics rally"
+    "copper breakout/AI demand",
+    "NVDA consolidation",
+    "AMD overclocking mentions",
+    "defense/tech overlap",
+    "photonics/microLED alternatives to copper"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "copper breakout / AI data centers",
+      "trending_topic": "copper breakout",
       "matching_theme": "copper",
       "our_positions": [],
-      "context": "FinTwit highlighting copper for wiring/power in AI infra; overlaps nuclear/power demand"
+      "context": "FinTwit highlighting AI data center + defense copper intensity; $FCX, $COPX buzz"
     },
     {
-      "trending_topic": "nuclear and quantum setups",
-      "matching_theme": "nuclear",
+      "trending_topic": "AI optical/photonics",
+      "matching_theme": "photonic interconnect",
       "our_positions": [],
-      "context": "Consolidation breakouts noted; AI power hunger driving interest"
-    },
-    {
-      "trending_topic": "AI semis / MU",
-      "matching_theme": "AI, semiconductors",
-      "our_positions": [
-        "$NVDA",
-        "$AMD"
-      ],
-      "context": "Broad tech rally; MU highlighted in chatter"
+      "context": "Discussions on microLED/optical interconnects reducing copper needs long-term"
     }
   ],
   "news_events": [
     {
-      "event": "GLP-1 gene therapy first human trial (Fractyl RJVA-001)",
-      "impact": "One-time pancreatic delivery for obesity/T2D; potential disruptor to chronic GLP-1s",
+      "event": "Copper supply shortfall + AI/defense demand",
+      "impact": "Prices near $6.40/lb highs; structural bull case",
       "relevance": "high"
     },
     {
-      "event": "ImmunityBio sBLA acceptance for ANKTIVA papillary bladder cancer",
-      "impact": "PDUFA Jan 2027; expands label potential",
-      "relevance": "high"
-    },
-    {
-      "event": "Copper futures strength amid AI demand + Iran geopolitics",
-      "impact": "Prices ~$6.40/lb; supply risks from acid shortages",
-      "relevance": "high"
-    },
-    {
-      "event": "Tech/AI infrastructure rally (Nasdaq +1.2%)",
-      "impact": "Photonics, semis, nuclear power plays benefiting",
-      "relevance": "high"
-    },
-    {
-      "event": "Geopolitics (Iran talks, tariffs overhang)",
-      "impact": "Mixed; risk-on in tech/copper despite headlines",
+      "event": "Iran-US peace talks progress",
+      "impact": "Risk-on sentiment; copper/tech bid",
       "relevance": "medium"
+    },
+    {
+      "event": "Fed policy steady (recent minutes)",
+      "impact": "Rates higher for longer context; inflation watch",
+      "relevance": "medium"
+    },
+    {
+      "event": "VYGR scanner signals",
+      "impact": "Gene therapy theme activation",
+      "relevance": "high (portfolio overlap)"
     }
   ],
-  "gathered_at": "2026-05-26T22:07:12.964615+00:00",
+  "gathered_at": "2026-05-27T00:03:30.525475+00:00",
   "is_market_hours": false,
-  "is_extended_hours": true
+  "is_extended_hours": false
 }

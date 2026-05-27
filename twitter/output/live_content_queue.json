@@ -3948,45 +3948,6 @@
     "tweet_id": "2056824161369051416"
   },
   {
-    "id": "live_20260519_190104_v1",
-    "text": "What happens when drone tech names get caught in a broader selloff? $EVTL down to $2.35 from $4.50 entry. Uncomfortable? Sure. But defense spending bills don't stop because of one red week. That's the difference between noise and invalidation.",
-    "category": "RECEIPT",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260519_2301.png",
-    "scheduled_time": "2026-05-19T19:01:04.321850-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "-0.67%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-19T23:01:04.321848+00:00",
-    "cost_usd": 0.017425,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260519_190104_v2",
-    "text": "$BAND breaking resistance.\nEntry $16.55. Now $53.88.\nAI voice platform consolidating gains.\nDYOR \ud83c\udfaf",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$BAND",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260520_0006.png",
-    "scheduled_time": "2026-05-19T19:01:04.321850-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "-0.67%",
-      "market_mood": "bearish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-19T23:01:04.321848+00:00",
-    "cost_usd": 0.017425,
-    "posted_at": "2026-05-20T00:26:26.387974",
-    "tweet_id": "2056894279797154272"
-  },
-  {
     "id": "live_20260519_200614_v1",
     "text": "$EVTL down to $2.35.\nEntry was $4.50.\nDefense rotation testing patience.\nWatching invalidation closely.",
     "category": "SIGNAL_ALERT",
@@ -5609,15 +5570,54 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260526_2207.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260527_0003.png",
     "scheduled_time": "2026-05-26T18:07:32.352324-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.6%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-26T22:07:32.352323+00:00",
-    "cost_usd": 0.017447
+    "cost_usd": 0.017447,
+    "posted_at": "2026-05-27T00:24:06.680726",
+    "tweet_id": "2059430408836862286"
+  },
+  {
+    "id": "live_20260526_200352_v1",
+    "text": "$SOFI from $7.90 to $32.00 high. When both technicals and fundamentals align \u2014 CEO buying at current levels while we're up 305% from entry \u2014 that's conviction validating. Win more than you lose.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260527_0003.png",
+    "scheduled_time": "2026-05-26T20:03:52.537415-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.6%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-27T00:03:52.537412+00:00",
+    "cost_usd": 0.017367,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260526_200352_v2",
+    "text": "$BAND absolute monster.\n$16.55 entry \u2192 $61.18 now.\n+269.7% in the AI voice infra play.\nFull breakdown in tomorrow's newsletter.",
+    "category": "SUBSTACK_TEASER",
+    "primary_ticker": "$BAND",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260527_0004.png",
+    "scheduled_time": "2026-05-26T20:03:52.537415-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.6%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-27T00:03:52.537412+00:00",
+    "cost_usd": 0.017367
   }
 ]

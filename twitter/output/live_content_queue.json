@@ -4071,26 +4071,6 @@
     "tweet_id": "2057549292194439238"
   },
   {
-    "id": "live_20260521_152900_v1",
-    "text": "$SOFI holding $15.68.\nEntry $7.90. Up 98.5%.\nRisk-on tape = fintech strength.\nRelative winners win again.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260522_0002.png",
-    "scheduled_time": "2026-05-21T15:29:00.976403-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.08%",
-      "market_mood": "bullish",
-      "context_stale": true
-    },
-    "generated_at": "2026-05-21T19:29:00.976401+00:00",
-    "cost_usd": 0.017453,
-    "posted_at": "2026-05-22T00:22:47.898439",
-    "tweet_id": "2057618139068690844"
-  },
-  {
     "id": "live_20260521_180511_v1",
     "text": "$EVTL from $4.50 entry hit $7.00 high on Hyundai WIA landing gear news. +55.6% on the defense aviation thesis. Setup validates when fundamentals align.",
     "category": "RECEIPT",
@@ -5629,9 +5609,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-28T16:13:57.180760+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260528_005",
@@ -5640,9 +5621,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-28T16:13:57.180760+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-05-28T20:14:32.244144",
+    "tweet_id": "2060092377650417889"
   },
   {
     "id": "live_20260528_150858_v1",
@@ -5651,7 +5634,7 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260528_1909.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260528_1954.png",
     "scheduled_time": "2026-05-28T15:08:58.943307-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5661,5 +5644,41 @@
     },
     "generated_at": "2026-05-28T19:08:58.943305+00:00",
     "cost_usd": 0.017191
+  },
+  {
+    "id": "live_20260528_155422_v1",
+    "text": "$EVTL at $2.86. Entry $4.50, down 36.4%. Setup invalidated on defense budget delays. Win more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260528_1954.png",
+    "scheduled_time": "2026-05-28T15:54:22.854729-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.6%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-28T19:54:22.854727+00:00",
+    "cost_usd": 0.017282
+  },
+  {
+    "id": "live_20260528_155422_v2",
+    "text": "$SOFI green while tape chops.\n$16.17 from $7.90 entry.\nFintech holding strength.\nRelative winners > everything.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260528_1954.png",
+    "scheduled_time": "2026-05-28T15:54:22.854729-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.6%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-28T19:54:22.854727+00:00",
+    "cost_usd": 0.017282
   }
 ]

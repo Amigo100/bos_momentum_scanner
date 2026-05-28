@@ -4009,45 +4009,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260520_200741_v1",
-    "text": "$HIVE sitting at $3.87.\nEntry $2.10. Bitcoin mining.\nFull breakdown in newsletter.\nLink in bio.",
-    "category": "SUBSTACK_TEASER",
-    "primary_ticker": "$HIVE",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260521_0007.png",
-    "scheduled_time": "2026-05-20T20:07:41.073251-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+1.08%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-21T00:07:41.073249+00:00",
-    "cost_usd": 0.01707,
-    "posted_at": "2026-05-21T00:27:51.451593",
-    "tweet_id": "2057257024316924146"
-  },
-  {
-    "id": "live_20260521_102108_v1",
-    "text": "$VYGR at $3.53. BBB gene therapy platform with FDA orphan drug status. Watching $4.00 resistance.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260521_1421.png",
-    "scheduled_time": "2026-05-21T10:21:08.278405-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+1.1%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-21T14:21:08.278403+00:00",
-    "cost_usd": 0.017422,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "live_20260521_123545_v1",
     "text": "$SOFI from $7.90 to $32.00. +305.1% on the fintech rotation. Win more than you lose.",
     "category": "RECEIPT",
@@ -5632,15 +5593,35 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260527_2219.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260528_1450.png",
     "scheduled_time": "2026-05-27T18:19:31.149749-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.02%",
       "market_mood": "quiet",
       "context_stale": false
     },
     "generated_at": "2026-05-27T22:19:31.149747+00:00",
-    "cost_usd": 0.017175
+    "cost_usd": 0.017175,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260528_105019_v1",
+    "text": "Why exit a position that's up 109%? Because the setup says so. $HIVE from $2.10 to $4.39 was textbook \u2014 crypto mining momentum met AI compute demand. When technicals break, we respect it. Win more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$HIVE",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260528_1450.png",
+    "scheduled_time": "2026-05-28T10:50:19.499907-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "+0.02%",
+      "market_mood": "quiet",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-28T14:50:19.499905+00:00",
+    "cost_usd": 0.017644,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   }
 ]

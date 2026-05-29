@@ -5615,15 +5615,92 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260529_1417.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260529_1613.png",
     "scheduled_time": "2026-05-29T10:17:28.901979-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.12%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-29T14:17:28.901977+00:00",
-    "cost_usd": 0.01727
+    "cost_usd": 0.01727,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260529_121334_v1",
+    "text": "$SOFI at $18.35. Up 8.1% today while SPY grinds +0.58%. Entry $7.90, now at $18.35. Fintech showing relative strength.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260529_1613.png",
+    "scheduled_time": "2026-05-29T12:13:34.197746-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.58%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-29T16:13:34.197744+00:00",
+    "cost_usd": 0.017318
+  },
+  {
+    "id": "watchdog_20260529_001",
+    "text": "\ud83d\udfe2 SIGNAL: $VYGR cleared all gates on our BBB Gene Therapy Platform scanner. Institutional accumulation building at structural pivot after FDA breakthrough therapy designation momentum. Capital preservation stop below $4.20.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-29T15:55:06.692528+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260529_002",
+    "text": "Small-cap momentum setup is generational. 25-year relative valuation discount + earnings broadening + institutional rotation = 2016-level opportunity. But geopolitical volatility demands disciplined position sizing.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "posted",
+    "created_at": "2026-05-29T15:55:06.692528+00:00",
+    "source": "watchdog",
+    "posted_at": "2026-05-29T16:33:44.146566",
+    "tweet_id": "2060399198902657467"
+  },
+  {
+    "id": "watchdog_20260529_003",
+    "text": "BBB Gene Therapy Platform theme hitting PRIME status. Blood-brain barrier delivery unlocks $100B+ addressable market for neurological diseases. $VYGR pioneering with platform approach vs single-asset biotechs.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-05-29T15:55:06.692528+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260529_004",
+    "text": "Portfolio update: 8 positions across AI infrastructure, nuclear fuel, gene therapy, fintech. NAV $76,586 (+104.88% vs SPY +9.57%). Structural themes + momentum discipline = alpha generation.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-29T15:55:06.692528+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260529_005",
+    "text": "Weekend question: What's your biggest challenge with momentum trading - finding entries, managing exits, or position sizing? The fundamentals matter less than execution discipline in this game.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-05-29T15:55:06.692528+00:00",
+    "source": "watchdog"
   }
 ]

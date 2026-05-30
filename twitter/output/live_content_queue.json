@@ -4194,44 +4194,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260523_165503_v1",
-    "text": "$EVTL pulled back from $7.00 but Walmart and Hyundai partnerships don't expire with price action. When commercial contracts validate the thesis, volatility tests position sizing \u2014 not conviction.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260524_1605.png",
-    "scheduled_time": "2026-05-23T16:55:03.374975-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-23T20:55:03.374974+00:00",
-    "cost_usd": 0.017346,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260523_165503_v2",
-    "text": "$AMD from $120 \u2192 $467.51.\nUp 289.6% on MI300 ramp.\nTaiwan AI plant expansion.\nChip demand relentless.",
-    "category": "RECEIPT",
-    "primary_ticker": "$AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260524_1605.png",
-    "scheduled_time": "2026-05-23T16:55:03.374975-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-23T20:55:03.374974+00:00",
-    "cost_usd": 0.017346,
-    "skip_reason": "Stale: 20h old"
-  },
-  {
     "id": "live_20260524_120543_v1",
     "text": "$SOFI at $15.69. Entry $7.90. Up 98.5% while SPY grinds higher. Fintech thesis validating.",
     "category": "RECEIPT",
@@ -5523,16 +5485,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260530_1608.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260530_2059.png",
     "scheduled_time": "2026-05-30T12:08:34.958263-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.22%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-05-30T16:08:34.958261+00:00",
-    "cost_usd": 0.017171
+    "cost_usd": 0.017171,
+    "posted_at": "2026-05-30T21:19:26.169084",
+    "tweet_id": "2060833485082804348"
   },
   {
     "id": "watchdog_20260530_001",
@@ -5552,9 +5516,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-30T13:52:33.807636+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260530_003",
@@ -5563,9 +5528,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-30T13:52:33.807636+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260530_004",
@@ -5588,5 +5554,59 @@
     "status": "pending",
     "created_at": "2026-05-30T13:52:33.807636+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260530_165912_v1",
+    "text": "$VYGR at $3.87. BBB gene therapy platform with Lunai's $20M BBB delivery tech acquisition this week. Watching for momentum confirmation before adding. Chart attached.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260530_2059.png",
+    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.22%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-30T20:59:12.751263+00:00",
+    "cost_usd": 0.017277
+  },
+  {
+    "id": "live_20260530_165912_v2",
+    "text": "What do you do when a position drops 40%? If it's $EVTL at $2.70, you check if the thesis still holds. Drone tech consolidation isn't invalidation \u2014 it's patience testing. Entry was $4.50. We don't panic at support.",
+    "category": "RECEIPT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260530_2059.png",
+    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.22%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-30T20:59:12.751263+00:00",
+    "cost_usd": 0.017277
+  },
+  {
+    "id": "live_20260530_165912_v3",
+    "text": "$NVDA trimmed at $211.14.\nEntry $150. Exit $225 high.\n+50% banked.\nData center power concerns real.\nNFA",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260530_2059.png",
+    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.22%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-05-30T20:59:12.751263+00:00",
+    "cost_usd": 0.017277
   }
 ]

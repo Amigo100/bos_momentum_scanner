@@ -1,21 +1,6 @@
 [
   {
     "workflow": "live_tweet",
-    "run_id": 25320541783,
-    "status": "success",
-    "started_at": "2026-05-04T13:25:42Z",
-    "completed_at": "2026-05-04T13:25:42Z",
-    "duration_seconds": 0,
-    "error": null,
-    "trigger": "schedule",
-    "account_results": {
-      "account1": 1,
-      "account2": 1,
-      "account3": 0
-    }
-  },
-  {
-    "workflow": "live_tweet",
     "run_id": 25325171143,
     "status": "success",
     "started_at": "2026-05-04T14:59:08Z",
@@ -1478,5 +1463,20 @@
     "duration_seconds": 0,
     "error": null,
     "trigger": "schedule"
+  },
+  {
+    "workflow": "live_tweet",
+    "run_id": 26688521101,
+    "status": "success",
+    "started_at": "2026-05-30T16:28:48Z",
+    "completed_at": "2026-05-30T16:28:48Z",
+    "duration_seconds": 0,
+    "error": null,
+    "trigger": "schedule",
+    "account_results": {
+      "account1": 1,
+      "account2": 1,
+      "account3": 0
+    }
   }
 ]

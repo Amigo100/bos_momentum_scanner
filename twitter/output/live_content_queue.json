@@ -4304,44 +4304,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260525_150503_v1",
-    "text": "$SOFI at $15.62. Entry $7.90, high $32.00 (+305.1%). Fintech rotation pausing but thesis intact. Win more than you lose.",
-    "category": "RECEIPT",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_2258.png",
-    "scheduled_time": "2026-05-25T15:05:03.904006-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-25T19:05:03.904004+00:00",
-    "cost_usd": 0.017086,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
-    "id": "live_20260525_150503_v2",
-    "text": "$AMD holding support.\nEntry $120. Now $467.51.\n+289.6% while semis consolidate.\nNFA",
-    "category": "RECEIPT",
-    "primary_ticker": "$AMD",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260525_2258.png",
-    "scheduled_time": "2026-05-25T15:05:03.904006-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-25T19:05:03.904004+00:00",
-    "cost_usd": 0.017086,
-    "skip_reason": "Stale: 4h old"
-  },
-  {
     "id": "live_20260525_185846_v1",
     "text": "$BAND from $16.55 to $61.39.\n+270.9% run complete.\nTrimming here.\nLocking in the win.",
     "category": "RECEIPT",
@@ -5450,16 +5412,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260601_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260601_1916.png",
     "scheduled_time": "2026-06-01T12:59:36.407724-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.1%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-06-01T16:59:36.407722+00:00",
-    "cost_usd": 0.017281
+    "cost_usd": 0.017281,
+    "posted_at": "2026-06-01T19:36:16.939080",
+    "tweet_id": "2061532301469876230"
   },
   {
     "id": "watchdog_20260531_001",
@@ -5468,9 +5432,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-31T13:58:08.479919+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260531_002",
@@ -5513,9 +5478,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-31T13:58:08.479919+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260601_142237_v1",
@@ -5524,7 +5490,7 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260601_1822.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260601_1916.png",
     "scheduled_time": "2026-06-01T14:22:37.484477-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5589,5 +5555,23 @@
     "status": "pending",
     "created_at": "2026-06-01T17:53:46.247138+00:00",
     "source": "watchdog"
+  },
+  {
+    "id": "live_20260601_151603_v1",
+    "text": "$SOFI entry $7.90, high $32.00. +305.1% on the fintech play. Volume confirming institutional accumulation while peers consolidate.",
+    "category": "RECEIPT",
+    "primary_ticker": "SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260601_1916.png",
+    "scheduled_time": "2026-06-01T15:16:03.375990-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.2%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-01T19:16:03.375988+00:00",
+    "cost_usd": 0.017317
   }
 ]

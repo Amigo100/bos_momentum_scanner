@@ -4304,26 +4304,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260525_140757_v1",
-    "text": "$SOFI from $7.90 to $32.00 high.\n\n+305% on the fintech thesis. Breaking down what made this work in this week's newsletter.\n\nLink in bio \ud83d\udcec",
-    "category": "SUBSTACK_TEASER",
-    "primary_ticker": "SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260525_2258.png",
-    "scheduled_time": "2026-05-25T14:07:57.432790-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-25T18:07:57.432789+00:00",
-    "cost_usd": 0.016958,
-    "posted_at": "2026-05-25T23:18:59.804110",
-    "tweet_id": "2059051634379083824"
-  },
-  {
     "id": "live_20260525_150503_v1",
     "text": "$SOFI at $15.62. Entry $7.90, high $32.00 (+305.1%). Fintech rotation pausing but thesis intact. Win more than you lose.",
     "category": "RECEIPT",
@@ -5381,9 +5361,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-05-30T13:52:33.807636+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-06-01T18:42:49.352527",
+    "tweet_id": "2061518848252129531"
   },
   {
     "id": "live_20260530_165912_v1",
@@ -5449,16 +5431,17 @@
     "primary_ticker": "VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260601_1659.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260601_1822.png",
     "scheduled_time": "2026-06-01T12:59:36.407724-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.1%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-06-01T16:59:36.407722+00:00",
-    "cost_usd": 0.017281
+    "cost_usd": 0.017281,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260601_125936_v2",
@@ -5467,7 +5450,7 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260601_1659.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260601_1822.png",
     "scheduled_time": "2026-06-01T12:59:36.407724-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5507,9 +5490,10 @@
     "account": "variant_2",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-05-31T13:58:08.479919+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "watchdog_20260531_004",
@@ -5531,6 +5515,79 @@
     "thread": false,
     "status": "pending",
     "created_at": "2026-05-31T13:58:08.479919+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "live_20260601_142237_v1",
+    "text": "$AMD trimmed at $507.51.\nEntry $120. Peak $516.\nSemis rotating. Took profit.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260601_1822.png",
+    "scheduled_time": "2026-06-01T14:22:37.484477-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.4%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-01T18:22:37.484475+00:00",
+    "cost_usd": 0.017034
+  },
+  {
+    "id": "watchdog_20260601_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation. Scanner confirms structural pivot with volume expansion across the entire theme complex.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-01T17:53:46.247138+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260601_002",
+    "text": "Small-cap momentum enjoys its most favorable 6-18 month setup since 2016: earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The structural stars are aligning.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-01T17:53:46.247138+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260601_003",
+    "text": "BBB Gene Therapy Platform elevated to PRIME status. When breakthrough drug delivery mechanisms gain regulatory momentum, the entire theme complex typically experiences coordinated institutional flows.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-01T17:53:46.247138+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260601_004",
+    "text": "Portfolio alpha: 114.35% vs SPY's 11.16%. Eight positions spanning AI infrastructure ($NVDA $AMD), nuclear fuel ($ASPI), crypto mining ($HIVE), and breakthrough biotech ($VYGR). Momentum rewarding structural themes.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": "$NVDA",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-01T17:53:46.247138+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260601_005",
+    "text": "The scanner tracks five investable themes today. Which sectors are you watching for institutional rotation signals? GLP-1 telehealth and defence manufacturing showing early accumulation patterns.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-01T17:53:46.247138+00:00",
     "source": "watchdog"
   }
 ]

@@ -4304,45 +4304,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260526_101257_v1",
-    "text": "$VYGR at $3.77. Blood-brain barrier gene therapy platform with IV CNS delivery. ASGCT catalyst mid-2025. Setup invalidated below $3.50.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260526_1413.png",
-    "scheduled_time": "2026-05-26T10:12:57.856872-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.65%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-26T14:12:57.856870+00:00",
-    "cost_usd": 0.017517,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260526_121602_v1",
-    "text": "$EVTL setup invalidated.\nEntry $4.50, now $2.65.\nWalmart partnership intact but price broke support.\nWin more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260526_1616.png",
-    "scheduled_time": "2026-05-26T12:16:02.694871-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.37%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-26T16:16:02.694869+00:00",
-    "cost_usd": 0.017501,
-    "posted_at": "2026-05-26T16:36:09.685064",
-    "tweet_id": "2059312645388558844"
-  },
-  {
     "id": "watchdog_20260526_001",
     "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45. BBB Gene Therapy Platform theme showing institutional accumulation across multiple names. Our scanner confirms structural pivot in progress.",
     "category": "SIGNAL_ALERT",
@@ -5515,16 +5476,18 @@
     "primary_ticker": "BAND",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260602_0013.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_BAND_20260602_1659.png",
     "scheduled_time": "2026-06-01T18:20:24.512324-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.26%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-06-01T22:20:24.512323+00:00",
-    "cost_usd": 0.017344
+    "cost_usd": 0.017344,
+    "posted_at": "2026-06-02T17:19:55.389285",
+    "tweet_id": "2061860373276631479"
   },
   {
     "id": "live_20260601_184208_v1",
@@ -5533,16 +5496,17 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260602_0014.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260602_1659.png",
     "scheduled_time": "2026-06-01T18:42:08.767676-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "+0.26%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-06-01T22:42:08.767675+00:00",
-    "cost_usd": 0.017355
+    "cost_usd": 0.017355,
+    "skip_reason": "Stale: 19h old"
   },
   {
     "id": "live_20260601_201345_v1",
@@ -5551,15 +5515,108 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260602_0013.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260602_1659.png",
     "scheduled_time": "2026-06-01T20:13:45.919880-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.26%",
       "market_mood": "bullish",
       "context_stale": false
     },
     "generated_at": "2026-06-02T00:13:45.919879+00:00",
-    "cost_usd": 0.017157
+    "cost_usd": 0.017157,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260602_125935_v1",
+    "text": "$VYGR at $3.65. Entry $4.45, down 18% but BBB platform thesis unchanged. Gene therapy sector catalysts building. Watching for reversal confirmation.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260602_1659.png",
+    "scheduled_time": "2026-06-02T12:59:35.077175-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.2%",
+      "market_mood": "quiet",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-02T16:59:35.077174+00:00",
+    "cost_usd": 0.017055
+  },
+  {
+    "id": "live_20260602_125935_v2",
+    "text": "$EVTL closed below $2.65 support.\n\nPosition exited. Drone thesis needs reconfirmation before re-entry. NFA",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260602_1659.png",
+    "scheduled_time": "2026-06-02T12:59:35.077175-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.2%",
+      "market_mood": "quiet",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-02T16:59:35.077174+00:00",
+    "cost_usd": 0.017055
+  },
+  {
+    "id": "watchdog_20260602_001",
+    "text": "\ud83d\udfe2 $VYGR scanner hit - BBB Gene Therapy Platform theme showing institutional accumulation. Stock cleared all gates at $4.45. This platform addresses one of biotech's biggest challenges: getting therapies across the blood-brain barrier.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-02T16:44:38.994712+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260602_002",
+    "text": "Small-cap momentum setup is the most favorable since 2016. Earnings broadening, 25-year relative valuation discount, institutional rotation accelerating. The structural pivot is here - capital preservation still key but offense opening up.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-02T16:44:38.994712+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260602_003",
+    "text": "BBB Gene Therapy Platform theme just hit PRIME status. The blood-brain barrier has been biotech's final frontier. Companies cracking this code could unlock massive CNS markets previously untouchable. $VYGR leading the charge.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-06-02T16:44:38.994712+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260602_004",
+    "text": "Portfolio update: 8 positions across AI chips, fintech, nuclear fuel, and gene therapy. NAV $84,296, up 125.51% vs SPY's 11.16%. Alpha of 114.35%. Momentum trading when themes align with institutional flows.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-02T16:44:38.994712+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260602_005",
+    "text": "What's the biggest catalyst you're watching in 2025? GLP-1 expansion into new indications? Small modular reactor approvals? AI infrastructure build-out? The theme rotation is accelerating across multiple sectors.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-02T16:44:38.994712+00:00",
+    "source": "watchdog"
   }
 ]

@@ -1,79 +1,74 @@
 {
-  "timestamp": "2026-06-02T18:30:00Z",
+  "timestamp": "2026-06-02T20:00:00Z",
   "market_snapshot": {
-    "spy_move": "+0.11%",
-    "qqq_move": "+0.04%",
-    "iwm_move": "mixed (small caps noted strong recently)",
-    "vix": "16.1",
-    "market_mood": "quiet",
-    "headline": "US indices flat to slightly up with low VIX; NVDA +6% post-close momentum, copper futures +2% on supply/tariff news"
+    "spy_move": "+0.16%",
+    "qqq_move": "+0.01%",
+    "iwm_move": "+0.47%",
+    "vix": "16.05",
+    "market_mood": "mixed",
+    "headline": "Broad indices edge higher with semis mixed; VIX subdued near 16 amid tariff/geopolitics watch"
   },
   "portfolio_movers": [
     {
-      "ticker": "$NVDA",
-      "move": "+6.26% (prior close)",
-      "price": "$224.36",
-      "context": "Strong momentum; AI/semiconductor leadership"
+      "ticker": "$SOFI",
+      "move": "-5.22%",
+      "price": "$17.61",
+      "context": "Sharp intraday pullback from recent highs near $19; fintech sector rotation"
     },
     {
-      "ticker": "$SOFI",
-      "move": "-5.14%",
-      "price": "$17.63",
-      "context": "Intraday weakness noted on X"
+      "ticker": "$NVDA",
+      "move": "-1.02%",
+      "price": "$222.07",
+      "context": "Pullback after recent strength; still above $220 support"
     },
     {
       "ticker": "$AMD",
-      "move": "+1.20% (recent)",
-      "price": "$516.25",
-      "context": "Semiconductor flow mixed but supported"
+      "move": "+0.90%",
+      "price": "$514.73",
+      "context": "Modest gain; Computex mentions but avoid repeat per instructions"
     },
     {
       "ticker": "$VYGR",
-      "move": "N/A (scanner PASS/CONSIDER)",
+      "move": "N/A",
       "price": "N/A",
-      "context": "Recent scanner signal; gene therapy relevance"
+      "context": "Recent PASS/CONSIDER scanner signal; no fresh price data"
     }
   ],
   "theme_activity": [
     {
-      "theme": "AI/semiconductors",
-      "status": "active",
-      "detail": "NVDA/AMD strong; photonic interconnect buzz via data center demand"
-    },
-    {
       "theme": "copper",
+      "status": "active",
+      "detail": "Futures at ~$6.63/lb up ~1.7% on supply tightness (Chile output weak) and US tariff adjustments widening premiums"
+    },
+    {
+      "theme": "AI",
+      "status": "active",
+      "detail": "Semis mixed with NVDA/AMD in focus; broader chip flow rotating"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "active",
+      "detail": "Sector breadth mixed; MU and others showing strength in recent sessions"
+    },
+    {
+      "theme": "glp-1 obesity telehealth",
       "status": "breaking",
-      "detail": "Futures +1.9-2.9% to ~$6.68/lb on China demand, supply constraints (Chile output low), US tariff adjustments"
-    },
-    {
-      "theme": "GLP-1 obesity/gene therapy",
-      "status": "active",
-      "detail": "Ongoing trials (Fractyl RJVA-001 first human dosing H2 2026); gene therapy platforms advancing"
-    },
-    {
-      "theme": "bladder cancer immunotherapy",
-      "status": "active",
-      "detail": "ImmunityBio (IBRX) FDA updates on ANKTIVA for NMIBC"
-    },
-    {
-      "theme": "defense/additive manufacturing",
-      "status": "active",
-      "detail": "NUBURU/Maddox JV for mobile additive platforms; laser/photonics defense overlap"
-    },
-    {
-      "theme": "photonic interconnect",
-      "status": "active",
-      "detail": "AI data center demand driving optical/photonics stocks (e.g., POET, COHR, LASR)"
+      "detail": "GLP-1 gene therapy (Fractyl RJVA-001) enters first human trial; telehealth platforms scaling"
     },
     {
       "theme": "nuclear",
       "status": "quiet",
-      "detail": "Limited specific moves; broader energy/geopolitics context"
+      "detail": "No major moves; sector supported by long-term energy demand narrative"
     },
     {
-      "theme": "infrastructure/defense",
-      "status": "active",
-      "detail": "Tariff/geopolitics support; additive mfg in defense"
+      "theme": "defense",
+      "status": "quiet",
+      "detail": "Additive manufacturing seeing aerospace/defense contract momentum"
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "status": "quiet",
+      "detail": "Ongoing clinical updates; ImmunityBio sBLA discussions noted earlier"
     }
   ],
   "theme_tickers": [
@@ -82,68 +77,103 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "N/A (recent ~$40s context)",
-          "context": "Major US copper producer"
+          "price": "$60.41",
+          "context": "Largest US copper miner"
         },
         {
           "symbol": "$SCCO",
-          "price": "N/A",
+          "price": "$184.30",
           "context": "Southern Copper"
         },
         {
-          "symbol": "$TECK",
+          "symbol": "$CCO",
           "price": "N/A",
-          "context": "Diversified miner with copper exposure"
+          "context": "Contextual peer"
         }
       ]
     },
     {
-      "theme": "AI/semiconductors/photonic",
+      "theme": "defense additive manufacturing",
       "tickers": [
         {
-          "symbol": "$NVDA",
-          "price": "$224.36",
-          "context": "AI leader"
+          "symbol": "$DDD",
+          "price": "$3.49",
+          "context": "3D Systems; aerospace/defense growth"
         },
         {
-          "symbol": "$AMD",
-          "price": "$516.25",
-          "context": "Semiconductor peer"
+          "symbol": "$PRLB",
+          "price": "$73.94",
+          "context": "Proto Labs; precision manufacturing"
         },
         {
-          "symbol": "$AVGO",
+          "symbol": "$SSYS",
+          "price": "$9.68",
+          "context": "Stratasys; recent MarkForged acquisition for A&D"
+        },
+        {
+          "symbol": "$VLD",
           "price": "N/A",
-          "context": "Broadcom photonics/networking"
+          "context": "Velo3D; metal 3D printing for defense"
         },
+        {
+          "symbol": "$XMTR",
+          "price": "N/A",
+          "context": "Xometry; on-demand manufacturing"
+        }
+      ]
+    },
+    {
+      "theme": "photonic interconnect",
+      "tickers": [
         {
           "symbol": "$COHR",
           "price": "N/A",
-          "context": "Coherent photonics components"
+          "context": "Coherent; silicon photonics leader, NVDA collab"
+        },
+        {
+          "symbol": "$LITE",
+          "price": "N/A",
+          "context": "Lumentum; high-power lasers, breakout potential"
+        },
+        {
+          "symbol": "$IPGP",
+          "price": "$115.16",
+          "context": "IPG Photonics; fiber lasers"
         },
         {
           "symbol": "$LASR",
-          "price": "N/A (~$70 recent context)",
-          "context": "nLIGHT lasers/defense photonics"
-        },
-        {
-          "symbol": "$POET",
           "price": "N/A",
-          "context": "POET optical interposer"
+          "context": "nLight; laser tech"
         }
       ]
     },
     {
-      "theme": "GLP-1/gene therapy",
+      "theme": "nuclear",
       "tickers": [
         {
-          "symbol": "$LLY",
+          "symbol": "$CCJ",
           "price": "N/A",
-          "context": "GLP-1 leader"
+          "context": "Cameco; uranium producer"
         },
         {
-          "symbol": "$GUTS",
+          "symbol": "$CEG",
           "price": "N/A",
-          "context": "Fractyl Health (GLP-1 gene therapy trials)"
+          "context": "Constellation Energy; plant operator"
+        },
+        {
+          "symbol": "$OKLO",
+          "price": "N/A",
+          "context": "Oklo; advanced nuclear"
+        },
+        {
+          "symbol": "$SMR",
+          "price": "N/A",
+          "context": "NuScale; small modular reactors"
+        },
+        {
+          "symbol": "$GEV",
+          "price": "N/A",
+          "context": "GE Vernova; nuclear tech"
         }
       ]
     },
@@ -153,22 +183,32 @@
         {
           "symbol": "$IBRX",
           "price": "N/A",
-          "context": "ImmunityBio ANKTIVA bladder cancer"
+          "context": "ImmunityBio; ANKTIVA sBLA updates"
+        },
+        {
+          "symbol": "$PFE",
+          "price": "N/A",
+          "context": "Pfizer; Padcev bladder cancer drug"
+        },
+        {
+          "symbol": "$AZN",
+          "price": "N/A",
+          "context": "AstraZeneca; oncology portfolio"
         }
       ]
     },
     {
-      "theme": "defense/additive mfg/photonic",
+      "theme": "glp-1 obesity telehealth",
       "tickers": [
         {
-          "symbol": "$LASR",
+          "symbol": "$GUTS",
           "price": "N/A",
-          "context": "Defense lasers"
+          "context": "Fractyl Health; GLP-1 gene therapy trial"
         },
         {
-          "symbol": "$BURU",
+          "symbol": "N/A",
           "price": "N/A",
-          "context": "NUBURU additive/defense JV"
+          "context": "Telehealth peers scaling compounded GLP-1"
         }
       ]
     }
@@ -176,71 +216,51 @@
   "fintwit_trending": [
     "$NVDA",
     "$AMD",
-    "$SOFI (negative)",
-    "semiconductors/AI flow",
+    "semiconductors",
     "GLP-1 gene therapy",
-    "copper",
-    "additive manufacturing/defense"
+    "copper tariffs"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "NVDA/AMD semiconductor momentum",
-      "matching_theme": "AI/semiconductors",
+      "trending_topic": "GLP-1 gene therapy",
+      "matching_theme": "glp-1 obesity telehealth",
+      "our_positions": [],
+      "context": "Fractyl first-in-human trial buzz; overlaps bbb gene therapy platform"
+    },
+    {
+      "trending_topic": "copper",
+      "matching_theme": "copper",
+      "our_positions": [],
+      "context": "Futures strength on supply/tariffs"
+    },
+    {
+      "trending_topic": "semiconductors",
+      "matching_theme": "AI",
       "our_positions": [
         "$NVDA",
         "$AMD"
       ],
-      "context": "Strong price action and X discussion"
-    },
-    {
-      "trending_topic": "GLP-1 gene therapy trials",
-      "matching_theme": "glp-1 obesity telehealth / bbb gene therapy platform",
-      "our_positions": [
-        "$VYGR"
-      ],
-      "context": "Ongoing human trials and biohacking narrative"
-    },
-    {
-      "trending_topic": "copper breakout/supply",
-      "matching_theme": "copper",
-      "our_positions": [],
-      "context": "Futures surge on tariffs/supply news"
-    },
-    {
-      "trending_topic": "defense additive mfg",
-      "matching_theme": "defence additive manufacturing / defense",
-      "our_positions": [],
-      "context": "JVs and laser platforms discussed"
+      "context": "Mixed moves; NVDA pullback noted"
     }
   ],
   "news_events": [
     {
-      "event": "Copper futures surge",
-      "impact": "Tariff adjustments, Chile supply issues, AI/data center demand",
+      "event": "US tariff adjustments on metals",
+      "impact": "Widens copper premiums, supports futures",
       "relevance": "high"
     },
     {
-      "event": "GLP-1 gene therapy progress",
-      "impact": "First human trials advancing (Fractyl etc.)",
+      "event": "GLP-1 gene therapy human trial authorization",
+      "impact": "Positive for gene therapy/telehealth themes",
       "relevance": "high"
     },
     {
-      "event": "ImmunityBio bladder cancer FDA update",
-      "impact": "sBLA progress for ANKTIVA",
+      "event": "Geopolitics/tariffs watch",
+      "impact": "Muted market reaction so far",
       "relevance": "medium"
-    },
-    {
-      "event": "Geopolitics/tariffs",
-      "impact": "Metals premiums, defense mfg interest",
-      "relevance": "medium"
-    },
-    {
-      "event": "NVDA momentum",
-      "impact": "AI/semiconductor leadership",
-      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-06-02T18:31:19.611803+00:00",
+  "gathered_at": "2026-06-02T19:56:13.463399+00:00",
   "is_market_hours": true,
   "is_extended_hours": false
 }

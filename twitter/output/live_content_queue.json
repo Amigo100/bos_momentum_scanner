@@ -4426,64 +4426,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260527_153703_v1",
-    "text": "$EVTL at $2.74. Entry was $4.50, down 39%. Walmart partnership intact but price action invalidates setup. Exit rules matter more than thesis attachment.",
-    "category": "TECHNICAL_ANALYSIS",
-    "primary_ticker": "$EVTL",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260527_2219.png",
-    "scheduled_time": "2026-05-27T15:37:03.713152-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.3%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-27T19:37:03.713150+00:00",
-    "cost_usd": 0.017071,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260527_153703_v2",
-    "text": "What happens when conviction meets volatility? $NVDA pulled back from $225 to $212 \u2014 uncomfortable for sure. But AI platform narrative hasn't changed. Sometimes the best move is letting winners breathe through consolidation.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$NVDA",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260527_1937.png",
-    "scheduled_time": "2026-05-27T15:37:03.713152-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.3%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-27T19:37:03.713150+00:00",
-    "cost_usd": 0.017071,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260527_153703_v3",
-    "text": "$SOFI strength today.\n$7.90 entry \u2192 $16.44 now.\nFintech momentum building.\nWatching close \ud83d\udc40",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260527_2219.png",
-    "scheduled_time": "2026-05-27T15:37:03.713152-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.3%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-27T19:37:03.713150+00:00",
-    "cost_usd": 0.017071,
-    "posted_at": "2026-05-27T22:39:41.404931",
-    "tweet_id": "2059766517844066759"
-  },
-  {
     "id": "live_20260527_181931_v1",
     "text": "$SOFI at $16.44. Up 104.7% from $7.90 entry. Fintech thesis holding while semis rotate.",
     "category": "MARKET_COMMENTARY",
@@ -5652,9 +5594,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-06-03T17:01:03.461679+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260603_002",
@@ -5663,9 +5606,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-06-03T17:01:03.461679+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-06-03T22:31:00.041397",
+    "tweet_id": "2062301046823612496"
   },
   {
     "id": "watchdog_20260603_003",
@@ -5709,7 +5654,7 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260603_1840.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260603_2210.png",
     "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5727,7 +5672,26 @@
     "primary_ticker": "$NVDA",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260603_1840.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260603_2210.png",
+    "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.5%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-03T18:40:23.895926+00:00",
+    "cost_usd": 0.017263,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260603_144023_v3",
+    "text": "$AMD from $120 to $516.10.\n\n+330.1% while semis bleed out.\n\nRelative strength > everything.",
+    "category": "RECEIPT",
+    "primary_ticker": "AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260603_2210.png",
     "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5739,21 +5703,21 @@
     "cost_usd": 0.017263
   },
   {
-    "id": "live_20260603_144023_v3",
-    "text": "$AMD from $120 to $516.10.\n\n+330.1% while semis bleed out.\n\nRelative strength > everything.",
-    "category": "RECEIPT",
-    "primary_ticker": "AMD",
+    "id": "live_20260603_181047_v1",
+    "text": "$SOFI down 6% today.\nEntry $7.90. Current $16.68.\nStill up 111%.\nVolatility \u2260 invalidation.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260603_1840.png",
-    "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260603_2210.png",
+    "scheduled_time": "2026-06-03T18:10:47.299336-04:00",
     "status": "pending",
     "context_snapshot": {
-      "spy_at_generation": "-0.5%",
-      "market_mood": "mixed",
+      "spy_at_generation": "-0.7%",
+      "market_mood": "volatile",
       "context_stale": false
     },
-    "generated_at": "2026-06-03T18:40:23.895926+00:00",
-    "cost_usd": 0.017263
+    "generated_at": "2026-06-03T22:10:47.299334+00:00",
+    "cost_usd": 0.017198
   }
 ]

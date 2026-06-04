@@ -1,74 +1,79 @@
 {
-  "timestamp": "2026-06-03T22:30:00Z",
+  "timestamp": "2026-06-04T00:00:00Z",
   "market_snapshot": {
-    "spy_move": "-0.7%",
-    "qqq_move": "-0.9%",
-    "iwm_move": "mixed (small caps referenced positively in broader context)",
-    "vix": "16.0",
-    "market_mood": "volatile",
-    "headline": "Broad market pullback with tech/semiconductor weakness amid rotation and macro uncertainty"
+    "spy_move": "-0.74%",
+    "qqq_move": "-0.89%",
+    "iwm_move": "-1.31%",
+    "vix": "16.06",
+    "market_mood": "bearish",
+    "headline": "Broad market selloff with tech and small caps leading declines amid tariff and geopolitical uncertainty"
   },
   "portfolio_movers": [
     {
       "ticker": "$SOFI",
-      "move": "-6.0%",
+      "move": "-5.98%",
       "price": "$16.68",
-      "context": "Sharp selloff post recent highs; avoid repeat tweet per instructions"
+      "context": "Sharp pullback from recent highs; FinTwit notes valuation vs Robinhood but selling pressure today"
     },
     {
       "ticker": "$NVDA",
-      "move": "-3.2%",
-      "price": "$215.70",
-      "context": "Down on rotation out of AI leaders; entry $150 still deep in profit"
+      "move": "-3.62%",
+      "price": "$214.75",
+      "context": "AVGO AI guidance miss and diversification fears spilling over to semis"
     },
     {
       "ticker": "$AMD",
-      "move": "mixed (sector rotation noted)",
-      "price": "not directly quoted but sector context positive for peers",
-      "context": "Entry $120; broader semis seeing rotation gains elsewhere"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "No specific move data; sector weakness in semis"
     },
     {
       "ticker": "$VYGR",
-      "move": "scanner PASS/CONSIDER signal",
-      "price": "not quoted",
-      "context": "Recent scanner highlight - actionable for review"
+      "move": "N/A",
+      "price": "N/A",
+      "context": "Recent scanner PASS/CONSIDER signal; no price update"
     }
   ],
   "theme_activity": [
     {
-      "theme": "photonic interconnect",
-      "status": "breaking",
-      "detail": "Nvidia commits $6.5B+ since March to photonics firms (Coherent, Lumentum, Marvell, Corning, Ayar Labs) to replace copper in AI data centers"
+      "theme": "AI",
+      "status": "active",
+      "detail": "NVDA and AVGO weakness on AI chip guidance concerns; broader semis under pressure"
+    },
+    {
+      "theme": "semiconductors",
+      "status": "active",
+      "detail": "Sector rotation or profit-taking after strong run; NVDA down 3.6%"
     },
     {
       "theme": "copper",
       "status": "active",
-      "detail": "Futures near all-time highs (~$6.46-$6.68/lb) on AI/data center demand despite intraday pullback; strong correlation to Nasdaq"
-    },
-    {
-      "theme": "nuclear",
-      "status": "active",
-      "detail": "AI data center power demand driving SMR deals; big tech (Microsoft, Google, Amazon, Meta) signing PPAs; DOE funding for deployments"
-    },
-    {
-      "theme": "AI/semiconductors",
-      "status": "active",
-      "detail": "Rotation out of NVDA leaders into broader semis; photonics shift as copper limits hit"
-    },
-    {
-      "theme": "infrastructure/defense",
-      "status": "quiet",
-      "detail": "Limited specific moves; additive manufacturing and defense themes quiet today"
+      "detail": "Futures near record highs ~$6.44/lb on supply concerns (Chile output) and AI/data center demand"
     },
     {
       "theme": "GLP-1 obesity telehealth",
-      "status": "quiet",
-      "detail": "Mention of beneficial cancer effects in recent X post"
+      "status": "active",
+      "detail": "Gene therapy angle heating up with Fractyl Health first-in-human trial news"
     },
     {
-      "theme": "bladder cancer immunotherapy / bbb gene therapy",
+      "theme": "bladder cancer immunotherapy",
+      "status": "active",
+      "detail": "ImmunityBio updates on ANKTIVA for NMIBC; enGene pivotal data expected"
+    },
+    {
+      "theme": "nuclear",
       "status": "quiet",
-      "detail": "No breaking news"
+      "detail": "No major moves; long-term AI data center power demand narrative intact"
+    },
+    {
+      "theme": "defense",
+      "status": "quiet",
+      "detail": "No specific catalysts noted"
+    },
+    {
+      "theme": "infrastructure",
+      "status": "quiet",
+      "detail": "No specific catalysts noted"
     }
   ],
   "theme_tickers": [
@@ -77,73 +82,13 @@
       "tickers": [
         {
           "symbol": "$FCX",
-          "price": "not quoted",
-          "context": "Major US copper producer"
+          "price": "$60.41",
+          "context": "Largest US copper miner"
         },
         {
           "symbol": "$SCCO",
-          "price": "not quoted",
+          "price": "$184.30",
           "context": "Southern Copper"
-        },
-        {
-          "symbol": "$COPX",
-          "price": "not quoted",
-          "context": "Global X Copper Miners ETF"
-        }
-      ]
-    },
-    {
-      "theme": "photonic interconnect",
-      "tickers": [
-        {
-          "symbol": "$COHR",
-          "price": "not quoted",
-          "context": "Coherent - Nvidia investment target"
-        },
-        {
-          "symbol": "$LITE",
-          "price": "not quoted",
-          "context": "Lumentum - Nvidia investment"
-        },
-        {
-          "symbol": "$MCHP",
-          "price": "not quoted",
-          "context": "Marvell - Nvidia investment"
-        },
-        {
-          "symbol": "$GLW",
-          "price": "not quoted",
-          "context": "Corning - Nvidia investment"
-        }
-      ]
-    },
-    {
-      "theme": "nuclear",
-      "tickers": [
-        {
-          "symbol": "$CEG",
-          "price": "not quoted",
-          "context": "Constellation - Three Mile Island restart for Microsoft"
-        },
-        {
-          "symbol": "$VST",
-          "price": "not quoted",
-          "context": "Vistra - nuclear/AI power plays"
-        },
-        {
-          "symbol": "$OKLO",
-          "price": "not quoted",
-          "context": "Oklo - SMR for data centers"
-        },
-        {
-          "symbol": "$NNE",
-          "price": "not quoted",
-          "context": "Nano Nuclear - microreactors, Supermicro MOU for AI DCs"
-        },
-        {
-          "symbol": "$SMR",
-          "price": "not quoted",
-          "context": "NuScale - SMR technology"
         }
       ]
     },
@@ -152,91 +97,178 @@
       "tickers": [
         {
           "symbol": "$AVGO",
-          "price": "not quoted",
-          "context": "Broadcom - AI semis"
+          "price": "N/A",
+          "context": "AI networking and custom chips; recent selloff on guidance"
         },
         {
           "symbol": "$TSM",
-          "price": "not quoted",
-          "context": "TSMC - foundry for AI chips"
-        },
-        {
-          "symbol": "$MU",
-          "price": "not quoted",
-          "context": "Micron - memory for AI"
+          "price": "N/A",
+          "context": "Foundry leader for AI chips"
         }
       ]
     },
     {
-      "theme": "defense/additive manufacturing",
+      "theme": "GLP-1 obesity telehealth/gene therapy",
       "tickers": [
         {
-          "symbol": "$KTOS",
-          "price": "not quoted",
-          "context": "Kratos - defense tech"
+          "symbol": "$LLY",
+          "price": "N/A",
+          "context": "GLP-1 leader"
         },
         {
-          "symbol": "$LMT",
-          "price": "not quoted",
-          "context": "Lockheed - defense"
+          "symbol": "$NVO",
+          "price": "N/A",
+          "context": "GLP-1 leader"
+        }
+      ]
+    },
+    {
+      "theme": "bladder cancer immunotherapy",
+      "tickers": [
+        {
+          "symbol": "$IBRX",
+          "price": "N/A",
+          "context": "ImmunityBio; ANKTIVA updates"
+        },
+        {
+          "symbol": "$ENGN",
+          "price": "N/A",
+          "context": "enGene; non-viral gene therapy for bladder cancer"
+        }
+      ]
+    },
+    {
+      "theme": "nuclear",
+      "tickers": [
+        {
+          "symbol": "$CCJ",
+          "price": "N/A",
+          "context": "Uranium miner"
+        },
+        {
+          "symbol": "$CEG",
+          "price": "N/A",
+          "context": "Constellation Energy; nuclear operator"
+        },
+        {
+          "symbol": "$SMR",
+          "price": "N/A",
+          "context": "NuScale Power"
+        },
+        {
+          "symbol": "$OKLO",
+          "price": "N/A",
+          "context": "Oklo"
+        }
+      ]
+    },
+    {
+      "theme": "defense additive manufacturing",
+      "tickers": [
+        {
+          "symbol": "$GE",
+          "price": "N/A",
+          "context": "GE Additive/Colibrium"
+        },
+        {
+          "symbol": "$DDD",
+          "price": "N/A",
+          "context": "3D Systems"
+        },
+        {
+          "symbol": "$SSYS",
+          "price": "N/A",
+          "context": "Stratasys"
+        }
+      ]
+    },
+    {
+      "theme": "photonic interconnect",
+      "tickers": [
+        {
+          "symbol": "$LITE",
+          "price": "N/A",
+          "context": "Lumentum; optical components"
+        },
+        {
+          "symbol": "$COHR",
+          "price": "N/A",
+          "context": "Coherent"
+        },
+        {
+          "symbol": "$IPGP",
+          "price": "N/A",
+          "context": "IPG Photonics"
         }
       ]
     }
   ],
   "fintwit_trending": [
-    "copper (AI metal demand)",
-    "NVDA rotation/semiconductors",
-    "nuclear/SMR for AI data centers",
-    "photonics/optical interconnects"
+    "$AVGO selloff",
+    "$NVDA AI guidance",
+    "$SOFI valuation vs HOOD",
+    "GLP-1 gene therapy",
+    "copper tariffs/supply"
   ],
   "fintwit_theme_overlaps": [
     {
-      "trending_topic": "copper breakout/AI demand",
+      "trending_topic": "$AVGO selloff / NVDA AI",
+      "matching_theme": "AI/semiconductors",
+      "our_positions": [
+        "$NVDA",
+        "$AMD"
+      ],
+      "context": "FinTwit discussing AVGO miss and spillover to NVDA/AMD"
+    },
+    {
+      "trending_topic": "$SOFI",
+      "matching_theme": "N/A (avoid repeating)",
+      "our_positions": [
+        "$SOFI"
+      ],
+      "context": "Bullish on monetization vs Robinhood but recent tweets noted"
+    },
+    {
+      "trending_topic": "GLP-1 gene therapy",
+      "matching_theme": "glp-1 obesity telehealth / bbb gene therapy platform",
+      "our_positions": [],
+      "context": "Fractyl Health trial news; overlaps with tracked GLP-1 and gene therapy themes"
+    },
+    {
+      "trending_topic": "copper",
       "matching_theme": "copper",
       "our_positions": [],
-      "context": "FinTwit highlighting copper as essential AI infrastructure metal with rising Nasdaq correlation"
-    },
-    {
-      "trending_topic": "nuclear for AI power",
-      "matching_theme": "nuclear",
-      "our_positions": [],
-      "context": "Discussions on SMRs, big tech PPAs, and data center energy needs"
-    },
-    {
-      "trending_topic": "photonics replacing copper",
-      "matching_theme": "photonic interconnect",
-      "our_positions": [],
-      "context": "Nvidia's $6.5B+ investments driving buzz on optical interconnects for scaling AI"
+      "context": "Futures near highs on supply/AI demand; no direct portfolio overlap"
     }
   ],
   "news_events": [
     {
-      "event": "Nvidia photonics investments",
-      "impact": "Accelerates shift from copper to optical interconnects in AI DCs; positive for photonics theme",
+      "event": "AVGO AI quarter and guidance",
+      "impact": "Stock plunged; fears on custom chips and NVDA competition",
       "relevance": "high"
     },
     {
-      "event": "Copper near ATH on AI demand",
-      "impact": "Supports copper theme despite pullback; infrastructure tailwind",
+      "event": "Fractyl Health GLP-1 gene therapy first human trial authorization",
+      "impact": "Positive for gene therapy approach to obesity/diabetes",
       "relevance": "high"
     },
     {
-      "event": "Nuclear/SMR momentum for AI power",
-      "impact": "Big tech deals and DOE funding boost nuclear theme",
-      "relevance": "high"
-    },
-    {
-      "event": "Market rotation out of NVDA leaders",
-      "impact": "Broader semis and themes like photonics/nuclear gaining attention",
+      "event": "ImmunityBio bladder cancer data and sBLA acceptance",
+      "impact": "Updates on ANKTIVA for NMIBC",
       "relevance": "medium"
     },
     {
-      "event": "Fed minutes/tariffs/geopolitics backdrop",
-      "impact": "Inflation/tariff concerns noted in recent minutes; macro uncertainty",
+      "event": "Copper futures near record highs",
+      "impact": "Supply tightness (Chile) + AI/data center demand",
       "relevance": "medium"
+    },
+    {
+      "event": "Tariffs/geopolitics overhang",
+      "impact": "Broad market pressure; metals and tech affected",
+      "relevance": "high"
     }
   ],
-  "gathered_at": "2026-06-03T22:10:27.059559+00:00",
+  "gathered_at": "2026-06-04T01:42:44.450640+00:00",
   "is_market_hours": false,
-  "is_extended_hours": true
+  "is_extended_hours": false
 }

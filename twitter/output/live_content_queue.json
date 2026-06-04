@@ -4426,25 +4426,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260527_181931_v1",
-    "text": "$SOFI at $16.44. Up 104.7% from $7.90 entry. Fintech thesis holding while semis rotate.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260528_1450.png",
-    "scheduled_time": "2026-05-27T18:19:31.149749-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-27T22:19:31.149747+00:00",
-    "cost_usd": 0.017175,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "live_20260528_105019_v1",
     "text": "Why exit a position that's up 109%? Because the setup says so. $HIVE from $2.10 to $4.39 was textbook \u2014 crypto mining momentum met AI compute demand. When technicals break, we respect it. Win more than you lose.",
     "category": "SELL_SIGNAL",
@@ -5643,9 +5624,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-06-03T17:01:03.461679+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-06-04T02:03:16.270502",
+    "tweet_id": "2062354466586964425"
   },
   {
     "id": "live_20260603_144023_v1",
@@ -5654,16 +5637,17 @@
     "primary_ticker": "SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260603_2210.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_0143.png",
     "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "mixed",
       "context_stale": false
     },
     "generated_at": "2026-06-03T18:40:23.895926+00:00",
-    "cost_usd": 0.017263
+    "cost_usd": 0.017263,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260603_144023_v2",
@@ -5691,16 +5675,17 @@
     "primary_ticker": "AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260603_2210.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260604_0143.png",
     "scheduled_time": "2026-06-03T14:40:23.895928-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.5%",
       "market_mood": "mixed",
       "context_stale": false
     },
     "generated_at": "2026-06-03T18:40:23.895926+00:00",
-    "cost_usd": 0.017263
+    "cost_usd": 0.017263,
+    "skip_reason": "Stale: 7h old"
   },
   {
     "id": "live_20260603_181047_v1",
@@ -5709,7 +5694,7 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260603_2210.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_0143.png",
     "scheduled_time": "2026-06-03T18:10:47.299336-04:00",
     "status": "pending",
     "context_snapshot": {
@@ -5719,5 +5704,60 @@
     },
     "generated_at": "2026-06-03T22:10:47.299334+00:00",
     "cost_usd": 0.017198
+  },
+  {
+    "id": "live_20260603_214300_v1",
+    "text": "$SOFI at $16.68. Still up 111% from $7.90 entry. Volatility expected when something runs this hard. Thesis intact.",
+    "category": "RECEIPT",
+    "primary_ticker": "$SOFI",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_0143.png",
+    "scheduled_time": "2026-06-03T21:43:00.347350-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T01:43:00.347349+00:00",
+    "cost_usd": 0.017301
+  },
+  {
+    "id": "live_20260603_214300_v2",
+    "text": "$NVDA from $150 to $225.32. Up 50.2% while everyone debates the pullback. Win more than you lose \u2014 that's the game. Short-term noise doesn't erase long-term positioning.",
+    "category": "RECEIPT",
+    "primary_ticker": "NVDA",
+    "account": "variant_2",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260604_0143.png",
+    "scheduled_time": "2026-06-03T21:43:00.347350-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T01:43:00.347349+00:00",
+    "cost_usd": 0.017301,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260603_214300_v3",
+    "text": "$HIVE breaking $2.53 support.\nEntry $2.10. Ran to $6.00.\nSetup invalidated at close below $2.50.\nWin more than you lose.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "$HIVE",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260604_0143.png",
+    "scheduled_time": "2026-06-03T21:43:00.347350-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.74%",
+      "market_mood": "bearish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T01:43:00.347349+00:00",
+    "cost_usd": 0.017301
   }
 ]

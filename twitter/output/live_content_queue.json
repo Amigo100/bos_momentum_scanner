@@ -4488,25 +4488,6 @@
     "tweet_id": "2060092377650417889"
   },
   {
-    "id": "live_20260528_150858_v1",
-    "text": "$SOFI at $16.17. +1.19% while tape drifts. Entry $7.90, now up 104.7%. Fintech momentum holding through consolidation.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "$SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260529_1417.png",
-    "scheduled_time": "2026-05-28T15:08:58.943307-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-28T19:08:58.943305+00:00",
-    "cost_usd": 0.017191,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "live_20260528_155422_v1",
     "text": "$EVTL at $2.86. Entry $4.50, down 36.4%. Setup invalidated on defense budget delays. Win more than you lose.",
     "category": "SELL_SIGNAL",
@@ -5770,9 +5751,10 @@
     "account": "variant_1",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-06-04T15:29:29.904571+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260604_005",
@@ -5793,16 +5775,17 @@
     "primary_ticker": "$EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260604_1834.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260604_1937.png",
     "scheduled_time": "2026-06-04T14:34:44.522947-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "+0.3%",
       "market_mood": "mixed",
       "context_stale": true
     },
     "generated_at": "2026-06-04T18:34:44.522945+00:00",
-    "cost_usd": 0.017293
+    "cost_usd": 0.017293,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
     "id": "live_20260604_143444_v2",
@@ -5811,15 +5794,35 @@
     "primary_ticker": "$AMD",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260604_1834.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260604_1937.png",
     "scheduled_time": "2026-06-04T14:34:44.522947-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "+0.3%",
       "market_mood": "mixed",
       "context_stale": true
     },
     "generated_at": "2026-06-04T18:34:44.522945+00:00",
-    "cost_usd": 0.017293
+    "cost_usd": 0.017293,
+    "posted_at": "2026-06-04T19:57:41.578586",
+    "tweet_id": "2062624853211910170"
+  },
+  {
+    "id": "live_20260604_153731_v1",
+    "text": "Setup invalidated below $2.44 on $EVTL. Stopped out for capital preservation. Can't win every trade \u2014 focus shifts to the 8 still working.",
+    "category": "SELL_SIGNAL",
+    "primary_ticker": "EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260604_1937.png",
+    "scheduled_time": "2026-06-04T15:37:31.623230-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "+0.58%",
+      "market_mood": "bullish",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T19:37:31.623228+00:00",
+    "cost_usd": 0.017496
   }
 ]

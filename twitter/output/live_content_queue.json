@@ -5694,16 +5694,18 @@
     "primary_ticker": "$SOFI",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_0143.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_1413.png",
     "scheduled_time": "2026-06-03T18:10:47.299336-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "-0.7%",
       "market_mood": "volatile",
       "context_stale": false
     },
     "generated_at": "2026-06-03T22:10:47.299334+00:00",
-    "cost_usd": 0.017198
+    "cost_usd": 0.017198,
+    "posted_at": "2026-06-04T14:33:30.765466",
+    "tweet_id": "2062543270400401595"
   },
   {
     "id": "live_20260603_214300_v1",
@@ -5712,16 +5714,17 @@
     "primary_ticker": "$SOFI",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_0143.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260604_1413.png",
     "scheduled_time": "2026-06-03T21:43:00.347350-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.74%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-06-04T01:43:00.347349+00:00",
-    "cost_usd": 0.017301
+    "cost_usd": 0.017301,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "live_20260603_214300_v2",
@@ -5749,15 +5752,34 @@
     "primary_ticker": "$HIVE",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260604_0143.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260604_1413.png",
     "scheduled_time": "2026-06-03T21:43:00.347350-04:00",
-    "status": "pending",
+    "status": "abandoned",
     "context_snapshot": {
       "spy_at_generation": "-0.74%",
       "market_mood": "bearish",
       "context_stale": false
     },
     "generated_at": "2026-06-04T01:43:00.347349+00:00",
-    "cost_usd": 0.017301
+    "cost_usd": 0.017301,
+    "skip_reason": "Stale: 13h old"
+  },
+  {
+    "id": "live_20260604_101317_v1",
+    "text": "$VYGR at $3.69. Down 17.1% from $4.45 entry but gene therapy thesis intact \u2014 AAV capsid platform targeting CNS. Invalidation below $3.20.",
+    "category": "TECHNICAL_ANALYSIS",
+    "primary_ticker": "$VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260604_1413.png",
+    "scheduled_time": "2026-06-04T10:13:17.399614-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "-0.2%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T14:13:17.399612+00:00",
+    "cost_usd": 0.0173
   }
 ]

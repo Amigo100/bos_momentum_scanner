@@ -4426,83 +4426,6 @@
     "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
   },
   {
-    "id": "live_20260528_105019_v1",
-    "text": "Why exit a position that's up 109%? Because the setup says so. $HIVE from $2.10 to $4.39 was textbook \u2014 crypto mining momentum met AI compute demand. When technicals break, we respect it. Win more than you lose.",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$HIVE",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_HIVE_20260528_1450.png",
-    "scheduled_time": "2026-05-28T10:50:19.499907-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-28T14:50:19.499905+00:00",
-    "cost_usd": 0.017644,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260528_123804_v1",
-    "text": "$VYGR at $3.86. VY1706 tau program cleared tox hurdles \u2014 clinical entry H2 2026. BBB platform validated. Gene therapy for Alzheimer's has a 24-month runway.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260528_1638.png",
-    "scheduled_time": "2026-05-28T12:38:04.160011-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-28T16:38:04.160009+00:00",
-    "cost_usd": 0.017609,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260528_123804_v2",
-    "text": "$ASPI exit at $14.40. +140% from $6.00 entry. Setup invalidated on weekly close below key support. Win more than you lose. NFA",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "ASPI",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_ASPI_20260528_1638.png",
-    "scheduled_time": "2026-05-28T12:38:04.160011-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-28T16:38:04.160009+00:00",
-    "cost_usd": 0.017609,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260528_123804_v3",
-    "text": "$EVTL on my radar.\n$2.90 \u2014 down from $4.50 entry.\nWalmart logistics automation still live.\nWatching for reversal confirmation.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260528_1638.png",
-    "scheduled_time": "2026-05-28T12:38:04.160011-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.02%",
-      "market_mood": "quiet",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-28T16:38:04.160009+00:00",
-    "cost_usd": 0.017609,
-    "posted_at": "2026-05-28T16:58:18.801742",
-    "tweet_id": "2060042995794399614"
-  },
-  {
     "id": "watchdog_20260528_001",
     "text": "\ud83d\udfe2 $VYGR scanner signal confirmed. BBB Gene Therapy Platform theme showing institutional accumulation. Entry cleared all gates at current levels.",
     "category": "SIGNAL_ALERT",
@@ -5771,15 +5694,92 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260604_1413.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260604_1642.png",
     "scheduled_time": "2026-06-04T10:13:17.399614-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "-0.2%",
       "market_mood": "mixed",
       "context_stale": false
     },
     "generated_at": "2026-06-04T14:13:17.399612+00:00",
-    "cost_usd": 0.0173
+    "cost_usd": 0.0173,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260604_124230_v1",
+    "text": "$NVDA volatility shaking weak hands.\nEntry $150. Now $218.\nUp 45% but choppy tape.\nHolding through noise.",
+    "category": "MARKET_COMMENTARY",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260604_1642.png",
+    "scheduled_time": "2026-06-04T12:42:30.191395-04:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "+0.3%",
+      "market_mood": "mixed",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-04T16:42:30.191394+00:00",
+    "cost_usd": 0.017468,
+    "posted_at": "2026-06-04T17:02:40.480393",
+    "tweet_id": "2062580808393556163"
+  },
+  {
+    "id": "watchdog_20260604_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates at $4.45 \u2014 BBB Gene Therapy Platform theme showing institutional accumulation. Brain delivery mechanisms creating structural advantage in neurological therapeutics.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-04T15:29:29.904571+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260604_002",
+    "text": "The small-cap momentum setup hasn't been this favorable since 2016. Earnings broadening, 25-year valuation discount, and institutional rotation all aligning. Capital preservation was key through the macro uncertainty.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-04T15:29:29.904571+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260604_003",
+    "text": "BBB Gene Therapy Platform theme hitting PRIME status. Blood-brain barrier technologies unlocking $100B+ neurological drug markets previously untouchable. $VYGR leading the structural pivot.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-06-04T15:29:29.904571+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260604_004",
+    "text": "Portfolio update: 125.51% return vs SPY's 11.16% \u2014 114.35% alpha generated through systematic momentum capture. 8 active positions across high-conviction themes.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-04T15:29:29.904571+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260604_005",
+    "text": "Photonic Interconnect and Defence Additive Manufacturing both showing INVESTABLE status. Infrastructure themes gaining momentum as geopolitical risks drive domestic manufacturing priorities.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-04T15:29:29.904571+00:00",
+    "source": "watchdog"
   }
 ]

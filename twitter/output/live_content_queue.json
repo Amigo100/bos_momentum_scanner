@@ -4550,45 +4550,6 @@
     "tweet_id": "2060442884734914614"
   },
   {
-    "id": "live_20260529_150709_v1",
-    "text": "Why is $NVDA betting $2B+ on photonics? Because copper interconnects hit a wall at 1.6Tbps \u2014 optical transceivers are the only way to scale AI clusters beyond current limits. COHR, LITE, AAOI catching institutional flow as the bottleneck shifts.",
-    "category": "THEME_CATALYST",
-    "primary_ticker": "$NVDA",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260529_1907.png",
-    "scheduled_time": "2026-05-29T15:07:09.539979-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.18%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-29T19:07:09.539978+00:00",
-    "cost_usd": 0.017271,
-    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
-  },
-  {
-    "id": "live_20260529_150709_v2",
-    "text": "$SOFI stablecoin launch today.\n$18.35 from $7.90 entry.\nFintech momentum real.\nRelative strength while tape flat.",
-    "category": "ENGAGEMENT",
-    "primary_ticker": "$SOFI",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260529_1954.png",
-    "scheduled_time": "2026-05-29T15:07:09.539979-04:00",
-    "status": "posted",
-    "context_snapshot": {
-      "spy_at_generation": "+0.18%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-29T19:07:09.539978+00:00",
-    "cost_usd": 0.017271,
-    "posted_at": "2026-05-29T20:14:12.800293",
-    "tweet_id": "2060454683546636449"
-  },
-  {
     "id": "live_20260529_155359_v1",
     "text": "Setup invalidated on $EVTL \u2014 closed below $3.20 support after Walmart logistics theme lost momentum. Win more than you lose.",
     "category": "SELL_SIGNAL",
@@ -5882,9 +5843,11 @@
     "account": "variant_3",
     "ticker": null,
     "thread": false,
-    "status": "pending",
+    "status": "posted",
     "created_at": "2026-06-05T15:17:13.018033+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "posted_at": "2026-06-05T19:39:36.540746",
+    "tweet_id": "2062982690425504049"
   },
   {
     "id": "live_20260605_142116_v1",
@@ -5893,15 +5856,53 @@
     "primary_ticker": "EVTL",
     "account": "variant_2",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260605_1821.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260605_1919.png",
     "scheduled_time": "2026-06-05T14:21:16.944051-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-06-05T18:21:16.944049+00:00",
-    "cost_usd": 0.016714
+    "cost_usd": 0.016714,
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260605_151926_v1",
+    "text": "Pentagon's FY26 budget allocates $2.4B to counter-drone tech \u2014 $EVTL thesis holding despite pullback to $2.13. Defense appropriations committee hearing March 15th could be the catalyst. Setup invalidates below $1.80.",
+    "category": "TECHNICAL_ANALYSIS",
+    "primary_ticker": "EVTL",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260605_1919.png",
+    "scheduled_time": "2026-06-05T15:19:26.554862-04:00",
+    "status": "failed",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-06-05T19:19:26.554860+00:00",
+    "cost_usd": 0.016817,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260605_151926_v2",
+    "text": "$AMD from $120 to $466.50.\nUp 288% through chip shortage recovery.\nData center demand exploding.\nHolding strong.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$AMD",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_AMD_20260605_1919.png",
+    "scheduled_time": "2026-06-05T15:19:26.554862-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-06-05T19:19:26.554860+00:00",
+    "cost_usd": 0.016817
   }
 ]

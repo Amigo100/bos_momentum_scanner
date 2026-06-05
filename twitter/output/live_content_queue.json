@@ -4488,44 +4488,6 @@
     "tweet_id": "2060092377650417889"
   },
   {
-    "id": "live_20260529_101728_v1",
-    "text": "$VYGR at $3.85. Gene therapy names need momentum confirmation and institutional money flowing in before I add. Watching the weekly chart for now.",
-    "category": "EDUCATIONAL",
-    "primary_ticker": "VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260529_1613.png",
-    "scheduled_time": "2026-05-29T10:17:28.901979-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.12%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-29T14:17:28.901977+00:00",
-    "cost_usd": 0.01727,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260529_121334_v1",
-    "text": "$SOFI at $18.35. Up 8.1% today while SPY grinds +0.58%. Entry $7.90, now at $18.35. Fintech showing relative strength.",
-    "category": "MARKET_COMMENTARY",
-    "primary_ticker": "SOFI",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_SOFI_20260529_1907.png",
-    "scheduled_time": "2026-05-29T12:13:34.197746-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.58%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-29T16:13:34.197744+00:00",
-    "cost_usd": 0.017318,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
     "id": "watchdog_20260529_001",
     "text": "\ud83d\udfe2 SIGNAL: $VYGR cleared all gates on our BBB Gene Therapy Platform scanner. Institutional accumulation building at structural pivot after FDA breakthrough therapy designation momentum. Capital preservation stop below $4.20.",
     "category": "SIGNAL_ALERT",
@@ -5832,15 +5794,92 @@
     "primary_ticker": "$VYGR",
     "account": "variant_1",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260605_1406.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260605_1625.png",
     "scheduled_time": "2026-06-05T10:06:01.161984-04:00",
-    "status": "pending",
+    "status": "failed",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": false
     },
     "generated_at": "2026-06-05T14:06:01.161983+00:00",
-    "cost_usd": 0.016931
+    "cost_usd": 0.016931,
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
+  },
+  {
+    "id": "live_20260605_122523_v1",
+    "text": "$NVDA at $209.\nEntry was $150.\nUp 39% through chop.\nAI thesis > noise.",
+    "category": "ENGAGEMENT",
+    "primary_ticker": "$NVDA",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260605_1625.png",
+    "scheduled_time": "2026-06-05T12:25:23.009311-04:00",
+    "status": "posted",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": true
+    },
+    "generated_at": "2026-06-05T16:25:23.009309+00:00",
+    "cost_usd": 0.016776,
+    "posted_at": "2026-06-05T16:45:33.647517",
+    "tweet_id": "2062938889287794781"
+  },
+  {
+    "id": "watchdog_20260605_001",
+    "text": "\ud83d\udfe2 $VYGR cleared all gates this morning. Blood-brain barrier gene therapy platform showing institutional accumulation after years of consolidation. Theme catalyst: BBB delivery solving the unsolvable in CNS therapeutics.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-05T15:17:13.018033+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260605_002",
+    "text": "Portfolio alpha: 114% vs SPY's 11%. Not luck. Not timing. Pure momentum methodology: wait for structural pivots, ride institutional flows, preserve capital when gates don't clear. 8 positions, 125% returns.",
+    "category": "RECEIPT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-05T15:17:13.018033+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260605_003",
+    "text": "Small-cap setup mirrors 2016: earnings broadening beyond mega-caps, 25-year relative valuation discount, institutional rotation accelerating. Iran tensions create entry volatility but don't change 6-18 month structural thesis.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "failed",
+    "created_at": "2026-06-05T15:17:13.018033+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "watchdog_20260605_004",
+    "text": "BBB gene therapy platform hitting PRIME status. The blood-brain barrier has been medicine's final frontier \u2014 these platforms could unlock CNS therapeutics that were previously impossible. $VYGR leading the charge.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-05T15:17:13.018033+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260605_005",
+    "text": "Friday question: What's your biggest position sizing mistake? Mine was going too big too early before momentum confirmed. Capital preservation beats being 'right' about direction. Size follows confirmation, not conviction.",
+    "category": "ENGAGEMENT",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-05T15:17:13.018033+00:00",
+    "source": "watchdog"
   }
 ]

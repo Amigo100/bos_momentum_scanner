@@ -4612,63 +4612,6 @@
     "tweet_id": "2061518848252129531"
   },
   {
-    "id": "live_20260530_165912_v1",
-    "text": "$VYGR at $3.87. BBB gene therapy platform with Lunai's $20M BBB delivery tech acquisition this week. Watching for momentum confirmation before adding. Chart attached.",
-    "category": "SIGNAL_ALERT",
-    "primary_ticker": "$VYGR",
-    "account": "variant_1",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260601_1659.png",
-    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
-    "status": "failed",
-    "context_snapshot": {
-      "spy_at_generation": "+0.22%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-30T20:59:12.751263+00:00",
-    "cost_usd": 0.017277,
-    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
-  },
-  {
-    "id": "live_20260530_165912_v2",
-    "text": "What do you do when a position drops 40%? If it's $EVTL at $2.70, you check if the thesis still holds. Drone tech consolidation isn't invalidation \u2014 it's patience testing. Entry was $4.50. We don't panic at support.",
-    "category": "RECEIPT",
-    "primary_ticker": "$EVTL",
-    "account": "variant_2",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260601_1659.png",
-    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.22%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-30T20:59:12.751263+00:00",
-    "cost_usd": 0.017277,
-    "skip_reason": "Stale: 44h old"
-  },
-  {
-    "id": "live_20260530_165912_v3",
-    "text": "$NVDA trimmed at $211.14.\nEntry $150. Exit $225 high.\n+50% banked.\nData center power concerns real.\nNFA",
-    "category": "SELL_SIGNAL",
-    "primary_ticker": "$NVDA",
-    "account": "variant_3",
-    "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_NVDA_20260601_1659.png",
-    "scheduled_time": "2026-05-30T16:59:12.751265-04:00",
-    "status": "abandoned",
-    "context_snapshot": {
-      "spy_at_generation": "+0.22%",
-      "market_mood": "bullish",
-      "context_stale": false
-    },
-    "generated_at": "2026-05-30T20:59:12.751263+00:00",
-    "cost_usd": 0.017277,
-    "skip_reason": "Stale: 44h old"
-  },
-  {
     "id": "live_20260601_125936_v1",
     "text": "Gene therapy names rarely clear all gates \u2014 but when they do, the setup is worth watching. $VYGR holding $3.80 with BBB platform tech that synergizes with Lunai's work. Volume above $4.10 changes everything.",
     "category": "EDUCATIONAL",
@@ -5894,16 +5837,18 @@
     "primary_ticker": "$EVTL",
     "account": "variant_3",
     "chart_recommended": true,
-    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260606_1612.png",
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260607_1622.png",
     "scheduled_time": "2026-06-06T12:12:00.568675-04:00",
-    "status": "pending",
+    "status": "posted",
     "context_snapshot": {
       "spy_at_generation": "N/A",
       "market_mood": "unknown",
       "context_stale": true
     },
     "generated_at": "2026-06-06T16:12:00.568673+00:00",
-    "cost_usd": 0.01689
+    "cost_usd": 0.01689,
+    "posted_at": "2026-06-07T16:42:35.504743",
+    "tweet_id": "2063662917887680818"
   },
   {
     "id": "watchdog_20260606_001",
@@ -5923,9 +5868,10 @@
     "account": "variant_1",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-06-06T13:56:48.638610+00:00",
-    "source": "watchdog"
+    "source": "watchdog",
+    "error": "403 Forbidden\nWhen authenticating requests to the Twitter API v2 endpoints, you must use keys and tokens from a Twitter developer App that is attached to a Project. You can create a project via the developer portal."
   },
   {
     "id": "watchdog_20260606_003",
@@ -5957,8 +5903,100 @@
     "account": "variant_2",
     "ticker": "$VYGR",
     "thread": false,
-    "status": "pending",
+    "status": "failed",
     "created_at": "2026-06-06T13:56:48.638610+00:00",
+    "source": "watchdog",
+    "error": "402 Payment Required\nYour enrolled account [2016996700674535424] does not have any credits to fulfill this request."
+  },
+  {
+    "id": "live_20260607_122225_v1",
+    "text": "Gene therapy names clearing resistance when they validate clinical milestones \u2014 not just hype. $VYGR Parkinson's program has FDA orphan drug status. Watching $3.33 hold as new support floor.",
+    "category": "EDUCATIONAL",
+    "primary_ticker": "VYGR",
+    "account": "variant_1",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_VYGR_20260607_1622.png",
+    "scheduled_time": "2026-06-07T12:22:25.770270-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-07T16:22:25.770268+00:00",
+    "cost_usd": 0.016888
+  },
+  {
+    "id": "live_20260607_122225_v2",
+    "text": "$EVTL watching closely.\nDefense budget cycle loading.\nEntry $4.50, pullback to $2.16.\nSetup still valid above $1.90.",
+    "category": "SIGNAL_ALERT",
+    "primary_ticker": "$EVTL",
+    "account": "variant_3",
+    "chart_recommended": true,
+    "chart_path": "/home/runner/work/bos_momentum_scanner/bos_momentum_scanner/twitter/output/charts/live_EVTL_20260607_1622.png",
+    "scheduled_time": "2026-06-07T12:22:25.770270-04:00",
+    "status": "pending",
+    "context_snapshot": {
+      "spy_at_generation": "N/A",
+      "market_mood": "unknown",
+      "context_stale": false
+    },
+    "generated_at": "2026-06-07T16:22:25.770268+00:00",
+    "cost_usd": 0.016888
+  },
+  {
+    "id": "watchdog_20260607_001",
+    "text": "Small-cap momentum setup mirrors 2016 conditions: earnings broadening beyond mega-cap, 25-year relative discount, institutional rotation accelerating. The structural pivot is here \u2014 but Iran tensions create near-term volatility windows.",
+    "category": "MARKET_COMMENTARY",
+    "account": "variant_3",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-07T14:06:19.345152+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260607_002",
+    "text": "$VYGR cleared all gates this week. BBB Gene Therapy Platform theme showing institutional accumulation as the sector exits oversold territory. GREEN signal confirmed.",
+    "category": "SIGNAL_ALERT",
+    "account": "variant_1",
+    "ticker": "$VYGR",
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-07T14:06:19.345152+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260607_003",
+    "text": "Portfolio update: 8 positions across AI infrastructure, nuclear fuel, and biotech platforms. YTD return 111% vs SPY 8%. Alpha generation through thematic momentum capture and capital preservation discipline.",
+    "category": "RECEIPT",
+    "account": "variant_1",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-07T14:06:19.345152+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260607_004",
+    "text": "Why small-caps are setting up for their best run since 2016: institutional flows, earnings broadening, and Fed pivot creating perfect storm. Tomorrow's note breaks down the structural drivers.",
+    "category": "SUBSTACK_TEASER",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-07T14:06:19.345152+00:00",
+    "source": "watchdog"
+  },
+  {
+    "id": "watchdog_20260607_005",
+    "text": "BBB Gene Therapy Platform theme hitting PRIME status. Five scanner themes showing institutional interest this week. The biotech rotation accelerates into year-end positioning.",
+    "category": "THEME_CATALYST",
+    "account": "variant_2",
+    "ticker": null,
+    "thread": false,
+    "status": "pending",
+    "created_at": "2026-06-07T14:06:19.345152+00:00",
     "source": "watchdog"
   }
 ]

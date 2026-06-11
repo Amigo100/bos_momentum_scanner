@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #0a1628; color: #e2e8f0; width: 680px; }
+  .card { width: 680px; overflow: hidden; }
+  .header { background: #0a1628; padding: 20px 24px 12px; border-bottom: 2px solid #1a3a5c; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .brand { font-size: 11px; letter-spacing: 2.5px; color: #64748b; text-transform: uppercase; }
+  .date { font-size: 11px; color: #64748b; }
+  .title { font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px; }
+  .stats-row { display: flex; gap: 8px; padding: 12px 24px; background: #0a1628; }
+  .stat-box { flex: 1; background: #0f2440; border-radius: 6px; padding: 10px 12px; text-align: center; }
+  .stat-value { font-size: 20px; font-weight: 700; color: #fff; }
+  .stat-value.green { color: #16a34a; }
+  .stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .section { padding: 10px 24px; }
+  .section-title { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .funnel { display: flex; flex-direction: column; gap: 4px; }
+  .funnel-row { display: flex; align-items: center; gap: 8px; }
+  .funnel-bar { height: 18px; border-radius: 3px; background: #1a3a5c; min-width: 4px; }
+  .funnel-label { font-size: 11px; color: #94a3b8; white-space: nowrap; min-width: 120px; }
+  .funnel-num { font-size: 12px; font-weight: 600; color: #e2e8f0; min-width: 40px; text-align: right; }
+  .positions { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .positions th { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; text-align: left; padding: 4px 6px; border-bottom: 1px solid #1a3a5c; }
+  .positions th:nth-child(n+2) { text-align: right; }
+  .positions td { font-size: 12px; padding: 4px 6px; border-bottom: 1px solid #0f2440; }
+  .positions td:nth-child(n+2) { text-align: right; font-variant-numeric: tabular-nums; }
+  .ticker { font-weight: 600; color: #fff; }
+  .force-tag { font-size: 9px; color: #64748b; }
+  .pnl-pos { color: #16a34a; font-weight: 600; }
+  .pnl-neg { color: #dc2626; font-weight: 600; }
+  .footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; border-top: 1px solid #1a3a5c; margin-top: 8px; }
+  .footer-brand { font-size: 11px; letter-spacing: 2px; color: #64748b; text-transform: uppercase; font-weight: 600; }
+  .footer-disc { font-size: 9px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-top">
+      <span class="brand">Sterling Signals</span>
+      <span class="date">Week 23 | June 6, 2026</span>
+    </div>
+    <div class="title">Weekly Scanner Recap</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value">1,279</div>
+      <div class="stat-label">Scanned</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">18</div>
+      <div class="stat-label">Signals</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Deployed</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value green">+61.1pp</div>
+      <div class="stat-label">Alpha vs SPY</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Screening Funnel</div>
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="funnel-num">1,279</div>
+        <div class="funnel-bar" style="width: 100%; background: #1a3a5c;"></div>
+        <div class="funnel-label">Universe</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-num">54</div>
+        <div class="funnel-bar" style="width: 28%; background: #2563eb;"></div>
+        <div class="funnel-label">Trend confirmed</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-num">18</div>
+        <div class="funnel-bar" style="width: 10%; background: #3b82f6;"></div>
+        <div class="funnel-label">Combined filters</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-num">3</div>
+        <div class="funnel-bar" style="width: 3%; background: #16a34a;"></div>
+        <div class="funnel-label">Forensic cleared</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Portfolio Positions (12 open)</div>
+    <table class="positions">
+      <tr><th>Ticker</th><th>Entry</th><th>Current</th><th>P&L</th></tr>
+      <tr><td><span class="ticker">$BAND</span> <span class="force-tag">AI Infra</span></td><td>$16.55</td><td>$71.25</td><td class="pnl-pos">+330.5%</td></tr>
+      <tr><td><span class="ticker">$AMD</span> <span class="force-tag">AI Infra</span></td><td>$120.00</td><td>$409.49</td><td class="pnl-pos">+241.2%</td></tr>
+      <tr><td><span class="ticker">$SVCO</span> <span class="force-tag">AI Infra</span></td><td>$5.98</td><td>$14.17</td><td class="pnl-pos">+136.9%</td></tr>
+      <tr><td><span class="ticker">$HIVE</span> <span class="force-tag">AI Infra</span></td><td>$2.10</td><td>$4.30</td><td class="pnl-pos">+104.8%</td></tr>
+      <tr><td><span class="ticker">$VOYG</span> <span class="force-tag">Defence</span></td><td>$29.00</td><td>$47.70</td><td class="pnl-pos">+64.5%</td></tr>
+      <tr><td><span class="ticker">$CYRX</span> <span class="force-tag">Biotech</span></td><td>$9.67</td><td>$15.74</td><td class="pnl-pos">+62.8%</td></tr>
+      <tr><td><span class="ticker">$NVDA</span> <span class="force-tag">AI Infra</span></td><td>$150.00</td><td>$207.22</td><td class="pnl-pos">+38.1%</td></tr>
+      <tr><td><span class="ticker">$ASPI</span> <span class="force-tag">Nuclear</span></td><td>$6.00</td><td>$7.97</td><td class="pnl-pos">+32.8%</td></tr>
+      <tr><td><span class="ticker">$ACRS</span> <span class="force-tag">Biotech</span></td><td>$3.65</td><td>$4.71</td><td class="pnl-pos">+29.0%</td></tr>
+      <tr><td><span class="ticker">$KARO</span> <span class="force-tag">Fin Infra</span></td><td>$48.05</td><td>$47.11</td><td class="pnl-neg">-2.0%</td></tr>
+      <tr><td><span class="ticker">$NAMS</span> <span class="force-tag">Biotech</span></td><td>$34.76</td><td>$32.67</td><td class="pnl-neg">-6.0%</td></tr>
+      <tr><td><span class="ticker">$VYGR</span> <span class="force-tag">Biotech</span></td><td>$4.45</td><td>$3.87</td><td class="pnl-neg">-13.0%</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span class="footer-brand">Sterling Signals</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

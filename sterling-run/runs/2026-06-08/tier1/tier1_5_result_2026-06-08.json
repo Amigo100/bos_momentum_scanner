@@ -1,0 +1,893 @@
+{
+ "meta": {
+  "anchor": "2026-06-08",
+  "iso_week": "2026-W24",
+  "tier": "1.5",
+  "input": 31,
+  "verified": 31
+ },
+ "counts": {
+  "advance": 17,
+  "drop": 14
+ },
+ "names": [
+  {
+   "ticker": "AIRO",
+   "result": "ADVANCE",
+   "exposure_real": "yes - pure-play AI-enabled drone/unmanned-systems maker for US & allied defense, core counter-drone/autonomous-warfare theme",
+   "still_early": "yes - Blue UAS cert H1-2026 and H2 ramp ahead; pre-breakout on backlog conversion",
+   "disqualifier": "clear - no going-concern; Q1 margin drop confirmed as mix shift (drone upgrades vs full systems), not structural; guidance reaffirmed; no slipped milestone or guidance cut",
+   "basis": "Q1-26 rev $8.9M GM 26.6% (mix-driven, full-system deliveries higher margin), drone backlog >$150M majority converting <12mo, FY26 +15-25% reaffirmed, record Q4 expected",
+   "verify_answer": "Backlog >$150M reaffirmed at Apr-30-2026, majority convertible <12mo; margin collapse confirmed mix/ramp (lower-margin upgrade programs in Q1) not structural - mgmt guides only low-single-digit GM compression vs FY25 as drone deliveries resume",
+   "tier2_pin": "Verify the >$150M backlog is firm POs (not LOIs) and quantify H2 drone-delivery conversion + Blue UAS cert timing that drives the margin/revenue recovery",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/AIRO/8-k-airo-group-holdings-inc-reports-material-event-a26fecd6b4e7.html",
+    "https://www.minichart.com.sg/2026/05/14/airo-group-holdings-reports-q1-2026-results-reaffirms-15-25-revenue-growth-guidance-and-expands-ai-enabled-drone-portfolio/"
+   ]
+  },
+  {
+   "ticker": "ARAY",
+   "result": "DROP",
+   "exposure_real": "yes - real radiation-oncology systems maker, but theme is a turnaround that is not turning",
+   "still_early": "n/a - turnaround stalling, not early",
+   "disqualifier": "FIRED (\u00a79 management/guidance event + confirmed non-traction): withdrew FY26 revenue and adj-EBITDA guidance on Middle East shipment delays",
+   "basis": "FQ3-26 rev $104.8M -7% YoY, backlog $356.2M down ~21% YoY, gross product orders $48.5M vs $71.2M (-32%), book-to-bill fell 1.2->1.0, GAAP net loss $11.8M, FY26 guidance withdrawn",
+   "verify_answer": "Turnaround NOT gaining traction: orders down 32% YoY, backlog down 21% YoY, book-to-bill deteriorated to 1.0, revenue declining, and company WITHDREW FY26 guidance citing indefinitely delayed MENA/Pakistan shipments - confirms melting-ice-cube over stabilizing turnaround",
+   "drop_reason": "Confirmed melting-ice-cube: backlog -21% YoY, orders -32% YoY, book-to-bill down to 1.0, revenue declining, and FY26 guidance withdrawn on indefinite shipment delays - turnaround traction absent, no plausible protected 4x path",
+   "sources": [
+    "https://www.tipranks.com/news/company-announcements/accuray-earnings-call-balances-turnaround-gains-risks",
+    "https://investors.accuray.com/news-releases/news-release-details/accuray-reports-fiscal-2026-third-quarter-financial-results"
+   ]
+  },
+  {
+   "ticker": "BARK",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real pet-brand turnaround (BarkBox DTC + Commerce/retail), standalone case",
+   "still_early": "yes - commerce/retail diversification still building; re-acceleration not yet proven either way",
+   "disqualifier": "clear - debt-free, adj-EBITDA positive (~$1.6M) and FCF-positive; one revenue miss (deliberate marketing cut), not >1 guidance cut; no going-concern or dilution-spiral",
+   "basis": "Q3-26 rev $98.4M (below $101-104M guide on cut marketing spend), adj-EBITDA ~$1.6M positive, 62.5% consolidated GM, fully repaid 2025 converts in cash = debt-free",
+   "verify_answer": "Not yet confirmed durable re-acceleration: Q3 revenue declined/missed on deliberate marketing reduction and commerce was ~$1.5M below LY on timing. EBITDA positivity is real but modest and partly cost-driven. Re-acceleration thesis UNRESOLVED - advances under unresolved->ADVANCE rule",
+   "tier2_pin": "Pin whether Commerce/retail can drive durable top-line re-acceleration (not just cost-cut EBITDA) - need forward revenue trajectory and retail door/SKU expansion vs the marketing-spend trade-off",
+   "sources": [
+    "https://investors.bark.co/news/news-details/2026/BARK-Reports-Third-Quarter-Fiscal-Year-2026-Results/default.aspx",
+    "https://www.investing.com/news/transcripts/earnings-call-transcript-barks-q3-2026-results-show-missed-revenue-target-93CH-4489099"
+   ]
+  },
+  {
+   "ticker": "CDT",
+   "result": "DROP",
+   "exposure_real": "no - dilution-funded crypto-treasury/M&A shell with no real operating substance",
+   "still_early": "n/a - not a real operating play",
+   "disqualifier": "FIRED (\u00a79 serial-dilution shell / fake-substance): equity-funded shell, ~17.9 BTC (~$2M) micro treasury, 22.8M-share selling-stockholder offering filed; no operating business",
+   "basis": "Formerly Conduit Pharma, renamed CDT Equity Aug-2025; runs equity-funded acquisitions + Bitcoin treasury (~17.9 BTC total, ~$1-2M); ~$0.74 stub; up to 22,846,452-share offering by selling stockholders",
+   "verify_answer": "CDT is a dilution-funded shell, NOT a real operating company: tiny ~$1-2M BTC treasury, equity-funded M&A strategy, and a 22.8M-share selling-stockholder offering driving dilution. No durable operating revenue base - this is a crypto/M&A shell dressed as a story",
+   "drop_reason": "Confirmed non-fit: dilution-funded crypto-treasury/M&A shell with no real operating substance and a 22.8M-share offering overhang - peripheral/tenuous 'exposure' and \u00a79 serial-dilution shell",
+   "sources": [
+    "https://bitcointreasuries.net/public-companies/cdt-equity-inc",
+    "https://www.gurufocus.com/news/3148258/cdt-equity-cdt-expands-bitcoin-holdings-with-strategic-purchase"
+   ]
+  },
+  {
+   "ticker": "CPS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real auto-supplier (sealing/fluid-handling) restructuring/deleveraging case",
+   "still_early": "yes - margin-expansion + de-lever path early; refi just reset maturity runway to 2031",
+   "disqualifier": "clear - refi EXTENDED to 2031, lowered rate, cut cash interest $6M/yr; $286M liquidity; awards ahead of plan; net loss includes one-time $24.2M refi charge, not operational",
+   "basis": "Q1-26 sales $686.4M +2.9%, adj-EBITDA $51M (down YoY only on non-recurring $10M prior royalty), GM +160bps over 2yr, $128M new awards ahead of plan, FY26 double-digit EBITDA-margin guide, +11% on print",
+   "verify_answer": "Path is real restructuring + new-award driven margin expansion, NOT just refi-extended distress: GM +160bps over two years on flat/declining volume, $128M awards ahead of plan, refi extended to 2031 + $6M/yr interest savings + $286M liquidity. EBITDA dip is non-recurring royalty comp, not structural decline",
+   "tier2_pin": "Pin the FY26 double-digit EBITDA-margin bridge and leverage trajectory - confirm new-award cadence and margin gains compound into sustained de-levering vs auto-volume/tariff headwinds",
+   "sources": [
+    "https://www.stocktitan.net/news/CPS/cooper-standard-reports-solid-first-quarter-2026-results-and-strong-iplnm9ldmwco.html",
+    "https://www.fool.com/earnings/call-transcripts/2026/05/07/cooper-standard-cps-q1-2026-earnings-transcript/"
+   ]
+  },
+  {
+   "ticker": "ELTX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - clinical immuno-oncology, lead asset ELI-002 7P mKRAS vaccine; classic binary monster-shape",
+   "still_early": "yes - pre-readout; the value-defining DFS data is still ahead (mid-2026)",
+   "disqualifier": "clear - cash $14.9M + $13M ATM funds operations into Q4-2026, PAST the mid-2026 readout; IDMC recommended continue without modification; fewer progressions/deaths than projected",
+   "basis": "Ph2 AMPLIFY-7P event-driven DFS analysis expected mid-2026; 99% evaluable mKRAS T-cell response; runway into Q4-2026 covers the binary; positive IDMC; favorable interim event count",
+   "verify_answer": "DFS readout is event-driven, expected mid-2026 (anticipated mid-year). Cash $14.9M (Mar-31) plus $13M ATM funds operations INTO Q4-2026 - i.e. past the readout. Dilution risk before the binary is therefore low; the ATM raise already extended runway over the catalyst",
+   "tier2_pin": "Pin the exact DFS event-trigger/readout window and confirm runway truly clears it without a forced raise into the print; size the binary up/down on positive vs negative DFS",
+   "sources": [
+    "https://www.stocktitan.net/news/ELTX/elicio-therapeutics-reports-first-quarter-2026-financial-results-and-c8pumq9tv8a2.html",
+    "https://www.chartmill.com/news/ELTX/Chartmill-48154-Elicio-Therapeutics-NASDAQELTX-Q1-2026-Results-Show-Extended-Cash-Runway-Ahead-of-Key-Phase-2-Data-Readout"
+   ]
+  },
+  {
+   "ticker": "LE",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real apparel-brand turnaround with structural IP value-unlock via WHP JV",
+   "still_early": "yes - JV just closed Apr-1-2026; June multi-year framework still to come; re-rating not played out",
+   "disqualifier": "clear - $300M cash repays $234M term loan = de-levered; profitable core (LTM NI $11.8M); $100M buyback; no going-concern or dilution issue",
+   "basis": "WHP JV completed Apr-1-2026: $300M cash for 50% controlling JV stake in brand IP, term loan (~$234M) fully repaid, continued long-term brand upside; Q3 EPS $0.17 swung to profit; June enhanced call for multi-year framework",
+   "verify_answer": "WHP JV is structurally transformative, NOT a one-time cash event: $300M proceeds de-lever via full term-loan repayment AND Lands' End retains 50% of the JV for continued IP/licensing upside while keeping DTC/B2B operations. Profit swing (Q3 EPS $0.17, LTM NI $11.8M) supports a sustainable, de-levered base ahead of June framework",
+   "tier2_pin": "Pin the June multi-year framework - JV economics/royalty split, licensing-expansion runway, and de-levered EPS power to confirm durable growth vs a one-time balance-sheet reset",
+   "sources": [
+    "https://www.stocktitan.net/news/LE/lands-end-and-whp-global-complete-joint-venture-to-accelerate-global-734jqjhea9u5.html",
+    "https://www.retaildive.com/news/whp-global-acquires-controlling-stake-lands-end/810469/"
+   ]
+  },
+  {
+   "ticker": "SKYX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - patented smart ceiling/electrical platform (~97 patents); standalone smart-home platform case",
+   "still_early": "yes - Gen-3 launch mid-Q3-2026 is the claimed inflection, not yet shipped; licensing/builder ramp early",
+   "disqualifier": "clear - 9 straight growth qtrs, $32M cash, $29M raise was STRAIGHT equity (no warrants/death-spiral); still unprofitable but no going-concern; dilution manageable",
+   "basis": "Q1-26 rev $22M +10% (9th straight growth qtr), GM 30%, net loss ~$9.3M, ~134M shares, cash ~$32M after $29M straight-equity raise; Eurofase license + Group OTT hotel deal; Gen-3 mid-Q3-2026",
+   "verify_answer": "Step-change is NOT yet confirmed - current growth is still slow ~10% YoY and the company remains deeply unprofitable (-$9.3M net loss on $22M rev). Dilution is manageable (134M shares, $29M raised as straight equity, no warrants). The inflection rests on Gen-3 (mid-Q3-2026) + licensing/builder conversion, which is UNRESOLVED -> advances under unresolved->ADVANCE rule",
+   "tier2_pin": "Pin whether Gen-3 + licensing/builder deals actually drive a revenue step-change (>10% to inflection) and a credible path to profitability - quantify license/builder economics and cash runway to breakeven",
+   "sources": [
+    "https://www.chartmill.com/news/SKYX/Chartmill-48211-SKYX-Platforms-Corp-NASDAQSKYX-Q1-2026-Earnings-Record-Revenue-and-Path-to-Profitability-Drive-8-After-Market-Surge",
+    "https://www.stocktitan.net/sec-filings/SKYX/10-q-skyx-platforms-corp-quarterly-earnings-report-a23fee6bcfa5.html"
+   ]
+  },
+  {
+   "ticker": "AMPX",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 pure-play silicon-anode cell maker; customers' defense backlog converts directly into AMPX cell purchase orders",
+   "still_early": "yes \u2014 revenue inflecting (Q1-26 $28.5M +2.5x YoY), FY26 guide just raised to >=$130M, backlog visibility expanding into 2027",
+   "disqualifier": "clear",
+   "basis": "Defense backlog confirmed firm: AeroVironment $117M firm-fixed + Kraus Hamdani $270M USAF, ~$500M new orders to customers, DIU contract raised to $18.1M; FY26 guide raised to >=$130M + positive adj-EBITDA",
+   "verify_answer": "FIRM and converting \u2014 backlog is real defense awards (not LOIs); AMPX raised FY26 guide on resulting cell demand, defending the $19.69 anchor with actual order flow",
+   "tier2_pin": "Pin the cell-level conversion timing/$ from the ~$500M customer awards into AMPX's own purchase orders and the path to sustained positive EBITDA",
+   "sources": [
+    "https://www.fool.com/earnings/call-transcripts/2026/06/01/amprius-ampx-q1-2026-earnings-transcript/",
+    "https://ir.amprius.com/news-events/press-releases/detail/103/amprius-secured-u-s-army-xtechprime-award-to-develop-high-energy-batteries-with-reduced-weight-and-double-the-endurance"
+   ]
+  },
+  {
+   "ticker": "AUID",
+   "result": "DROP",
+   "exposure_real": "yes thematically (passwordless biometric identity SaaS) but no standalone case \u2014 no demand conversion",
+   "still_early": "n/a \u2014 perennial pre-revenue, no inflection",
+   "disqualifier": "\u00a79 cash-runway / dilution-funded firewall fired",
+   "drop_reason": "Confirmed perennial pre-revenue with dilution-funded runway: Q1-26 rev $0.5M vs $4.5M net loss, ARR only $1.9M, bARR signed just $0.08M, $40M pipeline still unconverted, required $4.2M post-quarter bridge financing to extend runway",
+   "basis": "Q1-26 transcript/PR: $0.5M rev, $4.5M loss, ARR $1.9M, bARR $0.08M, $4.2M bridge financing; zero pipeline-to-booked enterprise conversion",
+   "verify_answer": "NO conversion confirmed \u2014 bARR signed was only $0.08M; the 20-account/$40M pipeline remains pipeline, funded by dilution not bookings",
+   "sources": [
+    "https://www.fool.com/earnings/call-transcripts/2026/05/15/authid-auid-q1-2026-earnings-call-transcript/",
+    "https://www.stocktitan.net/news/AUID/auth-id-reports-financial-and-operating-results-for-the-first-od5jbs5166cn.html"
+   ]
+  },
+  {
+   "ticker": "DJT",
+   "result": "DROP",
+   "exposure_real": "yes (BTC-treasury) but the thesis-shape (discount re-rate) is invalidated \u2014 treasury is liquidating",
+   "still_early": "no \u2014 played out the wrong way; treasury unwinding with deep markdowns",
+   "disqualifier": "clear of \u00a79, but thematic shape confirmed broken",
+   "drop_reason": "Confirmed unwinding not accumulating: BTC stash shrunk from 11,542 to ~6,889 via 2,000 + 2,650 BTC outflows, holdings ~34% underwater, FY net loss $712M from ~$582M crypto markdowns \u2014 no re-rating discount, a liquidating treasury",
+   "basis": "Multiple June-2026 sources: stash down to ~6,889 BTC after Crypto.com transfers, $455M unrealized shortfall, $712M FY loss driven by markdowns",
+   "verify_answer": "LIQUIDATING \u2014 net BTC outflows shrinking the stash, deeply underwater entry; not an accumulating treasury at a re-rateable NAV discount",
+   "sources": [
+    "https://finance.yahoo.com/markets/crypto/articles/trump-media-bitcoin-stash-shrinks-055901204.html",
+    "https://www.coindesk.com/markets/2026/05/22/trump-media-moves-another-usd205m-in-bitcoin-as-losses-on-crypto-bet-swell-to-usd455m"
+   ]
+  },
+  {
+   "ticker": "IBIO",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 clinical-stage pure-play in GLP-1-adjacent muscle-preservation (anti-myostatin IBIO-600, Activin-E IBIO-610)",
+   "still_early": "yes \u2014 Ph1 just initiated, sub-$2 micro-cap, pre-readout optionality intact (early-but-real)",
+   "disqualifier": "clear \u2014 runway concern resolved",
+   "basis": "Cash runway confirmed into Q3 FY2028 after $26M Frazier Life Sciences-led private placement (Jan-2026); first participant dosed Ph1 IBIO-600 Q2-26; IBIO-610 first-in-human early 2027",
+   "verify_answer": "Runway extends well past the SAD readout \u2014 into Q3 FY2028; 2026 catalyst timeline dated (first dose Q2-26, SAD data to follow). Weak-signal downtick does NOT reflect a funding/timeline break",
+   "tier2_pin": "Pin the specific SAD topline data date and what efficacy/biomarker bar would re-rate vs the crowded myostatin field (LLY/REGN/Scholar Rock)",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001420720/000110465926059408/ibio-20260512xex99d1.htm",
+    "https://www.sec.gov/Archives/edgar/data/0001420720/000110465926002940/tm262944d1_ex99-1.htm"
+   ]
+  },
+  {
+   "ticker": "MLCO",
+   "result": "DROP",
+   "exposure_real": "yes (Macau IR operator) but standalone case is a quality mid-recovery cyclical, not a multibagger",
+   "still_early": "no \u2014 already mid-recovery; EBITDA +12% YoY, deleveraging well underway, recovery substantially priced",
+   "disqualifier": "clear of \u00a79 \u2014 dropped on exhausted/limited-upside shape",
+   "drop_reason": "Confirmed no 4x equity-leverage path: $2.27B cap large-cap, analyst avg target $8.16 (~42% upside) and high $10.5 (~82%); deleveraging real ($7.18B\u2192$3.85B gross debt) but this is a quality cyclical with limited upside, not a protected 3-4x",
+   "basis": "Q1-26: rev $1.37B +11%, property EBITDA $381M +12%; price $5.76, cap $2.27B; analyst avg $8.16 / high $10.5",
+   "verify_answer": "Recovery + share-gain trajectory is REAL but lacks 4x equity leverage \u2014 it is an already mid-recovery cyclical; Street high case is <2x, deleveraging benefits largely captured",
+   "sources": [
+    "https://www.investing.com/news/company-news/melco-q1-2026-slides-revenue-jumps-11-ebitda-margin-expands-93CH-4649820",
+    "https://www.wallstreetzen.com/stocks/us/nasdaq/mlco"
+   ]
+  },
+  {
+   "ticker": "QTRX",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 owns the Simoa platform behind a multi-analyte FDA-stage Alzheimer's blood Dx; direct thematic exposure",
+   "still_early": "yes \u2014 pre-clearance; ~$300M cap vs a large reimbursable Alzheimer's Dx TAM; decision still ahead",
+   "disqualifier": "clear",
+   "basis": "510(k) submitted Feb-3-2026 with prior Breakthrough Device Designation (supports H2-2026 decision window); Q1-26 rev $36.4M +20%, $102.6M cash, FY guide $169-174M toward breakeven, Tempus ordering",
+   "verify_answer": "Submission filed Feb-3-2026; Breakthrough designation implies expedited review, decision plausibly H2-2026. Dx opportunity is large/reimbursable (mass Alzheimer's screening) vs the ~$300M cap \u2014 favorable asymmetry",
+   "tier2_pin": "Pin the actual FDA decision date and the reimbursable per-test economics x screening volume to size the Dx revenue ramp vs cap",
+   "sources": [
+    "https://ir.quanterix.com/news-releases/news-release-details/quanterix-announces-fda-510k-submission-multi-analyte",
+    "https://www.stocktitan.net/news/QTRX/quanterix-announces-fda-510-k-submission-for-a-multi-analyte-wrz99rwexxxy.html"
+   ]
+  },
+  {
+   "ticker": "STI",
+   "result": "DROP",
+   "exposure_real": "thematically silicon-anode/space-battery, but no real exposure \u2014 pre-commercial shell with no revenue-bearing contract",
+   "still_early": "n/a \u2014 pure announcement pop, no commercial substance",
+   "disqualifier": "\u00a79 fake-demand firewall fired",
+   "drop_reason": "Confirmed pure announcement-pop on a pre-commercial shell: Q1-26 first-ever rev only $85K (grants+samples), NO named SpaceX/NASA contract (Artemis/LEO cited as targets only), Hilco patent-monetization = asset-sale dressing; no funded development deal behind the space-battery narrative",
+   "basis": "June-2026 PR + coverage: $85,426 Q1 rev, space uses are 'targets not agreements', Hilco patent monetization deal; stock ripped ~3x on reveal alone",
+   "verify_answer": "NO real revenue-bearing or funded development contract \u2014 the space-battery reveal is a product announcement with no booked deal; revenue is $85K of grants/samples",
+   "sources": [
+    "https://www.ebc.com/forex/why-sti-stock-is-up-space-battery-rally",
+    "https://www.prnewswire.com/news-releases/solidion-technology-unveils-patented-extreme-climate-battery-technology-targeting-low-earth-orbit-based-artificial-intelligence-data-centers-lunar-economy-and-space-302790827.html"
+   ]
+  },
+  {
+   "ticker": "YXT",
+   "result": "DROP",
+   "exposure_real": "no \u2014 China corporate-learning SaaS with negligible AI traction; thematic 'AI pivot' is nominal",
+   "still_early": "no \u2014 declining business, no operating inflection",
+   "disqualifier": "\u00a79 going-concern / no-inflection firewall area fired",
+   "drop_reason": "Confirmed delisting-risk China micro-cap with no operating inflection: revenue in secular decline (RMB424M\u2192340M), persistent net losses (RMB159M FY25), AI MRR negligible (RMB1.1M), going-concern dependent on new financing, Nasdaq min-bid deficiency (deadline Jul-27-2026) + VIE risk",
+   "basis": "FY25 20-F: rev RMB340.2M (down from RMB424M in 2023), net loss RMB158.9M, AI MRR RMB1.1M; going-concern dependent on financing; Nasdaq bid deficiency",
+   "verify_answer": "Going-concern flagged and financing-dependent; AI product traction is immaterial (RMB1.1M MRR); no operating inflection and active Nasdaq delisting risk \u2014 fails the inflection test",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/YXT/20-f-yxt-com-group-holding-ltd-files-annual-report-foreign-issuer-f3e7759b45ad.html",
+    "https://www.stocktitan.net/news/YXT/yxt-com-announces-receipt-of-nasdaq-xuyj3cg5mw52.html"
+   ]
+  },
+  {
+   "ticker": "EBON",
+   "result": "DROP",
+   "exposure_real": "no - stablecoin angle is exchange-listing/announcement-only; no proprietary stablecoin, core rev only $6.5M",
+   "still_early": "n/a - exposure is tenuous, not a real thematic play",
+   "disqualifier": "clear - $200M cash buffer, narrowing loss; no \u00a79 firewall fired",
+   "drop_reason": "Confirmed peripheral/announcement-only exposure: FY25 rev just $6.5M with -$14.2M loss; Ebonex merely lists USDT (no proprietary stablecoin/firm traction). Stablecoin pivot is a shell narrative, not real revenue.",
+   "basis": "FY25 rev $6.5M (+11.4%), net loss $14.2M, $200.2M cash; Ebonex supports USDT/BTC/ETH but no proprietary stablecoin or revenue traction confirmed.",
+   "verify_answer": "Announcement/listing-only \u2014 no proprietary stablecoin and no quantified stablecoin revenue; cash is ample ($200M) so dilution firewall is not the issue, the exposure is.",
+   "sources": [
+    "https://stockanalysis.com/stocks/ebon/",
+    "https://briefglance.com/articles/ebangs-green-pivot-revenue-up-profits-down-in-risky-rebirth",
+    "https://cointelegraph.com/news/bitcoin-miner-firm-ebang-launches-ebonex-crypto-exchange"
+   ]
+  },
+  {
+   "ticker": "RXRX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - flagship AI-drug-discovery platform (Recursion OS) with proprietary clinical pipeline",
+   "still_early": "yes - clinical inflection still pre-registrational; FAP/oncology readouts ahead",
+   "disqualifier": "clear - runway into early 2028 ($665M+ cash, ~$81M/qtr burn), no \u00a79 flag",
+   "tier2_pin": "Quantify FAP REC-4881 registrational path/timing (H2-26 FDA alignment) and whether oncology data (REC-617 1H27, REC-1245) can re-rate before next financing; partner-funding durability.",
+   "basis": "Q1-26 beat (loss -$0.22), runway into early 2028 ($665M+ cash, ~$81M/qtr burn); REC-4881 FAP -43%\u2192-53% polyp burden; JPM OW PT $10.",
+   "verify_answer": "Durable: runway into early 2028 funds through FAP registrational alignment (H2-26) and oncology readouts (1H27) without forced near-term dilution reset; FAP signal strong (43-53% polyp reduction)."
+  },
+  {
+   "ticker": "ULBI",
+   "result": "DROP",
+   "exposure_real": "no - defense/battery growth is legacy chemistry (BA-5390, conformal wearable); no silicon-anode/advanced-cell content",
+   "still_early": "n/a - real backlog growth but wrong theme",
+   "disqualifier": "clear - record $115.1M backlog, no \u00a79 flag; not a balance-sheet issue",
+   "drop_reason": "Confirmed weak/non-fit on the silicon-anode advanced-cell theme: Q1-26 product narrative is legacy military/commercial chemistry (BA-5390, conformal wearable, radio amplifiers), zero silicon-anode/advanced high-energy-density cell content. Thematic exposure is tenuous as the brief flagged.",
+   "basis": "Q1-26 rev $47.4M (-6.5%), EPS -$0.03; record $115.1M backlog (+21%), $8M conformal wearable backlog \u2014 all legacy chemistry; no silicon-anode mention in results.",
+   "verify_answer": "Legacy-chemistry replacement/defense-timing growth, NOT silicon-anode advanced cells \u2014 confirms the brief's weak-fit flag; backlog is real but off-theme.",
+   "sources": [
+    "https://www.stocktitan.net/news/ULBI/ultralife-corporation-reports-first-quarter-1biwy6aqrqjn.html",
+    "https://seekingalpha.com/news/4590102-ultralife-outlines-record-115_1m-backlog-while-targeting-midyear-scrap-fix-and-2026-shipments"
+   ]
+  },
+  {
+   "ticker": "APPN",
+   "result": "ADVANCE",
+   "exposure_real": "yes - low-code agentic process-automation platform with AI-tier monetization",
+   "still_early": "yes - agentic ARR re-rate early; ~40% on AI tiers, room to expand",
+   "disqualifier": "clear - guidance raised, profit outlook lifted; no \u00a79 flag",
+   "tier2_pin": "Whether 115% net ARR expansion + agentic adoption (~40% on AI tiers) is durable enough to drive multiple re-rating vs rate-sensitive SaaS-duration compression; path to $825M Investor-Day rev goal.",
+   "basis": "Q1 FY26: total rev $202.2M (+21%), cloud subs $124.5M (+25%), 115% cloud net ARR expansion; FY26 guide raised (rev $819-831M), profit outlook lifted.",
+   "verify_answer": "Re-rate looks durable: cloud subs +25%, 115% net ARR expansion, ~40% of customers on AI-inclusive tiers, FY26 guide raised \u2014 real expansion not just multiple compression, though regime HEADWIND on duration remains the watch.",
+   "sources": [
+    "https://www.stocktitan.net/news/APPN/appian-announces-first-quarter-2026-financial-wvhr7eechrt9.html",
+    "https://www.benzinga.com/markets/earnings/26/05/52382535/appians-ai-bet-pays-off-q1-beats-estimates-2026-profit-outlook-raised"
+   ]
+  },
+  {
+   "ticker": "BTAI",
+   "result": "DROP",
+   "exposure_real": "yes - real CNS catalyst (IGALMI at-home sNDA, PDUFA Nov 14 2026)",
+   "still_early": "yes - pre-PDUFA, but cannot survive to it",
+   "disqualifier": "FIRED \u00a79 - explicit going-concern doubt + death-spiral dilution pattern",
+   "drop_reason": "\u00a79 firewall FIRED: management states substantial doubt about going concern; $17.2M cash vs ~$11.8M quarterly operating burn (~1.5 quarters, far under 6) plus $100.3M debt; serial warrant repricings and repeated equity financings = death-spiral pattern. Balance sheet cannot reach Nov 14 2026 PDUFA without a wipeout.",
+   "basis": "Q1-26: rev $0.2M, net loss $12.7M, op cash outflow $11.8M, cash $17.2M, debt $100.3M; explicit going-concern; warrant repricings; MTS hired exploring sale.",
+   "verify_answer": "Cannot survive to catalyst: ~1.5 quarters of cash at burn vs a Nov-2026 PDUFA, $100M debt, going-concern doubt and serial warrant-reprice dilution \u2014 balance-sheet wipeout risk is the base case.",
+   "sources": [
+    "https://www.globenewswire.com/news-release/2026/05/15/3295725/0/en/BioXcel-Therapeutics-Provides-Business-Update-and-Reports-First-Quarter-2026-Financial-Results.html",
+    "https://www.stocktitan.net/sec-filings/BTAI/10-q-bio-xcel-therapeutics-inc-quarterly-earnings-report-27c74aacba17.html"
+   ]
+  },
+  {
+   "ticker": "CNVS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - Matchpoint AI media-supply-chain platform positioned for licensed software-margin revenue",
+   "still_early": "yes - platform pivot early; M&A revenue/EBITDA ramps in FY27",
+   "disqualifier": "clear - low debt ($3.6M, D/E 10%), adj-EBITDA positive; no going-concern/\u00a79 flag",
+   "tier2_pin": "Pin whether Matchpoint generates genuine third-party LICENSED platform revenue (scale, named external customers, recurring software margin) vs internal media-ops tooling; and that Giant Worldwide/IndiQ +$53M rev/$10M EBITDA FY27 adds are firm and accretive (not financed by dilution given thin $2.5M cash).",
+   "basis": "Q3 FY26 rev $16.3M, adj-EBITDA +$2.4M, net loss -$1.0M; cash $2.5M + $4.2M facility; debt only $3.6M; acquisitions add ~$53M rev/$10M EBITDA FY27; FY27 guide $115-120M.",
+   "verify_answer": "Unresolved-but-real: Matchpoint is genuinely positioned as a scalable AI platform and the M&A adds are quantified/accretive, but third-party license revenue scale not yet confirmed \u2014 per rules this advances. Thin cash ($2.5M) is the watch, not a fired disqualifier.",
+   "sources": [
+    "https://www.stocktitan.net/news/CNVS/cineverse-reports-third-quarter-fiscal-year-2026-ytfxy9r5ashn.html",
+    "https://finance.yahoo.com/news/cineverse-reports-third-quarter-fiscal-210000542.html"
+   ]
+  },
+  {
+   "ticker": "GLBE",
+   "result": "ADVANCE",
+   "exposure_real": "yes - leading cross-border D2C ecommerce enablement platform, accelerating",
+   "still_early": "yes/qualified - already re-rated but growth re-accelerating with margin inflection",
+   "disqualifier": "clear - adj-EBITDA +59%, guidance raised; no \u00a79 flag",
+   "tier2_pin": "Whether a ~$5-6B mid-cap can still 4x: size the TAM runway, GMV/net-retention trajectory and FX-normalized growth durability vs the re-rating already in the multiple \u2014 the upside-shape question, not a disqualifier.",
+   "basis": "Q1 FY26: rev $252.1M (+33%), GMV $1,742M (+40%), adj-EBITDA $50.2M (+59%, 19.9% margin); FY26 guide raised (rev $1.22-1.28B, EBITDA $264-290M).",
+   "verify_answer": "Runway looks intact: +33% rev / +40% GMV re-acceleration with EBITDA margin expanding 330bps and raised guidance \u2014 growth-plus-margin combo supports a path, though 4x from a re-rated mid-cap is the explicit Tier-2 sizing question.",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/GLBE/6-k-global-e-online-ltd-current-report-foreign-issuer-b9c069ecb13c.html",
+    "https://finance.yahoo.com/markets/stocks/articles/global-e-online-ltd-glbe-230212443.html"
+   ]
+  },
+  {
+   "ticker": "IRIX",
+   "result": "DROP",
+   "exposure_real": "no - special-sit/takeout thesis is dead; now an internal cost-cut grind",
+   "still_early": "n/a - catalyst exhausted",
+   "disqualifier": "clear on \u00a79 balance sheet, but the monster-shape catalyst is confirmed gone",
+   "drop_reason": "Confirmed non-fit: strategic-review/sale process CONCLUDED WITHOUT A SALE (failed-sale overhang); EyeProGPO is a GPO preferred-pricing distribution deal (1,800 members get pricing, not 1,800 buyers), not a re-acceleration; 2026 focus is profitability/opex cuts toward cash-flow-positive. No live takeout path or growth inflection \u2014 the special-sit shape is gone.",
+   "basis": "CEO confirmed strategic review concluded; no pending alternatives beyond the closed Mar-2025 Novel Inspiration $10M investment (+$10M option); EyeProGPO = GPO pricing agreement; 2026 = profitability/opex-reduction focus.",
+   "verify_answer": "Stalled micro-cap with failed-sale overhang \u2014 the strategic process ended without a sale and there is no renewed takeout path; EyeProGPO is distribution pricing, not re-acceleration.",
+   "sources": [
+    "https://www.dailypolitical.com/2026/05/30/iridex-spotlights-profitability-push-retina-and-glaucoma-laser-growth-at-investor-conference.html",
+    "https://www.investing.com/news/company-news/iridex-partners-with-eyeprogpo-for-retina-laser-distribution-93CH-4601412"
+   ]
+  },
+  {
+   "ticker": "PACB",
+   "result": "ADVANCE",
+   "exposure_real": "yes - genuine long-read (HiFi) sequencing pure-play (Revio/Vega/SPRQ-Nx); monster-shape, not peripheral",
+   "still_early": "yes - consumables inflecting (record, clinical shipments >100% YoY) but total rev still flat; pre-self-funding crossover",
+   "disqualifier": "clear - $48.1M short-read asset sale lifted cash to $276M; no going-concern, no death-spiral dilution",
+   "basis": "Q1 FY26 rev $37.2M flat, consumables $21.8M (+9%, record), narrowed loss, FY26 guide $165-175M; $276M cash post asset sale",
+   "verify_answer": "Not yet self-funding: total rev flat and FY guide high-end trimmed $5M on soft instruments, BUT consumables genuinely inflecting (record, >100% YoY clinical) and $276M cash removes near-term dilution pressure. Unresolved-but-real, not a perennial-burner DROP.",
+   "tier2_pin": "Pin whether consumables pull-through (annualized clinical run-rate) can carry rev to gross-margin breakeven before the $276M cash is materially drawn - i.e. quarters-to-self-funding.",
+   "sources": [
+    "https://www.stocktitan.net/news/PACB/pac-bio-announces-first-quarter-2026-financial-tiq5u61kr63u.html",
+    "https://seekingalpha.com/news/4589544-pacbio-expects-165m-175m-2026-revenue-as-sprq-nx-ships-later-this-month",
+    "https://www.stocktitan.net/sec-filings/PACB/10-q-pacific-biosciences-of-california-inc-quarterly-earnings-report-df947fc7fc1d.html"
+   ]
+  },
+  {
+   "ticker": "SCOR",
+   "result": "ADVANCE",
+   "exposure_real": "yes - genuine media/audience-measurement turnaround pure-play (cross-platform vs legacy syndicated/national-TV)",
+   "still_early": "yes - cross-platform +30% but total rev still flat and adj-EBITDA fell YoY; crossover to growth not yet achieved",
+   "disqualifier": "clear - Q4-2025 recap closed (no going-concern); strategic review live; standalone turnaround case",
+   "basis": "Q1 FY26 rev $85.3M (-0.5%), cross-platform +30% to $12.6M, net loss $6.2M, adj-EBITDA $5.0M (down from $7.4M); new CEO; recap closed",
+   "verify_answer": "Crossover NOT yet achieved: cross-platform growth (+30%) still offset by national-TV/syndicated decline (rev flat, adj-EBITDA DOWN YoY). Thesis intact but unproven - mgmt guides continued double-digit cross-platform growth to offset legacy in 2026; strategic-action update pending. Unresolved -> ADVANCE.",
+   "tier2_pin": "Pin the crossover quarter (when cross-platform growth out-runs legacy decline to flip total rev positive) AND the post-recap diluted share/preferred structure for the 4x math.",
+   "sources": [
+    "https://www.stocktitan.net/news/SCOR/comscore-reports-first-quarter-2026-205nqlwkb0nc.html",
+    "https://www.globenewswire.com/news-release/2026/05/14/3295305/0/en/Comscore-Reports-First-Quarter-2026-Results.html"
+   ]
+  },
+  {
+   "ticker": "VERU",
+   "result": "DROP",
+   "exposure_real": "yes - real Next-Gen Obesity/metabolic exposure (enobosarm muscle-preservation w/ GLP-1s, advancing to Phase 3)",
+   "still_early": "n/a - dropped on disqualifier, not on theme maturity",
+   "disqualifier": "FIRED - \u00a79 going-concern: latest FY26 10-Q states substantial doubt; ~1.8 quarters runway, zero revenue, dilutive warrant offering in flight",
+   "basis": "FY26 10-Q: management says cash insufficient for next 12mo (substantial doubt); ~$27.6M cash vs $15.1M 6mo op burn (~1.8Q); $0 revenue; new common+Series A/B warrant offering to fund enobosarm",
+   "verify_answer": "Re-applied: going-concern STILL fires and is WORSE - latest 10-Q runway ~1.8 quarters vs last week's ~3.7Q, explicit substantial-doubt language, zero net revenue, and a fresh warrant-laden dilutive raise required just to fund the Phase 3 program. Drop again.",
+   "drop_reason": "\u00a79 going-concern disqualifier re-confirmed on latest FY26 10-Q (substantial doubt, ~1.8Q cash runway, zero revenue, dilutive warrant offering required to fund Phase 3 enobosarm)",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/VERU/10-q-veru-inc-quarterly-earnings-report-527197c54697.html",
+    "https://www.sec.gov/Archives/edgar/data/0000863894/000143774926016557/veru20260331_10q.htm",
+    "https://www.stocktitan.net/news/VERU/veru-announces-proposed-public-t4eyegp3pqcc.html"
+   ]
+  },
+  {
+   "ticker": "GXAI",
+   "result": "DROP",
+   "exposure_real": "no - indirect narrative shell; 19.99% non-controlling stake in private AFD, NO consolidated C-UAS revenue to GXAI",
+   "still_early": "n/a - dropped on non-fit exposure, not theme maturity",
+   "disqualifier": "FIRED - \u00a79 fake-demand/narrative pattern: AFD's Navy 'license' + Anduril Lattice 'acceptance' are milestones of a private company, not firm orders or revenue accruing to GXAI",
+   "basis": "Gaxos paid $2.9M for 19.99% of private America First Defense; AFD got a Navy NPS counter-drone license + Anduril Lattice acceptance; no financial terms, no firm orders, no consolidated revenue disclosed; stock spiked ~84% on the narrative",
+   "verify_answer": "NOT a real contracted C-UAS revenue pipeline. GXAI holds only a 19.99% minority stake in private AFD; AFD's license/Anduril-acceptance are pre-revenue narrative milestones with no firm orders or awards, and nothing consolidates to GXAI's P&L. Indirect narrative shell.",
+   "drop_reason": "Confirmed peripheral/tenuous exposure - GXAI is an AI-app company with a 19.99% minority stake in a private defense firm; no firm orders, no consolidated counter-drone revenue (\u00a79 fake-demand/narrative-shell pattern)",
+   "sources": [
+    "https://www.globenewswire.com/news-release/2026/03/03/3248324/0/en/Gaxos-Acquires-Strategic-Stake-in-America-First-Defense-Developer-of-Advanced-Drone-Based-Electronic-Warfare-System.html",
+    "https://www.stocktitan.net/sec-filings/GXAI/8-k-gaxos-ai-inc-reports-material-event-2d4ecf826d15.html",
+    "https://www.stocktitan.net/news/GXAI/america-first-defense-secures-license-from-navy-for-counter-uas-ghhf84vdz6n4.html"
+   ]
+  },
+  {
+   "ticker": "PRZO",
+   "result": "ADVANCE",
+   "exposure_real": "yes - Israeli aerospace/defense pure-play; DefendAir counter-UAS net-launcher own product",
+   "still_early": "yes - orders just starting to convert; tiny absolute base, US Tier-1 backlog just opened June 2026",
+   "disqualifier": "clear - firm named-customer orders (not LOIs/expo pipeline); production subcontractor engaged; no going-concern flagged in 6-Ks reviewed",
+   "basis": "Jan-Mar 2026 customer orders $1.278M (+22% vs FY25 total $1.046M); first US Tier-1 defense order (Jun 2026); Israeli + global defense corp + W-European reseller orders; subcontractor engaged for thousands of units/yr",
+   "verify_answer": "Orders are FIRM and named (Israeli defense entity, major global defense corp, US Tier-1 in June 2026 - actual POs, not expo pipeline) and converting, but the absolute base is tiny ($1.28M Q1 vs $1.05M FY25). Early but real; production engagement signals ramp intent. Runway not disclosed in reviewed 6-Ks (unresolved -> ADVANCE).",
+   "tier2_pin": "Pin the cash runway and dilution risk to fund the 'thousands of units/yr' production ramp, AND the dollar size/conversion timeline of the US Tier-1 follow-on backlog (does it scale to a needle-moving number?).",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001916241/000121390026018603/ea027781702ex99-1_parazero.htm",
+    "https://www.sec.gov/Archives/edgar/data/1916241/000121390026042779/ea028607101_ex99-1.htm"
+   ]
+  },
+  {
+   "ticker": "SENS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - implantable long-duration CGM pure-play (Eversense 365); core to the long-duration glucose-monitoring theme",
+   "still_early": "yes - revenue inflecting hard (+87%) post Ascensia US-rights reversion; Gemini pivotal still ahead; DTC ramp early",
+   "disqualifier": "clear - $100M+ raised funds the ramp (de-risks runway); dilution real but not death-spiral; no going-concern",
+   "basis": "Q1 FY26 rev $11.7M (+87%), GM 59%, Ascensia US rights reverted Jan-1-2026 (100% US economics), FY26 guide raised to $60-64M, raised $100M+, Gemini pivotal 2026",
+   "verify_answer": "Yes - Ascensia US-rights reversion (Senseonics now keeps 100% US economics) + DTC ramp drive the +87% inflection and raised $60-64M guide. The $100M+ raise (incl. $300M shelf / $100M ATM w/ TD Cowen) is genuinely dilutive but funds the commercial ramp and removes near-term runway risk. Path to GM scale credible, not yet proven.",
+   "tier2_pin": "Pin the dilution magnitude vs the 4x math - model fully-diluted share count after the $300M shelf/$100M ATM is tapped, against the path to gross-margin scale at the $60-64M (and beyond) revenue run-rate.",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001616543/000110465926057142/sens-20260507xex99d1.htm",
+    "https://www.sec.gov/Archives/edgar/data/0001616543/000110465926057233/sens-20260331x10q.htm",
+    "https://www.stocktitan.net/sec-filings/SENS/s-3-senseonics-holdings-inc-shelf-registration-statement-3810a6ea75ed.html"
+   ]
+  },
+  {
+   "ticker": "TRIB",
+   "result": "DROP",
+   "exposure_real": "yes - real next-gen CGM+ biosensor development exposure (650+ days data, improved MARD, 2026 pivotal/FDA target)",
+   "still_early": "n/a - dropped on disqualifier, not theme maturity",
+   "disqualifier": "FIRED - \u00a79 cash-runway/dilution death-spiral: $5.14M cash (Jun-1-26), negative equity, ongoing burn, reliant on Yorkville SEPA + Perceptive debt waiver; Nasdaq MVPHS non-compliance",
+   "basis": "As of Jun-1-26 only $5.14M cash; negative equity, sustained losses/cash burn, <1yr runway; $25M Yorkville SEPA (dilutive) + Perceptive interest-capitalization/covenant waiver (Jun-5-26) to preserve cash; Nasdaq $15M MVPHS shortfall (deadline Aug-18-26)",
+   "verify_answer": "CGM+ pivotal/FDA-submission targeted 2026 but the balance sheet CANNOT credibly fund it to commercialization: ~$5.14M cash against ongoing burn (<1yr runway), negative equity, dependence on a dilutive $25M Yorkville SEPA and a just-granted Perceptive covenant/interest waiver, plus a live Nasdaq delisting (MVPHS) clock. Going-concern/death-spiral fires.",
+   "drop_reason": "\u00a79 cash-runway/dilution death-spiral confirmed - sub-$1 micro-cap with ~$5.14M cash, negative equity, <1yr runway, reliant on dilutive Yorkville SEPA + Perceptive debt waiver, and a live Nasdaq MVPHS delisting clock; cannot fund CGM+ to commercialization without heavy dilution",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0000888721/000117891326000580/exhibit_99-1.htm",
+    "https://www.stocktitan.net/news/TRIB/trinity-biotech-receives-non-compliance-notice-regarding-nasdaq-j9anr0qe9apn.html",
+    "https://www.tipranks.com/news/company-announcements/trinity-biotech-secures-interest-capitalization-and-covenant-waiver-from-perceptive"
+   ]
+  }
+ ],
+ "advance": [
+  {
+   "ticker": "AIRO",
+   "result": "ADVANCE",
+   "exposure_real": "yes - pure-play AI-enabled drone/unmanned-systems maker for US & allied defense, core counter-drone/autonomous-warfare theme",
+   "still_early": "yes - Blue UAS cert H1-2026 and H2 ramp ahead; pre-breakout on backlog conversion",
+   "disqualifier": "clear - no going-concern; Q1 margin drop confirmed as mix shift (drone upgrades vs full systems), not structural; guidance reaffirmed; no slipped milestone or guidance cut",
+   "basis": "Q1-26 rev $8.9M GM 26.6% (mix-driven, full-system deliveries higher margin), drone backlog >$150M majority converting <12mo, FY26 +15-25% reaffirmed, record Q4 expected",
+   "verify_answer": "Backlog >$150M reaffirmed at Apr-30-2026, majority convertible <12mo; margin collapse confirmed mix/ramp (lower-margin upgrade programs in Q1) not structural - mgmt guides only low-single-digit GM compression vs FY25 as drone deliveries resume",
+   "tier2_pin": "Verify the >$150M backlog is firm POs (not LOIs) and quantify H2 drone-delivery conversion + Blue UAS cert timing that drives the margin/revenue recovery",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/AIRO/8-k-airo-group-holdings-inc-reports-material-event-a26fecd6b4e7.html",
+    "https://www.minichart.com.sg/2026/05/14/airo-group-holdings-reports-q1-2026-results-reaffirms-15-25-revenue-growth-guidance-and-expands-ai-enabled-drone-portfolio/"
+   ]
+  },
+  {
+   "ticker": "BARK",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real pet-brand turnaround (BarkBox DTC + Commerce/retail), standalone case",
+   "still_early": "yes - commerce/retail diversification still building; re-acceleration not yet proven either way",
+   "disqualifier": "clear - debt-free, adj-EBITDA positive (~$1.6M) and FCF-positive; one revenue miss (deliberate marketing cut), not >1 guidance cut; no going-concern or dilution-spiral",
+   "basis": "Q3-26 rev $98.4M (below $101-104M guide on cut marketing spend), adj-EBITDA ~$1.6M positive, 62.5% consolidated GM, fully repaid 2025 converts in cash = debt-free",
+   "verify_answer": "Not yet confirmed durable re-acceleration: Q3 revenue declined/missed on deliberate marketing reduction and commerce was ~$1.5M below LY on timing. EBITDA positivity is real but modest and partly cost-driven. Re-acceleration thesis UNRESOLVED - advances under unresolved->ADVANCE rule",
+   "tier2_pin": "Pin whether Commerce/retail can drive durable top-line re-acceleration (not just cost-cut EBITDA) - need forward revenue trajectory and retail door/SKU expansion vs the marketing-spend trade-off",
+   "sources": [
+    "https://investors.bark.co/news/news-details/2026/BARK-Reports-Third-Quarter-Fiscal-Year-2026-Results/default.aspx",
+    "https://www.investing.com/news/transcripts/earnings-call-transcript-barks-q3-2026-results-show-missed-revenue-target-93CH-4489099"
+   ]
+  },
+  {
+   "ticker": "CPS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real auto-supplier (sealing/fluid-handling) restructuring/deleveraging case",
+   "still_early": "yes - margin-expansion + de-lever path early; refi just reset maturity runway to 2031",
+   "disqualifier": "clear - refi EXTENDED to 2031, lowered rate, cut cash interest $6M/yr; $286M liquidity; awards ahead of plan; net loss includes one-time $24.2M refi charge, not operational",
+   "basis": "Q1-26 sales $686.4M +2.9%, adj-EBITDA $51M (down YoY only on non-recurring $10M prior royalty), GM +160bps over 2yr, $128M new awards ahead of plan, FY26 double-digit EBITDA-margin guide, +11% on print",
+   "verify_answer": "Path is real restructuring + new-award driven margin expansion, NOT just refi-extended distress: GM +160bps over two years on flat/declining volume, $128M awards ahead of plan, refi extended to 2031 + $6M/yr interest savings + $286M liquidity. EBITDA dip is non-recurring royalty comp, not structural decline",
+   "tier2_pin": "Pin the FY26 double-digit EBITDA-margin bridge and leverage trajectory - confirm new-award cadence and margin gains compound into sustained de-levering vs auto-volume/tariff headwinds",
+   "sources": [
+    "https://www.stocktitan.net/news/CPS/cooper-standard-reports-solid-first-quarter-2026-results-and-strong-iplnm9ldmwco.html",
+    "https://www.fool.com/earnings/call-transcripts/2026/05/07/cooper-standard-cps-q1-2026-earnings-transcript/"
+   ]
+  },
+  {
+   "ticker": "ELTX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - clinical immuno-oncology, lead asset ELI-002 7P mKRAS vaccine; classic binary monster-shape",
+   "still_early": "yes - pre-readout; the value-defining DFS data is still ahead (mid-2026)",
+   "disqualifier": "clear - cash $14.9M + $13M ATM funds operations into Q4-2026, PAST the mid-2026 readout; IDMC recommended continue without modification; fewer progressions/deaths than projected",
+   "basis": "Ph2 AMPLIFY-7P event-driven DFS analysis expected mid-2026; 99% evaluable mKRAS T-cell response; runway into Q4-2026 covers the binary; positive IDMC; favorable interim event count",
+   "verify_answer": "DFS readout is event-driven, expected mid-2026 (anticipated mid-year). Cash $14.9M (Mar-31) plus $13M ATM funds operations INTO Q4-2026 - i.e. past the readout. Dilution risk before the binary is therefore low; the ATM raise already extended runway over the catalyst",
+   "tier2_pin": "Pin the exact DFS event-trigger/readout window and confirm runway truly clears it without a forced raise into the print; size the binary up/down on positive vs negative DFS",
+   "sources": [
+    "https://www.stocktitan.net/news/ELTX/elicio-therapeutics-reports-first-quarter-2026-financial-results-and-c8pumq9tv8a2.html",
+    "https://www.chartmill.com/news/ELTX/Chartmill-48154-Elicio-Therapeutics-NASDAQELTX-Q1-2026-Results-Show-Extended-Cash-Runway-Ahead-of-Key-Phase-2-Data-Readout"
+   ]
+  },
+  {
+   "ticker": "LE",
+   "result": "ADVANCE",
+   "exposure_real": "yes - real apparel-brand turnaround with structural IP value-unlock via WHP JV",
+   "still_early": "yes - JV just closed Apr-1-2026; June multi-year framework still to come; re-rating not played out",
+   "disqualifier": "clear - $300M cash repays $234M term loan = de-levered; profitable core (LTM NI $11.8M); $100M buyback; no going-concern or dilution issue",
+   "basis": "WHP JV completed Apr-1-2026: $300M cash for 50% controlling JV stake in brand IP, term loan (~$234M) fully repaid, continued long-term brand upside; Q3 EPS $0.17 swung to profit; June enhanced call for multi-year framework",
+   "verify_answer": "WHP JV is structurally transformative, NOT a one-time cash event: $300M proceeds de-lever via full term-loan repayment AND Lands' End retains 50% of the JV for continued IP/licensing upside while keeping DTC/B2B operations. Profit swing (Q3 EPS $0.17, LTM NI $11.8M) supports a sustainable, de-levered base ahead of June framework",
+   "tier2_pin": "Pin the June multi-year framework - JV economics/royalty split, licensing-expansion runway, and de-levered EPS power to confirm durable growth vs a one-time balance-sheet reset",
+   "sources": [
+    "https://www.stocktitan.net/news/LE/lands-end-and-whp-global-complete-joint-venture-to-accelerate-global-734jqjhea9u5.html",
+    "https://www.retaildive.com/news/whp-global-acquires-controlling-stake-lands-end/810469/"
+   ]
+  },
+  {
+   "ticker": "SKYX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - patented smart ceiling/electrical platform (~97 patents); standalone smart-home platform case",
+   "still_early": "yes - Gen-3 launch mid-Q3-2026 is the claimed inflection, not yet shipped; licensing/builder ramp early",
+   "disqualifier": "clear - 9 straight growth qtrs, $32M cash, $29M raise was STRAIGHT equity (no warrants/death-spiral); still unprofitable but no going-concern; dilution manageable",
+   "basis": "Q1-26 rev $22M +10% (9th straight growth qtr), GM 30%, net loss ~$9.3M, ~134M shares, cash ~$32M after $29M straight-equity raise; Eurofase license + Group OTT hotel deal; Gen-3 mid-Q3-2026",
+   "verify_answer": "Step-change is NOT yet confirmed - current growth is still slow ~10% YoY and the company remains deeply unprofitable (-$9.3M net loss on $22M rev). Dilution is manageable (134M shares, $29M raised as straight equity, no warrants). The inflection rests on Gen-3 (mid-Q3-2026) + licensing/builder conversion, which is UNRESOLVED -> advances under unresolved->ADVANCE rule",
+   "tier2_pin": "Pin whether Gen-3 + licensing/builder deals actually drive a revenue step-change (>10% to inflection) and a credible path to profitability - quantify license/builder economics and cash runway to breakeven",
+   "sources": [
+    "https://www.chartmill.com/news/SKYX/Chartmill-48211-SKYX-Platforms-Corp-NASDAQSKYX-Q1-2026-Earnings-Record-Revenue-and-Path-to-Profitability-Drive-8-After-Market-Surge",
+    "https://www.stocktitan.net/sec-filings/SKYX/10-q-skyx-platforms-corp-quarterly-earnings-report-a23fee6bcfa5.html"
+   ]
+  },
+  {
+   "ticker": "AMPX",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 pure-play silicon-anode cell maker; customers' defense backlog converts directly into AMPX cell purchase orders",
+   "still_early": "yes \u2014 revenue inflecting (Q1-26 $28.5M +2.5x YoY), FY26 guide just raised to >=$130M, backlog visibility expanding into 2027",
+   "disqualifier": "clear",
+   "basis": "Defense backlog confirmed firm: AeroVironment $117M firm-fixed + Kraus Hamdani $270M USAF, ~$500M new orders to customers, DIU contract raised to $18.1M; FY26 guide raised to >=$130M + positive adj-EBITDA",
+   "verify_answer": "FIRM and converting \u2014 backlog is real defense awards (not LOIs); AMPX raised FY26 guide on resulting cell demand, defending the $19.69 anchor with actual order flow",
+   "tier2_pin": "Pin the cell-level conversion timing/$ from the ~$500M customer awards into AMPX's own purchase orders and the path to sustained positive EBITDA",
+   "sources": [
+    "https://www.fool.com/earnings/call-transcripts/2026/06/01/amprius-ampx-q1-2026-earnings-transcript/",
+    "https://ir.amprius.com/news-events/press-releases/detail/103/amprius-secured-u-s-army-xtechprime-award-to-develop-high-energy-batteries-with-reduced-weight-and-double-the-endurance"
+   ]
+  },
+  {
+   "ticker": "IBIO",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 clinical-stage pure-play in GLP-1-adjacent muscle-preservation (anti-myostatin IBIO-600, Activin-E IBIO-610)",
+   "still_early": "yes \u2014 Ph1 just initiated, sub-$2 micro-cap, pre-readout optionality intact (early-but-real)",
+   "disqualifier": "clear \u2014 runway concern resolved",
+   "basis": "Cash runway confirmed into Q3 FY2028 after $26M Frazier Life Sciences-led private placement (Jan-2026); first participant dosed Ph1 IBIO-600 Q2-26; IBIO-610 first-in-human early 2027",
+   "verify_answer": "Runway extends well past the SAD readout \u2014 into Q3 FY2028; 2026 catalyst timeline dated (first dose Q2-26, SAD data to follow). Weak-signal downtick does NOT reflect a funding/timeline break",
+   "tier2_pin": "Pin the specific SAD topline data date and what efficacy/biomarker bar would re-rate vs the crowded myostatin field (LLY/REGN/Scholar Rock)",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001420720/000110465926059408/ibio-20260512xex99d1.htm",
+    "https://www.sec.gov/Archives/edgar/data/0001420720/000110465926002940/tm262944d1_ex99-1.htm"
+   ]
+  },
+  {
+   "ticker": "QTRX",
+   "result": "ADVANCE",
+   "exposure_real": "yes \u2014 owns the Simoa platform behind a multi-analyte FDA-stage Alzheimer's blood Dx; direct thematic exposure",
+   "still_early": "yes \u2014 pre-clearance; ~$300M cap vs a large reimbursable Alzheimer's Dx TAM; decision still ahead",
+   "disqualifier": "clear",
+   "basis": "510(k) submitted Feb-3-2026 with prior Breakthrough Device Designation (supports H2-2026 decision window); Q1-26 rev $36.4M +20%, $102.6M cash, FY guide $169-174M toward breakeven, Tempus ordering",
+   "verify_answer": "Submission filed Feb-3-2026; Breakthrough designation implies expedited review, decision plausibly H2-2026. Dx opportunity is large/reimbursable (mass Alzheimer's screening) vs the ~$300M cap \u2014 favorable asymmetry",
+   "tier2_pin": "Pin the actual FDA decision date and the reimbursable per-test economics x screening volume to size the Dx revenue ramp vs cap",
+   "sources": [
+    "https://ir.quanterix.com/news-releases/news-release-details/quanterix-announces-fda-510k-submission-multi-analyte",
+    "https://www.stocktitan.net/news/QTRX/quanterix-announces-fda-510-k-submission-for-a-multi-analyte-wrz99rwexxxy.html"
+   ]
+  },
+  {
+   "ticker": "RXRX",
+   "result": "ADVANCE",
+   "exposure_real": "yes - flagship AI-drug-discovery platform (Recursion OS) with proprietary clinical pipeline",
+   "still_early": "yes - clinical inflection still pre-registrational; FAP/oncology readouts ahead",
+   "disqualifier": "clear - runway into early 2028 ($665M+ cash, ~$81M/qtr burn), no \u00a79 flag",
+   "tier2_pin": "Quantify FAP REC-4881 registrational path/timing (H2-26 FDA alignment) and whether oncology data (REC-617 1H27, REC-1245) can re-rate before next financing; partner-funding durability.",
+   "basis": "Q1-26 beat (loss -$0.22), runway into early 2028 ($665M+ cash, ~$81M/qtr burn); REC-4881 FAP -43%\u2192-53% polyp burden; JPM OW PT $10.",
+   "verify_answer": "Durable: runway into early 2028 funds through FAP registrational alignment (H2-26) and oncology readouts (1H27) without forced near-term dilution reset; FAP signal strong (43-53% polyp reduction)."
+  },
+  {
+   "ticker": "APPN",
+   "result": "ADVANCE",
+   "exposure_real": "yes - low-code agentic process-automation platform with AI-tier monetization",
+   "still_early": "yes - agentic ARR re-rate early; ~40% on AI tiers, room to expand",
+   "disqualifier": "clear - guidance raised, profit outlook lifted; no \u00a79 flag",
+   "tier2_pin": "Whether 115% net ARR expansion + agentic adoption (~40% on AI tiers) is durable enough to drive multiple re-rating vs rate-sensitive SaaS-duration compression; path to $825M Investor-Day rev goal.",
+   "basis": "Q1 FY26: total rev $202.2M (+21%), cloud subs $124.5M (+25%), 115% cloud net ARR expansion; FY26 guide raised (rev $819-831M), profit outlook lifted.",
+   "verify_answer": "Re-rate looks durable: cloud subs +25%, 115% net ARR expansion, ~40% of customers on AI-inclusive tiers, FY26 guide raised \u2014 real expansion not just multiple compression, though regime HEADWIND on duration remains the watch.",
+   "sources": [
+    "https://www.stocktitan.net/news/APPN/appian-announces-first-quarter-2026-financial-wvhr7eechrt9.html",
+    "https://www.benzinga.com/markets/earnings/26/05/52382535/appians-ai-bet-pays-off-q1-beats-estimates-2026-profit-outlook-raised"
+   ]
+  },
+  {
+   "ticker": "CNVS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - Matchpoint AI media-supply-chain platform positioned for licensed software-margin revenue",
+   "still_early": "yes - platform pivot early; M&A revenue/EBITDA ramps in FY27",
+   "disqualifier": "clear - low debt ($3.6M, D/E 10%), adj-EBITDA positive; no going-concern/\u00a79 flag",
+   "tier2_pin": "Pin whether Matchpoint generates genuine third-party LICENSED platform revenue (scale, named external customers, recurring software margin) vs internal media-ops tooling; and that Giant Worldwide/IndiQ +$53M rev/$10M EBITDA FY27 adds are firm and accretive (not financed by dilution given thin $2.5M cash).",
+   "basis": "Q3 FY26 rev $16.3M, adj-EBITDA +$2.4M, net loss -$1.0M; cash $2.5M + $4.2M facility; debt only $3.6M; acquisitions add ~$53M rev/$10M EBITDA FY27; FY27 guide $115-120M.",
+   "verify_answer": "Unresolved-but-real: Matchpoint is genuinely positioned as a scalable AI platform and the M&A adds are quantified/accretive, but third-party license revenue scale not yet confirmed \u2014 per rules this advances. Thin cash ($2.5M) is the watch, not a fired disqualifier.",
+   "sources": [
+    "https://www.stocktitan.net/news/CNVS/cineverse-reports-third-quarter-fiscal-year-2026-ytfxy9r5ashn.html",
+    "https://finance.yahoo.com/news/cineverse-reports-third-quarter-fiscal-210000542.html"
+   ]
+  },
+  {
+   "ticker": "GLBE",
+   "result": "ADVANCE",
+   "exposure_real": "yes - leading cross-border D2C ecommerce enablement platform, accelerating",
+   "still_early": "yes/qualified - already re-rated but growth re-accelerating with margin inflection",
+   "disqualifier": "clear - adj-EBITDA +59%, guidance raised; no \u00a79 flag",
+   "tier2_pin": "Whether a ~$5-6B mid-cap can still 4x: size the TAM runway, GMV/net-retention trajectory and FX-normalized growth durability vs the re-rating already in the multiple \u2014 the upside-shape question, not a disqualifier.",
+   "basis": "Q1 FY26: rev $252.1M (+33%), GMV $1,742M (+40%), adj-EBITDA $50.2M (+59%, 19.9% margin); FY26 guide raised (rev $1.22-1.28B, EBITDA $264-290M).",
+   "verify_answer": "Runway looks intact: +33% rev / +40% GMV re-acceleration with EBITDA margin expanding 330bps and raised guidance \u2014 growth-plus-margin combo supports a path, though 4x from a re-rated mid-cap is the explicit Tier-2 sizing question.",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/GLBE/6-k-global-e-online-ltd-current-report-foreign-issuer-b9c069ecb13c.html",
+    "https://finance.yahoo.com/markets/stocks/articles/global-e-online-ltd-glbe-230212443.html"
+   ]
+  },
+  {
+   "ticker": "PACB",
+   "result": "ADVANCE",
+   "exposure_real": "yes - genuine long-read (HiFi) sequencing pure-play (Revio/Vega/SPRQ-Nx); monster-shape, not peripheral",
+   "still_early": "yes - consumables inflecting (record, clinical shipments >100% YoY) but total rev still flat; pre-self-funding crossover",
+   "disqualifier": "clear - $48.1M short-read asset sale lifted cash to $276M; no going-concern, no death-spiral dilution",
+   "basis": "Q1 FY26 rev $37.2M flat, consumables $21.8M (+9%, record), narrowed loss, FY26 guide $165-175M; $276M cash post asset sale",
+   "verify_answer": "Not yet self-funding: total rev flat and FY guide high-end trimmed $5M on soft instruments, BUT consumables genuinely inflecting (record, >100% YoY clinical) and $276M cash removes near-term dilution pressure. Unresolved-but-real, not a perennial-burner DROP.",
+   "tier2_pin": "Pin whether consumables pull-through (annualized clinical run-rate) can carry rev to gross-margin breakeven before the $276M cash is materially drawn - i.e. quarters-to-self-funding.",
+   "sources": [
+    "https://www.stocktitan.net/news/PACB/pac-bio-announces-first-quarter-2026-financial-tiq5u61kr63u.html",
+    "https://seekingalpha.com/news/4589544-pacbio-expects-165m-175m-2026-revenue-as-sprq-nx-ships-later-this-month",
+    "https://www.stocktitan.net/sec-filings/PACB/10-q-pacific-biosciences-of-california-inc-quarterly-earnings-report-df947fc7fc1d.html"
+   ]
+  },
+  {
+   "ticker": "SCOR",
+   "result": "ADVANCE",
+   "exposure_real": "yes - genuine media/audience-measurement turnaround pure-play (cross-platform vs legacy syndicated/national-TV)",
+   "still_early": "yes - cross-platform +30% but total rev still flat and adj-EBITDA fell YoY; crossover to growth not yet achieved",
+   "disqualifier": "clear - Q4-2025 recap closed (no going-concern); strategic review live; standalone turnaround case",
+   "basis": "Q1 FY26 rev $85.3M (-0.5%), cross-platform +30% to $12.6M, net loss $6.2M, adj-EBITDA $5.0M (down from $7.4M); new CEO; recap closed",
+   "verify_answer": "Crossover NOT yet achieved: cross-platform growth (+30%) still offset by national-TV/syndicated decline (rev flat, adj-EBITDA DOWN YoY). Thesis intact but unproven - mgmt guides continued double-digit cross-platform growth to offset legacy in 2026; strategic-action update pending. Unresolved -> ADVANCE.",
+   "tier2_pin": "Pin the crossover quarter (when cross-platform growth out-runs legacy decline to flip total rev positive) AND the post-recap diluted share/preferred structure for the 4x math.",
+   "sources": [
+    "https://www.stocktitan.net/news/SCOR/comscore-reports-first-quarter-2026-205nqlwkb0nc.html",
+    "https://www.globenewswire.com/news-release/2026/05/14/3295305/0/en/Comscore-Reports-First-Quarter-2026-Results.html"
+   ]
+  },
+  {
+   "ticker": "PRZO",
+   "result": "ADVANCE",
+   "exposure_real": "yes - Israeli aerospace/defense pure-play; DefendAir counter-UAS net-launcher own product",
+   "still_early": "yes - orders just starting to convert; tiny absolute base, US Tier-1 backlog just opened June 2026",
+   "disqualifier": "clear - firm named-customer orders (not LOIs/expo pipeline); production subcontractor engaged; no going-concern flagged in 6-Ks reviewed",
+   "basis": "Jan-Mar 2026 customer orders $1.278M (+22% vs FY25 total $1.046M); first US Tier-1 defense order (Jun 2026); Israeli + global defense corp + W-European reseller orders; subcontractor engaged for thousands of units/yr",
+   "verify_answer": "Orders are FIRM and named (Israeli defense entity, major global defense corp, US Tier-1 in June 2026 - actual POs, not expo pipeline) and converting, but the absolute base is tiny ($1.28M Q1 vs $1.05M FY25). Early but real; production engagement signals ramp intent. Runway not disclosed in reviewed 6-Ks (unresolved -> ADVANCE).",
+   "tier2_pin": "Pin the cash runway and dilution risk to fund the 'thousands of units/yr' production ramp, AND the dollar size/conversion timeline of the US Tier-1 follow-on backlog (does it scale to a needle-moving number?).",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001916241/000121390026018603/ea027781702ex99-1_parazero.htm",
+    "https://www.sec.gov/Archives/edgar/data/1916241/000121390026042779/ea028607101_ex99-1.htm"
+   ]
+  },
+  {
+   "ticker": "SENS",
+   "result": "ADVANCE",
+   "exposure_real": "yes - implantable long-duration CGM pure-play (Eversense 365); core to the long-duration glucose-monitoring theme",
+   "still_early": "yes - revenue inflecting hard (+87%) post Ascensia US-rights reversion; Gemini pivotal still ahead; DTC ramp early",
+   "disqualifier": "clear - $100M+ raised funds the ramp (de-risks runway); dilution real but not death-spiral; no going-concern",
+   "basis": "Q1 FY26 rev $11.7M (+87%), GM 59%, Ascensia US rights reverted Jan-1-2026 (100% US economics), FY26 guide raised to $60-64M, raised $100M+, Gemini pivotal 2026",
+   "verify_answer": "Yes - Ascensia US-rights reversion (Senseonics now keeps 100% US economics) + DTC ramp drive the +87% inflection and raised $60-64M guide. The $100M+ raise (incl. $300M shelf / $100M ATM w/ TD Cowen) is genuinely dilutive but funds the commercial ramp and removes near-term runway risk. Path to GM scale credible, not yet proven.",
+   "tier2_pin": "Pin the dilution magnitude vs the 4x math - model fully-diluted share count after the $300M shelf/$100M ATM is tapped, against the path to gross-margin scale at the $60-64M (and beyond) revenue run-rate.",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0001616543/000110465926057142/sens-20260507xex99d1.htm",
+    "https://www.sec.gov/Archives/edgar/data/0001616543/000110465926057233/sens-20260331x10q.htm",
+    "https://www.stocktitan.net/sec-filings/SENS/s-3-senseonics-holdings-inc-shelf-registration-statement-3810a6ea75ed.html"
+   ]
+  }
+ ],
+ "drop": [
+  {
+   "ticker": "ARAY",
+   "result": "DROP",
+   "exposure_real": "yes - real radiation-oncology systems maker, but theme is a turnaround that is not turning",
+   "still_early": "n/a - turnaround stalling, not early",
+   "disqualifier": "FIRED (\u00a79 management/guidance event + confirmed non-traction): withdrew FY26 revenue and adj-EBITDA guidance on Middle East shipment delays",
+   "basis": "FQ3-26 rev $104.8M -7% YoY, backlog $356.2M down ~21% YoY, gross product orders $48.5M vs $71.2M (-32%), book-to-bill fell 1.2->1.0, GAAP net loss $11.8M, FY26 guidance withdrawn",
+   "verify_answer": "Turnaround NOT gaining traction: orders down 32% YoY, backlog down 21% YoY, book-to-bill deteriorated to 1.0, revenue declining, and company WITHDREW FY26 guidance citing indefinitely delayed MENA/Pakistan shipments - confirms melting-ice-cube over stabilizing turnaround",
+   "drop_reason": "Confirmed melting-ice-cube: backlog -21% YoY, orders -32% YoY, book-to-bill down to 1.0, revenue declining, and FY26 guidance withdrawn on indefinite shipment delays - turnaround traction absent, no plausible protected 4x path",
+   "sources": [
+    "https://www.tipranks.com/news/company-announcements/accuray-earnings-call-balances-turnaround-gains-risks",
+    "https://investors.accuray.com/news-releases/news-release-details/accuray-reports-fiscal-2026-third-quarter-financial-results"
+   ]
+  },
+  {
+   "ticker": "CDT",
+   "result": "DROP",
+   "exposure_real": "no - dilution-funded crypto-treasury/M&A shell with no real operating substance",
+   "still_early": "n/a - not a real operating play",
+   "disqualifier": "FIRED (\u00a79 serial-dilution shell / fake-substance): equity-funded shell, ~17.9 BTC (~$2M) micro treasury, 22.8M-share selling-stockholder offering filed; no operating business",
+   "basis": "Formerly Conduit Pharma, renamed CDT Equity Aug-2025; runs equity-funded acquisitions + Bitcoin treasury (~17.9 BTC total, ~$1-2M); ~$0.74 stub; up to 22,846,452-share offering by selling stockholders",
+   "verify_answer": "CDT is a dilution-funded shell, NOT a real operating company: tiny ~$1-2M BTC treasury, equity-funded M&A strategy, and a 22.8M-share selling-stockholder offering driving dilution. No durable operating revenue base - this is a crypto/M&A shell dressed as a story",
+   "drop_reason": "Confirmed non-fit: dilution-funded crypto-treasury/M&A shell with no real operating substance and a 22.8M-share offering overhang - peripheral/tenuous 'exposure' and \u00a79 serial-dilution shell",
+   "sources": [
+    "https://bitcointreasuries.net/public-companies/cdt-equity-inc",
+    "https://www.gurufocus.com/news/3148258/cdt-equity-cdt-expands-bitcoin-holdings-with-strategic-purchase"
+   ]
+  },
+  {
+   "ticker": "AUID",
+   "result": "DROP",
+   "exposure_real": "yes thematically (passwordless biometric identity SaaS) but no standalone case \u2014 no demand conversion",
+   "still_early": "n/a \u2014 perennial pre-revenue, no inflection",
+   "disqualifier": "\u00a79 cash-runway / dilution-funded firewall fired",
+   "drop_reason": "Confirmed perennial pre-revenue with dilution-funded runway: Q1-26 rev $0.5M vs $4.5M net loss, ARR only $1.9M, bARR signed just $0.08M, $40M pipeline still unconverted, required $4.2M post-quarter bridge financing to extend runway",
+   "basis": "Q1-26 transcript/PR: $0.5M rev, $4.5M loss, ARR $1.9M, bARR $0.08M, $4.2M bridge financing; zero pipeline-to-booked enterprise conversion",
+   "verify_answer": "NO conversion confirmed \u2014 bARR signed was only $0.08M; the 20-account/$40M pipeline remains pipeline, funded by dilution not bookings",
+   "sources": [
+    "https://www.fool.com/earnings/call-transcripts/2026/05/15/authid-auid-q1-2026-earnings-call-transcript/",
+    "https://www.stocktitan.net/news/AUID/auth-id-reports-financial-and-operating-results-for-the-first-od5jbs5166cn.html"
+   ]
+  },
+  {
+   "ticker": "DJT",
+   "result": "DROP",
+   "exposure_real": "yes (BTC-treasury) but the thesis-shape (discount re-rate) is invalidated \u2014 treasury is liquidating",
+   "still_early": "no \u2014 played out the wrong way; treasury unwinding with deep markdowns",
+   "disqualifier": "clear of \u00a79, but thematic shape confirmed broken",
+   "drop_reason": "Confirmed unwinding not accumulating: BTC stash shrunk from 11,542 to ~6,889 via 2,000 + 2,650 BTC outflows, holdings ~34% underwater, FY net loss $712M from ~$582M crypto markdowns \u2014 no re-rating discount, a liquidating treasury",
+   "basis": "Multiple June-2026 sources: stash down to ~6,889 BTC after Crypto.com transfers, $455M unrealized shortfall, $712M FY loss driven by markdowns",
+   "verify_answer": "LIQUIDATING \u2014 net BTC outflows shrinking the stash, deeply underwater entry; not an accumulating treasury at a re-rateable NAV discount",
+   "sources": [
+    "https://finance.yahoo.com/markets/crypto/articles/trump-media-bitcoin-stash-shrinks-055901204.html",
+    "https://www.coindesk.com/markets/2026/05/22/trump-media-moves-another-usd205m-in-bitcoin-as-losses-on-crypto-bet-swell-to-usd455m"
+   ]
+  },
+  {
+   "ticker": "MLCO",
+   "result": "DROP",
+   "exposure_real": "yes (Macau IR operator) but standalone case is a quality mid-recovery cyclical, not a multibagger",
+   "still_early": "no \u2014 already mid-recovery; EBITDA +12% YoY, deleveraging well underway, recovery substantially priced",
+   "disqualifier": "clear of \u00a79 \u2014 dropped on exhausted/limited-upside shape",
+   "drop_reason": "Confirmed no 4x equity-leverage path: $2.27B cap large-cap, analyst avg target $8.16 (~42% upside) and high $10.5 (~82%); deleveraging real ($7.18B\u2192$3.85B gross debt) but this is a quality cyclical with limited upside, not a protected 3-4x",
+   "basis": "Q1-26: rev $1.37B +11%, property EBITDA $381M +12%; price $5.76, cap $2.27B; analyst avg $8.16 / high $10.5",
+   "verify_answer": "Recovery + share-gain trajectory is REAL but lacks 4x equity leverage \u2014 it is an already mid-recovery cyclical; Street high case is <2x, deleveraging benefits largely captured",
+   "sources": [
+    "https://www.investing.com/news/company-news/melco-q1-2026-slides-revenue-jumps-11-ebitda-margin-expands-93CH-4649820",
+    "https://www.wallstreetzen.com/stocks/us/nasdaq/mlco"
+   ]
+  },
+  {
+   "ticker": "STI",
+   "result": "DROP",
+   "exposure_real": "thematically silicon-anode/space-battery, but no real exposure \u2014 pre-commercial shell with no revenue-bearing contract",
+   "still_early": "n/a \u2014 pure announcement pop, no commercial substance",
+   "disqualifier": "\u00a79 fake-demand firewall fired",
+   "drop_reason": "Confirmed pure announcement-pop on a pre-commercial shell: Q1-26 first-ever rev only $85K (grants+samples), NO named SpaceX/NASA contract (Artemis/LEO cited as targets only), Hilco patent-monetization = asset-sale dressing; no funded development deal behind the space-battery narrative",
+   "basis": "June-2026 PR + coverage: $85,426 Q1 rev, space uses are 'targets not agreements', Hilco patent monetization deal; stock ripped ~3x on reveal alone",
+   "verify_answer": "NO real revenue-bearing or funded development contract \u2014 the space-battery reveal is a product announcement with no booked deal; revenue is $85K of grants/samples",
+   "sources": [
+    "https://www.ebc.com/forex/why-sti-stock-is-up-space-battery-rally",
+    "https://www.prnewswire.com/news-releases/solidion-technology-unveils-patented-extreme-climate-battery-technology-targeting-low-earth-orbit-based-artificial-intelligence-data-centers-lunar-economy-and-space-302790827.html"
+   ]
+  },
+  {
+   "ticker": "YXT",
+   "result": "DROP",
+   "exposure_real": "no \u2014 China corporate-learning SaaS with negligible AI traction; thematic 'AI pivot' is nominal",
+   "still_early": "no \u2014 declining business, no operating inflection",
+   "disqualifier": "\u00a79 going-concern / no-inflection firewall area fired",
+   "drop_reason": "Confirmed delisting-risk China micro-cap with no operating inflection: revenue in secular decline (RMB424M\u2192340M), persistent net losses (RMB159M FY25), AI MRR negligible (RMB1.1M), going-concern dependent on new financing, Nasdaq min-bid deficiency (deadline Jul-27-2026) + VIE risk",
+   "basis": "FY25 20-F: rev RMB340.2M (down from RMB424M in 2023), net loss RMB158.9M, AI MRR RMB1.1M; going-concern dependent on financing; Nasdaq bid deficiency",
+   "verify_answer": "Going-concern flagged and financing-dependent; AI product traction is immaterial (RMB1.1M MRR); no operating inflection and active Nasdaq delisting risk \u2014 fails the inflection test",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/YXT/20-f-yxt-com-group-holding-ltd-files-annual-report-foreign-issuer-f3e7759b45ad.html",
+    "https://www.stocktitan.net/news/YXT/yxt-com-announces-receipt-of-nasdaq-xuyj3cg5mw52.html"
+   ]
+  },
+  {
+   "ticker": "EBON",
+   "result": "DROP",
+   "exposure_real": "no - stablecoin angle is exchange-listing/announcement-only; no proprietary stablecoin, core rev only $6.5M",
+   "still_early": "n/a - exposure is tenuous, not a real thematic play",
+   "disqualifier": "clear - $200M cash buffer, narrowing loss; no \u00a79 firewall fired",
+   "drop_reason": "Confirmed peripheral/announcement-only exposure: FY25 rev just $6.5M with -$14.2M loss; Ebonex merely lists USDT (no proprietary stablecoin/firm traction). Stablecoin pivot is a shell narrative, not real revenue.",
+   "basis": "FY25 rev $6.5M (+11.4%), net loss $14.2M, $200.2M cash; Ebonex supports USDT/BTC/ETH but no proprietary stablecoin or revenue traction confirmed.",
+   "verify_answer": "Announcement/listing-only \u2014 no proprietary stablecoin and no quantified stablecoin revenue; cash is ample ($200M) so dilution firewall is not the issue, the exposure is.",
+   "sources": [
+    "https://stockanalysis.com/stocks/ebon/",
+    "https://briefglance.com/articles/ebangs-green-pivot-revenue-up-profits-down-in-risky-rebirth",
+    "https://cointelegraph.com/news/bitcoin-miner-firm-ebang-launches-ebonex-crypto-exchange"
+   ]
+  },
+  {
+   "ticker": "ULBI",
+   "result": "DROP",
+   "exposure_real": "no - defense/battery growth is legacy chemistry (BA-5390, conformal wearable); no silicon-anode/advanced-cell content",
+   "still_early": "n/a - real backlog growth but wrong theme",
+   "disqualifier": "clear - record $115.1M backlog, no \u00a79 flag; not a balance-sheet issue",
+   "drop_reason": "Confirmed weak/non-fit on the silicon-anode advanced-cell theme: Q1-26 product narrative is legacy military/commercial chemistry (BA-5390, conformal wearable, radio amplifiers), zero silicon-anode/advanced high-energy-density cell content. Thematic exposure is tenuous as the brief flagged.",
+   "basis": "Q1-26 rev $47.4M (-6.5%), EPS -$0.03; record $115.1M backlog (+21%), $8M conformal wearable backlog \u2014 all legacy chemistry; no silicon-anode mention in results.",
+   "verify_answer": "Legacy-chemistry replacement/defense-timing growth, NOT silicon-anode advanced cells \u2014 confirms the brief's weak-fit flag; backlog is real but off-theme.",
+   "sources": [
+    "https://www.stocktitan.net/news/ULBI/ultralife-corporation-reports-first-quarter-1biwy6aqrqjn.html",
+    "https://seekingalpha.com/news/4590102-ultralife-outlines-record-115_1m-backlog-while-targeting-midyear-scrap-fix-and-2026-shipments"
+   ]
+  },
+  {
+   "ticker": "BTAI",
+   "result": "DROP",
+   "exposure_real": "yes - real CNS catalyst (IGALMI at-home sNDA, PDUFA Nov 14 2026)",
+   "still_early": "yes - pre-PDUFA, but cannot survive to it",
+   "disqualifier": "FIRED \u00a79 - explicit going-concern doubt + death-spiral dilution pattern",
+   "drop_reason": "\u00a79 firewall FIRED: management states substantial doubt about going concern; $17.2M cash vs ~$11.8M quarterly operating burn (~1.5 quarters, far under 6) plus $100.3M debt; serial warrant repricings and repeated equity financings = death-spiral pattern. Balance sheet cannot reach Nov 14 2026 PDUFA without a wipeout.",
+   "basis": "Q1-26: rev $0.2M, net loss $12.7M, op cash outflow $11.8M, cash $17.2M, debt $100.3M; explicit going-concern; warrant repricings; MTS hired exploring sale.",
+   "verify_answer": "Cannot survive to catalyst: ~1.5 quarters of cash at burn vs a Nov-2026 PDUFA, $100M debt, going-concern doubt and serial warrant-reprice dilution \u2014 balance-sheet wipeout risk is the base case.",
+   "sources": [
+    "https://www.globenewswire.com/news-release/2026/05/15/3295725/0/en/BioXcel-Therapeutics-Provides-Business-Update-and-Reports-First-Quarter-2026-Financial-Results.html",
+    "https://www.stocktitan.net/sec-filings/BTAI/10-q-bio-xcel-therapeutics-inc-quarterly-earnings-report-27c74aacba17.html"
+   ]
+  },
+  {
+   "ticker": "IRIX",
+   "result": "DROP",
+   "exposure_real": "no - special-sit/takeout thesis is dead; now an internal cost-cut grind",
+   "still_early": "n/a - catalyst exhausted",
+   "disqualifier": "clear on \u00a79 balance sheet, but the monster-shape catalyst is confirmed gone",
+   "drop_reason": "Confirmed non-fit: strategic-review/sale process CONCLUDED WITHOUT A SALE (failed-sale overhang); EyeProGPO is a GPO preferred-pricing distribution deal (1,800 members get pricing, not 1,800 buyers), not a re-acceleration; 2026 focus is profitability/opex cuts toward cash-flow-positive. No live takeout path or growth inflection \u2014 the special-sit shape is gone.",
+   "basis": "CEO confirmed strategic review concluded; no pending alternatives beyond the closed Mar-2025 Novel Inspiration $10M investment (+$10M option); EyeProGPO = GPO pricing agreement; 2026 = profitability/opex-reduction focus.",
+   "verify_answer": "Stalled micro-cap with failed-sale overhang \u2014 the strategic process ended without a sale and there is no renewed takeout path; EyeProGPO is distribution pricing, not re-acceleration.",
+   "sources": [
+    "https://www.dailypolitical.com/2026/05/30/iridex-spotlights-profitability-push-retina-and-glaucoma-laser-growth-at-investor-conference.html",
+    "https://www.investing.com/news/company-news/iridex-partners-with-eyeprogpo-for-retina-laser-distribution-93CH-4601412"
+   ]
+  },
+  {
+   "ticker": "VERU",
+   "result": "DROP",
+   "exposure_real": "yes - real Next-Gen Obesity/metabolic exposure (enobosarm muscle-preservation w/ GLP-1s, advancing to Phase 3)",
+   "still_early": "n/a - dropped on disqualifier, not on theme maturity",
+   "disqualifier": "FIRED - \u00a79 going-concern: latest FY26 10-Q states substantial doubt; ~1.8 quarters runway, zero revenue, dilutive warrant offering in flight",
+   "basis": "FY26 10-Q: management says cash insufficient for next 12mo (substantial doubt); ~$27.6M cash vs $15.1M 6mo op burn (~1.8Q); $0 revenue; new common+Series A/B warrant offering to fund enobosarm",
+   "verify_answer": "Re-applied: going-concern STILL fires and is WORSE - latest 10-Q runway ~1.8 quarters vs last week's ~3.7Q, explicit substantial-doubt language, zero net revenue, and a fresh warrant-laden dilutive raise required just to fund the Phase 3 program. Drop again.",
+   "drop_reason": "\u00a79 going-concern disqualifier re-confirmed on latest FY26 10-Q (substantial doubt, ~1.8Q cash runway, zero revenue, dilutive warrant offering required to fund Phase 3 enobosarm)",
+   "sources": [
+    "https://www.stocktitan.net/sec-filings/VERU/10-q-veru-inc-quarterly-earnings-report-527197c54697.html",
+    "https://www.sec.gov/Archives/edgar/data/0000863894/000143774926016557/veru20260331_10q.htm",
+    "https://www.stocktitan.net/news/VERU/veru-announces-proposed-public-t4eyegp3pqcc.html"
+   ]
+  },
+  {
+   "ticker": "GXAI",
+   "result": "DROP",
+   "exposure_real": "no - indirect narrative shell; 19.99% non-controlling stake in private AFD, NO consolidated C-UAS revenue to GXAI",
+   "still_early": "n/a - dropped on non-fit exposure, not theme maturity",
+   "disqualifier": "FIRED - \u00a79 fake-demand/narrative pattern: AFD's Navy 'license' + Anduril Lattice 'acceptance' are milestones of a private company, not firm orders or revenue accruing to GXAI",
+   "basis": "Gaxos paid $2.9M for 19.99% of private America First Defense; AFD got a Navy NPS counter-drone license + Anduril Lattice acceptance; no financial terms, no firm orders, no consolidated revenue disclosed; stock spiked ~84% on the narrative",
+   "verify_answer": "NOT a real contracted C-UAS revenue pipeline. GXAI holds only a 19.99% minority stake in private AFD; AFD's license/Anduril-acceptance are pre-revenue narrative milestones with no firm orders or awards, and nothing consolidates to GXAI's P&L. Indirect narrative shell.",
+   "drop_reason": "Confirmed peripheral/tenuous exposure - GXAI is an AI-app company with a 19.99% minority stake in a private defense firm; no firm orders, no consolidated counter-drone revenue (\u00a79 fake-demand/narrative-shell pattern)",
+   "sources": [
+    "https://www.globenewswire.com/news-release/2026/03/03/3248324/0/en/Gaxos-Acquires-Strategic-Stake-in-America-First-Defense-Developer-of-Advanced-Drone-Based-Electronic-Warfare-System.html",
+    "https://www.stocktitan.net/sec-filings/GXAI/8-k-gaxos-ai-inc-reports-material-event-2d4ecf826d15.html",
+    "https://www.stocktitan.net/news/GXAI/america-first-defense-secures-license-from-navy-for-counter-uas-ghhf84vdz6n4.html"
+   ]
+  },
+  {
+   "ticker": "TRIB",
+   "result": "DROP",
+   "exposure_real": "yes - real next-gen CGM+ biosensor development exposure (650+ days data, improved MARD, 2026 pivotal/FDA target)",
+   "still_early": "n/a - dropped on disqualifier, not theme maturity",
+   "disqualifier": "FIRED - \u00a79 cash-runway/dilution death-spiral: $5.14M cash (Jun-1-26), negative equity, ongoing burn, reliant on Yorkville SEPA + Perceptive debt waiver; Nasdaq MVPHS non-compliance",
+   "basis": "As of Jun-1-26 only $5.14M cash; negative equity, sustained losses/cash burn, <1yr runway; $25M Yorkville SEPA (dilutive) + Perceptive interest-capitalization/covenant waiver (Jun-5-26) to preserve cash; Nasdaq $15M MVPHS shortfall (deadline Aug-18-26)",
+   "verify_answer": "CGM+ pivotal/FDA-submission targeted 2026 but the balance sheet CANNOT credibly fund it to commercialization: ~$5.14M cash against ongoing burn (<1yr runway), negative equity, dependence on a dilutive $25M Yorkville SEPA and a just-granted Perceptive covenant/interest waiver, plus a live Nasdaq delisting (MVPHS) clock. Going-concern/death-spiral fires.",
+   "drop_reason": "\u00a79 cash-runway/dilution death-spiral confirmed - sub-$1 micro-cap with ~$5.14M cash, negative equity, <1yr runway, reliant on dilutive Yorkville SEPA + Perceptive debt waiver, and a live Nasdaq MVPHS delisting clock; cannot fund CGM+ to commercialization without heavy dilution",
+   "sources": [
+    "https://www.sec.gov/Archives/edgar/data/0000888721/000117891326000580/exhibit_99-1.htm",
+    "https://www.stocktitan.net/news/TRIB/trinity-biotech-receives-non-compliance-notice-regarding-nasdaq-j9anr0qe9apn.html",
+    "https://www.tipranks.com/news/company-announcements/trinity-biotech-secures-interest-capitalization-and-covenant-waiver-from-perceptive"
+   ]
+  }
+ ],
+ "truncated": [],
+ "errors": []
+}

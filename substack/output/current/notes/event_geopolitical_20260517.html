@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1a2e; color: #e2e8f0; width: 680px; }
+.card { background: #1a2744; border-radius: 12px; overflow: hidden; border: 1px solid #2a3f5f; }
+.header { background: #0a1628; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+.header-title { font-size: 13px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.2px; }
+.header-date { font-size: 12px; color: #64748b; }
+.hero { padding: 24px; text-align: center; border-bottom: 1px solid #2a3f5f; }
+.hero-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.hero-number { font-size: 32px; font-weight: 700; color: #f87171; }
+.hero-sub { font-size: 14px; color: #94a3b8; margin-top: 6px; }
+.facts { padding: 20px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 1px solid #2a3f5f; }
+.fact-box { background: #0f1a2e; border-radius: 8px; padding: 14px; }
+.fact-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.fact-value { font-size: 16px; font-weight: 600; color: #e2e8f0; }
+.fact-value.red { color: #f87171; }
+.fact-value.amber { color: #fbbf24; }
+.fact-value.green { color: #4ade80; }
+.portfolio-row { padding: 16px 24px; background: #142036; border-bottom: 1px solid #2a3f5f; }
+.portfolio-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.portfolio-text { font-size: 14px; color: #cbd5e1; line-height: 1.5; }
+.ticker { color: #60a5fa; font-weight: 600; }
+.footer { padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; background: #0a1628; }
+.footer-brand { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 1.5px; }
+.footer-disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <span class="header-title">Geopolitical: Trump-Xi Summit Outcome</span>
+    <span class="header-date">17 May 2026</span>
+  </div>
+  <div class="hero">
+    <div class="hero-label">S&P 500 Friday Close</div>
+    <div class="hero-number">-1.24%</div>
+    <div class="hero-sub">7,408.50 | Summit ended without breakthroughs</div>
+  </div>
+  <div class="facts">
+    <div class="fact-box">
+      <div class="fact-label">Boeing Order</div>
+      <div class="fact-value amber">200 jets</div>
+    </div>
+    <div class="fact-box">
+      <div class="fact-label">Trump Target</div>
+      <div class="fact-value red">500 jets</div>
+    </div>
+    <div class="fact-box">
+      <div class="fact-label">Hormuz Agreement</div>
+      <div class="fact-value green">Joint statement</div>
+    </div>
+    <div class="fact-box">
+      <div class="fact-label">Trade Council</div>
+      <div class="fact-value green">Established</div>
+    </div>
+  </div>
+  <div class="portfolio-row">
+    <div class="portfolio-label">Portfolio Connection</div>
+    <div class="portfolio-text"><span class="ticker">$NVDA</span> and <span class="ticker">$AMD</span> exposed to chip export uncertainty. Xi visit to US this fall may unlock further agreements. No new tariff escalation announced.</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">Sterling Signals</span>
+    <span class="footer-disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

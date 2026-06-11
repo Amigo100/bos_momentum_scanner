@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """
-Sterling Grid V6 — Weekly Indicator Calculator (EXACT BACKTEST MATCH)
+Sterling Grid V7 — Weekly Indicator Calculator (EXACT BACKTEST MATCH)
 ======================================================================
 Every calculation verified line-by-line against the actual backtest source:
   - src/indicators.py    (HMA, RSI, MACD, Undercurrent)
   - src/v2_signals.py    (entry signal generation + corridor alternation)
   - src/v3_exits.py      (ExD exit + tiered profit lock)
   - v6/run_phase_b_tiered_sizing.py  (V6 pivot entry, OR-gated, quality tiers)
+
+V7 CHANGES vs V6:
+  1. Entry: Added ATR Percentile Rank filter (squeeze must be active)
+     ATR(14) percentile rank over 52 weeks < 20th percentile = volatility hole
+  2. All other entry/exit logic unchanged from V6
 
 V6 CHANGES vs V4:
   1. Entry: HMA slope rising → HMA PIVOT LOW (V-bottom: HMA[i-2] > HMA[i-1] < HMA[i])
@@ -79,31 +84,46 @@ LOCK_TIERS = [
     (0.50, 0.25),   # current_return >= +50%  → 25% trail from peak
 ]
 
+# V8 exit (tiered_initial_35): a WIDE fixed initial floor active until +50% gain.
+# Below +50% there is now a hard stop at -35% from entry (was: no stop pre-+50%, ExD only).
+# At/above +50% the LOCK_TIERS trailing lock takes over. ExD is DROPPED as an exit trigger.
+# Validated over 12 backtests (crash-inclusive, next-open fills): tiered_initial_35 delivered
+# ~2.8x the live exit's risk-adjusted return (Sortino 5.06 vs 1.81).
+INITIAL_STOP_PCT = 0.35   # -35% hard floor from entry, applied while current return < +50%
+
 # ═══════════════════════════════════════════════════════════════
-# POSITION SIZING — Quality-Tier Based (V6 Tiered 20/10/5)
+# POSITION SIZING — Quality-Tier Based (V7: 6-tier, ATR squeeze split)
 # ═══════════════════════════════════════════════════════════════
 
 MAX_CONCURRENT_POSITIONS = 8
 MIN_TRADE_SIZE = 500.0
 
 # Quality tier definitions: {tier_int: {pct, label, description}}
+# T1-T3: V6 pivot + gate + ATR squeeze (volatility hole — highest edge)
+# T4-T6: V6 pivot + gate, NO ATR squeeze (standard momentum — halved sizing)
 QUALITY_TIERS = {
-    1: {'equity_pct': 0.20, 'label': 'T1', 'description': 'Both gates (UC rising + MACD cross-up)',
+    1: {'equity_pct': 0.20,  'label': 'T1', 'description': 'Both gates + ATR squeeze',
+        'backtest_wr': '80%', 'backtest_avg': '+65.6%'},
+    2: {'equity_pct': 0.10,  'label': 'T2', 'description': 'MACD cross-up + ATR squeeze',
+        'backtest_wr': '67%', 'backtest_avg': '+32.3%'},
+    3: {'equity_pct': 0.05,  'label': 'T3', 'description': 'UC rising + ATR squeeze',
+        'backtest_wr': '63%', 'backtest_avg': '+56.0%'},
+    4: {'equity_pct': 0.10,  'label': 'T4', 'description': 'Both gates (no ATR squeeze)',
         'backtest_wr': '57%', 'backtest_avg': '+91.0%'},
-    2: {'equity_pct': 0.10, 'label': 'T2', 'description': 'MACD cross-up only (timing confirmed)',
+    5: {'equity_pct': 0.05,  'label': 'T5', 'description': 'MACD cross-up only (no ATR squeeze)',
         'backtest_wr': '83%', 'backtest_avg': '+63.2%'},
-    3: {'equity_pct': 0.05, 'label': 'T3', 'description': 'UC rising only (regime confirmed)',
+    6: {'equity_pct': 0.025, 'label': 'T6', 'description': 'UC rising only (no ATR squeeze)',
         'backtest_wr': '69%', 'backtest_avg': '+75.8%'},
 }
 
 # Gear-shift configurations (scale all tier allocations proportionally)
 SIZING_GEARS = {
-    'conservative': {'max_positions': 10, 'label': 'Conservative (12/8/3)',
-                     'tiers': {1: 0.12, 2: 0.08, 3: 0.03}},
-    'recommended':  {'max_positions': 8,  'label': 'Recommended (20/10/5)',
-                     'tiers': {1: 0.20, 2: 0.10, 3: 0.05}},
-    'aggressive':   {'max_positions': 8,  'label': 'Aggressive (25/15/8)',
-                     'tiers': {1: 0.25, 2: 0.15, 3: 0.08}},
+    'conservative': {'max_positions': 10, 'label': 'Conservative',
+                     'tiers': {1: 0.12, 2: 0.08, 3: 0.03, 4: 0.06, 5: 0.04, 6: 0.015}},
+    'recommended':  {'max_positions': 8,  'label': 'Recommended',
+                     'tiers': {1: 0.20, 2: 0.10, 3: 0.05, 4: 0.10, 5: 0.05, 6: 0.025}},
+    'aggressive':   {'max_positions': 8,  'label': 'Aggressive',
+                     'tiers': {1: 0.25, 2: 0.15, 3: 0.08, 4: 0.125, 5: 0.075, 6: 0.04}},
 }
 
 
@@ -329,19 +349,94 @@ def calculate_undercurrent(weekly_df: pd.DataFrame,
 
 
 # ═══════════════════════════════════════════════════════════════
-# SIGNAL GENERATION — V6 (matching v6/run_phase_b_tiered_sizing.py)
+# ATR PERCENTILE RANK — Volatility Hole Entry Filter (V7)
+# ═══════════════════════════════════════════════════════════════
+
+# ATR squeeze parameters (validated via 45-parameter sweep)
+ATR_LEN = 14              # ATR period (weeks)
+ATR_LOOKBACK = 52         # Rolling window for percentile rank (weeks = 1 year)
+ATR_SQUEEZE_PCTILE = 20   # Percentile threshold — squeeze active below this
+
+
+def calculate_atr_squeeze(weekly_df: pd.DataFrame,
+                          atr_len: int = ATR_LEN,
+                          lookback: int = ATR_LOOKBACK,
+                          squeeze_pctile: float = ATR_SQUEEZE_PCTILE) -> pd.DataFrame:
+    """
+    ATR Percentile Rank — volatility hole detector (V7 entry filter).
+
+    Measures current candle size (ATR) relative to its own history.
+    Squeeze active when ATR rank drops below the Nth percentile.
+
+    When ATR is in the bottom 20th percentile of its 52-week range,
+    candles are abnormally small — statistically, a big move follows.
+    The V6 buy signal provides the direction; the ATR squeeze provides the energy.
+
+    Backtest evidence (49 tickers, 5 years):
+        T1-T3 alone:        52.7% WR, +21.6% avg, 2.50x PF, 0.256 Sharpe
+        T1-T3 + ATR squeeze: 68.4% WR, +52.3% avg, 5.88x PF, 0.483 Sharpe
+
+    Parameters:
+        weekly_df: pd.DataFrame — weekly OHLC data with columns: high, low, close
+        atr_len: int — ATR period (default 14 weeks)
+        lookback: int — rolling window for percentile rank (default 52 weeks)
+        squeeze_pctile: float — threshold below which squeeze is active (default 20)
+
+    Returns:
+        pd.DataFrame with columns:
+            atr            — ATR(14) value
+            atr_rank       — percentile rank (0-100)
+            atr_squeeze    — True when atr_rank < squeeze_pctile (volatility hole)
+            atr_fire       — True on the bar squeeze ends (expansion begins)
+            atr_fire_recent — True within 2 bars of a fire event
+    """
+    high = weekly_df['high']
+    low = weekly_df['low']
+    close = weekly_df['close']
+
+    # True Range: max of (high-low, |high-prev_close|, |low-prev_close|)
+    tr = pd.concat([
+        high - low,
+        (high - close.shift(1)).abs(),
+        (low - close.shift(1)).abs()
+    ], axis=1).max(axis=1)
+
+    # Average True Range
+    atr = tr.rolling(atr_len).mean()
+
+    # Percentile rank over lookback window (0-100 scale)
+    atr_rank = atr.rolling(lookback).rank(pct=True) * 100
+
+    # Build output
+    result = pd.DataFrame(index=weekly_df.index)
+    result['atr'] = atr
+    result['atr_rank'] = atr_rank
+    result['atr_squeeze'] = (atr_rank < squeeze_pctile).fillna(False)
+
+    # Fire: squeeze was active last bar, now it's not (expansion begins)
+    result['atr_fire'] = (
+        result['atr_squeeze'].shift(1).fillna(False) & ~result['atr_squeeze']
+    )
+
+    # Fire within 2 bars (current bar + 2 prior)
+    result['atr_fire_recent'] = (
+        result['atr_fire'].astype(float)
+        .rolling(3, min_periods=1).max()
+        .astype(bool)
+    )
+
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════
+# SIGNAL GENERATION — V7 (V6 pivot entry + ATR squeeze filter)
 # ═══════════════════════════════════════════════════════════════
 
 def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Sterling Grid V6 entry signal.
+    Sterling Grid V7 entry signal.
     Source: v6/run_phase_b_tiered_sizing.py generate_tiered_signals()
-    
-    V6 CONFIG:
-        signal_type = "pivot"        (HMA V-shape pivot low)
-        uc_cond     = "uc_rising"    (UC > UC.shift(1), no >0 req)
-        rsi_cond    = "rsi_none"     (RSI not used as gate)
-        macd_cond   = "macd_cross_up"
+    V7 addition: ATR Percentile Rank squeeze splits tiers (T1-T3 vs T4-T6).
     
     BUY fires when ALL of these are true on the SAME weekly bar:
         1. HMA(21) pivot low — V-bottom: HMA[i-2] > HMA[i-1] < HMA[i]
@@ -349,22 +444,19 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
            a. UC rising — UC > UC.shift(1)  (OR)
            b. MACD cross up — single-bar crossover event
 
-    QUALITY TIER CLASSIFICATION (at signal bar):
-        T1: UC rising AND MACD cross-up   (both gates — highest conviction)
-        T2: MACD cross-up only            (timing confirmed)
-        T3: UC rising only                (regime confirmed)
-    
-    V4→V6 CHANGES:
-        - HMA slope rising → HMA pivot low (3-bar V-shape detection)
-        - RSI(14) > 50 gate REMOVED
-        - UC "rising above" (>prev AND >0) → UC "rising" (>prev only)
-        - All 5 AND'd → pivot AND (UC OR MACD)
-        - Added quality tier classification
+    QUALITY TIER CLASSIFICATION (V7: 6-tier, ATR squeeze split):
+        T1: UC rising AND MACD cross-up + ATR squeeze  (20% — highest conviction)
+        T2: MACD cross-up only + ATR squeeze            (10% — timing + squeeze)
+        T3: UC rising only + ATR squeeze                (5%  — regime + squeeze)
+        T4: UC rising AND MACD cross-up, NO squeeze     (10% — halved T1)
+        T5: MACD cross-up only, NO squeeze              (5%  — halved T2)
+        T6: UC rising only, NO squeeze                  (2.5% — halved T3)
     """
     hma_data = calculate_hma_pivots(weekly_df)
     rsi = calculate_rsi(weekly_df['close'])       # Computed for display, NOT a gate
     macd_data = calculate_macd(weekly_df['close'])
     uc_data = calculate_undercurrent(weekly_df)
+    atr_data = calculate_atr_squeeze(weekly_df)   # V7: volatility hole filter
 
     signals = pd.DataFrame(index=weekly_df.index)
     signals['close'] = weekly_df['close']
@@ -393,34 +485,70 @@ def generate_entry_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     signals['uc_falling'] = uc_data['uc_falling']
     signals['uc_rising_above'] = uc_data['uc_rising_above']        # V4 legacy, informational
 
-    # ── V6 Combined buy signal ──────────────────────────────────
-    # HMA pivot low AND (UC rising OR MACD cross-up)
-    signals['buy_signal'] = (
+    # ATR squeeze (V7 entry filter)
+    signals['atr'] = atr_data['atr']
+    signals['atr_rank'] = atr_data['atr_rank']
+    signals['atr_squeeze'] = atr_data['atr_squeeze']
+    signals['atr_fire'] = atr_data['atr_fire']
+    signals['atr_fire_recent'] = atr_data['atr_fire_recent']
+
+    # ── V8 buy signal = BARE HMA pivot low (fire wide; gates are sizing nudges only) ─
+    # Backtesting (12 tests, crash-inclusive, next-open fills) showed UC/MACD/ATR *gates*
+    # cut winner-leg recall ~40% for zero selection gain. V8 takes EVERY confirmed weekly
+    # HMA pivot-up; the LLM does selection, and the gates / ATR squeeze now only inform the
+    # quality tier (sizing), not eligibility. buy_signal_v6 is retained for diagnostics.
+    signals['buy_signal_v6'] = (
         signals['hma_pivot_low'] &
         (signals['uc_rising'] | signals['macd_cross_up'])
     )
+    signals['buy_signal_v8'] = signals['hma_pivot_low']
+    signals['buy_signal'] = signals['buy_signal_v8']
 
-    # ── Quality tier classification ─────────────────────────────
-    # T1 = both gates, T2 = MACD only, T3 = UC only
+    # ── Quality tier classification (V7: 6-tier) ───────────────
+    # T1-T3: pivot + gate + ATR squeeze (volatility hole entry)
+    # T4-T6: pivot + gate, NO ATR squeeze (standard momentum)
     signals['quality_tier'] = 0  # 0 = no signal
+
+    # T1: both gates + ATR squeeze
     signals.loc[
-        signals['buy_signal'] & signals['uc_rising'] & signals['macd_cross_up'],
+        signals['buy_signal_v6'] & signals['uc_rising'] & signals['macd_cross_up'] & signals['atr_squeeze'],
         'quality_tier'
     ] = 1
+    # T2: MACD only + ATR squeeze
     signals.loc[
-        signals['buy_signal'] & signals['macd_cross_up'] & ~signals['uc_rising'],
+        signals['buy_signal_v6'] & signals['macd_cross_up'] & ~signals['uc_rising'] & signals['atr_squeeze'],
         'quality_tier'
     ] = 2
+    # T3: UC only + ATR squeeze
     signals.loc[
-        signals['buy_signal'] & signals['uc_rising'] & ~signals['macd_cross_up'],
+        signals['buy_signal_v6'] & signals['uc_rising'] & ~signals['macd_cross_up'] & signals['atr_squeeze'],
         'quality_tier'
     ] = 3
+    # T4: both gates, no ATR squeeze
+    signals.loc[
+        signals['buy_signal_v6'] & signals['uc_rising'] & signals['macd_cross_up'] & ~signals['atr_squeeze'],
+        'quality_tier'
+    ] = 4
+    # T5: MACD only, no ATR squeeze
+    signals.loc[
+        signals['buy_signal_v6'] & signals['macd_cross_up'] & ~signals['uc_rising'] & ~signals['atr_squeeze'],
+        'quality_tier'
+    ] = 5
+    # T6: UC only, no ATR squeeze
+    signals.loc[
+        signals['buy_signal_v6'] & signals['uc_rising'] & ~signals['macd_cross_up'] & ~signals['atr_squeeze'],
+        'quality_tier'
+    ] = 6
+
+    # V8: a bare HMA pivot with NO UC/MACD gate is still a valid buy — classify it T6
+    # (lowest sizing nudge). Gated pivots keep their richer T1–T5 classification above.
+    signals.loc[signals['buy_signal'] & (signals['quality_tier'] == 0), 'quality_tier'] = 6
 
     # ── Tier label for display ──────────────────────────────────
-    tier_labels = {0: '', 1: 'T1', 2: 'T2', 3: 'T3'}
+    tier_labels = {0: '', 1: 'T1', 2: 'T2', 3: 'T3', 4: 'T4', 5: 'T5', 6: 'T6'}
     signals['tier_label'] = signals['quality_tier'].map(tier_labels)
 
-    # ── Watchlist: HMA rising + at least one gate, but no pivot ─
+    # ── Watchlist: HMA rising + at least one gate, but no buy signal ─
     # These are stocks in a bullish trend where a pivot hasn't fired yet
     signals['watchlist_signal'] = (
         signals['hma_slope_rising'] &
@@ -449,6 +577,21 @@ def generate_exit_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     hma_data = calculate_hma_pivots(weekly_df)
     uc_data = calculate_undercurrent(weekly_df)
 
+    # RSI(14) + its SMA(14) signal line — matches the TradingView "RSI" indicator exactly
+    # (Wilder RSI via calculate_rsi == ta.rma; signal == SMA(14) of RSI). Used to CONDITION the
+    # legacy HMA-down exit: see rsi_death_cross_recent below.
+    rsi = calculate_rsi(weekly_df['close'])
+    rsi_ma = rsi.rolling(RSI_PERIOD, min_periods=1).mean()
+    below = rsi < rsi_ma
+    death_cross = below & ~below.shift(1, fill_value=False)   # RSI crosses below its signal line
+    # Recent + PERSISTENT death cross: crossed on the prior bar and is still below, OR crossed two
+    # bars back and has stayed below since. (Mirrors rsi_confluence_test.py's definition exactly —
+    # the conditioning that ~halved bare HMA-down's premature sells in backtesting.)
+    rsi_death_cross_recent = (
+        (death_cross.shift(1, fill_value=False) & below) |
+        (death_cross.shift(2, fill_value=False) & below.shift(1, fill_value=False) & below)
+    ).fillna(False)
+
     signals = pd.DataFrame(index=weekly_df.index)
     signals['close'] = weekly_df['close']
     signals['hma'] = hma_data['hma']
@@ -456,6 +599,10 @@ def generate_exit_signal(weekly_df: pd.DataFrame) -> pd.DataFrame:
     signals['hma_slope_falling'] = hma_data['hma_slope_falling']   # informational
     signals['uc'] = uc_data['uc']
     signals['uc_falling'] = uc_data['uc_falling']
+    signals['rsi14'] = rsi                                          # informational / display
+    signals['rsi_ma'] = rsi_ma                                      # SMA(14) signal line
+    signals['rsi_death_cross'] = death_cross.fillna(False)          # single-bar cross event
+    signals['rsi_death_cross_recent'] = rsi_death_cross_recent      # legacy-exit condition
 
     # V6 ExD = HMA pivot high AND UC falling (same bar)
     signals['exd_signal'] = (
@@ -532,6 +679,46 @@ def check_profit_lock(entry_price: float,
     }
 
 
+def check_tiered_initial_35(entry_price: float,
+                            current_close: float,
+                            peak_close: float) -> dict:
+    """
+    V8 exit — tiered_initial_35 (the live exit going forward).
+
+    Two regimes, decided on the WEEKLY CLOSE (act at next candle open):
+      • current return < +50%  → HARD STOP at entry * (1 - 0.35)  [wide -35% initial floor]
+      • current return >= +50% → hand off to the tiered trailing lock (check_profit_lock)
+
+    ExD (HMA pivot high + UC falling) is NOT used — it clipped winners on the first pullback
+    on every universe tested. This function replaces the old "ExD OR profit-lock" live exit.
+
+    Returns the same dict shape as check_profit_lock (triggered / lock_level / active_tier / …)
+    so existing callers and printouts keep working unchanged.
+    """
+    if entry_price <= 0:
+        return {'triggered': False}
+
+    current_return = (current_close - entry_price) / entry_price
+
+    # At/above +50% → the trailing profit lock owns the exit (initial floor switches off)
+    if current_return >= 0.50:
+        return check_profit_lock(entry_price, current_close, peak_close)
+
+    # Below +50% → wide -35% initial floor from entry
+    stop_level = entry_price * (1 - INITIAL_STOP_PCT)
+    triggered = current_close <= stop_level
+    return {
+        'triggered': triggered,
+        'tier_name': 'initial',
+        'trail_pct': f"{int(INITIAL_STOP_PCT * 100)}% floor",
+        'lock_level': round(stop_level, 2),
+        'peak_close': round(peak_close, 2),
+        'gain_pct': round(current_return * 100, 1),
+        'peak_gain_pct': round((peak_close - entry_price) / entry_price * 100, 1),
+        'active_tier': f"-{int(INITIAL_STOP_PCT * 100)}% initial floor (pre-+50%, stop ${stop_level:.2f})",
+    }
+
+
 # ═══════════════════════════════════════════════════════════════
 # SCANNER — Check any ticker for current signals
 # ═══════════════════════════════════════════════════════════════
@@ -583,8 +770,15 @@ def scan_ticker(ticker: str, verbose: bool = True) -> dict:
         'uc': round(float(cur['uc']), 2) if pd.notna(cur['uc']) else None,
         'uc_rsi10': round(float(cur['uc_rsi10']), 1) if pd.notna(cur['uc_rsi10']) else None,
         'uc_rising': bool(cur['uc_rising']),
+        # ATR squeeze (V7 entry filter)
+        'atr': round(float(cur['atr']), 4) if pd.notna(cur['atr']) else None,
+        'atr_rank': round(float(cur['atr_rank']), 1) if pd.notna(cur['atr_rank']) else None,
+        'atr_squeeze': bool(cur['atr_squeeze']),
+        'atr_fire': bool(cur['atr_fire']),
+        'atr_fire_recent': bool(cur['atr_fire_recent']),
         # Composite signals
         'buy_signal': bool(cur['buy_signal']),
+        'buy_signal_v6': bool(cur['buy_signal_v6']),
         'quality_tier': quality_tier,
         'tier_label': tier_label,
         'watchlist_signal': bool(cur['watchlist_signal']),
@@ -604,25 +798,35 @@ def _print_scan_result(result: dict, cur_exit) -> None:
     tier_info = QUALITY_TIERS.get(qt, {})
 
     print(f"\n{'=' * 62}")
-    print(f"  {ticker} — V6 Weekly Signal Check ({result['date']})")
+    print(f"  {ticker} — V7 Weekly Signal Check ({result['date']})")
     print(f"{'=' * 62}")
     print(f"  Close: ${result['close']}")
     print()
 
-    # Entry conditions (V6)
-    print(f"  ENTRY CONDITIONS (V6: pivot + OR-gated):")
+    # Entry conditions (V7)
+    print(f"  ENTRY CONDITIONS (V7: pivot + OR-gated + ATR squeeze):")
     print(f"    HMA(21) pivot low:     {'YES' if result['hma_pivot_low'] else 'no ':>3}  HMA={result['hma']}")
     print(f"    ── At least ONE gate: ──")
     print(f"    UC rising:             {'YES' if result['uc_rising'] else 'no ':>3}  UC={result['uc']} (RSI10={result['uc_rsi10']})")
     print(f"    MACD cross up (1 bar): {'YES' if result['macd_cross_up'] else 'no ':>3}  MACD={result['macd_line']}, Sig={result['signal_line']}")
+    print(f"    ── Volatility filter: ──")
+    atr_rank_str = f"{result['atr_rank']:.0f}" if result['atr_rank'] is not None else 'N/A'
+    print(f"    ATR squeeze (<20 pct): {'YES' if result['atr_squeeze'] else 'no ':>3}  ATR rank={atr_rank_str}{'  🔥 FIRE' if result.get('atr_fire') else ''}")
     print(f"    RSI(14):               {result['rsi14']:.0f}  (informational — not a gate)")
     print()
+
+    # V6 signal status (diagnostic)
+    if result.get('buy_signal_v6') and not result['buy_signal']:
+        print(f"  ⚠ V6 buy signal would fire — blocked by ATR squeeze filter (rank={atr_rank_str})")
+        print()
 
     if result['buy_signal']:
         tier_desc = tier_info.get('description', 'Unknown')
         tier_pct = tier_info.get('equity_pct', 0) * 100
+        atr_note = "ATR squeeze confirmed — volatility hole entry" if result['atr_squeeze'] else "No ATR squeeze — standard momentum (halved sizing)"
         print(f"  >> BUY SIGNAL — {result['tier_label']} ({tier_desc}) <<")
-        print(f"     Sizing: {tier_pct:.0f}% of equity | Execute next week open")
+        print(f"     Sizing: {tier_pct:.1f}% of equity | Execute next week open")
+        print(f"     {atr_note}")
         print(f"     Send to LLM gate pipeline for final assessment")
     elif result['watchlist_signal']:
         missing = []
@@ -669,24 +873,20 @@ def check_position(ticker: str, entry_price: float,
     if current_close > peak_price:
         peak_price = current_close
 
-    exd = bool(exit_signals['exd_signal'].iloc[-1])
-    lock = check_profit_lock(entry_price, current_close, peak_price)
+    exd = bool(exit_signals['exd_signal'].iloc[-1])   # informational only in V8 (ExD dropped)
+    lock = check_tiered_initial_35(entry_price, current_close, peak_price)
     gain_pct = ((current_close - entry_price) / entry_price) * 100
 
     action = 'HOLD'
-    if exd and lock.get('triggered', False):
-        action = f"EXIT — ExD + Profit lock ({lock['active_tier']})"
-    elif exd:
-        action = 'EXIT — ExD (HMA pivot high + UC falling)'
-    elif lock.get('triggered', False):
-        action = f"EXIT — Profit lock ({lock['active_tier']})"
+    if lock.get('triggered', False):
+        action = f"EXIT — {lock.get('active_tier', 'V8 tiered_initial_35')}"
 
     print(f"\n  {ticker}: ${current_close} ({gain_pct:+.1f}% from ${entry_price})")
     print(f"    Peak: ${peak_price} | Lock: {lock.get('active_tier', 'none')}")
     if lock.get('lock_level'):
         status = 'BELOW — TRIGGERED' if lock['triggered'] else 'above — safe'
         print(f"    Lock level: ${lock['lock_level']} | Current ${current_close} {status}")
-    print(f"    ExD exit: {'YES — EXIT' if exd else 'no'}")
+    print(f"    ExD exit: {'YES' if exd else 'no'} (informational — not used in V8)")
     print(f"    >> {action}")
 
     return {
@@ -734,14 +934,20 @@ def dump_history(ticker: str) -> pd.DataFrame:
     history['uc'] = entry['uc']
     history['uc_rsi_10'] = entry['uc_rsi10']
     history['uc_rising'] = entry['uc_rising']
+    # ATR squeeze (V7)
+    history['atr'] = entry['atr']
+    history['atr_rank'] = entry['atr_rank']
+    history['atr_squeeze'] = entry['atr_squeeze']
+    history['atr_fire'] = entry['atr_fire']
     # Composite
     history['buy_signal'] = entry['buy_signal']
+    history['buy_signal_v6'] = entry['buy_signal_v6']
     history['quality_tier'] = entry['quality_tier']
     history['tier_label'] = entry['tier_label']
     history['watchlist_signal'] = entry['watchlist_signal']
     history['exd_exit'] = exit_sig['exd_signal']
 
-    filename = f"{ticker}_weekly_indicators_v6.csv"
+    filename = f"{ticker}_weekly_indicators_v7.csv"
     history.to_csv(filename)
     print(f"  Saved {len(history)} weeks to {filename}")
     return history
@@ -771,7 +977,7 @@ def calculate_position_size(equity: float, quality_tier: int,
     """
     gear_config = SIZING_GEARS.get(gear, SIZING_GEARS['recommended'])
 
-    if quality_tier not in (1, 2, 3):
+    if quality_tier not in (1, 2, 3, 4, 5, 6):
         return {
             'tier': 0,
             'tier_label': 'INVALID',
@@ -821,13 +1027,13 @@ def show_portfolio_status(equity: float, positions: list,
     gear_config = SIZING_GEARS.get(gear, SIZING_GEARS['recommended'])
 
     print(f"\n{'=' * 68}")
-    print(f"  STERLING GRID V6 — PORTFOLIO STATUS")
+    print(f"  STERLING GRID V7 — PORTFOLIO STATUS")
     print(f"  Gear: {gear_config['label']} | Max positions: {gear_config['max_positions']}")
     print(f"  Portfolio equity: ${equity:,.0f}")
     print(f"{'=' * 68}")
 
     # Count positions by tier
-    tier_counts = {1: 0, 2: 0, 3: 0}
+    tier_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
     total_deployed = 0.0
     total_deployed_pct = 0.0
 
@@ -864,8 +1070,8 @@ def show_portfolio_status(equity: float, positions: list,
     print(f"    Deployed:  {total_deployed_pct*100:.0f}% (${total_deployed:,.0f})")
     print(f"    Cash:      {cash_pct*100:.0f}% (${cash_dollar:,.0f})")
 
-    print(f"\n  TIER CAPACITY (V6 quality-based):")
-    for qt in [1, 2, 3]:
+    print(f"\n  TIER CAPACITY (V7 quality-based):")
+    for qt in [1, 2, 3, 4, 5, 6]:
         info = QUALITY_TIERS[qt]
         pct = gear_config['tiers'][qt]
         used = tier_counts.get(qt, 0)
@@ -874,7 +1080,7 @@ def show_portfolio_status(equity: float, positions: list,
 
     if slots_free > 0:
         print(f"\n  NEXT SIGNAL SIZING:")
-        for qt in [1, 2, 3]:
+        for qt in [1, 2, 3, 4, 5, 6]:
             sizing = calculate_position_size(equity, qt, gear)
             info = QUALITY_TIERS[qt]
             print(f"    {info['label']} signal → {sizing['equity_pct']*100:.0f}% = ${sizing['dollar_amount']:,.0f}")
@@ -888,10 +1094,11 @@ def show_portfolio_status(equity: float, positions: list,
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Sterling Grid V6 — Weekly Indicator Calculator")
-        print("  Entry: HMA pivot low + (UC rising OR MACD cross-up)")
-        print("  Exit:  HMA pivot high + UC falling, OR tiered profit lock")
-        print("  Tiers: T1 (both gates, 20%), T2 (MACD, 10%), T3 (UC, 5%)")
+        print("Sterling Grid V8 — Weekly Indicator Calculator")
+        print("  Entry: bare HMA(21) pivot low (fire wide — no UC/MACD/ATR gate)")
+        print("  Tiers: gates/ATR squeeze now inform SIZING only (T1 high … T6 bare pivot)")
+        print("  Exit:  tiered_initial_35 — -35% floor until +50%, then trailing lock (ExD dropped)")
+        print("  Decide on weekly close, act at next candle open (buy AND sell)")
         print()
         print("Scan for buy signals:")
         print("  python sterling_indicators.py MARA RKLB IONQ")
@@ -988,9 +1195,10 @@ if __name__ == "__main__":
     elif filtered_args and filtered_args[0] == '--size':
         if len(filtered_args) < 3:
             print("Usage: --size EQUITY TIER [--gear conservative|recommended|aggressive]")
-            print("  TIER = T1, T2, T3 (or 1, 2, 3)")
+            print("  TIER = T1-T6 (or 1-6)")
+            print("  T1-T3: ATR squeeze confirmed | T4-T6: no ATR squeeze (halved sizing)")
             print("  Example: --size 120000 T1")
-            print("  Example: --size 200000 T3 --gear aggressive")
+            print("  Example: --size 200000 T5 --gear aggressive")
             sys.exit(1)
 
         equity = float(filtered_args[1])
@@ -1020,8 +1228,9 @@ if __name__ == "__main__":
 
     else:
         print("=" * 68)
-        print("  STERLING GRID V6 — WEEKLY SIGNAL SCAN")
+        print("  STERLING GRID V7 — WEEKLY SIGNAL SCAN")
         print(f"  Entry: HMA pivot + (UC rising OR MACD cross-up)")
+        print(f"  Tiers: T1-T3 (ATR squeeze) / T4-T6 (no ATR squeeze)")
         print(f"  Sizing: {gear} gear ({SIZING_GEARS[gear]['label']})")
         print("=" * 68)
 
@@ -1043,7 +1252,7 @@ if __name__ == "__main__":
             print(f"  BUY SIGNALS: {', '.join(buy_signals)}")
             print(f"  -> Send to LLM gate pipeline for final assessment")
             print(f"  -> Execute confirmed trades next week open")
-            print(f"  -> Sizing: T1=20%, T2=10%, T3=5% of equity")
+            print(f"  -> Sizing: T1=20%, T2=10%, T3=5% (ATR) | T4=10%, T5=5%, T6=2.5%")
         else:
             print(f"  No buy signals this week.")
         print()

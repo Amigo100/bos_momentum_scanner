@@ -1,0 +1,115 @@
+{
+ "ticker": "SENS",
+ "date": "2026-06-07",
+ "week_id": "2026-W23",
+ "archetype": "N",
+ "decision": "BUY",
+ "type": "great_trade",
+ "conviction": "Bullish",
+ "entry_price": 6.67,
+ "scenarios": {
+  "bear": {
+   "price": 5,
+   "prob": 0.3
+  },
+  "base": {
+   "price": 7.5,
+   "prob": 0.3
+  },
+  "rerate": {
+   "price": 13,
+   "prob": 0.28
+  },
+  "overshoot": {
+   "price": 32,
+   "prob": 0.12
+  }
+ },
+ "target": "$13 re-rate (base-case underwritten, ~2x signal; set just below Street avg ~$15.75 to honor the live CGM-peer de-rate to mid-single-digit P/S AND the ~75M fully-diluted-through-2028 share count) with a dilution-discounted overshoot anchor at $32 (~4.8x); protected shape is the ~3-4x re-rate+overshoot blend",
+ "expected_path": {
+  "target": "$13 re-rate / $32 overshoot; prob-weighted ~$11.23 (~+68%); blended U/D ~3.7:1",
+  "horizon": "12-18 months to the re-rate (first fuel sooner via the next 2-3 EU/DTC prints; full re-rate needs the AID leg)",
+  "driver": "twiist/Sequel AID converting qualitative-to-disclosed units/run-rate (carries ~$62M FY26 toward ~$120-150M at re-rate / ~$250-300M at overshoot) + EU/DTC organic ramp holding the SHOWN 59% GAAP-GM inflection, re-rating the multiple toward the mid-single-digit CGM-peer band (DXCM ~5-6x now) plus a hyper-growth premium"
+ },
+ "catalyst_window": "9-18 months. Near-term fuel (next 2-3 qtrs): Q2-2026 print (~Aug-2026) EU insertion run-rate (Sweden/Spain) + US DTC new-patient adds (~+100% YoY) + payer-breadth disclosures. Thesis-defining 12-18mo gate: twiist/Sequel AID converting qualitative-to-disclosed units. Funding clock (~12-15mo committed-capital runway; mgmt-stated to-2028 excl. ~$85M undrawn Hercules; next FORCED raise pushed to a 2027-28 event) sits BEHIND the first proof points and AHEAD of full AID monetization. Live $300M shelf / $100M ATM (S-3 333-289306) enables opportunistic issuance but is not imminent.",
+ "decisive_bear_class": "real-and-mispriced (lead bear = dilution-machine). Pre-net-income model requires periodic equity; ~$110-120M/yr burn vs ~$60M revenue; $5.00 strike ~25% below spot; authorized common doubled 70M\u2192140M; live $300M shelf/$100M ATM available. Threatens PATH MAGNITUDE (per-share re-cut on each raise), NOT survival; explicitly NOT a \u00a79 disqualifier (clean public offering + firm-cash Hercules draw, one raise this fiscal year, going-concern alleviated, committed runway to 2028).",
+ "discriminator_scorecard": {
+  "backlog_converting": "absent",
+  "milestone_on_date": "partial",
+  "firm_cash_contract": "absent",
+  "margin_cf_inflection": "partial"
+ },
+ "rerating_velocity": {
+  "time_to_rerate": "12-18 months \u2014 gated on twiist/AID converting from qualitative to disclosed units/run-rate, which the company has NOT timelined; first fuel is the next 2-3 EU/DTC prints, full re-rate needs the AID leg",
+  "implied_irr": "~30-40% to the re-rate over ~18mo (signal $6.67 \u2192 ~$13); overshoot path implies ~55%+ IRR but is right-tail-weighted and per-share dilution-discounted on ~75M FD",
+  "p_2x_6mo": 0.08,
+  "p_2x_12mo": 0.22,
+  "p_2x_18mo": 0.33,
+  "amplifiers": "Thin ~40-48M float + ~9.8-12.9% SI (2.5 DTC, declining ~2.3%) magnifies an upside OCF/AID-print air-pocket; counterweights = $5.00 dilution-strike overhang + live $100M ATM capping rallies + the likely 2027 raise resetting the clock; IV-pct ~8.7 (calm), RSI ~55.7, rel-vol ~0.6 (attention cooling). Net amplitude-prone BOTH ways; a re-rate would be FUNDAMENTAL-FLOW driven, NOT a squeeze."
+ },
+ "positioning": {
+  "short_interest_pct_float": "~9.8-12.9% (~5.13M short, settlement 2026-05-15; ~10.08% Benzinga on ~50.8M float is cleaner than MarketBeat 12.86% on stale pre-offering 41.8M basis); declining ~2.3%",
+  "days_to_cover": "~2.5 (LOW \u2014 not a squeeze setup); MarketBeat-basis range to ~7.2",
+  "float_size": "~40-48M (thin small-cap, just expanded ~25%); ~52.2M shares outstanding post-raise (51,665,778) + 8.0M pre-funded warrants",
+  "institutional_own_pct": 16.81,
+  "insider_own_pct": 12.16,
+  "iv": 79.56,
+  "iv_percentile": 8.73,
+  "rsi14": 55.73,
+  "rel_volume": 0.62,
+  "cost_to_borrow": "UNVERIFIED (Ortex/Fintel 403/404; inferred GC/cheap) \u2014 NOT load-bearing",
+  "analyst_consensus": "Buy/Strong Buy, avg PT ~$15.75-16.67; HCW cut $18.50\u2192$14 on 2026-06-01 citing dilution",
+  "read": "AMPLIFIER NEUTRAL-to-DAMPENING \u2014 never a thesis initiator. Modest declining SI, cheap borrow, calm IV, thin float just expanded ~25% with a $5 warrant overhang \u2192 a re-rate is fundamental-flow driven, NOT a squeeze."
+ },
+ "overshoot_anchor": "DXCM 2014-15 CGM commercial-scaling re-rate (G4 Platinum adoption + reimbursement unlock; ~21x trailing P/S peak off a $259M/+64% base inflecting to ~$8.5B cap). SENS applies a HEAVILY-discounted version (low-double-digit P/S, not 21x \u2014 discount even more justified now the LIVE category trades mid-single-digit: DXCM ~5-6x, TNDM ~1.3x) on ~$250-300M revenue \u2192 ~$2.0-3.5B cap / ~75M FD \u2248 ~$27-47/share, midpoint $32 (~4.8x signal). Structural match = TNDM-2018 (~4-5x P/S peak, ~18-24mo, +~3x revenue compounding). Street high $31 sits at the FLOOR of this overshoot tier, not its cap. Closest PRODUCT analog remains SENS's own 2019 failure \u2014 separated from the winners only by the in-housed Ascensia control + the SHOWN 59% GM inflection + the new ADA one-year-durability data.",
+ "prob_weighted_return": "~$11.23 (0.30\u00d7$5 + 0.30\u00d7$7.5 + 0.28\u00d7$13 + 0.12\u00d7$32) \u2248 +68% over 12-18mo vs the $6.67 signal; blended U/D ~3.7:1, ~5x conservative re-rate-vs-floor, ~16:1 overshoot tail alone",
+ "survival_impairment_pct": "~25-30% permanent-impairment probability \u2014 NOT ruin. \u00a79 PASSES: ~$150-165M pro-forma liquidity + ~$85M undrawn Hercules vs $110-120M FY26 burn clears >6 quarters; mgmt-stated 'sufficient cash to fund operations into 2028' on committed capital; debt matures Sept-3-2029 (no wall); covenant-compliant at 3/31; going-concern raised then EXPLICITLY ALLEVIATED. Impairment comes from chronic dilution compounding below the $5.00 strike IF the AID leg never lands AND a stalled-price 2027 raise prices punitively (live $300M shelf/$100M ATM enables it) \u2014 a path-magnitude loss bounded near the floor, NOT a zero. Pre-profit is not impairment.",
+ "crux_resolution": "DILUTION-ADJUSTED PER-SHARE PATH supports GREAT-TRADE, not multibagger. On ~75M fully-diluted-through-2028 shares the \u22654x is mathematically REACHABLE per-share (overshoot ~$33-47/share even after one modeled 2027 raise; dilution shaves ~20-25% but does not break it) \u2014 but ONLY in the right-tail overshoot (P=0.12) that ALSO requires the still-absent \u00a77-3 AID anchor + \u00a77-4 OCF inflection; the base/re-rate per-share is ~2-2.5x. Relentless issuance at depressed prices confines the \u22654x to the tail without zeroing the per-share thesis \u2192 great_trade (protected ~3-4x blend), confirming the prior 06-06 verdict over the Tier-2 provisional multibagger tag (which had not modeled the fully-diluted per-share count).",
+ "open_unverified": [
+  "Exact NET (vs gross $92M) equity proceeds \u2014 pro-forma cash ~$150-165M is a gross/net-blended estimate",
+  "Precise undrawn Hercules capacity (~$85M implied) + milestone/covenant conditions gating remaining tranches (final $60M needs IC approval)",
+  "Post-2026 (2027) burn trajectory \u2014 the 'to-2028' committed-runway claim is mgmt-stated but the underlying burn-moderation figure is not disclosed",
+  "Exact fully-diluted share count incl pre-funded + Hercules warrants + options/RSUs \u2014 ~75M-through-2028 is a model with an assumed 2027 raise; the forward issuance amount/price is a modeling assumption [UNVERIFIED]",
+  "twiist/AID run-rate / unit volumes / conversion cadence \u2014 company disclosed none (explicitly qualitative; ADA n=153 is clinical, not commercial)",
+  "Reimbursement covered-lives % and specific CMS rates for Eversense 365; % of total CGM TAM addressable (insulin-only restriction leaves it unquantified)",
+  "Current borrow fee / cost-to-borrow and short-loan utilization % (Fintel 403, ORTEX 404 \u2014 unfetchable)",
+  "Options skew / gamma / open-interest positioning (no chain fetched)",
+  "TNDM exact 2019 peak price/date and DXCM ~21x peak P/S (derived from verified inputs, not directly sourced)"
+ ],
+ "lineage_assertion": "8-of-8 present: Macro \u00b7 Theme \u00b7 Mapping \u00b7 Triage \u00b7 Gate (inherited verbatim from the Tier-2 card) \u00b7 Evidence (3a) \u00b7 Geometry (3b) \u00b7 Verdict (3c). Handoff intact this session \u2014 no upstream drop (unlike the 2026-06-06 Tier-2\u21923 break).",
+ "tier3_verdict_lineage": [
+  {
+   "stage": "Macro",
+   "line": "neutral \u00b7 tiny share vs incumbent lock (Abbott/Dexcom/Medtronic ~98%) and SENS balance-sheet-fragile/dilutive"
+  },
+  {
+   "stage": "Theme",
+   "line": "Eversense 365 implantable + AID, commercial-control reversion (revenue-share eliminated eff. Jan-1-2026) \u00b7 surfaced cluster+leading-indicator \u00b7 stage mid \u00b7 recognition open (SENS near lows despite +87% YoY & raised guide \u2014 mkt pricing dilution not success) \u00b7 demand = shipping one-year implantable CGM converting to accelerating revenue in a ~$15B/~15%-CAGR incumbent-dominated market \u00b7 fuel fundamental \u00b7 floor 2"
+  },
+  {
+   "stage": "Mapping",
+   "line": "Direct (SENS) / R&D-stage (TRIB) \u00b7 SENS + TRIB on-list & deployable, TNDM/DXCM off-list benchmarks \u00b7 proxy SENS strong, TRIB adequate \u00b7 bull-shape = sole long-duration pure-play recapturing channel economics + AID integration to take share, CMS/payer parity the next unlock"
+  },
+  {
+   "stage": "Triage",
+   "line": "T1 ADVANCE \u2192 T1.5 ADVANCE \u00b7 verify-question answered: GM-toward-70% inflection corroborated (Q1 GM 58%, FY guide 55-58% improving H2) + RAISED FY26 guide to $60-64M + ~+100% DTC = multi-quarter acceleration not one-off; $92M raise + $140M Hercules facility materially extends runway (survival overhang addressed; not ruin) \u2192 ADVANCE (Tier 2 to nail exact quarters)"
+  },
+  {
+   "stage": "Gate",
+   "line": "T2 ADVANCE \u00b7 provisional multibagger | PATH: N share-shift + re-rate \u2014 sole 1-yr-implantable CGM pure-play reclaimed its channel (rev-share gone Jan-1-26 \u2192 per-unit rev + GM step-up) taking share in a ~$15B/~15%-CAGR ~98%-locked market; rev $62M FY26\u2192~$118M'27\u2192Freedom/AID, ~5x sales on ~$200M+ rev = ~$1B+ EV vs ~$348M cap \u2192 3-4x plausibly >=4x off all-time lows; 3-of-4 discriminators show, anchored on PRINTED revenue+GM inflection (Q1 +87% YoY, raised guide, reorders above plan). ASYMMETRY: bull ~4-6x / base ~1.5-2x / bear ~-50-70% (reimbursed shipping product = partial floor) \u2014 U/D favorable, downside pre-discounted. SURVIVAL: ~$156M cash + ~$85M undrawn Hercules, FY26 cash use $110-120M declining, funded into 2028 (Freedom) \u2014 clears <6Q ruin bar, fragile-but-funded, no death-spiral. STRONGEST BEAR: serial diluter at lows (April $5.00 offering\u2192$92M, authorized shares doubled, burn ~2x revenue) can cap per-share upside even if the device executes vs a fast-iterating incumbent lock \u2014 threatens magnitude, not existence/survival."
+  },
+  {
+   "stage": "Evidence",
+   "line": "Evidence: discriminator scorecard 0/4 cleanly present \u2014 \u00a77-4 MARGIN PRESENT/load-bearing (59% GAAP GM, +35pts YoY, Ascensia rev-share elimination, durable 2 qtrs, SHOWN) but \u00a77-4 OCF leg ABSENT/adverse (-$32M/qtr, doubled YoY) so net PARTIAL \u00b7 \u00a77-2 PARTIAL (FDA Sep-2024 + CE Jan-2026 HIT; EU commercial launch slipped H2-2025\u21922026 now live; NEW ADA-2026 one-year RWE milestone HIT on cadence) \u00b7 \u00a77-1 ABSENT (no backlog/RPO; revenue-momentum proxy, +87% partly Ascensia ASP) \u00b7 \u00a77-3 ABSENT (twiist/AID qualitative + ADA n=153 clinical only, no firm fixed-price cash anchor) \u2014 the absences land WHERE THE THESIS NEEDS THEM (round-tripper tell), confining the \u22654x to the tail \u00b7 survival+accounting: NOT-ruin \u2014 going-concern raised then ALLEVIATED, ~$150-165M pro-forma cash + ~$85M undrawn Hercules vs $110-120M FY26 burn clears >6 qtrs, management-stated to-2028 on COMMITTED capital, debt matures 2029, accounting CLEAN GAAP (KS-3 clear); #1 QUESTION RESOLVED \u2014 dilution-adjusted per-share on ~75M FD-through-2028 keeps the $32 overshoot \u22654x (~$33-47/sh, ~5-7x) intact while base/re-rate is ~2-2.5x \u2192 caps but does NOT kill the \u22654x (great_trade not multibagger); NEW $300M shelf + $100M ATM sharpen the dilution bear \u00b7 disqualifier: NO \u00a79 fires (guide RAISED, one slip not >1, no reservations-as-backlog, no warrant-rebate/asset-sale win, no credibility event, runway clears; KS-5 carved out) \u00b7 comparable-winner anchor: TNDM-2018 (~4-5x P/S peak, +~3x rev, ~18-24mo) structural match + DXCM-2014/15 (~21x P/S peak, category ceiling) \u2014 magnitude achievable; closest PRODUCT analog remains SENS's own 2019 failure, separated from the winners only by the in-housed Ascensia control + the SHOWN 59% GM inflection (and now ADA RWE), still separated from them by the absent \u00a77-3 firm-cash anchor + the insertion-friction ceiling."
+  },
+  {
+   "stage": "Geometry",
+   "line": "FLOOR $5.00 (May-2026 raise clearing price / dilution-overhang anchor, ~0.75x spot, ~24% downside, going-concern alleviated) << SIGNAL $6.67 / SPOT ~$6.57 (~5.6x fwd P/S on $62M FY26 guide, ~$348M cap) < BASE $7.50 (P0.30 \u2014 EU/DTC scaling continues, no AID proof, multiple holds ~6x on flat-to-modest growth) < RE-RATE $13 (P0.28, ~2x \u2014 REVISED from $15: multiple converges to where CGM quality trades NOW [DXCM ~5-6x trailing, TNDM ~1.3x \u2014 live-peer DE-RATE fetched this session] + a hyper-growth premium on ~$120-150M rev / ~75M FD; just below the Street ~$15.75-16.67 because converge-to-current-peer is mid-single-digit and per-share is diluted) << OVERSHOOT $32 (P0.12, ~4.8x \u2014 DXCM-2014/15 category-scaling anchor [~21x peak] heavily discounted to low-double-digit P/S on ~$250-300M rev, ~$2.0-3.5B cap / ~75M FD \u2248 $27-47; Street high $31 = FLOOR of this tier). Methods-used range ~$5\u2192~$32-35 across forward-P/S-on-live-peer-band + financing-clearing/tuck-in floor + comparable-winner peak geometry. Prob-weighted ~$11.23 (+68%), blended U/D ~3.7:1. DILUTION-ADJUSTED PER-SHARE CRUX RESOLVED (firmed by the live-peer de-rate): on ~75M fully-diluted-through-2028 the \u22654x is mathematically reachable ONLY in the overshoot tail (~$27-47, ~5-7x signal); base/re-rate cap ~2x/share \u2192 GREAT_TRADE not multibagger. Re-rate gated on the still-ABSENT \u00a77-3 firm-cash AID anchor + the \u00a77-4 OCF inflection that does not yet exist; closest PRODUCT analog remains SENS's own 2019 failure, separated from the TNDM/DXCM winners only by the in-housed Ascensia control + the SHOWN 59% GM inflection (+ the NEW ADA 93% one-year wear-time durability data); type great_trade, conviction Bullish."
+  },
+  {
+   "stage": "Verdict",
+   "line": "VERDICT BUY \u00b7 great_trade \u00b7 Bullish \u2014 operator-bias check clears (no \u00a79 fires: guide RAISED not cut, one deliberate milestone slip not >1, no reservations-as-backlog, no warrant-rebate/asset-sale 'win', no credibility event, runway clears >6 qtrs; re-validation CLEAN and DE-RISKED this session: Q1-26 10-Q rev +87% 2nd consecutive accel, GAAP GM 59% +35pts YoY from Ascensia rev-share elimination, going-concern raised then ALLEVIATED, PLUS new ADA-2026 one-year RWE [93.19% wear time, stable across both 6-mo halves] validating the durability value-prop; NOT ruin \u2014 ~$150-165M pro-forma + ~$85M undrawn Hercules vs $110-120M FY26 burn, mgmt-stated committed runway to 2028, debt 2029) \u2192 a credible great-trade path EXISTS (FLOOR $5.00 << SIGNAL $6.67 < BASE $7.50 < RE-RATE $13 [revised down from $15 to honor the live CGM-peer de-rate: DXCM ~5-6x now, ~2x signal] << OVERSHOOT $32 [DXCM-2014/15 discounted, ~4.8x]); CRUX RESOLVED \u2014 the dilution-adjusted per-share path on ~75M fully-diluted-through-2028 shares makes the \u22654x REACHABLE per-share (overshoot ~$33-47/share post one modeled 2027 raise) but ONLY in the right-tail overshoot (P=0.12) gated on the still-ABSENT \u00a77-3 firm-cash AID anchor + the \u00a77-4 OCF inflection that does not yet exist; the base/re-rate per-share is ~2-2.5x \u2192 great_trade (protected ~3-4x re-rate+overshoot blend), CONFIRMING the prior 06-06 verdict over the Tier-2 provisional multibagger tag; decisive bear = dilution-machine (real-and-mispriced, path-magnitude not \u00a79); type great_trade not multibagger because the \u22654x is right-tail not base, conviction Bullish not Extremely because the load-bearing growth leg is asserted-not-shown and the \u00a77-4 OCF leg is absent/adverse (the GM inflection, now reinforced by ADA durability, is the only inflection shown). Entry/exit are the scanner's; the target is the published thesis, not a sell trigger."
+  }
+ ],
+ "superseded_note": "Refines the 2026-06-06 SENS record (same W23): same BUY/great_trade/Bullish; re-rate revised $15\u2192$13 on the current CGM-peer de-rate; modestly de-risked (ADA-2026 real-world data) but OCF leg worsened."
+}

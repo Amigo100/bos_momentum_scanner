@@ -1,0 +1,37 @@
+{
+    "date": "2026-05-26",
+    "day": "tuesday",
+    "generated_at": "2026-05-26T08:00:00+10:00",
+    "notes": [
+        {
+            "slot": 1,
+            "type": "SCANNER",
+            "sub_variant": "weekly_funnel",
+            "time_aedt": "08:00",
+            "file": "morning_scanner_20260526.md",
+            "tier": 1,
+            "batch_id": "SCAN-1",
+            "generation_reason": "Pre-batched in weekly_plan_2026-W22.json. Validated: no referenced ticker moved >5% since Sunday. Content references historical screening funnel, not live prices."
+        },
+        {
+            "slot": 2,
+            "type": "POSITION",
+            "sub_variant": "catalyst_update",
+            "time_aedt": "12:00",
+            "file": "midday_position_20260526.md",
+            "tier": 2,
+            "generation_reason": "Fresh generation: POSITION requires live prices. Lead tickers rotated from Monday (AMD/BAND/SVCO/CYRX) to HIVE/VOYG to avoid repetition. HIVE selected for near-double return + AI data centre catalyst (320MW GTA project, Cantor upgrade to $4.60)."
+        },
+        {
+            "slot": 3,
+            "type": "PROMO",
+            "sub_variant": "deep_dive_hook",
+            "time_aedt": "20:00",
+            "file": "evening_promo_20260526.md",
+            "tier": 1,
+            "batch_id": "PROMO-1",
+            "generation_reason": "Pre-batched in weekly_plan_2026-W22.json. Validated: no price data to go stale. Teases Tuesday Biotech Capital Cycle deep dive."
+        }
+    ],
+    "visual_card": null
+}

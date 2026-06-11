@@ -1,43 +1,38 @@
 {
-    "generated_at": "2026-03-18T07:00:00+11:00",
-    "target_date": "2026-03-18",
-    "day": "wednesday",
+    "date": "2026-05-18",
+    "day": "monday",
+    "generated_at": "2026-05-18T08:00:00+10:00",
     "notes": [
         {
             "slot": 1,
-            "type": "MARKET",
-            "sub_variant": "force_status",
+            "type": "POSITION",
+            "sub_variant": "alpha_snapshot",
             "time_aedt": "08:00",
-            "time_label": "morning",
-            "filepath": "morning_market_20260318.html",
-            "graphic": "morning_market_graphic_20260318.html",
-            "ticker_focus": "ASPI",
-            "force": "Nuclear Renaissance",
-            "source": "live",
-            "freshness_gate": true,
-            "live_prices_used": {"ASPI": 5.28}
+            "file": "morning_position_20260518.html",
+            "tier": 2,
+            "generation_reason": "Fresh generation: POSITION requires live prices"
         },
         {
             "slot": 2,
-            "type": "EDUCATION",
-            "sub_variant": "concept_explainer",
+            "type": "MARKET",
+            "sub_variant": "force_status_update",
             "time_aedt": "12:00",
-            "time_label": "midday",
-            "filepath": "batch_education_concept.html",
-            "source": "batch_6",
-            "freshness_gate": false,
-            "validation": "passed"
+            "file": "midday_market_20260518.html",
+            "tier": 2,
+            "generation_reason": "Fresh generation: MARKET requires current macro data. Rotated from event_impact (used Sunday) to force_status_update."
         },
         {
             "slot": 3,
-            "type": "SCANNER",
-            "sub_variant": "rejection_story",
+            "type": "EDUCATION",
+            "sub_variant": "research_insight",
             "time_aedt": "20:00",
-            "time_label": "evening",
-            "filepath": "batch_scanner_rejection.html",
-            "source": "batch_2",
-            "freshness_gate": false,
-            "validation": "passed"
+            "file": "evening_education_20260518.html",
+            "tier": 2,
+            "generation_reason": "Fresh generation: no W21 plan with pre-batched notes. Rotated from concept_explainer (used Sunday) to research_insight."
         }
-    ]
+    ],
+    "visual_card": {
+        "file": "morning_position_graphic_20260518.html",
+        "type": "portfolio_snapshot"
+    }
 }

@@ -1,0 +1,60 @@
+{
+    "date": "2026-06-06",
+    "day": "saturday",
+    "week": "W23",
+    "generated_at": "2026-06-06T18:00:00+10:00",
+    "notes_generated": 2,
+    "notes": [
+        {
+            "slot": 1,
+            "type": "PROMO",
+            "sub_variant": "briefing_promo",
+            "time_aedt": "08:00",
+            "file": "morning_promo_20260606.md",
+            "tier": 2,
+            "generation_reason": "Regenerated. Previous version referenced 'S&P 500 above 7,600' which was true Monday June 2 but stale after June 4 Broadcom-driven chip selloff (Nasdaq -4%, S&P to 7,383). Updated to lead with the Broadcom selloff as the week's defining event, portfolio resilience (+102% return, +61pp alpha), and payrolls beat (172K vs 80K). Different and more accurate angle than May 31 milestone_promo.",
+            "tickers_mentioned": [],
+            "structural_forces": ["AI Infrastructure"],
+            "word_count": 97,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        },
+        {
+            "slot": 2,
+            "type": "SCANNER",
+            "sub_variant": "weekly_funnel",
+            "time_aedt": "12:00",
+            "file": "midday_scanner_20260606.md",
+            "tier": 1,
+            "batch_id": "scan_1",
+            "generation_reason": "Pre-batched in weekly_plan_2026-W23.json (scan_1). Modified: removed banned numeric conviction values per voice_rules.md. Last SCANNER was exit_discipline (May 31). Rotated to weekly_funnel.",
+            "tickers_mentioned": [],
+            "structural_forces": ["Biotech Capital Cycle"],
+            "word_count": 84,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        }
+    ],
+    "visual_card": {
+        "file": "midday_scanner_graphic_20260606.html",
+        "type": "scanner_weekly_recap",
+        "accompanies_slot": 2,
+        "update_note": "Alpha updated from +61.8pp to +61.1pp per June 6 equity_curve.csv row. Position P&Ls use June 5 close prices (unchanged)."
+    }
+}

@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 """
-STERLING GRID MOMENTUM SCANNER V6 - PURE TECHNICAL SIGNAL DETECTOR (WEEKLY)
+STERLING GRID MOMENTUM SCANNER V7 - PURE TECHNICAL SIGNAL DETECTOR (WEEKLY)
 ============================================================================
 
-Detects weekly momentum entry/exit signals using Sterling Grid V6 indicators.
-V6 backtest validated: Tiered 20/10/5 = +3294% return, -5.1% DD, 645x ret/DD.
+Detects weekly momentum entry/exit signals using Sterling Grid V7 indicators.
+V7 adds ATR Percentile Rank filter to V6 entry criteria for volatility hole entries.
 
-ENTRY CRITERIA (V6: HMA pivot + OR-gated confirmation):
+ENTRY CRITERIA (V7: HMA pivot + OR-gated confirmation, 6-tier):
 1. HMA(21) PIVOT LOW — V-bottom: HMA[i-2] > HMA[i-1] < HMA[i]
 2. At least ONE confirmation gate:
    a. UC rising (UC > UC.shift(1)) — institutional accumulation  (OR)
    b. MACD(12,26,9) cross-up — timing confirmation (single bar event)
+3. ATR squeeze determines tier (does NOT block entry):
+   - ATR(14) percentile rank < 20th over 52 weeks → T1-T3 (full sizing)
+   - Otherwise → T4-T6 (halved sizing)
 QUALITY TIERS (at signal bar):
-- T1: UC rising AND MACD cross-up (both gates) → 20% of equity
-- T2: MACD cross-up only (timing confirmed)    → 10% of equity
-- T3: UC rising only (regime confirmed)         →  5% of equity
+- T1: UC + MACD + ATR squeeze  → 20% of equity
+- T2: MACD only + ATR squeeze  → 10% of equity
+- T3: UC only + ATR squeeze    →  5% of equity
+- T4: UC + MACD, no squeeze    → 10% of equity
+- T5: MACD only, no squeeze    →  5% of equity
+- T6: UC only, no squeeze      → 2.5% of equity
 Maximum 8 concurrent positions.
 
 EXIT CRITERIA (first exit — whichever fires first):
@@ -61,15 +67,19 @@ from config import (
     LOCK_TIERS,
 )
 
-# Sterling Grid indicators (V6 — pivot entry, OR-gated, quality tiers)
+# Sterling Grid indicators (V8 — bare-pivot entry, tiered_initial_35 exit)
 from scanner.sterling_indicators import (
     resample_to_weekly,
     calculate_hma_pivots,
     generate_entry_signal,
     generate_exit_signal,
     check_profit_lock,
+    check_tiered_initial_35,
     calculate_position_size as calc_position_size,
 )
+
+# yfinance fundamentals + profile enrichment (run only on flagged signals)
+from scanner.enrichment import enrich_stock
 
 # Portfolio Manager Integration (unified trade tracking)
 from portfolio.manager import (
@@ -126,8 +136,14 @@ LOGS_DIR = BASE_DIR / "logs"
 SCANNER_OUTPUT.mkdir(parents=True, exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
-# V6 tier allocation (% of equity per quality tier)
-TIER_ALLOC = {"T1": 20, "T2": 10, "T3": 5}
+# V7 tier allocation (% of equity per quality tier)
+TIER_ALLOC = {"T1": 20, "T2": 10, "T3": 5, "T4": 10, "T5": 5, "T6": 2.5}
+
+# V8 legacy re-anchor: pre-2026 holds are managed discretionarily — flag a sell only on the
+# next technical sell signal (HMA pivot high + UC falling) plus a wide disaster backstop.
+# (Full per-name re-anchor levels are produced by portfolio_transition.py.)
+LEGACY_CUTOFF_DATE = "2026-01-01"
+LEGACY_REANCHOR_FLOOR = 0.50   # -50% from entry — wide backstop so a value hold can't bleed to zero
 
 
 def rel_path(p: Path) -> str:
@@ -156,6 +172,7 @@ class Stock:
     hma_slope_rising: bool = False   # Informational (used for watchlist)
     # RSI(14) — computed for display, NOT an entry gate in V6
     rsi14: float = 0.0
+    rsi_death_cross_recent: bool = False  # RSI crossed below SMA(14) signal in last 1-2 bars, persistent (legacy-exit condition)
     # MACD timing gate (OR-gated with UC in V6)
     macd_cross_up: bool = False
     macd_line: float = 0.0
@@ -167,10 +184,15 @@ class Stock:
     uc_rising: bool = False          # V6: UC > UC.shift(1) — no >0 requirement
     uc_falling: bool = False
     # Composite signals
-    buy_signal: bool = False         # V6: HMA pivot + (UC OR MACD)
+    buy_signal: bool = False         # V8: bare HMA pivot low (gates/ATR squeeze inform tier only)
     exd_signal: bool = False         # V6: HMA pivot high + UC falling
     # Quality tier (V6: determined by which gates active at signal bar)
     quality_tier: int = 0            # 0=no signal, 1=T1 (both), 2=T2 (MACD), 3=T3 (UC)
+    # ATR squeeze (V7 entry filter)
+    atr: float = 0.0
+    atr_rank: float = 0.0
+    atr_squeeze: bool = False        # V7: ATR(14) percentile rank < 20 over 52 weeks
+    buy_signal_v6: bool = False      # V6 signal (without ATR filter) for diagnostics
     # Week date from data
     week_date: str = ""
 
@@ -179,39 +201,43 @@ class Stock:
     momentum_4w: float = 0.0
     tier: str = ""
 
-    def meets_technical_criteria(self) -> bool:
-        """Check if stock meets Sterling Grid V6 technical entry criteria.
+    # ── yfinance enrichment (populated only for flagged signals, post-scan) ──
+    enrichment: dict = field(default_factory=dict)
 
-        V6 entry: HMA(21) pivot low AND (UC rising OR MACD cross-up)
+    def meets_technical_criteria(self) -> bool:
+        """Check if stock meets Sterling Grid V7 technical entry criteria.
+
+        V7 entry: HMA(21) pivot low AND (UC rising OR MACD cross-up)
+        ATR squeeze determines tier (T1-T3 vs T4-T6), not eligibility.
         """
         return self.buy_signal
 
     def get_tier(self) -> str:
-        """Return quality tier label based on which gates are active at signal bar.
+        """Return quality tier label based on gates + ATR squeeze status.
 
-        T1: UC rising AND MACD cross-up (both gates — 20% equity)
-        T2: MACD cross-up only (timing confirmed — 10% equity)
-        T3: UC rising only (regime confirmed — 5% equity)
+        V7 6-tier system:
+        T1: UC rising AND MACD cross-up + ATR squeeze  (20%)
+        T2: MACD cross-up only + ATR squeeze            (10%)
+        T3: UC rising only + ATR squeeze                (5%)
+        T4: UC rising AND MACD cross-up, no squeeze     (10%)
+        T5: MACD cross-up only, no squeeze              (5%)
+        T6: UC rising only, no squeeze                  (2.5%)
         """
         if not self.meets_technical_criteria():
             return ""
-        if self.quality_tier == 1:
-            return "T1"
-        elif self.quality_tier == 2:
-            return "T2"
-        elif self.quality_tier == 3:
-            return "T3"
-        # Fallback: classify from indicator state
+        tier_map = {1: 'T1', 2: 'T2', 3: 'T3', 4: 'T4', 5: 'T5', 6: 'T6'}
+        if self.quality_tier in tier_map:
+            return tier_map[self.quality_tier]
+        # Fallback: classify from indicator state + ATR squeeze
         if self.uc_rising and self.macd_cross_up:
-            self.quality_tier = 1
-            return "T1"
+            self.quality_tier = 1 if self.atr_squeeze else 4
         elif self.macd_cross_up:
-            self.quality_tier = 2
-            return "T2"
+            self.quality_tier = 2 if self.atr_squeeze else 5
         elif self.uc_rising:
-            self.quality_tier = 3
-            return "T3"
-        return "T3"  # Default to lowest tier if somehow unclassified
+            self.quality_tier = 3 if self.atr_squeeze else 6
+        else:
+            self.quality_tier = 6
+        return tier_map.get(self.quality_tier, 'T6')
 
 
 @dataclass
@@ -223,12 +249,18 @@ class ScanStats:
     hma_slope_rising: int = 0      # HMA(21) slope rising (informational)
     macd_cross_up: int = 0         # MACD single-bar cross-up
     uc_rising: int = 0             # V6: UC > UC.shift(1) (no >0 req)
-    buy_signal: int = 0            # V6: pivot + (UC OR MACD) + price
-    exd_exit: int = 0              # V6: HMA pivot high + UC falling
+    buy_signal: int = 0            # V7: pivot + (UC OR MACD) + ATR squeeze
+    buy_signal_v6: int = 0         # V6: pivot + (UC OR MACD) without ATR filter
+    exd_exit: int = 0              # V6 ExD (HMA pivot high + UC falling) — retained for JSON only
+    hma_pivot_high: int = 0        # V8.1 HMA exit: bare HMA(21) V-top pivot ("HMA down")
+    atr_squeeze: int = 0           # V7: ATR percentile rank < 20
     # Quality tier counts
-    tier_t1: int = 0               # Both gates (UC + MACD)
-    tier_t2: int = 0               # MACD only
-    tier_t3: int = 0               # UC only
+    tier_t1: int = 0               # Both gates + ATR squeeze
+    tier_t2: int = 0               # MACD only + ATR squeeze
+    tier_t3: int = 0               # UC only + ATR squeeze
+    tier_t4: int = 0               # Both gates, no ATR squeeze
+    tier_t5: int = 0               # MACD only, no ATR squeeze
+    tier_t6: int = 0               # UC only, no ATR squeeze
     # Aggregate
     meets_technical_gate: int = 0
     technical_signals: int = 0     # Stocks passing full technical gate (buy_signal)
@@ -352,7 +384,7 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
 
         try:
             with contextlib.redirect_stderr(io.StringIO()):
-                data = yf.download(chunk, period="1y", progress=False, threads=True, group_by='ticker')
+                data = yf.download(chunk, period="2y", progress=False, threads=True, group_by='ticker')
 
             if data.empty:
                 failed_downloads.extend(chunk)
@@ -407,12 +439,19 @@ def download_and_process(tickers: List[str], benchmark_returns: pd.Series) -> Di
                             stock.buy_signal = bool(cur['buy_signal'])
                             stock.quality_tier = int(cur['quality_tier']) if pd.notna(cur['quality_tier']) else 0
 
+                            # ATR squeeze (V7 entry filter)
+                            stock.atr = round(float(cur['atr']), 4) if pd.notna(cur.get('atr', None)) else 0.0
+                            stock.atr_rank = round(float(cur['atr_rank']), 1) if pd.notna(cur.get('atr_rank', None)) else 0.0
+                            stock.atr_squeeze = bool(cur.get('atr_squeeze', False))
+                            stock.buy_signal_v6 = bool(cur.get('buy_signal_v6', False))
+
                             # Exit signal (V6 ExD: HMA pivot high + UC falling)
                             exit_data = generate_exit_signal(weekly)
                             cur_exit = exit_data.iloc[-1]
 
                             stock.uc_falling = bool(cur_exit['uc_falling'])
                             stock.exd_signal = bool(cur_exit['exd_signal'])
+                            stock.rsi_death_cross_recent = bool(cur_exit['rsi_death_cross_recent'])
                             stock.uc_prev = round(float(exit_data['uc'].iloc[-2]), 2) if len(exit_data) > 1 and pd.notna(exit_data['uc'].iloc[-2]) else 0.0
 
                             stock.week_date = str(weekly.index[-1].date())
@@ -458,18 +497,46 @@ class SellSignal:
     drawdown_pct: float = 0.0
 
 
+def _position_exit_rule(trade) -> str:
+    """Return the exit rule for an open position.
+
+    'legacy_reanchor' for holds entered before LEGACY_CUTOFF_DATE (pre-2026) — these are
+    managed discretionarily (wait for the next technical sell signal + a wide backstop).
+    'tiered_initial_35' for everything else (the V8 default).
+
+    Defensive: any parsing issue falls back to the V8 rule, so a missing/oddly-typed
+    entry_date can never crash the weekly sell check.
+    """
+    try:
+        ed = getattr(trade, 'entry_date', None)
+        if ed is not None:
+            ds = str(ed)[:10]
+            parts = ds.split('-')
+            if len(parts) >= 3:
+                from datetime import date
+                y, m, d = int(parts[0]), int(parts[1]), int(parts[2])
+                cy, cm, cd = (int(x) for x in LEGACY_CUTOFF_DATE.split('-'))
+                if date(y, m, d) < date(cy, cm, cd):
+                    return 'legacy_reanchor'
+    except Exception:
+        pass
+    return 'tiered_initial_35'
+
+
 def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
     """
-    Check for sell signals on open positions using Sterling Grid V6 exit criteria.
+    Check for sell signals on open positions using Sterling Grid V8.1 exit rules.
 
-    EXIT CRITERIA (first exit — whichever fires first):
-    1. ExD compound exit (HMA PIVOT HIGH + UC falling on same bar) → EXIT immediately
-    2. Tiered profit lock (based on CURRENT return, not peak) → EXIT immediately
-       - Current return >= +200%: 15% trail from peak
-       - Current return >= +100%: 20% trail from peak
-       - Current return >= +50%:  25% trail from peak
-       - Below +50%: Only ExD can trigger exit (no trailing stop)
-    Both can fire on same bar → exit once with combined reason.
+    ALL positions flag a sell on an HMA exit — the HMA pivot high ("HMA down" rollover),
+    bare (no UC-falling condition; this is no longer the old ExD compound).
+
+    On top of that, capital protection differs by position age:
+      NEW positions (entry >= 2026-01-01) → tiered trailing lock for runners
+         (+200%→15%, +100%→20%, +50%→25%) with a -35%-from-entry floor while gain < +50%.
+      LEGACY holds (entry < 2026-01-01) → a wide -50%-from-entry disaster backstop only
+         (discretionary value holds: wait for the HMA exit, don't let them bleed to zero).
+    So the effective exit is "HMA down OR tiered lock/floor", whichever fires first.
+    ExD is no longer used. Decided on the weekly close; execute at next candle open.
     """
     pm = get_portfolio_manager()
     sell_signals = []
@@ -499,19 +566,39 @@ def check_sell_signals(stocks: Dict[str, Stock]) -> List[SellSignal]:
             else:
                 drawdown_pct = 0
 
-            # CHECK EXIT CRITERIA (first exit — whichever fires first)
+            # CHECK EXIT CRITERIA — the exit rule is POSITION-DEPENDENT.
+            #   • New positions ride the tiered trailing lock ALONE. No HMA-down: round-trip
+            #     backtests show the HMA pivot-high almost always fires before the lock engages,
+            #     pre-empting it and clipping the multibaggers the lock exists to capture
+            #     (tiered ≈ +89% expectancy / 17% hit-3x vs HMA-down ≈ +4% / 0%).
+            #   • Legacy holds (pre-2026, phasing out) exit on a CONDITIONED HMA-down — pivot-high
+            #     gated on a recent persistent RSI death cross — plus a wide -50% disaster floor.
+            # Decided on the weekly close; act at next candle open.
             exit_reasons = []
 
-            # 1. ExD compound exit (HMA pivot high + UC falling)
-            if stock.exd_signal:
-                exit_reasons.append(f"ExD exit (HMA pivot high + UC falling)")
-
-            # 2. Tiered profit lock
-            lock_result = check_profit_lock(trade.entry_price, current_price, trade.highest_close)
-            if lock_result.get('triggered', False):
-                tier_info = lock_result.get('active_tier', 'unknown')
-                lock_level = lock_result.get('lock_level', 0)
-                exit_reasons.append(f"Profit lock ({tier_info}, lock=${lock_level:.2f})")
+            rule = _position_exit_rule(trade)
+            if rule == 'legacy_reanchor':
+                # Pre-2026 discretionary holds, phasing out. Sell into the rollover, but only when
+                # momentum confirms it: HMA pivot-high AND a recent, persistent RSI death cross (RSI
+                # crossed below its SMA(14) signal on the prior bar or the one before, and stayed
+                # below since). Conditioning the HMA-down on the RSI rollover fires ~40% less than
+                # bare HMA-down, clipping far fewer winners (~2x the risk-adjusted return in
+                # backtesting) while still giving a clean discrete exit to retire the position. A
+                # wide -50%-from-entry backstop stops a value hold bleeding to zero while we wait.
+                if stock.hma_pivot_high and stock.rsi_death_cross_recent:
+                    exit_reasons.append("Legacy HMA exit (HMA pivot high + recent RSI death cross)")
+                backstop = trade.entry_price * (1 - LEGACY_REANCHOR_FLOOR)
+                if trade.entry_price > 0 and current_price <= backstop:
+                    exit_reasons.append(
+                        f"disaster backstop (<= ${backstop:.2f}, "
+                        f"-{int(LEGACY_REANCHOR_FLOOR*100)}% from entry)"
+                    )
+            else:
+                # New positions: tiered trailing lock ONLY (+200%→15%, +100%→20%, +50%→25%), with a
+                # -35%-from-entry floor while gain < +50%. No HMA-down — runners ride the lock.
+                exit_result = check_tiered_initial_35(trade.entry_price, current_price, trade.highest_close)
+                if exit_result.get('triggered', False):
+                    exit_reasons.append(exit_result.get('active_tier', 'tiered lock'))
 
             if exit_reasons:
                 sell_reason = " + ".join(exit_reasons)
@@ -555,10 +642,10 @@ def load_open_positions() -> set:
 # Module-level pipeline cost tracker
 _pipeline_timer = PipelineCostTracker()
 
-def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[SellSignal], ScanStats]:
+def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[SellSignal], ScanStats, Dict[str, Stock]]:
     """Run the complete scan pipeline (pure technical — no LLM gates).
 
-    Returns (technical_signals, sell_signals, stats).
+    Returns (technical_signals, sell_signals, stats, stocks).
 
     Args:
         top_n: Only scan top N stocks by UC (0 = all)
@@ -598,7 +685,7 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
     print("─" * 70)
 
     try:
-        spy = yf.download("SPY", period="1y", progress=False)
+        spy = yf.download("SPY", period="2y", progress=False)
         if spy.empty:
             print("  ✗ Failed to download SPY")
             return [], [], stats
@@ -656,6 +743,10 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
             stats.macd_cross_up += 1
         if stock.uc_rising:
             stats.uc_rising += 1
+        if stock.atr_squeeze:
+            stats.atr_squeeze += 1
+        if stock.buy_signal_v6:
+            stats.buy_signal_v6 += 1
         if stock.buy_signal:
             stats.buy_signal += 1
             # Count by quality tier
@@ -665,8 +756,16 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
                 stats.tier_t2 += 1
             elif stock.quality_tier == 3:
                 stats.tier_t3 += 1
+            elif stock.quality_tier == 4:
+                stats.tier_t4 += 1
+            elif stock.quality_tier == 5:
+                stats.tier_t5 += 1
+            elif stock.quality_tier == 6:
+                stats.tier_t6 += 1
         if stock.exd_signal:
             stats.exd_exit += 1
+        if stock.hma_pivot_high:
+            stats.hma_pivot_high += 1
 
     # Sort eligible stocks by UC (strongest accumulation first)
     eligible_stocks.sort(key=lambda x: -x.uc)
@@ -675,31 +774,28 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
         eligible_stocks = eligible_stocks[:top_n]
         print(f"  (Limited to top {top_n} by UC)")
 
-    print(f"\n  STERLING GRID V6 FILTER RESULTS:")
+    print(f"\n  STERLING GRID V8.1 FILTER RESULTS:")
     print(f"  ────────────────────────────────────")
     print(f"  Total tickers scanned:    {stats.tickers_loaded:>6}")
     print(f"  Data downloaded:          {stats.data_downloaded:>6}")
     if verbose:
-        # Internal terminology for debugging
-        print(f"  HMA pivot low (V6):       {stats.hma_pivot_low:>6}")
+        # Component diagnostics (informational — none of these gate entry in V8)
         print(f"  HMA slope rising:         {stats.hma_slope_rising:>6}  (informational)")
-        print(f"  MACD cross-up:            {stats.macd_cross_up:>6}")
-        print(f"  UC rising (V6):           {stats.uc_rising:>6}")
+        print(f"  MACD cross-up:            {stats.macd_cross_up:>6}  (informational)")
+        print(f"  UC rising:                {stats.uc_rising:>6}  (informational)")
+        print(f"  ATR squeeze:              {stats.atr_squeeze:>6}  (informational)")
         print(f"  ────────────────────────────────────")
-        print(f"  BUY signal (V6):          {stats.buy_signal:>6}")
-        if stats.buy_signal > 0:
-            print(f"    T1 (both gates):        {stats.tier_t1:>6}")
-            print(f"    T2 (MACD only):         {stats.tier_t2:>6}")
-            print(f"    T3 (UC only):           {stats.tier_t3:>6}")
-        print(f"  ExD exit signal:          {stats.exd_exit:>6}")
+        print(f"  HMA entries (pivot low):  {stats.hma_pivot_low:>6}  ← bare HMA pivot up = buy signal")
+        print(f"  HMA exits (pivot high):   {stats.hma_pivot_high:>6}  ← HMA pivot down = sell flag")
     else:
         # Marketing-safe terminology
-        print(f"  Structural pivot (V6):    {stats.hma_pivot_low:>6}")
+        print(f"  Structural pivot:         {stats.hma_pivot_low:>6}")
         print(f"  Timing confirmed:         {stats.macd_cross_up:>6}")
         print(f"  Accumulation rising:      {stats.uc_rising:>6}")
+        print(f"  Volatility squeeze (V7):  {stats.atr_squeeze:>6}")
         print(f"  ────────────────────────────────────")
-        print(f"  Full entry signal:        {stats.buy_signal:>6}")
-        print(f"  Exit signals:             {stats.exd_exit:>6}")
+        print(f"  HMA entries (pivot up):   {stats.hma_pivot_low:>6}")
+        print(f"  HMA exits (pivot down):   {stats.hma_pivot_high:>6}")
 
     # ═══════════════════════════════════════════════════════════════════════════
     # DIAGNOSTIC: Show sample tickers (controlled by --verbose flag)
@@ -720,39 +816,35 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
         print(f"  │  DIAGNOSTIC: Sample Tickers (--verbose mode)                    │")
         print(f"  └─────────────────────────────────────────────────────────────────┘")
 
-    # Buy signals (V6: HMA pivot + OR-gated confirmation)
+    # Buy signals (V8: bare HMA pivot up)
     buy_signal_stocks = [s for s in stocks.values() if s.buy_signal]
     if verbose:
-        print(f"\n  🟢 BUY SIGNALS (V6 pivot + gate): {len(buy_signal_stocks)}")
+        print(f"\n  🟢 HMA ENTRIES (bare HMA pivot up): {len(buy_signal_stocks)}")
     else:
-        print(f"\n  🟢 FULL ENTRY SIGNALS: {len(buy_signal_stocks)}")
+        print(f"\n  🟢 HMA ENTRIES: {len(buy_signal_stocks)}")
     if buy_signal_stocks and verbose:
         for s in sorted(buy_signal_stocks, key=lambda x: -x.uc)[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            tier_label = s.get_tier() or "?"
-            print(f"      {s.symbol:<6} ${s.price:<8.2f} {tier_label} UC={s.uc:.1f} RSI={s.rsi14:.0f} HMA={'⌄' if s.hma_pivot_low else '↑' if s.hma_slope_rising else '↓'}{held_flag}")
+            squeeze_flag = "SQ" if s.atr_squeeze else "--"
+            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} RSI={s.rsi14:.0f} ATR={s.atr_rank:.0f}%[{squeeze_flag}] HMA={'⌄' if s.hma_pivot_low else '↑' if s.hma_slope_rising else '↓'}{held_flag}")
 
-    # ExD exit signals
-    exd_stocks = [s for s in stocks.values() if s.exd_signal]
+    # HMA exits (bare HMA pivot high / "HMA down")
+    hma_exit_stocks = [s for s in stocks.values() if s.hma_pivot_high]
     if verbose:
-        print(f"  🔴 ExD EXIT: {len(exd_stocks)} (HMA pivot high + UC falling)")
+        print(f"  🔴 HMA EXITS (HMA pivot high / HMA down): {len(hma_exit_stocks)}")
     else:
-        print(f"  🔴 EXIT SIGNALS: {len(exd_stocks)} (positions closed)")
-    if exd_stocks and verbose:
-        for s in exd_stocks[:sample_size]:
+        print(f"  🔴 HMA EXITS: {len(hma_exit_stocks)} (sell flag on open positions)")
+    if hma_exit_stocks and verbose:
+        for s in hma_exit_stocks[:sample_size]:
             print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} HMA={'⌃' if s.hma_pivot_high else '↓'}")
 
     # Entry candidates with buy signal
     buy_candidates = [s for s in eligible_stocks if s.buy_signal]
-    if verbose:
-        print(f"\n  ⭐ ENTRY CANDIDATES (V6 Signal): {len(buy_candidates)}")
-    else:
-        print(f"\n  ⭐ ENTRY CANDIDATES (Gate Qualified): {len(buy_candidates)}")
+    print(f"\n  ⭐ ENTRY CANDIDATES (HMA pivot up): {len(buy_candidates)}")
     if buy_candidates:
         for s in sorted(buy_candidates, key=lambda x: -x.uc)[:sample_size]:
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            tier_label = s.get_tier() or "?"
-            print(f"      {s.symbol:<6} ${s.price:<8.2f} {tier_label} UC={s.uc:.1f} RSI={s.rsi14:.0f} MACD={'✓' if s.macd_cross_up else '✗'}{held_flag}")
+            print(f"      {s.symbol:<6} ${s.price:<8.2f} UC={s.uc:.1f} RSI={s.rsi14:.0f} MACD={'✓' if s.macd_cross_up else '✗'} ATR={s.atr_rank:.0f}%{held_flag}")
 
     if not verbose:
         print(f"\n  💡 Use --verbose for detailed diagnostics")
@@ -763,7 +855,7 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
     print("\n" + "─" * 70)
     print("  STEP 5: Applying Sterling Grid Technical Gates")
     print("─" * 70)
-    print(f"\n  📊 Entry (V6): HMA pivot↓ + (UC rising OR MACD cross-up)")
+    print(f"\n  📊 Entry (V8): bare HMA pivot up — fire wide (no UC/MACD/ATR gate); LLM selects")
 
     technical_signals = []
 
@@ -775,28 +867,53 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
                 technical_signals.append(stock)
                 stats.technical_signals += 1
 
-    print(f"\n  STERLING GRID V6 GATE RESULTS:")
+    print(f"\n  STERLING GRID V8.1 GATE RESULTS:")
     print(f"  ────────────────────────────────────")
     print(f"  Eligible stocks:           {len(eligible_stocks):>5}")
-    print(f"  Buy signal (V6 pivot):     {stats.meets_technical_gate:>5}")
+    print(f"  HMA entries (pivot up):    {stats.meets_technical_gate:>5}")
+    print(f"  ATR squeeze (sizing nudge):{stats.atr_squeeze:>5}")
     print(f"  ────────────────────────────────────")
     print(f"  TECHNICAL SIGNALS:         {stats.technical_signals:>5}")
-    if stats.technical_signals > 0:
-        print(f"    T1 (UC + MACD, 20%):     {stats.tier_t1:>5}")
-        print(f"    T2 (MACD only, 10%):     {stats.tier_t2:>5}")
-        print(f"    T3 (UC only, 5%):        {stats.tier_t3:>5}")
     print(f"  ────────────────────────────────────")
 
     if technical_signals:
-        print(f"\n  ✅ TECHNICAL SIGNALS:")
+        print(f"\n  ✅ HMA ENTRY SIGNALS:")
         for s in sorted(technical_signals, key=lambda x: -x.uc):
             held_flag = " [HELD]" if s.symbol in open_positions else ""
-            print(f"    {s.tier}  {s.symbol:<6} ${s.price:>8.2f}  UC={s.uc:.1f}  RSI={s.rsi14:.0f}  MACD={'✓' if s.macd_cross_up else '✗'}  HMA={'⌄' if s.hma_pivot_low else '↑'}{held_flag}")
+            squeeze_flag = "SQ" if s.atr_squeeze else "--"
+            print(f"    {s.symbol:<6} ${s.price:>8.2f}  UC={s.uc:.1f}  RSI={s.rsi14:.0f}  MACD={'✓' if s.macd_cross_up else '✗'}  ATR={s.atr_rank:.0f}%[{squeeze_flag}]  HMA={'⌄' if s.hma_pivot_low else '↑'}{held_flag}")
 
     if not technical_signals:
         print("\n  No technical signals to process")
         sell_signals = check_sell_signals(stocks)
         return [], sell_signals, stats
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # STEP 5b: Enrich signals (yfinance fundamentals + profile)
+    # Only the flagged signals are enriched — fundamentals need per-ticker
+    # yf.Ticker calls (slow/flaky), so we never run them across the full universe.
+    # ─────────────────────────────────────────────────────────────────────────
+    print("\n" + "─" * 70)
+    print("  STEP 5b: Enriching Signals (yfinance fundamentals + profile)")
+    print("─" * 70)
+
+    for i, stock in enumerate(technical_signals, 1):
+        print(f"\r  Enriching: {i}/{len(technical_signals)} ({stock.symbol})    ", end="", flush=True)
+        try:
+            stock.enrichment = enrich_stock(stock.symbol)
+        except Exception as e:
+            stock.enrichment = {"data_warnings": [f"enrich_error: {type(e).__name__}: {e}"]}
+        time.sleep(0.3)  # be gentle on Yahoo
+
+    low_conf = sum(1 for s in technical_signals
+                   if s.enrichment.get("profile_confidence") == "low")
+    liq_fail = sum(1 for s in technical_signals
+                   if "liquidity_fail" in s.enrichment.get("hard_disqualifiers", []))
+    print(f"\r  ✓ Enriched {len(technical_signals)} signal(s)" + " " * 24)
+    if low_conf:
+        print(f"  ⚠ {low_conf} low-confidence profile (generic/missing sector — use business_summary)")
+    if liq_fail:
+        print(f"  ⚠ {liq_fail} flagged liquidity_fail (below tradable avg $ volume)")
 
     # ─────────────────────────────────────────────────────────────────────────
     # STEP 6: Technical signals ready (LLM gates → Claude.ai chat)
@@ -808,15 +925,15 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
     sorted_signals = sorted(technical_signals, key=lambda x: -x.uc)
     for s in sorted_signals[:5]:
         held_flag = " [HELD]" if s.symbol in open_positions else ""
-        print(f"     {s.symbol:<6} | {s.tier} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | MACD={'✓' if s.macd_cross_up else '✗'} | 20d={s.return_20d:+.1f}%{held_flag}")
+        print(f"     {s.symbol:<6} | UC={s.uc:.1f} | RSI={s.rsi14:.0f} | MACD={'✓' if s.macd_cross_up else '✗'} | ATR={s.atr_rank:.0f}% | 20d={s.return_20d:+.1f}%{held_flag}")
     if len(sorted_signals) > 5:
         print(f"     ... and {len(sorted_signals) - 5} more")
 
     # ─────────────────────────────────────────────────────────────────────────
-    # STEP 7: Check Sell Signals (ExD compound exit OR tiered profit lock)
+    # STEP 7: Check Sell Signals (HMA exit OR tiered lock / disaster floor)
     # ─────────────────────────────────────────────────────────────────────────
     print("\n" + "─" * 70)
-    print("  STEP 7: Checking Sell Signals (ExD Pivot High exit OR Tiered Profit Lock)")
+    print("  STEP 7: Checking Sell Signals (V8.1 HMA exit OR tiered lock | legacy = HMA exit + backstop)")
     print("─" * 70)
 
     sell_signals = check_sell_signals(stocks)
@@ -830,12 +947,68 @@ def run_scan(top_n: int = 0, verbose: bool = False) -> Tuple[List[Stock], List[S
 
     # NOTE: Portfolio updates now happen AFTER review in Claude.ai chat
 
-    return technical_signals, sell_signals, stats
+    return technical_signals, sell_signals, stats, stocks
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # OUTPUT & LOGGING
 # ═══════════════════════════════════════════════════════════════════════════════
+
+def _fmt_money(x) -> str:
+    """Compact dollar formatting: $16.4B, $470M, $202K, n/a."""
+    if not isinstance(x, (int, float)):
+        return "n/a"
+    ax = abs(x)
+    if ax >= 1e9:
+        return f"${x/1e9:.1f}B"
+    if ax >= 1e6:
+        return f"${x/1e6:.0f}M"
+    if ax >= 1e3:
+        return f"${x/1e3:.0f}K"
+    return f"${x:,.0f}"
+
+
+def _fmt_pct(x) -> str:
+    """Signed percent from a fraction: +8%, -63%, n/a."""
+    if not isinstance(x, (int, float)):
+        return "n/a"
+    return f"{x*100:+.0f}%"
+
+
+def _fundamentals_table(technical_signals: List[Stock]) -> List[str]:
+    """Build fundamentals table lines from each signal's enrichment dict.
+
+    Shared by the terminal report and the archived/email report so both stay
+    in sync. Enrichment is populated in STEP 5b; missing values render as n/a.
+    """
+    lines = []
+    lines.append(
+        f"  {'SYMBOL':<7} {'COMPANY':<22} {'SECTOR':<18} {'MKTCAP':>8} "
+        f"{'REVYoY':>7} {'GRMGN':>7} {'CASH':>8} {'RUNWAY':>7} {'DILUT':>7} {'FLAGS':<22}"
+    )
+    lines.append("  " + "-" * 116)
+    # Tier ascending (T1 highest conviction first), then strongest accumulation
+    for s in sorted(technical_signals, key=lambda x: (x.tier, -x.uc)):
+        e = s.enrichment or {}
+        company = (e.get("company") or "")[:20]
+        sector = (e.get("sector") or "")[:16]
+        mc = _fmt_money(e.get("market_cap"))
+        rev = _fmt_pct(e.get("revenue_yoy_growth"))
+        gm = _fmt_pct(e.get("gross_margin"))
+        cash = _fmt_money(e.get("cash_st"))
+        runway = e.get("runway_months")
+        rw = f"{runway:.0f}m" if isinstance(runway, (int, float)) else "n/a"
+        dil = _fmt_pct(e.get("dilution_yoy"))
+        flags = list(e.get("hard_disqualifiers", [])) + list(e.get("risk_flags", []))
+        if e.get("data_warnings"):
+            flags.append("fetch_err")
+        flag_str = (",".join(flags))[:20] if flags else "-"
+        lines.append(
+            f"  {s.symbol:<7} {company:<22} {sector:<18} {mc:>8} "
+            f"{rev:>7} {gm:>7} {cash:>8} {rw:>7} {dil:>7} {flag_str:<22}"
+        )
+    return lines
+
 
 def print_final_report(technical_signals: List[Stock], sell_signals: List[SellSignal], stats: ScanStats):
     """Print final summary report."""
@@ -847,21 +1020,28 @@ def print_final_report(technical_signals: List[Stock], sell_signals: List[SellSi
     if technical_signals:
         print(f"\n  ⭐ ENTRY CANDIDATES ({len(technical_signals)}) — pending Claude.ai analysis:")
         print("  " + "─" * 66)
-        print(f"  {'TIER':<5} {'SYMBOL':<7} {'PRICE':>8} {'UC':>6} {'RSI':>5} {'MACD':>5} {'20D':>7}")
-        print("  " + "-" * 50)
-        for s in sorted(technical_signals, key=lambda x: -x.uc):
+        print(f"  {'SYMBOL':<7} {'PRICE':>8} {'UC':>6} {'RSI':>5} {'MACD':>5} {'ATR%':>5} {'20D':>7}")
+        print("  " + "-" * 55)
+        for s in sorted(technical_signals, key=lambda x: (-1 if x.atr_squeeze else 0, -x.uc)):
             macd = "✓" if s.macd_cross_up else "✗"
-            print(f"  {s.tier:<5} {s.symbol:<7} ${s.price:>7.2f} {s.uc:>5.1f} {s.rsi14:>5.0f} {macd:>5} {s.return_20d:>+6.1f}%")
+            atr_str = f"{s.atr_rank:.0f}" if s.atr_rank else "--"
+            print(f"  {s.symbol:<7} ${s.price:>7.2f} {s.uc:>5.1f} {s.rsi14:>5.0f} {macd:>5} {atr_str:>5} {s.return_20d:>+6.1f}%")
 
         # Total allocation summary
         total_alloc = sum(TIER_ALLOC.get(s.tier, 0) for s in technical_signals)
         if total_alloc:
-            print(f"\n    💰 Potential equity deployment: {total_alloc}% (pending analysis)")
+            print(f"\n    💰 Potential equity deployment: {total_alloc:.1f}% (pending analysis)")
+
+        # Fundamentals (from STEP 5b enrichment) — profile + financials per signal
+        print(f"\n  📑 FUNDAMENTALS (yfinance enrichment):")
+        print("  " + "─" * 116)
+        for line in _fundamentals_table(technical_signals):
+            print(line)
     else:
         print("\n  NO TECHNICAL ENTRY SIGNALS")
         print(f"\n  Pipeline summary:")
         print(f"    • {stats.tickers_loaded} tickers scanned")
-        print(f"    • {stats.buy_signal} with full buy signal (V6 pivot + gate)")
+        print(f"    • {stats.buy_signal} HMA entries (bare pivot up)")
         print(f"    • {stats.technical_signals} met technical gate")
 
     if sell_signals:
@@ -876,11 +1056,11 @@ def print_final_report(technical_signals: List[Stock], sell_signals: List[SellSi
             print(f"     Position closed — first exit triggered")
 
     print(f"\n  " + "═" * 66)
-    print(f"  EXIT STRATEGY (first exit — whichever fires first):")
-    print(f"    • ExD compound exit (HMA pivot high + UC falling) = immediate exit")
-    print(f"    • Tiered profit lock (>=+200%→15%, >=+100%→20%, >=+50%→25% trail)")
-    print(f"    • Below +50% return: only ExD can trigger exit")
-    print(f"    • Whichever fires first closes the position")
+    print(f"  EXIT STRATEGY (V8.1 — decide on weekly close, act next candle open):")
+    print(f"    • HMA exit: HMA pivot high (HMA down) — flagged for every position, runners included")
+    print(f"    • Runners: tiered trailing lock (+200%→15%, +100%→20%, +50%→25% from peak)")
+    print(f"    • New positions: -35%-from-entry floor while gain < +50%")
+    print(f"    • Legacy holds (pre-2026): HMA exit + -50% disaster backstop")
     print("  " + "═" * 66)
 
 
@@ -892,7 +1072,7 @@ def generate_report(technical_signals: List[Stock], sell_signals: List[SellSigna
 
     lines = []
     lines.append("=" * 72)
-    lines.append(f"  STERLING GRID V6 — WEEKLY SCAN REPORT")
+    lines.append(f"  STERLING GRID V8.1 — WEEKLY SCAN REPORT")
     lines.append(f"  {date_display}")
     lines.append(f"  Generated: {timestamp}")
     lines.append("=" * 72)
@@ -901,12 +1081,9 @@ def generate_report(technical_signals: List[Stock], sell_signals: List[SellSigna
     lines.append("")
     lines.append(f"  Tickers scanned:     {stats.tickers_loaded:>6}")
     lines.append(f"  Data downloaded:     {stats.data_downloaded:>6}")
-    lines.append(f"  HMA pivot low:       {stats.hma_pivot_low:>6}")
-    lines.append(f"  Buy signal (V6):     {stats.buy_signal:>6}")
-    lines.append(f"    T1 (UC + MACD):    {stats.tier_t1:>6}")
-    lines.append(f"    T2 (MACD only):    {stats.tier_t2:>6}")
-    lines.append(f"    T3 (UC only):      {stats.tier_t3:>6}")
-    lines.append(f"  ExD exit signals:    {stats.exd_exit:>6}")
+    lines.append(f"  ATR squeeze:         {stats.atr_squeeze:>6}  (sizing nudge)")
+    lines.append(f"  HMA entries (up):    {stats.hma_pivot_low:>6}  ← bare HMA pivot up = buy signal")
+    lines.append(f"  HMA exits (down):    {stats.hma_pivot_high:>6}  ← HMA pivot high = sell flag")
 
     # Entry candidates
     if technical_signals:
@@ -914,11 +1091,18 @@ def generate_report(technical_signals: List[Stock], sell_signals: List[SellSigna
         lines.append("─" * 72)
         lines.append("  ENTRY CANDIDATES (pending Claude.ai analysis)")
         lines.append("─" * 72)
-        lines.append(f"  {'TIER':<5} {'SYMBOL':<7} {'PRICE':>8} {'UC':>6} {'RSI':>5} {'MACD':>5} {'20D':>7}")
+        lines.append(f"  {'SYMBOL':<7} {'PRICE':>8} {'UC':>6} {'RSI':>5} {'MACD':>5} {'20D':>7}")
         lines.append("  " + "-" * 50)
         for s in sorted(technical_signals, key=lambda x: -x.uc):
             macd = "✓" if s.macd_cross_up else "✗"
-            lines.append(f"  {s.tier:<5} {s.symbol:<7} ${s.price:>7.2f} {s.uc:>5.1f} {s.rsi14:>5.0f} {macd:>5} {s.return_20d:>+6.1f}%")
+            lines.append(f"  {s.symbol:<7} ${s.price:>7.2f} {s.uc:>5.1f} {s.rsi14:>5.0f} {macd:>5} {s.return_20d:>+6.1f}%")
+
+        # Fundamentals (from STEP 5b enrichment)
+        lines.append("")
+        lines.append("─" * 72)
+        lines.append("  FUNDAMENTALS (yfinance enrichment)")
+        lines.append("─" * 72)
+        lines.extend(_fundamentals_table(technical_signals))
     else:
         lines.append("")
         lines.append("  No technical entry signals this week.")
@@ -971,30 +1155,41 @@ def save_results(technical_signals: List[Stock], sell_signals: List[SellSignal],
             "hma_pivot_high": s.hma_pivot_high,
             "hma_slope_rising": s.hma_slope_rising,
             "buy_signal": s.buy_signal,
+            "buy_signal_v6": s.buy_signal_v6,
             "exd_signal": s.exd_signal,
+            "atr": s.atr,
+            "atr_rank": s.atr_rank,
+            "atr_squeeze": s.atr_squeeze,
             "return_20d": s.return_20d,
             "momentum_4w": s.momentum_4w,
             "week_date": s.week_date,
+            # yfinance fundamentals + profile (None/empty if enrichment unavailable)
+            "enrichment": s.enrichment,
             # Legacy compat keys for downstream systems
             "banker": s.uc,
-            "uc_rising_above": False,  # V4 legacy — always False in V6
+            "uc_rising_above": False,  # V4 legacy — always False in V6+
         }
 
     signals_data = {
         "timestamp": timestamp,
         "timeframe": "WEEKLY",
-        "entry_criteria": "Sterling Grid V6: HMA pivot + (UC rising OR MACD cross-up)",
-        "exit_criteria": "ExD compound exit + tiered profit lock",
+        "entry_criteria": "Sterling Grid V8.1: bare HMA(21) pivot up (no UC/MACD/ATR gate); gates inform sizing only",
+        "exit_criteria": "Sterling Grid V8.1: HMA exit (HMA pivot high / HMA down, all positions) OR tiered trailing lock for runners; -35% floor < +50% (new) / -50% backstop (legacy); ExD no longer used",
         "stats": {
             "tickers_loaded": stats.tickers_loaded,
             "data_downloaded": stats.data_downloaded,
             "hma_pivot_low": stats.hma_pivot_low,
             "macd_cross_up": stats.macd_cross_up,
             "uc_rising": stats.uc_rising,
+            "atr_squeeze": stats.atr_squeeze,
+            "buy_signal_v6": stats.buy_signal_v6,
             "buy_signal": stats.buy_signal,
             "tier_t1": stats.tier_t1,
             "tier_t2": stats.tier_t2,
             "tier_t3": stats.tier_t3,
+            "tier_t4": stats.tier_t4,
+            "tier_t5": stats.tier_t5,
+            "tier_t6": stats.tier_t6,
             "exd_exit": stats.exd_exit,
             "technical_signals": stats.technical_signals,
         },
@@ -1200,7 +1395,7 @@ SCAN STATS:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Sterling Grid V6 — Pure Technical Signal Detector (Weekly)")
+    parser = argparse.ArgumentParser(description="Sterling Grid V7 — Pure Technical Signal Detector (Weekly)")
     parser.add_argument("--top", type=int, help="Only scan top N stocks by UC")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed diagnostic output (10 items per category instead of 3)")
     parser.add_argument("--archive", action="store_true", help="Save dated archive files in addition to latest files")
@@ -1210,18 +1405,19 @@ def main() -> int:
     # Header
     print("\n")
     print("╔" + "═" * 68 + "╗")
-    print("║" + "STERLING GRID V6 — WEEKLY TECHNICAL SCANNER".center(68) + "║")
+    print("║" + "STERLING GRID V8.1 — WEEKLY TECHNICAL SCANNER".center(68) + "║")
     print("║" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").center(68) + "║")
     print("╚" + "═" * 68 + "╝")
 
     # Show entry/exit criteria (marketing-safe by default, detailed with --verbose)
     if args.verbose:
-        print(f"\n  ENTRY (V6): HMA pivot↓ + (UC rising OR MACD cross-up)")
-        print("  TIERS: T1 (both, 20%) | T2 (MACD, 10%) | T3 (UC, 5%) | Max 8 positions")
-        print("  EXIT:  ExD (HMA pivot↑ + UC↓) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25%)")
+        print(f"\n  ENTRY (V8.1): bare HMA(21) pivot up — fire wide, no UC/MACD/ATR gate")
+        print("  EXIT (V8.1): HMA exit (HMA pivot high / HMA down, every position) OR tiered lock for runners")
+        print("    • runners: trailing lock (+200%→15%, +100%→20%, +50%→25%); new: -35% floor < +50%")
+        print("  LEGACY (pre-2026 holds): HMA exit (HMA pivot high) + -50% disaster backstop")
     else:
-        print("\n  ENTRY (V6): Pivot + Confirmation Gate Screening (Structural + Timing/Accumulation)")
-        print("  EXIT:  Capital Preservation Protocol (first exit — whichever fires first)")
+        print("\n  ENTRY (V8.1): HMA pivot up — fire wide, LLM selects")
+        print("  EXIT (V8.1): HMA pivot down OR tiered lock (act next candle open)")
 
     print("\n  Pipeline: Pure Technical Signal Detector (no LLM API calls)")
     print("  Cost: $0.00 (free)")
@@ -1242,7 +1438,7 @@ def main() -> int:
     start_time = time.time()
 
     # Run scan (pure technical — no LLM API calls)
-    technical_signals, sell_signals, stats = run_scan(
+    technical_signals, sell_signals, stats, stocks = run_scan(
         top_n=args.top,
         verbose=args.verbose
     )
@@ -1262,16 +1458,41 @@ def main() -> int:
     # Portfolio summary and Google Sheets export
     try:
         pm = get_portfolio_manager()
-        open_positions = pm.get_open_positions()
-        closed_trades = pm.get_closed_trades()
 
         print("\n" + "─" * 70)
         print("  PORTFOLIO UPDATE")
         print("─" * 70)
+
+        # Update portfolio prices from scanner's yfinance data
+        if stocks:
+            open_symbols = pm.get_open_symbols()
+            matched = open_symbols & set(stocks.keys())
+            update_portfolio_prices(stocks)
+            # Reload to get persisted state
+            pm = get_portfolio_manager()
+            print(f"  ✓ Live prices updated for {len(matched)}/{len(open_symbols)} open positions (from scanner data)")
+
+            # Fallback: fetch prices for portfolio tickers not in scanner data
+            missing = open_symbols - set(stocks.keys())
+            if missing:
+                print(f"  ℹ {len(missing)} portfolio ticker(s) not in scanner data, fetching separately...")
+                from portfolio.manager import fetch_current_prices
+                fallback_prices = fetch_current_prices(list(missing))
+                for sym, price in fallback_prices.items():
+                    trade = next((t for t in pm.get_open_positions() if t.ticker == sym), None)
+                    if trade and price > 0:
+                        trade.calculate_metrics(price)
+                if fallback_prices:
+                    pm._save()
+                    pm.export_for_google_sheets()
+                    print(f"  ✓ Fallback prices updated for {len(fallback_prices)} ticker(s)")
+
+        open_positions = pm.get_open_positions()
+        closed_trades = pm.get_closed_trades()
+
         print(f"  ✓ Portfolio: {len(open_positions)} open, {len(closed_trades)} closed")
         print(f"  ✓ CSV: {rel_path(pm.portfolio_file)}")
 
-        # Export for Google Sheets
         sheets_file = pm.export_for_google_sheets()
         print(f"  ✓ Google Sheets export: {rel_path(sheets_file)}")
 

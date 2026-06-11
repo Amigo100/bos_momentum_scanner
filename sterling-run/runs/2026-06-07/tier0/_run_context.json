@@ -1,0 +1,49 @@
+{
+  "run": {
+    "date": "2026-06-07",
+    "iso_week": "2026-W23",
+    "prior_anchor": "2026-06-06",
+    "note": "Same-ISO-week Tier 0 refresh run one day after the cold-start 2026-06-06 run. Same 57-name signal list. Build on the carried-forward log; compute Delta vs 2026-06-06; use CURRENT data (web) per Shared Context section 9 — never memory."
+  },
+  "paths": {
+    "skill_dna": "/Users/mattydeighton/Downloads/bos_momentum_scanner/.claude/skills/sterling-grid-tier0/references/shared-context-dna.md",
+    "skill_diag": "/Users/mattydeighton/Downloads/bos_momentum_scanner/.claude/skills/sterling-grid-tier0/references/diagnostic-reference.md",
+    "skill_cards": "/Users/mattydeighton/Downloads/bos_momentum_scanner/.claude/skills/sterling-grid-tier0/references/card-schemas.md",
+    "carried_theme_map": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/log/theme_map.json",
+    "carried_regime_log": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/log/regime_log.jsonl",
+    "carried_discovery_log": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/log/discovery_log.jsonl",
+    "carried_benchmark_set": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/log/benchmark_set.json",
+    "carried_hunting_brief": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/log/hunting_brief_2026-06-06.md",
+    "this_week_signals": "/Users/mattydeighton/Downloads/bos_momentum_scanner/sterling-run/signals/this-week.csv"
+  },
+  "new_cluster_feed_from_tier1_2026-06-06": [
+    {
+      "cluster": "Deleveraged consumer/retail turnarounds",
+      "tickers": ["BNED", "LE", "WWW", "BARK"],
+      "mechanism": "Balance-sheet event removed the overhang; margin/EBITDA inflection off a depressed base. No theme home -> recurring orphan-ADVANCE shape. BARK Q4 print ~Jun-9 is the near tell.",
+      "task": "Investigate as a bottom-up cluster: is there a genuine shared demand mechanism with rising capital, or are these idiosyncratic single-name turnarounds with no theme? Recall-mode surface; do not force a theme."
+    },
+    {
+      "cluster": "AI-platform re-rate (agentic software + AI-native techbio)",
+      "tickers": ["CNVS", "APPN", "RXRX"],
+      "mechanism": "Beaten-down platform + AI-attach/agentic catalyst re-rates the multiple. CNVS the only true small-cap; APPN/RXRX need multiple-expansion not size.",
+      "task": "Investigate: is agentic-software / AI-native-techbio re-rating a real fundable theme with a demand mechanism, or single-name multiple stories? Check VC/enterprise spend signals."
+    },
+    {
+      "cluster": "Event-driven single-binary clinical micro-caps",
+      "tickers": ["ELTX", "BTAI"],
+      "mechanism": "Tiny float + dated near-term binary + funded-into-catalyst. Tier-1 ref mis-filed both under KRAS/Cancer-Immuno [HOLD]; flagged so a theme-rule does not false-DROP them.",
+      "task": "Investigate the specific catalysts/dates and whether either belongs to a live HUNT theme vs a standalone binary. Not a theme per se; confirm correct theme home."
+    }
+  ],
+  "groups": [
+    { "key": "G1_defense_autonomy", "label": "Defense & Autonomous Warfare", "themes": ["Counter-Drone / Autonomous Warfare (C-UAS + attritable drones, Pentagon largest-ever buy)", "Golden Dome Missile Defense (layered shield + space-sensing/transport layer + proliferated-LEO launch)", "US Shipbuilding / Maritime Industrial Base Revival"] },
+    { "key": "G2_space", "label": "Commercial Space", "themes": ["Commercial Space Launch & Satellite Cadence (civil/commercial, distinct from defense Golden Dome)"] },
+    { "key": "G3_ai_power_infra", "label": "AI Infrastructure: Power / Cooling / Storage", "themes": ["AI Data-Center Power & Grid Bottleneck (transformers, switchgear, GOES steel, gas turbines, behind-the-meter generation)", "Data-Center Thermal Management / Liquid Cooling", "Grid-Scale Energy Storage & Long-Duration Storage (LDES)"] },
+    { "key": "G4_nuclear_fuelcycle", "label": "Nuclear & Fuel Cycle", "themes": ["Nuclear Renaissance / SMR + HALEU Fuel + Hyperscaler PPAs", "Western Uranium Enrichment / SWU Capacity Bottleneck (fuel-cycle, distinct from SMR/HALEU mining)"] },
+    { "key": "G5_materials_cells", "label": "Critical Materials & Advanced Cells", "themes": ["Rare Earths & Critical Minerals Onshoring (DoD price floors + funded policy)", "High-Energy-Density Silicon-Anode & NDAA-Compliant Advanced Cells (drone/eVTOL/defense/space power)"] },
+    { "key": "G6_bio_med", "label": "Obesity / Metabolic / Diabetes Tech", "themes": ["Next-Gen Obesity / Metabolic Therapeutics", "GLP-1 Muscle-Preservation Adjuncts (anti-catabolic obesity combo drugs)", "Next-Gen / Long-Duration Glucose Monitoring & Diabetes Tech"] },
+    { "key": "G7_frontier", "label": "Frontier Compute & Physical AI", "themes": ["Fault-Tolerant Quantum Computing (Logical-Qubit Inflection)", "Humanoid Robotics / Physical AI Supply Chain"] },
+    { "key": "G8_newclusters_recheck", "label": "New Clusters + HOLD/AVOID Re-check", "themes": ["AI Memory Supercycle (HBM / DRAM)", "Cybersecurity for the AI/Agentic Era", "Stablecoins, Tokenization & On-Chain Dollar Rails (GENIUS Act)", "Blood-Based Alzheimer's / Neuro Diagnostics", "Cancer Immunotherapy / KRAS Vaccine Catalyst Cohort", "Genomics & Life-Science Research Tools (long-read sequencing + sample infra)", "Housing & Building-Products Recovery (repair/remodel + new-build supply chain)", "Auto-Supplier Margin Restructuring / Recovery", "Macau / Integrated-Resort Gaming Recovery", "Companion-Animal / Pet Health (vet diagnostics + therapeutics)", "China ADR Logistics / New-Energy Infrastructure micro-caps (LOW-CONFIDENCE)", "Precious-Metals Miners — Silver/Gold Structural-Deficit Breakout", "Copper Structural Deficit (Electrification Bottleneck)"] }
+  ]
+}

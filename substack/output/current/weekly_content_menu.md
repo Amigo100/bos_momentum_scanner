@@ -1,182 +1,205 @@
-# Sterling Signals Content Menu: Week of March 30, 2026
+# Sterling Signals Content Menu: Week of June 8, 2026
 
 ## Portfolio Pulse
 
-NAV at approximately $101,900, up +85% from $55,000 deployed. Alpha vs SPY is significant, driven by $SOFI (+141% from $7.90 entry), $AMD (+84% from $120), and $TMDX (+53% from $65). The biggest risk this week: $ASPI at $4.61, now -23% from entry and approaching the system's exit threshold. $ACRS has its AAD ePoster data from March 27 to digest, and $SVCO is up +19% in four days since entry at $5.98. Upcoming catalysts: $CPRX patent trial ruling (watchlisted), $SVCO Q1 earnings in May, $VYGR IND filing Q2 2026.
+NAV stands at $106,531, up 102.4% since inception and 61.1 points ahead of the S&P 500 (48.6 points ahead of the Nasdaq 100). The book gave back roughly 7.5% from its May 30 peak of $115,155 as a semiconductor selloff hit the AI Infrastructure positions: $AMD fell 10.9% on Friday June 5 alone, yet still sits +282% from our $120 entry. The standout remains $BAND at $64.85, up 292% from $16.55 after a 20% Q1 revenue beat and a raised full-year guide to $880-900M. The April biotech batch is diverging cleanly: $CYRX at +62% versus $NAMS at -6% into its defining trial, with $KYTX systematically exited on May 31. No position sits near its exit level. Watching $VYGR for its VY1706 IND decision this quarter.
+
+> Note: portfolio_snapshot.json is stale (dated Feb 27, lists closed ETON/RELY). Portfolio figures here are drawn from equity_curve.csv (current to June 6) and portfolio.csv. Scanner data is from the April 13 session; no new scan ran this week, so several ideas revisit the April signals and rejections with eight weeks of hindsight. SVCO showed conflicting intraday quotes; ~$13.89 used.
 
 ---
 
 ## Monday
 
 ### Articles
-1. **$SVCO at $7.14: The EDA Turnaround Four Days In** — Position Update
-   New position entered at $5.98 is already +19%. CEO Walden Rhines bought $170K at the all-time low. Q1 earnings in May will be the first real test. · Data: decisions.json → SVCO dd_elevator_pitch, dd_the_math
 
-2. **1,279 Stocks In, 2 Out: How the March 21 Screening Session Filtered 99.8% of the Universe** — Methodology Explainer
-   The latest scan loaded 1,279 tickers, found 18 technical signals, and deployed capital in 2 positions. Walk through each filter stage with real numbers from this session. · Data: signals.json → stats, signal_history_rows.csv stage_reached counts
+1. **$AMD at +282%: What a 10.9% Friday Does Not Change About the AI Infrastructure Thesis** — Position Update
+   AMD dropped 10.9% on June 5 in a broad semiconductor selloff yet remains +282% from our $120 entry: the structural force is intact while the tape is noisy. Most timely because the move is days old. · Data: portfolio.csv ($AMD entry $120) + live price $458.80; structural_force = AI Infrastructure
 
-3. **The Copper Thesis We Walked Away From: Why $TGB Failed at $2.74B** — Rejection Story
-   PRIME theme (8.6 composite), POWERFUL structural wave, 305% rally in 12 months. The system said no. Insider selling, exceeded our size threshold, and the primary catalyst had already occurred. · Data: decisions.json → TGB rejection_reason, reconsider_if
+2. **The $8,624 Drawdown: How the Book Held +102% Through the Semiconductor Selloff** — Performance Review
+   NAV slipped from a May 30 peak of $115,155 to $106,531, a give-back concentrated in the AI Infrastructure positions, but total return holds at +102.4% with +61 points of alpha. Discipline framing, not panic. · Data: equity_curve.csv (rows 2026-05-30 through 2026-06-06)
+
+3. **Five of Twelve Positions Sit in One Force: The AI Infrastructure Concentration Question** — Force Analysis
+   $NVDA, $AMD, $HIVE, $BAND and $SVCO all map to AI Infrastructure, which is why one bad session moved the whole book. Examines the case for and against the concentration. · Data: portfolio.csv structural_force column + decisions.json batch_assessment sector_concentration
 
 ### Visual Carousels
-1. **The March 21 Filter Funnel: 1,279 → 18 → 2** — Funnel Graphic
-   Hook: 99.8% rejection rate · Features: each filter stage count (1,279 loaded → 45 pivot → 18 technical → 7 themes → 2 deployed), named tickers at each dropout
 
-2. **Portfolio Heatmap: 11 Positions, 4 Structural Forces** — Portfolio Snapshot
-   Hook: +85% total return · Features: all 11 tickers mapped to forces (AI Infrastructure, Defence Spending, Biotech Capital Cycle, Nuclear Renaissance, Financial Infrastructure), colour-coded by P&L tier
+1. **The AI Infrastructure Book: Five Positions, One Friday** — Forces heatmap
+   Hook: $AMD -10.9% in a single session · Features: NVDA +36%, AMD +282%, HIVE +79%, BAND +292%, SVCO ~+132%, each with Friday move
 
-3. **$SVCO Valuation Gap: 2.8x Revenue vs 11x Peer Median** — Comparison Table
-   Hook: 75% discount to EDA peers · Features: SVCO vs Synopsys, Cadence, PDF Solutions on EV/Revenue, margin profile, growth rate
+2. **Portfolio NAV: $115,155 to $106,531 in Five Sessions** — Data chart
+   Hook: still +102.4% total return · Features: equity_curve NAV line May 30 to June 6, SPY and QQQ benchmark lines, alpha +61.1pts
+
+3. **$120 to $458: The 15-Month AMD Hold** — Timeline scorecard
+   Hook: +282% from entry · Features: entry 2025-03-02, $521 all-time high June 2, $458.80 now, 462 days held
 
 ---
 
 ## Tuesday
 
 ### Articles
-1. **$ACRS: Four Clinical Shots, $296M Enterprise Value, and a $1.4B M&A Precedent** — New Signal Deep Dive
-   Entered at $3.65 with a blended fair value of $8.00. Bosakitug enrollment completed March 18. AAD ePoster data just released. Four programs reduce all-fail probability to 17%. · Data: decisions.json → ACRS dd_elevator_pitch, dd_the_math, dd_why_now
 
-2. **The Biotech Capital Cycle: Where $4.7B in TSLP Deal Flow Meets 17% Failure Odds** — Force Analysis
-   GSK paid $1B for a single anti-TSLP asset (Aiolos). AstraZeneca paid $1.4B (tezepelumab franchise). ACRS has four programs at a $296M enterprise value. Map the structural force driving these valuations. · Data: decisions.json → ACRS gate_math, signals.json → Bispecific Antibody theme
+1. **The April Biotech Batch, Eight Weeks On: $CYRX +62%, $NAMS -6%, One Exit** — Performance Review
+   Three biotech names cleared the screening on April 13. The divergence since shows why the system staggers catalysts and sizes by conviction. Includes the $KYTX systematic exit. · Data: decisions.json new_positions (CYRX, KYTX, NAMS) + live prices + portfolio.csv KYTX exit row
 
-3. **Three Stocks That Almost Cleared the Gate: $BKSY, $CPRX, and $TGB** — Watchlist
-   All three had PRIME or INVESTABLE themes and strong structural wave alignment. Each failed for a specific, quantifiable reason. These are the stocks the system is monitoring for re-entry. · Data: decisions.json → no_go entries (BKSY, CPRX, TGB reconsider_if)
+2. **$CYRX at +62%: What Accumulation Into an Earnings Inflection Looks Like** — Deep Dive
+   Cryoport handles the logistics for roughly 70% of the cell and gene therapy pipeline and approaches its first positive operating-profit quarter in 27 years. Up 62% from our $9.67 entry. · Data: decisions.json CYRX dd_elevator_pitch + dd_the_math + dd_key_catalyst; live $15.69
+
+3. **$VOYG at +48%: The Defence Spending Force Beyond the Drone Trade** — Force Analysis
+   Voyager Technologies advanced ten NASA Starlab milestones in 2025 and rides the $1.01T FY2027 defence budget. Up 48% from $29.00 in 48 days. · Data: portfolio.csv VOYG notes + live $42.90 + decisions.json defence force context
 
 ### Visual Carousels
-1. **$ACRS Pipeline Valuation: 4 Programs, $1.6B rNPV** — Business Model Diagram
-   Hook: $296M EV vs $1.6B pipeline value · Features: bosakitug ($490M), ATI-052 ($500M), ATI-2138 ($505M), ATI-9494 ($103M), with phase and readout date per program
 
-2. **TSLP M&A Tracker: What Pharma Paid for Single Assets** — Comparison Table
-   Hook: $1.0B to $1.4B per program · Features: GSK/Aiolos, AstraZeneca/tezepelumab, Sanofi/Dupixent franchise, ACRS current EV
+1. **Three Biotech Signals, Three Outcomes** — Comparison table
+   Hook: a 68-point spread between best and exited · Features: CYRX +62%, NAMS -6%, KYTX exit -7.6%, all entered April 13
 
-3. **Watchlist Scorecard: Why 3 PRIME Stocks Did Not Make the Cut** — Scorecard
-   Hook: Zero margin of safety at $24.15 · Features: BKSY (valuation), TGB (market cap $2.74B), CPRX (patent binary), each with re-entry trigger price
+2. **$CYRX: 70% of the Cell and Gene Therapy Pipeline** — Business model diagram
+   Hook: $411M cash against a $70M enterprise value at entry · Features: logistics monopoly, 20 commercial therapies, earnings inflection targeted H2 2026
+
+3. **$VOYG: Starlab and the $1.01T Defence Budget** — Process flow
+   Hook: +48% in 48 days · Features: three divisions, FY25 revenue $166.4M (+15% YoY), ten NASA milestones cleared
 
 ---
 
 ## Wednesday
 
 ### Articles
-1. **$SOFI at $19.06: +141% and the Position Management Question** — Position Update
-   Entered at $7.90 with a Financial Infrastructure force alignment. Now the largest portfolio contributor. The tiered Capital Preservation Protocol is active. What does the system say about managing a position this size? · Data: portfolio.csv → SOFI entry/current, equity_curve.csv → NAV contribution
 
-2. **The Immersion Cooling Trap: Why Smart Money Invested in Accelsius, Not $INV** — Rejection Story
-   NeuCool technology is real. Johnson Controls invested $65M directly in the subsidiary. But the holding company structure, serial dilution, and -61% stock performance tell a different story. · Data: decisions.json → INV rejection_reason, signals.json → DC Immersion Cooling theme
+1. **$BAND at +292%: The Quarter That Re-Rated a Voice Infrastructure Bet** — Deep Dive
+   Bandwidth posted 20% Q1 revenue growth and raised full-year guidance to $880-900M, lifting the stock to $64.85 from our $16.55 entry. The thesis on its independent voice network played out. · Data: portfolio.csv BAND notes + live $64.85 + Q1 2026 results (20% growth, raised guide)
 
-3. **Iran, Oil at $108, and the Small-Cap Rotation: What the Market Context Means for Our System** — Market Commentary
-   VIX at 26.78, S&P breadth near capitulation (12.7% above 20-day MA), yet small caps outperforming SPY by +4pp YTD. The selective regime favours our structural force approach. · Data: market_analysis.md, signals.json → market_context_summary
+2. **The Nuclear Renaissance and $ASPI at +27%: Enrichment Prices and the Reactor Queue** — Force Analysis
+   ASP Isotopes sits inside the Nuclear Renaissance force as enrichment prices stay elevated and the reactor pipeline builds. Recovered to +27% from $6.00 after a March drawdown. · Data: portfolio.csv ASPI + decisions.json emerging_shifts (Nuclear/Power Renaissance, 14 SMR applications) + live $7.61
+
+3. **$VYGR at Breakeven With a Catalyst This Quarter: The Platform Pharma Pays $1.4B to Access** — Position Update
+   Voyager is flat from our $4.45 entry, but the VY1706 IND decision lands this quarter and a specialist fund raised its stake 497%. The asymmetry is intact, honestly shown. · Data: portfolio.csv VYGR notes (IND Q2, FIH H2 2026, EcoR1 +497%) + live $4.42
 
 ### Visual Carousels
-1. **$SOFI: The +141% Journey from $7.90 to $19.06** — Timeline
-   Hook: +141% in 34 days · Features: entry date, key milestones, force alignment (Financial Infrastructure), current P&L
 
-2. **Market Regime Dashboard: Selective Mode** — Data Chart
-   Hook: Only 12.7% of S&P above 20-day MA · Features: VIX at 26.78, sector rotation data (Energy +21%, Tech -6%), small-cap vs large-cap spread, rate expectations
+1. **$16.55 to $64.85: Anatomy of a 292% Hold** — Data chart
+   Hook: +292% in 91 days · Features: BAND entry, Q1 beat, FY guide $880-900M, current $64.85
 
-3. **$INV: The Technology Was Real, The Structure Was Not** — Process Flow
-   Hook: $65M invested in subsidiary, -61% at parent level · Features: holding company diagram, dilution timeline, smart money route vs public equity route
+2. **Nuclear Renaissance: Where $ASPI Fits** — Landscape map
+   Hook: enrichment prices near multi-year highs · Features: ASPI +27%, enrichment capacity, reactor queue at 14 applications, uranium watchlist name $URG
+
+3. **$VYGR Catalyst Clock: IND This Quarter, First-in-Human H2 2026** — Timeline
+   Hook: pharma paying $800M to $1.4B for this platform · Features: VY1706 IND Q2, FIH H2 2026, EcoR1 stake +497%, cash floor near entry
 
 ---
 
 ## Thursday
 
 ### Articles
-1. **Why Our System Rejected a 3D Printing Company With a Defence Tailwind: The $DDD Story** — Investment Education
-   Defence Spending is a confirmed structural force. DDD had a defence additive manufacturing thesis. The forensic analysis found 45% dilution in two years and revenue declining 12% YoY. Filtering is the edge. · Data: signal_history_rows.csv → DDD DD_FAIL, decisions.json context
 
-2. **Variant Perception: The 27-Percentage-Point Gap the Market Assigns to $SVCO** — Investment Education
-   The market implies a 47% turnaround failure probability for Silvaco. Our analysis assigns 20%. The gap comes from three specific factors the market has not absorbed: cost cuts 70% executed, insider cluster buy at ATL, Mixel SIP revenue doubling. · Data: decisions.json → SVCO variant_perception, dd_the_math
+1. **Why We Walked Away From the Highest-Scoring Stock of the Week** — Investor Lesson
+   Graham ($GHM) carried the top theme score in the April session but was rejected for chasing after tripling from its low to 68x earnings. The discipline of saying no, taught through a specific case. · Data: decisions.json no_go GHM + watchlist GHM (price $91.09, P/E 68x vs 18-22x peers)
 
-3. **$ASPI at $4.61: -23% from Entry and the Nuclear Renaissance Force** — Position Update
-   The weakest position in the portfolio. SWU prices have tripled to $188 since 2022, but the stock is testing our discipline. The thesis and structural force remain intact. What would trigger a systematic exit? · Data: portfolio.csv → ASPI entry/current, signals.json → Nuclear Renaissance theme context
+2. **$NAMS at -6%: Holding the Last Drug in a 0-for-4 Class Into a Defining Trial** — Position Update
+   NewAmsterdam is the only late-stage name left in its category heading into the PREVAIL readout. We sized it small on purpose, and it sits 6% below our $34.76 entry. · Data: decisions.json NAMS dd_bear_case + dd_risk_to_monitor (class 0-for-4) + live $32.67
+
+3. **$ACRS at +25%: Four Clinical Shots and a 17% All-Fail Floor** — Deep Dive
+   Aclaris offers multi-shot optionality with the bosakitug Phase 2 readout due Q4 2026. Up 25% from $3.65 inside the Biotech Capital Cycle. · Data: portfolio.csv ACRS notes (four programs, ~17% all-fail) + live $4.55
 
 ### Visual Carousels
-1. **The $DDD Rejection: Defence Tailwind, 45% Dilution** — Scorecard
-   Hook: Revenue -12% YoY despite defence tailwind · Features: gate pass criteria, specific failure points (dilution %, revenue decline, serial turnaround history), system verdict
 
-2. **$SVCO Variant Perception: Market vs Our Analysis** — Comparison Table
-   Hook: 27-percentage-point probability gap · Features: market implied failure rate (47%) vs system estimate (20%), three driver factors with specific data points
+1. **The Stock That Scored Highest and Still Got a No** — Scorecard
+   Hook: top theme score, zero position · Features: GHM $91, tripled from $24.78 low, 68x P/E vs 18-22x peer average, record $515.6M backlog
 
-3. **Nuclear Renaissance Force Status: $ASPI at -23%** — Forces Heatmap
-   Hook: SWU prices tripled to $188 since 2022 · Features: force status, $ASPI position data, thesis checkpoints, exit trigger levels
+2. **Sizing by Conviction: Why $NAMS Is Our Smallest Biotech Bet** — Comparison table
+   Hook: a binary trial sized at the floor · Features: NAMS reduced allocation, class 0-for-4 history, PREVAIL readout late 2026, exit discipline below entry
+
+3. **$ACRS: Four Programs, One 17% Failure Floor** — Business model diagram
+   Hook: +25% with the main readout still ahead · Features: bosakitug Phase 2 Q4 2026, four clinical programs, $296M enterprise value at entry
 
 ---
 
 ## Friday
 
 ### Articles
-1. **$AMD at $220.27: +84% and the AI Infrastructure Force Entering Late Peak** — Position Update
-   AMD entered at $120 within the AI Infrastructure force. The force is now transitioning from Slope to Late Peak on the hype cycle. What does that mean for position management? · Data: portfolio.csv → AMD entry/current, decisions.json → market_context → established_waves
 
-2. **6 Themes Scored, 2 Deployed: Inside the Thematic Analyzer from March 21** — Methodology Explainer
-   Sovereign Satellite ISR scored 8.6 (PRIME). Copper Structural Deficit scored 8.1 (PRIME). AI Semiconductor Fab scored 6.75 (INVESTABLE). Walk through how the scoring works and why PRIME themes did not produce deployable positions this session. · Data: signals.json → themes array, decisions.json → batch_assessment
+1. **$SVCO Doubles From Entry: The Software Discount and a CEO Who Bought the Bottom** — Position Update
+   Silvaco trades up roughly 132% from $5.98 as cost cuts complete and a CEO who once built a $4.5B exit bought the all-time low. Non-GAAP profitability targeted for H1 2026. · Data: portfolio.csv SVCO notes (2.8x revenue vs 11-16x peers, CEO $170K open-market buy) + live ~$13.89
 
-3. **$TMDX at $99.38: +53%, Down 18.9% in the Last Month, and What the System Says** — Position Update
-   TransMedics entered at $65, peaked near $150, and has pulled back 33% from highs. Still +53% from entry. The Biotech Capital Cycle force is approaching sweet spot. A pullback within a structural force is different from a thesis break. · Data: portfolio.csv → TMDX entry/current/highest_close
+2. **$KARO at Breakeven: A Rule of 60 Compounder Behind a 63% Discount** — Deep Dive
+   Karooooo grows 20% at 46% margins with the founder owning 58% and 2.57M subscribers across 23 countries, yet trades flat from our $48.05 entry at a steep discount to its closest peer. · Data: portfolio.csv KARO notes + live $48.28
+
+3. **The Week Ahead: A Catalyst Inside 14 Days and a Semiconductor Tape to Watch** — Performance Review
+   $VYGR's IND decision this quarter, the AI Infrastructure book after Friday's selloff, and biotech momentum into mid-year. What confirms and what disconfirms. · Data: decisions.json catalyst calendar + portfolio.csv + equity_curve.csv
 
 ### Visual Carousels
-1. **AI Infrastructure Force: Late Peak Positioning** — Forces Heatmap
-   Hook: $AMD +84%, $NVDA +19%, $HIVE +1% · Features: three portfolio positions mapped to AI Infrastructure force, hype cycle position, force status indicators
 
-2. **Theme Scoring: March 21 Session** — Scorecard
-   Hook: 6 themes, 2 PRIME, 3 INVESTABLE, 1 SELECTIVE · Features: each theme with composite score, catalyst/momentum/crowding/runway sub-scores, classification badge
+1. **$5.98 to ~$14: The Silvaco Recovery** — Data chart
+   Hook: roughly +132% from entry · Features: cost cuts 70% complete, Mixel IP doubling SIP revenue, CEO open-market buy, H1 2026 profitability target
 
-3. **$TMDX: From $65 to $150 to $99** — Data Chart
-   Hook: Still +53% from entry despite 33% pullback · Features: price journey timeline, Capital Preservation Protocol levels, force alignment (Biotech Capital Cycle)
+2. **Rule of 60: $KARO Versus Its Closest Peer** — Comparison table
+   Hook: a 63% revenue-multiple discount · Features: KARO 20% growth, 46% EBITDA margin, 58% founder ownership, 2.57M subscribers, 23 countries
+
+3. **Catalyst Calendar: 14 Days, Multiple Forces** — Timeline
+   Hook: one IND decision inside the window · Features: VYGR IND Q2, semiconductors post-selloff, biotech mid-year readouts (NAMS, ACRS)
 
 ---
 
 ## Saturday
 
 ### Articles
-1. **Portfolio Review: 11 Positions, +85% Total Return, and 4 Structural Forces Carrying the Weight** — Performance Review
-   Full portfolio transparency. Every position, every P&L, mapped to structural forces. Winners ($SOFI +141%, $AMD +84%, $TMDX +53%) alongside the weakest holding ($ASPI -23%). Week-over-week NAV change and alpha calculation. · Data: portfolio.csv (all rows), equity_curve.csv, portfolio_snapshot.json
 
-2. **$BAND at $17.27: The AI Voice Infrastructure Thesis at +4%** — Position Update
-   Bandwidth owns the only independent Tier-1 IP voice network in CPaaS. At 0.7x forward revenue, it trades at a 75% discount to peers. The AI voice infrastructure thesis is embryonic. Q1 earnings in May will test the $10M AI ARR trajectory. · Data: signal_history_rows.csv → BAND entry, portfolio.csv → BAND
+1. **Portfolio Review: 12 Positions, +102% NAV, and 61 Points of Alpha** — Performance Review
+   The full book after a drawdown week. Every position with P&L, force allocation, and what is approaching a catalyst. Winners and laggards, nothing hidden. · Data: portfolio.csv (all 12 open) + equity_curve.csv
 
-3. **Sovereign Satellite ISR: The PRIME Theme That Produced No Deployable Position** — Force Analysis
-   Scored 8.6 with $345B backlog growing 32% YoY. Iran conflict elevated demand. Yet the best vehicle (BKSY) was at fair value and PL was too large. When the system finds a great theme but no great price, the correct action is to wait. · Data: signals.json → Sovereign Satellite ISR theme, decisions.json → BKSY rejection
+2. **$HIVE at +79%: Mining Power Pivoting to AI Compute** — Position Update
+   HIVE Digital sits inside the AI Infrastructure force as miners convert megawatts to data-centre capacity. Up 79% from $2.10. · Data: portfolio.csv HIVE + live $3.76
+
+3. **$NVDA at $5.05T: When a 36% Gain Is the Quiet Position** — Investment Education
+   Nvidia is our oldest hold at +36% from $150 and the steadiest line in a volatile book. A lesson on what a base position does versus a high-beta name. · Data: portfolio.csv NVDA + live $204.04 (market cap $5.05T)
 
 ### Visual Carousels
-1. **Weekly Portfolio Dashboard: 11 Positions** — Portfolio Snapshot
-   Hook: +85% total return, ~$101,900 NAV · Features: all 11 tickers with entry price, current price, P&L%, force alignment, days held
 
-2. **$BAND: 0.7x Revenue vs CPaaS Peer Group** — Comparison Table
-   Hook: Cheapest in peer group despite 16% guided growth · Features: BAND vs Twilio, RingCentral, Vonage on revenue multiple, growth rate, margin profile
+1. **The Whole Book: 12 Positions Ranked by Return** — Portfolio snapshot
+   Hook: +292% at the top, -6% at the bottom · Features: all 12 open positions with P&L bars and force tags
 
-3. **Sovereign ISR Theme: PRIME Score 8.6, Zero Positions Deployed** — Process Flow
-   Hook: $345B backlog growing 32% YoY · Features: BKSY valuation analysis (7-method blend = $24.00, stock at $24.15), PL market cap filter, re-entry triggers
+2. **1,279 Stocks In, 3 Signals Out: The April Filter Chain** — Funnel graphic
+   Hook: 0.23% cleared every stage · Features: signal_history funnel (1,279 loaded, 18 technical signals, 3 entries)
+
+3. **Force Allocation: Where the $52,630 Sits** — Forces heatmap
+   Hook: AI Infrastructure is the largest block · Features: deployed capital by force (AI Infrastructure, Biotech Capital Cycle, Defence Spending, Nuclear Renaissance, SaaS)
 
 ---
 
 ## Sunday
 
 ### Articles
-1. **$VYGR at $4.45: Gene Therapy Platforms, $800M Pharma Deals, and a 500% Institutional Bet** — New Signal Deep Dive
-   EcoR1 Capital increased its stake 497% in Q4 2025. The BBB gene therapy platform addresses a $50B+ CNS disease market. IND filing expected Q2 2026. Cash floor at $3.43 bounds the downside. · Data: signal_history_rows.csv → VYGR entry, portfolio.csv → VYGR
 
-2. **The Selective Regime Playbook: How We Deploy Capital When VIX is at 26.78** — Investment Education
-   Market breadth near capitulation. Oil above $108. Fed holding at 3.50-3.75%. The system classifies this as a selective regime with normal deployment but conservative sizing. Explain what that means in practice with examples from the March 21 session. · Data: signals.json → market_context, decisions.json → market_context → deployment_implication
+1. **The Stock That Passed Every Fundamental Test and Still Failed: $DLO** — Investor Lesson
+   DLocal posted 47% growth, an 8 of 9 Piotroski score and a 4.44 Altman Z, yet the system removed it for drifting from the strategy. Why strong fundamentals are necessary but not sufficient. · Data: decisions.json no_go DLO + watchlist DLO (price $13.12)
 
-3. **Week Ahead: $CPRX Patent Trial, $SVCO Watching Q1, and the Iran Conflict Variable** — Week Ahead Preview
-   Three catalysts to watch: CPRX FIRDAPSE patent ruling determines if it re-enters our universe at $28-32. SVCO's first full quarter under Rhines. Iran conflict duration (4-5 week presidential timeline) and its effect on energy names and VIX. · Data: decisions.json → CPRX reconsider_if, SVCO dd_key_catalyst, market_analysis.md
+2. **$ASPI, $KARO, $ACRS: Three Quiet Holds Doing Three Different Jobs** — Position Update
+   A nuclear enrichment recovery (+27%), a flat SaaS compounder (+0.5%), and a biotech option (+25%). Diversification beyond the AI Infrastructure book, in plain numbers. · Data: portfolio.csv + live prices ($7.61, $48.28, $4.55)
+
+3. **Five Forces, One Portfolio: The Map for the Week Ahead** — Force Analysis
+   AI Infrastructure, Biotech Capital Cycle, Defence Spending, Nuclear Renaissance and a standalone SaaS compounder, ranked by momentum into mid-June. · Data: portfolio.csv structural_force + decisions.json established_waves and emerging_shifts
 
 ### Visual Carousels
-1. **$VYGR: Platform Value vs $56M Enterprise Value Above Cash** — Business Model Diagram
-   Hook: $800M to $1.4B pharma deal flow for BBB platforms · Features: VY1706, VY9323 pipeline, pharma partnership values (Novartis, Neurocrine), EcoR1 +497% stake increase, IND timeline
 
-2. **Selective Regime: What the Data Says** — Data Chart
-   Hook: 12.7% of S&P 500 above 20-day MA · Features: VIX trend, breadth indicators, sector rotation bar chart, rate path dots, system deployment classification
+1. **$DLO: 8 of 9 Piotroski, 4.44 Altman Z, Zero Position** — Scorecard
+   Hook: a passing report card and a rejection · Features: DLO 47% growth, Piotroski 8/9, Altman Z 4.44, removed for strategy drift
 
-3. **Week Ahead: 3 Catalysts to Watch** — Timeline
-   Hook: $CPRX ruling could unlock a $2.96B position · Features: CPRX patent trial date, SVCO Q1 milestones, Iran conflict timeline estimate, each with portfolio/watchlist impact
+2. **Three Holds, Three Jobs: $ASPI, $KARO, $ACRS** — Comparison table
+   Hook: +27%, +0.5%, +25% from three separate forces · Features: ASPI nuclear, KARO SaaS, ACRS biotech, entry and live prices
+
+3. **The Forces Heatmap: Momentum Into Mid-June** — Forces heatmap
+   Hook: AI Infrastructure cooling, Biotech warming · Features: five forces with status, the semiconductor selloff overlay, biotech readout calendar
 
 ---
 
 ## How to Use
-1. Pick an article idea → open Claude.ai → attach the relevant data files and voice_rules.md → ask it to write the article using the title and data source noted above
-2. Pick a visual idea → open Claude.ai → attach the visual system spec → ask it to build the visual using the data points noted above
-3. Ideas are ranked roughly by timeliness (most timely first each day)
-4. Mix and match across days. These are suggestions, not a rigid schedule
-5. Every position appears at least once across the week: SOFI (Wed), EVTL (implied in Sat portfolio review), NVDA (Fri carousel), AMD (Fri), TMDX (Fri), ASPI (Thu), HIVE (Fri carousel), BAND (Sat), VYGR (Sun), SVCO (Mon/Thu), ACRS (Tue)
+
+1. Pick an article idea, open Claude.ai, attach your reference document (voice_rules.md plus the relevant handbook section), and ask it to write the article using the title and data source noted above.
+2. Pick a visual idea, open Claude.ai, attach the diagram or carousel spec (STERLING_VISUAL_SYSTEM_v2.md), and ask it to build the visual using the data points noted above.
+3. Ideas are ranked roughly by timeliness, most timely first each day.
+4. Mix and match across days. These are suggestions, not a rigid schedule.
+
+### This week's strongest pulls
+
+- **Most timely:** the June 5 semiconductor selloff and the resulting NAV drawdown (Monday). It is recent, it is honest, and it reinforces the discipline message.
+- **Best winner story:** $BAND at +292% on a real, verifiable Q1 beat (Wednesday).
+- **Best teaching story:** the April biotech batch eight weeks later, divergence plus one systematic exit (Tuesday), reinforced by the two rejection lessons, $GHM (Thursday) and $DLO (Sunday).
+- **Coverage check:** every open position appears at least once; no ticker is the primary subject on more than two days.

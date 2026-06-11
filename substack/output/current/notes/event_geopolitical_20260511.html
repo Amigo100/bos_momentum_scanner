@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: transparent; }
+  .card { width: 680px; background: #0f1f3d; border-radius: 12px; overflow: hidden; color: #e2e8f0; }
+  .header { background: #0a1628; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .header-title { font-size: 13px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.2px; }
+  .header-date { font-size: 12px; color: #64748b; }
+  .hero { padding: 24px 24px 16px; text-align: center; }
+  .hero-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .hero-number { font-size: 36px; font-weight: 700; color: #f87171; }
+  .hero-sub { font-size: 14px; color: #94a3b8; margin-top: 6px; }
+  .facts { padding: 0 24px 20px; }
+  .fact-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-label { font-size: 13px; color: #94a3b8; max-width: 280px; }
+  .fact-value { font-size: 13px; font-weight: 600; color: #e2e8f0; text-align: right; }
+  .fact-value.red { color: #f87171; }
+  .fact-value.green { color: #4ade80; }
+  .fact-value.amber { color: #fbbf24; }
+  .badge-row { padding: 0 24px 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-red { background: rgba(248,113,113,0.15); color: #f87171; }
+  .badge-amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .portfolio-box { margin: 0 24px 20px; padding: 14px 16px; background: #1a2744; border-radius: 8px; border-left: 3px solid #fbbf24; }
+  .portfolio-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .portfolio-text { font-size: 13px; color: #e2e8f0; line-height: 1.5; }
+  .footer { background: #0a1628; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 1.5px; text-transform: uppercase; }
+  .footer-disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <span class="header-title">Geopolitical: Iran / Oil</span>
+    <span class="header-date">May 11, 2026</span>
+  </div>
+  <div class="hero">
+    <div class="hero-label">Brent Crude</div>
+    <div class="hero-number">$104.49</div>
+    <div class="hero-sub">+3.2% after Trump rejects Iran proposal</div>
+  </div>
+  <div class="facts">
+    <div class="fact-row">
+      <span class="fact-label">WTI crude (June delivery)</span>
+      <span class="fact-value red">$95.42 (+3.1%)</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Trump response to Iran proposal</span>
+      <span class="fact-value red">"Totally unacceptable"</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Oil price surge since Feb 28</span>
+      <span class="fact-value red">+40%</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Worst-case Brent scenario</span>
+      <span class="fact-value amber">$140/bbl</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">VIX (pre-market)</span>
+      <span class="fact-value amber">18.13 (+5.5%)</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">S&amp;P 500 futures</span>
+      <span class="fact-value">7,416 (-0.04%)</span>
+    </div>
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-red">Strait of Hormuz risk</span>
+    <span class="badge badge-red">Supply disruption</span>
+    <span class="badge badge-amber">VIX elevated</span>
+  </div>
+  <div class="portfolio-box">
+    <div class="portfolio-label">Portfolio connection</div>
+    <div class="portfolio-text">$ASPI (Nuclear Renaissance): elevated oil strengthens the case for nuclear baseload. $NVDA, $AMD: energy cost pressure on data centers is a second-order headwind worth monitoring.</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">Sterling Signals</span>
+    <span class="footer-disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f8f9fa; }
+  .card { width: 680px; overflow: hidden; border-radius: 12px; background: #fff; }
+  .header { background: #0a1628; padding: 24px 28px 20px; }
+  .event-label { color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .event-title { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.3; }
+  .ticker-badge { display: inline-block; background: #16a34a; color: #fff; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 10px; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #1a2a40; }
+  .stat-box { background: #0f2440; padding: 18px 20px; text-align: center; }
+  .stat-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .stat-value { color: #fff; font-size: 22px; font-weight: 700; }
+  .stat-value.green { color: #16a34a; }
+  .guidance-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #1a2a40; }
+  .guidance-box { background: #0f2440; padding: 14px 20px; text-align: center; }
+  .guidance-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .guidance-value { color: #fff; font-size: 16px; font-weight: 600; }
+  .guidance-detail { color: #16a34a; font-size: 12px; margin-top: 2px; }
+  .portfolio-bar { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 14px 20px; margin: 16px 20px; border-radius: 4px; }
+  .portfolio-text { color: #1a1a1a; font-size: 13px; font-weight: 600; }
+  .portfolio-sub { color: #6b6b6b; font-size: 12px; margin-top: 4px; }
+  .footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; border-top: 1px solid #e5e7eb; }
+  .brand { color: #0a1628; font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+  .disclaimer { color: #94a3b8; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="event-label">Q1 2026 Earnings Beat</div>
+    <div class="event-title">$BAND: Record Revenue, Guidance Raised</div>
+    <span class="ticker-badge">+173% from entry</span>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-label">Q1 Revenue</div>
+      <div class="stat-value">$209M</div>
+      <div class="stat-sub" style="color:#64748b;font-size:11px;margin-top:4px">+20% YoY</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Adj. EBITDA</div>
+      <div class="stat-value green">$26M</div>
+      <div class="stat-sub" style="color:#64748b;font-size:11px;margin-top:4px">Record quarter, +17% YoY</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Non-GAAP EPS</div>
+      <div class="stat-value green">$0.38</div>
+      <div class="stat-sub" style="color:#64748b;font-size:11px;margin-top:4px">vs $0.30 consensus</div>
+    </div>
+  </div>
+  <div class="guidance-row">
+    <div class="guidance-box">
+      <div class="guidance-label">FY26 Revenue (Raised)</div>
+      <div class="guidance-value">$880M–$900M</div>
+      <div class="guidance-detail">+18% YoY growth</div>
+    </div>
+    <div class="guidance-box">
+      <div class="guidance-label">FY26 Adj. EBITDA (Raised)</div>
+      <div class="guidance-value">$119M–$125M</div>
+      <div class="guidance-detail">+31% YoY growth</div>
+    </div>
+  </div>
+  <div class="portfolio-bar">
+    <div class="portfolio-text">Portfolio position: $16.55 entry → $45.29 current</div>
+    <div class="portfolio-sub">AI voice infrastructure thesis validated. Citizens PT raised to $45.</div>
+  </div>
+  <div class="footer">
+    <span class="brand">STERLING SIGNALS</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

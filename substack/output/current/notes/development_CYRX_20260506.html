@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: transparent; }
+.card { width: 680px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.header { background: #0a1628; padding: 24px 28px; }
+.header-label { font-size: 11px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+.header-title { font-size: 22px; font-weight: 700; color: #fff; font-family: 'DM Serif Display', Georgia, serif; }
+.header-subtitle { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+.stats-row { display: flex; gap: 12px; padding: 20px 28px; background: #f8fafc; }
+.stat-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 16px; text-align: center; }
+.stat-label { font-size: 10px; letter-spacing: 1px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 700; color: #fff; font-family: 'DM Mono', monospace; }
+.stat-value.green { color: #16a34a; }
+.detail-row { display: flex; gap: 12px; padding: 0 28px 20px; background: #f8fafc; }
+.detail-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 14px; text-align: center; }
+.detail-label { font-size: 10px; letter-spacing: 1px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+.detail-value { font-size: 16px; font-weight: 600; color: #e2e8f0; }
+.portfolio-line { padding: 16px 28px; background: #f0fdf4; border-left: 4px solid #16a34a; margin: 0 28px 20px; border-radius: 0 8px 8px 0; }
+.portfolio-text { font-size: 13px; color: #15803d; font-weight: 600; }
+.footer { display: flex; justify-content: space-between; align-items: center; padding: 16px 28px; border-top: 1px solid #e2e8f0; }
+.footer-brand { font-size: 11px; letter-spacing: 2px; color: #0a1628; font-weight: 700; text-transform: uppercase; }
+.footer-disclaimer { font-size: 10px; color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Earnings Release — May 4, 2026</div>
+    <div class="header-title">$CYRX Q1 2026: CGT Segment Grows 26%</div>
+    <div class="header-subtitle">BTIG raises target to $17 · Guggenheim to $12</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Revenue</div>
+      <div class="stat-value">$47.8M</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">vs Estimate</div>
+      <div class="stat-value green">Beat</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">CGT Growth</div>
+      <div class="stat-value green">+26%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Cash</div>
+      <div class="stat-value">$411M</div>
+    </div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-box">
+      <div class="detail-label">Revenue vs Est</div>
+      <div class="detail-value">$47.8M vs $45.8M</div>
+    </div>
+    <div class="detail-box">
+      <div class="detail-label">Non-GAAP EPS</div>
+      <div class="detail-value">-$0.23 vs -$0.22</div>
+    </div>
+    <div class="detail-box">
+      <div class="detail-label">BTIG Target</div>
+      <div class="detail-value" style="color:#16a34a;">$17.00</div>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-text">Portfolio position: Entry $9.67 · Biotech Capital Cycle force · 70% global CGT logistics share, $411M cash floor</div>
+  </div>
+  <div class="footer">
+    <div class="footer-brand">Sterling Signals</div>
+    <div class="footer-disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=680">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a1628; color: #e2e8f0; width: 680px; }
+  .card { width: 680px; max-height: 500px; overflow: hidden; }
+  .header { background: #0a1628; padding: 20px 28px 12px; border-bottom: 2px solid #f59e0b; }
+  .header-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #f59e0b; font-weight: 600; }
+  .header-title { font-size: 18px; font-weight: 700; color: #ffffff; margin-top: 4px; }
+  .hero { text-align: center; padding: 24px 28px 16px; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #f59e0b; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .comparison { display: flex; justify-content: center; gap: 32px; padding: 0 28px 20px; }
+  .comp-box { text-align: center; flex: 1; background: #111d33; border-radius: 8px; padding: 14px 12px; }
+  .comp-value { font-size: 22px; font-weight: 700; color: #e2e8f0; }
+  .comp-label { font-size: 11px; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .comp-box.actual .comp-value { color: #f59e0b; }
+  .detail-rows { padding: 0 28px 16px; }
+  .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
+  .detail-key { color: #94a3b8; }
+  .detail-val { color: #e2e8f0; font-weight: 600; }
+  .detail-val.red { color: #ef4444; }
+  .detail-val.green { color: #22c55e; }
+  .portfolio-line { background: #111d33; margin: 0 28px; padding: 12px 16px; border-radius: 6px; border-left: 3px solid #3b82f6; font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+  .footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; margin-top: 12px; border-top: 1px solid #1e293b; }
+  .footer-brand { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #475569; text-transform: uppercase; }
+  .footer-disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Economic Data Release</div>
+    <div class="header-title">March CPI: Energy Shock Pushes Inflation to 3.3%</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">3.3% YoY</div>
+    <div class="hero-label">Headline CPI, March 2026</div>
+  </div>
+  <div class="comparison">
+    <div class="comp-box actual">
+      <div class="comp-value">+0.9%</div>
+      <div class="comp-label">Actual MoM</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-value">+0.8%</div>
+      <div class="comp-label">Consensus MoM</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-value">+2.4%</div>
+      <div class="comp-label">Prior YoY (Feb)</div>
+    </div>
+  </div>
+  <div class="detail-rows">
+    <div class="detail-row">
+      <span class="detail-key">Core CPI (ex food/energy)</span>
+      <span class="detail-val">+0.3% MoM / ~2.7% YoY</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">Energy (MoM)</span>
+      <span class="detail-val red">+10.6%</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">Driver</span>
+      <span class="detail-val">Iran conflict energy shock</span>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    Portfolio: $HIVE crypto/data centre exposure benefits from inflation hedge narrative. Energy cost pressure on $KARO fleet operations and $BAND infrastructure margins. Core services stable: no broad demand destruction yet.
+  </div>
+  <div class="footer">
+    <span class="footer-brand">Sterling Signals</span>
+    <span class="footer-disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #0a1628; width: 680px; }
+  .card { width: 680px; max-height: 500px; overflow: hidden; }
+  .header { background: #0a1628; padding: 20px 24px 12px; }
+  .header h1 { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+  .header .sub { color: #64748b; font-size: 12px; margin-top: 4px; }
+  .stats { display: flex; gap: 12px; padding: 0 24px 16px; }
+  .stat-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-val { color: #fff; font-size: 22px; font-weight: 700; }
+  .stat-val.green { color: #16a34a; }
+  .stat-val.red { color: #dc2626; }
+  .stat-val.amber { color: #d97706; }
+  .stat-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .forces { padding: 0 24px 16px; }
+  .force-row { display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; margin-bottom: 4px; }
+  .force-row:nth-child(odd) { background: #0f2440; }
+  .force-name { color: #94a3b8; font-size: 12px; width: 180px; }
+  .force-tickers { color: #fff; font-size: 12px; flex: 1; font-weight: 600; }
+  .force-pnl { font-size: 12px; font-weight: 700; width: 80px; text-align: right; }
+  .force-impact { font-size: 10px; width: 90px; text-align: center; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+  .impact-pos { background: rgba(22,163,74,0.15); color: #16a34a; }
+  .impact-neu { background: rgba(148,163,184,0.15); color: #94a3b8; }
+  .impact-mix { background: rgba(217,119,6,0.15); color: #d97706; }
+  .banner { background: #0f2440; margin: 0 24px 12px; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; border-left: 3px solid #16a34a; }
+  .banner-text { color: #94a3b8; font-size: 11px; line-height: 1.4; }
+  .banner-text strong { color: #fff; }
+  .footer { padding: 12px 24px; display: flex; justify-content: space-between; border-top: 1px solid #1a3a5c; }
+  .footer span { color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>HORMUZ CEASEFIRE: PORTFOLIO FORCE MAP</h1>
+    <div class="sub">Two-week ceasefire agreed. Oil $117 → $95 (-17%). April 8, 2026.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-val green">+8.8%</div>
+      <div class="stat-label">$SOFI Pre-Mkt</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">10</div>
+      <div class="stat-label">Open Positions</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val green">6</div>
+      <div class="stat-label">Benefit / Neutral</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val red">$95</div>
+      <div class="stat-label">WTI (from $117)</div>
+    </div>
+  </div>
+
+  <div class="banner">
+    <div class="banner-text"><strong>Ceasefire impact:</strong> Oil -17%. S&P futures +2.7%, Nasdaq +3.5%, Russell +3.8%. 6/10 positions benefit from de-escalation or are oil-insensitive. Pakistan negotiations Friday.</div>
+  </div>
+
+  <div class="forces">
+    <div class="force-row">
+      <div class="force-name">AI Infrastructure</div>
+      <div class="force-tickers">$AMD $NVDA $HIVE $BAND $SVCO</div>
+      <div class="force-pnl green">+84.6% lead</div>
+      <div class="force-impact impact-pos">POSITIVE</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Financial Infrastructure</div>
+      <div class="force-tickers">$SOFI</div>
+      <div class="force-pnl green">+121.8%</div>
+      <div class="force-impact impact-pos">POSITIVE</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Defence Spending</div>
+      <div class="force-tickers">$EVTL</div>
+      <div class="force-pnl green">+20.4%</div>
+      <div class="force-impact impact-neu">NEUTRAL</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Nuclear Renaissance</div>
+      <div class="force-tickers">$ASPI</div>
+      <div class="force-pnl red">-28.0%</div>
+      <div class="force-impact impact-mix">MIXED</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Biotech Capital Cycle</div>
+      <div class="force-tickers">$VYGR $ACRS</div>
+      <div class="force-pnl amber">-0.7% lead</div>
+      <div class="force-impact impact-pos">POSITIVE</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Fundamental Compounder</div>
+      <div class="force-tickers">$KARO</div>
+      <div class="force-pnl green">+3.3%</div>
+      <div class="force-impact impact-neu">NEUTRAL</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Sterling Signals</span>
+    <span>Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

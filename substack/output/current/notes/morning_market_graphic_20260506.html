@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a1628; color: #e2e8f0; }
+  .card { width: 680px; margin: 0 auto; overflow: hidden; }
+  .header { background: #0a1628; padding: 24px 28px 16px; border-bottom: 2px solid #1a3a5c; }
+  .header h1 { font-family: 'DM Serif Display', Georgia, serif; font-size: 22px; color: #fff; margin-bottom: 4px; }
+  .header .subtitle { font-size: 13px; color: #64748b; }
+  .stats-row { display: flex; gap: 12px; padding: 16px 28px; background: #0a1628; }
+  .stat-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .stat-value { font-size: 26px; font-weight: 700; color: #fff; font-family: 'DM Mono', monospace; }
+  .stat-value.green { color: #16a34a; }
+  .stat-value.red { color: #dc2626; }
+  .stat-value.amber { color: #d97706; }
+  .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .forces { padding: 16px 28px; }
+  .force-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #1a2a3f; }
+  .force-row:last-child { border-bottom: none; }
+  .force-name { width: 200px; font-size: 14px; font-weight: 600; color: #e2e8f0; }
+  .force-bar-wrap { flex: 1; margin: 0 16px; }
+  .force-bar { height: 8px; border-radius: 4px; background: #1a3a5c; }
+  .force-bar-fill { height: 100%; border-radius: 4px; }
+  .force-positions { width: 100px; font-size: 13px; color: #94a3b8; text-align: right; }
+  .force-pnl { width: 80px; font-size: 14px; font-weight: 600; text-align: right; font-family: 'DM Mono', monospace; }
+  .footer { padding: 16px 28px; border-top: 1px solid #1a3a5c; display: flex; justify-content: space-between; }
+  .footer .brand { font-size: 11px; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
+  .footer .disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>Structural Forces Heatmap</h1>
+    <div class="subtitle">Portfolio allocation by force &bull; May 6, 2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value">13</div>
+      <div class="stat-label">Open Positions</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Active Forces</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value green">+55.4%</div>
+      <div class="stat-label">Total Return</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value green">+9.3pp</div>
+      <div class="stat-label">Alpha vs SPY</div>
+    </div>
+  </div>
+
+  <div class="forces">
+    <div class="force-row">
+      <div class="force-name">AI Infrastructure</div>
+      <div class="force-bar-wrap">
+        <div class="force-bar"><div class="force-bar-fill" style="width:100%; background: linear-gradient(90deg, #16a34a, #22c55e);"></div></div>
+      </div>
+      <div class="force-positions">5 positions</div>
+      <div class="force-pnl" style="color:#16a34a;">+107%</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Biotech Capital Cycle</div>
+      <div class="force-bar-wrap">
+        <div class="force-bar"><div class="force-bar-fill" style="width:60%; background: linear-gradient(90deg, #d97706, #eab308);"></div></div>
+      </div>
+      <div class="force-positions">3 positions</div>
+      <div class="force-pnl" style="color:#d97706;">-9.5%</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Nuclear Renaissance</div>
+      <div class="force-bar-wrap">
+        <div class="force-bar"><div class="force-bar-fill" style="width:20%; background: linear-gradient(90deg, #dc2626, #ef4444);"></div></div>
+      </div>
+      <div class="force-positions">1 position</div>
+      <div class="force-pnl" style="color:#dc2626;">-16.7%</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Financial Infrastr.</div>
+      <div class="force-bar-wrap">
+        <div class="force-bar"><div class="force-bar-fill" style="width:20%; background: linear-gradient(90deg, #16a34a, #22c55e);"></div></div>
+      </div>
+      <div class="force-positions">1 position</div>
+      <div class="force-pnl" style="color:#16a34a;">+4.5%</div>
+    </div>
+    <div class="force-row">
+      <div class="force-name">Defence Spending</div>
+      <div class="force-bar-wrap">
+        <div class="force-bar"><div class="force-bar-fill" style="width:20%; background: linear-gradient(90deg, #dc2626, #ef4444);"></div></div>
+      </div>
+      <div class="force-positions">1 position</div>
+      <div class="force-pnl" style="color:#dc2626;">-11.0%</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="brand">STERLING SIGNALS</div>
+    <div class="disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

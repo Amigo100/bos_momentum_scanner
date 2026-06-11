@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=680">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; width: 680px; background: #fff; }
+.card { width: 680px; overflow: hidden; border-radius: 12px; border: 1px solid #1a3a5c; }
+.header { background: #0a1628; padding: 24px 28px 20px; }
+.event-label { color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+.event-title { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.3; }
+.ticker-badge { display: inline-block; background: #2563eb; color: #fff; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 10px; }
+.stats-row { display: flex; gap: 0; background: #0f2440; }
+.stat-box { flex: 1; padding: 18px 16px; text-align: center; border-right: 1px solid #1a3a5c; }
+.stat-box:last-child { border-right: none; }
+.stat-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.stat-value { color: #fff; font-size: 20px; font-weight: 700; }
+.stat-value.green { color: #16a34a; }
+.stat-value.red { color: #dc2626; }
+.portfolio-line { background: #0a1628; padding: 14px 28px; border-top: 1px solid #1a3a5c; }
+.portfolio-text { color: #94a3b8; font-size: 12px; }
+.portfolio-text strong { color: #fff; }
+.footer { display: flex; justify-content: space-between; padding: 12px 28px; background: #0a1628; border-top: 1px solid #1a3a5c; }
+.brand { color: #64748b; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+.disclaimer { color: #475569; font-size: 9px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="event-label">Earnings Beat + Commercial Milestones</div>
+    <div class="event-title">ASPI Q1 Revenue +278% YoY, Three Deliveries on Calendar</div>
+    <span class="ticker-badge">$ASPI</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Q1 Revenue</div>
+      <div class="stat-value">$4.18M</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">vs Consensus</div>
+      <div class="stat-value green">+$0.50M</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">YoY Growth</div>
+      <div class="stat-value green">+278%</div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Loss/Share</div>
+      <div class="stat-value green">$0.06</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">vs Est.</div>
+      <div class="stat-value green">Beat $0.28</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Entry</div>
+      <div class="stat-value">$6.00</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Position P&L</div>
+      <div class="stat-value green">+140%</div>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-text"><strong>Nuclear Renaissance</strong> force. Si-28 deliveries mid-2026. Yb-176 and C-14 shipments Q3. Thesis transitioning from R&D to revenue.</div>
+  </div>
+  <div class="footer">
+    <span class="brand">Sterling Signals</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,27 +1,72 @@
 {
-    "date": "2026-03-18",
-    "day": "wednesday",
-    "generated_at": "2026-03-18T07:00:00+11:00",
-    "decision_reason": "Wednesday Mode B: 3 notes (1 fresh MARKET, 2 batch). Structural forces heatmap card generated.",
-    "post": {
-        "type": "none",
-        "status": "no_post_scheduled",
-        "publish_time_aedt": null
-    },
+    "date": "2026-05-18",
+    "day": "monday",
+    "generated_at": "2026-05-18T08:00:00+10:00",
+    "week": "W21",
+    "weekly_plan_used": "weekly_plan_2026-W20.json",
+    "weekly_plan_note": "No W21 plan exists. Mode A has not run for this week. Generated fresh Tier 2 notes using W20 context and live price data.",
+    "post": null,
     "notes": [
-        {"slot": 1, "type": "MARKET", "sub_variant": "force_status", "time_aedt": "08:00", "time_label": "morning", "file": "notes/morning_market_20260318.html", "graphic": "notes/morning_market_graphic_20260318.html", "source": "live", "ticker_focus": "ASPI", "force": "Nuclear Renaissance"},
-        {"slot": 2, "type": "EDUCATION", "sub_variant": "concept_explainer", "time_aedt": "12:00", "time_label": "midday", "file": "notes/batch_education_concept.html", "source": "batch_6"},
-        {"slot": 3, "type": "SCANNER", "sub_variant": "rejection_story", "time_aedt": "20:00", "time_label": "evening", "file": "notes/batch_scanner_rejection.html", "source": "batch_2"}
+        {
+            "slot": 1,
+            "type": "POSITION",
+            "sub_variant": "alpha_snapshot",
+            "time_aedt": "08:00",
+            "file": "notes/morning_position_20260518.html",
+            "tickers_referenced": ["AMD", "BAND", "SVCO", "CYRX"],
+            "prices_verified": true,
+            "word_count": 107
+        },
+        {
+            "slot": 2,
+            "type": "MARKET",
+            "sub_variant": "force_status_update",
+            "time_aedt": "12:00",
+            "file": "notes/midday_market_20260518.html",
+            "tickers_referenced": ["ASPI"],
+            "prices_verified": true,
+            "word_count": 130
+        },
+        {
+            "slot": 3,
+            "type": "EDUCATION",
+            "sub_variant": "research_insight",
+            "time_aedt": "20:00",
+            "file": "notes/evening_education_20260518.html",
+            "tickers_referenced": ["SVCO", "KARO"],
+            "prices_verified": false,
+            "word_count": 118
+        }
     ],
     "visual_card": {
-        "type": "structural_forces_heatmap",
-        "file": "notes/morning_market_graphic_20260318.html",
-        "attached_to_slot": 1
+        "type": "portfolio_snapshot",
+        "file": "notes/morning_position_graphic_20260518.html",
+        "slot": "morning",
+        "description": "Portfolio snapshot: 13 positions, NAV $99,356, +73.6% return, +30.3pp alpha vs SPY"
+    },
+    "repetition_check": {
+        "previous_manifests_checked": ["notes_manifest_20260517.json"],
+        "skips": [],
+        "substitutions": [
+            {
+                "original": "MARKET event_impact (yields + Hormuz broad macro)",
+                "replacement": "MARKET force_status_update (Nuclear Renaissance + ASPI)",
+                "reason": "Sunday 2026-05-17 used event_impact sub-variant. Variety rule requires different sub-variant for consecutive MARKET notes."
+            }
+        ],
+        "variant_rotation": {
+            "POSITION": "alpha_snapshot (Sunday had no POSITION note; last POSITION was Apr 30 morning_position single_winner)",
+            "MARKET": "force_status_update (Sunday used event_impact; rotated to force_status)",
+            "EDUCATION": "research_insight (Sunday used concept_explainer; rotated to research_insight)"
+        }
     },
     "freshness_gate": {
-        "prices_checked": true,
-        "tickers_searched": ["SOFI", "EVTL", "NVDA", "AMD", "TMDX", "ASPI", "HIVE", "BAND"],
-        "significant_moves": {"HIVE": "+9.6%", "EVTL": "+5.6%"},
-        "batch_notes_affected": "none"
+        "prices_searched": ["AMD", "BAND", "SVCO", "CYRX", "KARO", "ASPI", "KYTX"],
+        "price_date": "2026-05-18",
+        "equity_curve_date": "2026-05-17",
+        "nav_used": 99356,
+        "total_return_used": 73.55,
+        "spy_return_used": 43.21,
+        "alpha_used": 30.33
     }
 }

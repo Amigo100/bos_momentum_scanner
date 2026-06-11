@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .card { width: 680px; max-height: 500px; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #d97706; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.3; }
+  .header-sub { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .stats { display: flex; gap: 12px; padding: 20px 28px; }
+  .stat-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #ffffff; }
+  .stat-value.green { color: #16a34a; }
+  .stat-value.red { color: #dc2626; }
+  .stat-value.amber { color: #d97706; }
+  .stat-value.neutral { color: #f8fafc; }
+  .stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: #64748b; margin-top: 4px; text-transform: uppercase; }
+  .connection { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 14px 28px; display: flex; align-items: center; gap: 10px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
+  .connection-text { font-size: 13px; color: #334155; }
+  .connection-force { font-weight: 700; color: #1a3a5c; }
+  .footer { padding: 10px 28px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #94a3b8; text-transform: uppercase; }
+  .disclaimer { font-size: 10px; color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Earnings Monday Pre-Market</div>
+    <div class="header-title">$ASPI Q4 2025 Results Due March 30</div>
+    <div class="header-sub">March 28, 2026</div>
+  </div>
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-value neutral">$4.61</div>
+      <div class="stat-label">Current Price</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value red">-23.2%</div>
+      <div class="stat-label">From $6.00 Entry</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value red">-8.5%</div>
+      <div class="stat-label">Thursday Move</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value neutral">$12.00</div>
+      <div class="stat-label">Analyst Target</div>
+    </div>
+  </div>
+  <div class="stats" style="padding-top: 0;">
+    <div class="stat-box">
+      <div class="stat-value green">16x</div>
+      <div class="stat-label">Renergen Well Flow</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value neutral">4 Mo</div>
+      <div class="stat-label">Ahead of Schedule</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value amber">Pre-Rev</div>
+      <div class="stat-label">Enrichment Stage</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value neutral">Mar 30</div>
+      <div class="stat-label">Report Date</div>
+    </div>
+  </div>
+  <div class="connection">
+    <div class="dot"></div>
+    <div class="connection-text">Portfolio connection: <span class="connection-force">Nuclear Renaissance</span> force. Laser enrichment economics vs. centrifuge incumbents.</div>
+  </div>
+  <div class="footer">
+    <div class="brand">Sterling Signals</div>
+    <div class="disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

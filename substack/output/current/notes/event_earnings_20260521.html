@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f8f9fa; }
+  .card { width: 680px; background: #ffffff; border-radius: 12px; overflow: hidden; }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #ffffff; }
+  .hero { background: #0f2440; padding: 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #16a34a; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .comparison { display: flex; gap: 12px; padding: 20px 28px; }
+  .comp-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 16px; text-align: center; }
+  .comp-value { font-size: 22px; font-weight: 700; color: #ffffff; }
+  .comp-label { font-size: 11px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .comp-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .beat { color: #16a34a; }
+  .detail-rows { padding: 0 28px 20px; }
+  .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { font-size: 13px; color: #64748b; }
+  .detail-val { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .portfolio-bar { background: #f0f9ff; border-left: 3px solid #2563eb; margin: 0 28px 20px; padding: 14px 16px; border-radius: 0 8px 8px 0; }
+  .portfolio-label { font-size: 11px; color: #2563eb; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+  .portfolio-text { font-size: 13px; color: #334155; line-height: 1.5; }
+  .footer { background: #0a1628; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #64748b; }
+  .footer-disc { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Earnings Report | May 21, 2026</div>
+    <div class="header-title">NVIDIA Q1 FY2027 Results</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">$81.6B</div>
+    <div class="hero-label">Q1 Revenue (+85% YoY)</div>
+  </div>
+  <div class="comparison">
+    <div class="comp-box">
+      <div class="comp-value beat">$1.87</div>
+      <div class="comp-label">EPS Actual</div>
+      <div class="comp-sub">vs $1.78 est</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-value beat">$75.2B</div>
+      <div class="comp-label">Data Center</div>
+      <div class="comp-sub">+92% YoY</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-value" style="color:#ffffff;">$91.0B</div>
+      <div class="comp-label">Q2 Guidance</div>
+      <div class="comp-sub">+12% QoQ</div>
+    </div>
+  </div>
+  <div class="detail-rows">
+    <div class="detail-row">
+      <span class="detail-key">Revenue vs Consensus</span>
+      <span class="detail-val beat">+$2.4B beat ($79.2B est)</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">Share Buyback</span>
+      <span class="detail-val">$80B authorized</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">Stock Reaction</span>
+      <span class="detail-val" style="color:#64748b;">Flat at $224 (beat priced in)</span>
+    </div>
+  </div>
+  <div class="portfolio-bar">
+    <div class="portfolio-label">Portfolio Connection</div>
+    <div class="portfolio-text">$NVDA at $150.00 entry. $AMD at $120.00 entry. Both AI Infrastructure force holdings. Q2 guidance above the $87B threshold confirms demand trajectory.</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">STERLING SIGNALS</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

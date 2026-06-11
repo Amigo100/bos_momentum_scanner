@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f8f9fa; }
+  .card { width: 680px; background: #ffffff; border-radius: 12px; overflow: hidden; }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #ffffff; }
+  .hero { background: #0f2440; padding: 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #d97706; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .vote-section { display: flex; gap: 12px; padding: 20px 28px; }
+  .vote-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 16px; text-align: center; }
+  .vote-number { font-size: 28px; font-weight: 700; }
+  .vote-label { font-size: 11px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .vote-sub { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }
+  .fact-rows { padding: 0 28px 20px; }
+  .fact-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-key { font-size: 13px; color: #64748b; max-width: 280px; }
+  .fact-val { font-size: 14px; font-weight: 600; color: #1a1a1a; text-align: right; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .portfolio-bar { background: #f0f9ff; border-left: 3px solid #2563eb; margin: 0 28px 20px; padding: 14px 16px; border-radius: 0 8px 8px 0; }
+  .portfolio-label { font-size: 11px; color: #2563eb; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+  .portfolio-text { font-size: 13px; color: #334155; line-height: 1.5; }
+  .footer { background: #0a1628; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #64748b; }
+  .footer-disc { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Central Bank | May 21, 2026</div>
+    <div class="header-title">FOMC April Minutes: Most Divided Since 1992</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">8 - 4</div>
+    <div class="hero-label">Vote Split (Highest Dissent in 34 Years)</div>
+  </div>
+  <div class="vote-section">
+    <div class="vote-box">
+      <div class="vote-number" style="color:#16a34a;">1</div>
+      <div class="vote-label">Wanted Cut</div>
+      <div class="vote-sub">Miran: 25bp reduction</div>
+    </div>
+    <div class="vote-box">
+      <div class="vote-number" style="color:#d97706;">3</div>
+      <div class="vote-label">Opposed Easing Bias</div>
+      <div class="vote-sub">Hammack, Kashkari, Logan</div>
+    </div>
+    <div class="vote-box">
+      <div class="vote-number" style="color:#ffffff;">8</div>
+      <div class="vote-label">Hold at 3.50-3.75%</div>
+      <div class="vote-sub">Majority with easing tilt</div>
+    </div>
+  </div>
+  <div class="fact-rows">
+    <div class="fact-row">
+      <span class="fact-key">First Minutes Under Chair Warsh</span>
+      <span class="fact-val"><span class="badge badge-amber">New Leadership</span></span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-key">10-Year Treasury Yield</span>
+      <span class="fact-val">4.67%</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-key">Market Pricing: Next Cut</span>
+      <span class="fact-val"><span class="badge badge-red">Sept at Earliest</span></span>
+    </div>
+  </div>
+  <div class="portfolio-bar">
+    <div class="portfolio-label">Portfolio Connection</div>
+    <div class="portfolio-text">Pre-revenue biotech holdings ($VYGR, $ACRS, $KYTX, $CYRX, $NAMS) are rate-sensitive. Higher-for-longer compresses distant cash flows. Offset: binary catalysts matter more than discount rates for these positions.</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">STERLING SIGNALS</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

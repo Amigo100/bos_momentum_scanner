@@ -1,0 +1,241 @@
+{
+ "batch_id": "batch4",
+ "web_access_ok": true,
+ "triage": [
+  {
+   "ticker": "MLCO",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "Macau Gaming (HOLD)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "MRNO",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "none (distressed RE micro-cap)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "PACB",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "Genomics/Life-Science Tools (AVOID)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "PRZO",
+   "bucket": "ADVANCE",
+   "arch": "N",
+   "theme": "Counter-Drone / Autonomous Warfare [P1]",
+   "fourx": "YES",
+   "fam": "KNOWN",
+   "benchmark": "ONDS/RCAT/AVAV/DRO"
+  },
+  {
+   "ticker": "QDEL",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "Diagnostics (no theme; large-cap declining)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "QTRX",
+   "bucket": "ADVANCE",
+   "arch": "N",
+   "theme": "Blood-Based Alzheimer's Dx (single-name binary)",
+   "fourx": "MAYBE",
+   "fam": "KNOWN",
+   "benchmark": "DXCM/large-Dx"
+  },
+  {
+   "ticker": "RXRX",
+   "bucket": "ADVANCE",
+   "arch": "N",
+   "theme": "AI-Native TechBio / AI-Designed Drug Discovery (MONITOR)",
+   "fourx": "MAYBE",
+   "fam": "KNOWN",
+   "benchmark": "none (platform leader is the vehicle)"
+  },
+  {
+   "ticker": "SCOR",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "none (distressed ad-measurement)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "SENS",
+   "bucket": "ADVANCE",
+   "arch": "N",
+   "theme": "Long-Duration Glucose Monitoring & Diabetes Tech [P3]",
+   "fourx": "YES",
+   "fam": "KNOWN",
+   "benchmark": "DXCM/TNDM"
+  },
+  {
+   "ticker": "SKYX",
+   "bucket": "ADVANCE",
+   "arch": "G",
+   "theme": "none (standalone smart-home platform \u2014 Monster-shape)",
+   "fourx": "MAYBE",
+   "fam": "PARTIAL",
+   "benchmark": "none"
+  },
+  {
+   "ticker": "STI",
+   "bucket": "DROP",
+   "arch": "N",
+   "theme": "Silicon-Anode [P2] / Golden-Dome (fake-inflection)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "AMPX"
+  },
+  {
+   "ticker": "STRT",
+   "bucket": "DROP",
+   "arch": "V",
+   "theme": "Auto-Supplier Restructuring (HOLD)",
+   "fourx": "NO",
+   "fam": "KNOWN",
+   "benchmark": "none"
+  }
+ ],
+ "advance": [
+  {
+   "ticker": "PRZO",
+   "bull_case": "Purest listed counter-UAS interception pure-play (DefendAir net-capture). Shape = sub-$1 micro-cap converting a named, funded government drone-defense backlog to revenue. Inflection: in 2026 secured a Tier-1 international framework order for >=2,000 DefendAir Net Pods (full platform integration) PLUS repeat Israeli defense orders (2nd/3rd reorders Apr 6/13) and engaged a subcontractor (May 29) for thousands-of-units annual capacity. Why now: cheap-FPV-kills-expensive-asset procurement cycle is converting to firm POs ahead of full NDAA enactment; reorders are the operational tell that the product works and is being bought repeatedly.",
+   "arch": "N",
+   "theme": "Counter-Drone / Autonomous Warfare (C-UAS + attritable drones) [P1 \u2014 THE LEAD]",
+   "verify_first": "Confirm the 2026 DefendAir orders are FIRM fixed-price cash POs (not MOU/framework intent) and quantify converting backlog $ + delivery timing; size the micro-float dilution / cash-runway risk against the order book.",
+   "lineage": {
+    "macro": "tailwind \u00b7 RISK-ON but more selective \u00b7 easing-inflection NEAR/slipped-hawkish \u00b7 capex-funded defense is the regime's sweet spot",
+    "theme": "C-UAS interception & net-capture hardware + DAWG attritable-interceptor procurement (JIATF-401 engine) \u00b7 surfaced cluster+top-down+leading-indicator \u00b7 stage early \u00b7 recognition closing (decoupled-leader + sub-theme escapes; dispersion intact) \u00b7 demand = funded gov procurement converting to firm backlog (Perennial $500M IDIQ, Anduril $20B vehicle, PRZO two firm DefendAir orders, AIRO $150M backlog) \u00b7 fuel fundamental \u00b7 floor 2",
+    "mapping": "Direct (PRZO/AIRO pure-plays) \u00b7 2 actionable on-list + GXAI weak/AXON adjacent; purest off-list comps ONDS/RCAT/AVAV/DRO benchmarks \u00b7 proxy strong (PRZO net-capture w/ fresh US Tier-1 order, AIRO backlog+Blue UAS) \u00b7 bull-shape = sub-$10 C-UAS/attritable pure-play converting a named, funded gov backlog to revenue <12mo, before full NDAA enactment",
+    "triage": "T1 ADVANCE \u00b7 verify-question: are the 2026 DefendAir orders firm fixed-price cash POs with quantifiable converting backlog, and is the micro-float dilution risk survivable? (purest listed C-UAS pure-play, fast-track to Tier 2)"
+   }
+  },
+  {
+   "ticker": "QTRX",
+   "bull_case": "Quanterix (Simoa ultrasensitive immunoassay) is pivoting from a receding research-tools identity into a live blood-based Alzheimer's diagnostics inflection. Shape = single-name binary with a near-term regulatory catalyst + early commercial conversion. Inflection: Q1-2026 rev +20% YoY to $36.4M; LucentAD Complete (p-tau217) now orderable via Tempus AI clinical platform + Life Line Screening national rollout; Medicare set a $897 reimbursement rate (Nov-2025); an FDA 510(k) decision plus three clinical-utility study completions land H2-2026. Why now: a reimbursed, partner-distributed blood test for Alzheimer's hitting an FDA decision is a discrete, dated re-rating catalyst; ~$100M cash, no debt = survives to the readout.",
+   "arch": "N",
+   "theme": "Blood-Based Alzheimer's Diagnostics (single-name binary; brief HOLD'd as a theme, but the Dx leg is a live standalone inflection distinct from the receding genomics-tools cohort)",
+   "verify_first": "Confirm the H2-2026 FDA 510(k) date is the originally-stated date (not a slip) and that LucentAD volume is actually converting (orders/tests run post-Tempus & Life Line), and separate the growing Alzheimer's-Dx revenue from the contracting legacy research-tools base.",
+   "lineage": {
+    "macro": "tailwind \u00b7 RISK-ON but more selective \u00b7 easing-inflection slipped-hawkish; longest-duration no-cashflow biotech carries marginal headwind \u2014 Quanterix's ~$100M cash / no-debt cushions this",
+    "theme": "[INHERITED-PARTIAL \u2014 Tier-0 HOLD'd 'Blood-Based Alzheimer's' as a single-name binary, not a theme HUNT; carry as standalone] blood-based p-tau217 Alzheimer's diagnostic \u00b7 surfaced bottom-up single-name \u00b7 stage mid (reimbursed, FDA 510(k) pending) \u00b7 recognition open \u00b7 demand = reimbursed non-invasive Alzheimer's screening converting via Tempus/Life Line channels \u00b7 fuel fundamental \u00b7 floor 2 [provisional \u2014 flag to Tier 0 whether the broader blood-Dx layer is a birthable theme]",
+    "mapping": "Direct single-name (QTRX = the vehicle; large-Dx/DXCM only as scale benchmarks) \u00b7 proxy n/a (it IS the asset) \u00b7 bull-shape = sole-leader ultrasensitive blood-Dx re-rating on an FDA clearance + Medicare-reimbursed channel ramp [provisional Tier-1 mapping; Tier 0 to confirm theme status]",
+    "triage": "T1 ADVANCE \u00b7 verify-question: is the H2-2026 FDA 510(k) on its original date and is LucentAD revenue genuinely converting (separable from the receding research-tools base)?"
+   }
+  },
+  {
+   "ticker": "RXRX",
+   "bull_case": "Recursion is the listed pure-play on AI-driven phenotypic drug discovery (Recursion OS). Shape = pre-/early-commercial N-narrative platform with large optionality, now showing de-risking leading indicators rather than story alone. Inflection: Q1-2026 beat (EPS -0.22 vs -0.26), revenue 'extremely strong,' cash runway extended into early-2028 (survives the rates back-up); six AI-derived maps of biology accepted by Roche/Genentech; positive Phase-2 signal in familial adenomatous polyposis (REC-4881, in-licensed from Takeda). Why now: partner validation (Roche/Genentech) + a real Phase-2 efficacy signal start converting the platform narrative into quantified evidence, while the extended runway removes the near-term ruin overhang the brief's regime caveat warns about.",
+   "arch": "N",
+   "theme": "AI-Native TechBio / AI-Designed Drug Discovery (Tier-0 MONITOR \u2014 is_theme_real=false at theme level, but RXRX is the de-risking single-name vehicle with a survival cushion)",
+   "verify_first": "Confirm the cash-runway-to-early-2028 and that the Roche/Genentech maps + the FAP Phase-2 signal are milestone/efficacy events (not pre-clinical optionality dressed up); pressure-test whether any clinical asset has a near-term value-inflecting readout vs. pure platform narrative.",
+   "lineage": {
+    "macro": "tailwind overall \u00b7 RISK-ON but more selective \u00b7 easing slipped-hawkish \u2014 no-cash-flow narrative biotech carries a marginal HEADWIND, so the cash-runway-to-2028 is the load-bearing survival fact",
+    "theme": "[INHERITED \u2014 Tier-0 MONITOR/HOLD] AI-native techbio / AI-designed drug discovery \u00b7 surfaced top-down (NEW) \u00b7 stage early \u00b7 recognition open \u00b7 demand mechanism is_theme_real=FALSE at theme level (thin, single-name) \u00b7 fuel sentiment+early-fundamental \u00b7 floor 5 [carry verbatim; RXRX itself is the de-risking expression]",
+    "mapping": "Direct single-name platform (RXRX = the vehicle; no clean peer proxy on-list) \u00b7 proxy weak/n/a \u00b7 bull-shape = AI-discovery platform re-rating as partner-validated maps + first clinical efficacy signals convert optionality into pipeline value, survival extended to 2028 [Tier-0 to revisit whether the theme births a cohort]",
+    "triage": "T1 ADVANCE \u00b7 verify-question: is the runway truly to early-2028 and are the Roche/Genentech maps + FAP Phase-2 genuine de-risking milestones rather than story (does a near-term value-inflecting clinical readout exist)?"
+   }
+  },
+  {
+   "ticker": "SENS",
+   "bull_case": "Senseonics (Eversense 365) is the sole year-long implantable CGM with an in-the-numbers inflection. Shape = decoupled-leader small-cap recapturing channel economics + taking share from short-life disposables. Inflection: Q1-2026 rev +85% YoY to $11.7M, GM 59% (commercial-control reversion executed \u2014 revenue-share eliminated, per-unit revenue + GM trending toward 70%+), FY26 guide RAISED to $60-64M, Eversense 365 launched in Europe (first Sweden insertions Apr) + US AID launch via twiist, ~100% YoY DTC new-patient growth. Why now: the channel-economics reset is compounding into accelerating revenue while the stock sits near lows (market pricing dilution, not the +85% success); $92M+ raised addresses the balance-sheet survival overhang.",
+   "arch": "N",
+   "theme": "Next-Gen / Long-Duration Glucose Monitoring & Diabetes Tech [P3 \u2014 top of P3]",
+   "verify_first": "Confirm the Q1 GM-toward-70% trajectory holds for a 2nd quarter and that the $92M raise gives >=6 quarters of runway against burn (survival is the binding check); verify Eversense 365 / AID-integration uptake is translating to sustained unit/revenue acceleration, not a one-quarter step.",
+   "lineage": {
+    "macro": "neutral \u00b7 tiny share vs incumbent lock and SENS balance-sheet-fragile/dilutive",
+    "theme": "Eversense 365 implantable + AID, commercial-control reversion \u00b7 surfaced cluster+leading-indicator \u00b7 stage mid \u00b7 recognition open (SENS near lows despite +85% YoY & raised guide \u2014 mkt pricing dilution not success) \u00b7 demand = shipping one-year implantable CGM converting to accelerating revenue \u00b7 fuel fundamental \u00b7 floor 2",
+    "mapping": "Direct (SENS) / R&D-stage (TRIB) \u00b7 SENS + TRIB on-list & deployable, TNDM/DXCM off-list benchmarks \u00b7 proxy SENS strong, TRIB adequate \u00b7 bull-shape = sole long-duration pure-play recapturing channel economics + AID integration to take share, CMS/payer parity the next unlock",
+    "triage": "T1 ADVANCE \u00b7 verify-question: does the GM-toward-70% inflection hold a 2nd quarter and does the $92M raise give >=6 quarters runway (survival), with Eversense-365/AID uptake sustaining revenue acceleration?"
+   }
+  },
+  {
+   "ticker": "SKYX",
+   "bull_case": "SKYX Platforms is a smart-home / advanced-lighting platform (plug-and-play ceiling outlet + AI-enabled all-in-one platform) with a recurring product-cycle story. Shape = small-cap growth/platform with a licensing-and-OEM distribution flywheel. Inflection: record Q1-2026 rev $22M (+10%, 9th consecutive YoY-growth quarter), GM up to 30%, $32M cash, narrowing losses; new licensing deal with Eurofase (builder/hotel/residential/commercial across US/Canada/Europe/Asia) + European hotel deployment agreements (Group OTT); Generation-3 All-in-One Smart Platform launching mid-to-Q3-2026. Why now: a code-driven/standardized smart-ceiling product gaining licensing + builder channels, with a Gen-3 launch that could step up attach/margin \u2014 a credible product-cycle re-rate from a sub-$2 base.",
+   "arch": "G",
+   "theme": "Standalone smart-home / advanced-lighting platform \u2014 no current HUNT-theme fit (Monster-shape); carried as provisional standalone",
+   "verify_first": "Confirm a credible >=4x path actually exists: is revenue growth re-accelerating (not stuck ~10%) and is the Eurofase/OEM licensing model producing high-margin recurring royalty revenue \u2014 and does $32M cash cover burn to the Gen-3 launch without a dilution death-spiral (the binding survival check on a persistently loss-making microcap)?",
+   "lineage": {
+    "macro": "[Tier-1 provisional \u2014 not inherited; no mapped theme] tailwind-neutral \u00b7 RISK-ON but more selective \u00b7 a persistently loss-making consumer-hardware microcap sits in the rates-back-up's marginal-headwind zone \u2014 survival/dilution is the load-bearing question",
+    "theme": "[NO THEME MATCH \u2014 Monster-shape standalone, flag to Tier 0] smart-home / advanced-lighting platform (plug-and-play smart-ceiling + AI all-in-one) \u00b7 surfaced bottom-up single-name \u00b7 stage early-commercial \u00b7 recognition open \u00b7 demand = builder/OEM/hotel adoption of a standardized smart-ceiling platform via licensing \u00b7 fuel fundamental(early) \u00b7 floor unset [Tier-0 to judge if a 'connected-home/edge-device' theme is birthable]",
+    "mapping": "[Tier-1 provisional] Direct single-name (SKYX = the vehicle; no peer proxy) \u00b7 proxy n/a \u00b7 bull-shape = sub-$2 platform compounding on a licensing/OEM flywheel + Gen-3 attach-and-margin step-up, contingent on revenue re-acceleration and self-funding to launch",
+    "triage": "T1 ADVANCE \u00b7 verify-question: does a credible >=4x path exist (revenue re-accelerating + high-margin recurring licensing royalties from Eurofase/OEM) and does $32M cash fund burn to the Gen-3 launch without a dilution spiral?"
+   }
+  }
+ ],
+ "drops": [
+  {
+   "ticker": "MLCO",
+   "reason": "Wrong instrument / size class that can't 4x: mega-cap Macau casino operator ($1.37B Q1 revenue, +$700M buyback) in the Tier-0 HOLD'd 'Macau Gaming' theme (late-stage/priced/large-cap-only). No credible venture \u22654x path.",
+   "theme": "Macau Gaming (HOLD)"
+  },
+  {
+   "ticker": "MRNO",
+   "reason": "Ruin firewall + wrong vehicle: distressed Mexican hotel/RE micro-cap restructuring $300M senior notes (going-concern lock-up), under a Nasdaq sub-$1 delisting deficiency, with a BTC-treasury+Yorkville-SEPA pivot (dilution death-spiral shape). Real estate, not a HUNT theme. Search-confirmed.",
+   "theme": "none (distressed RE micro-cap)"
+  },
+  {
+   "ticker": "PACB",
+   "reason": "Current evidence = confirmed contraction in an AVOID theme: Q1-2026 revenue FLAT YoY ($37.2M), instrument sales weak, 'no recovery assumed in 2026'; Tier-0 marks Genomics/Life-Science Tools AVOID (capital RECEDING, mean-reversion-watch only) and the signal is WEAK. No live inflection.",
+   "theme": "Genomics / Life-Science Research Tools (AVOID)"
+  },
+  {
+   "ticker": "QDEL",
+   "reason": "Wrong instrument / no \u22654x path: large-cap IVD diagnostics with DECLINING fundamentals (Q1 rev -10.5% to $620M, GAAP net loss $92M, FY26 outlook CUT on respiratory weakness + China pricing). Mature shrinking large-cap, not a venture shot. Search-confirmed.",
+   "theme": "Diagnostics (no theme; large-cap declining)"
+  },
+  {
+   "ticker": "SCOR",
+   "reason": "No credible \u22654x path + ruin-adjacent debt wall: distressed ad-measurement microcap, flat revenue ($85.3M, -0.5%), shrinking adj-EBITDA, $112M fixed obligations through 2030 requiring a covenant-waiver Limited Consent. Structurally low-growth with a near-term leverage overhang and no live thematic angle. Search-confirmed.",
+   "theme": "none (distressed ad-measurement)"
+  },
+  {
+   "ticker": "STI",
+   "reason": "Fake-inflection + ruin firewall (Tier-0 already adjudicated as a 'fake-inflection pump'): 350%+ spike on a 'space/LEO-AI battery' + Bitcoin-treasury press release while Q1-2026 revenue is ~$85K and the 10-Q discloses substantial-doubt GOING CONCERN ($41M FY25 loss, ~7.7M shares pre-raise, large-float dilution warned). No firm contracts behind the narrative. Search-confirmed.",
+   "theme": "Silicon-Anode [P2] / Golden Dome (fake-inflection \u2014 name-level firewall)"
+  },
+  {
+   "ticker": "STRT",
+   "reason": "Wrong instrument / size class that can't 4x: Strattec is a mature, profitable mid-cap automotive vehicle-access supplier (~$344M mkt cap, ~$565M TTM revenue, net income $8.5M, 17% GM) \u2014 a cyclical value-turnaround in the Tier-0 HOLD'd 'Auto-Supplier Restructuring' (tariff/chip headwinds). A modest re-rate ceiling, not an open-ended \u22654x venture shape. Search-confirmed.",
+   "theme": "Auto-Supplier Restructuring (HOLD)"
+  }
+ ],
+ "new_cluster": [],
+ "counts": {
+  "batch_total": 12,
+  "advance": 5,
+  "drop": 7,
+  "held": 0,
+  "arch_N": 4,
+  "arch_G": 1,
+  "arch_V_drops": 6,
+  "fourx_YES": 2,
+  "fourx_MAYBE": 3,
+  "fourx_NO": 7,
+  "fam_KNOWN": 11,
+  "fam_PARTIAL": 1,
+  "benchmark_fast_track": [
+   "PRZO"
+  ],
+  "theme_map_gaps": [
+   "QTRX\u2192provisional Blood-Based Alzheimer's Dx (Tier-0 HOLD'd as single-name binary; revisit if blood-Dx births a cohort)",
+   "RXRX\u2192AI-Native TechBio is_theme_real=false at theme level (vehicle de-risking; revisit)",
+   "SKYX\u2192no theme match, Monster-shape standalone smart-home/connected-device (Tier-0 to judge birthable theme)"
+  ]
+ }
+}

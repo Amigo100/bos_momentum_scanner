@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8f9fa; display: flex; justify-content: center; padding: 20px; }
+  .card { width: 680px; max-height: 500px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 24px; }
+  .header-label { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: #dc2626; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .header-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+  .stats { display: flex; gap: 0; background: #0f2440; }
+  .stat { flex: 1; padding: 18px 16px; border-right: 1px solid rgba(255,255,255,0.06); text-align: center; }
+  .stat:last-child { border-right: none; }
+  .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #fff; font-family: 'DM Mono', monospace; }
+  .stat-value.negative { color: #dc2626; }
+  .stat-value.positive { color: #16a34a; }
+  .stat-value.neutral { color: #d97706; }
+  .context { display: flex; align-items: center; gap: 10px; padding: 16px 24px; background: #f1f5f9; border-top: 1px solid #e2e8f0; }
+  .force-dot { width: 8px; height: 8px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
+  .force-text { font-size: 12px; color: #334155; }
+  .force-text strong { color: #0a1628; }
+  .footer { padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
+  .brand { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: #94a3b8; text-transform: uppercase; }
+  .disclaimer { font-size: 9px; color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Short Seller Report</div>
+    <div class="header-title">$SOFI: Muddy Waters Alleges Accounting Issues</div>
+    <div class="header-sub">March 25, 2026 | CEO Noto buying shares in response</div>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">2-Day Move</div>
+      <div class="stat-value negative">-8.7%</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Entry</div>
+      <div class="stat-value">$7.90</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Recent</div>
+      <div class="stat-value">~$19</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">From ATH</div>
+      <div class="stat-value negative">-50%</div>
+    </div>
+  </div>
+  <div class="context">
+    <div class="force-dot"></div>
+    <div class="force-text"><strong>Financial Infrastructure</strong> &mdash; Short thesis targets credit quality, not structural digital banking adoption (10.8M members).</div>
+  </div>
+  <div class="footer">
+    <div class="brand">Sterling Signals</div>
+    <div class="disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

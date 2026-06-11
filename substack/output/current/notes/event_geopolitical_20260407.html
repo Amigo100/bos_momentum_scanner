@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .card { width: 680px; max-width: 680px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 28px 16px; }
+  .label { font-size: 11px; letter-spacing: 1.5px; color: #d97706; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+  .title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .hero { background: #0f2440; padding: 24px 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 700; color: #d97706; font-family: 'DM Mono', monospace; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .grid { display: flex; gap: 0; border-top: 1px solid #1a3a5c; }
+  .grid-box { flex: 1; background: #0f2440; padding: 16px 20px; text-align: center; border-right: 1px solid #1a3a5c; }
+  .grid-box:last-child { border-right: none; }
+  .grid-val { font-size: 20px; font-weight: 700; color: #fff; font-family: 'DM Mono', monospace; }
+  .grid-val.neg { color: #dc2626; }
+  .grid-val.pos { color: #16a34a; }
+  .grid-val.amber { color: #d97706; }
+  .grid-lbl { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .facts { padding: 20px 28px; background: #fff; }
+  .fact-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+  .fact-row:last-child { border-bottom: none; }
+  .fact-label { font-size: 13px; color: #64748b; font-weight: 500; }
+  .fact-value { font-size: 13px; color: #1a1a1a; font-weight: 600; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+  .badge-red { background: rgba(220,38,38,0.12); color: #dc2626; }
+  .badge-amber { background: rgba(217,119,6,0.12); color: #d97706; }
+  .badge-green { background: rgba(22,163,74,0.12); color: #16a34a; }
+  .portfolio { padding: 16px 28px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  .portfolio-title { font-size: 11px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+  .portfolio-text { font-size: 13px; color: #334155; line-height: 1.5; }
+  .footer { background: #0a1628; padding: 12px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-size: 11px; letter-spacing: 2px; color: #64748b; font-weight: 700; }
+  .disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="label">Geopolitical: Iran Ceasefire Deadline</div>
+    <div class="title">Trump Sets Tuesday Ultimatum on Strait of Hormuz</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">$108.67</div>
+    <div class="hero-label">Brent Crude (per barrel)</div>
+  </div>
+  <div class="grid">
+    <div class="grid-box">
+      <div class="grid-val pos">&darr;$3.33</div>
+      <div class="grid-lbl">From Friday High</div>
+    </div>
+    <div class="grid-box">
+      <div class="grid-val amber">4.5-5M</div>
+      <div class="grid-lbl">BPD Supply Lost</div>
+    </div>
+    <div class="grid-box">
+      <div class="grid-val neg">$4.00</div>
+      <div class="grid-lbl">US Gas/Gallon (Mar 31)</div>
+    </div>
+  </div>
+  <div class="facts">
+    <div class="fact-row">
+      <span class="fact-label">Ceasefire proposal</span>
+      <span class="fact-value">45-day framework via Pakistan, Turkey, Egypt</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Trump deadline</span>
+      <span class="fact-value">Tuesday Apr 7: open Hormuz or strikes escalate</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Deal probability (48h)</span>
+      <span class="badge badge-red">LOW</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Escalation target</span>
+      <span class="fact-value">Power plants, bridges</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">War duration</span>
+      <span class="fact-value">6 weeks, 5% of global oil supply removed</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Ceasefire scenario</span>
+      <span class="badge badge-green">Brent toward $90</span>
+    </div>
+    <div class="fact-row">
+      <span class="fact-label">Escalation scenario</span>
+      <span class="badge badge-red">Brent toward $120+</span>
+    </div>
+  </div>
+  <div class="portfolio">
+    <div class="portfolio-title">Portfolio Connection</div>
+    <div class="portfolio-text">$NVDA, $AMD, $HIVE: high-beta growth names sensitive to risk sentiment. Ceasefire compresses energy-driven inflation premium, supports growth multiples. $SOFI benefits from easing rate expectations if oil falls.</div>
+  </div>
+  <div class="footer">
+    <span class="brand">STERLING SIGNALS</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

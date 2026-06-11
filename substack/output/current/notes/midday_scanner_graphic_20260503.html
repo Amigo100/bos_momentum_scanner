@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; }
+  .card { width: 680px; margin: 0 auto; overflow: hidden; border-radius: 12px; border: 1px solid #e0ddd8; }
+  .header { background: #0a1628; padding: 28px 32px 20px; }
+  .header-label { font-size: 11px; letter-spacing: 2px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+  .header-title { font-size: 26px; font-weight: 700; color: #ffffff; line-height: 1.2; }
+  .header-sub { font-size: 14px; color: #94a3b8; margin-top: 6px; }
+  .funnel { background: #0f2440; padding: 24px 32px; }
+  .funnel-row { display: flex; align-items: center; margin-bottom: 10px; }
+  .funnel-row:last-child { margin-bottom: 0; }
+  .funnel-bar { height: 28px; background: linear-gradient(90deg, #1a3a5c, #2563eb); border-radius: 4px; display: flex; align-items: center; padding-left: 10px; min-width: 40px; transition: width 0.3s; }
+  .funnel-num { font-size: 14px; font-weight: 700; color: #fff; }
+  .funnel-label { font-size: 12px; color: #94a3b8; margin-left: 12px; white-space: nowrap; }
+  .stats-row { display: flex; background: #f8f7f5; padding: 20px 32px; gap: 0; }
+  .stat-box { flex: 1; text-align: center; border-right: 1px solid #e0ddd8; }
+  .stat-box:last-child { border-right: none; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #0a1628; }
+  .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .entries { padding: 20px 32px; background: #fff; }
+  .entries-title { font-size: 12px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; margin-bottom: 14px; }
+  .entry-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0eeeb; }
+  .entry-row:last-child { border-bottom: none; }
+  .entry-ticker { font-size: 16px; font-weight: 700; color: #0a1628; width: 70px; }
+  .entry-force { font-size: 13px; color: #64748b; flex: 1; }
+  .entry-conv { font-size: 13px; font-weight: 600; color: #0a1628; width: 90px; text-align: right; }
+  .entry-tier { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 10px; }
+  .t2 { background: #dbeafe; color: #1e40af; }
+  .t3 { background: #e0e7ff; color: #3730a3; }
+  .themes { padding: 16px 32px 20px; background: #fff; }
+  .theme-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+  .theme-tag { font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+  .prime { background: #dcfce7; color: #166534; }
+  .investable { background: #dbeafe; color: #1e40af; }
+  .selective { background: #fef3c7; color: #92400e; }
+  .footer { background: #0a1628; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; letter-spacing: 2px; color: #64748b; font-weight: 700; }
+  .footer-disc { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Weekly Screening Recap</div>
+    <div class="header-title">1,279 Tickers. Three Survived.</div>
+    <div class="header-sub">Week of April 14, 2026</div>
+  </div>
+
+  <div class="funnel">
+    <div class="funnel-row">
+      <div class="funnel-bar" style="width: 100%;"><span class="funnel-num">1,279</span></div>
+      <span class="funnel-label">Universe loaded</span>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar" style="width: 18%;"><span class="funnel-num">30</span></div>
+      <span class="funnel-label">Momentum inflection</span>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar" style="width: 10%;"><span class="funnel-num">18</span></div>
+      <span class="funnel-label">Combined filters</span>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar" style="width: 4%;"><span class="funnel-num">6</span></div>
+      <span class="funnel-label">Theme scoring</span>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-bar" style="width: 2%; background: linear-gradient(90deg, #16a34a, #22c55e);"><span class="funnel-num">3</span></div>
+      <span class="funnel-label">Forensic audit cleared</span>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value">99.8%</div>
+      <div class="stat-label">Eliminated</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">6</div>
+      <div class="stat-label">Themes Scored</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">13</div>
+      <div class="stat-label">Open Positions</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" style="color: #16a34a;">+55.4%</div>
+      <div class="stat-label">Portfolio Return</div>
+    </div>
+  </div>
+
+  <div class="entries">
+    <div class="entries-title">New Entries from This Scan</div>
+    <div class="entry-row">
+      <span class="entry-ticker">CYRX</span>
+      <span class="entry-force">CGT Cold Chain Logistics</span>
+      <span class="entry-conv">Conv. 8</span>
+      <span class="entry-tier t2">T2</span>
+    </div>
+    <div class="entry-row">
+      <span class="entry-ticker">KYTX</span>
+      <span class="entry-force">Autoimmune CAR-T</span>
+      <span class="entry-conv">Conv. 7</span>
+      <span class="entry-tier t2">T2</span>
+    </div>
+    <div class="entry-row">
+      <span class="entry-ticker">NAMS</span>
+      <span class="entry-force">Oral CETP Inhibitor</span>
+      <span class="entry-conv">Conv. 6</span>
+      <span class="entry-tier t3">T3</span>
+    </div>
+  </div>
+
+  <div class="themes">
+    <div class="entries-title" style="margin-bottom: 10px;">Theme Classifications</div>
+    <div class="theme-grid">
+      <span class="theme-tag prime">PRIME: Submarine Hardware</span>
+      <span class="theme-tag prime">PRIME: Autoimmune CAR-T</span>
+      <span class="theme-tag investable">INVESTABLE: CGT Logistics</span>
+      <span class="theme-tag investable">INVESTABLE: CETP Inhibitor</span>
+      <span class="theme-tag investable">INVESTABLE: EM Payments</span>
+      <span class="theme-tag selective">SELECTIVE: Quantum Sensing</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-brand">STERLING SIGNALS</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

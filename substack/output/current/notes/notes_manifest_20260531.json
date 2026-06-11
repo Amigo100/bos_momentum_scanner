@@ -1,0 +1,49 @@
+{
+    "date": "2026-05-31",
+    "day": "saturday",
+    "week": "W22",
+    "notes_generated": 2,
+    "notes": [
+        {
+            "slot": 1,
+            "type": "PROMO",
+            "sub_variant": "milestone_promo",
+            "time_aedt": "08:00",
+            "file": "morning_promo_20260531.md",
+            "word_count": 95,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": false,
+                "screenshottable": true
+            }
+        },
+        {
+            "slot": 2,
+            "type": "SCANNER",
+            "sub_variant": "exit_discipline",
+            "time_aedt": "12:00",
+            "file": "midday_scanner_20260531.md",
+            "word_count": 121,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        }
+    ],
+    "visual_card": {
+        "file": "midday_scanner_graphic_20260531.html",
+        "type": "portfolio_milestone",
+        "accompanies_slot": 2
+    }
+}

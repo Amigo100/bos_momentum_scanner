@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .card { width: 680px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; letter-spacing: 1.5px; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .hero { background: #0f2440; padding: 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #d97706; letter-spacing: -1px; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .vote-section { display: flex; gap: 12px; padding: 20px 28px; }
+  .vote-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 16px; text-align: center; }
+  .vote-number { font-size: 28px; font-weight: 800; color: #fff; }
+  .vote-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .vote-detail { font-size: 11px; color: #94a3b8; margin-top: 6px; line-height: 1.4; }
+  .divider { height: 1px; background: #e2e8f0; margin: 0 28px; }
+  .context-section { padding: 20px 28px; }
+  .context-title { font-size: 12px; font-weight: 700; color: #0a1628; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .context-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+  .context-row:last-child { border-bottom: none; }
+  .context-key { color: #64748b; }
+  .context-val { color: #0a1628; font-weight: 600; }
+  .portfolio-section { padding: 20px 28px; }
+  .portfolio-title { font-size: 12px; font-weight: 700; color: #0a1628; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .impact-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 12px; color: #334155; }
+  .dot-hawk { width: 8px; height: 8px; border-radius: 50%; background: #dc2626; flex-shrink: 0; }
+  .dot-dove { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; flex-shrink: 0; }
+  .footer { background: #0a1628; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #64748b; }
+  .footer-disc { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Central Bank</div>
+    <div class="header-title">FOMC April Minutes: Committee Split 8-4</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">3.50 - 3.75%</div>
+    <div class="hero-label">Federal Funds Rate held (final decision under Powell)</div>
+  </div>
+  <div class="vote-section">
+    <div class="vote-box">
+      <div class="vote-number">8</div>
+      <div class="vote-label">Hold</div>
+      <div class="vote-detail">Maintain rate + easing bias</div>
+    </div>
+    <div class="vote-box">
+      <div class="vote-number">1</div>
+      <div class="vote-label">Cut</div>
+      <div class="vote-detail">Miran: preferred 25bp cut</div>
+    </div>
+    <div class="vote-box">
+      <div class="vote-number">3</div>
+      <div class="vote-label">Hold (hawkish)</div>
+      <div class="vote-detail">Hammack, Kashkari, Logan: objected to easing bias</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="context-section">
+    <div class="context-title">Key Context</div>
+    <div class="context-row">
+      <span class="context-key">New Fed Chair</span>
+      <span class="context-val">Kevin Warsh (confirmed May 13, 54-45)</span>
+    </div>
+    <div class="context-row">
+      <span class="context-key">First Warsh meeting</span>
+      <span class="context-val">June 16-17</span>
+    </div>
+    <div class="context-row">
+      <span class="context-key">Market pricing</span>
+      <span class="context-val">1-2 cuts remaining in 2026</span>
+    </div>
+    <div class="context-row">
+      <span class="context-key">Next data point</span>
+      <span class="context-val">April PCE: May 30</span>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="portfolio-section">
+    <div class="portfolio-title">Portfolio Sensitivity</div>
+    <div class="impact-row"><span class="dot-hawk"></span> Hawkish Warsh: headwind for $CYRX, $KYTX, $NAMS, $VYGR, $ACRS</div>
+    <div class="impact-row"><span class="dot-dove"></span> Dovish pivot: tailwind for biotech + $KARO (weak dollar, ZAR revenue)</div>
+    <div class="impact-row"><span class="dot-hawk"></span> AI cluster ($AMD, $NVDA, $BAND, $SVCO): capex-driven, less rate-sensitive</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">STERLING SIGNALS</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

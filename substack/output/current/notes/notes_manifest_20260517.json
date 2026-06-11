@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-05-17T08:00:00+10:00",
+  "week": "2026-W20",
+  "day": "Sunday",
+  "weekly_plan_used": "weekly_plan_2026-W20.json",
+  "repetition_check": {
+    "previous_manifests_checked": ["daily_manifest.json (2026-05-10)", "notes from 2026-05-06", "notes from 2026-05-03"],
+    "skips": [
+      {"topic": "Exit discipline / profit lock mechanics", "reason": "Covered in sunday_1_education.md on 2026-05-10 (last Sunday). 7-day gap insufficient."},
+      {"topic": "S&P ATH vs consumer sentiment divergence framing", "reason": "Lead story in sunday_2_market.md on 2026-05-10. Avoided same framing."},
+      {"topic": "Portfolio concentration / position count philosophy", "reason": "Covered in midday_education_20260506.html on 2026-05-06. 11-day gap insufficient."}
+    ],
+    "substitutions": [
+      {"original": "Exit discipline", "replacement": "Structural force diversification within AI Infrastructure", "reason": "Fresh education angle showing value chain diversification across 5 AI positions"},
+      {"original": "S&P vs sentiment divergence", "replacement": "Inflation-tech split: retail/utilities collapse vs tech new highs", "reason": "New data from May 12-15 week. XRT -6.5%, utilities -5% May. Different angle from same macro backdrop."}
+    ]
+  },
+  "notes": [
+    {
+      "slot": "08:00",
+      "type": "EDUCATION",
+      "sub_variant": "Concept Explainer",
+      "tier": "Tier 2 (fresh generation)",
+      "file": "sunday_1_education_20260517.md",
+      "topic": "Structural force diversification: 5 AI Infrastructure positions across different value chain layers",
+      "tickers_mentioned": ["AMD", "NVDA", "BAND", "SVCO", "HIVE"],
+      "structural_forces": ["AI Infrastructure"],
+      "word_count": 137,
+      "freshness_gate": false,
+      "quality_checks": {
+        "opens_with_number": true,
+        "word_count_in_range": true,
+        "zero_em_dashes": true,
+        "zero_ai_references": true,
+        "zero_indicator_names": true,
+        "portfolio_connection": true,
+        "ends_with_data_or_date": false,
+        "ends_with_forward_look": true,
+        "screenshot_worthy": true
+      }
+    },
+    {
+      "slot": "12:00",
+      "type": "MARKET",
+      "sub_variant": "Event Impact Analysis",
+      "tier": "Tier 2 (fresh generation)",
+      "file": "sunday_2_market_20260517.md",
+      "topic": "Inflation-tech divergence: XRT -6.5% weekly, utilities -5% May, while tech hits new highs. Portfolio exposure analysis.",
+      "tickers_mentioned": ["ACRS", "CYRX", "KYTX", "NAMS"],
+      "structural_forces": ["Biotech Capital Cycle", "AI Infrastructure"],
+      "word_count": 142,
+      "freshness_gate": true,
+      "freshness_sources": ["WebSearch: S&P 7,444 ATH May 13, XRT -6.5% weekly, utilities -5% May", "WebSearch: ACRS $4.95, CYRX $13.20, KYTX $9.44, NAMS $38.73"],
+      "quality_checks": {
+        "opens_with_number": true,
+        "word_count_in_range": true,
+        "zero_em_dashes": true,
+        "zero_ai_references": true,
+        "zero_indicator_names": true,
+        "portfolio_connection": true,
+        "ends_with_data_or_date": true,
+        "ends_with_forward_look": true,
+        "screenshot_worthy": true
+      }
+    }
+  ],
+  "visual_card": null,
+  "visual_card_note": "No visual card scheduled for Sunday per W20 plan."
+}

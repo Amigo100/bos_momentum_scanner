@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVDA Development Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .card {
+    width: 680px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  .header {
+    background: #0a1628;
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .ticker {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .event-tag {
+    background: #2563eb;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .date {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #e2e8f0;
+  }
+  .stat {
+    background: #0f2440;
+    padding: 18px 20px;
+    text-align: center;
+  }
+  .stat-label {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-value.positive { color: #16a34a; }
+  .stat-value.highlight { color: #2563eb; }
+  .stat-sub {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 3px;
+  }
+  .detail-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #e2e8f0;
+  }
+  .detail {
+    background: #0f2440;
+    padding: 14px 20px;
+    text-align: center;
+  }
+  .detail .stat-label { margin-bottom: 4px; }
+  .detail .stat-value { font-size: 15px; color: #e2e8f0; }
+  .connection {
+    background: #1a3a5c;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .connection-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #16a34a;
+    flex-shrink: 0;
+  }
+  .connection-text {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .connection-text strong { color: #e2e8f0; }
+  .footer {
+    background: #0a1628;
+    padding: 10px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand {
+    font-size: 10px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .disclaimer {
+    font-size: 9px;
+    color: #475569;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-left">
+      <span class="ticker">$NVDA</span>
+      <span class="event-tag">GTC 2026</span>
+    </div>
+    <span class="date">March 16-19, 2026</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Entry Price</div>
+      <div class="stat-value">$150.00</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Current Price</div>
+      <div class="stat-value">$180.25</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Position P&L</div>
+      <div class="stat-value positive">+20.2%</div>
+      <div class="stat-sub">from entry</div>
+    </div>
+  </div>
+
+  <div class="detail-row">
+    <div class="detail">
+      <div class="stat-label">Order Pipeline</div>
+      <div class="stat-value" style="color:#16a34a;">$1 Trillion</div>
+      <div class="stat-sub">through 2027</div>
+    </div>
+    <div class="detail">
+      <div class="stat-label">New Platform</div>
+      <div class="stat-value">Vera Rubin</div>
+      <div class="stat-sub">Blackwell successor</div>
+    </div>
+    <div class="detail">
+      <div class="stat-label">Analyst Consensus</div>
+      <div class="stat-value" style="color:#16a34a;">Strong Buy</div>
+      <div class="stat-sub">55 of 56 analysts</div>
+    </div>
+  </div>
+
+  <div class="stats" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="stat" style="padding: 14px 20px;">
+      <div class="stat-label">Uber AV Partnership</div>
+      <div class="stat-value" style="font-size:16px; color:#e2e8f0;">28 Cities by 2028</div>
+    </div>
+    <div class="stat" style="padding: 14px 20px;">
+      <div class="stat-label">Agentic AI Framework</div>
+      <div class="stat-value" style="font-size:16px; color:#e2e8f0;">OpenClaw (Open Source)</div>
+    </div>
+  </div>
+
+  <div class="connection">
+    <div class="connection-dot"></div>
+    <div class="connection-text">
+      <strong>AI Infrastructure</strong> force. $1T pipeline removes near-term demand uncertainty. Vera Rubin positions inference/agentic workloads as next growth vector. Next catalyst: fiscal Q1 2027 earnings, late May.
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">Sterling Signals</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

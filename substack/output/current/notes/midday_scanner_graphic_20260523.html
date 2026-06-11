@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #0a1628; }
+  .card { width: 680px; margin: 0 auto; background: #0a1628; color: #e2e8f0; }
+  .header { padding: 24px 28px 16px; border-bottom: 1px solid #1e3a5f; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
+  .header .sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+  .stats-row { display: flex; gap: 12px; padding: 16px 28px; }
+  .stat-box { flex: 1; background: #0f2440; border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .stat-box .num { font-size: 24px; font-weight: 700; color: #ffffff; }
+  .stat-box .label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .stat-box.green .num { color: #16a34a; }
+  .stat-box.red .num { color: #dc2626; }
+  .stat-box.blue .num { color: #3b82f6; }
+  .funnel { padding: 16px 28px; }
+  .funnel h2 { font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .funnel-bar { display: flex; align-items: center; margin-bottom: 8px; }
+  .funnel-bar .bar-label { width: 160px; font-size: 12px; color: #94a3b8; }
+  .funnel-bar .bar { height: 22px; background: #1e3a5f; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 600; color: #e2e8f0; }
+  .positions { padding: 12px 28px 8px; }
+  .positions h2 { font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .pos-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1e3a5f; font-size: 13px; }
+  .pos-row .ticker { font-weight: 700; color: #ffffff; width: 60px; }
+  .pos-row .force { color: #64748b; flex: 1; }
+  .pos-row .entry { color: #94a3b8; width: 70px; text-align: right; }
+  .pos-row .current { color: #e2e8f0; width: 70px; text-align: right; }
+  .pos-row .pnl { width: 80px; text-align: right; font-weight: 600; }
+  .pos-row .pnl.up { color: #16a34a; }
+  .pos-row .pnl.down { color: #94a3b8; }
+  .footer { padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1e3a5f; margin-top: 8px; }
+  .footer .brand { font-size: 11px; font-weight: 700; color: #3b82f6; letter-spacing: 2px; }
+  .footer .disc { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h1>WEEKLY SCREENING RECAP</h1>
+    <div class="sub">Week ending May 23, 2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box green">
+      <div class="num">+73.5%</div>
+      <div class="label">Portfolio Return</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">+43.2%</div>
+      <div class="label">S&P 500</div>
+    </div>
+    <div class="stat-box blue">
+      <div class="num">+30.3pp</div>
+      <div class="label">Alpha</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">13</div>
+      <div class="label">Positions</div>
+    </div>
+  </div>
+
+  <div class="funnel">
+    <h2>Screening Funnel</h2>
+    <div class="funnel-bar">
+      <div class="bar-label">Universe</div>
+      <div class="bar" style="width: 440px;">1,279 tickers</div>
+    </div>
+    <div class="funnel-bar">
+      <div class="bar-label">Momentum confirmed</div>
+      <div class="bar" style="width: 44px; background: #1e4a6f;">30</div>
+    </div>
+    <div class="funnel-bar">
+      <div class="bar-label">Theme qualified</div>
+      <div class="bar" style="width: 28px; background: #1e5a7f;">18</div>
+    </div>
+    <div class="funnel-bar">
+      <div class="bar-label">Forensic cleared</div>
+      <div class="bar" style="width: 16px; background: #16a34a;">3</div>
+    </div>
+  </div>
+
+  <div class="positions">
+    <h2>Portfolio Positions</h2>
+    <div class="pos-row" style="border-bottom: 1px solid #334155; color: #64748b; font-weight: 600;">
+      <div class="ticker">Ticker</div>
+      <div class="force">Force</div>
+      <div class="entry">Entry</div>
+      <div class="current">Current</div>
+      <div class="pnl">P&L</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">AMD</div>
+      <div class="force">AI Infrastructure</div>
+      <div class="entry">$120.00</div>
+      <div class="current">$469.43</div>
+      <div class="pnl up">+291.2%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">BAND</div>
+      <div class="force">AI Infrastructure</div>
+      <div class="entry">$16.55</div>
+      <div class="current">$58.54</div>
+      <div class="pnl up">+253.7%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">HIVE</div>
+      <div class="force">AI Infrastructure</div>
+      <div class="entry">$2.10</div>
+      <div class="current">$3.89</div>
+      <div class="pnl up">+85.2%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">SVCO</div>
+      <div class="force">AI Infrastructure</div>
+      <div class="entry">$5.98</div>
+      <div class="current">$9.27</div>
+      <div class="pnl up">+55.0%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">CYRX</div>
+      <div class="force">Biotech Capital Cycle</div>
+      <div class="entry">$9.67</div>
+      <div class="current">$14.22</div>
+      <div class="pnl up">+47.1%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">NVDA</div>
+      <div class="force">AI Infrastructure</div>
+      <div class="entry">$150.00</div>
+      <div class="current">$218.13</div>
+      <div class="pnl up">+45.4%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">VOYG</div>
+      <div class="force">Defense Spending</div>
+      <div class="entry">$29.00</div>
+      <div class="current">$41.30</div>
+      <div class="pnl up">+42.4%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">ACRS</div>
+      <div class="force">Biotech Capital Cycle</div>
+      <div class="entry">$3.65</div>
+      <div class="current">$3.92</div>
+      <div class="pnl up">+7.4%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">VYGR</div>
+      <div class="force">Biotech Capital Cycle</div>
+      <div class="entry">$4.45</div>
+      <div class="current">$4.24</div>
+      <div class="pnl down">-4.7%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">KARO</div>
+      <div class="force">Financial Infrastructure</div>
+      <div class="entry">$48.05</div>
+      <div class="current">$46.14</div>
+      <div class="pnl down">-4.0%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">NAMS</div>
+      <div class="force">Biotech Capital Cycle</div>
+      <div class="entry">$34.76</div>
+      <div class="current">$32.81</div>
+      <div class="pnl down">-5.6%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">KYTX</div>
+      <div class="force">Biotech Capital Cycle</div>
+      <div class="entry">$9.22</div>
+      <div class="current">$8.65</div>
+      <div class="pnl down">-6.2%</div>
+    </div>
+    <div class="pos-row">
+      <div class="ticker">ASPI</div>
+      <div class="force">Nuclear Renaissance</div>
+      <div class="entry">$6.00</div>
+      <div class="current">$5.03</div>
+      <div class="pnl down">-16.2%</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="brand">STERLING SIGNALS</div>
+    <div class="disc">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

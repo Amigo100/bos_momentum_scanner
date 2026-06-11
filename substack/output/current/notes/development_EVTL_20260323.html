@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=680">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+  .card { width: 680px; max-height: 500px; border-radius: 12px; overflow: hidden; background: #ffffff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 24px; }
+  .header-label { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: #d97706; text-transform: uppercase; margin-bottom: 6px; }
+  .header-title { font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.3; }
+  .stats-row { display: flex; gap: 0; border-bottom: 1px solid #e2e8f0; }
+  .stat-box { flex: 1; padding: 18px 16px; background: #0f2440; text-align: center; border-right: 1px solid rgba(255,255,255,0.08); }
+  .stat-box:last-child { border-right: none; }
+  .stat-value { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+  .stat-value.negative { color: #dc2626; }
+  .stat-value.neutral { color: #d97706; }
+  .stat-value.positive { color: #16a34a; }
+  .stat-label { font-size: 11px; font-weight: 500; letter-spacing: 0.8px; color: #94a3b8; text-transform: uppercase; }
+  .details-row { display: flex; gap: 0; background: #ffffff; }
+  .detail-box { flex: 1; padding: 16px; text-align: center; border-right: 1px solid #e2e8f0; }
+  .detail-box:last-child { border-right: none; }
+  .detail-value { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+  .detail-label { font-size: 10px; font-weight: 500; letter-spacing: 0.6px; color: #6b6b6b; text-transform: uppercase; }
+  .connection { background: #f8fafc; padding: 14px 24px; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+  .connection-dot { width: 8px; height: 8px; border-radius: 50%; background: #d97706; flex-shrink: 0; }
+  .connection-text { font-size: 13px; color: #334155; font-weight: 500; }
+  .footer { background: #0a1628; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #64748b; text-transform: uppercase; }
+  .footer-disclaimer { font-size: 9px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Earnings Catalyst</div>
+    <div class="header-title">$EVTL FY 2025 Results: March 24, 8:30 AM ET</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value">$4.24</div>
+      <div class="stat-label">Current Price</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value">$4.50</div>
+      <div class="stat-label">Entry Price</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value negative">-5.8%</div>
+      <div class="stat-label">From Entry</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value neutral">($0.38)</div>
+      <div class="stat-label">Est. EPS</div>
+    </div>
+  </div>
+  <div class="details-row">
+    <div class="detail-box">
+      <div class="detail-value">1,500</div>
+      <div class="detail-label">Pre-Orders</div>
+    </div>
+    <div class="detail-box">
+      <div class="detail-value">2028</div>
+      <div class="detail-label">Valo Target Launch</div>
+    </div>
+    <div class="detail-box">
+      <div class="detail-value">Operational</div>
+      <div class="detail-label">Battery Pilot Line</div>
+    </div>
+  </div>
+  <div class="connection">
+    <div class="connection-dot"></div>
+    <div class="connection-text">Defence Spending force: eVTOL military logistics thesis. Tomorrow's cash burn data validates the runway.</div>
+  </div>
+  <div class="footer">
+    <div class="footer-brand">Sterling Signals</div>
+    <div class="footer-disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

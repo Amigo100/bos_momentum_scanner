@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: transparent; }
+.card { width: 680px; background: #0f1f3d; border-radius: 12px; overflow: hidden; }
+.header { background: #0a1628; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+.header-title { color: #8ba3c7; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; }
+.header-date { color: #5a7a9e; font-size: 12px; }
+.hero { padding: 28px 24px 16px; text-align: center; }
+.hero-label { color: #8ba3c7; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.hero-number { color: #34d399; font-size: 36px; font-weight: 700; }
+.hero-sub { color: #94a3b8; font-size: 14px; margin-top: 6px; }
+.comparison { display: flex; justify-content: center; gap: 32px; padding: 20px 24px; border-top: 1px solid #1a2d4a; border-bottom: 1px solid #1a2d4a; }
+.comp-box { text-align: center; }
+.comp-label { color: #5a7a9e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.comp-value { font-size: 18px; font-weight: 600; }
+.comp-value.green { color: #34d399; }
+.comp-value.blue { color: #60a5fa; }
+.comp-value.neutral { color: #94a3b8; }
+.bars { padding: 20px 24px; }
+.bar-row { display: flex; align-items: center; margin-bottom: 12px; }
+.bar-label { color: #94a3b8; font-size: 13px; width: 120px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 24px; background: #1a2d4a; border-radius: 4px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+.bar-fill.green { background: linear-gradient(90deg, #059669, #34d399); }
+.bar-fill.blue { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+.bar-fill.teal { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+.bar-pct { color: #fff; font-size: 12px; font-weight: 600; }
+.portfolio-line { padding: 16px 24px; border-top: 1px solid #1a2d4a; }
+.portfolio-text { color: #c4b5fd; font-size: 13px; line-height: 1.5; }
+.footer { background: #0a1628; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+.footer-brand { color: #60a5fa; font-size: 12px; font-weight: 600; letter-spacing: 1px; }
+.footer-disc { color: #3d5a80; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <span class="header-title">Market Structure: Small-Cap Surge</span>
+    <span class="header-date">May 1, 2026</span>
+  </div>
+  <div class="hero">
+    <div class="hero-label">Russell 2000 Daily Gain</div>
+    <div class="hero-number">+2.21%</div>
+    <div class="hero-sub">Best day since April 22 recovery. Nine-session winning streak.</div>
+  </div>
+  <div class="comparison">
+    <div class="comp-box">
+      <div class="comp-label">Russell 2000</div>
+      <div class="comp-value green">+2.21%</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">Nasdaq</div>
+      <div class="comp-value blue">+0.89%</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">S&amp;P 500</div>
+      <div class="comp-value neutral">+0.54%</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">VIX</div>
+      <div class="comp-value neutral">16.99</div>
+    </div>
+  </div>
+  <div class="bars">
+    <div class="bar-row">
+      <span class="bar-label">Russell 2000</span>
+      <div class="bar-track"><div class="bar-fill green" style="width:92%"><span class="bar-pct">+2.21%</span></div></div>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">Nasdaq</span>
+      <div class="bar-track"><div class="bar-fill blue" style="width:37%"><span class="bar-pct">+0.89%</span></div></div>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">S&amp;P 500</span>
+      <div class="bar-track"><div class="bar-fill teal" style="width:22%"><span class="bar-pct">+0.54%</span></div></div>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-text">Portfolio tilted small-cap: $BAND, $VYGR, $SVCO, $ACRS, $CYRX, $KYTX, $NAMS all under $1B market cap. Direct beneficiaries of the rotation trade.</div>
+  </div>
+  <div class="footer">
+    <span class="footer-brand">STERLING SIGNALS</span>
+    <span class="footer-disc">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

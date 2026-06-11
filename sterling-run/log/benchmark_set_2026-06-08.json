@@ -1,0 +1,545 @@
+{
+ "meta": {
+  "anchor": "2026-06-08",
+  "iso_week": "2026-W24",
+  "note": "carried forward from 2026-06-07; refreshed against this week's 57 signals in the hunting brief"
+ },
+ "themes": {
+  "Counter-Drone / Autonomous Warfare (C-UAS + attritable drones)": [
+   {
+    "ticker": "ONDS",
+    "waiting_for": "technical flag on the weekly signal list \u2014 purest converting C-UAS small-cap (+~1,000% rev); benchmark until it triggers"
+   },
+   {
+    "ticker": "RCAT",
+    "waiting_for": "technical flag \u2014 attritable ISR pure-play (+849% rev), the decoupled leader; deployable once on-list"
+   },
+   {
+    "ticker": "AVAV",
+    "waiting_for": "technical flag \u2014 Switchblade loitering-munition incumbent; direct but off-list"
+   },
+   {
+    "ticker": "DRO",
+    "waiting_for": "technical flag \u2014 DroneShield committed-revenue cadence; benchmark with an ASIC governance-probe caveat"
+   },
+   {
+    "ticker": "KTOS",
+    "waiting_for": "technical flag \u2014 attritable/target-drone + Valkyrie mid-cap; adjacent-quality benchmark"
+   },
+   {
+    "ticker": "DRS",
+    "waiting_for": "technical flag \u2014 C-UAS sensing/EW + platform integration; adjacent benchmark"
+   }
+  ],
+  "Golden Dome Missile Defense (layered shield + space-sensing/transport + proliferated-LEO launch)": [
+   {
+    "ticker": "RKLB",
+    "waiting_for": "a technical flag \u2014 purest layered Golden Dome vehicle (launch + SDA buses + SBI); not on this week's list"
+   },
+   {
+    "ticker": "FLY",
+    "waiting_for": "a technical flag \u2014 Firefly Aerospace (parent of SBI awardee SciTec); the correct vehicle the STI pump was mistaken for"
+   },
+   {
+    "ticker": "KTOS",
+    "waiting_for": "a technical flag \u2014 hypersonic targets/propulsion + drones, direct program exposure"
+   },
+   {
+    "ticker": "RDW",
+    "waiting_for": "a technical flag \u2014 space buses/infrastructure for the proliferated-LEO sensor layer"
+   },
+   {
+    "ticker": "PL",
+    "waiting_for": "a technical flag \u2014 optical/sensing constituent of the space-sensing layer"
+   },
+   {
+    "ticker": "VOYG",
+    "waiting_for": "a technical flag \u2014 space infrastructure/services exposure (already held in the book)"
+   }
+  ],
+  "US Shipbuilding / Maritime Industrial Base Revival": [
+   {
+    "ticker": "HII",
+    "waiting_for": "a technical flag on the weekly signal list \u2014 purest shipyard pure-play + MUSV finalist; currently benchmark-only"
+   },
+   {
+    "ticker": "GD",
+    "waiting_for": "a technical flag; mega-cap so lower priority even if it flags"
+   },
+   {
+    "ticker": "MRCY",
+    "waiting_for": "a technical flag \u2014 best marine-systems component proxy if it enters the deployable list"
+   },
+   {
+    "ticker": "LDOS",
+    "waiting_for": "a technical flag AND a firm MUSV production order (the current $15M is conditional, eligibility-only)"
+   }
+  ],
+  "Commercial Space Launch & Satellite Cadence": [
+   {
+    "ticker": "RKLB",
+    "waiting_for": "A technical flag on the weekly screen (HMA(21) slope rising + RSI>50 + MACD cross-up + UC rising; the <$25 universe filter is the binding obstacle at ~$110). Purest vehicle; first to fast-track when it flags. Monitor the Neutron Q4-2026 first flight as a binary hit/slip tell at the lead benchmark."
+   },
+   {
+    "ticker": "FLY",
+    "waiting_for": "A technical flag; the cheaper (~14x sales) fundamentally-converting Direct alternative to RKLB. Watch for backlog conversion to hold (80% of 2026 booked) and dilution from the follow-on cadence."
+   },
+   {
+    "ticker": "ASTS",
+    "waiting_for": "A technical flag; confirm BlueBird 8/9/10 deployed and the path to ~45 sats holding. Currently benchmark-only and priced into the cohort re-rate."
+   },
+   {
+    "ticker": "PL",
+    "waiting_for": "A technical flag; adjacent EO-operator confirmation of cadence demand."
+   },
+   {
+    "ticker": "RDW",
+    "waiting_for": "A technical flag; the picks-and-shovels read for the capex phase as the bottleneck migrates to the bus/component layer."
+   },
+   {
+    "ticker": "BKSY",
+    "waiting_for": "A technical flag; re-verify still a geospatial small-sat pure-play (drift risk) at flag time."
+   },
+   {
+    "ticker": "LUNR",
+    "waiting_for": "A technical flag; weakest proxy and most narrative-coupled, lowest priority."
+   }
+  ],
+  "In-Space Mobility / Last-Mile Orbital Servicing (OTV)": [
+   {
+    "ticker": "MNTS",
+    "waiting_for": "Will NOT be fast-tracked even on a technical flag \u2014 firewall dilution/ruin disqualifier. Monitor only for a structural balance-sheet cure (dilution velocity normalizing, stockholders' deficit resolved) AND firm fixed-price cash backlog before it could ever be a vehicle."
+   },
+   {
+    "ticker": "Impulse Space (private)",
+    "waiting_for": "An IPO / listed expression \u2014 the constituent-creation event that would give this layer a clean on-list vehicle. Private benchmark until then."
+   }
+  ],
+  "AI Data-Center Power & Grid Bottleneck": [
+   {
+    "ticker": "POWL",
+    "waiting_for": "A technical flag onto the signal list \u2014 purest switchgear pure-play; fast-track the moment it triggers."
+   },
+   {
+    "ticker": "PSIX",
+    "waiting_for": "A flag PLUS evidence DC demand is converting to profitable shipments (margin/backlog inflection after the H2-2026 push)."
+   },
+   {
+    "ticker": "GEV",
+    "waiting_for": "A flag \u2014 large-cap transformer/turbine fundamental tape; also watch institutional selling + DC permitting pushback as the first capital-flow-reversal tell."
+   },
+   {
+    "ticker": "AZZ",
+    "waiting_for": "A flag \u2014 small/mid-cap GOES-steel/electrical-coatings proxy upstream of the transformer."
+   },
+   {
+    "ticker": "ATKR",
+    "waiting_for": "A flag \u2014 last-mile conduit/cable-management proxy with DC end-market."
+   },
+   {
+    "ticker": "NVTS",
+    "waiting_for": "A flag PLUS a FIRM 800VDC design-win converting to revenue (not collaboration optics); until then richly-priced announced-only."
+   }
+  ],
+  "Data-Center Thermal Management / Liquid Cooling": [
+   {
+    "ticker": "VRT",
+    "waiting_for": "A technical flag (HMA slope rising + entry confluence). Also watch whether the $15.0B->$12.45B backlog step-down resolves up or down."
+   },
+   {
+    "ticker": "MOD",
+    "waiting_for": "A flag \u2014 best growth-rate benchmark; watch for a pullback-and-pivot entry given DC +158% and raised guide."
+   },
+   {
+    "ticker": "AAON",
+    "waiting_for": "A flag confirming BASX liquid-cooling mix climb / momentum re-acceleration."
+   }
+  ],
+  "Grid-Scale Energy Storage & LDES": [
+   {
+    "ticker": "FLNC",
+    "waiting_for": "A flag PLUS the AI-DC reference architecture converting from blueprint to a FIRM PO/supply contract, and a pullback toward fundamentals (currently overshot, Hold/PT ~$18)."
+   },
+   {
+    "ticker": "EOSE",
+    "waiting_for": "A flag PLUS a balance-sheet repair removing the ruin flag (negative equity / PIK convertible). Until then theme benchmark only, never a buy."
+   },
+   {
+    "ticker": "NRGV",
+    "waiting_for": "A flag \u2014 cleanest LDES own-and-operate read; watch backlog conversion."
+   }
+  ],
+  "Nuclear Renaissance / SMR + HALEU Fuel + Hyperscaler PPAs": [
+   {
+    "ticker": "LEU",
+    "waiting_for": "Technical flag on the weekly signal list \u2014 firm-cash HALEU leader, not deployable until it triggers. Near tell: Centrus DOE HALEU contract extension EXPIRES Jun-30-2026 (23 days out) \u2014 a renewal/Phase-4 decision is the next conversion catalyst that could flag it."
+   },
+   {
+    "ticker": "ASPI",
+    "waiting_for": "Technical flag AND a hardening of demand from MOU to firm fixed-price offtake (commercial HALEU/Si-28/C-14 ramp prints) \u2014 currently announced-only + dilution-flagged."
+   },
+   {
+    "ticker": "TLN",
+    "waiting_for": "Technical flag \u2014 firm-PPA cash anchor; mid-cap benchmark until it appears on the list."
+   },
+   {
+    "ticker": "OKLO",
+    "waiting_for": "Technical flag \u2014 watch for a licensing/commercial milestone (post-Aurora-PDC) that flags it."
+   },
+   {
+    "ticker": "NNE",
+    "waiting_for": "Technical flag \u2014 watch for KRONOS construction-permit progress past the May-2026 CPA acceptance."
+   },
+   {
+    "ticker": "SMR",
+    "waiting_for": "Technical flag \u2014 watch for a firm hyperscaler SMR order."
+   },
+   {
+    "ticker": "CEG",
+    "waiting_for": "Technical flag \u2014 Constellation Crane restart/PPA anchor; large-cap benchmark."
+   },
+   {
+    "ticker": "VST",
+    "waiting_for": "Technical flag \u2014 Vistra-Meta PPA anchor; mid/large-cap benchmark."
+   }
+  ],
+  "Western Uranium Enrichment / SWU Capacity Bottleneck": [
+   {
+    "ticker": "LEU",
+    "waiting_for": "Technical flag \u2014 the run-up leader; deployable only if it triggers AND a fresh demand catalyst (e.g. Centrus DOE HALEU extension renewal post-Jun-30-2026, or a new utility SWU contract) re-opens the recognition window."
+   },
+   {
+    "ticker": "ASPI",
+    "waiting_for": "Technical flag AND conversion of MOUs to binding fixed-price offtake / a completed QLE S-1 spin-off (cleaner public vehicle) \u2014 both unrealized; dilution firewall must also clear."
+   }
+  ],
+  "Nuclear Fusion Power (distinct from fission/SMR/HALEU)": [
+   {
+    "ticker": "CFS",
+    "waiting_for": "A public-equity access path (IPO/SPAC of a credible developer) AND a demonstrated net-energy-to-grid milestone on or ahead of its stated date \u2014 neither exists; theme stays AVOID until a real vehicle and a real inflection appear."
+   }
+  ],
+  "Domestic Uranium Conversion / Deconversion + LEU+ (5-10% enrichment) sub-bottleneck": [
+   {
+    "ticker": "ASPI",
+    "waiting_for": "Technical flag AND firm fixed-price conversion/deconversion or LEU+ offtake (vs current MOU stage) / completed QLE S-1 \u2014 plus dilution firewall clearing."
+   }
+  ],
+  "Rare Earths & Critical Minerals Onshoring (DoD price floors + funded policy)": [
+   {
+    "ticker": "USAR",
+    "waiting_for": "A technical flag on the signal list (structural pivot + accumulation). Watch whether the Jun-5 dilution break resolves into a momentum re-set off the ~$3.5B Commerce catalyst \u2014 the cleanest second-tier mine-to-magnet vehicle if it appears in the deployable list."
+   },
+   {
+    "ticker": "UAMY",
+    "waiting_for": "A technical flag AND firm conversion \u2014 actual DLA REVENUE recognized against the $245M IDIQ (a firm PO with cash terms), not a reiterated guide; firmness, not headline, is what would move it from announced-only to playable."
+   },
+   {
+    "ticker": "MP",
+    "waiting_for": "A technical flag, though primarily a theme-DIRECTION benchmark (already priced as the DoD anchor); a flag confirms sector flow but the card prefers second-tier names."
+   },
+   {
+    "ticker": "UUUU",
+    "waiting_for": "A technical flag; diversified adjacent benchmark for heavy-REE/NdPr processing flow."
+   },
+   {
+    "ticker": "CRML",
+    "waiting_for": "A technical flag AND a hard de-risking event (binding offtake/price-floor or financing) to move it out of R&D-stage option value."
+   }
+  ],
+  "High-Energy-Density Silicon-Anode & NDAA-Compliant Advanced Cells (drone/eVTOL/defense/space power)": [
+   {
+    "ticker": "ENVX",
+    "waiting_for": "A technical flag on the signal list \u2014 would become the deepest-liquidity silicon-anode commercialization read, but theme fit stays capped by the consumer-electronics-first mix until defense/drone revenue scales."
+   },
+   {
+    "ticker": "SLDP",
+    "waiting_for": "A technical flag AND a pivot of its end-market from EV-licensing toward aero/defense/space \u2014 otherwise stays a peripheral next-gen-cell benchmark."
+   }
+  ],
+  "Next-Gen Obesity / Metabolic Therapeutics": [
+   {
+    "ticker": "VKTX",
+    "waiting_for": "A technical flag \u2014 purest oral GLP-1/GIP + amylin pure-play (Ph3 3Q26); deploy and fast-track to Tier 2 on signal-list entry."
+   },
+   {
+    "ticker": "GPCR",
+    "waiting_for": "A technical flag \u2014 clean oral small-molecule GLP-1 (Ph3 Q3-26); benchmark until it appears on the weekly list."
+   },
+   {
+    "ticker": "ALT",
+    "waiting_for": "A technical flag \u2014 GLP-1/glucagon dual-agonist vehicle (not amylin)."
+   },
+   {
+    "ticker": "TERN",
+    "waiting_for": "A technical flag plus a renewed/clearer late-stage metabolic program with stronger oral efficacy."
+   }
+  ],
+  "Next-Gen / Long-Duration Glucose Monitoring & Diabetes Tech": [
+   {
+    "ticker": "TNDM",
+    "waiting_for": "A technical flag \u2014 would become an Adjacent (AID-integration) deployable, but CGM-agnostic so a weaker theme proxy even if flagged."
+   },
+   {
+    "ticker": "DXCM",
+    "waiting_for": "A technical flag \u2014 but DXCM is the incumbent being disrupted; benchmark only for tracking share-shift, never a vehicle for this theme."
+   }
+  ],
+  "Fault-Tolerant Quantum Computing (Logical-Qubit Inflection)": [
+   {
+    "ticker": "IONQ",
+    "waiting_for": "Technical flag in the weekly list AND a pullback below the universe cap (or cap-waiver); price >$25 currently fails the filter."
+   },
+   {
+    "ticker": "RGTI",
+    "waiting_for": "Technical flag \u2014 best regime-fit small-cap, oscillating right at the <$25 line; NOT on this week's 57. Watch momentum off the CHIPS-stake catalyst."
+   },
+   {
+    "ticker": "QBTS",
+    "waiting_for": "Technical flag; watch momentum off the Jun-2026 gate-model FT-roadmap catalyst."
+   },
+   {
+    "ticker": "QNT",
+    "waiting_for": "N/A for deployment (mega-cap, >$25); monitor as TD-4 superior-liquid-proxy + post-IPO/lockup behavior."
+   },
+   {
+    "ticker": "QUBT",
+    "waiting_for": "Technical flag AND a commercial-traction inflection to lift proxy from weak; adjacent only."
+   },
+   {
+    "ticker": "IBM",
+    "waiting_for": "N/A (mega-cap, off-mandate) \u2014 sector/roadmap confirmation benchmark only."
+   },
+   {
+    "ticker": "ARQQ",
+    "waiting_for": "Re-tag to PQC/cyber theme; not a vehicle here regardless of flag."
+   }
+  ],
+  "Humanoid Robotics / Physical AI Supply Chain": [
+   {
+    "ticker": "Harmonic Drive Systems",
+    "waiting_for": "N/A for deployment (Japan-listed); FY3/27 US-bookings guidance (doubling/tripling) as the leading confirmer of demand firming."
+   },
+   {
+    "ticker": "Sanhua",
+    "waiting_for": "N/A (China-listed); follow-on humanoid actuator orders beyond the ~$685M Tesla PO + Optimus V3 production start."
+   },
+   {
+    "ticker": "USAR",
+    "waiting_for": "A FIRM humanoid-OEM magnet PO (vs current defense/consumer-anchored demand) to validate the humanoid tag; overlaps G5 Rare-Earths \u2014 may inherit a vehicle there."
+   },
+   {
+    "ticker": "KROP",
+    "waiting_for": "N/A (ETF) \u2014 basket-beta benchmark; watch AUM/inflow acceleration as a recognition gauge."
+   },
+   {
+    "ticker": "SERV",
+    "waiting_for": "Re-tag / do NOT fast-track \u2014 mis-tagged + extreme valuation, not a clean humanoid component pure-play."
+   }
+  ],
+  "Agentic Enterprise Software Re-Rate (orchestration/process-automation platforms monetizing AI agents)": [
+   {
+    "ticker": "PEGA",
+    "waiting_for": "a technical flag \u2014 purest horizontal agent-orchestration pure-play; fast-track to Tier 2 the week it appears"
+   },
+   {
+    "ticker": "PATH",
+    "waiting_for": "a technical flag \u2014 RPA\u2192agentic transition benchmark for the ARR-migration leg"
+   }
+  ],
+  "AI Memory Supercycle (HBM / DRAM)": [
+   {
+    "ticker": "WDC",
+    "waiting_for": "a technical flag \u2014 preferred adjacent HDD durability edge; deploy on flag, fast-track to Tier 2"
+   },
+   {
+    "ticker": "MU",
+    "waiting_for": "a technical flag \u2014 purest US DRAM/HBM Direct play; deploy on flag"
+   },
+   {
+    "ticker": "SNDK",
+    "waiting_for": "a technical flag AND a base/reset given parabolic extension"
+   },
+   {
+    "ticker": "AMKR",
+    "waiting_for": "a technical flag \u2014 next-bottleneck packaging adjacency, but recognition closing/priced"
+   }
+  ],
+  "AI Advanced-Packaging / OSAT Bottleneck (CoWoS / 2.5D HBM assembly & test)": [
+   {
+    "ticker": "AMKR",
+    "waiting_for": "a technical flag AND a recognition reset \u2014 demand is priced; only a basing setup makes the asymmetry work"
+   },
+   {
+    "ticker": "ONTO",
+    "waiting_for": "a technical flag \u2014 the closest non-mega-cap equipment rung; fast-track if it appears with a clean base"
+   },
+   {
+    "ticker": "FORM",
+    "waiting_for": "a technical flag \u2014 probe-card/test adjacency to HBM/2.5D ramp"
+   }
+  ],
+  "Cybersecurity for the AI/Agentic Era": [
+   {
+    "ticker": "S",
+    "waiting_for": "a technical flag \u2014 purest AI-native endpoint pure-play; fast-track on appearance"
+   },
+   {
+    "ticker": "TENB",
+    "waiting_for": "a technical flag \u2014 exposure-management pure-play for agentic attack surface"
+   },
+   {
+    "ticker": "OKTA",
+    "waiting_for": "a technical flag \u2014 identity-security benchmark for the agentic/machine-identity sub-theme AUID gestures at"
+   },
+   {
+    "ticker": "CRWD",
+    "waiting_for": "a technical flag \u2014 AI-native platform benchmark; read on whether agentic bookings accrue to listed software vs leak private"
+   },
+   {
+    "ticker": "PANW",
+    "waiting_for": "a technical flag \u2014 mega-cap consolidation/M&A read"
+   }
+  ],
+  "Stablecoins, Tokenization & On-Chain Dollar Rails (GENIUS Act)": [
+   {
+    "ticker": "SOFI",
+    "waiting_for": "a technical flag \u2014 purest deployable shape (bank-issuer moat + durable balance sheet); fast-track the week it appears"
+   },
+   {
+    "ticker": "CRCL",
+    "waiting_for": "a technical flag; watch CLARITY-Act resolution as a fundamental gate on reserve-income economics"
+   },
+   {
+    "ticker": "COIN",
+    "waiting_for": "a technical flag \u2014 benchmark for USDC reserve-share + custody"
+   },
+   {
+    "ticker": "GLXY",
+    "waiting_for": "a technical flag \u2014 benchmark for the tokenization-tech/RWA-settlement leg (crypto-beta contamination)"
+   },
+   {
+    "ticker": "BULL",
+    "waiting_for": "a technical flag \u2014 benchmark for the institutional on-chain exchange/rails leg"
+   }
+  ],
+  "Blood-Based Alzheimer's / Neuro Diagnostics": [
+   {
+    "ticker": "FNA",
+    "waiting_for": "no clean US listing (OTC MRCHF inside H.U. Group) \u2014 benchmark for assay/IVD-clearance progress only, never deployable as-is"
+   },
+   {
+    "ticker": "TEM",
+    "waiting_for": "Tempus to disclose material AD-triage distribution economics from the QTRX channel, plus a technical flag"
+   },
+   {
+    "ticker": "NTRA",
+    "waiting_for": "a neuro/Alzheimer's revenue line to exist at all (none today) \u2014 pure platform comp"
+   }
+  ],
+  "Cancer Immunotherapy / KRAS Vaccine Catalyst Cohort": [
+   {
+    "ticker": "MRNA",
+    "waiting_for": "a technical flag \u2014 purest large-cap mKRAS/neoantigen-vaccine benchmark; benchmark only"
+   },
+   {
+    "ticker": "GRTS",
+    "waiting_for": "a technical flag \u2014 personalized neoantigen-vaccine peer reading the modality de-risk; benchmark only"
+   },
+   {
+    "ticker": "AMGN",
+    "waiting_for": "a technical flag \u2014 KRAS-inhibitor benchmark (LUMAKRAS) anchoring mKRAS sentiment; benchmark only"
+   }
+  ],
+  "Genomics & Life-Science Research Tools (long-read sequencing + sample infra)": [
+   {
+    "ticker": "TWST",
+    "waiting_for": "a capital-flow REVERSAL (NIH/research budgets re-expanding) \u2014 benchmark the contraction; do not deploy while the inflection is negative"
+   },
+   {
+    "ticker": "ILMN",
+    "waiting_for": "a research-budget cycle turn confirmed in guidance + a technical flag \u2014 bellwether for the tools recovery"
+   }
+  ],
+  "Auto-Supplier Margin Restructuring / Recovery": [
+   {
+    "ticker": "DAN",
+    "waiting_for": "a technical flag \u2014 purest off-list Direct vehicle (funded $325M program); benchmark until it flags"
+   },
+   {
+    "ticker": "DCH",
+    "waiting_for": "a technical flag (note AXL\u2192DCH rebrand Feb-5-2026); Direct vehicle, merger-integration story; benchmark until it flags"
+   }
+  ],
+  "Macau / Integrated-Resort Gaming Recovery": [
+   {
+    "ticker": "LVS",
+    "waiting_for": "a technical flag \u2014 purest large-cap Macau/Asia operator and cleanest recovery read-through; mega-cap, benchmark only"
+   },
+   {
+    "ticker": "MGM",
+    "waiting_for": "a technical flag \u2014 divergence benchmark to confirm a Macau-specific (not broad US-gaming) move"
+   }
+  ],
+  "Companion-Animal / Pet Health (vet diagnostics + therapeutics)": [
+   {
+    "ticker": "TRUP",
+    "waiting_for": "a technical flag \u2014 purest subscription-recurring small-cap and best regime-fit (high beta into the small-cap rotation); fast-track when it flags"
+   },
+   {
+    "ticker": "ZTS",
+    "waiting_for": "a technical flag AND share-loss-narrative stabilization \u2014 large-cap incumbent benchmark (the disruptee)"
+   }
+  ],
+  "Precious-Metals Miners \u2014 Silver/Gold Structural-Deficit Breakout": [
+   {
+    "ticker": "MAG",
+    "waiting_for": "a technical flag \u2014 purest/lowest-cost Juanicipio leverage; top of the queue when it appears"
+   },
+   {
+    "ticker": "AG",
+    "waiting_for": "a technical flag \u2014 cleanest large-cap pure-play; deploy when it triggers"
+   },
+   {
+    "ticker": "EXK",
+    "waiting_for": "a technical flag \u2014 high-beta mid-tier with a 2026 production-growth catalyst"
+   },
+   {
+    "ticker": "SILV",
+    "waiting_for": "a technical flag \u2014 high-grade margin leverage"
+   },
+   {
+    "ticker": "SILJ",
+    "waiting_for": "a basket breakout as the regime confirm \u2014 theme-wide thrust, not a single-name deploy"
+   }
+  ],
+  "Copper Structural Deficit (Electrification Bottleneck)": [
+   {
+    "ticker": "ERO",
+    "waiting_for": "a technical flag \u2014 purest small-cap pure-play; fast-track the week it appears (note 2026/27 surplus risk on the metal)"
+   },
+   {
+    "ticker": "TGB",
+    "waiting_for": "a technical flag \u2014 sub-$10 small-cap pure-play, high price-leverage on a deficit re-acceleration"
+   },
+   {
+    "ticker": "SCCO",
+    "waiting_for": "a technical flag \u2014 large-cap pure-play benchmark; confirms participation, low alpha, lower priority than ERO/TGB"
+   },
+   {
+    "ticker": "CPER",
+    "waiting_for": "a copper-price BREAKOUT \u2014 the cleanest confirmation the modeled deficit is re-tightening (2026/27 model swung to surplus, so this is the tell)"
+   }
+  ],
+  "AI-Native TechBio / AI-Designed Drug Discovery (clinical-stage platform re-rate)": [
+   {
+    "ticker": "SDGR",
+    "waiting_for": "a technical flag \u2014 computational-platform peer; benchmark for whether AI-discovery monetizes via software/milestones vs pure pipeline optionality"
+   },
+   {
+    "ticker": "ABSI",
+    "waiting_for": "a technical flag AND a de-risking clinical/partnership milestone \u2014 earlier-stage benchmark"
+   }
+  ]
+ }
+}

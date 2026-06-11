@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Weekly Screening - Week 23: A Book of Ten, Grown by Choice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-deep: #0f2440;
+    --blue: #1a3a5c;
+    --blue-bright: #2563eb;
+    --blue-mid: #3b82f6;
+    --blue-soft: #60a5fa;
+    --blue-pale: #dbeafe;
+    --slate-deep: #0f172a;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+    --paper: #ffffff;
+    --paper-warm: #f8fafc;
+    --wash: #f1f5f9;
+    --line: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    color: var(--slate);
+    background: var(--paper-warm);
+    line-height: 1.7;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    background: var(--paper);
+  }
+
+  /* ---- Masthead ---- */
+  .masthead {
+    border-bottom: 3px solid var(--navy);
+    padding-bottom: 22px;
+    margin-bottom: 10px;
+  }
+  .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    font-weight: 700;
+  }
+  .issue-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--slate-light);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  h1.headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.12;
+    color: var(--slate-deep);
+    margin: 16px 0 6px;
+    font-weight: 400;
+  }
+  h1.headline .sub-hook {
+    display: block;
+    font-size: 27px;
+    color: var(--blue);
+    margin-top: 6px;
+  }
+
+  /* ---- Preview line ---- */
+  .preview {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--blue);
+    border-left: 4px solid var(--amber);
+    padding: 6px 0 6px 20px;
+    margin: 26px 0 28px;
+  }
+  .preview strong { color: var(--navy); font-style: normal; font-weight: 400; }
+
+  /* ---- Stat grid ---- */
+  .stat-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 28px 0;
+  }
+  .stat-card {
+    flex: 1 1 140px;
+    background: var(--wash);
+    border-radius: 8px;
+    padding: 16px 16px;
+  }
+  .stat-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--slate-deep);
+  }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card .label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* ---- TOC ---- */
+  .toc {
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin: 32px 0;
+  }
+  .toc h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .toc ol { list-style: none; counter-reset: toc; }
+  .toc li { counter-increment: toc; margin: 7px 0; padding-left: 34px; position: relative; }
+  .toc li::before {
+    content: counter(toc);
+    position: absolute;
+    left: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue-bright);
+    background: var(--blue-pale);
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toc a { color: var(--slate); text-decoration: none; font-weight: 500; }
+  .toc a:hover { color: var(--blue-bright); text-decoration: underline; }
+
+  /* ---- Sections ---- */
+  section { margin: 46px 0; }
+  h2.sec {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--navy-deep);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--blue-pale);
+    font-weight: 400;
+  }
+  h3.sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+    margin: 28px 0 8px;
+  }
+  p { margin: 14px 0; }
+  p strong { color: var(--navy); font-weight: 700; }
+  .lead {
+    font-size: 19px;
+    color: var(--navy);
+    font-weight: 500;
+    line-height: 1.55;
+  }
+  .figure { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--navy); }
+  .pos { color: var(--green); font-weight: 700; }
+  .neg { color: var(--red); font-weight: 700; }
+
+  /* ---- Portfolio table ---- */
+  .port-table-wrap { overflow-x: auto; margin: 22px 0; }
+  table.port {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 760px;
+  }
+  table.port thead th {
+    background: var(--navy-deep);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 14px;
+  }
+  table.port tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  table.port tbody tr:nth-child(odd) { background: var(--paper); }
+  table.port tbody tr:nth-child(even) { background: var(--paper-warm); }
+  table.port .tk { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--navy); }
+  table.port .num { font-family: 'JetBrains Mono', monospace; }
+  table.port .pnl-pos { font-family: 'JetBrains Mono', monospace; color: var(--green); font-weight: 700; }
+  table.port .pnl-neg { font-family: 'JetBrains Mono', monospace; color: var(--red); font-weight: 700; }
+  table.port .force { font-size: 13px; color: var(--slate); }
+  .targets-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--slate-light);
+    margin: 6px 0 0;
+    line-height: 1.7;
+  }
+
+  /* ---- Status / book card ---- */
+  .book-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--green);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin: 22px 0;
+  }
+  .book-card .eb-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .book-card .eb-line {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--navy-deep);
+    line-height: 1.35;
+  }
+  .no-entry {
+    background: var(--paper-warm);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--blue-bright);
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin: 22px 0;
+    font-size: 16px;
+  }
+  .no-entry .eb-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ---- Spotlight ---- */
+  .spotlight {
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--green);
+    border-radius: 8px;
+    padding: 16px 22px;
+    margin: 14px 0;
+    background: #f4faf5;
+  }
+  .spotlight .sp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .spotlight .sp-tk { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--navy); }
+  .spotlight .sp-pnl { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--green); }
+  .spotlight p { margin: 8px 0 0; font-size: 15.5px; }
+  .pressure {
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--amber);
+    border-radius: 8px;
+    padding: 16px 22px;
+    margin: 14px 0;
+    background: #fffdf7;
+  }
+  .pressure .sp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pressure .sp-tk { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--navy); }
+  .pressure .sp-pnl { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--red); }
+  .pressure p { margin: 8px 0 0; font-size: 15.5px; }
+
+  /* ---- Screening funnel ---- */
+  .funnel { margin: 26px 0; }
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    margin: 7px 0;
+    gap: 14px;
+  }
+  .funnel-bar {
+    background: var(--wash);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--navy);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: width 0.2s;
+  }
+  .funnel-bar .stage { font-size: 13px; letter-spacing: 0.5px; }
+  .funnel-bar .count { font-size: 18px; }
+  .fb1 { width: 100%; border-left: 6px solid var(--green); }
+  .fb2 { width: 80%; border-left: 6px solid var(--green); }
+  .fb3 { width: 62%; border-left: 6px solid var(--amber); }
+  .fb4 { width: 70%; border-left: 6px solid var(--amber); }
+  .fb5 { width: 34%; border-left: 6px solid var(--red); }
+  .fb6 { width: 28%; border-left: 6px solid var(--red); }
+  .fb7 { width: 20%; border-left: 6px solid var(--red); background: #fdf2f2; color: var(--red); }
+  .funnel-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--slate-light);
+    min-width: 118px;
+  }
+
+  /* ---- Force cards ---- */
+  .force-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left-width: 6px;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    box-shadow: 0 1px 4px rgba(10,22,40,0.05);
+  }
+  .force-card.lead-force { border-left-color: var(--blue-bright); }
+  .force-card.held { border-left-color: var(--green); }
+  .force-card.approach { border-left-color: var(--amber); }
+  .force-card.nearmiss { border-left-color: var(--amber); background: #fffdf7; }
+  .force-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .force-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--navy-deep);
+  }
+  .status-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .sb-green { background: #dcfce7; color: #15803d; }
+  .sb-amber { background: #fef3c7; color: #b45309; }
+  .sb-blue { background: var(--blue-pale); color: #1d4ed8; }
+  .force-card p { margin: 8px 0; font-size: 16px; }
+  .force-flagged {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--slate);
+    margin-top: 8px;
+  }
+  .exposure {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: #eef6ef;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #15803d;
+    margin-top: 10px;
+  }
+
+  /* ---- Force group grid (status rows) ---- */
+  .force-grid { margin: 18px 0 8px; }
+  .fg-row {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding: 13px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin: 9px 0;
+    background: var(--paper-warm);
+  }
+  .fg-name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    color: var(--navy-deep);
+    font-size: 15px;
+    flex: 0 0 210px;
+  }
+  .fg-prio {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--slate-light);
+  }
+  .fg-text { font-size: 14.5px; color: var(--slate); flex: 1 1 auto; }
+
+  /* ---- Near-miss announcement ---- */
+  .near-signal {
+    background: #fffdf7;
+    border-left: 6px solid var(--amber);
+    border-radius: 0 10px 10px 0;
+    padding: 24px 28px;
+    margin: 26px 0;
+  }
+  .near-signal .ns-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--amber);
+    font-weight: 700;
+  }
+  .near-signal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--navy-deep);
+    margin: 6px 0 12px;
+    font-weight: 400;
+  }
+  .ns-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    background: #f0e2c4;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 14px 0 18px;
+  }
+  .ns-grid > div { flex: 1 1 120px; background: #fffdf7; padding: 12px 16px; }
+  .ns-grid .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-bottom: 5px;
+  }
+  .ns-grid .v { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--navy-deep); }
+  .near-signal p { margin: 10px 0; }
+  .ns-close {
+    font-weight: 700;
+    color: var(--amber);
+    margin-top: 14px;
+  }
+  .level-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--slate-light);
+    border-top: 1px solid #f0e2c4;
+    padding-top: 10px;
+    margin-top: 6px;
+  }
+
+  /* ---- Callout / lesson ---- */
+  .lesson {
+    background: #f0f6ff;
+    border-left: 4px solid var(--blue-bright);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0 26px;
+    font-size: 15px;
+  }
+  .lesson .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--blue-bright);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .reject-block { margin: 22px 0; }
+  .reject-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .reject-tk { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--navy); }
+  .stage-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 9px;
+    border-radius: 4px;
+    background: var(--navy-deep);
+    color: #fff;
+  }
+
+  /* ---- Week-ahead cards ---- */
+  .week-ahead { margin: 22px 0; }
+  .wa-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    border: 1px solid var(--line);
+  }
+  .wa-general { background: #f4f7fa; border-left: 5px solid var(--blue); }
+  .wa-portfolio { background: #fdf6f4; border-left: 5px solid var(--red); }
+  .wa-held { background: #f4faf5; border-left: 5px solid var(--green); }
+  .wa-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--navy-deep);
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    min-width: 118px;
+    text-align: center;
+  }
+  .wa-body .wa-title { font-weight: 700; color: var(--navy-deep); font-size: 16px; }
+  .wa-body p { margin: 5px 0 0; font-size: 15px; }
+
+  /* ---- Bottom line ---- */
+  .bottom-line {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 26px 30px;
+    margin: 28px 0;
+  }
+  .bottom-line p { color: #d8e4f0; }
+  .bottom-line strong { color: #fff; }
+  .bottom-line .next {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #a8c6e8;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+  }
+
+  /* ---- Footer ---- */
+  .footer {
+    text-align: center;
+    border-top: 2px solid var(--line);
+    margin-top: 50px;
+    padding-top: 26px;
+  }
+  .footer .tagline {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--navy-deep);
+    font-style: italic;
+  }
+  .footer .url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--blue-bright);
+    font-weight: 700;
+    margin: 12px 0;
+    letter-spacing: 0.5px;
+  }
+  .footer .disclaimer {
+    font-size: 12px;
+    color: var(--slate-light);
+    line-height: 1.6;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .placeholder {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--slate-light);
+    background: var(--wash);
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 14px 0;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 28px 18px; }
+    h1.headline { font-size: 30px; }
+    h1.headline .sub-hook { font-size: 21px; }
+    .preview { font-size: 18px; }
+    .funnel-row { flex-direction: column; align-items: stretch; gap: 4px; }
+    .funnel-bar { width: 100% !important; }
+    .funnel-note { min-width: 0; }
+    .fg-row { flex-direction: column; gap: 4px; }
+    .fg-name { flex-basis: auto; }
+    .wa-card { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ============ MASTHEAD ============ -->
+  <div class="masthead">
+    <div class="brand">Sterling Signals &middot; The Weekly Screening</div>
+    <h1 class="headline">The Weekly Screening: Week 23
+      <span class="sub-hook">A Book of Ten, Grown by Choice</span>
+    </h1>
+    <div class="issue-line">Week ending 2026-06-07 &middot; 10 positions held &middot; 0 GREEN signals</div>
+  </div>
+
+  <!-- ============ PREVIEW LINE ============ -->
+  <p class="preview"><strong>The lead position is up 336.3% and three holdings sit above 80%, the book grew to ten by choice last week, yet 57 fresh candidates went into the screen this week and not one earned a place.</strong> The book expanded on our own decision, not on a GREEN signal. The screen's verdict this week was a clean zero.</p>
+
+  <!-- ============ STAT GRID ============ -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="value">10</div><div class="label">Live positions held</div></div>
+    <div class="stat-card"><div class="value green">+65.0%</div><div class="label">Average position</div></div>
+    <div class="stat-card"><div class="value green">+336.3%</div><div class="label">Lead position, BAND</div></div>
+    <div class="stat-card"><div class="value">57</div><div class="label">New candidates scanned</div></div>
+    <div class="stat-card"><div class="value">0</div><div class="label">GREEN signals added</div></div>
+  </div>
+
+  <!-- ============ TOC ============ -->
+  <nav class="toc">
+    <h2>Inside This Week</h2>
+    <ol>
+      <li><a href="#s1">The headline</a></li>
+      <li><a href="#s2">The forces at work</a></li>
+      <li><a href="#s3">The portfolio</a></li>
+      <li><a href="#s4">The screening</a></li>
+      <li><a href="#s5">The week ahead</a></li>
+      <li><a href="#s6">The bottom line</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============ SECTION 1 - THE HEADLINE ============ -->
+  <section id="s1">
+    <h2 class="sec">1. The Headline</h2>
+    <p class="lead">The book now holds ten positions averaging 65.0%, one of them up 336.3% since entry and three up more than 80%, yet across the same week the screen ran 57 fresh candidates and issued zero GREEN signals.</p>
+    <p>The growth and the zero belong together, because together they describe how this book is built: it expands when we choose to add a name, not when a screen tells us to be busy. The book grew by two last week, on our own decision, and the weekly screen this week added nothing at all. Both moves were deliberate. BAND sits at 72.20 against a 16.55 entry; SVCO, HIVE, CYRX, ASPI, VOYG and ACRS are all green; ten names in total, seven of them in profit, three carried below entry and named as such. Two of those ten, TEM in artificial-intelligence healthcare and CRSP in gene editing, were added last week at the penultimate weekly candle close, outside the weekly screen, and we walk through both in Section 3. Into that book, this week's screen took one new name all the way through full due diligence and still issued no GREEN signal.</p>
+    <p>The distinction matters, so we draw it sharply. The two additions came from our own conviction on names we wanted exposure to, carrying street-consensus targets rather than our own completed due diligence. The weekly screen, the systematic process that has built the rest of this book, produced a clean zero from 57 candidates. We would rather report that honestly than blur the two. The backdrop sharpened the case for the screen sitting still: the policy-easing turn slipped toward hawkish on a hot jobs print, the small-cap rotation bent rather than broke, and the most fragile balance sheets picked up a marginal headwind. Two data points ahead, both in Section 5, decide whether the screen's door swings wider. Until then, the portfolio is where the story is.</p>
+  </section>
+
+  <!-- ============ SECTION 2 - THE FORCES AT WORK ============ -->
+  <section id="s2">
+    <h2 class="sec">2. The Forces at Work</h2>
+    <p>We do not chase the theme of the week. We keep a living map of validated structural forces, the deep demand currents with real capital behind them, and we hunt names inside them only when one surfaces a vehicle that can survive to capture the move. Fifteen forces sit on the screen's map this week, and four of them already carry positions the screen built. Two further forces, artificial-intelligence healthcare and gene editing, entered the book last week through the two additions we made outside the screen; we cover those names in Section 3. Here is where the forces that count stood, the held ones first.</p>
+
+    <h3 class="sub">The forces we already own</h3>
+
+    <div class="force-card held">
+      <div class="force-head">
+        <span class="force-name">AI Data-Center Power, Compute and Infrastructure</span>
+        <span class="status-badge sb-green">Held &middot; 3 positions</span>
+      </div>
+      <p>The strongest demand floor on the entire map, and the force carrying the book. The constraint on the artificial-intelligence buildout has moved past chips to power and physical capacity: more than half of 2026 data-center projects sit at equipment-delay risk, and interconnection queues now bottleneck roughly 650 to 725 billion dollars of planned hyperscaler spending. We hold three names riding that current, all three working. The week's tremor was instructive: a guidance miss at a mega-cap chip name knocked the crowded leaders while the equal-weight tape kept climbing, exactly what pushes capital toward the smaller infrastructure layer we own here.</p>
+      <div class="exposure">Held: BAND +336.3% &middot; SVCO +89.0% &middot; HIVE +81.2% &middot; all three green</div>
+    </div>
+
+    <div class="force-card held">
+      <div class="force-head">
+        <span class="force-name">Biotech Innovation</span>
+        <span class="status-badge sb-green">Held &middot; 3 positions</span>
+      </div>
+      <p>The widest force in the book by position count, carrying the full spread of outcomes. Three holdings sit here, each on its own clinical or financial clock: independent shots, independent timelines. CYRX is up 62.4% on a margin and cash-flow inflection; ACRS is up 19.5% ahead of a Phase 2 readout late in the year; VYGR is the one position in the red, openly carried, with its catalysts still ahead. The force sits under a marginal regime headwind, because the rates back-up presses hardest on names that have to fund themselves, the lens we apply to each one in Section 3.</p>
+      <div class="exposure">Held: CYRX +62.4% &middot; ACRS +19.5% &middot; VYGR -25.2%</div>
+    </div>
+
+    <div class="force-card held">
+      <div class="force-head">
+        <span class="force-name">Nuclear Renaissance and the Fuel-Cycle Bottleneck</span>
+        <span class="status-badge sb-green">Held &middot; 1 position</span>
+      </div>
+      <p>Big-technology power demand pulling nuclear through firm long-dated agreements, gated upstream by a scarce domestic enrichment bottleneck the government is funding. We own one name in the earliest, highest-leverage layer of that chain: the enrichment and fuel side, where a legislated supply cliff meets a structural separative-work gap. A domestic capacity expansion was committed this week with utility backing, converting the cliff from a policy thesis into contracted reality, and that fuel-side rung is exactly where the book sits.</p>
+      <div class="exposure">Held: ASPI +59.0% &middot; catalyst: fuel-spin pricing and first enrichment revenue</div>
+    </div>
+
+    <div class="force-card held">
+      <div class="force-head">
+        <span class="force-name">Defense Spending and Commercial Space Cadence</span>
+        <span class="status-badge sb-green">Held &middot; 1 position</span>
+      </div>
+      <p>Record launch cadence and constellation buildout are driving recurring launch and satellite demand, with civil and commercial space sitting alongside the defense budget rather than inside it. We own one name here, riding a contracted backlog toward a named government award this summer. The wider force tightened its entry window this week: a private launch giant priced its offering mid-month, and the listed launch leader round-tripped about 27% off its late-May high. That re-rate is why no new space name cleared, but it does nothing to the position we hold, which is anchored to its own award timeline.</p>
+      <div class="exposure">Held: VOYG +43.3% &middot; catalyst: summer NASA commercial-destination award</div>
+    </div>
+
+    <h3 class="sub">The near-miss force</h3>
+    <p>One unowned force earned more than a status line, because it produced the only name to reach our final capital decision. Next-generation glucose monitoring is the migration off short-life disposable sensors, where two incumbents hold roughly 98% of a 15 billion-dollar market, toward year-long implantable monitoring that integrates with automated insulin delivery. The candidate, SENS, cleared full due diligence but not the buy; the complete treatment is in the next section.</p>
+
+    <div class="force-card nearmiss">
+      <div class="force-head">
+        <span class="force-name">Next-Generation Glucose Monitoring</span>
+        <span class="status-badge sb-amber">Cleared DD, No Buy</span>
+      </div>
+      <p>The only force this week to produce a name that completed full due diligence. The shown legs are strong: a reclaimed commercial channel, gross margin stepped to 59%, revenue up 87% year over year. The unshown one, automated-insulin-delivery integration, is the entire prize and remains asserted, not disclosed, which is why the name reached the last decision and stopped.</p>
+      <div class="force-flagged">Surfaced this week: SENS &middot; TRIB &middot; SENS declined at the capital decision</div>
+    </div>
+
+    <h3 class="sub">The unowned map: live forces, no clean vehicle</h3>
+    <p>The remaining forces are live, but none surfaced a name worth a position this week. The pattern repeats: the demand current is real, and the cleanest expression either trades off the list we deploy from or has already re-rated past the asymmetry we require. The lead among them is the one we most want to own.</p>
+
+    <div class="force-card lead-force">
+      <div class="force-head">
+        <span class="force-name">Counter-Drone and Autonomous Warfare</span>
+        <span class="status-badge sb-blue">Top Priority &middot; Unowned</span>
+      </div>
+      <p>The single highest-priority unowned force on the map, and the most active this week. Cheap first-person-view drones destroying multi-million-dollar assets triggered a funded procurement cycle now converting to firm backlog: a 500 million-dollar indefinite-delivery vehicle, named interception orders, defense-technology venture funding already past 14.6 billion dollars for the year. Two listed candidates surfaced and neither cleared: PRZO carries a micro-float and financing fragility, and AIRO is a real pure-play whose order book ran the wrong way. To earn the first position here, demand has to show up as firm cash orders converting to disclosed revenue inside twelve months, on a balance sheet that survives to bill them.</p>
+      <div class="force-flagged">Surfaced this week: PRZO &middot; AIRO &middot; both declined</div>
+    </div>
+
+    <div class="force-grid">
+      <div class="fg-row">
+        <span class="fg-name">Silicon-Anode Advanced Cells <span class="fg-prio">P2</span></span>
+        <span class="fg-text">Energy density is the hard ceiling on drone endurance and aircraft range, with a funded mandate behind it. The one listed pure-play, AMPX, is a real converting business whose reward a prior run already consumed.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Agentic Enterprise Software <span class="fg-prio">P2</span></span>
+        <span class="fg-text">A new entry on the map this week: listed platforms converting agent-attach into recurring revenue. APPN and CNVS surfaced, one a clean converter at a full multiple, the other a loose-fit micro-cap.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Data-Center Liquid Cooling <span class="fg-prio">P2</span></span>
+        <span class="fg-text">Rack power density has exceeded what air can cool, making direct-to-chip and immersion non-discretionary. Every real vehicle trades off our list; no clean proxy surfaced.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Western Uranium Enrichment <span class="fg-prio">P2</span></span>
+        <span class="fg-text">A legislated supply cliff: a Russian-import ban terminates January 1, 2028 against a structural separative-work gap. The same fuel current our held nuclear name rides, with no separate clean vehicle this week.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Rare Earths and Critical Minerals <span class="fg-prio">P2</span></span>
+        <span class="fg-text">Government-engineered demand: a Department of Defense price floor, an equity stake, and a definitive supply deal with a major technology buyer. The purest set traded off our list.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Grid-Scale Storage and Long-Duration <span class="fg-prio">P3</span></span>
+        <span class="fg-text">Storage is the firming layer the grid must buy to absorb data-center load. Downgraded this week: the marquee integrator's headline tie-up is a blueprint not a contract, and the best long-duration cell name carries negative equity.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Next-Gen Obesity and Metabolic <span class="fg-prio">P3</span></span>
+        <span class="fg-text">A structurally expanding obesity market with firm capital arriving through acquisitions. The only on-list expression is an adjacent muscle-preservation name; the pure-plays are off our list.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Muscle-Preservation Adjuncts <span class="fg-prio">P3</span></span>
+        <span class="fg-text">Obesity drugs cause documented lean-muscle loss, and small-caps develop adjuncts dosed alongside them. Two listed vehicles, VERU and IBIO, are deployable but pre-efficacy and binary, where the survival firewall bites hardest.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Fault-Tolerant Quantum Computing <span class="fg-prio">P3</span></span>
+        <span class="fg-text">On-roadmap logical-qubit milestones plus roughly 2 billion dollars of government pull. Recognition matured toward crowded after a one-day debut run reversed, and every real vehicle is off our list.</span>
+      </div>
+      <div class="fg-row">
+        <span class="fg-name">Humanoid Robotics Supply Chain <span class="fg-prio">P3</span></span>
+        <span class="fg-text">A physical-component bottleneck converting at the actuator and reducer layer. The binding constraint is vehicle quality, not the thesis: every real pure-play is foreign-listed or mega-cap, none on our list.</span>
+      </div>
+    </div>
+
+    <p>Read top to bottom, the screen's map says one coherent thing. The four forces the screen built into the book are carrying it, three of them deep in profit. Across the eleven on the map we do not own, the screen this week found either no listed vehicle, a label that only looked like one, or a real business already re-rated past the asymmetry we demand. A working book plus no clean new vehicle is the exact condition under which the right number of screen additions is zero. The two names we added by hand last week sit in forces of their own, on conviction rather than on a GREEN signal, and Section 3 holds them to that distinction.</p>
+  </section>
+
+  <!-- ============ SECTION 3 - THE PORTFOLIO ============ -->
+  <section id="s3">
+    <h2 class="sec">3. The Portfolio</h2>
+    <p>This is the section that earned the right to lead this week, because the book is doing the work and because the book changed. Ten positions are open, seven green, three of those up more than 80%, and three carried below entry and named as such. Two of the ten, TEM and CRSP, joined last week by our own decision rather than through the screen, and they get their own treatment below the winners. Every line is tracked from its entry date with no revisions.</p>
+
+    <div class="port-table-wrap">
+      <table class="port">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Entry</th>
+            <th>Current</th>
+            <th>P&amp;L%</th>
+            <th>Structural Force</th>
+            <th>Days</th>
+            <th>Base</th>
+            <th>Bull</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tk">BAND</td>
+            <td class="num">$16.55</td>
+            <td class="num">$72.20</td>
+            <td class="pnl-pos">+336.3%</td>
+            <td class="force">AI Infrastructure</td>
+            <td class="num">91</td>
+            <td class="num">$115-130</td>
+            <td class="num">$190-240</td>
+          </tr>
+          <tr>
+            <td class="tk">SVCO</td>
+            <td class="num">$5.98</td>
+            <td class="num">$11.30</td>
+            <td class="pnl-pos">+89.0%</td>
+            <td class="force">AI Infrastructure</td>
+            <td class="num">75</td>
+            <td class="num">$24-31</td>
+            <td class="num">$36-45</td>
+          </tr>
+          <tr>
+            <td class="tk">HIVE</td>
+            <td class="num">$2.08</td>
+            <td class="num">$3.77</td>
+            <td class="pnl-pos">+81.2%</td>
+            <td class="force">AI Infrastructure</td>
+            <td class="num">62</td>
+            <td class="num">$11</td>
+            <td class="num">$20</td>
+          </tr>
+          <tr>
+            <td class="tk">CYRX</td>
+            <td class="num">$9.67</td>
+            <td class="num">$15.70</td>
+            <td class="pnl-pos">+62.4%</td>
+            <td class="force">Biotech Innovation</td>
+            <td class="num">54</td>
+            <td class="num">$31</td>
+            <td class="num">$52</td>
+          </tr>
+          <tr>
+            <td class="tk">ASPI</td>
+            <td class="num">$4.22</td>
+            <td class="num">$6.71</td>
+            <td class="pnl-pos">+59.0%</td>
+            <td class="force">Nuclear Renaissance</td>
+            <td class="num">83</td>
+            <td class="num">$16</td>
+            <td class="num">$30</td>
+          </tr>
+          <tr>
+            <td class="tk">VOYG</td>
+            <td class="num">$29.00</td>
+            <td class="num">$41.55</td>
+            <td class="pnl-pos">+43.3%</td>
+            <td class="force">Defense Spending</td>
+            <td class="num">48</td>
+            <td class="num">$75</td>
+            <td class="num">$165</td>
+          </tr>
+          <tr>
+            <td class="tk">ACRS</td>
+            <td class="num">$3.65</td>
+            <td class="num">$4.36</td>
+            <td class="pnl-pos">+19.5%</td>
+            <td class="force">Biotech Innovation</td>
+            <td class="num">75</td>
+            <td class="num">$11-15</td>
+            <td class="num">$22-30</td>
+          </tr>
+          <tr>
+            <td class="tk">VYGR</td>
+            <td class="num">$4.45</td>
+            <td class="num">$3.33</td>
+            <td class="pnl-neg">-25.2%</td>
+            <td class="force">Biotech Innovation</td>
+            <td class="num">81</td>
+            <td class="num">$13-15</td>
+            <td class="num">$24-30</td>
+          </tr>
+          <tr>
+            <td class="tk">TEM</td>
+            <td class="num">$50.47</td>
+            <td class="num">$46.43</td>
+            <td class="pnl-neg">-8.0%</td>
+            <td class="force">AI Healthcare</td>
+            <td class="num">7</td>
+            <td class="num">$67</td>
+            <td class="num">$100</td>
+          </tr>
+          <tr>
+            <td class="tk">CRSP</td>
+            <td class="num">$56.18</td>
+            <td class="num">$51.84</td>
+            <td class="pnl-neg">-7.7%</td>
+            <td class="force">Gene Editing</td>
+            <td class="num">7</td>
+            <td class="num">$82</td>
+            <td class="num">$291</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="targets-note">
+      Base and Bull columns are published thesis levels, the scoreboard we hold against, not sell triggers. For BAND, SVCO, HIVE, CYRX, ASPI, VOYG, ACRS and VYGR these come from our own completed due diligence. For TEM and CRSP, joined last week outside the screen, they are street-consensus figures, not yet our own work; CRSP's $291 upper marker is a single-shop outlier and the consensus mean sits near $82.
+    </p>
+
+    <div class="placeholder">[WINNERS_TABLE]</div>
+
+    <h3 class="sub">The winners driving the book</h3>
+
+    <div class="spotlight">
+      <div class="sp-head">
+        <span class="sp-tk">BAND</span>
+        <span class="sp-pnl">+336.3%</span>
+      </div>
+      <p>Entry 16.55, now 72.20, and the position carrying the whole book. This is an infrastructure name riding the artificial-intelligence buildout, driven by the demand floor underneath it rather than by sentiment. We hold it as a high-confidence return with a defined ceiling, base case 115 to 130, bull case 190 to 240. The next read is the second-quarter print due late July into early August, where the software recurring-revenue line is what we are watching.</p>
+    </div>
+
+    <div class="spotlight">
+      <div class="sp-head">
+        <span class="sp-tk">SVCO</span>
+        <span class="sp-pnl">+89.0%</span>
+      </div>
+      <p>Entry 5.98, now 11.30, and the cleanest fundamental story in the group. The position has worked because the company delivered the thing that was supposed to be hard, profitability, and did it on schedule, the kind of confirmation that separates a name that compounds from one that fades. The base case sits at 24 to 31, the bull case at 36 to 45, and the next confirmation is the early-August quarter.</p>
+    </div>
+
+    <div class="spotlight">
+      <div class="sp-head">
+        <span class="sp-tk">HIVE</span>
+        <span class="sp-pnl">+81.2%</span>
+      </div>
+      <p>Entry 2.08, now 3.77, and the highest-optionality name among the three artificial-intelligence holdings. We hold this one as an open-ended multibagger, because the prize is a firm next-generation compute anchor that has not yet been signed. The published path runs to 11 in the base case and 20 in the bull case, and the catalyst is that anchor signing landing across the back half of the year.</p>
+    </div>
+
+    <p>Four more positions are green and carried without a spotlight, each on its own clock. <strong>CYRX</strong> is up 62.4% from 9.67 to 15.70, with its first positive adjusted cash-earnings quarter due in the back half. <strong>ASPI</strong> is up 59.0% from 4.22 to 6.71, riding the enrichment-fuel bottleneck toward fuel-spin pricing and first enrichment revenue. <strong>VOYG</strong> is up 43.3% from 29.00 to 41.55, anchored to a summer government award in commercial space. <strong>ACRS</strong> is up 19.5% from 3.65 to 4.36, holding ahead of a Phase 2 readout late in the year, with a published base case at 11 to 15. None needs managing; each is held full and monitored for the screening system's exit, nothing more.</p>
+
+    <h3 class="sub">Under pressure</h3>
+
+    <div class="pressure">
+      <div class="sp-head">
+        <span class="sp-tk">VYGR</span>
+        <span class="sp-pnl">-25.2%</span>
+      </div>
+      <p>Entry 4.45, now 3.33, the deepest of the three positions in the book currently below entry, and we state that plainly rather than bury it. This is a gene-therapy name whose thesis was always back-half-weighted, and nothing in the price action this quarter has touched the thesis itself. The catalysts that underwrite the position are still ahead: an anti-tau Phase 1 program and a first-in-human start, both expected in the second half of the year, with a published base case at 13 to 15 and a bull case at 24 to 30. What would change the view is not the share price, it is the data, and a delay or a miss on those programs has not happened. Because every holding in this book is one equal-weight position, the portfolio-level impact here is contained by design while seven other positions sit in profit around it. We hold it, and we monitor it on the timing, not on our nerves.</p>
+    </div>
+
+    <h3 class="sub">Recent additions: two names we chose, outside the screen</h3>
+    <div class="book-card" style="border-left-color: var(--blue-bright);">
+      <span class="eb-tag" style="color: var(--blue-bright);">Added last week &middot; by conviction, not by GREEN signal</span>
+      <div class="eb-line" style="font-size:18px;">Two positions joined the book last week at the penultimate weekly candle close, outside the weekly screen. They carry street-consensus targets, not our own completed due diligence yet. We separate them from the screen on purpose, and we will put our own work behind them in the weeks ahead.</div>
+    </div>
+
+    <div class="pressure">
+      <div class="sp-head">
+        <span class="sp-tk">TEM &middot; Tempus AI</span>
+        <span class="sp-pnl">-8.0%</span>
+      </div>
+      <p>Entry 50.47, now 46.43, our entry into the artificial-intelligence healthcare force. Tempus runs a precision-medicine data and diagnostics platform: a large and scaling base of genomic and multimodal patient data feeding two revenue engines, algorithmic diagnostics and data licensing. The thesis is that both engines compound off the data asset as the library grows, and the near-term read is the second-quarter print due in August, where diagnostic and data-licensing growth is what we are watching. Street consensus frames the range from a low near 35, through a mean around 67, to a high near 100. The position sits modestly below our entry seven days in, and we carry it openly at that mark.</p>
+    </div>
+
+    <div class="pressure">
+      <div class="sp-head">
+        <span class="sp-tk">CRSP &middot; CRISPR Therapeutics</span>
+        <span class="sp-pnl">-7.7%</span>
+      </div>
+      <p>Entry 56.18, now 51.84, our entry into the gene-editing force. CRISPR Therapeutics pairs a commercial gene-editing therapy already approved, Casgevy, now in its ramp, with an in-vivo pipeline whose CTX-310 and CTX-320 programs carry readouts in the back half of the year. The position is a commercial ramp underwriting an early clinical option set. On targets we are deliberately careful: the street range runs from a low near 33 to a high of 291, but that 291 is a single-shop outlier and the consensus mean sits near 82, which is the figure we anchor to. Seven days in, the position is modestly below our entry, and we state that plainly.</p>
+    </div>
+
+    <p>State the distinction once more, because it is the point. TEM and CRSP entered on our own conviction, at last week's penultimate weekly candle close, outside the screen, carrying street-consensus targets we have not yet replaced with our own due diligence. The weekly screen, the systematic engine behind the other eight names, produced zero GREEN signals this week. Two deliberate additions and a screen that added nothing are not in tension; they are two different decisions, and we report both as they are.</p>
+
+    <h3 class="sub">New entries from the screen this week</h3>
+    <div class="no-entry">
+      <span class="eb-tag">No GREEN signal</span>
+      The weekly screen produced no GREEN signal this week, so the only changes to the book were the two additions above, which came from our own decision rather than the screen. When the screen does open a new position, you will see it here first: ticker, entry price, structural force, conviction, a short fundamental thesis, and a plain read of the setup, with the full deep-dive to follow on Tuesday. None of that fired this week, and that is the correct outcome on the evidence in hand.
+    </div>
+
+    <h3 class="sub">Exits</h3>
+    <p>None. No held position triggered the screening system's exit this week, so the book stands at ten names, the eight it has carried plus the two it added by choice. When an exit does fire, it appears here named and dated, framed as the screening system doing its job on the timing rather than a change of view on the company. This week there was nothing to report.</p>
+    <p><em>Every position tracked from entry date. No revisions.</em></p>
+  </section>
+
+  <!-- ============ SECTION 4 - THE SCREENING ============ -->
+  <section id="s4">
+    <h2 class="sec">4. The Screening</h2>
+    <p>This is the most valuable thing we publish, never more so than in a week that added nothing, because what the screen rejects teaches more than what it keeps. Here is the full funnel, from the raw candidate list to the single name that completed full due diligence and the zero that earned capital.</p>
+
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="funnel-note">Scanned</div>
+        <div class="funnel-bar fb1"><span class="stage">Weekly candidates</span><span class="count">57</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">First triage</div>
+        <div class="funnel-bar fb2"><span class="stage">Cleared shape triage</span><span class="count">24</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">Verification</div>
+        <div class="funnel-bar fb3"><span class="stage">Cleared verification</span><span class="count">13</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">Reinstated</div>
+        <div class="funnel-bar fb4"><span class="stage">To the deep-dive review (incl. +5 reinstated)</span><span class="count">18</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">Deep-dive review</div>
+        <div class="funnel-bar fb5"><span class="stage">Cleared the deep-dive review</span><span class="count">1</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">Due diligence</div>
+        <div class="funnel-bar fb6"><span class="stage">Completed deep due diligence</span><span class="count">1</span></div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-note">Capital decision</div>
+        <div class="funnel-bar fb7"><span class="stage">GREEN signal</span><span class="count">0</span></div>
+      </div>
+    </div>
+
+    <div class="placeholder">[SCAN_FUNNEL]</div>
+
+    <p>From 57 candidates to zero is a 100% elimination rate, the screen saying no in genuinely different ways at every stage. Eighteen names reached the deep-dive review, counting five we deliberately reinstated; one cleared it and completed full due diligence, none earned capital. Here are the rejections that teach the most, each tagged to the stage where it failed.</p>
+
+    <div class="reject-block">
+      <div class="reject-head">
+        <span class="reject-tk">CNM</span>
+        <span class="stage-tag">First triage &middot; false exposure</span>
+      </div>
+      <p>It surfaced on the artificial-intelligence power-and-grid screen, exactly the label that earns a fast pass somewhere less disciplined. The revenue is water and wastewater infrastructure, with zero data-center power. The match was the word, not the business.</p>
+      <div class="lesson"><span class="tag">The lesson</span>We do not buy a label. A name on a hot-force screen still has to earn the exposure in its actual revenue mix, and a zero mix ends it.</div>
+    </div>
+
+    <div class="reject-block">
+      <div class="reject-head">
+        <span class="reject-tk">GXAI</span>
+        <span class="stage-tag">Verification &middot; peripheral exposure</span>
+      </div>
+      <p>A counter-drone story in our single strongest unowned force. Verification found the entire exposure was a 19.99% minority stake in an early-stage company that merely licenses the technology: no funded program, no firm order, no defense revenue on its own books.</p>
+      <div class="lesson"><span class="tag">The lesson</span>Peripheral exposure to a hot force is still a pass. Owning a sliver of a company that licenses the thing is not owning it.</div>
+    </div>
+
+    <div class="reject-block">
+      <div class="reject-head">
+        <span class="reject-tk">AIRO</span>
+        <span class="stage-tag">Deep-dive review &middot; inverted evidence</span>
+      </div>
+      <p>The hardest to pass on: a genuine counter-drone pure-play in the unowned force we most want to add, and it earned a deep-dive slot on the strength of the story. Then the load-bearing evidence ran backwards. The order book has declined every quarter since the company came public, and the thesis rests entirely on converting a shrinking backlog into rising revenue.</p>
+      <div class="lesson"><span class="tag">The lesson</span>A shrinking order book is the classic round-tripper signature. What separates a thematic winner from one that runs and gives it all back is whether the operational evidence is accelerating or fading.</div>
+    </div>
+
+    <div class="reject-block">
+      <div class="reject-head">
+        <span class="reject-tk">BNED &middot; STRT &middot; TGLS &middot; BXC &middot; YXT</span>
+        <span class="stage-tag">Deep-dive review &middot; reinstated, re-dropped</span>
+      </div>
+      <p>The most revealing decision of the week, because we deliberately reinstated all five in case the first cut had been too quick. On current data, the verdict held: four capped near two times, short of the asymmetry bar, and one tripped the survival firewall. The wide recall net gave them a hearing; the hard bar still refused them.</p>
+      <div class="lesson"><span class="tag">The lesson</span>Recall and precision are two different jobs. Cast a wide net early so a real shot never dies on a technicality, then let a hard bar refuse anything short of the threshold.</div>
+    </div>
+
+    <h3 class="sub">The near-miss: a clean review that still said no</h3>
+    <p>The week's defining decision was not a fast rejection but a slow one. SENS, the year-long implantable glucose-monitoring pure-play, was the single name to complete full due diligence. It earned a constructive read at every turn, and still was not a GREEN signal.</p>
+
+
+    <div class="near-signal">
+      <span class="ns-tag">Near-Miss &middot; Do Not Buy</span>
+      <h3>SENS &middot; Senseonics Holdings</h3>
+      <div class="ns-grid">
+        <div><div class="k">Force</div><div class="v" style="font-size:13px;">Next-Gen Glucose Monitoring</div></div>
+        <div><div class="k">Decision</div><div class="v">No Buy</div></div>
+        <div><div class="k">Stage reached</div><div class="v" style="font-size:13px;">Full deep review</div></div>
+      </div>
+      <p><strong>What looked good.</strong> The only year-long implantable glucose monitor on the market reclaimed its own commercial channel effective January 1, a single move that stepped gross margin to 59% by letting the company book revenue it previously split, and removed the distribution dependency that broke this same story in 2019. The product cycle is demonstrably live: revenue grew 87% year over year, the second straight quarter of acceleration, management raised full-year guidance, and the European launch began executing. It is taking share in a 15 billion-dollar market two incumbents have held locked at about 98%.</p>
+      <p><strong>Why it still said no.</strong> Against a deliberately sharpened opportunity bar, only the margin step is shown today. The load-bearing growth leg, automated-insulin-delivery integration, is the entire prize, and it is asserted rather than demonstrated: pilot-stage, no disclosed units, no run-rate. With that leg unproven, the evidence-backed reward is roughly two times, and the larger outcome lives only in a low-probability tail. This is a constructive business one disclosure away from a position, and that disclosure is not yet here.</p>
+      <p class="ns-close">It re-enters on a future scan if the next quarter converts the growth leg from a claim into disclosed numbers.</p>
+      <p class="level-note">Screened reference levels only, not held prices and not a recommendation to buy: the review framed a screened entry near $6.67, a financing floor at $5.00, a re-rate scenario at $13, and a right-tail overshoot at $32. No position was taken.</p>
+    </div>
+
+    <p>Put the rejections side by side and the discipline is obvious. Several different reasons, not one a weak chart. The 100% elimination rate is the screen refusing to let a good label, story, company, or even a clean deep review substitute for the one thing the screen requires: an early structural force caught at an inflection happening now, in a vehicle that can survive to capture it. The eight names the screen built into this book cleared that bar; the two we added by hand last week came in on conviction and now carry the burden of earning that same work. Nothing in this week's screen did.</p>
+  </section>
+
+  <!-- ============ SECTION 5 - THE WEEK AHEAD ============ -->
+  <section id="s5">
+    <h2 class="sec">5. The Week Ahead</h2>
+    <p>A short calendar, but a heavy one, and this week it is about the regime rather than any single earnings date. No held position reports in this window, so the two prints below matter through their effect on the whole map, the rate-sensitive corners in particular.</p>
+
+    <div class="week-ahead">
+      <div class="wa-card wa-general">
+        <div class="wa-date">Wed Jun 10<br>8:30 AM ET</div>
+        <div class="wa-body">
+          <div class="wa-title">May Consumer Price Index</div>
+          <p>Consensus near 3.8% headline year over year, with second-quarter estimates running close to 4.0%. This print decides whether the policy-easing turn revives or the stall hardens. A cool number reopens the window for new positions and widens the set of forces that can hand us a clean vehicle; a hot, energy-driven number keeps the bar where it was this week. It sets the regime for the entire map. This is the one to watch.</p>
+        </div>
+      </div>
+      <div class="wa-card wa-portfolio">
+        <div class="wa-date">Jun 16 to 17<br>2:00 PM ET</div>
+        <div class="wa-body">
+          <div class="wa-title">Federal Reserve decision, fresh projections, and Chair Warsh's first press conference</div>
+          <p>No change is priced near 98%, so the decision itself is not the story. The fresh projections and the new Chair's debut tone are the live variables, with the press conference at 2:30 PM ET on June 17. This is the volatility vector for the rate-sensitive corners of the book, most acutely the three biotech positions where the rates back-up presses hardest on names that fund themselves, and VYGR most of all. A non-hawkish read would re-upgrade the tape toward a wider green light for new names; a hawkish set of projections would harden the selectivity we are running today.</p>
+        </div>
+      </div>
+    </div>
+
+    <p>Both answers arrive inside the next ten days. None of the ten positions reports in that window, so there is nothing in the book to adjust around a number we have not seen. We let Wednesday speak first, the projections confirm it the week after, and keep the screen doing its job on every name the scan hands over, adding nothing until something clears.</p>
+  </section>
+
+  <!-- ============ SECTION 6 - THE BOTTOM LINE ============ -->
+  <section id="s6">
+    <h2 class="sec">6. The Bottom Line</h2>
+    <div class="bottom-line">
+      <p>The book holds ten positions averaging 65.0%, seven green and three up more than 80%, led by BAND at 336.3%. It grew by two last week, TEM and CRSP, on our own conviction rather than a GREEN signal, while this week's screen turned 57 weekly candidates into zero new names at a 100% elimination rate. Both decisions were deliberate, and we report them as two distinct things. <strong>Structurally, the book is positioned exactly where the capital is moving</strong>: the artificial-intelligence infrastructure floor carrying three winners, the nuclear fuel-cycle bottleneck, a contracted space-and-defense award, a spread of independent biotech shots, and now early footholds in artificial-intelligence healthcare and gene editing. The regime is risk-on but a notch more selective than a month ago. <strong>The primary risk into next week is a hot inflation print</strong> that hardens the stall and presses the rate-sensitive corners of the book, the biotech leg and VYGR most of all. We hold the ten, we keep the screen's bar where it is, and we let Wednesday's data decide whether that door opens wider for an eleventh.</p>
+      <p class="next">Tuesday: why a 59%-margin medical-device turnaround still did not clear our capital bar. Thursday: how a held position earns its place versus a new candidate, present inflection against asserted.</p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <div class="footer">
+    <p class="tagline">Every screening result. Every entry. Every exit.</p>
+    <p class="url">sterlingsignals.substack.com</p>
+    <p class="disclaimer">Not financial advice. Informational and educational content only. Past performance does not guarantee future results.</p>
+  </div>
+
+</div>
+</body>
+</html>

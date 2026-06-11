@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: transparent; }
+  .card { width: 680px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+  .header-title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; margin-top: 6px; }
+  .hero { background: #0f2440; padding: 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #16a34a; letter-spacing: -1px; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .comparison { display: flex; gap: 0; padding: 0; }
+  .comp-box { flex: 1; padding: 18px 16px; text-align: center; border-right: 1px solid #e2e8f0; }
+  .comp-box:last-child { border-right: none; }
+  .comp-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+  .comp-value { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-top: 4px; }
+  .comp-value.green { color: #16a34a; }
+  .comp-value.amber { color: #d97706; }
+  .comp-value.muted { color: #64748b; }
+  .trend { padding: 16px 28px; background: #f8fafc; display: flex; align-items: center; gap: 12px; }
+  .trend-bar-container { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .trend-bar { height: 100%; background: linear-gradient(90deg, #d97706, #16a34a); border-radius: 4px; }
+  .trend-label { font-size: 12px; color: #64748b; white-space: nowrap; }
+  .portfolio-line { padding: 16px 28px; border-top: 1px solid #e2e8f0; }
+  .portfolio-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 6px; }
+  .portfolio-text { font-size: 14px; color: #1a1a1a; line-height: 1.5; }
+  .portfolio-text strong { color: #2563eb; }
+  .footer { background: #0a1628; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; color: #64748b; letter-spacing: 1.5px; font-weight: 700; }
+  .footer-disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Economic Data / ISM Manufacturing</div>
+    <div class="header-title">ISM Manufacturing Hits 54.0: Highest Since May 2022</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">54.0</div>
+    <div class="hero-label">May 2026 Manufacturing PMI</div>
+  </div>
+  <div class="comparison">
+    <div class="comp-box">
+      <div class="comp-label">Actual</div>
+      <div class="comp-value green">54.0</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">Prior</div>
+      <div class="comp-value muted">52.7</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">Change</div>
+      <div class="comp-value green">+1.3 pts</div>
+    </div>
+    <div class="comp-box">
+      <div class="comp-label">Expansion Streak</div>
+      <div class="comp-value amber">19 months</div>
+    </div>
+  </div>
+  <div class="trend">
+    <div class="trend-label">Contraction</div>
+    <div class="trend-bar-container">
+      <div class="trend-bar" style="width: 80%;"></div>
+    </div>
+    <div class="trend-label">Expansion</div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-label">Portfolio Connection</div>
+    <div class="portfolio-text">Manufacturing capex acceleration benefits <strong>$SVCO</strong> (semiconductor fab optimization, entry $5.98) and <strong>$BAND</strong> (enterprise voice infrastructure, entry $16.55). Industrial expansion supports demand for <strong>$CYRX</strong> logistics and <strong>$HIVE</strong> data centre buildout.</div>
+  </div>
+  <div class="footer">
+    <div class="footer-brand">STERLING SIGNALS</div>
+    <div class="footer-disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

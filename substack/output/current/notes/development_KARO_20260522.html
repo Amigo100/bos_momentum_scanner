@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=680">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; width: 680px; background: #fff; }
+.card { width: 680px; overflow: hidden; border-radius: 12px; border: 1px solid #1a3a5c; }
+.header { background: #0a1628; padding: 24px 28px 20px; }
+.event-label { color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
+.event-title { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.3; }
+.ticker-badge { display: inline-block; background: #2563eb; color: #fff; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 10px; }
+.stats-row { display: flex; gap: 0; background: #0f2440; }
+.stat-box { flex: 1; padding: 18px 16px; text-align: center; border-right: 1px solid #1a3a5c; }
+.stat-box:last-child { border-right: none; }
+.stat-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.stat-value { color: #fff; font-size: 20px; font-weight: 700; }
+.stat-value.green { color: #16a34a; }
+.stat-value.red { color: #dc2626; }
+.portfolio-line { background: #0a1628; padding: 14px 28px; border-top: 1px solid #1a3a5c; }
+.portfolio-text { color: #94a3b8; font-size: 12px; }
+.portfolio-text strong { color: #fff; }
+.footer { display: flex; justify-content: space-between; padding: 12px 28px; background: #0a1628; border-top: 1px solid #1a3a5c; }
+.brand { color: #64748b; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+.disclaimer { color: #475569; font-size: 9px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="event-label">Full-Year Earnings + Guidance</div>
+    <div class="event-title">Karooooo FY2026: Revenue +20%, FCF +90%, Dividend +20%</div>
+    <span class="ticker-badge">$KARO</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Revenue Growth</div>
+      <div class="stat-value green">+20%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Sub Revenue</div>
+      <div class="stat-value green">+19%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Adj FCF Growth</div>
+      <div class="stat-value green">+90%</div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">SA ARR Growth</div>
+      <div class="stat-value green">+23%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Dividend</div>
+      <div class="stat-value green">$1.50</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Roth PT</div>
+      <div class="stat-value">$68</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">FY27 EPS Guide</div>
+      <div class="stat-value green">+21%</div>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-text"><strong>Financial Infrastructure</strong> force. Rule of 60 compounder. 2.57M subscribers, 23 countries, zero dilution. Entry $48.05, now ~$53.35.</div>
+  </div>
+  <div class="footer">
+    <span class="brand">Sterling Signals</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: #f8f9fa; }
+  .card { width: 680px; overflow: hidden; border-radius: 12px; background: #fff; }
+  .header { background: #0a1628; padding: 24px 28px 20px; }
+  .event-label { color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .event-title { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.3; }
+  .ticker-badge { display: inline-block; background: #d97706; color: #fff; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 10px; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #1a2a40; }
+  .stat-box { background: #0f2440; padding: 18px 20px; text-align: center; }
+  .stat-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .stat-value { color: #fff; font-size: 22px; font-weight: 700; }
+  .stat-value.green { color: #16a34a; }
+  .stat-value.amber { color: #d97706; }
+  .stat-sub { color: #64748b; font-size: 11px; margin-top: 4px; }
+  .detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #1a2a40; }
+  .detail-box { background: #0f2440; padding: 14px 20px; text-align: center; }
+  .detail-label { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .detail-value { color: #fff; font-size: 16px; font-weight: 600; }
+  .detail-sub { color: #16a34a; font-size: 12px; margin-top: 2px; }
+  .portfolio-bar { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 14px 20px; margin: 16px 20px; border-radius: 4px; }
+  .portfolio-text { color: #1a1a1a; font-size: 13px; font-weight: 600; }
+  .portfolio-sub { color: #6b6b6b; font-size: 12px; margin-top: 4px; }
+  .footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; border-top: 1px solid #e5e7eb; }
+  .brand { color: #0a1628; font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+  .disclaimer { color: #94a3b8; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="event-label">Earnings Eve — May 5</div>
+    <div class="event-title">$AMD: Q1 Results Monday After Close</div>
+    <span class="ticker-badge">Catalyst Watch</span>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-label">Q1 Rev. Guidance</div>
+      <div class="stat-value">$9.8B</div>
+      <div class="stat-sub">+32% YoY expected</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">DA Davidson PT</div>
+      <div class="stat-value green">$375</div>
+      <div class="stat-sub">Upgraded to Buy (from $220)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">YTD Move</div>
+      <div class="stat-value green">+70%</div>
+      <div class="stat-sub">+75% in last month</div>
+    </div>
+  </div>
+  <div class="detail-row">
+    <div class="detail-box">
+      <div class="detail-label">Key Driver</div>
+      <div class="detail-value">MI400 + Helios Rack</div>
+      <div class="detail-sub">OpenAI 6-GW Instinct deal</div>
+    </div>
+    <div class="detail-box">
+      <div class="detail-label">Consensus PT</div>
+      <div class="detail-value">$289–$290</div>
+      <div class="detail-sub">35% revenue CAGR target</div>
+    </div>
+  </div>
+  <div class="portfolio-bar">
+    <div class="portfolio-text">Portfolio position: $120.00 entry. Highest close $360.54.</div>
+    <div class="portfolio-sub">AI Infrastructure force. Monday's print sets the tone for Q2.</div>
+  </div>
+  <div class="footer">
+    <span class="brand">STERLING SIGNALS</span>
+    <span class="disclaimer">Not financial advice</span>
+  </div>
+</div>
+</body>
+</html>

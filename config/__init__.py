@@ -1,13 +1,14 @@
 """
-CONFIG — Re-exports all settings for backwards compatibility.
+CONFIG — the lean Sterling system's configuration package.
 
-All modules can continue using `from config import X` unchanged.
-The actual configuration lives in config/settings.py.
-Banned terms are in config/banned_terms.py (single source of truth).
+- config/output_paths.py — the path registry (scanner output, sterling-run, helpers).
+- config/banned_terms.py — the marketing-language guard (single source of truth;
+  re-exported here so `from config import ALL_BANNED` keeps working).
+
+(config/settings.py — the V8-era tweet/content/threshold settings — was archived
+2026-06-11 to archive/cowork-content-system/; the V10 scanner carries its own
+thresholds in scanner/sterling_indicators.py.)
 """
-from config.settings import *  # noqa: F401,F403
-
-# Banned terms — single source of truth
 from config.banned_terms import (  # noqa: F401
     CRITICAL_BANNED,
     BANNED_PHRASES,

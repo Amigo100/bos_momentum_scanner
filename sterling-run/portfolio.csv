@@ -1,13 +1,13 @@
-# Held positions. Current/P&L% are the SOLE price source for the newsletter; refresh before publishing.
-# Targets: Bear/Base/Bull = Tier-3c scenario prices; ProbAdjTarget = probability-weighted. Written for new BUYs at the weekly close; you may backfill held names.
-Ticker,Entry,Current,P&L%,Structural Force,Days Held,Type,Conviction,Bear,Base,Bull,ProbAdjTarget,Catalyst Window
-BAND,16.55,59.31,+258.4%,AI Infrastructure,91,great trade,Bullish,$42-47,$115-130,$190-240,$88,Q2'26 earnings (late Jul/early Aug); watch software ARR
-SVCO,5.98,11.48,+92.0%,AI Infrastructure,75,great trade,Bullish,$7-8.50,$24-31,$36-45,$20.6,Q2 FY26 earnings ~early Aug (profitability delivered)
-HIVE,2.08,3.50,+68.3%,AI Infrastructure,62,multibagger,Bullish,$1.80,$11,$20,$6.99,Q3-Q4'26 firm GB200/GB300 anchor signing
-CYRX,9.67,14.77,+52.7%,Biotech Innovation,54,great trade,Bullish,$10,$31,$52,$22.2,H2'26 first positive adj-EBITDA (Q2'26 10-Q ~Aug)
-ASPI,4.22,5.85,+38.6%,Nuclear Renaissance,83,multibagger,Bullish,$3.75,$16,$30,$10.3,Q3'26 QLE HALEU spin pricing + first enrichment revenue
-VOYG,29.00,41.28,+42.3%,Defense Spending,48,multibagger,Bullish,$18,$75,$165,$58,Summer 2026 NASA CLD Phase 2 award
-ACRS,3.65,4.10,+12.3%,Biotech Innovation,75,multibagger,Bullish,$2.50-3.00,$11-15,$22-30,$9.52,Q4'26 bosakitug Ph2 readout
-VYGR,4.45,3.32,-25.4%,Biotech Innovation,81,multibagger,Bullish,$2.20-2.84,$13-15,$24-30,$7.40,H2'26 VY7523 anti-tau Ph1 + VY1706 FIH
-TEM,50.47,49.48,-2.0%,AI Healthcare,7,,,$35,$67,$100,,Q2-2026 earnings (Aug); algorithmic-Dx + data-licensing growth
-CRSP,56.18,49.44,-12.0%,Gene Editing,7,,,$33,$82,$291,,Casgevy ramp + in-vivo (CTX-310/320) readouts H2-2026
+# Held positions. Current/P&L% are the SOLE price source for the newsletter; refresh via scripts/sterling_price_refresh.py.
+# Entry Date (col 14) anchors the scanner's V10 exit checks (peak-close derivation). TEM/CRSP dates are DEFAULTED to 2026-06-04 — correct if known. Bear/Base/Bull = Tier-3c scenario prices; ProbAdjTarget = probability-weighted.
+Ticker,Entry,Current,P&L%,Structural Force,Days Held,Type,Conviction,Bear,Base,Bull,ProbAdjTarget,Catalyst Window,Entry Date
+BAND,16.55,59.31,+258.4%,AI Infrastructure,91,great trade,Bullish,$42-47,$115-130,$190-240,$88,Q2'26 earnings (late Jul/early Aug); watch software ARR,2026-03-08
+SVCO,5.98,11.48,+92.0%,AI Infrastructure,75,great trade,Bullish,$7-8.50,$24-31,$36-45,$20.6,Q2 FY26 earnings ~early Aug (profitability delivered),2026-03-24
+HIVE,2.08,3.50,+68.3%,AI Infrastructure,62,multibagger,Bullish,$1.80,$11,$20,$6.99,Q3-Q4'26 firm GB200/GB300 anchor signing,2025-10-04
+CYRX,9.67,14.77,+52.7%,Biotech Innovation,54,great trade,Bullish,$10,$31,$52,$22.2,H2'26 first positive adj-EBITDA (Q2'26 10-Q ~Aug),2026-04-14
+ASPI,4.22,5.85,+38.6%,Nuclear Renaissance,83,multibagger,Bullish,$3.75,$16,$30,$10.3,Q3'26 QLE HALEU spin pricing + first enrichment revenue,2025-10-04
+VOYG,29.00,41.28,+42.3%,Defense Spending,48,multibagger,Bullish,$18,$75,$165,$58,Summer 2026 NASA CLD Phase 2 award,2026-04-20
+ACRS,3.65,4.10,+12.3%,Biotech Innovation,75,multibagger,Bullish,$2.50-3.00,$11-15,$22-30,$9.52,Q4'26 bosakitug Ph2 readout,2026-03-24
+VYGR,4.45,3.32,-25.4%,Biotech Innovation,81,multibagger,Bullish,$2.20-2.84,$13-15,$24-30,$7.40,H2'26 VY7523 anti-tau Ph1 + VY1706 FIH,2026-03-18
+TEM,50.47,49.48,-2.0%,AI Healthcare,7,,,$35,$67,$100,,Q2-2026 earnings (Aug); algorithmic-Dx + data-licensing growth,2026-06-04
+CRSP,56.18,49.44,-12.0%,Gene Editing,7,,,$33,$82,$291,,Casgevy ramp + in-vivo (CTX-310/320) readouts H2-2026,2026-06-04

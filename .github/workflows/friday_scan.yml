@@ -39,18 +39,21 @@ jobs:
           pip install -r requirements.txt
 
       # ═══════════════════════════════════════════════════════════════════════════
-      # STEP 1: RUN SCANNER (Pure Technical Signal Detector — $0 cost)
-      # Also updates portfolio/output/portfolio.csv (prices + technical-exit checks)
+      # STEP 1: RUN SCANNER (V10 — pure detector, $0 cost; portfolio is READ-ONLY)
+      # --no-email: the scanner's own plain-text email is silenced — Step 3's
+      # send_scan_summary (HTML email + WhatsApp, buys + exits in one message) is
+      # the single notification path. Note: on a 0-buy/0-exit week no email goes
+      # out at all (failure alerts in Step 7 still cover breakage).
       # ═══════════════════════════════════════════════════════════════════════════
 
       - name: Run Scanner
         id: scanner
         run: |
           echo "## Scanner Configuration" >> $GITHUB_STEP_SUMMARY
-          echo "- **Mode:** Pure Technical (no LLM API calls)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode:** V10 Pure Technical (no LLM API calls)" >> $GITHUB_STEP_SUMMARY
           echo "- **Cost:** $0.00" >> $GITHUB_STEP_SUMMARY
 
-          SCANNER_ARGS="--archive"
+          SCANNER_ARGS="--archive --no-email"
 
           # Top N limit
           TOP_N="${{ github.event.inputs.top_n }}"
@@ -120,21 +123,32 @@ jobs:
 
           logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-          # Read technical signals produced by this scan
+          # Read technical signals produced by this scan (V10 schema)
           signals_path = Path("scanner/output/signals_technical.json")
-          if not signals_path.exists():
-              signals_path = Path("scanner/output/signals.json")  # Fallback
           if not signals_path.exists():
               print("No signals file found — skipping notifications")
               sys.exit(0)
 
           data = json.loads(signals_path.read_text())
-          buy_signals = data.get("buy_signals", [])
-          sell_signals = data.get("sell_signals", [])
+          raw_buys = data.get("buy_signals", [])
+          # V10 emits `exit_flags` (the tiered_initial_35 stop checks); pre-V10 files said sell_signals
+          sell_signals = data.get("exit_flags", data.get("sell_signals", []))
 
-          if not buy_signals and not sell_signals:
-              print("No buy or sell signals — no notifications needed")
+          if not raw_buys and not sell_signals:
+              print("No buy signals or exit flags — no notifications needed")
               sys.exit(0)
+
+          # Map V10 buy dicts for the formatter: raw pivots are pre-selection,
+          # so label them PIVOT (not a green PASS) and use sector as the theme line.
+          buy_signals = [
+              {
+                  "symbol": s.get("symbol", ""),
+                  "price": s.get("price", 0),
+                  "theme": (s.get("enrichment") or {}).get("sector") or "",
+                  "final_decision": "PIVOT",
+              }
+              for s in raw_buys
+          ]
 
           try:
               from utils.notifications import send_scan_summary
@@ -142,7 +156,7 @@ jobs:
               print(f"Notification module not available: {e}")
               sys.exit(0)
 
-          print(f"Sending combined notification: {len(buy_signals)} buys, {len(sell_signals)} sells")
+          print(f"Sending combined notification: {len(buy_signals)} pivots, {len(sell_signals)} exit flags")
           result = send_scan_summary(
               buy_signals=buy_signals,
               sell_signals=sell_signals,
@@ -161,11 +175,9 @@ jobs:
         with:
           name: scan-results-${{ github.run_id }}
           path: |
-            scanner/output/current/
-            scanner/output/signals.json
             scanner/output/signals_technical.json
-            portfolio/output/portfolio.csv
-            portfolio/output/portfolio_google_sheets.csv
+            scanner/output/analysis_log.csv
+            scanner/output/archive/
             sterling-run/signals/this-week.csv
           retention-days: 30
 
@@ -178,11 +190,8 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add --force scanner/output/signals.json scanner/output/signals_technical.json \
-            scanner/output/analysis_log.csv scanner/output/signal_history_rows.csv \
-            scanner/output/current/ 2>/dev/null || true
-          git add --force portfolio/output/portfolio.csv portfolio/output/portfolio_google_sheets.csv \
-            portfolio/output/equity_curve.csv 2>/dev/null || true
+          git add --force scanner/output/signals_technical.json \
+            scanner/output/analysis_log.csv scanner/output/archive/ 2>/dev/null || true
           git add sterling-run/signals/ 2>/dev/null || true
 
           if git diff --cached --quiet; then
@@ -211,11 +220,16 @@ jobs:
           echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f "scanner/output/current/report.txt" ]; then
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            head -100 scanner/output/current/report.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
+          python3 << 'SCAN_SUMMARY' >> $GITHUB_STEP_SUMMARY || true
+          import json, os
+          p = "scanner/output/signals_technical.json"
+          if os.path.exists(p):
+              d = json.load(open(p))
+              m, s = d.get("scan_meta", {}), d.get("stats", {})
+              print(f"- **Doctrine:** {m.get('doctrine_version','?')}  -  **asof:** {m.get('asof','?')}")
+              print(f"- **Pivot signals:** {s.get('pivot_signals','?')}  -  **Open positions:** "
+                    f"{s.get('open_positions','?')}  -  **Exit flags:** {s.get('exit_flags','?')}")
+          SCAN_SUMMARY
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Next: the weekend skills run" >> $GITHUB_STEP_SUMMARY

@@ -29,22 +29,11 @@ Thumbs.db
 logs/*
 !logs/.gitkeep
 
-# Generated scanner/portfolio outputs — ignore by default; track only the live data set
-portfolio/output/*
-!portfolio/output/portfolio.csv
-!portfolio/output/portfolio_google_sheets.csv
-!portfolio/output/equity_curve.csv
-!portfolio/output/portfolio_snapshot.json
+# Generated scanner outputs — ignore by default; track only the live data set
 scanner/output/*
-!scanner/output/signals.json
 !scanner/output/signals_technical.json
 !scanner/output/analysis_log.csv
-!scanner/output/signal_history_rows.csv
-!scanner/output/current/
-scanner/output/current/*
-!scanner/output/current/report.txt
-!scanner/output/current/signals.json
-!scanner/output/current/signals_technical.json
+!scanner/output/archive/
 
 # Node (carousel template tool; archived dashboard source)
 node_modules/

@@ -17,7 +17,7 @@ EXIT   : tiered_initial_35 ONLY, checked on every open position:
 
 IO CONTRACT (the scanner is a pure detector):
   reads  : scanner/complete_tickers.txt          (universe)
-           portfolio/output/portfolio.csv        (open positions, READ-ONLY;
+           sterling-run/portfolio.csv            (open positions, READ-ONLY;
              flexible headers: ticker/symbol, entry_date/date, entry_price/entry)
   writes : signals_technical.json  (+ dated archive copy with --archive)
            analysis_log.csv        (append-only run log)
@@ -108,7 +108,7 @@ except ImportError:
     SIGNALS_TECH_FILE = _FALLBACK_OUTPUT / "signals_technical.json"
     ANALYSIS_LOG = _FALLBACK_OUTPUT / "analysis_log.csv"
     SCANNER_OUTPUT = _FALLBACK_OUTPUT
-    PORTFOLIO_FILE = Path(__file__).resolve().parent.parent / "portfolio" / "output" / "portfolio.csv"
+    PORTFOLIO_FILE = Path(__file__).resolve().parent.parent / "sterling-run" / "portfolio.csv"
 
     def ensure_output_structure():
         _FALLBACK_OUTPUT.mkdir(parents=True, exist_ok=True)
@@ -228,7 +228,8 @@ def load_positions(path: Path = PORTFOLIO_FILE) -> List[Position]:
         return []
     positions: List[Position] = []
     with open(path, newline="", encoding="utf-8", errors="ignore") as f:
-        reader = csv.DictReader(f)
+        # skip leading comment lines (sterling-run/portfolio.csv documents itself with '#' lines)
+        reader = csv.DictReader(ln for ln in f if not ln.lstrip().startswith("#"))
         if not reader.fieldnames:
             return []
         cols = {c.lower().strip(): c for c in reader.fieldnames}
@@ -524,26 +525,9 @@ def save_results(signals: List[Stock], exit_flags: List[ExitFlag], stats: ScanSt
         "data_quality": asdict(dq),
         "buy_signals": [_sig(s) for s in signals],
         "exit_flags": [asdict(e) for e in exit_flags],
-        # retained hooks for the content pipeline
+        # retained keys for output-schema stability (the tweet-system consumers were retired 2026-06)
         "historical_winners": [], "big_wins": [], "home_runs": [],
     }
-    try:
-        from twitter.signal_tracker import load_historical_signals, find_big_wins
-        from config import MARKETING_THRESHOLDS
-        hist = load_historical_signals()
-        payload["historical_winners"] = [
-            {"ticker": h.ticker, "entry_price": h.entry_price, "current_price": h.current_price,
-             "pnl_pct": h.pnl_pct, "signal_date": h.entry_date, "theme": h.theme} for h in hist]
-        wins = find_big_wins()
-        bw = MARKETING_THRESHOLDS.get("big_win_threshold", 25.0)
-        hr = MARKETING_THRESHOLDS.get("home_run_threshold", 50.0)
-        as_d = lambda w: {"ticker": w.ticker, "entry_price": w.entry_price,
-                          "current_price": w.current_price, "pnl_pct": w.pnl_pct,
-                          "signal_date": w.entry_date, "theme": w.theme}
-        payload["big_wins"] = [as_d(w) for w in wins if w.pnl_pct >= bw]
-        payload["home_runs"] = [as_d(w) for w in wins if w.pnl_pct >= hr]
-    except Exception:
-        pass
 
     SIGNALS_TECH_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(SIGNALS_TECH_FILE, "w") as f:

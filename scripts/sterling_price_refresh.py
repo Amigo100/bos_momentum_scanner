@@ -3,20 +3,63 @@
 
 Rewrites ONLY the `Current` and `P&L%` columns (P&L% recomputed from `Entry`) of
 sterling-run/portfolio.csv — the newsletter's SOLE price source. The two comment lines, the
-header, row order, and every other column are preserved byte-identical. A ticker whose fetch
-fails keeps its old values (warned, never blanked) — prices are pulled, never fabricated.
+header, row order, and every other column (including `Entry Date`, col 14 — the scanner's
+exit-check anchor) are preserved byte-identical. A ticker whose fetch fails keeps its old
+values (warned, never blanked) — prices are pulled, never fabricated.
 
-`Days Held` is deliberately left untouched: this CSV carries no entry_date to derive it from
-(incrementing would be non-idempotent across re-runs; deriving would be fabrication). The proper
-fix is a future entry_date column migration alongside the calibration Part C schema.
+`Days Held` is left untouched (informational; re-derivable from Entry Date).
 
 Usage:
   python3 -m scripts.sterling_price_refresh [--run-root sterling-run] [--dry-run]
 """
 import argparse, os, shutil, sys
 
-NCOLS = 13
+NCOLS = 14
 I_TICKER, I_ENTRY, I_CUR, I_PNL = 0, 1, 2, 3
+
+
+def fetch_current_prices(tickers, warn_threshold=0.5):
+    """Latest closes via a yfinance batch download (inlined from the retired
+    portfolio.manager canonical implementation — identical semantics: 1d window,
+    auto_adjust, NaN-safe, returns only successes, warns when incomplete)."""
+    if not tickers:
+        return {}
+    try:
+        import yfinance as yf
+    except ImportError:
+        print("ERROR: yfinance not installed (pip install yfinance pandas)")
+        sys.exit(1)
+
+    prices, failed = {}, []
+    try:
+        data = yf.download(tickers, period="1d", interval="1d",
+                           progress=False, auto_adjust=True)
+        if len(tickers) == 1:
+            tk = tickers[0]
+            if not data.empty and "Close" in data.columns:
+                prices[tk] = round(float(data["Close"].iloc[-1]), 2)
+            else:
+                failed.append(tk)
+        elif not data.empty and "Close" in data.columns:
+            for tk in tickers:
+                try:
+                    px = data["Close"][tk].iloc[-1]
+                    if px == px:  # NaN check
+                        prices[tk] = round(float(px), 2)
+                    else:
+                        failed.append(tk)
+                except (KeyError, IndexError):
+                    failed.append(tk)
+        else:
+            failed = list(tickers)
+    except Exception as e:
+        print(f"  ERROR fetching prices: {e}")
+        failed = list(tickers)
+
+    if tickers and len(prices) / len(tickers) < warn_threshold:
+        print(f"  WARN: price fetch incomplete — {len(prices)}/{len(tickers)} "
+              f"(failed: {', '.join(failed[:5])}{' …' if len(failed) > 5 else ''})")
+    return prices
 
 
 def parse_lines(path):
@@ -92,13 +135,6 @@ def main():
     tickers = [p[I_TICKER].strip() for k, p in items if k == "row"]
     if not tickers:
         print("no held rows found — nothing to refresh"); sys.exit(0)
-
-    try:
-        from portfolio.manager import fetch_current_prices  # the canonical yfinance implementation
-    except (ImportError, SystemExit) as e:
-        print(f"ERROR: could not import portfolio.manager.fetch_current_prices ({e}) — "
-              "run from the repo root with yfinance/pandas installed (pip install yfinance pandas)")
-        sys.exit(1)
 
     print(f"fetching latest closes for {len(tickers)} held tickers…")
     prices = fetch_current_prices(tickers)

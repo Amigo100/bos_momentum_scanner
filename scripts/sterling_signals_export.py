@@ -7,13 +7,15 @@ sterling-run/signals/this-week.csv — the Tier-1 input contract
 snapshot in sterling-run/signals/archive/. This replaces the manual weekly
 extraction step.
 
-Mapping (deterministic canon — the pre-2026-06-11 csv's strength labels were
-hand-assigned and are NOT reproduced):
+Mapping (deterministic canon for the V10 scanner schema — the pre-2026-06-11
+csv's strength labels were hand-assigned and are NOT reproduced):
   ticker          <- symbol
   sector          <- enrichment.sector (else "Unknown")
-  last_price      <- price (2dp)
-  signal_type     <- "HMA-pivot"; "ExD" when exd_signal fired without a pivot low
-  signal_strength <- "strong" if (buy_signal_v6 or macd_cross_up or uc_rising) else "weak"
+  last_price      <- price (2dp; last completed weekly close)
+  signal_type     <- "HMA-pivot" (V10 emits bare-pivot entries only)
+  signal_strength <- "strong" if (macd_cross_up or uc_rising) else "weak"
+                     (informational confluence; hma_slope_rising is excluded —
+                      every pivot low has a rising slope by construction)
 
 Held-name dedup: tickers already in sterling-run/portfolio.csv are skipped
 (held names enter the pipeline via re-underwrite, not triage); --include-held
@@ -49,9 +51,8 @@ def build_rows(signals, skip):
             skipped.append(tk)
             continue
         sector = (s.get("enrichment") or {}).get("sector") or "Unknown"
-        sig_type = "ExD" if (s.get("exd_signal") and not s.get("hma_pivot_low")) else "HMA-pivot"
-        strength = "strong" if (s.get("buy_signal_v6") or s.get("macd_cross_up")
-                                or s.get("uc_rising")) else "weak"
+        sig_type = "HMA-pivot"
+        strength = "strong" if (s.get("macd_cross_up") or s.get("uc_rising")) else "weak"
         rows.append([tk, sector, f"{float(s.get('price') or 0):.2f}", sig_type, strength])
     return rows, skipped
 
@@ -77,7 +78,8 @@ def main():
     date = a.date
     if not date:
         date = (signals[0].get("week_date") if signals else None) \
-               or (data.get("timestamp", "")[:10] or None)
+               or (data.get("scan_meta") or {}).get("asof") \
+               or (data.get("timestamp", "")[:10] or None)   # pre-V10 fallback
     if not date:
         print("ERROR: no date derivable — pass --date")
         sys.exit(1)

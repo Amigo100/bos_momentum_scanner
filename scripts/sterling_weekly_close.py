@@ -30,7 +30,7 @@ TICKER_COLS = ["week_id","anchor_date","ticker","sector","signal_strength","them
     "px_3mo","px_6mo","px_12mo","px_18mo","px_24mo","notes"]
 
 PORTFOLIO_COLS = ["Ticker","Entry","Current","P&L%","Structural Force","Days Held","Type",
-    "Conviction","Bear","Base","Bull","ProbAdjTarget","Catalyst Window"]
+    "Conviction","Bear","Base","Bull","ProbAdjTarget","Catalyst Window","Entry Date"]
 
 def load(path, default=None):
     try:
@@ -255,7 +255,8 @@ def update_portfolio_for_buys(root, run_dir, anchor):
              v.get("type",""), v.get("conviction",""),
              scn.get("bear",{}).get("price",""), scn.get("base",{}).get("price",""),
              scn.get("rerate",{}).get("price",""), prob_adj(scn) if scn else "",
-             (v.get("catalyst_window","") or "")[:120]]
+             (v.get("catalyst_window","") or "")[:120],
+             anchor]   # Entry Date (col 14) — the scanner's exit-check anchor
         with open(pf,"a",newline="") as f:
             csv.writer(f).writerow(row)
         added.append(tk)

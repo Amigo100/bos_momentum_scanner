@@ -219,5 +219,7 @@ The real levers — not "is it a skill":
 All tier skills share the canonical `shared/shared-context-dna.md` (V9), `lineage-block.md`,
 `diagnostic-reference.md`, `handoff-card-spec.md` (envelope · constants · lineage encoding · workflow
 transport), and `theme-intelligence.md` (staging · precursors · bottleneck-migration · proxy rubric)
-— propagated by `./sync-shared.sh` — plus their own card schemas. The deterministic checks live in
+— propagated by `sh sterling-grid/install.sh` (which also installs the skills from the canonical
+`sterling-grid/skills/` source into the `.claude/skills/` runtime) — plus their own card schemas.
+The deterministic checks live in
 `scripts/sterling_validate.py` (lineage · counts · decisions · layout).

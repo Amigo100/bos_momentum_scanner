@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', -apple-system, sans-serif; background: transparent; }
+  .card { width: 680px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .header { background: #0a1628; padding: 20px 28px; }
+  .header-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+  .header-title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; margin-top: 6px; }
+  .hero { background: #0f2440; padding: 28px; text-align: center; }
+  .hero-number { font-size: 36px; font-weight: 800; color: #16a34a; letter-spacing: -1px; }
+  .hero-label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+  .stats-row { display: flex; gap: 0; }
+  .stat-box { flex: 1; padding: 16px 14px; text-align: center; background: #0f2440; border-right: 1px solid #1a3a5c; }
+  .stat-box:last-child { border-right: none; }
+  .stat-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+  .stat-value { font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px; }
+  .stat-value.green { color: #16a34a; }
+  .stat-value.red { color: #dc2626; }
+  .ripple { padding: 16px 28px; background: #f8fafc; }
+  .ripple-title { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 10px; }
+  .ripple-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid #e2e8f0; }
+  .ripple-row:last-child { border-bottom: none; }
+  .ripple-ticker { font-size: 14px; font-weight: 700; color: #1a1a1a; width: 60px; }
+  .ripple-bar-container { flex: 1; height: 6px; background: #e2e8f0; border-radius: 3px; margin: 0 12px; }
+  .ripple-bar { height: 100%; border-radius: 3px; }
+  .ripple-bar.green { background: #16a34a; }
+  .ripple-bar.red { background: #dc2626; }
+  .ripple-pct { font-size: 14px; font-weight: 600; width: 60px; text-align: right; }
+  .ripple-pct.green { color: #16a34a; }
+  .ripple-pct.red { color: #dc2626; }
+  .portfolio-line { padding: 16px 28px; border-top: 1px solid #e2e8f0; }
+  .portfolio-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 6px; }
+  .portfolio-text { font-size: 14px; color: #1a1a1a; line-height: 1.5; }
+  .portfolio-text strong { color: #2563eb; }
+  .footer { background: #0a1628; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 11px; color: #64748b; letter-spacing: 1.5px; font-weight: 700; }
+  .footer-disclaimer { font-size: 10px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-label">Major Earnings / AI Infrastructure</div>
+    <div class="header-title">Dell AI Revenue +757% YoY Sends Semiconductor Chain Higher</div>
+  </div>
+  <div class="hero">
+    <div class="hero-number">$16.1B</div>
+    <div class="hero-label">Dell Q1 FY27 AI Server Revenue (vs $1.9B prior year)</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value green">$43.8B</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">YoY Growth</div>
+      <div class="stat-value green">+88%</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">EPS vs Est</div>
+      <div class="stat-value green">$4.86 vs $2.93</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Stock Move</div>
+      <div class="stat-value green">+32%</div>
+    </div>
+  </div>
+  <div class="ripple">
+    <div class="ripple-title">Monday Ripple Effect (June 1)</div>
+    <div class="ripple-row">
+      <div class="ripple-ticker">HPE</div>
+      <div class="ripple-bar-container"><div class="ripple-bar green" style="width: 91%;"></div></div>
+      <div class="ripple-pct green">+13.7%</div>
+    </div>
+    <div class="ripple-row">
+      <div class="ripple-ticker">ARM</div>
+      <div class="ripple-bar-container"><div class="ripple-bar green" style="width: 67%;"></div></div>
+      <div class="ripple-pct green">+10.0%</div>
+    </div>
+    <div class="ripple-row">
+      <div class="ripple-ticker">ORCL</div>
+      <div class="ripple-bar-container"><div class="ripple-bar green" style="width: 37%;"></div></div>
+      <div class="ripple-pct green">+5.6%</div>
+    </div>
+    <div class="ripple-row">
+      <div class="ripple-ticker">MU</div>
+      <div class="ripple-bar-container"><div class="ripple-bar green" style="width: 33%;"></div></div>
+      <div class="ripple-pct green">+5.0%</div>
+    </div>
+    <div class="ripple-row">
+      <div class="ripple-ticker">INTC</div>
+      <div class="ripple-bar-container"><div class="ripple-bar red" style="width: 45%;"></div></div>
+      <div class="ripple-pct red">-6.8%</div>
+    </div>
+  </div>
+  <div class="portfolio-line">
+    <div class="portfolio-label">Portfolio Connection</div>
+    <div class="portfolio-text"><strong>$AMD</strong> at $120. Now $516.10. AI Infrastructure force validated: Dell raised FY27 AI server guidance to $60B. <strong>$NVDA</strong> at $150. Now $212.49. <strong>$HIVE</strong> data centre expansion aligns with hyperscaler capex surge. Broadcom reports Wednesday: next catalyst for the thesis.</div>
+  </div>
+  <div class="footer">
+    <div class="footer-brand">STERLING SIGNALS</div>
+    <div class="footer-disclaimer">Not financial advice</div>
+  </div>
+</div>
+</body>
+</html>

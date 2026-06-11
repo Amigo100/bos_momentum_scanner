@@ -15,8 +15,9 @@ where your eyes are on every handoff; automation comes after it passes.
 
 ## Phase 0 — install + point at the state folder
 
-1. **Install the skills (Claude Code).** Copy each `sterling-grid-*` folder into `~/.claude/skills/`
-   (all projects) or `.claude/skills/` (this project). New session → `/skills` should list all 11.
+1. **Install the skills (Claude Code).** `sh sterling-grid/install.sh` (the canonical sources live
+   in `sterling-grid/skills/`; the script installs them into `.claude/skills/`). New session →
+   `/skills` should list all 16 `sterling-grid-*` skills.
 2. **Place this folder.** Put `sterling-run/` beside (or inside) that repo. The chain reads/writes the
    files here.
 3. **How a skill runs.** In Claude Code you invoke the skill (e.g. `/sterling-grid-tier1`) and give it
@@ -103,7 +104,7 @@ Run the **same assertions** from Phase 1 at each real handoff — plus, on real 
 
 ## The validation checklist (what "passing" means)
 
-- [ ] All 11 skills load (`/skills`).
+- [ ] All 16 skills load (`/skills`).
 - [ ] The chain reads/writes `sterling-run/` (signals in, cards in `runs/<date>/`, decisions appended).
 - [ ] **Lineage inheritance:** a mapped name carries Macro/Theme/Mapping verbatim from the hunting brief.
 - [ ] **Lineage accumulation:** by 3c the block holds Macro·Theme·Mapping·Triage·Gate·Evidence·Geometry·Verdict (·Decision after Tier 4).
@@ -119,7 +120,7 @@ If any assertion fails, it's a card-schema mismatch at that one handoff — fix 
 ---
 
 ## After it passes
-- Move to **Level 1**: paste the operator prompt from `sterling-grid-skills/orchestration/run-pipeline.md`
+- Move to **Level 1**: paste the operator prompt from `sterling-grid/orchestration/run-pipeline.md`
   and let it drive the full run, with Checkpoints A and B as approve-to-continue gates.
 - Then **Level 2**: wrap that prompt as a Claude Code Routine to run weekly.
 - Keep the early-quarter discipline: **bias to recall, log cleanly**; real K.1 tuning waits for matured

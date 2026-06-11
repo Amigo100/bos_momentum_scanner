@@ -1,0 +1,74 @@
+{
+    "date": "2026-06-01",
+    "day": "monday",
+    "generated_at": "2026-06-01T08:00:00+10:00",
+    "notes": [
+        {
+            "slot": 1,
+            "type": "POSITION",
+            "sub_variant": "single_winner",
+            "time_aedt": "08:00",
+            "file": "morning_position_20260601.md",
+            "tier": 2,
+            "generation_reason": "Fresh generation: POSITION requires live prices. CYRX selected: +46.3% in 7 weeks, not featured as lead subject in last 14 days. Rotated from HIVE/VOYG (May 26) and KYTX exit (May 31).",
+            "tickers_mentioned": ["CYRX"],
+            "structural_forces": ["Biotech Capital Cycle"],
+            "word_count": 118,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        },
+        {
+            "slot": 2,
+            "type": "MARKET",
+            "sub_variant": "catalyst_flag",
+            "time_aedt": "12:00",
+            "file": "midday_market_20260601.md",
+            "tier": 2,
+            "generation_reason": "Fresh generation: MARKET requires live data. Week's macro calendar: ISM PMI today, HIVE Q4 today, Broadcom Wednesday, payrolls Friday. Four of five catalysts connect directly to portfolio positions.",
+            "tickers_mentioned": ["HIVE", "NVDA", "AMD", "BAND", "SVCO"],
+            "structural_forces": ["AI Infrastructure"],
+            "word_count": 112,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        },
+        {
+            "slot": 3,
+            "type": "EDUCATION",
+            "sub_variant": "research_finding",
+            "time_aedt": "20:00",
+            "file": "evening_education_20260601.md",
+            "tier": 1,
+            "batch_id": "edu_1",
+            "generation_reason": "Pre-batched in weekly_plan_2026-W23.json. Validated: no ticker prices referenced, content is evergreen academic research. Minor edits for opening rhythm (number-first per voice rules). Bessembinder study not covered in last 14 days.",
+            "tickers_mentioned": [],
+            "structural_forces": [],
+            "word_count": 105,
+            "quality_checks": {
+                "opens_with_data": true,
+                "word_count_in_range": true,
+                "no_em_dashes": true,
+                "no_ai_references": true,
+                "no_indicator_names": true,
+                "portfolio_connection": true,
+                "ends_with_data_or_date": true,
+                "screenshottable": true
+            }
+        }
+    ]
+}

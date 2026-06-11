@@ -1,11 +1,8 @@
-# Core (scanner + portfolio + sterling scripts)
+# Core (V10 scanner + sterling scripts)
 yfinance==0.2.66
 pandas==2.3.3
 numpy==2.0.2
 
-# Content tools (Cowork: substack/tools/capture.py)
-playwright==1.57.0
-
-# Notifications (Friday sell-signal email + optional WhatsApp)
+# Notifications (Friday scan summary email + optional WhatsApp)
 python-dotenv==1.2.1
 twilio>=8.0.0

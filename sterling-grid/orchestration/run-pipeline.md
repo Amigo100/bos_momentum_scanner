@@ -7,16 +7,17 @@ sequence).
 
 ---
 
-## 0. Install the skills (once per surface)
+## 0. Install the skills (the ONE edit point is `sterling-grid/`, tracked in git)
 
-- **Claude Code (preferred — unsandboxed host access for the scanner + data pulls):** copy each
-  `skills/sterling-grid-*` folder into `~/.claude/skills/` (all projects) or `.claude/skills/` (this
-  project). Start a new session; run `/skills` to confirm. Invoke a skill with `/sterling-grid-tier1`
-  etc., or let the driver name it.
-- **Cowork / claude.ai:** Customize → Skills → Upload; zip each skill folder so the ZIP holds the
-  folder at its root.
-- **After a DNA change:** edit `shared/shared-context-dna.md` (or `lineage-block.md` /
-  `diagnostic-reference.md`), run `./sync-shared.sh` to propagate into every skill, then re-install.
+- **Canonical source:** `sterling-grid/skills/sterling-grid-*` (the 16 skills) +
+  `sterling-grid/shared/` (the 5 refs) + this `orchestration/` folder.
+- **Install / update:** `sh sterling-grid/install.sh` — propagates the shared refs into each source
+  skill's `references/`, then replaces the runtime copies in `.claude/skills/`. Start a new session;
+  `/skills` to confirm. Invoke with `/sterling-grid-tier1` etc., or let the driver name it.
+- **After ANY skill or shared-ref edit:** edit in `sterling-grid/`, run `sh sterling-grid/install.sh`.
+  Never edit `.claude/skills/` directly — it is the gitignored runtime, overwritten on install.
+- **Cowork / claude.ai:** zip a `sterling-grid/skills/sterling-grid-*` folder (folder at the ZIP
+  root) and upload via Customize → Skills.
 
 ## 1. Set up a working folder (the state medium)
 

@@ -5,7 +5,7 @@ repo where the `sterling-grid-*` skills are installed, and point the operator pr
 
 ```
 sterling-run/
-├── signals/this-week.csv     # the Tier-1 input — WRITTEN AUTOMATICALLY by the Friday workflow
+├── signals/this-week.csv     # the Tier-1 input — written by the Friday signals export (local run)
 │   └── archive/              #   dated snapshots (this-week-<YYYY-MM-DD>.csv)
 ├── log/                      # the carried-forward log (Tier 0 reads + rewrites weekly)
 │   ├── theme_map.json        #   {} on first run; Tier 0 fills it (+ theme-level lineage lines)

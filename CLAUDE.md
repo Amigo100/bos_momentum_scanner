@@ -32,10 +32,10 @@ Three layers, strict division of labour:
 ## 2. The weekly cadence
 
 ```
-FRIDAY ~16:30 ET (automated — .github/workflows/friday_scan.yml)
-  python -m scanner.scanner --archive --no-email   # V10 scan: pivots + exit flags (read-only book)
-  python -m scripts.sterling_signals_export        # → sterling-run/signals/this-week.csv (auto)
-  → one combined notification (email + WhatsApp): pivot list + exit flags
+FRIDAY after the close (LOCAL RUN — all automation removed 2026-06-12)
+  python -m scanner.scanner --archive              # V10 scan: pivots + exit flags (read-only book)
+  python -m scripts.sterling_signals_export        # → sterling-run/signals/this-week.csv
+  → report prints to the terminal; email/WhatsApp summary only if §9 env vars set (--no-email skips)
 
 WEEKEND (the skills run — sterling-grid/orchestration/run-pipeline.md, steps ①–⑨)
   ① Tier 0 theme map + hunting brief   ①b theme-health on held themes
@@ -61,7 +61,6 @@ sterling-run/   THE STATE LAYER — see §6 (incl. THE portfolio.csv)
 config/         output_paths.py · banned_terms.py
 utils/          notifications.py (scan summary email/WhatsApp) · email_notifier.py
 tests/          test_sterling_indicators.py (V10 suite) · test_integration.py (marketing-rule guard)
-.github/workflows/  friday_scan.yml · test_notifications.yml
 archive/        everything retired (see map below)
 ```
 
@@ -78,6 +77,10 @@ book + equity/sheets/snapshot exports) · `archive/cowork-content-system/` (COWO
 settings.py, voice_rules.md, all of substack/) · `archive/docs/` (Sterling Prompt Library, handbook
 v7, ARTICLE/VISUAL systems) · `archive/sterling-grid-bundle/` (superseded by sterling-grid/skills +
 install.sh). Rollback tag: `pre-v10-integration`.
+2026-06-12 local-only — ALL automation removed: every GitHub workflow disabled
+(`friday_scan.yml` + `test_notifications.yml` YAMLs → `archive/workflows/`; `.github/` deleted) and
+the 3 Claude scheduled tasks disabled (scanner-run, run-sterling-scanner, weekly-content-ideas).
+The system runs only when you run it.
 
 ---
 
@@ -170,8 +173,8 @@ notes skills enforce them; `config/banned_terms.py` is the machine-readable regi
 ## 5. Command cheat sheet
 
 ```bash
-# Friday (automated; manual equivalents)
-python -m scanner.scanner --archive              # full technical scan + portfolio update
+# Friday (local run)
+python -m scanner.scanner --archive              # full technical scan: pivots + exit flags
 python -m scripts.sterling_signals_export        # → sterling-run/signals/this-week.csv
 python -m scripts.sterling_signals_export --dry-run
 
@@ -196,7 +199,7 @@ python -m pytest tests/ -v
 
 ```
 sterling-run/
-├── signals/this-week.csv        # Tier-1 input — WRITTEN AUTOMATICALLY by the Friday workflow
+├── signals/this-week.csv        # Tier-1 input — written by the Friday signals export (local run)
 │   └── archive/                 # dated snapshots
 ├── log/                         # carried-forward state (Tier 0 reads + rewrites weekly):
 │   theme_map.json · regime_log.jsonl · discovery_log.jsonl · benchmark_set.json ·
@@ -247,7 +250,7 @@ article/visual systems, substack tools) is archived at `archive/cowork-content-s
 ## 9. Environment variables
 
 ```bash
-# Notifications (Friday scan summary + failure alerts)
+# Notifications (optional — emailed scan summary when running locally)
 export NOTIFICATION_EMAIL="alerts@yourdomain.com"
 export SMTP_SERVER="smtp.gmail.com"; export SMTP_PORT="587"
 export EMAIL_SENDER="you@gmail.com"; export EMAIL_PASSWORD="app-password"
@@ -260,14 +263,14 @@ export TWILIO_WHATSAPP_FROM="whatsapp:+14155238886"; export WHATSAPP_TO="whatsap
 
 No LLM API keys required — the scanner is pure technical; the skills run inside Claude Code.
 
-## 10. Workflows & troubleshooting
+## 10. Running it & troubleshooting
 
-**Active workflows:** `friday_scan.yml` (Fri 21:30 UTC: scan → signals export → notify → commit)
-and `test_notifications.yml` (manual dispatch). Everything else was disabled + archived.
+**No automation.** Every GitHub workflow is disabled (YAMLs in `archive/workflows/`; `.github/`
+removed) and the Claude scheduled tasks are disabled — nothing runs unless you run it.
 
-- **Friday scan failed** → check the Actions run; the failure email fires automatically. Re-run via
-  `workflow_dispatch`. The weekend run needs `sterling-run/signals/this-week.csv` — regenerate
-  locally with `python -m scripts.sterling_signals_export` if needed.
+- **Friday scan** → run it yourself after the close: `python -m scanner.scanner --archive`, then
+  `python -m scripts.sterling_signals_export`. The weekend run needs
+  `sterling-run/signals/this-week.csv` — the export writes it.
 - **Validator FAILs after a weekend run** → fix the failing agent's output and re-run that unit;
   never patch arrays/counts at persist time (handoff-card-spec §W).
 - **yfinance rate limits** → wait 5–10 min or `--top 50`.

@@ -81,8 +81,8 @@ deep-dive → verdict. (Tier 2.5's `Consensus` line only appears when a second p
 ## Phase 2 — real small run (Tier 0 → Tier 4)
 
 1. **Export this week's scanner output**: `python -m scripts.sterling_signals_export` writes
-   `signals/this-week.csv` from `scanner/output/signals_technical.json` (the Friday workflow runs
-   this automatically; `--dry-run` to preview).
+   `signals/this-week.csv` from `scanner/output/signals_technical.json` (run it after each Friday
+   scan; `--dry-run` to preview).
 2. **Tier 0 (`/sterling-grid-tier0`), four sessions:** 0a Regime ∥ 0b Discovery → 0c Qualification &
    Scoring → 0d Vehicle Mapping, off `log/` (empty on first run = bootstrap). Output: the scored map +
    the **hunting brief**. ✅ The hunting brief carries the **three theme-level lineage lines per HUNT

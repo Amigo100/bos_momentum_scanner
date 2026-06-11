@@ -1,0 +1,90 @@
+{
+    "date": "2026-05-26",
+    "day": "tuesday",
+    "generated_at": "2026-05-26T08:00:00+10:00",
+    "week": "W22",
+    "weekly_plan_used": "weekly_plan_2026-W22.json",
+    "post": {
+        "type": "deep_dive",
+        "status": "produced_externally",
+        "topic": "Biotech Capital Cycle: Five Positions, Three Catalysts",
+        "note": "Tuesday deep dive written by user in Claude.ai using context_tuesday_20260526.md. Cowork not involved in writing this post."
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "SCANNER",
+            "sub_variant": "weekly_funnel",
+            "time_aedt": "08:00",
+            "file": "notes/morning_scanner_20260526.md",
+            "tickers_referenced": ["CYRX", "KYTX", "NAMS"],
+            "prices_verified": false,
+            "price_note": "Historical screening funnel data. No live prices referenced.",
+            "word_count": 101
+        },
+        {
+            "slot": 2,
+            "type": "POSITION",
+            "sub_variant": "catalyst_update",
+            "time_aedt": "12:00",
+            "file": "notes/midday_position_20260526.md",
+            "tickers_referenced": ["HIVE", "VOYG"],
+            "prices_verified": true,
+            "word_count": 122
+        },
+        {
+            "slot": 3,
+            "type": "PROMO",
+            "sub_variant": "deep_dive_hook",
+            "time_aedt": "20:00",
+            "file": "notes/evening_promo_20260526.md",
+            "tickers_referenced": [],
+            "prices_verified": false,
+            "price_note": "No prices referenced. Teaser for Biotech Capital Cycle deep dive.",
+            "word_count": 82
+        }
+    ],
+    "visual_card": null,
+    "repetition_check": {
+        "previous_manifests_checked": [
+            "daily_manifest_20260523.json (2026-05-23, Saturday)",
+            "daily_manifest.json (2026-05-18, Monday)"
+        ],
+        "skips": [],
+        "substitutions": [
+            {
+                "original": "POSITION lead with AMD/BAND/SVCO/CYRX (same as Monday May 18)",
+                "replacement": "POSITION lead with HIVE/VOYG",
+                "reason": "Monday used alpha_snapshot featuring AMD, BAND, SVCO, CYRX. Rotated to HIVE (near-double + AI data centre catalyst) and VOYG (+54%) for variety."
+            }
+        ],
+        "variant_rotation": {
+            "SCANNER": "weekly_funnel (pre-batched SCAN-1; Saturday used weekly_recap_visual, different angle)",
+            "POSITION": "catalyst_update (Monday used alpha_snapshot; rotated to catalyst_update featuring HIVE AI pivot news)",
+            "PROMO": "deep_dive_hook (pre-batched PROMO-1; Saturday used briefing_promo, different type)"
+        }
+    },
+    "freshness_gate": {
+        "prices_searched": ["HIVE", "VOYG", "CYRX", "KYTX", "NAMS", "AMD", "NVDA", "BAND", "ASPI", "SVCO", "ACRS", "KARO", "VYGR"],
+        "price_date": "2026-05-22 to 2026-05-25 (Memorial Day weekend; last trading day May 23)",
+        "nav_used": 107811,
+        "total_return_used": 88.31,
+        "spy_return_used": 45.22,
+        "alpha_used": 43.10,
+        "live_prices": {
+            "AMD": 481.00,
+            "NVDA": 215.33,
+            "BAND": 58.54,
+            "HIVE": 4.16,
+            "SVCO": 9.27,
+            "VOYG": 44.64,
+            "CYRX": 14.22,
+            "ACRS": 4.46,
+            "NAMS": 35.44,
+            "KARO": 46.14,
+            "KYTX": 8.63,
+            "ASPI": 5.56,
+            "VYGR": 4.15
+        }
+    }
+}

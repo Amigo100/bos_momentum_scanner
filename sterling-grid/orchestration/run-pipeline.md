@@ -196,7 +196,10 @@ Run, in order, invoking each skill BY NAME (re-read each skill from disk on use)
    ledger; consolidate any stray side-logs into it), then run
    `python3 -m scripts.sterling_validate <date> --check decisions` — Part A owns ledger validity.
    **Part C (runs last):** `python -m scripts.sterling_weekly_close <date>` to
-   build the operator report + the two tracking CSVs and write new buys / DD'd sells into portfolio.csv.
+   build the operator report + the two tracking CSVs and write new buys / DD'd sells into portfolio.csv
+   — the close ALSO MIRRORS the run into `research/<TICKER>/` (per-name view, status + decision
+   history) and `weeks/<YYYY-WNN>/` (per-week view: newsletter, notes, deep-dives, decisions.csv) —
+   idempotent, append-only.
    SAVE log/ (theme_map.json, benchmark_set, regime_log, discovery_log, theme_health.jsonl) for next
    week; check held names for the scanner's technical exit and flag any to sell in full.
 

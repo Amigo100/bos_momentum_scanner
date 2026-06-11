@@ -1,0 +1,802 @@
+{
+  "timestamp": "2026-03-24 19:38:24",
+  "timeframe": "WEEKLY",
+  "entry_criteria": "Sterling Grid V6: HMA pivot + (UC rising OR MACD cross-up)",
+  "exit_criteria": "ExD compound exit + tiered profit lock",
+  "stats": {
+    "tickers_loaded": 1279,
+    "data_downloaded": 1269,
+    "hma_pivot_low": 45,
+    "macd_cross_up": 25,
+    "uc_rising": 156,
+    "buy_signal": 18,
+    "tier_t1": 6,
+    "tier_t2": 3,
+    "tier_t3": 9,
+    "exd_exit": 37,
+    "technical_signals": 18
+  },
+  "market_context_summary": "GDP tracking +2.3% with Feb payrolls at -92K and unemployment rising to 4.4%. Fed held at 3.50-3.75% with median dot projecting one cut in 2026. Iran conflict driving oil above $108 and VIX to 26.78. S&P 500 breadth near capitulation with only 12.7% above 20-day MA. Small caps outperforming SPY by +4pp YTD as the Great Rotation from mega-cap tech into value and cyclicals continues.",
+  "market_regime": "selective",
+  "themes": [
+    {
+      "name": "Sovereign Satellite ISR",
+      "classification": "PRIME",
+      "composite_score": 8.6,
+      "catalyst_score": 9.0,
+      "momentum_score": 8.5,
+      "crowding_score": 6.0,
+      "runway_score": 8.5,
+      "thesis_summary": "Sovereign demand for real-time satellite intelligence is structurally increasing as the Iran conflict, European rearmament, and Indo-Pacific tensions drive governments to build independent ISR capabilities. EOCL and allied programmes represent a $4B+ IDIQ with multi-year contract visibility.",
+      "why_now": "Iran conflict has elevated demand for space-based ISR. Gen-3 satellite technology achieving commercial parity with legacy systems at fraction of cost. $345M backlog growing 32% YoY.",
+      "key_catalysts": [
+        "FY2027 President's Budget Request (March/April 2026)",
+        "EOCL Year 5 option exercise (mid-2026)",
+        "Gen-3 constellation 8-9 on orbit by year-end 2026"
+      ],
+      "primary_risks": [
+        "EOCL budget cut from $300M to $200M",
+        "Gen-3 launch delays",
+        "Revenue recognition lumpiness"
+      ],
+      "valuation_regime": "TRANSITION",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Copper Structural Deficit",
+      "classification": "PRIME",
+      "composite_score": 8.1,
+      "catalyst_score": 8.0,
+      "momentum_score": 8.0,
+      "crowding_score": 4.0,
+      "runway_score": 8.5,
+      "thesis_summary": "ICSG projects persistent copper deficits through the decade. Demand drivers are structural: EVs, grid modernisation, data centre build-out, and defence electronics all require copper. New mine supply takes 10+ years to develop. Producers with near-term production growth trade at premiums.",
+      "why_now": "Florence Copper commenced production March 2026 (first greenfield US copper in a decade). Copper at $6/lb near multi-year highs. Supply constrained with limited new projects.",
+      "key_catalysts": [
+        "Florence Copper ramp-up targets 30-35M lbs 2026",
+        "Gibraltar production guide 110-115M lbs",
+        "Yellowhead project environmental assessment"
+      ],
+      "primary_risks": [
+        "Copper price correction >15%",
+        "Florence ramp-up underperformance",
+        "Tariff expiration uncertainty (Section 122, July 24)"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "AI Semiconductor Fab Optimization",
+      "classification": "INVESTABLE",
+      "composite_score": 6.75,
+      "catalyst_score": 7.0,
+      "momentum_score": 6.5,
+      "crowding_score": 7.0,
+      "runway_score": 6.5,
+      "thesis_summary": "The transition from FinFET to gate-all-around architecture multiplies simulation demand. CHIPS Act fab construction requires full EDA tool stacks. Silvaco holds the #2 global TCAD position and is acquiring semiconductor IP assets at distressed multiples while the rest of the EDA sector trades at 11-16x revenue.",
+      "why_now": "Q4 2025 earnings beat by 57%. Cost cuts 70% executed. CEO/CFO cluster buy at all-time low. SIP revenue doubled in 5 months via Mixel acquisition.",
+      "key_catalysts": [
+        "Q1 2026 earnings (May)",
+        "DAC 2026 conference (July)",
+        "Non-GAAP profitability target (H1 2026)",
+        "China export control suspension expiry (Nov 2026)"
+      ],
+      "primary_risks": [
+        "$10M unrestricted cash creates genuine binary risk",
+        "TCAD declining -25% vs Synopsys vertical integration",
+        "FTCO platform has only 2 customers"
+      ],
+      "valuation_regime": "TRANSITION",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Bispecific Antibody AD Pipeline",
+      "classification": "INVESTABLE",
+      "composite_score": 6.65,
+      "catalyst_score": 7.0,
+      "momentum_score": 6.5,
+      "crowding_score": 7.5,
+      "runway_score": 6.0,
+      "thesis_summary": "TSLP-targeting biologics for atopic dermatitis represent the next frontier after Dupixent's $13B franchise faces patent cliff anxiety. ACRS has both biologic (bosakitug, ATI-052) and oral (ATI-2138, ATI-9494) programs spanning the two most sought-after target classes. Multi-shot structure reduces all-fail probability to ~17%.",
+      "why_now": "Bosakitug Phase 2 enrollment completed March 18 (109 patients). ATI-052 Phase 1a interim data showed 4x potency. $59.8M institutional raise from specialist healthcare funds at current prices.",
+      "key_catalysts": [
+        "AAD 2026 ePoster (March 27)",
+        "ATI-052 Phase 1a topline (Q2 2026)",
+        "ATI-2138 Phase 2b initiation (H1 2026)",
+        "Bosakitug Phase 2 topline (Q4 2026)"
+      ],
+      "primary_risks": [
+        "Phase 2 AD failure rate ~55%",
+        "TSLP may not translate from asthma to skin disease",
+        "Correlated failure risk on 2 of 4 programs",
+        "Continued dilution pre-revenue"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Rare Disease M&A Target",
+      "classification": "INVESTABLE",
+      "composite_score": 7.1,
+      "catalyst_score": 7.0,
+      "momentum_score": 7.0,
+      "crowding_score": 5.5,
+      "runway_score": 7.5,
+      "thesis_summary": "CPRX is the highest-quality balance sheet in small/mid-cap pharma: 36% net margins, $709M cash, zero debt, $200M buyback active. FIRDAPSE and AGAMREE franchises growing 20%+ annually. But FIRDAPSE (61% of revenue) faces active patent litigation with March 2026 trial.",
+      "why_now": "FIRDAPSE patent trial imminent. Outcome determines whether CPRX is a $35 stock or a $15 stock. Wait for resolution before deploying.",
+      "key_catalysts": [
+        "FIRDAPSE patent trial outcome (March 2026)",
+        "Q1 2026 earnings (May 13)",
+        "AGAMREE quarterly growth updates"
+      ],
+      "primary_risks": [
+        "FIRDAPSE patent loss would expose 61% of revenue to generic erosion",
+        "Single-drug concentration",
+        "All products in-licensed with no proprietary pipeline"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "MAINSTREAM",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "DC Immersion Cooling",
+      "classification": "INVESTABLE",
+      "composite_score": 6.95,
+      "catalyst_score": 7.5,
+      "momentum_score": 7.0,
+      "crowding_score": 6.5,
+      "runway_score": 6.5,
+      "thesis_summary": "Accelsius (INV subsidiary) has genuine technology differentiation with the NeuCool two-phase cooling platform. But INV's holding company structure, serial dilution, and governance issues destroy the risk/reward for equity holders. Smart money is investing in Accelsius directly ($65M Series B from Johnson Controls).",
+      "why_now": "NeuCool IR150 launched at NVIDIA GTC March 16. But INV stock down 61% from highs despite the tailwind.",
+      "key_catalysts": [
+        "Accelsius hyperscaler contract announcements",
+        "Accelsius projected cash-flow positive year-end 2026",
+        "INV Q4 earnings (April 10)"
+      ],
+      "primary_risks": [
+        "INV holding company structure = structural value trap",
+        "Serial dilution at parent level",
+        "Governance tension (activist 13D)",
+        "Vertiv, Modine, nVent competition"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Coal Geopolitical Repricing",
+      "classification": "SELECTIVE",
+      "composite_score": 4.85,
+      "catalyst_score": 4.0,
+      "momentum_score": 5.0,
+      "crowding_score": 6.0,
+      "runway_score": 4.5,
+      "thesis_summary": "BTU and CNR ride geopolitical energy tailwinds but lack structural force alignment. Both exceed $2B market cap. Coal is a cyclical trade, not a secular theme for our system.",
+      "why_now": "Iran conflict driving energy prices. But this is a macro trade, not our system's edge.",
+      "key_catalysts": [
+        "Iran conflict escalation/resolution",
+        "Section 122 tariff expiration July 24"
+      ],
+      "primary_risks": [
+        "Geopolitical de-escalation collapses premium",
+        "Secular energy transition headwinds",
+        "Both tickers >$2B"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "MAINSTREAM",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    }
+  ],
+  "pass_signals": [],
+  "consider_signals": [
+    {
+      "symbol": "SVCO",
+      "price": 5.98,
+      "tier": "T3",
+      "quality_tier": 3,
+      "beta": 0,
+      "uc": 0,
+      "uc_rising": false,
+      "rsi14": 0,
+      "macd_cross_up": false,
+      "hma_pivot_low": false,
+      "hma_pivot_high": false,
+      "hma_slope_rising": false,
+      "buy_signal": false,
+      "exd_signal": false,
+      "return_20d": 0,
+      "banker": 0,
+      "uc_rising_above": false,
+      "theme": "AI semiconductor fab optimization",
+      "theme_score": 6.75,
+      "pure_play_score": 6.75,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "TRANSITION",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Q1 2026 earnings May 2026: non-GAAP breakeven test. DAC 2026 conference July. Positive OCF target H2 2026.",
+      "gate_bear_case": "Cash runway of $10M unrestricted is 3.5-8 months. If Q1 misses and burns accelerate, ATM at depressed prices creates reflexive dilution spiral. TCAD business declining -25% YoY faces Synopsys $35B Ansys vertical integration.",
+      "gate_math": "2.8x EV/Revenue vs EDA peer median 11x. Even half-gap closure to 5.5x = $308M EV = ~$10/share (+67%). Analyst avg PT $9.33 (+56%).",
+      "sector_status": "",
+      "upside_potential": "EV/Revenue peer convergence: SVCO at 2.8x vs Synopsys 11.1x, Cadence 16.0x, PDF Solutions 5.8x. Even closing half the gap to peer median (5.5x) implies re-rating from $184M to $308M EV = ~$10/share. Expected value $8.63 (+44.3%) via scenario weighting: Bear $3.00 (20%) + Base $8.25 (50%) + Bull $13.00 (30%).",
+      "bullish_factors": [
+        "Market assigns 47% probability of turnaround failure (implied from reverse DCF). We assign 20%. The 27-percentage-point gap is driven by cost cuts already 70% executed, insider cluster buy at ATL, and Mixel structural revenue addition the market has not absorbed.",
+        "Q4 2025 earnings beat by 57% on March 12. Cost reduction programme 70% executed. SIP revenue hit $5.1M in Q4 (company record, more than all of FY2024 SIP). CEO/CFO/Chair bought $348K at $3.90-4.13 in Nov-Dec 2025.",
+        "Q1 2026 earnings (May 2026): revenue above $16M with non-GAAP OpEx below $16.5M confirms turnaround trajectory."
+      ],
+      "risk_factors": [
+        "$10M unrestricted cash with $33.9M FY2025 operating cash burn. ATM programme at $4-5/share creates reflexive dilution spiral. TCAD declined 25% facing $35B Synopsys-Ansys vertical integration. FTCO has only 2 customers after 18 months. Q1 seasonal weakness could accelerate cash crisis.",
+        "Unrestricted cash position. If cash drops below $5M at any quarter-end, the thesis is in jeopardy regardless of revenue trajectory.",
+        "Q1 2026 revenue below $14M AND cash below $5M at quarter-end. OR CEO Rhines departs within 12 months. OR stock closes below $3.50."
+      ],
+      "reasoning": "Silvaco at $5.98 trades at 2.8x revenue when EDA peers trade at 11-16x. The new CEO (Walden Rhines, grew Mentor Graphics from $400M to a $4.5B Siemens acquisition) bought $170K of open-market shares at the all-time low. Cost cuts are 70% done, Mixel IP acquisition doubled SIP revenue in five months, and non-GAAP profitability is targeted by H1 2026.",
+      "position_size_pct": 0.015,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "Silvaco at $5.98 trades at 2.8x revenue when EDA peers trade at 11-16x. The new CEO (Walden Rhines, grew Mentor Graphics from $400M to a $4.5B Siemens acquisition) bought $170K of open-market shares at the all-time low. Cost cuts are 70% done, Mixel IP acquisition doubled SIP revenue in five months, and non-GAAP profitability is targeted by H1 2026.",
+      "dd_why_now": "Q4 2025 earnings beat by 57% on March 12. Cost reduction programme 70% executed. SIP revenue hit $5.1M in Q4 (company record, more than all of FY2024 SIP). CEO/CFO/Chair bought $348K at $3.90-4.13 in Nov-Dec 2025.",
+      "dd_the_math": "EV/Revenue peer convergence: SVCO at 2.8x vs Synopsys 11.1x, Cadence 16.0x, PDF Solutions 5.8x. Even closing half the gap to peer median (5.5x) implies re-rating from $184M to $308M EV = ~$10/share. Expected value $8.63 (+44.3%) via scenario weighting: Bear $3.00 (20%) + Base $8.25 (50%) + Bull $13.00 (30%).",
+      "dd_bear_case": "$10M unrestricted cash with $33.9M FY2025 operating cash burn. ATM programme at $4-5/share creates reflexive dilution spiral. TCAD declined 25% facing $35B Synopsys-Ansys vertical integration. FTCO has only 2 customers after 18 months. Q1 seasonal weakness could accelerate cash crisis.",
+      "dd_risk_to_monitor": "Unrestricted cash position. If cash drops below $5M at any quarter-end, the thesis is in jeopardy regardless of revenue trajectory.",
+      "dd_action": "Enter T3 at $5.98. Three tranches: 0.5% now, 0.5% on Q1 confirmation (May), 0.5% on first positive OCF quarter. Hard stop $3.50.",
+      "dd_key_catalyst": "Q1 2026 earnings (May 2026): revenue above $16M with non-GAAP OpEx below $16.5M confirms turnaround trajectory.",
+      "dd_fatal_flaw": "",
+      "action": "Enter T3 at $5.98. Three tranches: 0.5% now, 0.5% on Q1 confirmation (May), 0.5% on first positive OCF quarter. Hard stop $3.50.",
+      "catalyst_summary": "Q1 2026 earnings May 2026: non-GAAP breakeven test. DAC 2026 conference July. Positive OCF target H2 2026."
+    },
+    {
+      "symbol": "ACRS",
+      "price": 3.65,
+      "tier": "T3",
+      "quality_tier": 3,
+      "beta": 0,
+      "uc": 0,
+      "uc_rising": false,
+      "rsi14": 0,
+      "macd_cross_up": false,
+      "hma_pivot_low": false,
+      "hma_pivot_high": false,
+      "hma_slope_rising": false,
+      "buy_signal": false,
+      "exd_signal": false,
+      "return_20d": 0,
+      "banker": 0,
+      "uc_rising_above": false,
+      "theme": "Bispecific antibody AD pipeline",
+      "theme_score": 6.65,
+      "pure_play_score": 6.65,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "OPTIONALITY",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Bosakitug Phase 2 AD topline Q4 2026 (primary). ATI-052 Phase 1b POC H2 2026. ATI-2138 Phase 2b initiation H1 2026. AAD 2026 ePoster March 27.",
+      "gate_bear_case": "Phase 2 AD trials have ~55% failure rate. Rising placebo response (up to 20% on EASI-75) makes statistical significance harder. Bosakitug and ATI-052 share TSLP target: if TSLP doesn't translate from asthma to skin, both biologic programs fail simultaneously.",
+      "gate_math": "rNPV pipeline value: bosakitug $490M, ATI-052 $500M, ATI-2138 $505M, ATI-9494 $103M. After cash, overhead, dilution: base fair value $8.00-11.23/share. Current $3.65 = 119-207% upside. Cash floor $1.52/share limits downside to ~58%.",
+      "sector_status": "",
+      "upside_potential": "rNPV pipeline model (40% weight): $11.23/share. Precedent M&A (20% weight): GSK/Aiolos $1B for single anti-TSLP applied with discounts = $7.27. Catalyst-adjusted (30% weight): $5.72. Blended base: ~$8.00 (+119%). Cash floor: $1.52/share. Prob-weighted U/D: 3.8:1.",
+      "bullish_factors": [
+        "Market prices ACRS as a single-program coin flip, assigning zero value to ATI-052, ATI-2138, and ATI-9494. Our analysis values the pipeline at $296M above cash based on rNPV, M&A precedent, and the multi-shot structure that reduces all-fail probability to ~17%.",
+        "Bosakitug Phase 2 enrollment completed March 18 (109 patients, topline Q4 2026). ATI-052 interim Phase 1a showed 4x potency vs comparators. Four specialist funds invested $59.8M at ~$3.25 in March. AAD 2026 ePoster this week (March 27).",
+        "Bosakitug Phase 2 topline results in atopic dermatitis, Q4 2026."
+      ],
+      "risk_factors": [
+        "CEO oversaw zunsemetinib Phase 2b failure in Nov 2023. Bosakitug and ATI-052 share TSLP target (correlated failure). AD placebo response trending up to 20% on EASI-75 making statistical significance harder in 109-patient study. Shares grew 96% in <2 years. Further dilution certain before any product revenue.",
+        "Bosakitug Phase 2 EASI-75 primary endpoint result (Q4 2026). This single binary event determines the majority of the stock's value.",
+        "Bosakitug Phase 2 misses primary EASI-75 endpoint (p>0.05 on ITT). Do not average down. Stock closes below $1.80. CEO sells >$250K discretionary stock. Cash runway falls below 12 months."
+      ],
+      "reasoning": "At $3.65, ACRS trades at $296M enterprise value in a TSLP M&A environment where single Phase 2-ready assets have commanded $1.0 to $1.4 billion. Four clinical programs provide multi-shot optionality, reducing all-fail probability to approximately 17%. The bosakitug Phase 2 readout in Q4 2026 is the primary catalyst.",
+      "position_size_pct": 0.015,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "At $3.65, ACRS trades at $296M enterprise value in a TSLP M&A environment where single Phase 2-ready assets have commanded $1.0 to $1.4 billion. Four clinical programs provide multi-shot optionality, reducing all-fail probability to approximately 17%. The bosakitug Phase 2 readout in Q4 2026 is the primary catalyst.",
+      "dd_why_now": "Bosakitug Phase 2 enrollment completed March 18 (109 patients, topline Q4 2026). ATI-052 interim Phase 1a showed 4x potency vs comparators. Four specialist funds invested $59.8M at ~$3.25 in March. AAD 2026 ePoster this week (March 27).",
+      "dd_the_math": "rNPV pipeline model (40% weight): $11.23/share. Precedent M&A (20% weight): GSK/Aiolos $1B for single anti-TSLP applied with discounts = $7.27. Catalyst-adjusted (30% weight): $5.72. Blended base: ~$8.00 (+119%). Cash floor: $1.52/share. Prob-weighted U/D: 3.8:1.",
+      "dd_bear_case": "CEO oversaw zunsemetinib Phase 2b failure in Nov 2023. Bosakitug and ATI-052 share TSLP target (correlated failure). AD placebo response trending up to 20% on EASI-75 making statistical significance harder in 109-patient study. Shares grew 96% in <2 years. Further dilution certain before any product revenue.",
+      "dd_risk_to_monitor": "Bosakitug Phase 2 EASI-75 primary endpoint result (Q4 2026). This single binary event determines the majority of the stock's value.",
+      "dd_action": "Enter T3 at $3.65. Three tranches: 0.75% now, conditional adds on ATI-052 confirmation and pre-bosakitug readout. Hard stop $1.80.",
+      "dd_key_catalyst": "Bosakitug Phase 2 topline results in atopic dermatitis, Q4 2026.",
+      "dd_fatal_flaw": "",
+      "action": "Enter T3 at $3.65. Three tranches: 0.75% now, conditional adds on ATI-052 confirmation and pre-bosakitug readout. Hard stop $1.80.",
+      "catalyst_summary": "Bosakitug Phase 2 AD topline Q4 2026 (primary). ATI-052 Phase 1b POC H2 2026. ATI-2138 Phase 2b initiation H1 2026. AAD 2026 ePoster March 27."
+    }
+  ],
+  "buy_signals": [
+    {
+      "symbol": "SVCO",
+      "price": 5.98,
+      "tier": "T3",
+      "quality_tier": 3,
+      "beta": 0,
+      "uc": 0,
+      "uc_rising": false,
+      "rsi14": 0,
+      "macd_cross_up": false,
+      "hma_pivot_low": false,
+      "hma_pivot_high": false,
+      "hma_slope_rising": false,
+      "buy_signal": false,
+      "exd_signal": false,
+      "return_20d": 0,
+      "banker": 0,
+      "uc_rising_above": false,
+      "theme": "AI semiconductor fab optimization",
+      "theme_score": 6.75,
+      "pure_play_score": 6.75,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "TRANSITION",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Q1 2026 earnings May 2026: non-GAAP breakeven test. DAC 2026 conference July. Positive OCF target H2 2026.",
+      "gate_bear_case": "Cash runway of $10M unrestricted is 3.5-8 months. If Q1 misses and burns accelerate, ATM at depressed prices creates reflexive dilution spiral. TCAD business declining -25% YoY faces Synopsys $35B Ansys vertical integration.",
+      "gate_math": "2.8x EV/Revenue vs EDA peer median 11x. Even half-gap closure to 5.5x = $308M EV = ~$10/share (+67%). Analyst avg PT $9.33 (+56%).",
+      "sector_status": "",
+      "upside_potential": "EV/Revenue peer convergence: SVCO at 2.8x vs Synopsys 11.1x, Cadence 16.0x, PDF Solutions 5.8x. Even closing half the gap to peer median (5.5x) implies re-rating from $184M to $308M EV = ~$10/share. Expected value $8.63 (+44.3%) via scenario weighting: Bear $3.00 (20%) + Base $8.25 (50%) + Bull $13.00 (30%).",
+      "bullish_factors": [
+        "Market assigns 47% probability of turnaround failure (implied from reverse DCF). We assign 20%. The 27-percentage-point gap is driven by cost cuts already 70% executed, insider cluster buy at ATL, and Mixel structural revenue addition the market has not absorbed.",
+        "Q4 2025 earnings beat by 57% on March 12. Cost reduction programme 70% executed. SIP revenue hit $5.1M in Q4 (company record, more than all of FY2024 SIP). CEO/CFO/Chair bought $348K at $3.90-4.13 in Nov-Dec 2025.",
+        "Q1 2026 earnings (May 2026): revenue above $16M with non-GAAP OpEx below $16.5M confirms turnaround trajectory."
+      ],
+      "risk_factors": [
+        "$10M unrestricted cash with $33.9M FY2025 operating cash burn. ATM programme at $4-5/share creates reflexive dilution spiral. TCAD declined 25% facing $35B Synopsys-Ansys vertical integration. FTCO has only 2 customers after 18 months. Q1 seasonal weakness could accelerate cash crisis.",
+        "Unrestricted cash position. If cash drops below $5M at any quarter-end, the thesis is in jeopardy regardless of revenue trajectory.",
+        "Q1 2026 revenue below $14M AND cash below $5M at quarter-end. OR CEO Rhines departs within 12 months. OR stock closes below $3.50."
+      ],
+      "reasoning": "Silvaco at $5.98 trades at 2.8x revenue when EDA peers trade at 11-16x. The new CEO (Walden Rhines, grew Mentor Graphics from $400M to a $4.5B Siemens acquisition) bought $170K of open-market shares at the all-time low. Cost cuts are 70% done, Mixel IP acquisition doubled SIP revenue in five months, and non-GAAP profitability is targeted by H1 2026.",
+      "position_size_pct": 0.015,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "Silvaco at $5.98 trades at 2.8x revenue when EDA peers trade at 11-16x. The new CEO (Walden Rhines, grew Mentor Graphics from $400M to a $4.5B Siemens acquisition) bought $170K of open-market shares at the all-time low. Cost cuts are 70% done, Mixel IP acquisition doubled SIP revenue in five months, and non-GAAP profitability is targeted by H1 2026.",
+      "dd_why_now": "Q4 2025 earnings beat by 57% on March 12. Cost reduction programme 70% executed. SIP revenue hit $5.1M in Q4 (company record, more than all of FY2024 SIP). CEO/CFO/Chair bought $348K at $3.90-4.13 in Nov-Dec 2025.",
+      "dd_the_math": "EV/Revenue peer convergence: SVCO at 2.8x vs Synopsys 11.1x, Cadence 16.0x, PDF Solutions 5.8x. Even closing half the gap to peer median (5.5x) implies re-rating from $184M to $308M EV = ~$10/share. Expected value $8.63 (+44.3%) via scenario weighting: Bear $3.00 (20%) + Base $8.25 (50%) + Bull $13.00 (30%).",
+      "dd_bear_case": "$10M unrestricted cash with $33.9M FY2025 operating cash burn. ATM programme at $4-5/share creates reflexive dilution spiral. TCAD declined 25% facing $35B Synopsys-Ansys vertical integration. FTCO has only 2 customers after 18 months. Q1 seasonal weakness could accelerate cash crisis.",
+      "dd_risk_to_monitor": "Unrestricted cash position. If cash drops below $5M at any quarter-end, the thesis is in jeopardy regardless of revenue trajectory.",
+      "dd_action": "Enter T3 at $5.98. Three tranches: 0.5% now, 0.5% on Q1 confirmation (May), 0.5% on first positive OCF quarter. Hard stop $3.50.",
+      "dd_key_catalyst": "Q1 2026 earnings (May 2026): revenue above $16M with non-GAAP OpEx below $16.5M confirms turnaround trajectory.",
+      "dd_fatal_flaw": "",
+      "action": "Enter T3 at $5.98. Three tranches: 0.5% now, 0.5% on Q1 confirmation (May), 0.5% on first positive OCF quarter. Hard stop $3.50.",
+      "catalyst_summary": "Q1 2026 earnings May 2026: non-GAAP breakeven test. DAC 2026 conference July. Positive OCF target H2 2026."
+    },
+    {
+      "symbol": "ACRS",
+      "price": 3.65,
+      "tier": "T3",
+      "quality_tier": 3,
+      "beta": 0,
+      "uc": 0,
+      "uc_rising": false,
+      "rsi14": 0,
+      "macd_cross_up": false,
+      "hma_pivot_low": false,
+      "hma_pivot_high": false,
+      "hma_slope_rising": false,
+      "buy_signal": false,
+      "exd_signal": false,
+      "return_20d": 0,
+      "banker": 0,
+      "uc_rising_above": false,
+      "theme": "Bispecific antibody AD pipeline",
+      "theme_score": 6.65,
+      "pure_play_score": 6.65,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "OPTIONALITY",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Bosakitug Phase 2 AD topline Q4 2026 (primary). ATI-052 Phase 1b POC H2 2026. ATI-2138 Phase 2b initiation H1 2026. AAD 2026 ePoster March 27.",
+      "gate_bear_case": "Phase 2 AD trials have ~55% failure rate. Rising placebo response (up to 20% on EASI-75) makes statistical significance harder. Bosakitug and ATI-052 share TSLP target: if TSLP doesn't translate from asthma to skin, both biologic programs fail simultaneously.",
+      "gate_math": "rNPV pipeline value: bosakitug $490M, ATI-052 $500M, ATI-2138 $505M, ATI-9494 $103M. After cash, overhead, dilution: base fair value $8.00-11.23/share. Current $3.65 = 119-207% upside. Cash floor $1.52/share limits downside to ~58%.",
+      "sector_status": "",
+      "upside_potential": "rNPV pipeline model (40% weight): $11.23/share. Precedent M&A (20% weight): GSK/Aiolos $1B for single anti-TSLP applied with discounts = $7.27. Catalyst-adjusted (30% weight): $5.72. Blended base: ~$8.00 (+119%). Cash floor: $1.52/share. Prob-weighted U/D: 3.8:1.",
+      "bullish_factors": [
+        "Market prices ACRS as a single-program coin flip, assigning zero value to ATI-052, ATI-2138, and ATI-9494. Our analysis values the pipeline at $296M above cash based on rNPV, M&A precedent, and the multi-shot structure that reduces all-fail probability to ~17%.",
+        "Bosakitug Phase 2 enrollment completed March 18 (109 patients, topline Q4 2026). ATI-052 interim Phase 1a showed 4x potency vs comparators. Four specialist funds invested $59.8M at ~$3.25 in March. AAD 2026 ePoster this week (March 27).",
+        "Bosakitug Phase 2 topline results in atopic dermatitis, Q4 2026."
+      ],
+      "risk_factors": [
+        "CEO oversaw zunsemetinib Phase 2b failure in Nov 2023. Bosakitug and ATI-052 share TSLP target (correlated failure). AD placebo response trending up to 20% on EASI-75 making statistical significance harder in 109-patient study. Shares grew 96% in <2 years. Further dilution certain before any product revenue.",
+        "Bosakitug Phase 2 EASI-75 primary endpoint result (Q4 2026). This single binary event determines the majority of the stock's value.",
+        "Bosakitug Phase 2 misses primary EASI-75 endpoint (p>0.05 on ITT). Do not average down. Stock closes below $1.80. CEO sells >$250K discretionary stock. Cash runway falls below 12 months."
+      ],
+      "reasoning": "At $3.65, ACRS trades at $296M enterprise value in a TSLP M&A environment where single Phase 2-ready assets have commanded $1.0 to $1.4 billion. Four clinical programs provide multi-shot optionality, reducing all-fail probability to approximately 17%. The bosakitug Phase 2 readout in Q4 2026 is the primary catalyst.",
+      "position_size_pct": 0.015,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "At $3.65, ACRS trades at $296M enterprise value in a TSLP M&A environment where single Phase 2-ready assets have commanded $1.0 to $1.4 billion. Four clinical programs provide multi-shot optionality, reducing all-fail probability to approximately 17%. The bosakitug Phase 2 readout in Q4 2026 is the primary catalyst.",
+      "dd_why_now": "Bosakitug Phase 2 enrollment completed March 18 (109 patients, topline Q4 2026). ATI-052 interim Phase 1a showed 4x potency vs comparators. Four specialist funds invested $59.8M at ~$3.25 in March. AAD 2026 ePoster this week (March 27).",
+      "dd_the_math": "rNPV pipeline model (40% weight): $11.23/share. Precedent M&A (20% weight): GSK/Aiolos $1B for single anti-TSLP applied with discounts = $7.27. Catalyst-adjusted (30% weight): $5.72. Blended base: ~$8.00 (+119%). Cash floor: $1.52/share. Prob-weighted U/D: 3.8:1.",
+      "dd_bear_case": "CEO oversaw zunsemetinib Phase 2b failure in Nov 2023. Bosakitug and ATI-052 share TSLP target (correlated failure). AD placebo response trending up to 20% on EASI-75 making statistical significance harder in 109-patient study. Shares grew 96% in <2 years. Further dilution certain before any product revenue.",
+      "dd_risk_to_monitor": "Bosakitug Phase 2 EASI-75 primary endpoint result (Q4 2026). This single binary event determines the majority of the stock's value.",
+      "dd_action": "Enter T3 at $3.65. Three tranches: 0.75% now, conditional adds on ATI-052 confirmation and pre-bosakitug readout. Hard stop $1.80.",
+      "dd_key_catalyst": "Bosakitug Phase 2 topline results in atopic dermatitis, Q4 2026.",
+      "dd_fatal_flaw": "",
+      "action": "Enter T3 at $3.65. Three tranches: 0.75% now, conditional adds on ATI-052 confirmation and pre-bosakitug readout. Hard stop $1.80.",
+      "catalyst_summary": "Bosakitug Phase 2 AD topline Q4 2026 (primary). ATI-052 Phase 1b POC H2 2026. ATI-2138 Phase 2b initiation H1 2026. AAD 2026 ePoster March 27."
+    }
+  ],
+  "sell_signals": [],
+  "assessed_signals": [
+    {
+      "symbol": "BKSY",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "TGB",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "CPRX",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "INV",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "PL",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "SEI",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "TSEM",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "BTU",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "CNR",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "SPIR",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "IE",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "VKTX",
+      "price": 35.63,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "RDWR",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "BNED",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "TOI",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "AUDC",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "CCII",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "BRCC",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "BKSY",
+      "price": 26.09,
+      "theme": "Sovereign satellite ISR",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "TGB",
+      "price": 7.19,
+      "theme": "Copper structural deficit",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "CPRX",
+      "price": 24.24,
+      "theme": "Rare disease M&A target",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "TOI",
+      "price": 3.32,
+      "theme": "Value-based oncology at scale",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "SPIR",
+      "price": 12.22,
+      "theme": "Space-based RF intelligence",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "IE",
+      "price": 0.0,
+      "theme": "Copper structural deficit",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    }
+  ],
+  "historical_winners": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "EVTL",
+      "entry_price": 4.5,
+      "current_price": 3.74,
+      "pnl_pct": -16.888888888888886,
+      "signal_date": "2026-02-22",
+      "theme": "Drone tech"
+    },
+    {
+      "ticker": "NVDA",
+      "entry_price": 150.0,
+      "current_price": 180.25,
+      "pnl_pct": 20.166666666666664,
+      "signal_date": "2026-03-01",
+      "theme": "AI Chip Manufacturer"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "ASPI",
+      "entry_price": 6.0,
+      "current_price": 5.28,
+      "pnl_pct": -12.0,
+      "signal_date": "2026-03-04",
+      "theme": "Nuclear Fuel"
+    },
+    {
+      "ticker": "HIVE",
+      "entry_price": 2.1,
+      "current_price": 2.13,
+      "pnl_pct": 1.4285714285714235,
+      "signal_date": "2026-03-04",
+      "theme": "Crypto Miner and Datacentres"
+    },
+    {
+      "ticker": "BAND",
+      "entry_price": 16.55,
+      "current_price": 15.23,
+      "pnl_pct": -7.975830815709973,
+      "signal_date": "2026-03-08",
+      "theme": "AI Voice CPaaS Infrastructure"
+    }
+  ],
+  "big_wins": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    }
+  ],
+  "home_runs": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 17.76,
+      "pnl_pct": 124.81012658227849,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 123.48,
+      "pnl_pct": 89.96923076923078,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 193.39,
+      "pnl_pct": 61.15833333333332,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    }
+  ],
+  "exit_signals": []
+}

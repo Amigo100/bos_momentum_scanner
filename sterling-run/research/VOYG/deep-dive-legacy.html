@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The $185 Billion Build-Out Has a $29 Public Proxy: Why We Bought $VOYG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-2: #0f2440;
+    --blue: #1a3a5c;
+    --blue-bright: #2563eb;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --green: #16a34a;
+    --red: #dc2626;
+    --gold: #d97706;
+    --paper: #ffffff;
+    --paper-2: #f8fafc;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper-2);
+    color: var(--slate);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 18px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    background: var(--paper);
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    font-weight: 700;
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.12;
+    color: var(--navy);
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    color: var(--navy);
+    margin: 52px 0 8px;
+    letter-spacing: -0.01em;
+  }
+  h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    color: var(--blue-bright);
+    font-weight: 700;
+    vertical-align: middle;
+    margin-right: 12px;
+  }
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--blue);
+    margin: 34px 0 6px;
+  }
+  .section-rule {
+    height: 3px;
+    width: 56px;
+    background: var(--blue-bright);
+    border: 0;
+    margin: 0 0 22px;
+  }
+  p { margin: 0 0 18px; }
+  strong { color: var(--navy); font-weight: 600; }
+  em { color: var(--slate); }
+  a { color: var(--blue-bright); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .preview {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--slate);
+    border-left: 4px solid var(--gold);
+    background: var(--paper-2);
+    padding: 20px 24px;
+    margin: 0 0 36px;
+    border-radius: 0 8px 8px 0;
+  }
+  .preview strong { color: var(--navy); }
+
+  /* Stat grid */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 30px 0 14px;
+  }
+  .stat-card {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 10px;
+    padding: 18px 16px;
+  }
+  .stat-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #93b4d8;
+    margin: 0 0 8px;
+  }
+  .stat-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .stat-card .sub {
+    font-size: 12px;
+    color: #c7d6e8;
+    margin-top: 5px;
+    line-height: 1.35;
+  }
+  .stat-grid.wide .stat-card .value { font-size: 17px; }
+  .targets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 14px 0 6px;
+  }
+  .t-card {
+    border-radius: 10px;
+    padding: 16px 14px;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--slate-light);
+  }
+  .t-card.bear { border-top-color: var(--red); }
+  .t-card.base { border-top-color: var(--blue-bright); }
+  .t-card.rerate { border-top-color: var(--green); }
+  .t-card.over { border-top-color: var(--gold); }
+  .t-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin: 0 0 6px;
+  }
+  .t-card .price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .t-card .meta {
+    font-size: 12px;
+    color: var(--slate-light);
+    margin-top: 6px;
+    line-height: 1.35;
+  }
+  .caption {
+    font-size: 13px;
+    color: var(--slate-light);
+    margin: 8px 0 26px;
+    font-style: italic;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin: 34px 0 8px;
+  }
+  .toc h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin: 0 0 12px;
+  }
+  .toc ol {
+    margin: 0;
+    padding: 0 0 0 2px;
+    list-style: none;
+    counter-reset: toc;
+    columns: 2;
+    column-gap: 28px;
+  }
+  .toc li {
+    counter-increment: toc;
+    margin: 0 0 9px;
+    font-size: 15px;
+    break-inside: avoid;
+  }
+  .toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--blue-bright);
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 0 26px;
+    font-size: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  thead th {
+    background: var(--navy-2);
+    color: #fff;
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: var(--paper-2); }
+  td.num, th.num { font-family: 'JetBrains Mono', monospace; }
+  .pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 2px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .pill.present { background: #dcfce7; color: #15803d; }
+  .pill.partial { background: #fef3c7; color: #b45309; }
+  .pill.absent { background: #fee2e2; color: #b91c1c; }
+  .pill.clear { background: #e0edff; color: #1d4ed8; }
+
+  /* Callout */
+  .callout {
+    background: var(--navy);
+    color: #e8eef5;
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin: 30px 0;
+  }
+  .callout .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #93b4d8;
+    margin: 0 0 12px;
+  }
+  .callout p { color: #e8eef5; margin: 0 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { color: #fff; }
+
+  .bear-box {
+    border: 1px solid #fca5a5;
+    background: #fef2f2;
+    border-left: 5px solid var(--red);
+    border-radius: 0 10px 10px 0;
+    padding: 22px 26px;
+    margin: 26px 0;
+  }
+  .bear-box p { margin: 0 0 14px; }
+  .bear-box p:last-child { margin-bottom: 0; }
+
+  ol.deci, ul.deci { margin: 0 0 20px; padding-left: 22px; }
+  ol.deci li, ul.deci li { margin: 0 0 14px; }
+
+  .disclaimer {
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    color: var(--slate-light);
+    line-height: 1.6;
+  }
+  .footer-brand {
+    margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+  }
+
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    .container { padding: 28px 18px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 25px; }
+    .stat-grid, .targets-grid { grid-template-columns: repeat(2, 1fr); }
+    .toc ol { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <p class="eyebrow">Sterling Signals · Deep Dive · Structural Force: Defense Spending</p>
+
+  <h1>The $185 Billion Build-Out Has a Public Proxy: Why We Bought $VOYG at $29</h1>
+
+  <p class="preview">
+    The United States has no government-owned replacement for a space station it retires in 2030, and it is spending toward a missile-defense architecture costed at <strong>$185 billion to $1.2 trillion</strong> over the decade. One small-cap funds the floor with both and trades at roughly <strong>13 to 15 times sales</strong> against theme-quality 25. We bought it at $29.00. It is <strong>$41.55</strong> today, and we think a single summer decision can re-rate it.
+  </p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <p class="label">Entry Price</p>
+      <p class="value">$29.00</p>
+      <p class="sub">Now $41.55 · +43.3% · 48 days held</p>
+    </div>
+    <div class="stat-card">
+      <p class="label">Structural Force</p>
+      <p class="value" style="font-size:17px;">Defense Spending</p>
+      <p class="sub">Space Infrastructure &amp; Defense</p>
+    </div>
+    <div class="stat-card">
+      <p class="label">Type</p>
+      <p class="value" style="font-size:18px;">Multibagger</p>
+      <p class="sub">Conviction: Bullish</p>
+    </div>
+    <div class="stat-card">
+      <p class="label">Next Catalyst</p>
+      <p class="value" style="font-size:16px;">Summer 2026</p>
+      <p class="sub">NASA CLD Phase-2 award</p>
+    </div>
+  </div>
+
+  <div class="targets-grid">
+    <div class="t-card bear">
+      <p class="label">Bear</p>
+      <p class="price">$18</p>
+      <p class="meta">~30% · floor basis</p>
+    </div>
+    <div class="t-card base">
+      <p class="label">Base</p>
+      <p class="price">$45</p>
+      <p class="meta">~35% · highest mass</p>
+    </div>
+    <div class="t-card rerate">
+      <p class="label">Re-rate</p>
+      <p class="price">$75</p>
+      <p class="meta">~25% · ~1.8x current</p>
+    </div>
+    <div class="t-card over">
+      <p class="label">Overshoot</p>
+      <p class="price">$165</p>
+      <p class="meta">~10% · ~4x current</p>
+    </div>
+  </div>
+  <p class="caption">Probability-weighted target ~$58 (about +39% from $41.55; about +99% from the $29.00 entry). Targets are the published thesis and scoreboard, not a sell trigger.</p>
+
+  <div class="toc">
+    <h4>In this report</h4>
+    <ol>
+      <li><a href="#thesis">The thesis in one sentence</a></li>
+      <li><a href="#what">What this company does</a></li>
+      <li><a href="#why">Why now</a></li>
+      <li><a href="#space">The Space</a></li>
+      <li><a href="#evidence">The evidence</a></li>
+      <li><a href="#valuation">Valuation and the path</a></li>
+      <li><a href="#bear">The bear case</a></li>
+      <li><a href="#call">The call</a></li>
+      <li><a href="#wrong">How we would be wrong</a></li>
+    </ol>
+  </div>
+
+  <h2 id="thesis"><span class="num">01</span>The thesis in one sentence</h2>
+  <hr class="section-rule">
+  <p>
+    Voyager Technologies (NYSE: VOYG) is a funded, converting defense-tech business that throws off a real floor, and it carries on top of that floor a dated, binary, public-market call option on the post-station space economy: a summer-2026 NASA decision can re-rate the whole thing beyond what the market currently pays, while the floor itself does not depend on that decision landing.
+  </p>
+  <p>
+    We re-underwrote this name on 2026-06-08 against fully current data, and we did it at a <strong>better price than the prior look</strong>: $41.55 today versus $47.70 a week earlier, a 13% fade on profit-taking rather than any thesis break. The floor firmed, the survival picture hardened, and the speculative leg got smaller and harder. That combination, a stronger base and a cheaper option, is precisely the asymmetry we underwrite. Off our $29.00 book entry the position is already up 43.3%.
+  </p>
+
+  <h2 id="what"><span class="num">02</span>What this company does</h2>
+  <hr class="section-rule">
+  <p>
+    Voyager runs three divisions. <strong>Defense &amp; National Security</strong> is the revenue engine: missile-defense and classified work anchored to the Lockheed Martin / Missile Defense Agency next-generation-interceptor program of record. This is the part of the business that is unambiguously real, and it grew <strong>59% in fiscal 2025 to $123.0 million</strong>. <strong>Space Solutions</strong> sits alongside it. And <strong>Starlab</strong> is the optionality: a commercial successor to the International Space Station, backed by a NASA funded cooperative agreement and targeting a 2029 launch.
+  </p>
+  <p>
+    The structure of the contracts is the entire story. On Defense, Voyager is a cash subcontractor under firm purchase orders with cash terms, reinforced this cycle by fresh awards: a DARPA Burn-n-Go Phase-2 order worth <strong>$16.5 million</strong> and a NASA Johnson Space Center IDIQ with a <strong>$24.5 million ceiling</strong>, plus follow-on work. That is firm government work landing as current revenue, not reservations or letters of intent. On Starlab, the commitment is a funded Space Act Agreement: real cash (more than <strong>$24 million received in the first quarter alone</strong>, with 28 program milestones hit), but structurally a step weaker than a fixed-price procurement.
+  </p>
+  <p>
+    The capital structure is clean enough to carry the thesis. Voyager has roughly <strong>59.3 million shares outstanding</strong> and about <strong>53.5 million in float</strong>, for an enterprise value near <strong>$2.2 to $2.5 billion</strong>. The pending Astrobotic transaction moved from announced to a signed merger on June 1, closing around early July, adding roughly 2.03 million shares plus an earnout and turning accretive in 2027. Total liquidity stands at <strong>$641.4 million</strong>. This is a venture-stage business with a government anchor, not a story stock without a balance sheet.
+  </p>
+
+  <h2 id="why"><span class="num">03</span>Why now</h2>
+  <hr class="section-rule">
+  <p>
+    The structural force is <strong>government defense and space spending in a multi-year up-cycle</strong>, and it is appropriations-driven rather than cyclical. The buyer is the U.S. government; the programs are programs of record; the money is rising into named line-items. Missile-defense modernisation runs through the Golden Dome architecture at <strong>$13.4 billion appropriated in fiscal 2026</strong>, a <strong>$17.9 billion request for fiscal 2027</strong>, and a decade architecture costed at <strong>$185 billion to $1.2 trillion</strong>. The human-spaceflight side is forced by a hard deadline: the International Space Station retires in 2030, the United States has no government-owned replacement, and NASA's Commercial LEO Destinations program carries <strong>$1.0 to $1.5 billion across fiscal 2026 to 2031</strong> to fund the private successors.
+  </p>
+  <p>
+    This name reaches us as a <strong>top-down-confirmed read</strong>: it sits on our standing theme map under Space Infrastructure &amp; Defense, with a Direct-to-Adjacent value-capture grade. The reason the timing is <em>now</em> rather than someday is a dated binary sitting on top of a converting floor. Backlog hit a record <strong>$275.3 million, up 54% year over year</strong>, with a book-to-bill of <strong>1.3</strong>. Fiscal-2026 revenue guidance was <strong>raised to $230 to $255 million</strong>, a 39% to 53% growth range. And the gating event, the NASA Phase-2 award that validates Starlab as the public proxy for the post-station economy, lands in <strong>summer 2026</strong>, June or July. The thesis does not require us to wait two years to learn whether we are right.
+  </p>
+  <p>
+    Three things moved since our prior look, and all three sharpen the setup. Price faded to a better entry on profit-taking, not a failed award or a guidance cut. The floor firmed, with the convertible note corrected to <strong>$435 million</strong> and cushioned by a capped call ($63.1 million), a prepaid forward ($131.1 million), and a $27.7 million buyback, so the dilution strike is lighter than first modelled. And the fuel got dated, smaller, and off-policy, which we treat honestly below. The comparable-winner archetype is <strong>Rocket Lab at its pre-breakout moment</strong>: government-anchored space-tech, large optionality, premium multiple, founder-led, thin coverage. That is the shape we are underwriting, with eyes open to where it differs.
+  </p>
+
+  <h2 id="space"><span class="num">04</span>The Space</h2>
+  <hr class="section-rule">
+  <p>
+    This is a <strong>two-clock theme</strong>, and getting the two clocks separate is the crux of the whole file. Voyager rides two distinct sub-themes that sit on opposite parts of the same S-curve, and the current read is materially better for the floor leg and materially worse for the speculative leg than the surface narrative suggests.
+  </p>
+
+  <h3>The live competitive field</h3>
+  <p>
+    On the post-station orbital-destination leg, Voyager is a co-contender riding the wave, not the leader, and it is the latest entrant in a serious field. <strong>Axiom Space</strong> is the de-facto architecture winner: it holds a firm-fixed-price IDIQ worth up to <strong>$140 million</strong> for a station-attached module, and after NASA's March-2026 pivot to a government-owned docking core, Axiom's program thesis effectively became NASA's official policy, with modules already in fabrication at Thales Alenia. <strong>Vast</strong> is the fast-follower gaining ground: it raised <strong>$500 million in March 2026</strong> from QIA, Mitsui, MUFG and IQT, and its Haven-1 launches around the first quarter of 2027 with life-support testing already underway. Starlab, by contrast, is still in design phase for a 2029 launch and is one of the standalone-architecture players now re-fitting to a docking-based framework mid-development. Where Voyager genuinely leads is the separate Defense leg, a direct firm-cash position on the Lockheed / MDA interceptor and the DARPA and Johnson Space Center orders. That is the real moat and the real floor.
+  </p>
+
+  <h3>Theme lifecycle and where this name sits</h3>
+  <p>
+    The two legs sit on opposite parts of the arc. The Defense and Golden Dome leg is early-to-mid S-curve with capital <strong>accelerating in</strong>: $13.4 billion appropriated for fiscal 2026 rising to a $17.9 billion fiscal-2027 request, with Lockheed opening a dedicated interceptor plant. The broad space-equity cohort, by contrast, has reached elevated expectations and is rolling into its first de-rate: the leading liquid proxy ran more than <strong>366% year-to-date</strong> before a sharp pullback, a sector ETF fell <strong>10% across two sessions</strong>, and independent research has flagged the cohort as overvalued. The operational orbital-destination market underneath all of that is still genuinely too early, with launches in the 2027-to-2030 window and NASA itself stating that no commercial business case yet exists in low orbit. Voyager's placement is therefore a mismatch on both sub-clocks: <strong>late on the equity multiple</strong> (the cohort already re-rated and is now de-rating, so a tailwind has turned into a headwind) and <strong>on-inflection-but-trailing on the operational clock</strong> (its binary award is near, but its hardware is the latest in the field on an off-policy design).
+  </p>
+
+  <h3>Capex, demand, and the addressable slice</h3>
+  <p>
+    Two demand pools, pointing in opposite directions. Defense is strong and rising, and Voyager's slice of it is firm and converting: record backlog of <strong>$275.3 million, up 54%</strong>, a 1.3 book-to-bill, and Defense up 59% in fiscal 2025 to $123.0 million, with a policy-backed runway of 18 to 36 months. The orbital-destination pool is thin and starved of committed capital. The segment is only a <strong>$3 to $4 billion-per-year market by 2030</strong> on NASA's own demand assumptions, it is split across at least two awardees, and NASA's committed capital is structurally thin: <strong>$1.0 to $1.5 billion across fiscal 2026 to 2031</strong> for all program participants, against less than $600 million to industry since 2020 and more than $150 billion spent on the station it replaces. Voyager's addressable Starlab segment is therefore a <strong>low-single-digit-billion-dollar slice of a shared $3 to $4 billion-per-year pool</strong>, not the $163 billion "space economy" or $10 billion "low-orbit market" headline figures. Management's aspirational roughly $4 billion in annual Starlab revenue assumes near-total capture of that pool, which the at-least-two-awardee reality and Axiom's architecture lead directly contradict.
+  </p>
+
+  <h3>The moat, as the space matures</h3>
+  <p>
+    The durability is bifurcated, and the bifurcation widened this cycle. The Defense leg is a <strong>structural moat that holds its Direct value-capture grade</strong> as capital crowds in: program-of-record incumbency, classified and ITAR-controlled work, multi-year switching costs, and a firm converting backlog. That is exactly the differentiator that separated the Rocket Lab winner from the Astra failure, and it is not substitutable on a 12-to-36-month clock. The Starlab leg is <strong>first-mover positioning that is eroding</strong>: the integration model NASA now rewards is station-docking, which favours Axiom, not Starlab's standalone design, so its value-capture grade slides from Direct toward Adjacent as capital crowds toward the policy and speed winners. The floor's durability rose; the fuel's durability fell.
+  </p>
+
+  <div class="callout">
+    <p class="k">Theme to price ceiling</p>
+    <p>
+      The space-equity theme is maturing and crowding, not early-accelerating, and two cap forces stack. The overshoot anchor, the leading liquid proxy, sits at a cyclical extreme; and the only Voyager leg that could deliver an open-ended run, Starlab, is the one now off-policy, thin-TAM, and split at least two ways, with a near-term mega-IPO acting as a sentiment-saturation event for the whole space cohort. The live multiple on that anchor verified at roughly <strong>90 times revenue</strong>, so we honour the overshoot at the live price-anchor of <strong>~$165</strong>; we do not clip a real path for being expensive.
+    </p>
+    <p>
+      But the maturing-theme logic is fully load-bearing, expressed as a <strong>probability throttle, not a price cut</strong>: architecture-loss risk, a thin and split market, and proxy saturation keep the odds of reaching that peak low (overshoot held to roughly 10%) and shift the scenario mass into base and re-rate. Net: the crowding theme caps the <em>likelihood</em> of the open-ended overshoot, while the structurally-moated Defense leg, with Voyager at only 13 to 15 times sales today versus theme-quality 25, still supports a durable re-rate. The multibagger type is not killed; the overshoot ceiling is simply lower-probability and lighter than we carried a week ago.
+    </p>
+  </div>
+
+  <h2 id="evidence"><span class="num">05</span>The evidence</h2>
+  <hr class="section-rule">
+  <p>
+    We separate winners from same-theme round-trippers with four leading, observable operational signals. The discriminator scorecard below is the heart of the read. The Defense leg passes cleanly; the speculative leg passes partially; and the margin signal is the one honest weakness we carry into the call.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Discriminator</th>
+        <th>Read</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backlog converting</strong></td>
+        <td><span class="pill present">Present</span></td>
+        <td>Record backlog $275.3M, +54% YoY, book-to-bill 1.3; Defense +59% in FY25 landing as current revenue; fresh firm orders (DARPA $16.5M, NASA JSC $24.5M ceiling, follow-ons). Firm government work, not reservations.</td>
+      </tr>
+      <tr>
+        <td><strong>Firm fixed-price cash contract</strong></td>
+        <td><span class="pill present">Present</span> <span style="color:var(--slate-light);font-size:13px;">/ Defense</span><br><span class="pill partial">Partial</span> <span style="color:var(--slate-light);font-size:13px;">/ Starlab</span></td>
+        <td>Lockheed / MDA interceptor, DARPA, and NASA JSC IDIQ are firm orders with cash terms. Starlab is a confirmed funded cooperative agreement with fixed-price ruled out: a step weaker than the floor.</td>
+      </tr>
+      <tr>
+        <td><strong>Milestone on date</strong></td>
+        <td><span class="pill partial">Partial</span></td>
+        <td>Starlab design milestones land on or ahead (28 program milestones, design review done, $24M+ cash). But the launch slipped 2028 to 2029 (one company-attributable slip), and the gating Phase-2 award re-slipped to summer 2026 (a NASA reschedule, not a Voyager miss).</td>
+      </tr>
+      <tr>
+        <td><strong>Margin / cash-flow inflection</strong></td>
+        <td><span class="pill absent">Absent &amp; inverted</span></td>
+        <td>Q1'26 gross margin of (4.4%) versus +16.2% a year earlier; innovation spend ~151% of sales; no clean GAAP bridge in hand. Expected for a pre-launch platform build, but the inflection is not yet visible. The load-bearing conviction strike.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Read the scorecard the way we read it. Two of the four signals are present, and the most discriminating one, a firm converting backlog under a government program of record, is both present and accelerating on the Defense leg. That is the single signal that separated the comparable winner from the comparable failure, and Voyager sits on the right side of it. The Starlab leg passes partially: design milestones convert, but the contract structure is a funded agreement rather than a fixed-price procurement, and one launch slip is on the company's account. The margin signal is the genuine weakness. Negative gross margin with innovation spend running at roughly 151% of sales is the spend-not-harvest signature you would expect from a pre-revenue platform driver, but expectation is not evidence, and we name it as the conviction strike rather than explaining it away.
+  </p>
+
+  <p>
+    The disqualifier scan comes back <span class="pill clear">all clear</span>. No reservations dressed as backlog; no warrant or asset-sale dressed as a customer win; only one company-attributable slip, below the trip wire; guidance was <strong>raised, not cut</strong>; no management-credibility event (the "Voyager Digital" fraud headlines belong to an unrelated crypto company); and runway clears the wire at roughly <strong>6.4 quarters of cash and 9 to 10 quarters of total liquidity</strong>. Accounting-quality reads were not tripped, and the convertible, capped-call-cushioned and not due before November 2030, does not read as a dilution death-spiral. The runway-plus-inverted-margin combination is a real conviction strike. It is not a disqualifier.
+  </p>
+
+  <h2 id="valuation"><span class="num">06</span>Valuation and the path</h2>
+  <hr class="section-rule">
+  <p>
+    The valuation work decouples the floor from the target. The floor is what the business is worth on its Defense engine alone; the target is what the option is worth on a win. They are computed separately and they answer different questions.
+  </p>
+
+  <h3>The floor: about $15, and it is not the target</h3>
+  <p>
+    Value the Defense &amp; National Security book on its own, decoupled from Starlab entirely. Fiscal-2025 revenue of $123.0 million up 59%, a record $275.3 million backlog up 54%, a 1.3 book-to-bill, valued at a theme-quality 12 to 15 times sales, supports a permanent-impairment basis around <strong>$15</strong>, with an entry-fair-value closer to <strong>$20 to $22</strong>. That is the worst case in a world where the Phase-2 award is lost: roughly 64% below the current price, but <strong>well above zero</strong>, with no going-concern risk, no debt wall before the 2030 convert, and accounting quality intact. From our $29 entry the impairment floor is roughly 48% to 52% down. We never use this level as a sell trigger; the screening system owns the exit. It is the answer to "what do we own if the option expires worthless," and the answer is a real converting business.
+  </p>
+
+  <h3>The methods-used field</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th class="num">Output</th>
+        <th>What it values</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Dilution-adjusted milestone / TAM-capture (Defense-only)</td>
+        <td class="num">~$15</td>
+        <td>The floor: program-of-record book with no Starlab credit.</td>
+      </tr>
+      <tr>
+        <td>Comparable-company multiple (theme-quality ~25x forward sales)</td>
+        <td class="num">~$75</td>
+        <td>The re-rate: blended book toward theme-quality on the $230 to $255M guide. Street highs of $55 to $60 sit inside this band.</td>
+      </tr>
+      <tr>
+        <td>Comparable-company multiple (live anchor ~90x revenue, Starlab-inclusive base)</td>
+        <td class="num">~$165</td>
+        <td>The overshoot: the full public-proxy re-rate to the live comparable peak. A path that survives, not an extrapolation.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Two valuation methods, three reference points. The low end is the Defense-only floor; the high end is the live comparable peak applied to a Starlab-inclusive revenue base. The Street-high cluster of $55 to $60, from multiple sell-side desks, sits <em>inside</em> the re-rate band, which we read as a floor on the bull rather than a ceiling.
+  </p>
+
+  <h3>The four scenarios</h3>
+  <div class="targets-grid">
+    <div class="t-card bear">
+      <p class="label">Bear · ~30%</p>
+      <p class="price">$18</p>
+      <p class="meta">$15&ndash;22 range</p>
+    </div>
+    <div class="t-card base">
+      <p class="label">Base · ~35%</p>
+      <p class="price">$45</p>
+      <p class="meta">$40&ndash;50 range</p>
+    </div>
+    <div class="t-card rerate">
+      <p class="label">Re-rate · ~25%</p>
+      <p class="price">$75</p>
+      <p class="meta">$70&ndash;90 range</p>
+    </div>
+    <div class="t-card over">
+      <p class="label">Overshoot · ~10%</p>
+      <p class="price">$165</p>
+      <p class="meta">$150&ndash;200 range</p>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th class="num">Level</th><th class="num">Prob</th><th>Driver</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Bear</strong></td>
+        <td class="num">~$18</td>
+        <td class="num">~30%</td>
+        <td>Phase-2 lost, or awarded to Axiom and Vast with Voyager excluded; Starlab written to zero; multiple compresses to Defense-only; a forced raise into weakness atop the convert. Lands near the ~$15 floor: survivable, no ruin.</td>
+      </tr>
+      <tr>
+        <td><strong>Base</strong></td>
+        <td class="num">~$45</td>
+        <td class="num">~35%</td>
+        <td>Defense executes and converts the backlog, but Starlab stays unproven optionality through the window; multiple barely moves; lockup expiry and IPO sell-the-news cap it near current. The highest-mass scenario.</td>
+      </tr>
+      <tr>
+        <td><strong>Re-rate</strong></td>
+        <td class="num">~$75</td>
+        <td class="num">~25%</td>
+        <td>Defense backlog lands as current revenue plus a partial or credible Starlab outcome; the blended book re-rates from 13 to 15 times sales toward 20 to 25 times forward sales. Street highs sit inside the band as a floor.</td>
+      </tr>
+      <tr>
+        <td><strong>Overshoot</strong></td>
+        <td class="num">~$165</td>
+        <td class="num">~10%</td>
+        <td>A clean win plus the market extending the full post-station public-proxy re-rate to the live comparable peak on a forward Starlab-inclusive base. Price-supported by a real live multiple; probability-capped by architecture-loss, thin and split TAM, and proxy saturation.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Blend those four and the <strong>probability-weighted target is roughly $58</strong>, about 39% above the current $41.55 and about 99% above our $29.00 entry. The upside-to-downside span from the current price runs roughly +297% to the overshoot against -57% to the floor, and off the $29 cost basis that asymmetry is far stronger still.
+  </p>
+
+  <h3>Velocity and what is already priced in</h3>
+  <p>
+    This is a <strong>fast binary</strong>. The re-rate hangs on a dated catalyst in summer 2026, so time-to-re-rate is weeks-to-three-months on the up-leg, not years. The probability of at least doubling from $41.55 runs roughly <strong>12%, 20%, and 28% at 6, 12, and 18 months</strong>, with an implied internal rate of return on a $75 re-rate inside 12 to 18 months of roughly 40% to 80%. Off our $29 book entry the doubling clock is already nearly complete at +43%, so the live question is how fast it re-rates from here. The amplifier is real: short interest around <strong>20.21% of float</strong>, 7.89 million shares, 3.4 days to cover, atop a thin IPO-era float of roughly 53.5 million shares and a constructive raised analyst tape, which makes the up-leg violent on a win and the down-leg fast on a loss. The headwind on velocity is equally real: a near-term mega-IPO and a lockup expiry can blunt the multiple-amplification even on a clean award. We treat short interest as an amplifier and a conviction input, never as a reason to own.
+  </p>
+  <p>
+    What is the market already paying for? At $41.55 (roughly a $2.46 billion market cap, 13 to 14 times trailing sales) the price embeds full credit for the Defense engine executing <em>plus</em> a meaningful Starlab option premium, but it does <strong>not</strong> embed a clean Phase-2 win and does not embed the full Starlab re-rate; one sell-side desk explicitly carries Starlab at only $18 per share inside a $60 target. The steelman against us, in one line: you are paying a full space premium of 13 to 15 times sales on a pre-profit book whose multibagger leg is off-policy, thin-TAM, split at least two ways, and twice-rescheduled, for a binary you might lose. That steelman is strong. And even granting it, a path to roughly $165 on a win is visible without heroic inputs, because the comparable peak is a real live multiple rather than an extrapolation. The room is genuine edge, throttled by the binary's odds.
+  </p>
+
+  <h2 id="bear"><span class="num">07</span>The bear case</h2>
+  <hr class="section-rule">
+  <div class="bear-box">
+    <p>
+      Strip the floor away and look at what you are actually paying a premium for. The entire multibagger thesis rests on a <strong>single restructured, twice-rescheduled, unawarded NASA decision</strong> for a program whose own sponsor said out loud that no commercial business case yet exists in low orbit, and which then pivoted the architecture to a government-owned docking core that Starlab was not designed around. The company that benefits from that pivot is <strong>Axiom</strong>, which already holds the firm-fixed-price contract for the design NASA chose. The company gaining behind it is <strong>Vast</strong>, freshly funded with $500 million and flying real hardware in early 2027, two years ahead of Starlab's 2029 paper. Starlab is the latest entrant, on the wrong architecture, in a market NASA will fund with $1.0 to $1.5 billion split across at least two winners. This is TAM-fantasy meeting regime-shift, and the better-positioned competitors are not hypothetical.
+    </p>
+    <p>
+      Behind the binary, stack the rest. A <strong>$435 million in-the-money convertible</strong>, cushioned but real, that still forces a raise into weakness if the award is lost. <strong>Customer concentration</strong> above 80% U.S. government, exposed to the same fiscal-austerity process that funds the thesis. And a <strong>gross margin of negative 4.4%</strong> with no GAAP path in hand and innovation spend at 151% of sales. The space-equity cohort is rolling into its first de-rate, and a near-term mega-IPO can saturate generalist space sentiment regardless of how Voyager itself executes. You are long a premium-multiple, pre-profit, government-dependent name into a maturing theme, betting on one decision that the policy winds have already turned against.
+    </p>
+  </div>
+  <p>
+    We classify the decisive bear as <strong>unresolved-binary</strong>, and we take it seriously: the space read genuinely strengthened it, promoting the competitor risk from a backstage worry to a named, funded, policy-favoured Axiom and a fast-moving Vast. The dilution bear is <strong>real but eased</strong> by the capped call, forward, and buyback. The fake-theme and no-terminal-buyer bears, by contrast, are <strong>refuted</strong>: government capital is rising into named line-items under a funded model, not exiting. NASA restructured how it buys low-orbit capacity; it did not abandon the mechanism.
+  </p>
+  <div class="callout">
+    <p class="k">Why we are paid</p>
+    <p>
+      The bears that bite hardest are <strong>unresolved-binary and resolve at a dated, near catalyst</strong> in summer 2026, while the market has priced only Defense-success plus Starlab-as-a-live-option, not a win. We are paid because the floor is a genuine converting business rather than zero (~$15, roughly -64%, no ruin); because the binary is dated and sits <em>inside</em> the funding clock, so the award arrives before any runway-forced raise if it lands on time; and because the amplifiers, 20% of float short and a thin float, make a positive resolution fast and reflexive. The genuinely open risk is the architecture decision, which is exactly the risk the asymmetry pays us to take across a diversified venture book.
+    </p>
+  </div>
+
+  <h2 id="call"><span class="num">08</span>The call</h2>
+  <hr class="section-rule">
+  <p>
+    <strong>Type: Multibagger.</strong> A credible four-times return survives in the overshoot tier at roughly $165, binary-gated and anchored to the live comparable peak near 90 times revenue. The floor sits far below the current price, which makes this an open-ended, optionality-driven shot rather than a defined-ceiling great trade.
+  </p>
+  <p>
+    <strong>Conviction: Bullish</strong>, and deliberately not Extremely Bullish. The Defense engine clears the bar comfortably, but the open-ended upside hinges on an unresolved binary that the space read made <em>harder</em>: the architecture went off-policy, Axiom is favoured, and the addressable market is thin and split. The margin and cash-flow signal is absent and inverted, with no GAAP bridge yet in hand, and the convert dilution, though eased, is real. Those caps hold conviction at Bullish, and we would rather say so plainly than overclaim.
+  </p>
+  <p>
+    <strong>Expected path:</strong> a re-rate to roughly <strong>$75</strong> and then an overshoot toward roughly <strong>$165 over about 12 to 18 months</strong> (about 1.8x then 4x from the current price; about 2.6x then 5.7x from our $29 entry), driven by the <strong>NASA Commercial LEO Destinations Phase-2 funded award in summer 2026</strong> validating Starlab as the public proxy for the post-station economy, on top of the converting Defense backlog. Time-to-re-rate is roughly three months on a clean win. The <strong>catalyst window is summer 2026</strong>, June or July, an award to at least two participants with fixed-price ruled out. The next dated proof points after that are the Astrobotic close around early July and the second-quarter financials around August, and the same window carries a headwind collision: a near-term mega-IPO and a lockup expiry both land alongside the award.
+  </p>
+  <p>
+    To be unambiguous about lane: <strong>entry and exit belong to the screening system</strong>. The entry was the system's technical signal at $29.00. The exit will be the system's technical rule, monitored weekly. The targets in this report are the published thesis and the scoreboard we hold ourselves to. <strong>They are not a sell trigger.</strong>
+  </p>
+
+  <h2 id="wrong"><span class="num">09</span>How we would be wrong</h2>
+  <hr class="section-rule">
+  <p>Three ways, in order of likelihood.</p>
+  <ol class="deci">
+    <li>
+      <strong>Starlab Phase-2 is lost or token-split.</strong> The most likely failure: NASA's award goes to Axiom (policy-aligned, fixed-price) and Vast (Haven-1 speed, funded), and Voyager either loses outright or wins a token slice. The Starlab leg, the entire multibagger driver, deflates; the multiple compresses to the Defense-only $15 to $22 basis; and the stock round-trips toward the bear. That is a severe de-rate of roughly 57% to 64% from here, but it is <strong>not ruin</strong>: no going-concern risk, $641 million in liquidity, a 2030 convert wall, accounting quality intact. This is the named conviction strike the published thesis carries, not a hidden one.
+    </li>
+    <li>
+      <strong>The space-equity cohort completes a genuine de-rate.</strong> IPO sell-the-news, sector-wide sentiment damage, and overvaluation flags drag Voyager's multiple down regardless of company execution. That is a sector-beta drawdown, and it is the kind of move the screening system's exit, not this thesis, is built to handle.
+    </li>
+    <li>
+      <strong>Margin and cash flow stay inverted too long.</strong> If the Street's patience for the burn, with innovation spend at roughly 151% of sales, snaps <em>before</em> a catalyst lands, the multiple compresses on a "no GAAP path" narrative. We expect this risk for a platform name at this stage, and the summer catalyst time-boxes it, but it is real and we are watching the margin line as the proof point.
+    </li>
+  </ol>
+  <p>
+    The single most-likely loss cause is not ruin, which is the whole point: the name survives long enough to realise the thesis, so the verdict stands. We bought it. The expected path is a summer-2026 re-rate toward $75 and, on a clean win, an overshoot toward $165. We will hold it and monitor weekly, and the screening system will tell us when to leave.
+  </p>
+
+  <div class="disclaimer">
+    <p>
+      Entry and exit belong to the screening system. The entry was the system's technical signal at $29.00; the exit is the system's technical rule, monitored weekly. The price targets above are the published thesis and scoreboard, not a sell trigger, and a position is one full, equal-weight holding. This is research and education, not personalised investment advice. Every present-day figure traces to the completed deep-dive work and current sources; do your own diligence before acting.
+    </p>
+    <p class="footer-brand">Sterling Signals · Structural Force: Defense Spending · $VOYG</p>
+  </div>
+
+</div>
+</body>
+</html>

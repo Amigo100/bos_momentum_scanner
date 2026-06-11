@@ -1,0 +1,105 @@
+2026-01-18 21:51:05,860 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-01-18 21:51:05,861 | INFO     | Max retries: 8
+2026-01-18 21:51:05,861 | INFO     | ============================================================
+2026-01-18 21:51:05,861 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-01-18 21:51:05,861 | INFO     | ============================================================
+2026-01-18 21:51:05,861 | INFO     | Fetching ETF momentum data for context...
+2026-01-18 21:51:08,652 | INFO     | Fetched momentum data for 29 ETFs
+2026-01-18 21:51:08,653 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-01-18 21:51:08,653 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:53:37,493 | DEBUG    | Tokens: 771054 in, 6395 out
+2026-01-18 21:53:37,495 | DEBUG    | Response received: 21268 chars
+2026-01-18 21:53:37,496 | DEBUG    | Raw response saved to logs/opus_raw_response.txt
+2026-01-18 21:53:37,505 | DEBUG    | Parsed JSON keys: ['analysis_date', 'market_context', 'trends_identified_step_a', 'searches_performed', 'top_themes', 'themes_rejected', 'contrarian_watchlist', 'theme_watchlist']
+2026-01-18 21:53:37,509 | INFO     | 
+2026-01-18 21:53:37,509 | INFO     | ============================================================
+2026-01-18 21:53:37,509 | INFO     | STEP 2: MAPPING TICKERS TO THEMES
+2026-01-18 21:53:37,510 | INFO     | ============================================================
+2026-01-18 21:53:37,510 | INFO     | Analyzing 33 tickers: AOSL, AEHR, INOD, ACHR, BBBY, RIOT, QUBT, SEI, PCT, OUST, APLD, FLNC, RXO, AEIS, SMLR, ASPI, JOBY, GCO, DNA, LEU, SPIR, PRTH, POWL, CWH, ELF, APA, OS, WCC, FUN, GPRE, NE, KC, FIP
+2026-01-18 21:53:37,510 | DEBUG    | Compact themes JSON size: 4866 chars
+2026-01-18 21:53:37,510 | INFO     | Splitting into 3 batches of 12 tickers
+2026-01-18 21:53:37,510 | INFO     | Processing batch 1/3: AOSL, AEHR, INOD, ACHR, BBBY, RIOT, QUBT, SEI, PCT, OUST, APLD, FLNC
+2026-01-18 21:53:37,510 | DEBUG    | Rate limiting: sleeping 2.98s between requests
+2026-01-18 21:53:40,499 | INFO     | API call: Step 2 - Ticker Analysis (batch 1) (attempt 1/8)
+2026-01-18 21:53:40,501 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:55:06,357 | DEBUG    | Tokens: 369797 in, 3860 out
+2026-01-18 21:55:06,386 | DEBUG    | Response received: 11638 chars
+2026-01-18 21:55:08,401 | INFO     | Processing batch 2/3: RXO, AEIS, SMLR, ASPI, JOBY, GCO, DNA, LEU, SPIR, PRTH, POWL, CWH
+2026-01-18 21:55:08,402 | DEBUG    | Rate limiting: sleeping 0.95s between requests
+2026-01-18 21:55:09,359 | INFO     | API call: Step 2 - Ticker Analysis (batch 2) (attempt 1/8)
+2026-01-18 21:55:09,360 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:56:15,981 | DEBUG    | Tokens: 213598 in, 3498 out
+2026-01-18 21:56:15,985 | DEBUG    | Response received: 11034 chars
+2026-01-18 21:56:17,993 | INFO     | Processing batch 3/3: ELF, APA, OS, WCC, FUN, GPRE, NE, KC, FIP
+2026-01-18 21:56:17,994 | DEBUG    | Rate limiting: sleeping 0.99s between requests
+2026-01-18 21:56:18,982 | INFO     | API call: Step 2 - Ticker Analysis (batch 3) (attempt 1/8)
+2026-01-18 21:56:18,983 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:57:24,211 | DEBUG    | Tokens: 271799 in, 2880 out
+2026-01-18 21:57:24,212 | DEBUG    | Response received: 9011 chars
+2026-01-18 21:57:24,215 | INFO     | Fetching price data for 33 tickers...
+2026-01-18 21:57:24,215 | DEBUG    | Fetching data for AOSL
+2026-01-18 21:57:25,052 | DEBUG    |   AOSL: $22.51 | Technology
+2026-01-18 21:57:25,052 | DEBUG    | Fetching data for AEHR
+2026-01-18 21:57:25,492 | DEBUG    |   AEHR: $28.81 | Technology
+2026-01-18 21:57:25,492 | DEBUG    | Fetching data for INOD
+2026-01-18 21:57:25,839 | DEBUG    |   INOD: $61.54 | Technology
+2026-01-18 21:57:25,840 | DEBUG    | Fetching data for ACHR
+2026-01-18 21:57:26,212 | DEBUG    |   ACHR: $8.86 | Industrials
+2026-01-18 21:57:26,212 | DEBUG    | Fetching data for BBBY
+2026-01-18 21:57:26,739 | DEBUG    |   BBBY: $7.26 | Unknown
+2026-01-18 21:57:26,740 | DEBUG    | Fetching data for RIOT
+2026-01-18 21:57:27,091 | DEBUG    |   RIOT: $19.24 | Financial Services
+2026-01-18 21:57:27,091 | DEBUG    | Fetching data for QUBT
+2026-01-18 21:57:27,437 | DEBUG    |   QUBT: $12.70 | Technology
+2026-01-18 21:57:27,437 | DEBUG    | Fetching data for SEI
+2026-01-18 21:57:27,851 | DEBUG    |   SEI: $56.87 | Energy
+2026-01-18 21:57:27,851 | DEBUG    | Fetching data for PCT
+2026-01-18 21:57:28,188 | DEBUG    |   PCT: $11.76 | Industrials
+2026-01-18 21:57:28,188 | DEBUG    | Fetching data for OUST
+2026-01-18 21:57:28,553 | DEBUG    |   OUST: $26.36 | Technology
+2026-01-18 21:57:28,553 | DEBUG    | Fetching data for APLD
+2026-01-18 21:57:28,894 | DEBUG    |   APLD: $37.40 | Technology
+2026-01-18 21:57:28,894 | DEBUG    | Fetching data for FLNC
+2026-01-18 21:57:29,724 | DEBUG    |   FLNC: $27.08 | Utilities
+2026-01-18 21:57:29,724 | DEBUG    | Fetching data for RXO
+2026-01-18 21:57:30,196 | DEBUG    |   RXO: $14.99 | Industrials
+2026-01-18 21:57:30,197 | DEBUG    | Fetching data for AEIS
+2026-01-18 21:57:30,552 | DEBUG    |   AEIS: $253.86 | Industrials
+2026-01-18 21:57:30,552 | DEBUG    | Fetching data for SMLR
+2026-01-18 21:57:30,914 | DEBUG    |   SMLR: $20.33 | Healthcare
+2026-01-18 21:57:30,914 | DEBUG    | Fetching data for ASPI
+2026-01-18 21:57:31,259 | DEBUG    |   ASPI: $7.74 | Basic Materials
+2026-01-18 21:57:31,260 | DEBUG    | Fetching data for JOBY
+2026-01-18 21:57:31,628 | DEBUG    |   JOBY: $15.43 | Industrials
+2026-01-18 21:57:31,628 | DEBUG    | Fetching data for GCO
+2026-01-18 21:57:31,977 | DEBUG    |   GCO: $37.77 | Consumer Cyclical
+2026-01-18 21:57:31,977 | DEBUG    | Fetching data for DNA
+2026-01-18 21:57:32,320 | DEBUG    |   DNA: $9.55 | Healthcare
+2026-01-18 21:57:32,321 | DEBUG    | Fetching data for LEU
+2026-01-18 21:57:32,791 | DEBUG    |   LEU: $331.03 | Energy
+2026-01-18 21:57:32,791 | DEBUG    | Fetching data for SPIR
+2026-01-18 21:57:33,139 | DEBUG    |   SPIR: $12.11 | Industrials
+2026-01-18 21:57:33,139 | DEBUG    | Fetching data for PRTH
+2026-01-18 21:57:33,504 | DEBUG    |   PRTH: $5.84 | Technology
+2026-01-18 21:57:33,504 | DEBUG    | Fetching data for POWL
+2026-01-18 21:57:33,863 | DEBUG    |   POWL: $419.98 | Industrials
+2026-01-18 21:57:33,863 | DEBUG    | Fetching data for CWH
+2026-01-18 21:57:34,212 | DEBUG    |   CWH: $13.68 | Consumer Cyclical
+2026-01-18 21:57:34,213 | DEBUG    | Fetching data for ELF
+2026-01-18 21:57:34,593 | DEBUG    |   ELF: $89.99 | Consumer Defensive
+2026-01-18 21:57:34,593 | DEBUG    | Fetching data for APA
+2026-01-18 21:57:35,004 | DEBUG    |   APA: $25.78 | Energy
+2026-01-18 21:57:35,004 | DEBUG    | Fetching data for OS
+2026-01-18 21:57:35,372 | DEBUG    |   OS: $23.62 | Technology
+2026-01-18 21:57:35,374 | DEBUG    | Fetching data for WCC
+2026-01-18 21:57:35,789 | DEBUG    |   WCC: $281.63 | Industrials
+2026-01-18 21:57:35,789 | DEBUG    | Fetching data for FUN
+2026-01-18 21:57:36,235 | DEBUG    |   FUN: $16.57 | Consumer Cyclical
+2026-01-18 21:57:36,237 | DEBUG    | Fetching data for GPRE
+2026-01-18 21:57:36,710 | DEBUG    |   GPRE: $11.63 | Basic Materials
+2026-01-18 21:57:36,710 | DEBUG    | Fetching data for NE
+2026-01-18 21:57:37,092 | DEBUG    |   NE: $32.69 | Energy
+2026-01-18 21:57:37,092 | DEBUG    | Fetching data for KC
+2026-01-18 21:57:37,528 | DEBUG    |   KC: $11.90 | Technology
+2026-01-18 21:57:37,528 | DEBUG    | Fetching data for FIP
+2026-01-18 21:57:37,882 | DEBUG    |   FIP: $5.76 | Industrials

@@ -2,8 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
+.pytest_cache/
 venv/
 ENV/
 
@@ -11,86 +10,43 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Logs (keep structure, ignore contents)
-logs/*.log
-logs/*.txt
-
 # IDE
 .vscode/
 .idea/
 *.swp
 
-# Local settings
+# Local settings / sessions (sensitive — never commit)
 .claude/
-
-# Data files that change frequently
-data/themes_cache.json
-
-# Playwright browser profile (contains login sessions)
 .playwright_profile/
-
-# TradingView authentication cookies (SENSITIVE)
 .tradingview_cookies.json
-
-# Sensitive backup copies
-*.bak
-*copy*.txt
-
-# Local environment files
 .env
 .env.local
 
-# Reports directory (generated, can be large)
-reports/
+# Backups
+*.bak
 
-# Legacy trades/ directory (replaced by section-specific output dirs)
-trades/
+# Logs (keep the dir, ignore contents)
+logs/*
+!logs/.gitkeep
 
-# Section output directories (generated data, not source code)
-portfolio/output/
+# Generated scanner/portfolio outputs — ignore by default; track only the live data set
+portfolio/output/*
+!portfolio/output/portfolio.csv
+!portfolio/output/portfolio_google_sheets.csv
+!portfolio/output/equity_curve.csv
+!portfolio/output/portfolio_snapshot.json
 scanner/output/*
-substack/output/*
-twitter/output/*
-
-# Exceptions: live tweet system files needed across CI runs
-!twitter/output/live_content_queue.json
-!twitter/output/live_context.json
-!twitter/output/live_cost_log.json
-!twitter/output/workflow_status.json
-!twitter/output/cowork_content_queue.json
-
-# Exceptions: files needed by Saturday workflow (GitHub Actions)
-!scanner/output/decisions.json
-!scanner/output/signal_history_rows.csv
 !scanner/output/signals.json
 !scanner/output/signals_technical.json
+!scanner/output/analysis_log.csv
+!scanner/output/signal_history_rows.csv
 !scanner/output/current/
 scanner/output/current/*
-!scanner/output/current/market_analysis.md
 !scanner/output/current/report.txt
-!scanner/output/current/newsletter_briefing.md
 !scanner/output/current/signals.json
 !scanner/output/current/signals_technical.json
-!substack/output/current/
-substack/output/current/*
-!substack/output/current/newsletter.html
-!substack/output/current/daily_context.md
-!substack/output/current/daily_notes_context.json
-!substack/output/current/portfolio_visual.html
-!substack/output/current/portfolio_snapshot.json
-!substack/output/current/daily_manifest.json
-!substack/output/current/daily_email.html
-!substack/output/current/posts/
-!substack/output/current/notes/
-!substack/output/current/diagrams/
 
-# Dashboard bundled data (generated at build time)
-dashboard/data/
-
-# Chart images committed for tweet posting pipeline
-# (small files ~50-100KB, needed by daily_post workflow)
-
-# Node.js (carousel template tool)
+# Node (carousel template tool; archived dashboard source)
 node_modules/
 package-lock.json
 

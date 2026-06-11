@@ -1,14 +1,11 @@
+# Core (scanner + portfolio + sterling scripts)
 yfinance==0.2.66
 pandas==2.3.3
 numpy==2.0.2
-anthropic==0.75.0
-tweepy==4.16.0
-mplfinance==0.12.10b0
+
+# Content tools (Cowork: substack/tools/capture.py)
 playwright==1.57.0
+
+# Notifications (Friday sell-signal email + optional WhatsApp)
 python-dotenv==1.2.1
-requests==2.32.5
-curl_cffi>=0.7.0
-PyYAML==6.0.3
-Pillow==11.3.0
 twilio>=8.0.0
-sendgrid>=6.0.0

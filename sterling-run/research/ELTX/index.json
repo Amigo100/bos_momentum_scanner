@@ -1,0 +1,55 @@
+{
+ "ticker": "ELTX",
+ "status": "passed",
+ "status_rule": "held = row in sterling-run/portfolio.csv; bought = any tier4 BUY (ledger or run-dir row); passed = latest decision DROP/DO_NOT_BUY and not held; else in-funnel",
+ "first_seen": "2026-06-08",
+ "last_updated": "2026-06-08",
+ "runs": [],
+ "decision_history": [
+  {
+   "ticker": "ELTX",
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "tier": "3",
+   "decision": "BUY",
+   "type": "multibagger",
+   "conviction": "Bullish",
+   "reason": "Target $45-75 (3.5x-5.5x from $13.26) on a clean positive randomized DFS HR in AMPLIFY-7P; horizon ~6-12 months; driver = single dated event-driven Phase 2 DFS readout re-rating a ~19M-share float onto a registrational/partnership path + squeeze mechanics (18.6% SI, ~12 d-to-cover); catalyst window ",
+   "stage": "tier3",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": null
+  },
+  {
+   "ticker": "ELTX",
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "tier": "4",
+   "decision": "DO_NOT_BUY",
+   "type": null,
+   "conviction": null,
+   "opportunity_vs_RKLB": "weaker",
+   "catalyst_window": "mid-2026 AMPLIFY-7P DFS readout",
+   "reason": "Sound 3c binary thesis but FAILS the opportunity bar. INFLECTION: pre-inflection \u2014 3a found all 4 \u00a77 discriminators ABSENT in hard form (no converting backlog/revenue, milestone slipped 4x, no firm cash/partner, no margin-CF inflection); the bar explicitly rejects 'pre-inflection (still a story).' REWARD-VS-SUBSTANCE: large upside ($45-75 / 3.5-5.5x) but it rests on a ~35-40% binary with NO operational evidence and squeeze/event geometry (thin ~19M float, 18.6% SI) \u2014 the bar's 'low-odds binary w",
+   "note": "BINDING capital decision \u2014 governs over the 3c BUY (which stays logged as the analytical verdict)",
+   "stage": "tier4",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": null
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+2026-02-14 11:37:20,593 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-02-14 11:37:20,593 | INFO     | Max retries: 8
+2026-02-14 11:37:20,593 | INFO     | ============================================================
+2026-02-14 11:37:20,593 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-02-14 11:37:20,593 | INFO     | ============================================================
+2026-02-14 11:37:20,594 | INFO     | Fetching ETF momentum data for context...
+2026-02-14 11:37:23,769 | INFO     | Fetched momentum data for 41 ETFs
+2026-02-14 11:37:23,770 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-02-14 11:37:23,770 | DEBUG    | Web search ENABLED for this call
+2026-02-14 11:39:55,859 | DEBUG    | Tokens: 749712 in, 6580 out
+2026-02-14 11:39:55,860 | DEBUG    | Response received: 23662 chars
+2026-02-14 11:39:55,862 | DEBUG    | Raw response saved to logs/opus_raw_response.txt
+2026-02-14 11:39:55,870 | DEBUG    | Parsed JSON keys: ['analysis_date', 'market_context', 'trends_identified_step_a', 'searches_performed', 'top_themes', 'themes_rejected', 'contrarian_watchlist', 'theme_watchlist']
+2026-02-14 11:39:55,871 | INFO     | 
+2026-02-14 11:39:55,871 | INFO     | ============================================================
+2026-02-14 11:39:55,871 | INFO     | STEP 2: MAPPING TICKERS TO THEMES
+2026-02-14 11:39:55,871 | INFO     | ============================================================
+2026-02-14 11:39:55,872 | INFO     | Analyzing 4 tickers: FSLY, HCSG, OSW, HLIT
+2026-02-14 11:39:55,872 | DEBUG    | Compact themes JSON size: 3650 chars
+2026-02-14 11:39:55,872 | DEBUG    | Rate limiting: sleeping 2.99s between requests
+2026-02-14 11:39:58,867 | INFO     | API call: Step 2 - Ticker Analysis (batch 1) (attempt 1/8)
+2026-02-14 11:39:58,867 | DEBUG    | Web search ENABLED for this call
+2026-02-14 11:40:40,472 | DEBUG    | Tokens: 189367 in, 1695 out
+2026-02-14 11:40:40,473 | DEBUG    | Response received: 5230 chars
+2026-02-14 11:40:40,475 | INFO     | Fetching price data for 4 tickers...
+2026-02-14 11:40:40,475 | DEBUG    | Fetching data for FSLY
+2026-02-14 11:40:41,254 | DEBUG    |   FSLY: $18.26 | Technology
+2026-02-14 11:40:41,254 | DEBUG    | Fetching data for HCSG
+2026-02-14 11:40:41,644 | DEBUG    |   HCSG: $21.59 | Healthcare
+2026-02-14 11:40:41,644 | DEBUG    | Fetching data for OSW
+2026-02-14 11:40:41,954 | DEBUG    |   OSW: $22.70 | Consumer Cyclical
+2026-02-14 11:40:41,954 | DEBUG    | Fetching data for HLIT
+2026-02-14 11:40:42,303 | DEBUG    |   HLIT: $10.68 | Technology

@@ -1,0 +1,763 @@
+{
+  "scan_date": "2026-04-06",
+  "scan_week_ending": "2026-04-03",
+  "market_regime": "selective",
+  "market_context_summary": "SELECTIVE regime with NORMAL deployment. GDP decelerating to +1.4% in Q4 2025. Fed frozen at 3.50-3.75% with no cuts expected through year-end. Iran war driving Brent above $100, Strait of Hormuz effectively closed. Russell 2000 outperforming S&P 500 by 4-6pp YTD but 40% of the index is unprofitable with $709B maturity wall.",
+  "retrospective": {
+    "open_positions_total": 10,
+    "thesis_intact": 8,
+    "thesis_weakening": 2,
+    "thesis_broken": 0,
+    "recently_closed": [
+      {
+        "symbol": "TMDX",
+        "pnl_pct": 54.9,
+        "held_months": 11,
+        "thesis_correct": true
+      }
+    ],
+    "notable_filter_misses": [],
+    "notable_filter_validations": [],
+    "calibration_notes": [
+      "First session \u2014 no prior data for cross-session calibration"
+    ]
+  },
+  "market_context": {
+    "regime": "selective",
+    "regime_outlook_months": "6-18 month: mid-to-late cycle with stagflationary crosscurrents. Iran war is dominant swing variable. Extended-war scenario (40% probability per Macquarie) would trigger recession.",
+    "economic_trajectory": "contracting",
+    "fed_rate_path": "holding",
+    "earnings_cycle": "decelerating",
+    "small_cap_environment": "favorable",
+    "small_cap_3m_trend": "IWM outperforming SPY by 4-6pp YTD. Russell 2000 up ~1-2% while SPY down ~4%. Widest institutional pro-small-cap tilt since April 2021.",
+    "sectors_accelerating": [
+      "Energy \u2014 Iran war oil premium + AI data center power demand",
+      "Industrials \u2014 OBBBA fiscal stimulus + $500B hyperscaler capex + defense spending",
+      "Materials \u2014 data center copper demand + infrastructure spending + gold boom"
+    ],
+    "sectors_decelerating": [
+      "Information Technology \u2014 -$3.3B monthly outflows, valuation reset",
+      "Consumer Discretionary \u2014 weakening confidence, rising delinquencies",
+      "Financials \u2014 credit quality concerns, Iran uncertainty"
+    ],
+    "established_waves": [
+      "AI Infrastructure & Data Center Buildout \u2014 Peak to Slope, physical infra names less hyped",
+      "Defense & Aerospace Rearmament \u2014 Slope of Enlightenment, at inflection, SWEET SPOT",
+      "GLP-1 Obesity Drug Revolution \u2014 Slope of Enlightenment, 15M of 110M patients treated",
+      "Nuclear Renaissance / SMR \u2014 Peak of Inflated Expectations, pre-inflection",
+      "Reshoring / Domestic Manufacturing \u2014 Early Slope, at inflection, SWEET SPOT"
+    ],
+    "emerging_shifts": [
+      "Edge AI Inference Semiconductors \u2014 $9B to $63.6B by 2030, S-curve at inflection",
+      "Defense Autonomous Systems \u2014 $1B Drone Dominance Program, 150K drones by 2027",
+      "Grid Equipment Shortage \u2014 128-week transformer lead times, 77% price increase",
+      "Uranium Supply Structural Deficit \u2014 spot above $100/lb, 20-30% structural shortfall",
+      "CHIPS Act Disbursement \u2014 $33.7B of $39B awarded, hype at trough",
+      "Biotech Capital Cycle Recovery \u2014 Q1 2026 median IPO raise $287.5M, 2x Q1 2025"
+    ],
+    "deployment_implication": "Given 3-18 month holds, capital deployment is NORMAL because structural setup supports deployment but Iran war, frozen Fed, sticky inflation, and 30-49% recession probability demand quality filters"
+  },
+  "batch_assessment": {
+    "theme_clustering": "none",
+    "theme_clustering_detail": "10 isolated micro-themes from 9 qualifying tickers. No 2+ stocks in same theme. 50% biotech concentration.",
+    "wave_alignment": "0 tickers ride funded structural forces from Prompt 2 with scanner confirmation",
+    "wave_alignment_detail": "RCAT (Defense Autonomous) identified via macro but filtered for lacking scanner signal. VOR and IMTX have MODERATE Biotech alignment. KARO has no force alignment.",
+    "source_convergence": "none",
+    "sector_concentration": "50% in Healthcare/Biotech",
+    "sector_concentration_warning": true,
+    "batch_quality": "MIXED",
+    "batch_quality_rationale": "Individually defensible picks but no powerful wave convergence. KARO is a clean fundamental compounder. No SOURCE CONVERGENCE signals."
+  },
+  "review_gate": {
+    "session_quality": "ADEQUATE",
+    "session_quality_rationale": "Some individually strong picks but mixed quality. Themes INVESTABLE not PRIME for advancing stocks. No confirmed waves. KARO strongest individual setup.",
+    "stocks_approved": [
+      "KARO"
+    ],
+    "stocks_adjusted": [
+      {
+        "symbol": "KARO",
+        "adjustment": "Reduced from T4 to T3. Initial tranche 1.0% to 0.75%.",
+        "reason": "STRONG DRIFT on archetype (2/7). Individually exceptional but not theme-wave archetype."
+      },
+      {
+        "symbol": "VOR",
+        "adjustment": "Reduced to T3 max. DD required before deployment.",
+        "reason": "MODERATE DRIFT (3/7). PRIME theme but 700% dilution, elevated entry, binary risk."
+      }
+    ],
+    "stocks_removed": [
+      {
+        "symbol": "IMTX",
+        "reason": "STRONG DRIFT (1/7). T6 signal, INVESTABLE theme, binary Phase 3, no system fit.",
+        "moved_to": "watchlist"
+      }
+    ],
+    "conviction_inflation_detected": false,
+    "bear_case_quality": "RIGOROUS",
+    "portfolio_construction_notes": "KARO only new deployment. VOR requires DD. 4/10 positions in AI Infrastructure creates concentration but themes distinct.",
+    "market_alignment": "neutral"
+  },
+  "new_positions": [
+    {
+      "symbol": "KARO",
+      "action": "BUY",
+      "verdict": "PASS",
+      "conviction": 7,
+      "tier": "T3",
+      "quality_tier": 4,
+      "price": 48.05,
+      "stop_price": 35.0,
+      "position_size": "REDUCED",
+      "position_size_pct": 0.01,
+      "theme": "Fleet Telematics SaaS in Emerging Markets",
+      "theme_score": 6.55,
+      "theme_classification": "INVESTABLE",
+      "theme_verdict": "GOOD FIT",
+      "wave_strength": "UNCONFIRMED",
+      "source": "SCANNER",
+      "structural_force": "",
+      "force_connection": "NONE",
+      "system_fit": "POOR",
+      "system_fit_reason": "Archetype 2/7. Fundamental compounder, not theme-wave momentum play. Fails TOP 3 (PRIME + wave + sub-$500M). PATH CONVERGENCE positive for fundamental stocks.",
+      "opportunity_type": "SECULAR_GROWTH",
+      "valuation_regime": "FUNDAMENTAL",
+      "gate_verdict": "PASS",
+      "gate_result": "CLEAN_PASS",
+      "gate_flags": "PATH CONVERGENCE detected. Thin liquidity (44K avg daily volume).",
+      "catalyst_summary": "Q4 FY2026 results May 20, 2026. Russell 2000 inclusion June 2026.",
+      "red_flag_level": "CLEAN",
+      "dilution_check": "CLEAN",
+      "dilution_detail": "Zero dilution ever. No options, warrants, convertibles. Basic = diluted at 30,893,300 shares.",
+      "gate_bear_case": "ZAR/USD collapse compresses USD-reported growth. Samsara enters SA/SE Asia via distribution partnership.",
+      "gate_bear_severity": "SERIOUS",
+      "gate_math": "$49.68 to $67 base (+39%), $95 bull (+98%). EV $69.40 (+44.5%). 6.9:1 upside/downside.",
+      "entry_timing_verdict": "CLEAN",
+      "entry_timing_detail": "Up 6.8% over 20 days. Catalyst in 6 weeks. PATH CONVERGENCE confirmed.",
+      "exceptional_override": false,
+      "exceptional_override_criteria": "",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_conviction_change": "SAME",
+      "dd_conviction_change_reason": "Gate +51-61% upside. DD +39% base / +98% bull, EV +44.5%. Consistent.",
+      "dd_return_driver": "FUNDAMENTAL_RERATE",
+      "dd_return_driver_secondary": "",
+      "dd_return_driver_status": "INTACT",
+      "dd_narrative_stage": "N/A",
+      "dd_elevator_pitch": "Karooooo is a Rule of 60 SaaS compounder (20% growth + 46% EBITDA margins) with zero dilution, founder-CEO owning 58%, 2.57M subscribers across 23 countries. Trades at 63% EV/Revenue discount to Samsara due to EM domicile, thin float, ZAR revenue \u2014 all actively resolving.",
+      "dd_why_now": "Q4 FY26 results May 20. Russell 2000 inclusion June 2026. SE Asia headcount +70% driving subscriber acceleration.",
+      "dd_the_math": "Seven methods: historical multiples, DCF, comps, reverse DCF, catalyst-adjusted EV, EV/ARR Rule of 40, precedent transactions. Bear $37 (20%) / Base $67 (50%) / Bull $95 (30%). EV $69.40 (+44.5%). Reverse DCF: market prices 12% growth vs 20%+ delivery.",
+      "dd_bear_case": "Iran escalation. Oil $130. ZAR past 20/USD. Growth to 10%. Samsara + Vodacom SA partnership. Russell deferred. De-rate 22x to 14x. Bear: $37 (-23%).",
+      "dd_bear_case_severity": "MODERATE",
+      "dd_risk_to_monitor": "ZAR/USD volatility. Every 1 ZAR/USD move = ~$6/share fair value. No hedge.",
+      "dd_action": "Enter $48.05, T3. Tranche 1: 0.75%. Tranche 2: +1.0% on Q4 FY26 confirms. Tranche 3: +0.5% on Russell. Stop $35.",
+      "dd_hold_thesis": "12-18 months. Milestones: Q4 FY26 May 20, Russell June 2026, SE Asia ramp H2 2026, dividend Aug 2026.",
+      "dd_key_catalyst": "Q4 FY2026 results May 20, 2026",
+      "dd_fatal_flaw": "",
+      "dd_scale_up_trigger": "Q4 FY26 net adds >85K and FY27 sub rev guidance 18%+",
+      "dd_scale_down_trigger": "Sub growth <12% ZAR for 2 Qs or net adds <60K for 2 Qs",
+      "dd_conviction_dimensions": {
+        "theme_durability": 2,
+        "competitive_position": 3,
+        "return_driver_integrity": 3,
+        "management_execution": 3,
+        "balance_sheet_runway": 3,
+        "entry_timing": 2
+      },
+      "dd_conviction_average": 2.67,
+      "dd_conviction_tier": "HIGH",
+      "dd_veto_triggered": false,
+      "dd_veto_dimension": "",
+      "dd_blacklist_applied": [],
+      "dd_blacklist_violations": "NONE",
+      "theme_lifecycle_hype": "SLOPE",
+      "theme_lifecycle_scurve": "PRE_INFLECTION",
+      "theme_sweet_spot": false,
+      "cro_verdict": "ADJUSTED",
+      "cro_adjustments": "T4 to T3. 1.0% to 0.75%. STRONG DRIFT (2/7) but individually exceptional with PATH CONVERGENCE, zero dilution, rigorous valuation.",
+      "cro_archetype_score": "2/7",
+      "cro_blacklist_clean": true,
+      "variant_perception": "Market prices bear case at ~57% probability. We assign 20%. 37pp divergence is the edge.",
+      "key_assumption": "Sub revenue growth sustains >15% ZAR and ARPU expands via Video/Tag upsells",
+      "kill_switch": "Sub growth <12% 2 Qs, net adds <60K 2 Qs, CEO sells <$50, Samsara SA/SE Asia partnership, close <$35",
+      "downside_floor": "$37 bear. Net cash ~$1/share. Profitable ops limit downside to multiple compression.",
+      "off_system_exception": false,
+      "off_system_verdict": "N/A",
+      "off_system_exception_score": 0,
+      "off_system_reason": "",
+      "off_system_expected_return": 0,
+      "off_system_12mo_target": 0.0,
+      "off_system_checks_passed": "",
+      "off_system_failed_checks": "",
+      "off_system_monitoring_cadence": "weekly"
+    }
+  ],
+  "no_go": [
+    {
+      "symbol": "IMTX",
+      "verdict": "FAIL",
+      "stage_rejected": "review_gate",
+      "rejection_reason": "CRO REMOVED: Archetype 1/7. T6 signal, INVESTABLE theme (6.50), binary Phase 3, cell therapy viability concern.",
+      "reconsider_if": "Positive SUPRAME Phase 3 data AND T2+ scanner signal",
+      "prompt4_removal": true,
+      "prompt4_removal_reason": "STRONG DRIFT 1/7. Does not match system edge in any dimension."
+    },
+    {
+      "symbol": "VOR",
+      "verdict": "FAIL",
+      "stage_rejected": "review_gate",
+      "rejection_reason": "CRO ADJUSTED but DD not completed. MODERATE DRIFT (3/7). PRIME theme (7.70) but 700% dilution, elevated entry. Requires DD.",
+      "reconsider_if": "DD resolving dilution. Pullback to $14-15.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "AZ",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 4.60 SELECTIVE. Revenue -37% in 2024. No structural demand driver.",
+      "reconsider_if": "Revenue inflects positive. Quarterly rev >$10M.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "ABSI",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 4.20 AVOID. No catalysts, no candidates, 4+ funded competitors.",
+      "reconsider_if": "Clinical candidate nominated with IND date.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "BFLY",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 5.00 SELECTIVE. Commoditising hardware, no structural driver.",
+      "reconsider_if": "Hospital system partnership with recurring rev model.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "XNCR",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 5.00 SELECTIVE. Crowded bispecific landscape.",
+      "reconsider_if": "Clinical data showing clear superiority.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "EVLV",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 4.95 SELECTIVE. Narrow TAM without federal mandates.",
+      "reconsider_if": "Federal mandate for weapons detection.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "SRPT",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Score 5.30 SELECTIVE. Borderline $2.4B cap above threshold.",
+      "reconsider_if": "Cap falls <$2B with thesis intact.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "RCAT",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Macro-only. PRIME theme (7.95) POWERFUL wave but no scanner signal. Highest-priority watchlist.",
+      "reconsider_if": "Scanner signal fires = SOURCE CONVERGENCE.",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "NTNX",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $11B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "CENX",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $5.8B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "SNX",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $13B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "ACLS",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $2.9B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "FLY",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $4.9B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "WH",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $5.9B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "BRZE",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap $2.5B. Eliminated >$2B.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "PROP",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap <$300M minimum.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    },
+    {
+      "symbol": "RDCM",
+      "verdict": "FAIL",
+      "stage_rejected": "thematic",
+      "rejection_reason": "Cap <$300M minimum.",
+      "reconsider_if": "N/A \u2014 size exclusion",
+      "prompt4_removal": false,
+      "prompt4_removal_reason": ""
+    }
+  ],
+  "exits": [
+    {
+      "symbol": "TMDX",
+      "action": "SELL",
+      "reason": "25% trailing stop from $150 high. Systematic exit discipline.",
+      "exit_price": 100.69,
+      "entry_price": 65.0,
+      "pnl_pct": 54.9,
+      "lesson": "System exit works. Enter on confirmation, hold through thesis, trailing stop locks gains without premature exit."
+    }
+  ],
+  "watchlist": [
+    {
+      "symbol": "RCAT",
+      "theme": "Small Tactical UAS Production",
+      "source": "MACRO",
+      "force_aligned": "Defense Autonomous Systems",
+      "status": "Highest priority. PRIME 7.95, POWERFUL wave. 161% FY rev growth. NATO orders. Basing $12.15.",
+      "trigger_to_buy": "Scanner signal = SOURCE CONVERGENCE.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 12.15
+    },
+    {
+      "symbol": "VOR",
+      "theme": "BLyS/APRIL Autoimmune",
+      "source": "SCANNER",
+      "force_aligned": "Biotech Capital Cycle",
+      "status": "PRIME 7.70. Dual BAFF/APRIL Phase 3 Sjogren's. $450M cash. 700% dilution concern.",
+      "trigger_to_buy": "DD resolving dilution. Pullback to $14-15.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 18.05
+    },
+    {
+      "symbol": "IMTX",
+      "theme": "PRAME Immunotherapy",
+      "source": "SCANNER",
+      "force_aligned": "Biotech Capital Cycle",
+      "status": "CRO REMOVED. INVESTABLE 6.50. $551M cash. T6 signal. Binary.",
+      "trigger_to_buy": "Positive SUPRAME Phase 3 + T2+ signal",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 10.35
+    },
+    {
+      "symbol": "SKYT",
+      "theme": "US Sovereign Foundry",
+      "source": "MACRO",
+      "force_aligned": "Edge AI Inference Semiconductors",
+      "status": "CHIPS Act funded. $600M rev forecast. Needs consolidation from $5.67-$30 run.",
+      "trigger_to_buy": "Consolidation to $22-25 + scanner signal.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 30.0
+    },
+    {
+      "symbol": "MPTI",
+      "theme": "Defense Frequency Control",
+      "source": "MACRO",
+      "force_aligned": "Defense Autonomous Systems",
+      "status": "Micro-cap A&D pure-play. ~70%+ defense rev. Low coverage.",
+      "trigger_to_buy": "Scanner signal with cap >$300M.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 0.0
+    },
+    {
+      "symbol": "INOD",
+      "theme": "AI Data Engineering",
+      "source": "MACRO",
+      "force_aligned": "Edge AI Inference Semiconductors",
+      "status": "5/7 hyperscaler clients. Basing near 200-day SMA.",
+      "trigger_to_buy": "Scanner signal confirming base.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 0.0
+    },
+    {
+      "symbol": "GPCR",
+      "theme": "Oral GLP-1 Agonist",
+      "source": "MACRO",
+      "force_aligned": "Biotech Capital Cycle",
+      "status": "Phase 3 oral GLP-1. Pure-play expansion.",
+      "trigger_to_buy": "Scanner signal ahead of Phase 3 data.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 0.0
+    },
+    {
+      "symbol": "PLAB",
+      "theme": "AI Photomask Manufacturing",
+      "source": "MACRO",
+      "force_aligned": "CHIPS Act Disbursement",
+      "status": "~$2.2B borderline. AI photomask demand.",
+      "trigger_to_buy": "Cap <$2B + scanner signal.",
+      "scanner_watchlist_added": true,
+      "price_at_scan": 0.0
+    }
+  ],
+  "themes_this_week": [
+    {
+      "name": "Small Tactical UAS Production",
+      "classification": "PRIME",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_hype_cycle": "SLOPE",
+      "lifecycle_scurve": "INFLECTION",
+      "lifecycle_sweet_spot": true,
+      "valuation_regime": "TRANSITION",
+      "composite_score": 7.95,
+      "catalyst_score": 9.0,
+      "momentum_score": 8.0,
+      "crowding_score": 6.0,
+      "runway_score": 8.0,
+      "one_liner": "DoD $1B Drone Dominance Program creates structural demand for domestic small UAS manufacturers.",
+      "thesis_summary": "Pentagon pivot to mass-produced expendable autonomous systems. Funded programmes converting to production. Small-cap domestic manufacturers at convergence of defense, reshoring, edge AI.",
+      "why_now": "Budget 53% above FY24. NATO ordering. Production scaling.",
+      "wave_strength": "POWERFUL",
+      "structural_force_aligned": "Defense Autonomous Systems",
+      "capital_flow_evidence": "Defense ETF record $3B/month inflows March 2026.",
+      "key_catalysts": [
+        "RCAT production ramp",
+        "Gauntlet Phase II selection",
+        "NATO orders"
+      ],
+      "primary_risks": [
+        "Budget sequestration",
+        "Production scaling challenges",
+        "Large prime acquisitions at depressed valuations"
+      ],
+      "tickers": [
+        "RCAT"
+      ]
+    },
+    {
+      "name": "BLyS/APRIL Autoimmune",
+      "classification": "PRIME",
+      "lifecycle_stage": "EMERGENCE",
+      "lifecycle_hype_cycle": "INNOVATION_TRIGGER",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 7.7,
+      "catalyst_score": 8.0,
+      "momentum_score": 7.0,
+      "crowding_score": 7.0,
+      "runway_score": 8.0,
+      "one_liner": "First-in-class dual BAFF/APRIL inhibitor in Phase 3 for Sjogren's.",
+      "thesis_summary": "Dual approach addresses multiple autoimmune pathways. First-in-disease for Sjogren's. Specialist funds accumulated.",
+      "why_now": "Phase 3 enrollment underway. Capital cycle improving.",
+      "wave_strength": "EMERGING",
+      "structural_force_aligned": "Biotech Capital Cycle",
+      "capital_flow_evidence": "Biotech median IPO raise $287.5M (2x prior year).",
+      "key_catalysts": [
+        "Phase 3 enrollment updates",
+        "Interim data",
+        "BTD potential"
+      ],
+      "primary_risks": [
+        "700% dilution",
+        "Binary Phase 3",
+        "Elevated entry"
+      ],
+      "tickers": [
+        "VOR"
+      ]
+    },
+    {
+      "name": "Fleet Telematics SaaS EM",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_hype_cycle": "SLOPE",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 6.55,
+      "catalyst_score": 7.0,
+      "momentum_score": 6.0,
+      "crowding_score": 7.0,
+      "runway_score": 6.0,
+      "one_liner": "Fleet telematics 15-26% penetration in SE Asia vs 70%+ NA creates decade-long runway.",
+      "thesis_summary": "Karooooo connects 2.57M vehicles via vertically integrated model. Rule of 60, zero dilution, 63% discount to Samsara.",
+      "why_now": "Growth accelerating. Coverage expanding. Russell inclusion imminent.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "UBS, MS, Roth MKM initiated. Institutional ownership climbing.",
+      "key_catalysts": [
+        "Q4 FY26 May 20",
+        "Russell June 2026",
+        "SE Asia ramp H2"
+      ],
+      "primary_risks": [
+        "ZAR/USD",
+        "Samsara competition",
+        "Thin liquidity"
+      ],
+      "tickers": [
+        "KARO"
+      ]
+    },
+    {
+      "name": "PRAME Immunotherapy",
+      "classification": "INVESTABLE",
+      "lifecycle_stage": "EMERGENCE",
+      "lifecycle_hype_cycle": "INNOVATION_TRIGGER",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 6.5,
+      "catalyst_score": 6.0,
+      "momentum_score": 5.0,
+      "crowding_score": 6.0,
+      "runway_score": 7.5,
+      "one_liner": "PRAME T-cell therapy for solid tumors with binary Phase 3 risk.",
+      "thesis_summary": "PRAME target expansion beyond melanoma. $551M cash. T6 signal, binary, cell therapy viability concern.",
+      "why_now": "SUPRAME Phase 3 advancing.",
+      "wave_strength": "EMERGING",
+      "structural_force_aligned": "Biotech Capital Cycle",
+      "capital_flow_evidence": "Early biotech recovery.",
+      "key_catalysts": [
+        "SUPRAME Phase 3 data",
+        "IMA203CD8 ovarian data"
+      ],
+      "primary_risks": [
+        "Binary outcome",
+        "Manufacturing scalability",
+        "T6 signal"
+      ],
+      "tickers": [
+        "IMTX"
+      ]
+    },
+    {
+      "name": "siRNA Expansion",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_hype_cycle": "SLOPE",
+      "lifecycle_scurve": "INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 5.3,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 6.0,
+      "one_liner": "Sarepta siRNA platform validated but $2.4B cap above threshold.",
+      "thesis_summary": "Platform validated, cap exceeds threshold, score below investment grade.",
+      "why_now": "Pipeline catalysts.",
+      "wave_strength": "EMERGING",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "Moderate.",
+      "key_catalysts": [
+        "Pipeline data"
+      ],
+      "primary_risks": [
+        "Size exclusion",
+        "Below threshold"
+      ],
+      "tickers": [
+        "SRPT"
+      ]
+    },
+    {
+      "name": "AI Smart Checkout",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "lifecycle_hype_cycle": "INNOVATION_TRIGGER",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 4.6,
+      "catalyst_score": 4.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 4.0,
+      "one_liner": "Smart cart tech lacks structural driver. Revenue -37% in 2024.",
+      "thesis_summary": "Revenue declining. Larger competitors retreated. Momentum without demand driver is noise.",
+      "why_now": "Scanner surge but no fundamental backing.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "Institutional accumulation despite weak rev.",
+      "key_catalysts": [
+        "Cart deployment rev recognition"
+      ],
+      "primary_risks": [
+        "Revenue declining",
+        "Competitor retreat from space"
+      ],
+      "tickers": [
+        "AZ"
+      ]
+    },
+    {
+      "name": "Handheld Ultrasound",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_hype_cycle": "TROUGH",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 5.0,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "one_liner": "Commoditising hardware, no structural driver.",
+      "thesis_summary": "Interesting but commoditising.",
+      "why_now": "Scanner signal, no catalyst.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "Limited.",
+      "key_catalysts": [
+        "Hospital partnership"
+      ],
+      "primary_risks": [
+        "Commoditisation"
+      ],
+      "tickers": [
+        "BFLY"
+      ]
+    },
+    {
+      "name": "AI Weapons Detection",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_hype_cycle": "SLOPE",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "FUNDAMENTAL",
+      "composite_score": 4.95,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "one_liner": "Real product, narrow TAM without mandates.",
+      "thesis_summary": "NFL venues deployed but needs government mandates for scale.",
+      "why_now": "Scanner signal, no mandate catalyst.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "Limited.",
+      "key_catalysts": [
+        "Federal mandate"
+      ],
+      "primary_risks": [
+        "Narrow TAM"
+      ],
+      "tickers": [
+        "EVLV"
+      ]
+    },
+    {
+      "name": "Bispecific Fc Platform",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "lifecycle_hype_cycle": "SLOPE",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 5.0,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "one_liner": "Crowded competitive landscape.",
+      "thesis_summary": "No differentiation from competing platforms.",
+      "why_now": "Scanner signal, no catalyst.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "Limited.",
+      "key_catalysts": [
+        "Clinical data"
+      ],
+      "primary_risks": [
+        "Crowded landscape"
+      ],
+      "tickers": [
+        "XNCR"
+      ]
+    },
+    {
+      "name": "AI Antibody Design",
+      "classification": "SELECTIVE",
+      "lifecycle_stage": "EMERGENCE",
+      "lifecycle_hype_cycle": "PEAK",
+      "lifecycle_scurve": "PRE_INFLECTION",
+      "lifecycle_sweet_spot": false,
+      "valuation_regime": "OPTIONALITY",
+      "composite_score": 4.2,
+      "catalyst_score": 3.0,
+      "momentum_score": 4.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "one_liner": "Platform without product. 4+ better-funded competitors.",
+      "thesis_summary": "No catalysts, no candidates, well-funded competition.",
+      "why_now": "ARK accumulation, not fundamentals.",
+      "wave_strength": "UNCONFIRMED",
+      "structural_force_aligned": "",
+      "capital_flow_evidence": "ARK only.",
+      "key_catalysts": [
+        "Candidate nomination",
+        "Pharma partnership"
+      ],
+      "primary_risks": [
+        "No product",
+        "Better-funded competitors"
+      ],
+      "tickers": [
+        "ABSI"
+      ]
+    }
+  ]
+}

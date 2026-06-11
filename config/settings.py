@@ -25,17 +25,11 @@ TICKERS_FILE = BASE_DIR / "scanner" / "complete_tickers.txt"
 
 # Section output roots (canonical definitions in config/output_paths.py)
 from config.output_paths import (
-    SCANNER_OUTPUT, PORTFOLIO_OUTPUT, SUBSTACK_OUTPUT, TWITTER_OUTPUT,
+    SCANNER_OUTPUT, PORTFOLIO_OUTPUT, SUBSTACK_OUTPUT, STERLING_RUN,
     SIGNALS_FILE, ANALYSIS_LOG,
     PORTFOLIO_FILE, SHEETS_EXPORT_FILE, EQUITY_CURVE_FILE,
     PORTFOLIO_BACKUP_DIR,
-    LIVE_QUEUE_FILE, COWORK_QUEUE_FILE, LIVE_CONTEXT_FILE, LIVE_COST_LOG_FILE,
-    CHARTS_DIR, FAILED_TWEETS_FILE, WORKFLOW_STATUS_FILE,
-    TWEET_TRACKING_FILE, CELEBRATIONS_FILE,
 )
-
-# Legacy alias — DEPRECATED, kept for backward compat
-TRADES_DIR = BASE_DIR / "trades"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1210,7 +1204,6 @@ XAI_BASE_URL = "https://api.x.ai/v1"
 # Cost controls
 DAILY_COST_LIMIT_USD = 1.00               # Hard limit — kills generation if exceeded
 MONTHLY_COST_LIMIT_USD = 30.00            # Alert threshold
-COST_LOG_FILE = LIVE_COST_LOG_FILE  # Alias for backward compat
 
 # Content controls
 MAX_TWEETS_PER_DAY = 12                   # Hard cap across all accounts

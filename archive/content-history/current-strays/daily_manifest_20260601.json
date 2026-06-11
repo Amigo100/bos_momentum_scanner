@@ -1,0 +1,93 @@
+{
+    "date": "2026-06-01",
+    "day": "monday",
+    "generated_at": "2026-06-01T08:00:00+10:00",
+    "week": "W23",
+    "weekly_plan_used": "weekly_plan_2026-W23.json",
+    "post": {
+        "type": "none",
+        "status": "no_post_scheduled",
+        "note": "Monday is a notes-only day. Tuesday deep dive ($BAND position update) to be written by user in Claude.ai."
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "POSITION",
+            "sub_variant": "single_winner",
+            "time_aedt": "08:00",
+            "file": "notes/morning_position_20260601.md",
+            "tickers_referenced": ["CYRX"],
+            "prices_verified": true,
+            "price_note": "CYRX $14.15 from web search June 1 2026. Entry $9.67 from portfolio.csv.",
+            "word_count": 118
+        },
+        {
+            "slot": 2,
+            "type": "MARKET",
+            "sub_variant": "catalyst_flag",
+            "time_aedt": "12:00",
+            "file": "notes/midday_market_20260601.md",
+            "tickers_referenced": ["HIVE", "NVDA", "AMD", "BAND", "SVCO"],
+            "prices_verified": true,
+            "price_note": "Entry prices from portfolio.csv. Macro data (ISM 52.7, AVGO consensus $22.08B) from web search.",
+            "word_count": 112
+        },
+        {
+            "slot": 3,
+            "type": "EDUCATION",
+            "sub_variant": "research_finding",
+            "time_aedt": "20:00",
+            "file": "notes/evening_education_20260601.md",
+            "tickers_referenced": [],
+            "prices_verified": false,
+            "price_note": "No prices referenced. Evergreen academic research content.",
+            "word_count": 105
+        }
+    ],
+    "visual_card": null,
+    "visual_card_note": "No visual card scheduled for Monday per W23 plan.",
+    "repetition_check": {
+        "previous_manifests_checked": [
+            "daily_manifest_20260531.json (2026-05-31, Saturday)",
+            "daily_manifest_20260526.json (2026-05-26, Tuesday)",
+            "daily_manifest_20260523.json (2026-05-23, Saturday)",
+            "daily_manifest_20260517.json (2026-05-17, Sunday)"
+        ],
+        "skips": [],
+        "substitutions": [
+            {
+                "original": "POSITION lead with HIVE or VOYG (featured May 26)",
+                "replacement": "POSITION lead with CYRX (single winner, +46.3%)",
+                "reason": "HIVE/VOYG were May 26 POSITION leads (6 days ago). CYRX mentioned briefly in May 26 SCANNER funnel but never as dedicated POSITION subject. Different angle, different note type."
+            }
+        ],
+        "variant_rotation": {
+            "POSITION": "single_winner (last POSITION was May 26 catalyst_update on HIVE/VOYG; rotated to CYRX single winner)",
+            "MARKET": "catalyst_flag (last MARKET was May 17 event_impact_analysis on inflation-tech split; 15 days ago, completely fresh topic)",
+            "EDUCATION": "research_finding (last EDUCATION was May 17 concept_explainer on AI Infra diversification; 15 days ago, Bessembinder study is new topic)"
+        }
+    },
+    "freshness_gate": {
+        "prices_searched": ["CYRX", "HIVE", "NVDA", "AMD", "BAND", "SVCO", "ASPI", "VOYG", "ACRS", "KARO", "NAMS", "VYGR"],
+        "price_date": "2026-06-01",
+        "equity_curve_date": "2026-05-31",
+        "nav_used": 110534,
+        "total_return_used": 110.02,
+        "spy_return_used": 48.27,
+        "alpha_used": 61.75,
+        "live_prices": {
+            "CYRX": 14.15,
+            "AMD": 516.10,
+            "NVDA": 212.49,
+            "BAND": 54.44,
+            "HIVE": 4.50,
+            "SVCO": 7.20,
+            "ASPI": 7.78,
+            "VOYG": 50.81,
+            "ACRS": 4.55,
+            "KARO": 46.25,
+            "NAMS": 33.08,
+            "VYGR": 4.15
+        }
+    }
+}

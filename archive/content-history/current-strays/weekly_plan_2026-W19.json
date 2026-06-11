@@ -1,0 +1,235 @@
+{
+  "week": "2026-W19",
+  "generated": "2026-05-03",
+  "week_dates": "May 5-10, 2026",
+
+  "market_context": {
+    "spy_close": 720.01,
+    "qqq_close": 672.50,
+    "vix": 16.89,
+    "spy_weekly_change": "+0.9%",
+    "qqq_weekly_change": "+1.1%",
+    "market_regime": "selective",
+    "key_events_this_week": [
+      "CYRX Q1 earnings Mon May 4 after close",
+      "AMD Q1 earnings Tue May 5 after close",
+      "ISM Services PMI Tue May 5",
+      "ADP Employment Wed May 6",
+      "Palantir earnings Mon May 5",
+      "Disney earnings Tue May 6",
+      "Factory Orders Mon May 4"
+    ]
+  },
+
+  "portfolio_update": {
+    "total_positions": 13,
+    "forces_represented": ["AI Infrastructure", "Nuclear Renaissance", "Biotech Capital Cycle", "Financial Infrastructure", "Defense Spending"],
+    "positions": [
+      {"ticker": "AMD", "entry": 120.00, "current": 360.54, "pnl_pct": 200.5, "force": "AI Infrastructure", "note": "52-week high, earnings Tue May 5"},
+      {"ticker": "BAND", "entry": 16.55, "current": 44.89, "pnl_pct": 171.2, "force": "AI Infrastructure", "note": "46% single-day surge on Q1 beat Apr 30"},
+      {"ticker": "NVDA", "entry": 150.00, "current": 198.12, "pnl_pct": 32.1, "force": "AI Infrastructure"},
+      {"ticker": "SVCO", "entry": 5.98, "current": 7.20, "pnl_pct": 20.4, "force": "AI Infrastructure"},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.42, "pnl_pct": 15.2, "force": "AI Infrastructure"},
+      {"ticker": "ACRS", "entry": 3.65, "current": 4.20, "pnl_pct": 15.1, "force": "Biotech Capital Cycle"},
+      {"ticker": "KARO", "entry": 48.05, "current": 53.35, "pnl_pct": 11.0, "force": "Financial Infrastructure"},
+      {"ticker": "CYRX", "entry": 9.67, "current": 10.59, "pnl_pct": 9.5, "force": "Biotech Capital Cycle", "note": "Earnings Mon May 4"},
+      {"ticker": "KYTX", "entry": 9.22, "current": 8.70, "pnl_pct": -5.6, "force": "Biotech Capital Cycle", "note": "BLA filing 1H 2026"},
+      {"ticker": "VOYG", "entry": 29.00, "current": 26.74, "pnl_pct": -7.8, "force": "Defense Spending"},
+      {"ticker": "VYGR", "entry": 4.45, "current": 4.01, "pnl_pct": -9.9, "force": "Biotech Capital Cycle"},
+      {"ticker": "ASPI", "entry": 6.00, "current": 5.08, "pnl_pct": -15.3, "force": "Nuclear Renaissance"},
+      {"ticker": "NAMS", "entry": 34.76, "current": 28.43, "pnl_pct": -18.2, "force": "Biotech Capital Cycle", "note": "PREVAIL CVOT watch"}
+    ],
+    "significant_movers": [
+      "BAND +171.2% (was +9% at last update; Q1 beat triggered 46% single-day surge Apr 30)",
+      "AMD +200.5% (highest_close in CSV was $360.54; at 52-week high; reports earnings Tue)",
+      "NAMS -18.2% (dropped from $34.76 entry to ~$28.43; insider selling pressure)"
+    ]
+  },
+
+  "content_schedule": {
+    "tuesday": {
+      "type": "Deep Dive",
+      "topic": "$BAND thesis validated: from $16.55 to $44.89",
+      "reasoning": "Material development on held position. Q1 record revenue $209M (+20% YoY), raised FY26 guidance, 46% single-day surge. Validates the AI Voice CPaaS thesis and the 0.7x forward revenue entry. This is a flagship winner story that demonstrates system effectiveness.",
+      "handbook_prompt": "Tuesday Deep Dive — Position Update (material development)"
+    },
+    "wednesday": {
+      "type": "Sector Watch",
+      "topic": "Biotech Capital Cycle: CYRX earnings as litmus test",
+      "reasoning": "CYRX Q1 earnings Mon May 4 is the week's most important catalyst for portfolio concentration. 5 of 13 positions sit in Biotech Capital Cycle. CYRX result will validate or challenge the EBITDA inflection thesis. KYTX BLA filing timeline also due for update."
+    },
+    "thursday": {
+      "type": "The Edge (Education Rotation B: Investment Education)",
+      "topic": "Position sizing for binary catalysts: how we allocate across KYTX, NAMS, CYRX",
+      "reasoning": "Rotation B (investment education) is least-recently-used. All three biotech positions have imminent binary events. Teaching the framework for sizing T2 vs T3 positions around catalysts is immediately relevant and teaches subscribers our risk methodology without revealing indicators.",
+      "handbook_prompt": "Thursday Education — Rotation B: Investment education"
+    },
+    "friday": {
+      "type": "Investor Lessons",
+      "subcategory": "case_study",
+      "topic": "$BAND: anatomy of a 171% return from a $16.55 entry",
+      "reasoning": "Case study subcategory. Traces the full journey: what the system saw at entry (0.7x revenue, Tier-1 IP voice network, cost advantage), how the thesis evolved (AI voice infrastructure demand), and what the Q1 beat confirms about forward economics."
+    },
+    "saturday": {
+      "type": "Tools & Tech",
+      "topic": "Reading an earnings transcript in 10 minutes: the CYRX framework",
+      "reasoning": "Uses Monday's CYRX earnings call as the real-time example. Teaches subscribers how to extract the 3-4 data points that matter (revenue trajectory, EBITDA guidance language, contract retention, cash burn) from a 45-minute call."
+    }
+  },
+
+  "repetition_audit": {
+    "note": "No prior manifests found in substack/output/current/ for the last 14 days. This appears to be the first weekly plan in the current output directory. All topics are AVAILABLE.",
+    "retired_topics": [],
+    "available_topics": [
+      "BAND earnings beat (NEW this week)",
+      "CYRX Q1 earnings (catalyst this week)",
+      "AMD 200% milestone",
+      "Binary event sizing methodology",
+      "Portfolio alpha snapshot",
+      "Scanner rejection stories (from W16 scan)"
+    ]
+  },
+
+  "batch_notes": {
+    "education": [
+      {
+        "id": "EDU-1",
+        "sub_variant": "research_insight",
+        "content": "Hendrik Bessembinder's 2018 study of 26,000 US stocks from 1926 to 2016 found that just 4% of listed companies accounted for the entire net wealth creation above Treasury bills.\n\nThe median stock underperformed T-bills over its lifetime. The mean outperformed. That gap is the entire argument for concentrated, high-conviction portfolios over diversified index replication.\n\nOur system targets the 4%. Thirteen positions. Six structural forces. The maths only works if each position has asymmetric upside potential and defined downside boundaries. Cash floors, catalyst calendars, systematic exits.\n\nBessembinder's conclusion: broad diversification guarantees average. Concentration with discipline is the only path to outlier returns."
+      },
+      {
+        "id": "EDU-2",
+        "sub_variant": "methodology_philosophy",
+        "content": "Most investors size positions by conviction alone. High conviction, big position. Low conviction, small position.\n\nWe size by a different variable: outcome distribution.\n\nA stock with a binary catalyst (FDA decision, trial readout) gets a smaller allocation regardless of conviction. A stock with a cash floor and multiple re-rating paths gets a larger one. Conviction determines whether we enter. Distribution shape determines how much.\n\n$CYRX at $9.67 with $8.25 cash floor and seven re-rating methods: full T2 allocation. $NAMS at $34.76 with a single binary CVOT readout that determines 80% of future value: half-size T3. Same conviction score. Different allocation logic.\n\nThe system prices the shape of the payoff, not the strength of the opinion."
+      },
+      {
+        "id": "EDU-3",
+        "sub_variant": "concept_explainer",
+        "content": "What does it mean when a stock trades below its cash value?\n\nCryoport has $411M in cash and equivalents. Market cap: roughly $480M. Enterprise value: $70M. That means the market assigns $70M of value to a business generating $192M in annual revenue with 70% market share in CGT logistics.\n\nThis is not \"cheap.\" This is the market pricing in probable failure to reach profitability. The implied probability: roughly 56% that the business never earns a sustained dollar.\n\nWe disagree. The demonstrated $12M annual EBITDA improvement trajectory and nine pending therapy approvals in 2026 suggest 75% probability of profitability by H2 2026. The gap between 56% implied failure and our 25% estimate is the entire position thesis.\n\nQ1 results: Monday after close."
+      },
+      {
+        "id": "EDU-4",
+        "sub_variant": "research_insight",
+        "content": "O'Shaughnessy Asset Management studied 63 years of US stock returns and found that the single strongest predictor of 12-month forward returns was not earnings growth, not analyst upgrades, not insider buying.\n\nIt was price momentum combined with value. Stocks in the cheapest quintile by price-to-sales that also showed six-month price momentum outperformed the market by 5.2 percentage points annually.\n\nNeither factor worked alone at that magnitude. Momentum without value chased expensive stocks into reversals. Value without momentum caught falling knives.\n\nOur screening system combines both: structural momentum confirmation plus fundamental value gates. The academic evidence spans six decades. The application is real-time."
+      }
+    ],
+    "scanner": [
+      {
+        "id": "SCAN-1",
+        "sub_variant": "weekly_funnel",
+        "content": "Last Friday's screening: 1,279 tickers loaded across US exchanges.\n\n30 showed momentum inflection signals. 54 confirmed trend acceleration. 18 cleared the combined filter chain across six distinct structural themes.\n\nThree advanced to full forensic analysis. Three cleared. Fifteen were watchlisted for timing or thesis gaps. The rest: eliminated.\n\n98.6% rejection rate. 1,261 stocks told no. That is not a bug in the system. That is the system."
+      },
+      {
+        "id": "SCAN-2",
+        "sub_variant": "rejection_story",
+        "content": "This week we screened a luxury watch retailer showing momentum confirmation and institutional accumulation signals.\n\nWe walked away in under sixty seconds.\n\nNo structural force alignment. No identifiable catalyst within 90 days. Revenue declining 8% year over year. The momentum signal was real. It was also meaningless without a thesis underneath it.\n\nMomentum confirmation is Gate 1. It is necessary but not sufficient. Twelve more stocks were eliminated at the same stage: movie exhibition, community banking, hospitality REITs, specialty chemicals. Momentum without structural backing is noise."
+      },
+      {
+        "id": "SCAN-3",
+        "sub_variant": "theme_heatmap",
+        "content": "Six themes scored from the W16 scan:\n\nTwo rated PRIME (composite above 8.0): navy submarine hardware manufacturing and CAR-T autoimmune therapy. Both have funded catalysts within 90 days and capital flowing.\n\nOne rated PRIME: oral CETP cardiovascular (8.15 composite, but binary risk keeps allocation small).\n\nTwo INVESTABLE: CGT cold chain logistics and EM cross-border payments. Viable but need earnings confirmation or timing improvement.\n\nThe scanner does not chase narrative or sector rotation headlines. It scores catalyst density, institutional momentum, crowding risk, and forward runway. This week, biotech dominated. Next week may look entirely different."
+      }
+    ],
+    "promo": [
+      {
+        "id": "PROMO-1",
+        "sub_variant": "deep_dive_hook",
+        "target_day": "tuesday",
+        "content": "New deep dive published today.\n\nA CPaaS company that owns the only independent Tier-1 IP voice network in the United States. We entered at $16.55. It closed Friday at $44.89 after a 46% single-day surge on record revenue.\n\nThe thesis was asymmetric from day one: 0.7x forward revenue when peers traded at 3-5x. What changed, what the Q1 numbers confirm, and whether there is still upside from here.\n\nFull analysis in today's post."
+      },
+      {
+        "id": "PROMO-2",
+        "sub_variant": "education_preview",
+        "target_day": "thursday",
+        "content": "New post: how we size positions around binary catalysts.\n\nThree of our biotech positions face FDA-dependent events in the next six months. Same screening system. Same conviction methodology. Three different allocation sizes. The logic behind each one, the specific risk each faces, and the framework we use to price outcome distributions rather than confidence levels.\n\nFree to read."
+      }
+    ]
+  },
+
+  "visual_asset_ideas": [
+    {
+      "id": 1,
+      "type": "PORTFOLIO_WINNER",
+      "description": "$BAND return journey: $16.55 entry to $44.89, showing key thesis milestones (entry at 0.7x revenue, AI voice demand thesis, Q1 beat, guidance raise)",
+      "ticker": "$BAND",
+      "data_needed": ["Entry price $16.55 (Mar 8 2026)", "Q1 revenue $209M (+20% YoY)", "Current price $44.89 (+171%)", "Key milestone dates with price annotations"]
+    },
+    {
+      "id": 2,
+      "type": "BINARY_SIZING",
+      "description": "Position sizing framework visual: three biotech positions compared. Cash floor protection vs binary risk vs multi-path re-rating. Show CYRX (bounded downside, full T2), KYTX (moderate binary, T2), NAMS (extreme binary, half T3)",
+      "ticker": "$CYRX / $KYTX / $NAMS",
+      "data_needed": ["Cash floor per share for each", "Allocation % for each", "Number of re-rating paths for each", "Key binary event and date for each"]
+    },
+    {
+      "id": 3,
+      "type": "EARNINGS_PREVIEW",
+      "description": "$CYRX Q1 2026 earnings watch card: the four metrics that determine thesis survival. Revenue trajectory vs $192M guided, EBITDA guidance language, contract retention rate, cash burn pace",
+      "ticker": "$CYRX",
+      "data_needed": ["FY25 revenue $176.2M, FY26 guide $192M", "Q4 2025 EBITDA regression detail", "Cash position $411M", "H2 2026 positive EBITDA target status"]
+    },
+    {
+      "id": 4,
+      "type": "SCANNER_FUNNEL",
+      "description": "W16 screening funnel infographic: 1,279 tickers narrowing to 3 deployed positions through 5 filter stages, with rejection counts at each stage and example rejected tickers labeled",
+      "ticker": "System-level",
+      "data_needed": ["1,279 loaded → 30 momentum → 18 combined filters → 5 theme-confirmed → 3 deployed", "Stage names", "Example rejections at each stage (MOV, AMC, FUNC)"]
+    },
+    {
+      "id": 5,
+      "type": "FORCE_MAP",
+      "description": "Portfolio force concentration map: 13 positions across 5 structural forces, sized by allocation, coloured by P&L. Highlight AI Infrastructure dominance (5 positions, all green) vs Biotech Capital Cycle (5 positions, mixed)",
+      "ticker": "Portfolio-level",
+      "data_needed": ["Force groupings with ticker lists", "P&L colour coding per position", "Relative allocation sizing", "Force-level aggregate P&L"]
+    },
+    {
+      "id": 6,
+      "type": "COMPARISON",
+      "description": "$AMD at $120 entry vs $360 today: the three phases of a 200% return. Phase 1 (consolidation, -4%), Phase 2 (breakout, AI capex narrative), Phase 3 (earnings acceleration, $9.89B Q1 expected). Annotated timeline.",
+      "ticker": "$AMD",
+      "data_needed": ["Entry date Mar 2 2026 at $120", "Key inflection dates and prices", "Revenue/EPS growth rates by quarter", "Current price $360.54 (+200.5%)"]
+    }
+  ],
+
+  "context_packages": {
+    "tuesday_deep_dive": {
+      "topic": "$BAND Deep Dive: Thesis Validated at +171%",
+      "prompt_type": "Position Update (material development)",
+      "reference_files": [
+        "portfolio/output/portfolio.csv (BAND row: entry $16.55, T3, conviction 6)",
+        "scanner/output/signals.json (historical_winners: BAND entry $16.55, current $18.05 — STALE, now $44.89)",
+        "config/voice_rules.md (all 15 rules)"
+      ],
+      "portfolio_context": "Ticker: BAND\nEntry: $16.55 (March 8, 2026)\nCurrent: $44.89 (May 2, 2026)\nP&L: +171.2%\nTier: T3\nConviction at entry: 6\nForce: AI Infrastructure\nOriginal thesis: Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue — cheapest in the peer group despite 16% guided growth — the market priced in single-digit growth and ignored the emerging AI voice infrastructure thesis.\n\nQ1 2026 earnings (reported Apr 29):\n- Revenue: $209M (record), +20% YoY\n- Adjusted EBITDA: $26M (record Q1)\n- Stock surged 46% on Apr 30 (from $24.20 to $36.81)\n- Continued to $44.89 by May 2\n- FY26 guidance raised\n- 52-week range: $11.93 to $46.16",
+      "voice_reminders": [
+        "No em dashes. Colons, periods, semicolons only.",
+        "No AI/LLM references. 'Our research process' or 'forensic analysis.'",
+        "No indicator names. Describe outcomes: 'momentum inflection confirmed.'",
+        "Map to AI Infrastructure force, not 'AI Voice CPaaS' micro-theme.",
+        "Open with data: entry price, current price, return percentage.",
+        "Show the original bear case and how earnings addressed it.",
+        "End with forward look: what does $44.89 price in? Is there still upside?"
+      ],
+      "suggested_prompt": "Write a Tuesday Deep Dive for Sterling Signals about $BAND.\n\nThis is a position update: material development (Q1 earnings beat triggered +171% from entry).\n\nStructure: Entry thesis recap at $16.55 → What Q1 numbers showed ($209M revenue, $26M EBITDA, raised guidance) → Why the stock re-rated 46% in one day → Updated valuation at $44.89 → Forward view (what's priced in, remaining upside/risk) → Action.\n\nUse the Content Prompt Handbook v8.0 Tuesday Deep Dive format. Attach portfolio.csv for entry data. Web search for latest analyst targets and AI voice market sizing."
+    },
+    "thursday_education": {
+      "topic": "Position Sizing for Binary Catalysts",
+      "prompt_type": "Education Rotation B: Investment education",
+      "reference_files": [
+        "portfolio/output/portfolio.csv (CYRX, KYTX, NAMS rows)",
+        "scanner/output/signals.json (consider_signals for all three: gate_math, bear_case)",
+        "config/voice_rules.md"
+      ],
+      "portfolio_context": "Three biotech positions with imminent binary events:\n\n1. CYRX ($9.67 entry, T2, conviction 8)\n   - Cash floor: $8.25/share (85% downside protection)\n   - Re-rating paths: 7 methods (EV/Rev, DCF, comps, etc.)\n   - Binary event: Q1 earnings May 4 (EBITDA guidance)\n   - Allocation: FULL T2 (2.5% target)\n   - Why full size: bounded downside + multiple re-rating catalysts\n\n2. KYTX ($9.22 entry, T2, conviction 7)\n   - Cash floor: $4.89/share\n   - Binary event: BLA filing 1H 2026, FDA acceptance Q3\n   - Allocation: FULL T2 but tranched (1% initial, scale to 2.5%)\n   - Why tranched: unprecedented regulatory path, binary FDA outcome\n\n3. NAMS ($34.76 entry, T3, conviction 6)\n   - No meaningful cash floor\n   - Binary event: PREVAIL CVOT (determines 80% of value)\n   - Allocation: HALF T3 (0.5% initial, max 1.0%)\n   - Why half-size: 0-for-4 CETP class history, $40M+ insider selling, single binary readout determines everything\n\nKey framework: Same screening system → same conviction methodology → three different allocation architectures. The variable is outcome distribution shape, not conviction strength.",
+      "voice_reminders": [
+        "Teach the framework, not the indicators.",
+        "Use real portfolio examples with actual numbers.",
+        "No 'conviction 8' language publicly. Use 'highest conviction' or describe the thesis strength.",
+        "Frame as 'our risk methodology' or 'allocation framework.'",
+        "Never say 'binary event sizing' — say 'how we allocate around major catalysts.'",
+        "End with the principle: 'The system prices payoff shape, not opinion strength.'"
+      ],
+      "suggested_prompt": "Write a Thursday Education post for Sterling Signals about how we size positions around binary catalysts.\n\nThis is Rotation B: Investment Education. The concept: allocation is determined by outcome distribution shape (bounded vs unbounded downside, single vs multiple re-rating paths), not by conviction alone.\n\nUse three real portfolio positions as the case studies (CYRX, KYTX, NAMS). Show the specific logic for each without revealing technical indicators. The reader should finish understanding WHY the same system produces three different allocation sizes for three biotech stocks with similar conviction levels.\n\nUse the Content Prompt Handbook v8.0 Thursday Education format. Free to read (no paywall)."
+    }
+  }
+}

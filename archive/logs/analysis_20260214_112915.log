@@ -1,0 +1,12 @@
+2026-02-14 11:29:16,009 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-02-14 11:29:16,009 | INFO     | Max retries: 8
+2026-02-14 11:29:16,009 | INFO     | ============================================================
+2026-02-14 11:29:16,009 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-02-14 11:29:16,009 | INFO     | ============================================================
+2026-02-14 11:29:16,009 | INFO     | Fetching ETF momentum data for context...
+2026-02-14 11:29:19,148 | INFO     | Fetched momentum data for 41 ETFs
+2026-02-14 11:29:19,149 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-02-14 11:29:19,149 | DEBUG    | Web search ENABLED for this call
+2026-02-14 11:29:55,516 | DEBUG    | Tokens: 737596 in, 807 out
+2026-02-14 11:29:55,516 | DEBUG    | Response received: 589 chars
+2026-02-14 11:29:55,518 | DEBUG    | Raw response saved to logs/opus_raw_response.txt

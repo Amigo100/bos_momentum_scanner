@@ -1,0 +1,93 @@
+{
+  "day": "tuesday",
+  "date": "2026-02-26",
+  "generated_at": "2026-02-26T19:47:07.432114Z",
+  "note_schedule": [
+    {
+      "slot": 1,
+      "type": "SIGNAL_ALERT",
+      "time": "08:30 ET"
+    },
+    {
+      "slot": 2,
+      "type": "THEME_MOMENTUM",
+      "time": "12:30 ET"
+    },
+    {
+      "slot": 3,
+      "type": "ENGAGEMENT_HOOK",
+      "time": "17:00 ET"
+    }
+  ],
+  "live_data": {
+    "spy_price": 687.75,
+    "spy_change_pct": -0.78,
+    "qqq_price": 607.54,
+    "qqq_change_pct": -1.44,
+    "vix": 20.0
+  },
+  "portfolio": {
+    "open_count": 2,
+    "win_rate": 0.0,
+    "total_pnl_pct": -3.5,
+    "top_performer": {
+      "symbol": "RELY",
+      "pnl_pct": -2.2,
+      "entry": 17.15,
+      "current": 16.78
+    },
+    "positions": [
+      {
+        "symbol": "RELY",
+        "pnl_pct": -2.2,
+        "theme": "Cross-Border Digital Payments & Remittances"
+      },
+      {
+        "symbol": "ETON",
+        "pnl_pct": -4.8,
+        "theme": "Healthcare Contrarian Recovery"
+      }
+    ]
+  },
+  "signals": {
+    "new_this_week": [
+      "ETON",
+      "RELY",
+      "NPB"
+    ],
+    "pass_count": 3,
+    "themes": [
+      {
+        "name": "Grid Infrastructure Modernization",
+        "status": "PRIME",
+        "composite": 8.1
+      },
+      {
+        "name": "Defense Industrial Base Modernization",
+        "status": "PRIME",
+        "composite": 7.5
+      },
+      {
+        "name": "Industrial AI Infrastructure",
+        "status": "INVESTABLE",
+        "composite": 7.2
+      },
+      {
+        "name": "Healthcare Contrarian Recovery",
+        "status": "INVESTABLE",
+        "composite": 6.8
+      },
+      {
+        "name": "Energy Infrastructure Transition",
+        "status": "SELECTIVE",
+        "composite": 5.7
+      }
+    ]
+  },
+  "scanner_stats": {
+    "universe_size": 885,
+    "technical_pass": 5,
+    "theme_pass": 4,
+    "green_signals": 3
+  }
+}

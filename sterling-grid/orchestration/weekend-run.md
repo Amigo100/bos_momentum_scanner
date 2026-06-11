@@ -142,10 +142,12 @@ rewrites only the Current/P&L% columns of `portfolio.csv`; fetch failures keep o
 Load `sterling-grid-calibration/SKILL.md`. **Part A:** append every decision (buys *and* rejects, plus
 any technical SELL) to `decisions.json` with the forward-snapshot block — the sole ledger. **Part C
 (runs last):** `python -m scripts.sterling_weekly_close <date>` builds the operator report +
-`theme_research_history.csv` + `ticker_journey_history.csv`, and writes new buys / DD'd sells into
-`portfolio.csv`. **Save the carried-forward log** — theme map · benchmark set · regime log · discovery
-log — for next week. Each week, also check held names for the scanner's **technical exit** and sell in
-full when it flags.
+`theme_research_history.csv` + `ticker_journey_history.csv`, writes new buys / DD'd sells into
+`portfolio.csv`, **and mirrors the run into the two findability views** — `research/<TICKER>/`
+(per-name artifacts + status index across runs) and `weeks/<YYYY-WNN>/` (newsletter · notes ·
+deep-dives · the week's decisions.csv + manifest) — idempotently. **Save the carried-forward log** —
+theme map · benchmark set · regime log · discovery log — for next week. Each week, also check held
+names for the scanner's **technical exit** and sell in full when it flags.
 
 **Cadence:** ①→⑨ weekly (including Tier 0's full four-pass cycle; no separate monthly pass) ·
 Calibration **K.1 quarterly** on the matured log (load `sterling-grid-calibration/SKILL.md`); change

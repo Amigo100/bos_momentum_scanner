@@ -1,0 +1,26 @@
+{
+ "ticker": "ASPI",
+ "status": "held",
+ "status_rule": "held = row in sterling-run/portfolio.csv; bought = any tier4 BUY (ledger or run-dir row); passed = latest decision DROP/DO_NOT_BUY and not held; else in-funnel",
+ "first_seen": "2026-06-08",
+ "last_updated": "2026-06-08",
+ "runs": [
+  {
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "artifacts": [
+    "memo.md"
+   ]
+  }
+ ],
+ "decision_history": [],
+ "legacy_artifacts": [
+  "deep-dive-legacy.html"
+ ],
+ "portfolio": {
+  "entry": "4.22",
+  "theme": "Nuclear Renaissance",
+  "type": "multibagger",
+  "conviction": "Bullish"
+ }
+}

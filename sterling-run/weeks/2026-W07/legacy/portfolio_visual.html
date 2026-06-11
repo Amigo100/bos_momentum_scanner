@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sterling Signals Portfolio</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;margin:0;padding:24px;background:#111827;color:#F9FAFB;">
+  <div style="max-width:900px;margin:0 auto;">
+
+    <!-- HEADER -->
+    <div style="text-align:center;padding:28px 0 20px 0;border-bottom:2px solid #2DD4BF;">
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#F9FAFB;letter-spacing:-0.5px;">
+        <span style="color:#2DD4BF;">Sterling Signals</span> Portfolio
+      </h1>
+      <p style="margin:8px 0 0 0;color:#9CA3AF;font-size:14px;">
+        February 14, 2026 | 18 Open Positions<span style="color:#9CA3AF;font-size:13px;"> | Since 2026-01-09</span>
+      </p>
+      <p style="margin:4px 0 0 0;color:#374151;font-size:11px;">
+        Generated: 2026-02-14 11:49 ET | Refresh: python -m content.portfolio_visual
+      </p>
+    </div>
+
+    <!-- SUMMARY STATS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;">
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#F9FAFB;">£91,809</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Portfolio NAV</div>
+    </div>
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#22C55E;">+2.0%</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Total Return</div>
+    </div>
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#F9FAFB;">N/A</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Win Rate</div>
+    </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px 0;">
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#22C55E;">+3.8%</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Alpha vs S&P 500</div>
+    </div>
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#22C55E;">+6.0%</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Alpha vs NASDAQ</div>
+    </div>
+      <div style="background:#1F2937;border:1px solid #374151;border-radius:8px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:700;color:#EF4444;">-1.0%</div>
+      <div style="font-size:12px;color:#9CA3AF;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Max Drawdown</div>
+    </div>
+    </div>
+
+    <!-- EQUITY CURVE -->
+    
+    <div style="margin:0 0 24px 0;">
+      <h2 style="color:#2DD4BF;font-size:18px;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid #374151;">
+        Equity Curve
+      </h2>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 280" style="width:100%;max-width:860px;height:auto;display:block;margin:0 auto;">
+<rect x="0" y="0" width="860" height="280" fill="#1F2937" rx="8"/>
+<line x1="60" y1="30.0" x2="840" y2="30.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="34.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">+3.8%</text>
+<line x1="60" y1="72.0" x2="840" y2="72.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="76.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">+2.1%</text>
+<line x1="60" y1="114.0" x2="840" y2="114.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="118.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">+0.4%</text>
+<line x1="60" y1="156.0" x2="840" y2="156.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="160.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">-1.3%</text>
+<line x1="60" y1="198.0" x2="840" y2="198.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="202.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">-3.0%</text>
+<line x1="60" y1="240.0" x2="840" y2="240.0" stroke="#374151" stroke-width="0.5" stroke-dasharray="4,4"/>
+<text x="52" y="244.0" text-anchor="end" fill="#9CA3AF" font-size="10" font-family="sans-serif">-4.7%</text>
+<line x1="60" y1="123.9" x2="840" y2="123.9" stroke="#9CA3AF" stroke-width="0.5" opacity="0.5"/>
+<text x="60.0" y="272" text-anchor="middle" fill="#9CA3AF" font-size="10" font-family="sans-serif">02-09</text>
+<text x="840.0" y="272" text-anchor="middle" fill="#9CA3AF" font-size="10" font-family="sans-serif">02-14</text>
+<polyline points="60.0,124.4 450.0,124.4 840.0,168.3" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="60.0,123.9 450.0,123.9 840.0,222.5" fill="none" stroke="#A78BFA" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="60.0,47.5 450.0,47.5 840.0,73.7" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="840.0" cy="168.3" r="3" fill="#9CA3AF"/>
+<circle cx="840.0" cy="222.5" r="3" fill="#A78BFA"/>
+<circle cx="840.0" cy="73.7" r="3" fill="#2DD4BF"/>
+<line x1="70" y1="38" x2="90" y2="38" stroke="#2DD4BF" stroke-width="2"/>
+<text x="95" y="42" fill="#F9FAFB" font-size="11" font-family="sans-serif">Portfolio</text>
+<line x1="170" y1="38" x2="190" y2="38" stroke="#9CA3AF" stroke-width="2"/>
+<text x="195" y="42" fill="#F9FAFB" font-size="11" font-family="sans-serif">S&P 500</text>
+<line x1="270" y1="38" x2="290" y2="38" stroke="#A78BFA" stroke-width="2"/>
+<text x="295" y="42" fill="#F9FAFB" font-size="11" font-family="sans-serif">NASDAQ</text>
+</svg>
+    </div>
+
+    <!-- OPEN POSITIONS -->
+    
+    <div style="margin:24px 0;">
+      <h2 style="color:#2DD4BF;font-size:18px;margin:0 0 12px 0;padding-bottom:8px;border-bottom:1px solid #374151;">
+        Open Positions (18)
+      </h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <thead>
+          <tr style="border-bottom:2px solid #374151;">
+            <th style="padding:8px 12px;text-align:left;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Ticker</th>
+            <th style="padding:8px 12px;text-align:left;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Theme</th>
+            <th style="padding:8px 12px;text-align:left;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Entry</th>
+            <th style="padding:8px 12px;text-align:left;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Current</th>
+            <th style="padding:8px 12px;text-align:center;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Held</th>
+            <th style="padding:8px 12px;text-align:right;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">P&L</th>
+            <th style="padding:8px 12px;text-align:center;color:#9CA3AF;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;">Stop Dist</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$VNET</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Data Center Coolin..</td>
+          <td style="padding:10px 12px;">$10.40</td>
+          <td style="padding:10px 12px;">$13.80</td>
+          <td style="padding:10px 12px;text-align:center;">36d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+32.7%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$STRL</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">AI Cooling & Data ..</td>
+          <td style="padding:10px 12px;">$362.53</td>
+          <td style="padding:10px 12px;">$437.77</td>
+          <td style="padding:10px 12px;text-align:center;">23d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+20.8%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$MOD</td>
+          <td style="padding:10px 12px;color:#9CA3AF;"></td>
+          <td style="padding:10px 12px;">$184.66</td>
+          <td style="padding:10px 12px;">$216.50</td>
+          <td style="padding:10px 12px;text-align:center;">15d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+17.2%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$IESC</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Industrials Manufa..</td>
+          <td style="padding:10px 12px;">$474.43</td>
+          <td style="padding:10px 12px;">$518.16</td>
+          <td style="padding:10px 12px;text-align:center;">23d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+9.2%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$WCC</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Power Grid Infrast..</td>
+          <td style="padding:10px 12px;">$281.63</td>
+          <td style="padding:10px 12px;">$307.10</td>
+          <td style="padding:10px 12px;text-align:center;">27d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+9.0%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$AAON</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">AI Cooling & Data ..</td>
+          <td style="padding:10px 12px;">$95.64</td>
+          <td style="padding:10px 12px;">$101.04</td>
+          <td style="padding:10px 12px;text-align:center;">23d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+5.6%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$AMSC</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Grid Modernization..</td>
+          <td style="padding:10px 12px;">$33.28</td>
+          <td style="padding:10px 12px;">$34.26</td>
+          <td style="padding:10px 12px;text-align:center;">21d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+2.9%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$BITF</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Crypt Mining & AI ..</td>
+          <td style="padding:10px 12px;">$2.14</td>
+          <td style="padding:10px 12px;">$2.14</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#22C55E;font-weight:700;">+0.0%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$AMD</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Semiconductors</td>
+          <td style="padding:10px 12px;">$208.44</td>
+          <td style="padding:10px 12px;">$207.32</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-0.5%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$NVDA</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Semiconductors</td>
+          <td style="padding:10px 12px;">$185.41</td>
+          <td style="padding:10px 12px;">$182.81</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-1.4%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$EVTL</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Drone Technology</td>
+          <td style="padding:10px 12px;">$4.53</td>
+          <td style="padding:10px 12px;">$4.39</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-3.1%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$CGON</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Healthcare / Biotech</td>
+          <td style="padding:10px 12px;">$53.92</td>
+          <td style="padding:10px 12px;">$51.50</td>
+          <td style="padding:10px 12px;text-align:center;">36d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-4.5%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$LUMN</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Battery Technology</td>
+          <td style="padding:10px 12px;">$8.82</td>
+          <td style="padding:10px 12px;">$8.39</td>
+          <td style="padding:10px 12px;text-align:center;">15d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-4.9%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$HIVE</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Crypt Mining & AI ..</td>
+          <td style="padding:10px 12px;">$2.33</td>
+          <td style="padding:10px 12px;">$2.21</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-5.2%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$APLD</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Power Grid Infrast..</td>
+          <td style="padding:10px 12px;">$37.40</td>
+          <td style="padding:10px 12px;">$35.28</td>
+          <td style="padding:10px 12px;text-align:center;">27d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-5.7%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$SOFI</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Financials</td>
+          <td style="padding:10px 12px;">$20.86</td>
+          <td style="padding:10px 12px;">$19.61</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-6.0%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#1F2937;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$ASPI</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Nuclear Energy & C..</td>
+          <td style="padding:10px 12px;">$5.82</td>
+          <td style="padding:10px 12px;">$5.22</td>
+          <td style="padding:10px 12px;text-align:center;">8d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-10.3%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr><tr style="background:#111827;">
+          <td style="padding:10px 12px;font-weight:700;color:#2DD4BF;">$AMPX</td>
+          <td style="padding:10px 12px;color:#9CA3AF;">Critical Materials..</td>
+          <td style="padding:10px 12px;">$12.44</td>
+          <td style="padding:10px 12px;">$9.97</td>
+          <td style="padding:10px 12px;text-align:center;">14d</td>
+          <td style="padding:10px 12px;text-align:right;"><span style="color:#EF4444;font-weight:700;">-19.9%</span></td>
+          <td style="padding:10px 12px;text-align:center;"><span style="color:#9CA3AF;">—</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RECENT EXITS -->
+    
+
+    <!-- FOOTER -->
+    <div style="text-align:center;padding:20px 0 8px 0;margin-top:24px;border-top:1px solid #374151;">
+      <p style="margin:0;color:#9CA3AF;font-size:13px;">
+        sterlingsignals.substack.com
+      </p>
+      <p style="margin:4px 0 0 0;color:#374151;font-size:11px;">
+        Proprietary 5-gate screening system | No ego, just execution
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

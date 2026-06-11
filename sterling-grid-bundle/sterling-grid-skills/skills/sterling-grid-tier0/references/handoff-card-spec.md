@@ -133,6 +133,13 @@ sterling-run/runs/<YYYY-MM-DD>/
   articles/ <ticker>-deep-dive.html · weekly-screening-<date>.html · notes files
 ```
 
+Beyond the run dir, the weekly close **mirrors** each run (idempotent, append-only copies +
+deterministic indexes) into the two findability views: `sterling-run/research/<TICKER>/`
+(per-name: every memo/dossier/verdict/decision across runs + `index.json` with status
+bought|held|passed|in-funnel) and `sterling-run/weeks/<YYYY-WNN>/` (per-week: newsletter, notes,
+deep-dives/, `decisions.csv` ledger slice, `manifest.json`). Backfill mode:
+`sterling_weekly_close <date> --mirror-only`.
+
 **Each tier writes ONLY inside its own directory** (the 2026-06-08 run wrote tier1_5 outputs into
 `tier1/` — the validator now flags it). One sanctioned exception: a tier may write its successor's
 handoff queue in its own dir, named for the **consumer** (`tier2_queue.json` in `tier1_5/`,

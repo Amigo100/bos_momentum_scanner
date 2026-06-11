@@ -1,0 +1,27 @@
+2026-01-13 17:44:54,224 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-01-13 17:44:54,224 | INFO     | Max retries: 8
+2026-01-13 17:44:54,224 | INFO     | ============================================================
+2026-01-13 17:44:54,224 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-01-13 17:44:54,224 | INFO     | ============================================================
+2026-01-13 17:44:54,224 | INFO     | Fetching ETF momentum data for context...
+2026-01-13 17:44:56,971 | INFO     | Fetched momentum data for 29 ETFs
+2026-01-13 17:44:56,971 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-01-13 17:44:56,971 | DEBUG    | Web search ENABLED for this call
+2026-01-13 17:47:12,857 | DEBUG    | Tokens: 636003 in, 5691 out
+2026-01-13 17:47:12,858 | DEBUG    | Response received: 19108 chars
+2026-01-13 17:47:12,862 | DEBUG    | Raw response saved to logs/opus_raw_response.txt
+2026-01-13 17:47:12,869 | DEBUG    | Parsed JSON keys: ['analysis_date', 'market_context', 'trends_identified_step_a', 'searches_performed', 'top_themes', 'themes_rejected', 'contrarian_watchlist', 'theme_watchlist']
+2026-01-13 17:47:12,870 | INFO     | 
+2026-01-13 17:47:12,870 | INFO     | ============================================================
+2026-01-13 17:47:12,870 | INFO     | STEP 2: MAPPING TICKERS TO THEMES
+2026-01-13 17:47:12,870 | INFO     | ============================================================
+2026-01-13 17:47:12,870 | INFO     | Analyzing 1 tickers: TRON
+2026-01-13 17:47:12,870 | DEBUG    | Compact themes JSON size: 4004 chars
+2026-01-13 17:47:12,870 | DEBUG    | Rate limiting: sleeping 2.99s between requests
+2026-01-13 17:47:15,866 | INFO     | API call: Step 2 - Ticker Analysis (batch 1) (attempt 1/8)
+2026-01-13 17:47:15,866 | DEBUG    | Web search ENABLED for this call
+2026-01-13 17:47:33,232 | DEBUG    | Tokens: 42361 in, 532 out
+2026-01-13 17:47:33,232 | DEBUG    | Response received: 1337 chars
+2026-01-13 17:47:33,234 | INFO     | Fetching price data for 1 tickers...
+2026-01-13 17:47:33,234 | DEBUG    | Fetching data for TRON
+2026-01-13 17:47:34,206 | DEBUG    |   TRON: $1.71 | Consumer Cyclical

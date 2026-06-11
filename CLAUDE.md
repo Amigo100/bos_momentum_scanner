@@ -1,47 +1,84 @@
-# CLAUDE.md - BoS Momentum Scanner
+# CLAUDE.md — Sterling System
 
-> **Comprehensive System Documentation**
-> For AI analysis (Gemini Pro, Claude), development planning, and daily operations.
-> Last updated: February 2026
+> Lean system documentation after the 2026-06-11 restructure.
+> Everything retired lives under `archive/` (map in §3). Last updated: June 2026.
 
 ---
 
-# TIER 1: OPERATIONAL QUICK REFERENCE
-
-## System Identity
+## 1. System identity
 
 | Attribute | Value |
 |-----------|-------|
-| **Project** | BoS Momentum Scanner |
-| **Purpose** | Weekly + daily momentum trading scanner for US stocks |
+| **Project** | Sterling System (scanner + sterling-grid skills pipeline) |
+| **Purpose** | Weekly momentum scan → skills-driven research funnel → BUY / DO NOT BUY |
 | **Newsletter** | [Sterling Signals](https://sterlingsignals.substack.com) |
-| **X/Twitter** | [@AlexSterlingGBR](https://twitter.com/AlexSterlingGBR) (main), [@Rdobrogowska](https://twitter.com/Rdobrogowska) (account 2) |
-| **Target Audience** | US Active Investors, Swing Traders, Roth IRA Builders |
+| **Goal** | Catch early-lifecycle, high-growth themes at their inflection (RKLB-2024 / PLTR-2022 / Quantum-2024 pattern) and ride the best vehicles |
 
-### Trading Strategy (Internal Reference Only)
+Three layers, strict division of labour:
 
-**Weekly Scanner (Sterling Grid — V2/V4 backtest-validated):**
+1. **The technical scanner** (`scanner/`) owns ENTRY and EXIT timing. Pure technical, $0 — no LLM.
+   It flags ~30–60 weekly buy signals wide and checks held positions for technical exits.
+2. **The sterling-grid skills** (`.claude/skills/sterling-grid-*`, master in `sterling-grid/`) own
+   SELECTION — which flagged signal is a *real* buy. A 16-skill pipeline: Tier 0 theme research →
+   triage → verification → deep-dive gate → deep DD → a binary, full-position **BUY / DO NOT BUY**
+   (no sizing; V9 DNA in `sterling-grid/shared/shared-context-dna.md`).
+3. **The state layer** (`sterling-run/`) holds everything the system knows: signals, runs, the
+   decisions ledger, the portfolio, per-ticker research, and per-week content.
+
+## 2. The weekly cadence
+
 ```
-ENTRY:  HMA(21) slope rising + RSI(14) > 50 + MACD(12,26,9) cross-up + UC rising above + Price < $25
-        → Investment Gate (Sonnet) → Deep DD (Opus, 1-3 stocks)
-EXIT:   ExD (HMA falling + UC falling) OR Tiered Profit Lock (+200%→15%, +100%→20%, +50%→25% trail)
-SIZING: Conviction-tiered: HIGH 8-10=20%, STANDARD 7=15%, SPEC 4-6=8% | Max 6 positions, 10% cash reserve
+FRIDAY ~16:30 ET (automated — .github/workflows/friday_scan.yml)
+  python -m scanner.scanner --archive          # signals + portfolio price/exit checks + sell email
+  python -m scripts.sterling_signals_export    # → sterling-run/signals/this-week.csv (auto)
+
+WEEKEND (the skills run — sterling-grid/orchestration/run-pipeline.md, steps ①–⑨)
+  ① Tier 0 theme map + hunting brief   ①b theme-health on held themes
+  ②③ triage + verify (batched, validated, recall-audited)   ⏸ Checkpoint A
+  ④ Tier 2 gate → ⑤ (reconcile) → ⑥ Tier 3 deep DD → ⑦ Tier 4 buy decision   ⏸ Checkpoint B
+  ⑧ publish: 3d articles → python -m scripts.sterling_price_refresh → newsletter + notes skills
+  ⑨ close: calibration Part A (ledger) → python -m scripts.sterling_weekly_close <date>
+     — the close also MIRRORS the run into research/<TICKER>/ and weeks/<YYYY-WNN>/
 ```
 
-**Daily Scanner (unchanged — legacy indicators):**
+Validation at every seam: `python -m scripts.sterling_validate <date> --check all`.
+
+## 3. Repo layout
+
 ```
-ENTRY:  Daily HMA Pivot BUY + Beta ≥1.5 + Banker Rising (max 5/day, dedup vs weekly)
-EXIT:   Daily BoS Down OR 20% trailing stop (whichever first)
+scanner/        scanner.py · sterling_indicators.py · enrichment.py · complete_tickers.txt · output/
+portfolio/      manager.py (canonical price/trade manager) · backup_cleanup.py · output/
+scripts/        sterling_signals_export · sterling_validate · sterling_weekly_close · sterling_price_refresh
+sterling-grid/  shared/ (5 canonical refs) · orchestration/ (run-pipeline, weekend-run) · sync-shared.sh
+.claude/skills/ the 16 installed sterling-grid-* skills (gitignored — bundle is the tracked copy)
+sterling-grid-bundle/  the distributable (skills + shared + orchestration + scripts + starter state)
+sterling-run/   THE STATE LAYER — see §6
+substack/       COWORK_INSTRUCTIONS.md · docs/ · tools/ (capture.py, carousel) · output/current/ (Cowork working area)
+docs/           ARTICLE_SYSTEM_v2 · STERLING_VISUAL_SYSTEM_v2 · content_prompt_handbook_v7_0 · Sterling Prompt Library.html
+config/         settings.py · output_paths.py · banned_terms.py · voice_rules.md
+utils/          notifications.py (scan summary email/WhatsApp) · email_notifier.py
+tests/          test_sterling_indicators.py · test_integration.py
+.github/workflows/  friday_scan.yml · test_notifications.yml
+archive/        everything retired (see map below)
 ```
 
-> **IMPORTANT:** These specific strategy details are for internal documentation only.
-> Public content must use approved marketing language (see below).
+**Where did X go (the 2026-06-11 restructure):**
+`archive/twitter-system/` (the whole tweet system + its workflows' tests + state) ·
+`archive/workflows/` (live_tweet, engagement-fetch, content_watchdog, saturday_workflow YAMLs — crons disabled) ·
+`archive/dashboard-src/` (Next.js source; build artifacts deleted) ·
+`archive/decision-loop-v8/` (saturday_workflow.py, merge_decisions.py, weekly_briefing.py, run_friday.sh — superseded by the skills pipeline) ·
+`archive/substack_python_pipeline/` (constants, portfolio_visual, email/content scripts) ·
+`archive/scanner-output-history/` (pre-sterling weekly archives) ·
+`archive/content-history/` + `sterling-run/weeks/<id>/legacy/` (old content) ·
+`archive/{docs,specs,logs,misc,portfolio-backups}/`. Rollback tag: `pre-restructure`.
 
 ---
 
-## MARKETING LANGUAGE RULES (CRITICAL)
+## 4. MARKETING LANGUAGE RULES (CRITICAL)
 
-All public-facing content (tweets, newsletter, notes) must follow these rules.
+All public-facing content (newsletter, notes, posts) must follow these rules. The newsletter and
+notes skills enforce them; `config/banned_terms.py` is the machine-readable registry
+(tested by `tests/test_integration.py`).
 
 ### NEVER Reveal These Details (BANNED TERMS)
 
@@ -98,1954 +135,138 @@ All public-facing content (tweets, newsletter, notes) must follow these rules.
 4. **Contrarian Opportunities** - Cold themes, oversold setups, patience plays
 5. **Discipline Over FOMO** - Patience, systematic approach, no chasing
 
-### Honesty Rules
-
-Even with marketing language, NEVER hide losses:
-- Always show full P&L including losers
-- Frame losses positively: "Stop hit = system working as designed"
-- When underwater: "Down but managing risk - disciplined exits in place"
-
-> **Full marketing guidelines:** See `SYSTEM_OVERVIEW.md` Section 2
-
----
-
 ### Signal Color System
 
-Sterling Signals uses a color-coded signal system for public-facing content:
-
-| Color | Emoji | Meaning | Internal Status | Public Name |
-|-------|-------|---------|-----------------|-------------|
-| **GREEN** | 🟢 | BUY | PASS | GREEN Signal |
-| **RED** | 🔴 | EXIT | STOPPED | Exit Alert |
-| **CONSIDER** | 🟡 | WATCH | CONSIDER | On Our Radar |
-
-**Usage in tweets:**
-- Start buy signals with: `🟢 GREEN Signal: $TICKER`
-- Start exit alerts with: `🔴 Exit Alert: $TICKER`
-- Start watchlist with: `🟡 On Our Radar`
+| Color | Emoji | Meaning | Public Name |
+|-------|-------|---------|-------------|
+| **GREEN** | 🟢 | BUY | GREEN Signal |
+| **RED** | 🔴 | EXIT | Exit Alert |
+| **CONSIDER** | 🟡 | WATCH | On Our Radar |
 
 ### Conviction Language
 
-Replace internal conviction scores with public-facing language:
+| Internal | Public Language |
+|----------|-----------------|
+| Extremely Bullish | Extremely Bullish (the only two conviction labels V9 emits) |
+| Bullish | Bullish |
+| Numeric conviction values | **NEVER** post publicly |
 
-| Internal Score | Public Language |
-|---------------|-----------------|
-| Conviction 8-10 | Extremely Bullish |
-| Conviction 7 | Bullish |
-| Conviction 4-6 | Watching |
-| Conviction 1-3 | Do not post publicly |
+### Honesty Rules (Portfolio Transparency)
 
-**BANNED:** Never use "conviction 8", "conviction score", or any numeric conviction value in public content.
-
-### Portfolio Transparency Rules
-
-- Always show ALL positions — winners AND losers
+- Always show ALL positions — winners AND losers; show entry prices (full transparency)
 - Frame losses positively: "Stop hit = system working as designed"
 - When underwater: "Down but managing risk — disciplined exits in place"
-- Show entry prices for all positions (full transparency)
-- Celebrate big wins prominently (25%+, 50%+, 100%+)
-- Never hide or omit negative P&L
+- Celebrate big wins prominently (25%+, 50%+, 100%+); never hide or omit negative P&L
 
 ---
 
-### Weekly Schedule
-
-| Day | Automated | Manual |
-|-----|-----------|--------|
-| **Friday 4:15 PM ET** | Full weekly scan, DD, tweets, newsletter via GitHub Actions | - |
-| **Saturday 21:00 UTC** | `saturday_workflow.yml` → merge decisions + portfolio + archive; tweet posting (7 slots/day) | Save decisions.json from Claude.ai; copy newsletter to Substack, add charts; post 3 notes |
-| **Sunday** | Tweet posting (5 slots — weekly only) | Performance Review post + 3 notes |
-| **Monday-Friday** | Tweet posting (7 slots/day) | Cowork generates posts + notes + visuals → emails content |
-| **Daily (Cowork)** | — | Cowork scheduled task reads data, generates HTML posts/notes/diagrams/carousels, sends email |
-
-**Daily content workflow (Cowork + handbook v6.2):**
-1. Cowork runs as a scheduled task → reads portfolio/scanner data
-2. Generates HTML post (if scheduled) + 2-3 HTML notes + visual asset (Tue/Thu: diagram, Wed/Sat: carousel)
-3. Saves to `substack/output/current/` with `daily_manifest.json`
-4. Runs `python3 -m scripts.build_daily_email` → emails HTML files as attachments
-5. Open email on phone → copy HTML → paste into Substack
-
-### Daily Tweet Schedule (7-Slot System, Eastern Time)
-
-| Slot | Time (ET) | Source | Days | Content Type |
-|------|-----------|--------|------|--------------|
-| 1 | 07:30 | Daily queue | Mon-Fri | Pre-market recap / daily signals |
-| 2 | 10:00 | Weekly queue | Daily | Theme analysis / Buy signal |
-| 3 | 12:30 | Weekly queue | Daily | Position update + chart |
-| 4 | 15:30 | Weekly queue | Daily | **Power Hour** (CRITICAL) |
-| 5 | 18:00 | Weekly queue | Daily | Engagement / Lessons |
-| 6 | 17:00 | Daily queue | Mon-Fri | Post-close daily signals recap |
-| 7 | 18:30 | Daily queue | Mon-Fri | Daily overflow / evening |
-
-**Queue system:** Slots 1/6/7 pull from `daily_content_queue.json` (fresh intraday content); Slots 2-5 pull from `content_queue.json` (Friday-generated weekly content).
-
-**Only manual steps:** Substack newsletter publish (~10 min) + paste daily post from Claude.ai (~5 min)
-
----
-
-## Command Cheat Sheet
-
-### Production Scan (Costs ~$1-3)
-```bash
-python -m scanner.scanner --web-search              # Full pipeline with web search
-python -m scanner.scanner --web-search --top 50     # Limit to top 50 by beta
-```
-
-### Free Testing (No API Costs)
-```bash
-python -m scanner.scanner --no-llm                  # Technical scan only
-python -m scanner.scanner --no-llm --top 20         # Quick test with 20 tickers
-python -m scanner.scanner --no-momentum             # Themes only, skip gatekeeper
-```
-
-### Portfolio Management
-```bash
-python -m portfolio.manager --report        # View portfolio summary
-python -m portfolio.manager --update        # Refresh prices via yfinance
-python -m portfolio.manager --export        # Export for Google Sheets
-python -m portfolio.manager --add TICKER --price 10.50 --theme "AI"   # Manual add
-python -m portfolio.manager --exit TICKER --exit-price 15.00          # Manual exit
-python -m portfolio.manager --migrate       # One-time: migrate legacy files
-```
-
-### Saturday Workflow (after Claude.ai analysis)
-```bash
-python -m scanner.saturday_workflow                   # Full Saturday pipeline
-python -m scanner.saturday_workflow --dry-run         # Preview without writing files
-python -m scanner.saturday_workflow --skip-market     # Skip market_analyzer API call
-python -m scanner.saturday_workflow --skip-guide      # Skip daily context generation
-python -m scanner.saturday_workflow --decisions-dir ~/path/to/dir  # Custom decisions dir
-```
-
-### Content Generation
-```bash
-# Tweets (automated via GitHub Actions)
-python -m twitter.live_tweet_generator                       # Live tweet generation (full run)
-python -m twitter.live_tweet_generator --dry-run             # Preview without writing queue
-python -m twitter.live_tweet_generator --force-type RECEIPT  # Force specific category
-
-# Substack content — now generated by Cowork (see substack/COWORK_INSTRUCTIONS.md)
-# Cowork reads data, generates posts/notes/diagrams/carousels, and emails them
-
-# Email pipeline (sends Cowork-generated content as attachments)
-python -m scripts.build_daily_email                  # Build + send daily content email
-python -m scripts.build_daily_email --dry-run        # Preview without sending
-python -m scripts.build_daily_email --skip-email     # Save locally only
-
-# Portfolio dashboard (still Python — used by friday_scan.yml)
-python -m substack.portfolio_visual                  # Generate portfolio dashboard HTML + PNG
-python -m substack.portfolio_visual --dry-run        # Preview dashboard HTML without PNG
-
-# Visual asset tools (used by Cowork)
-python3 substack/tools/capture.py diagram.html --duration 10 --fps 24  # Export animated HTML → MP4
-node substack/tools/carousel-template-v2.js          # Generate carousel PPTX slides
-```
-
-### Backup Management
-```bash
-python -m portfolio.backup_cleanup                      # Preview duplicate removal
-python -m portfolio.backup_cleanup --execute            # Remove duplicates (keep newest per week)
-python -m portfolio.backup_cleanup --list               # List backups grouped by week
-python -m portfolio.backup_cleanup --stats              # Show backup statistics
-```
-
-### Full Pipeline (Automated via GitHub Actions)
-```bash
-./run_friday.sh                             # Complete Friday pipeline
-```
-
-### Testing
-```bash
-python -m pytest tests/ -v                        # Run all tests
-python -m pytest tests/test_integration.py -v     # Integration tests only
-python -m pytest tests/ -v -k "banned"            # Run specific test pattern
-```
-
-### Debugging
-```bash
-python -m py_compile scanner/scanner.py             # Syntax check
-python -m py_compile portfolio/manager.py           # Syntax check
-python -m py_compile scanner/merge_decisions.py     # Syntax check
-python -m py_compile scanner/saturday_workflow.py   # Syntax check
-```
-
----
-
-## File Locations Quick Reference
-
-### Output Directory Structure (5-Section Layout)
-
-Each section owns its output files. Paths are defined in `config/output_paths.py`.
-
-```
-scanner/output/
-    signals.json                          # Latest weekly scan results
-    daily_signals.json                    # Latest daily scan results
-    analysis_log.csv                      # Append-only historical data
-    current/
-        report.txt                        # Scan summary
-        signals.json                      # Copy of weekly signals
-        newsletter_briefing.md            # Scanner briefing for newsletter
-        market_analysis.md                # Market context via Claude
-    archive/
-        2026-WXX/                         # Archived by ISO week
-            report.txt, signals.json, newsletter_briefing.md, market_analysis.md
-
-portfolio/output/
-    portfolio.csv                         # Source of truth (weekly trades)
-    daily_portfolio.csv                   # Daily timeframe trades (separate)
-    portfolio_google_sheets.csv           # Export with calculated P&L
-    equity_curve.csv                      # NAV tracking over time
-    portfolio_backups/                    # Deduped: 1 per calendar week, newest kept
-    daily_portfolio_backups/
-
-substack/output/
-    current/
-        newsletter.html                   # Compiled newsletter → Substack Saturday
-        portfolio_visual.html             # Portfolio dashboard with equity curve SVG
-        daily_context.md                  # Daily context doc + post assignment (attach to Claude.ai)
-        daily_notes_context.json          # Daily notes generation context (scanner + portfolio data)
-        substack_notes/
-            *_1_*.md, *_2_*.md, *_3_*.md  # 2-3 notes/day from rotation matrix
-            tuesday_note.md               # Legacy compat
-            thursday_note.md              # Legacy compat
-            notes_manifest.json           # Batch tracking
-        substack_posts/                   # Rich HTML posts
-            dd_TICKER.html                # DD post per buy signal
-            wednesday_theme_deep_dive.html
-            thursday_stock_deep_dive.html
-            friday_portfolio_showcase.html
-    archive/
-        2026-WXX/                         # Archived by ISO week
-            newsletter.html, portfolio_visual.html,
-            substack_notes/, substack_posts/
-
-twitter/output/
-    # ─── Content Queues (used by poster + GH Actions) ───
-    content_queue.json                    # Account 1 weekly (slots 2-5)
-    content_queue_account2.json           # Account 2 weekly
-    content_queue_account3.json           # Account 3 weekly
-    daily_content_queue.json              # Account 1 daily (slots 1/6/7)
-    daily_content_queue_account2.json     # Account 2 daily
-    daily_content_queue_account3.json     # Account 3 daily
-    # ─── Live Tweet System ───
-    live_content_queue.json               # Live tweet queue
-    live_context.json                     # Market context for live tweets
-    live_cost_log.json                    # API cost tracking
-    workflow_status.json                  # Pipeline status
-    # ─── Tracking ───
-    tweet_tracking.json                   # Self-quote milestone tracker
-    celebrations.json                     # Win milestone tracker
-    failed_tweets.json                    # Validation failure log
-    # ─── Charts ───
-    charts/
-        *.png, chart_manifest.json, funnel_graphic.png
-```
-
-### Source Files
-
-#### `scanner/` — Scanner Pipeline
-| File | Purpose |
-|------|---------|
-| `scanner/scanner.py` | Weekly technical signal detector (Sterling Grid V6, ~1360 lines) |
-| `scanner/sterling_indicators.py` | Sterling Grid indicators (HMA slope, RSI, MACD, UC, ExD, profit lock, position sizing) |
-| `scanner/investment_gate.py` | Investment Gate (Sonnet, replaces gatekeeper) |
-| `scanner/deep_dd.py` | Deep DD (Opus + extended thinking, 1-3 stocks) |
-| `scanner/merge_decisions.py` | Merge Claude.ai decisions with technical signals → signals.json |
-| `scanner/saturday_workflow.py` | Saturday workflow orchestrator (merge → portfolio → content → archive) |
-| `scanner/thematic_analyzer.py` | LLM theme discovery and scoring |
-| `scanner/complete_tickers.txt` | Ticker universe (~1800 stocks) |
-
-#### `portfolio/` — Portfolio Management
-| File | Purpose |
-|------|---------|
-| `portfolio/manager.py` | Trade tracking, P&L, tiered profit lock, conviction-sized positions |
-| `portfolio/backup_cleanup.py` | Portfolio backup dedup (newest per calendar week) |
-
-#### `substack/` — Substack Content System (Cowork-Driven)
-| File | Purpose |
-|------|---------|
-| `substack/COWORK_INSTRUCTIONS.md` | Master instructions for Cowork scheduled content generation |
-| `substack/constants.py` | Shared constants: NOTE_TYPE_MATRIX, HANDBOOK_SECTION_MAP, extract_prompt_from_handbook() |
-| `substack/portfolio_visual.py` | Portfolio HTML dashboard with equity curve SVG, SPY/QQQ benchmarks |
-| `substack/docs/content_prompt_handbook_v6.2.md` | Post/note prompt library (6 series types) |
-| `substack/docs/animated-diagram-spec.md` | Animated HTML diagram specification (1280x720, CSS animations) |
-| `substack/docs/carousel-guide.docx` | Carousel slide design rules and brand guide |
-| `substack/tools/capture.py` | Playwright+ffmpeg export tool for animated HTML → MP4/GIF |
-| `substack/tools/carousel-template-v2.js` | Node.js pptxgenjs carousel generator (10x10 square, branded slides) |
-
-> **Note:** 10 Python content modules archived to `archive/substack_python_pipeline/`.
-> Content generation now handled by Claude Cowork via `COWORK_INSTRUCTIONS.md`.
-
-#### `twitter/` — Twitter/X Content System
-| File | Purpose |
-|------|---------|
-| `twitter/live_tweet_generator.py` | Live tweet generation (11 categories, 7-priority cascade, 3-account persona affinity, thread support) |
-| `twitter/live_context_gatherer.py` | Grok-powered market context (theme_tickers, fintwit_overlaps, market_snapshot) |
-| `twitter/poster.py` | X/Twitter posting (live queue, thread support, 3-account routing) |
-| `twitter/models.py` | Category taxonomy, Tweet/ValidationResult dataclasses, CHART_REQUIRED/EXTERNAL/THREAD constants |
-| `twitter/chart_generator.py` | Chart generation via chart-img.com REST API (CI-compatible) |
-| `twitter/funnel_graphic.py` | Funnel visualization |
-| `twitter/winner_showcase_generator.py` | Winner showcase with entry prices |
-| `twitter/signal_tracker.py` | Win tracking + signal performance analysis |
-| `twitter/self_quote_tracker.py` | Track tweets for milestone quoting |
-| `twitter/health_check.py` | Live tweet system health monitoring |
-| `twitter/cost_tracker.py` | API cost tracking with daily kill switch |
-| `twitter/tradingview_login.py` | TradingView browser login (companion for local chart workflow) |
-
-#### `config/` — Shared Configuration
-| File | Purpose |
-|------|---------|
-| `config/settings.py` | All constants, thresholds, API config |
-| `config/__init__.py` | Re-exports settings (backwards compat: `from config import X`) |
-| `config/output_paths.py` | Multi-section output path registry |
-| `config/banned_terms.py` | Single source of truth for banned terms, phrases, patterns |
-
-#### `utils/` — Shared Utilities
-| File | Purpose |
-|------|---------|
-| `utils/notifications.py` | Sell signal notifications (email + WhatsApp) |
-| `utils/email_notifier.py` | SMTP email notifications (general) |
-
-#### `dashboard/` — Next.js Dashboard
-| File | Purpose |
-|------|---------|
-| `dashboard/src/lib/data.ts` | Data loading from section output directories |
-| `dashboard/scripts/bundle-data.sh` | Bundle data from 4 section outputs |
-
-#### `tests/` — Test Suite
-| File | Purpose |
-|------|---------|
-| `tests/test_live_tweet_system.py` | Live tweet system tests (314 tests — Phases 1-6: decision, validation, persona, threads) |
-| `tests/test_sterling_indicators.py` | Sterling Grid indicator unit tests (63 tests) |
-| `tests/test_integration.py` | Cross-module integration tests — includes QQQ benchmark + DD post generator |
-| `tests/test_saturday_workflow.py` | Saturday workflow orchestration tests |
-| `tests/test_scheduling.py` | Scheduling and cron tests |
-| `tests/test_edge_cases.py` | Edge case tests |
-| `tests/test_safeguards.py` | Safety guard tests |
-| `tests/test_email_attachments.py` | Email attachment system + constants module tests (18 tests) |
-
-#### Root-Level & Workflow Files
-| File | Purpose |
-|------|---------|
-| `run_friday.sh` | Full Friday pipeline orchestration |
-| `.github/workflows/friday_scan.yml` | Friday automated scan + tweet generation |
-| `.github/workflows/daily_content.yml` | **ARCHIVED** — replaced by Cowork scheduled tasks |
-| `.github/workflows/live_tweet.yml` | Live tweet system (market hours, ~12 runs/day) |
-| `.github/workflows/saturday_workflow.yml` | Saturday workflow: merge decisions + portfolio + archive (21:00 UTC Sat + manual) |
-| `requirements.txt` | Python dependencies |
-
----
-
-## Environment Variables
+## 5. Command cheat sheet
 
 ```bash
-# Required
-export ANTHROPIC_API_KEY="sk-ant-api03-..."
+# Friday (automated; manual equivalents)
+python -m scanner.scanner --archive              # full technical scan + portfolio update
+python -m scripts.sterling_signals_export        # → sterling-run/signals/this-week.csv
+python -m scripts.sterling_signals_export --dry-run
 
-# Optional: Email notifications
-export SMTP_SERVER="smtp.gmail.com"
-export SMTP_PORT="587"
-export EMAIL_SENDER="you@gmail.com"
-export EMAIL_PASSWORD="app-password"
+# Weekend run helpers
+python -m scripts.sterling_validate 2026-06-14 --check all      # lineage/counts/decisions/layout
+python -m scripts.sterling_price_refresh [--dry-run]            # refresh sterling-run/portfolio.csv prices
+python -m scripts.sterling_weekly_close 2026-06-14              # the close (+ research/weeks mirrors)
+python -m scripts.sterling_weekly_close 2026-06-14 --mirror-only  # backfill mode (no history appends)
+
+# Old BoS portfolio manager (still the canonical price fetcher)
+python -m portfolio.manager --report             # view portfolio summary
+python -m portfolio.manager --update             # refresh prices via yfinance
+python -m portfolio.backup_cleanup --execute     # dedup backups (newest per week)
+
+# Tests
+python -m pytest tests/ -v
+```
+
+## 6. The sterling-run data layer
+
+```
+sterling-run/
+├── signals/this-week.csv        # Tier-1 input — WRITTEN AUTOMATICALLY by the Friday workflow
+│   └── archive/                 # dated snapshots
+├── log/                         # carried-forward state (Tier 0 reads + rewrites weekly):
+│   theme_map.json · regime_log.jsonl · discovery_log.jsonl · benchmark_set.json ·
+│   theme_health.jsonl · theme_research_history.csv · ticker_journey_history.csv
+├── runs/<YYYY-MM-DD>/           # each run's tier0..tier4 cards + report/ + articles/
+├── research/<TICKER>/           # ★ PER-TICKER VIEW (built by the weekly close, idempotent)
+│   ├── index.json               #   status bought|held|passed|in-funnel + decision_history + runs
+│   ├── runs/<date>/             #   memo.md · dossier · geometry · verdict · decision_record ·
+│   │                            #   tier4_row · deep-dive.html (per deep-dived run)
+│   └── deep-dive-legacy.html    #   pre-sterling DD article where one exists
+├── weeks/<YYYY-WNN>/            # ★ PER-WEEK VIEW (built by the weekly close, idempotent)
+│   ├── newsletter.html · notes.md · note-cards.html · deep-dives/ · report/
+│   ├── decisions.csv            #   the week's ledger slice (ticker·stage·decision·reason_code…)
+│   ├── manifest.json            #   week_id ↔ run_dates, buys/sells, what exists
+│   └── legacy/                  #   pre-sterling content history (W04–W23 migrated)
+├── decisions.json               # THE LEDGER — sole record of every decision (calibration Part A
+│                                #   is its sole writer; V9.1 schema: stage + reason_code + forward)
+├── portfolio.csv                # the sterling book — SOLE price source for the newsletter
+│                                #   (refreshed by scripts/sterling_price_refresh.py)
+└── fixtures/                    # synthetic plumbing fixtures for skill smoke tests
+```
+
+Seam contracts (batch ceilings, lineage encoding, file naming, workflow transport):
+`sterling-grid/shared/handoff-card-spec.md`. Theme method (S0–S4 staging, P1–P4 precursors,
+bottleneck migration, proxy rubric): `sterling-grid/shared/theme-intelligence.md`.
+
+## 7. The two portfolios
+
+| File | Owner | Role |
+|------|-------|------|
+| `portfolio/output/portfolio.csv` | `portfolio/manager.py` (via the Friday scan) | The technical book: prices, trailing stops/exits, Google-Sheets export, the Friday sell-signal email |
+| `sterling-run/portfolio.csv` | the skills pipeline + `sterling_price_refresh` | The research book: held names + 3c targets; the newsletter's ONLY price source |
+
+`portfolio/manager.py` stays whole — it is the canonical yfinance price fetcher
+(`fetch_current_prices`) that `sterling_price_refresh` imports.
+
+## 8. Content system (Cowork)
+
+- `COWORK.md` (root) → `substack/COWORK_INSTRUCTIONS.md` — the Cowork session contract.
+- Voice: `config/voice_rules.md` + §4 above. Current playbooks: `docs/ARTICLE_SYSTEM_v2.md`,
+  `docs/STERLING_VISUAL_SYSTEM_v2.md`, `docs/content_prompt_handbook_v7_0.md`.
+- Tools: `substack/tools/capture.py` (animated HTML → MP4), `substack/tools/carousel-template-v2.js`.
+- Working area: `substack/output/current/` (posts/, notes/, diagrams/, carousels/, substack_posts/).
+- The canonical published-content record per week: `sterling-run/weeks/<YYYY-WNN>/`.
+
+## 9. Environment variables
+
+```bash
+# Notifications (Friday scan summary + failure alerts)
+export NOTIFICATION_EMAIL="alerts@yourdomain.com"
+export SMTP_SERVER="smtp.gmail.com"; export SMTP_PORT="587"
+export EMAIL_SENDER="you@gmail.com"; export EMAIL_PASSWORD="app-password"
 export EMAIL_RECIPIENTS="you@gmail.com"
 
-# Optional: Sell signal notifications (email)
-export NOTIFICATION_EMAIL="alerts@yourdomain.com"
-export SMTP_HOST="smtp.gmail.com"
-export SMTP_USER="you@gmail.com"
-export SMTP_PASS="app-password"
-
-# Optional: Sell signal notifications (WhatsApp via Twilio)
-export TWILIO_ACCOUNT_SID="AC..."
-export TWILIO_AUTH_TOKEN="..."
-export TWILIO_WHATSAPP_FROM="whatsapp:+14155238886"
-export WHATSAPP_TO="whatsapp:+1XXXXXXXXXX"
-
-# Optional: TradingView chart capture
-export TRADINGVIEW_COOKIES='[{"name":"...","value":"..."}]'
+# Optional WhatsApp (Twilio)
+export TWILIO_ACCOUNT_SID="AC..."; export TWILIO_AUTH_TOKEN="..."
+export TWILIO_WHATSAPP_FROM="whatsapp:+14155238886"; export WHATSAPP_TO="whatsapp:+1..."
 ```
 
----
-
-# TIER 2: SYSTEM ARCHITECTURE
-
-## Complete Pipeline Flow
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         SCANNER.PY PIPELINE                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  STEP 1: LOAD TICKERS                                              Cost: $0 │
-│  ├─ Input: complete_tickers.txt (~1800 US stocks)                           │
-│  ├─ Also loads: open positions from portfolio.csv                           │
-│  └─ Output: List[str] ticker symbols                                        │
-│                                                                              │
-│  STEP 2: DOWNLOAD SPY BENCHMARK                                    Cost: $0 │
-│  ├─ Source: yfinance                                                        │
-│  ├─ Period: 1 year daily data                                               │
-│  └─ Output: pd.Series of SPY daily returns (for beta calculation)           │
-│                                                                              │
-│  STEP 3: DOWNLOAD DATA + CALCULATE INDICATORS                      Cost: $0 │
-│  ├─ Source: yfinance bulk download                                          │
-│  ├─ Calculates:                                                             │
-│  │   • Beta = cov(stock, SPY) / var(SPY)                                    │
-│  │   • Banker = 50 + ((price/20d-VWAP - 1) * 100 * 5)                       │
-│  │   • HMA Pivot BoS (Break of Structure) on weekly timeframe               │
-│  │   • 4-week momentum (tracked, not filtered)                              │
-│  │   • 20-day return                                                        │
-│  └─ Output: Dict[str, Stock] with all fields populated                      │
-│                                                                              │
-│  STEP 4: TECHNICAL GATE                                            Cost: $0 │
-│  ├─ Criteria: Beta ≥ 1.5 AND Weekly BoS UP AND Banker Rising                │
-│  ├─ All passing stocks assigned TIER1 (no level-based differentiation)       │
-│  └─ Output: List[Stock] passing technical gate                              │
-│                                                                              │
-│  STEP 5: THEMATIC ANALYZER (LLM)                          Cost: ~$0.15-0.25 │
-│  ├─ Model: Claude Sonnet 4 (claude-sonnet-4-20250514)                       │
-│  ├─ Step 1: Identify top 5 themes (PRIME/INVESTABLE/SELECTIVE/AVOID)        │
-│  ├─ Step 2: Map tickers to themes, score fit (STRONG/GOOD/MODERATE/POOR)    │
-│  ├─ Web search: Optional (adds ~$0.50-1.00 for current news)                │
-│  └─ Output: Themes classified, tickers mapped with scores                   │
-│                                                                              │
-│  STEP 6: GATEKEEPER (LLM)                         Cost: ~$0.15-0.25/stock   │
-│  ├─ Model: Claude Sonnet 4                                                  │
-│  ├─ Per-stock analysis:                                                     │
-│  │   • Catalyst assessment (earnings, events within 90 days)                │
-│  │   • Red flag detection (auditor issues, insider selling, etc.)           │
-│  │   • Sentiment analysis (analyst trends, short interest)                  │
-│  ├─ Web search: 2-3 searches per stock (recommended for production)         │
-│  ├─ Decisions: PASS (trade) / CAUTION (watchlist) / FAIL (skip)             │
-│  └─ Output: Final decisions with conviction scores 1-5                      │
-│                                                                              │
-│  STEP 7: CHECK SELL SIGNALS                                        Cost: $0 │
-│  ├─ Checks open positions from portfolio.csv                                │
-│  ├─ First exit — whichever fires first:                                     │
-│  │   • Weekly BoS DOWN → EXIT immediately (HMA fracture)                    │
-│  │   • Price < 80% of highest_close → EXIT (20% trailing stop)              │
-│  └─ Output: List[SellSignal] for exited positions                           │
-│                                                                              │
-│  STEP 8: UPDATE PORTFOLIO                                          Cost: $0 │
-│  ├─ Add PASS signals to portfolio.csv with entry details                    │
-│  ├─ Flag exits for positions hitting stops                                  │
-│  ├─ Update highest_close for open positions                                 │
-│  ├─ Export to portfolio_google_sheets.csv with calculated fields            │
-│  └─ Create backup in portfolio_backups/                                     │
-│                                                                              │
-│  STEP 9: GENERATE OUTPUTS                                          Cost: $0 │
-│  ├─ signals.json - Full scan results in JSON format                         │
-│  ├─ analysis_log.csv - Append to historical data                            │
-│  ├─ current/report.txt - Human-readable summary                             │
-│  └─ current/newsletter_briefing.md - Newsletter data with P&L              │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-TOTAL COST: ~$1-3 per full run with web search enabled
-```
-
----
-
-## Technical Indicator Formulas
-
-### HMA Pivot BoS (Break of Structure)
-
-The Hull Moving Average Pivot system identifies structural breaks in price action.
-
-```python
-# Hull Moving Average formula
-def HMA(series, n):
-    """
-    HMA = WMA(2 * WMA(n/2) - WMA(n), sqrt(n))
-    Uses HL2 (high+low)/2 as input
-    """
-    half_period = int(n / 2)
-    sqrt_period = int(np.sqrt(n))
-
-    wma_half = WMA(series, half_period)
-    wma_full = WMA(series, n)
-
-    raw_hma = 2 * wma_half - wma_full
-    hma = WMA(raw_hma, sqrt_period)
-    return hma
-
-# Parameters
-n = 21  # periods (weekly timeframe)
-k = 1   # pivot lookback
-
-# Pivot detection
-pivot_high = HMA[i] > max(HMA[i-k], HMA[i+k])  # Local maximum
-pivot_low = HMA[i] < min(HMA[i-k], HMA[i+k])   # Local minimum
-
-# Signal generation (step lines)
-upper_step_line = most recent pivot high value
-lower_step_line = most recent pivot low value
-
-BUY_SIGNAL:  lower_step_line changed (new pivot low established)
-SELL_SIGNAL: upper_step_line changed (new pivot high established)
-
-# Weekly resampling
-Daily OHLCV data resampled to weekly (Friday close)
-```
-
-### Beta Calculation
-
-```python
-def calculate_beta(stock_returns, spy_returns):
-    """
-    Beta = Covariance(stock, SPY) / Variance(SPY)
-
-    Period: 1 year of daily returns
-    Minimum data points: 60 trading days
-    Threshold for entry: Beta >= 1.5
-    """
-    covariance = np.cov(stock_returns, spy_returns)[0, 1]
-    variance = np.var(spy_returns)
-    beta = covariance / variance
-    return beta
-```
-
-### Banker (Institutional Accumulation Score)
-
-```python
-def calculate_banker(df, period=20):
-    """
-    Banker measures deviation from 20-day VWAP, scaled to 50-centered score.
-
-    Formula: banker = 50 + ((price/vwap - 1) * 100 * 5)
-
-    Interpretation:
-      50 = At VWAP (neutral)
-      60 = 2% above VWAP (moderate accumulation)
-      70 = 4% above VWAP (strong accumulation)
-
-    Entry gate: Banker Rising (current bar > previous bar)
-    Backtesting proved static threshold (>= 55) catches stocks where
-    institutions FINISHED accumulating. Rising check catches the START.
-
-    Only DIRECTION matters, not LEVEL. A banker at 1.0 rising is valid;
-    a banker at 80.0 falling is not. No level-based tier differentiation.
-    """
-    typical_price = (df['High'] + df['Low'] + df['Close']) / 3
-    vwap = (typical_price * df['Volume']).rolling(period).sum() / df['Volume'].rolling(period).sum()
-
-    deviation_pct = (df['Close'] / vwap - 1) * 100
-    banker = 50 + (deviation_pct * 5)
-
-    return banker.iloc[-1]
-```
-
-### Theme Scoring (Thematic Analyzer)
-
-```python
-# Composite score calculation (0-10 scale)
-composite_score = (
-    catalyst_score * 0.40 +    # Upcoming catalysts (40% weight)
-    momentum_score * 0.25 +    # Price/flow momentum (25% weight)
-    crowding_score * 0.20 +    # Positioning/crowding (20% weight)
-    runway_score * 0.15        # Future potential (15% weight)
-)
-
-# Classification thresholds
-PRIME:      composite_score >= 7.5  # Highest conviction
-INVESTABLE: 6.0 <= composite_score < 7.5  # Good opportunities
-SELECTIVE:  4.5 <= composite_score < 6.0  # Mixed signals
-AVOID:      composite_score < 4.5  # Stay away
-```
-
----
-
-## Data Structures (Python Definitions)
-
-### Stock Dataclass (core/scanner.py)
-
-```python
-@dataclass
-class Stock:
-    # Core fields (always populated)
-    symbol: str
-    price: float = 0.0
-    beta: float = 0.0
-    banker: float = 0.0
-    banker_prev: float = 0.0       # Previous bar banker value
-    banker_rising: bool = False    # True when current > previous (entry gate)
-    bos_bullish: bool = False
-    bos_bearish: bool = False
-    bos_debug: dict = field(default_factory=dict)
-    return_20d: float = 0.0
-    momentum_4w: float = 0.0
-    tier: str = ""  # TIER1, TIER2, TIER3
-
-    # Thematic analyzer fields (populated in Step 5)
-    theme: str = ""
-    theme_score: float = 0.0
-    pure_play_score: int = 0  # 0-100%
-    theme_verdict: str = ""   # STRONG FIT, GOOD FIT, MODERATE FIT, POOR FIT
-
-    # Gatekeeper fields (populated in Step 6)
-    final_decision: str = ""  # TRADE, CONSIDER, SKIP
-    conviction: int = 0       # 1-5
-    catalyst_summary: str = ""
-    red_flag_level: str = ""  # CLEAN, MINOR, SEVERE
-    action: str = ""          # Recommended action
-    bullish_factors: List[str] = field(default_factory=list)
-    risk_factors: List[str] = field(default_factory=list)
-    reasoning: str = ""
-```
-
-### Trade Dataclass (core/portfolio_manager.py)
-
-```python
-class TradeStatus(Enum):
-    OPEN = "OPEN"       # Active position being tracked
-    CLOSED = "CLOSED"   # Exited manually (profit/strategic)
-    STOPPED = "STOPPED" # Hit 20% trailing stop
-
-@dataclass
-class Trade:
-    # Stored in CSV
-    ticker: str
-    status: str = "OPEN"
-    entry_date: str = ""
-    entry_price: float = 0.0
-    exit_date: str = ""
-    exit_price: float = 0.0
-    highest_close: float = 0.0
-    theme: str = ""
-    tier: str = ""          # TIER1, TIER2, TIER3
-    signal_type: str = ""   # TRADE, CONSIDER
-    conviction: int = 0
-    notes: str = ""
-
-    # Calculated in-memory (not stored)
-    current_price: float = 0.0
-    pnl_pct: float = 0.0
-    pnl_usd: float = 0.0
-    stop_level: float = 0.0
-    days_held: int = 0
-    distance_to_stop_pct: float = 0.0
-    stop_alert: bool = False  # True if within 5% of stop
-```
-
-### Theme Dataclass (core/thematic_analyzer.py)
-
-```python
-@dataclass
-class Theme:
-    rank: int
-    name: str
-    classification: str = "INVESTABLE"  # PRIME, INVESTABLE, SELECTIVE, AVOID
-    theme_type: str = "TREND"           # TREND, BOTTLENECK, CONTRARIAN
-    composite_score: float = 0.0        # 0-10
-    catalyst_score: float = 0.0
-    momentum_score: float = 0.0
-    crowding_score: float = 0.0
-    runway_score: float = 0.0
-    thesis_summary: str = ""
-    key_catalysts: List[str] = field(default_factory=list)
-    primary_etfs: List[str] = field(default_factory=list)
-    crowding_indicator: str = "Moderate"  # Low, Moderate, High
-```
-
-### GatekeeperResult Dataclass (core/gatekeeper.py)
-
-```python
-class GateDecision(Enum):
-    PASS = "PASS"       # Trade at next open
-    CAUTION = "CAUTION" # Watchlist only
-    FAIL = "FAIL"       # Skip
-
-@dataclass
-class GatekeeperResult:
-    ticker: str
-    decision: GateDecision
-    conviction: int             # 1-5
-    theme: str
-    theme_fit: str              # STRONG, GOOD, MODERATE
-    catalyst_present: bool
-    catalyst_summary: str
-    days_to_catalyst: int
-    red_flag_level: str         # CLEAN, MINOR, SEVERE
-    red_flags: List[str]
-    analyst_trend: str          # BULLISH, NEUTRAL, BEARISH
-    short_interest_pct: float
-    key_bullish: List[str]      # Top 3 bullish factors
-    key_risks: List[str]        # Top 3 risk factors
-    reasoning: str
-    action: str                 # Recommended action
-```
-
-### SellSignal Dataclass (core/scanner.py)
-
-```python
-@dataclass
-class SellSignal:
-    symbol: str
-    price: float
-    reason: str           # First exit reason(s), may be combined if both fire
-    entry_price: float
-    highest_close: float
-    pnl_pct: float
-```
-
----
-
-## Output File Schemas
-
-### portfolio.csv
-
-```csv
-ticker,status,entry_date,entry_price,exit_date,exit_price,highest_close,theme,tier,signal_type,conviction,notes
-RCAT,OPEN,2025-12-29,8.50,,,12.19,Drone Technology,TIER1,TRADE,4,Scanner signal
-IBKR,OPEN,2025-12-29,65.00,,,72.93,Financials,TIER1,TRADE,5,Scanner signal
-OKLO,CLOSED,2024-11-15,22.00,2025-01-08,28.50,28.50,Nuclear,TIER1,TRADE,4,Manual exit - took profits
-SMCI,STOPPED,2024-10-01,45.00,2025-01-10,36.00,52.00,AI Infrastructure,TIER2,TRADE,3,Hit 20% trailing stop
-```
-
-### portfolio_google_sheets.csv (with calculated fields)
-
-```csv
-ticker,status,entry_date,entry_price,exit_date,exit_price,highest_close,theme,tier,signal_type,conviction,notes,current_price,pnl_pct,pnl_usd,stop_level,days_held,distance_to_stop,stop_alert
-RCAT,OPEN,2025-12-29,8.50,,,12.19,Drone Technology,TIER1,TRADE,4,Scanner signal,13.25,55.9%,475,9.75,23,26.4%,
-```
-
-**Google Sheets Setup:**
-Replace `current_price` column with formula: `=IF(B2="OPEN", GOOGLEFINANCE(A2, "price"), G2)`
-
-### signals.json
-
-```json
-{
-  "timestamp": "2026-01-18 22:06:24",
-  "timeframe": "WEEKLY",
-  "entry_criteria": "Weekly BoS Up + Hot Theme + TRADE/CONSIDER decision",
-  "exit_criteria": "First exit — Weekly BoS Down OR 20.0% trailing stop (whichever first)",
-  "stats": {
-    "tickers_loaded": 1817,
-    "data_downloaded": 1814,
-    "beta_gte_1_5": 485,
-    "weekly_bos_up": 48,
-    "technical_signals": 44,
-    "theme_confirmed": 17,
-    "final_trade": 6,
-    "final_consider": 7
-  },
-  "themes": [
-    {
-      "name": "AI Infrastructure",
-      "classification": "PRIME",
-      "composite_score": 8.2,
-      "thesis_summary": "..."
-    }
-  ],
-  "buy_signals": [
-    {
-      "symbol": "INOD",
-      "tier": "TIER1",
-      "price": 61.54,
-      "beta": 2.48,
-      "banker": 78.3,
-      "momentum_4w": 12.5,
-      "return_20d": 8.2,
-      "theme": "Power Grid Infrastructure",
-      "theme_score": 7.8,
-      "pure_play_score": 85,
-      "theme_verdict": "STRONG FIT",
-      "final_decision": "TRADE",
-      "conviction": 4,
-      "catalyst_summary": "Earnings in 3 weeks, infrastructure bill tailwind",
-      "red_flag_level": "CLEAN",
-      "bullish_factors": ["Strong institutional buying", "Theme leader", "Catalyst upcoming"],
-      "risk_factors": ["High valuation", "Concentrated customer base"],
-      "reasoning": "Strong theme fit with near-term catalyst...",
-      "action": "Enter Monday at market open, 2% position size"
-    }
-  ],
-  "sell_signals": [],
-  "exit_signals": [
-    {
-      "symbol": "VNET",
-      "reason": "Weekly BoS Down",
-      "action": "Position closed — first exit triggered"
-    }
-  ]
-}
-```
-
-### latest_newsletter_briefing.md Structure
-
-```markdown
-# Weekly Scanner Briefing - Week Ending January 17, 2026
-
-## Performance Summary
-- Unrealized P&L: +32.5% ($4,250)
-- Open Positions: 6
-- Win Rate (closed): 75%
-- Avg Winner: +42.3% | Avg Loser: -18.2%
-
-## Recently Closed (Last 7 Days)
-| Ticker | Exit Date | Entry | Exit | P&L | Reason |
-|--------|-----------|-------|------|-----|--------|
-| OKLO | 2025-01-08 | $22.00 | $28.50 | +29.5% | Took profits |
-
-## Hot Themes This Week
-
-### PRIME Themes (Highest Conviction)
-**AI Infrastructure** (TREND)
-- Score: 8.2/10
-- Thesis: Data center buildout accelerating...
-- Catalysts: NVDA earnings, hyperscaler CapEx guidance
-
-### INVESTABLE Themes
-**Power Grid Infrastructure** (BOTTLENECK)
-- Score: 7.1/10
-- Thesis: Grid modernization spending...
-
-### SELECTIVE Themes
-**Quantum Computing** (CONTRARIAN)
-- Score: 5.2/10
-
-### AVOID Themes
-**Legacy Retail** (TREND)
-- Score: 3.1/10
-
-## PASS - Ready for Entry
-
-### INOD
-| Metric | Value |
-|--------|-------|
-| Price | $61.54 |
-| Theme | Power Grid Infrastructure (STRONG FIT) |
-| Tier | TIER1 |
-| Beta | 2.48 |
-| Banker | 78.3 |
-| Conviction | 4/5 |
-
-**Bullish Factors:**
-- Strong institutional accumulation
-- Infrastructure bill beneficiary
-- Earnings catalyst in 3 weeks
-
-**Risk Factors:**
-- Concentrated customer base
-- High valuation vs peers
-
-**Analysis:** [Gatekeeper reasoning]
-
-**Recommended Action:** Enter Monday at market open, 2% position
-
-[CHART: INOD]
-
-## CAUTION - Watchlist
-
-### IONQ
-| Metric | Value |
-|--------|-------|
-| Price | $42.15 |
-| Theme | Quantum Computing (GOOD FIT) |
-| Tier | TIER2 |
-| Conviction | 3/5 |
-
-**Concern:** Extended move, wait for pullback
-
-## Open Positions
-
-| Ticker | Entry | Current | P&L | Days | Theme | Stop Distance |
-|--------|-------|---------|-----|------|-------|---------------|
-| RCAT | $8.50 | $13.25 | +55.9% | 23 | Drone Tech | 26.4% |
-| IBKR | $65.00 | $72.93 | +12.2% | 23 | Financials | 18.5% |
-| VNET | $12.00 | $10.80 | -10.0% | 45 | Cloud | 8.2% |
-
-**Stop Distance Indicators:** >15% safe | 10-15% watch | <10% alert
-
-## Exit Signals
-
-### VNET
-- **Reason:** Weekly BoS Down
-- **Current P&L:** -10.0%
-- **Action:** Position closed — first exit triggered
-
-## Scan Statistics
-- Tickers scanned: 1,817
-- Weekly BoS Up: 48
-- Technical signals: 44
-- Theme confirmed: 17
-- PASS signals: 6
-- CAUTION signals: 7
-```
-
----
-
-## LLM Integration Details
-
-### Model Configuration
-
-| Component | Model | Max Tokens | Web Search |
-|-----------|-------|------------|------------|
-| Thematic Analyzer | `claude-sonnet-4-20250514` | 12,000 | Optional |
-| Gatekeeper | `claude-sonnet-4-20250514` | 3,000 | Recommended |
-
-### API Costs
-
-```
-Claude Sonnet 4 Pricing:
-  Input:  $3.00 / 1M tokens
-  Output: $15.00 / 1M tokens
-  Web Search: $0.01 / search
-
-Typical Run Costs:
-  Step 5 (Thematic Analyzer):
-    - Without web search: ~$0.15
-    - With web search: ~$0.25-0.50
-
-  Step 6 (Gatekeeper per stock):
-    - Without web search: ~$0.05
-    - With web search: ~$0.15-0.25
-
-  Full run (10 stocks, web search):
-    - Total: ~$1.50-3.00
-```
-
-### Rate Limiting & Error Handling
-
-```python
-# Rate limit configuration
-INTER_STEP_DELAY = 30.0      # Seconds between analyzer and gatekeeper
-INTER_STOCK_DELAY = 8.0      # Seconds between gatekeeper calls
-RATE_LIMIT_COOLDOWN = 90.0   # Cooldown on rate limit error
-MAX_RETRIES = 8              # Retry attempts on failure
-
-# Exponential backoff on rate limits
-wait_time = min(base_wait * (2 ** attempt), max_wait)
-```
-
-### Gatekeeper Immediate Disqualifiers
-
-These trigger automatic FAIL:
-- Recent auditor resignation/change
-- CFO or CEO departure within 90 days
-- SEC investigation or accounting restatement
-- Severe short report with unaddressed allegations
-- Upcoming dilution event (shelf registration, ATM active)
-- Insider selling > 10% in last 30 days
-
----
-
-## Newsletter Generation
-
-### Workflow
-
-1. **Friday PM:** Run scanner -> generates `latest_newsletter_briefing.md`
-2. **Saturday AM:**
-   - Run `python -m substack.market_analyzer --save` -> get market context
-3. **Optional DD:**
-   - Automated via `python -m scanner.deep_dd` (runs as part of scanner)
-4. **Compile:**
-   - Run `python -m substack.newsletter_compiler --from-html`
-   - Converts Claude.ai HTML output to publication-ready newsletter
-5. **Publish:**
-   - Copy to Substack
-   - Add TradingView charts at [CHART: TICKER] placeholders
-   - Publish
-
-### Due Diligence Deal Memo
-
-5-phase methodology for 50%+ return validation:
-
-| Phase | Focus | Key Questions |
-|-------|-------|---------------|
-| 1. Explosive Growth | Revenue, margins, ROIC | Is growth accelerating? |
-| 2. Hidden Catalysts | Non-consensus events | What hasn't market priced? |
-| 3. Bear Killer | Short thesis rebuttal | Why is bear case wrong? |
-| 4. Valuation Reality | Multiple analysis | What multiple is justified? |
-| 5. Synthesis | Final recommendation | Path to 50%+ upside? |
-
----
-
-## Email Notification System
-
-### Configuration
-
-```bash
-# Gmail setup (requires App Password)
-export SMTP_SERVER="smtp.gmail.com"
-export SMTP_PORT="587"
-export EMAIL_SENDER="your.email@gmail.com"
-export EMAIL_PASSWORD="xxxx xxxx xxxx xxxx"  # App Password, not regular password
-export EMAIL_RECIPIENTS="recipient1@email.com,recipient2@email.com"
-```
-
-### Supported Providers
-
-| Provider | SMTP Server | Port | Notes |
-|----------|-------------|------|-------|
-| Gmail | smtp.gmail.com | 587 | Requires App Password |
-| Outlook | smtp.office365.com | 587 | |
-| Yahoo | smtp.mail.yahoo.com | 587 | Requires App Password |
-| Custom | Your server | 587/465 | |
-
----
-
-## macOS Scheduler Setup
-
-### Automated Weekly Scans
-
-```bash
-# Setup scheduler (runs Sunday 21:30 by default)
-python setup_scheduler.py
-
-# Custom time
-python setup_scheduler.py --time "18:00" --day "Friday"
-
-# Remove scheduler
-python setup_scheduler.py --remove
-```
-
-### launchd Configuration
-
-Creates plist at `~/Library/LaunchAgents/com.bos.scanner.plist`:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.bos.scanner</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/path/to/run_scanner.sh</string>
-    </array>
-    <key>StartCalendarInterval</key>
-    <dict>
-        <key>Weekday</key>
-        <integer>0</integer>
-        <key>Hour</key>
-        <integer>21</integer>
-        <key>Minute</key>
-        <integer>30</integer>
-    </dict>
-</dict>
-</plist>
-```
-
----
-
-# TIER 3: INTEGRATION & EXTENSION
-
-## Current External APIs
-
-| API | Purpose | Authentication | Rate Limits |
-|-----|---------|----------------|-------------|
-| **yfinance** | Stock data download | None (free) | ~2000 req/hour |
-| **Anthropic Claude** | LLM analysis | `ANTHROPIC_API_KEY` | Tier-based |
-| **Twitter/X API** | Tweet posting | OAuth 1.0a (GitHub Secrets) | 1500 tweets/15 min |
-| **SMTP** | Email notifications | Username/password | Provider-dependent |
-
----
-
-## Implemented Integrations
-
-### X/Twitter Auto-Posting (IMPLEMENTED)
-
-**Status:** Fully operational via GitHub Actions (`live_tweet.yml`)
-
-**Components:**
-- `twitter/live_tweet_generator.py` — Context-aware tweet generation (11 categories, 7-priority cascade, 3-account persona affinity)
-- `twitter/live_context_gatherer.py` — Grok-powered market context (theme_tickers, fintwit_overlaps, market_snapshot)
-- `twitter/poster.py` — Live queue posting with thread support
-- `twitter/chart_generator.py` — chart-img.com REST API charts (CI-compatible)
-- `twitter/output/live_content_queue.json` — Live tweet queue
-- `.github/workflows/live_tweet.yml` — Market-hours automation (~12 runs/day)
-
-**Configuration (GitHub Secrets):**
-```
-X1_API_KEY, X1_API_SECRET, X1_ACCESS_TOKEN, X1_ACCESS_SECRET      # Account 1 (Alex)
-X2_API_KEY, X2_API_SECRET, X2_ACCESS_TOKEN, X2_ACCESS_SECRET      # Account 2 (Rozalia)
-X3_API_KEY, X3_API_SECRET, X3_ACCESS_TOKEN, X3_ACCESS_SECRET      # Account 3 (James)
-XAI_API_KEY                                                        # Grok context gathering
-CHARTIMG_API_KEY                                                   # Chart generation
-```
-
-**3-Account Persona Model:**
-| Account | Persona | Primary Categories |
-|---------|---------|-------------------|
-| variant_1 (Alex) | The System / Analyst | RECEIPT, SIGNAL_ALERT, SELL_SIGNAL, TECHNICAL_ANALYSIS |
-| variant_2 (Rozalia) | The Mentor / Teacher | EDUCATIONAL, THEME_LIST, SUBSTACK_TEASER, THEME_CATALYST |
-| variant_3 (James) | The Trader / Practitioner | MARKET_COMMENTARY, TRENDING_TAKE, RECEIPT, ENGAGEMENT |
-
-**11 Category Taxonomy:**
-Signal: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT | Market: MARKET_COMMENTARY, THEME_CATALYST, THEME_LIST, TRENDING_TAKE | Position: TECHNICAL_ANALYSIS | Content: EDUCATIONAL, SUBSTACK_TEASER, ENGAGEMENT
-
-**Thread Support:** THEME_LIST (always thread), RECEIPT (multi-winner threads)
-
----
-
-### Substack Content (COWORK-DRIVEN)
-
-**Status:** Fully operational via Claude Cowork scheduled tasks
-
-**Components:**
-- `substack/COWORK_INSTRUCTIONS.md` - Master instructions for daily content generation
-- `substack/constants.py` - Shared constants (NOTE_TYPE_MATRIX, HANDBOOK_SECTION_MAP)
-- `substack/docs/content_prompt_handbook_v6.2.md` - Post/note prompt library
-- `substack/tools/capture.py` - Animated diagram HTML → MP4 export
-- `substack/tools/carousel-template-v2.js` - Branded carousel PPTX generation
-- `scripts/build_daily_email.py` - Sends generated content as email attachments
-
-**Output:** `substack/output/current/` — posts/, notes/, diagrams/, carousels/
-
-**Workflow:** Cowork generates HTML → emails attachments → user pastes into Substack from phone
-
----
-
-## Future Integration Opportunities
-
-### Substack Newsletter Auto-Publish (MEDIUM PRIORITY)
-
-**Current State:**
-- `newsletter_compiler.py --from-html` converts Claude.ai HTML to publication-ready newsletter
-- User manually copies to Substack editor
-- Charts added manually via TradingView screenshots
-
-**Target State:**
-- Automated publication via API or browser automation
-- Charts auto-embedded
-
-**Options:**
-
-| Option | Feasibility | Notes |
-|--------|-------------|-------|
-| **Email-to-Publish** | High | Substack supports email posting |
-| **Browser Automation** | Medium | Playwright/Selenium, fragile |
-| **Substack API** | Low | No public API currently |
-
-**Interim Solution (Email-to-Publish):**
-
-```python
-# Potential: substack_publisher.py
-
-def publish_via_email(newsletter_content, subject):
-    """
-    Send newsletter to Substack's email-to-publish address.
-    Format: your-publication@mg.substack.com
-    """
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_SENDER
-    msg['To'] = SUBSTACK_PUBLISH_EMAIL
-
-    # HTML content with embedded charts
-    html_content = convert_markdown_to_html(newsletter_content)
-    msg.attach(MIMEText(html_content, 'html'))
-
-    # Send
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-        server.send_message(msg)
-```
-
----
-
-### Chart Generation (IMPLEMENTED)
-
-**Status:** Operational via `chart_generator.py` (chart-img.com REST API)
-
-**Components:**
-- `twitter/chart_generator.py` — REST API chart generation (CI-compatible, no browser required)
-- `twitter/output/charts/` — Output directory for chart images
-- `twitter/output/charts/chart_manifest.json` — Tracks captured charts with paths
-
-**Usage:**
-```bash
-python -m twitter.chart_generator                    # Process live queue (charts for chart_recommended=True items)
-python -m twitter.chart_generator --ticker AAPL      # Single chart
-```
-
-**Integration:**
-- Items with `chart_recommended=True` in live queue get charts generated automatically
-- Chart paths written to `chart_path` in live queue entries
-- `twitter/poster.py` uploads charts via Twitter API v1.1 media endpoint, attaches to tweet via v2
-- Categories with required charts: SELL_SIGNAL, SIGNAL_ALERT, RECEIPT (from `CHART_REQUIRED_CATEGORIES`)
-
----
-
-### Google Sheets Live Sync (LOW PRIORITY)
-
-**Current State:**
-- `portfolio_google_sheets.csv` exported by scanner
-- User manually imports to Google Sheets
-- GOOGLEFINANCE formulas added manually
-
-**Target State:**
-- Auto-sync on each scan
-- Preserve formulas and formatting
-
-**Implementation:**
-
-```python
-# utils/sheets_sync.py (future)
-
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-def sync_portfolio_to_sheets(portfolio_data: List[Dict]):
-    """
-    Sync portfolio data to Google Sheets.
-
-    Prerequisites:
-    - Service account created in Google Cloud Console
-    - Spreadsheet shared with service account email
-    - GOOGLE_SHEETS_CREDENTIALS_PATH env var set
-    - GOOGLE_SHEETS_SPREADSHEET_ID env var set
-    """
-    creds = Credentials.from_service_account_file(
-        os.getenv('GOOGLE_SHEETS_CREDENTIALS_PATH'),
-        scopes=SCOPES
-    )
-
-    service = build('sheets', 'v4', credentials=creds)
-    sheet = service.spreadsheets()
-
-    # Clear existing data (preserve header and formulas)
-    sheet.values().clear(
-        spreadsheetId=SPREADSHEET_ID,
-        range='Portfolio!A2:L100'
-    ).execute()
-
-    # Write new data
-    values = [trade_to_row(t) for t in portfolio_data]
-    sheet.values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range='Portfolio!A2',
-        valueInputOption='USER_ENTERED',
-        body={'values': values}
-    ).execute()
-```
-
----
-
-### Real-Time Alerts (FUTURE)
-
-**Concept:**
-- Intraday price monitoring for stop alerts
-- Push notifications when positions approach stops
-
-**Implementation Ideas:**
-- Use yfinance streaming or alternative (Alpha Vantage, Polygon.io)
-- Check prices every 15 minutes during market hours
-- Send alerts via email/SMS/push when within 5% of stop
-
----
-
-## Extension Patterns
-
-### Adding New Technical Indicators
-
-```python
-# Location: core/scanner.py, after calculate_banker()
-
-def calculate_new_indicator(df: pd.DataFrame) -> float:
-    """
-    Calculate [indicator name].
-
-    Formula: [explicit formula]
-
-    Args:
-        df: Daily OHLCV DataFrame with columns: Open, High, Low, Close, Volume
-
-    Returns:
-        Indicator value (float)
-    """
-    try:
-        # Your calculation here
-        value = ...
-        return value
-    except Exception:
-        return 0.0
-
-# Add to Stock dataclass
-@dataclass
-class Stock:
-    # ... existing fields ...
-    new_indicator: float = 0.0
-
-# Add calculation in download_and_process()
-def download_and_process(ticker, spy_data, ...):
-    # ... existing code ...
-    stock.new_indicator = calculate_new_indicator(df)
-```
-
-### Adding New LLM Gates
-
-```python
-# Pattern: Create new module like gatekeeper.py
-
-# 1. Define result dataclass
-@dataclass
-class NewGateResult:
-    ticker: str
-    decision: str  # PASS, CAUTION, FAIL
-    reasoning: str
-    # ... additional fields ...
-
-# 2. Define system prompt
-NEW_GATE_SYSTEM_PROMPT = """
-You are a [role] at a [context].
-Your task is to [objective].
-...
-"""
-
-# 3. Implement run function
-def run_new_gate(
-    client: anthropic.Anthropic,
-    stocks: List[Stock],
-    use_web_search: bool = False
-) -> List[NewGateResult]:
-    results = []
-    for stock in stocks:
-        # Build user prompt
-        user_prompt = f"Analyze {stock.symbol}..."
-
-        # API call
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=2000,
-            system=NEW_GATE_SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": user_prompt}]
-        )
-
-        # Parse response
-        result = parse_response(response.content[0].text)
-        results.append(result)
-
-    return results
-
-# 4. Integrate in core/scanner.py
-def run_new_gate_in_scanner(signals: List[Stock], client, **kwargs) -> List[Stock]:
-    from core.new_gate import run_new_gate
-
-    results = run_new_gate(client, signals, **kwargs)
-
-    # Map results back to Stock objects
-    for stock in signals:
-        result = next((r for r in results if r.ticker == stock.symbol), None)
-        if result:
-            stock.new_gate_decision = result.decision
-            # ... additional mapping ...
-
-    # Filter based on decisions
-    passed = [s for s in signals if s.new_gate_decision == "PASS"]
-    return passed
-```
-
-### Adding New Output Formats
-
-```python
-# Location: core/scanner.py, save_results()
-
-def save_new_format(
-    confirmed: List[Stock],
-    sell_signals: List[SellSignal],
-    stats: ScanStats
-) -> Path:
-    """Generate [format name] output."""
-
-    output_file = TRADES_DIR / "output.ext"
-
-    # Generate content
-    content = {
-        "timestamp": datetime.now().isoformat(),
-        "signals": [stock_to_dict(s) for s in confirmed],
-        # ... additional content ...
-    }
-
-    # Write file
-    with open(output_file, 'w') as f:
-        json.dump(content, f, indent=2)
-
-    print(f"  New format: {output_file}")
-    return output_file
-
-# Call from save_results()
-def save_results(confirmed, all_assessed, sell_signals, stats, ...):
-    # ... existing saves ...
-    save_new_format(confirmed, sell_signals, stats)
-```
-
----
-
-## Complete Environment Variables Reference
-
-```bash
-# ============================================================
-# REQUIRED
-# ============================================================
-
-# Anthropic API (for LLM analysis)
-export ANTHROPIC_API_KEY="sk-ant-api03-..."
-
-# ============================================================
-# OPTIONAL: Email Notifications
-# ============================================================
-
-export SMTP_SERVER="smtp.gmail.com"
-export SMTP_PORT="587"
-export EMAIL_SENDER="your.email@gmail.com"
-export EMAIL_PASSWORD="xxxx xxxx xxxx xxxx"  # App Password
-export EMAIL_RECIPIENTS="recipient@email.com"
-
-# ============================================================
-# FUTURE: X/Twitter Integration
-# ============================================================
-
-export TWITTER_API_KEY=""
-export TWITTER_API_SECRET=""
-export TWITTER_BEARER_TOKEN=""
-export TWITTER_ACCESS_TOKEN=""
-export TWITTER_ACCESS_SECRET=""
-
-# ============================================================
-# FUTURE: Google Sheets Sync
-# ============================================================
-
-export GOOGLE_SHEETS_CREDENTIALS_PATH="/path/to/service-account.json"
-export GOOGLE_SHEETS_SPREADSHEET_ID="1abc..."
-
-# ============================================================
-# FUTURE: Substack Publishing
-# ============================================================
-
-export SUBSTACK_PUBLISH_EMAIL="your-publication@mg.substack.com"
-```
-
----
-
-# APPENDICES
-
-## A. Complete Terminal Output Example
-
-```
-==============================================================================
-              BoS MOMENTUM SCANNER - WEEKLY TIMEFRAME
-                      2026-01-17 22:30:00
-==============================================================================
-
-  Pipeline: Technical -> Thematic -> Gatekeeper (thorough)
-  Cost: ~$1-3/run (web search enabled)
-  Schedule: Run WEEKLY (signals only change on Friday close)
-
-  Web search ENABLED:
-     - Thematic: Current theme momentum
-     - Gatekeeper: 2-3 searches per stock
-
-  Portfolio: 6 open position(s) tracked
-     - portfolio/output/portfolio.csv
-     - Google Sheets export on completion
-
-------------------------------------------------------------------------------
-  STEP 1: Loading Tickers
-------------------------------------------------------------------------------
-  Loaded 1,817 tickers from complete_tickers.txt
-  Tracking 6 open position(s): CGON, FIX, IBKR, RCAT, TLN, VNET
-
-------------------------------------------------------------------------------
-  STEP 2: Downloading SPY Benchmark
-------------------------------------------------------------------------------
-  Downloaded 251 days of SPY data
-
-------------------------------------------------------------------------------
-  STEP 3: Downloading Stock Data
-------------------------------------------------------------------------------
-  Downloaded data for 1,814 stocks (3 failed)
-  Calculated Beta, Banker, HMA Pivot BoS for all stocks
-
-------------------------------------------------------------------------------
-  STEP 4: Technical Gate
-------------------------------------------------------------------------------
-  Universe Statistics:
-    High Beta (>=1.5):  485 stocks
-    Weekly BoS Up:      48 stocks
-    Banker Rising:      312 stocks
-
-  44 stocks passed technical gate (Beta >=1.5 AND BoS Up AND Banker Rising)
-
-  Top 10 by Banker:
-    TIER1  INOD    $61.54  Beta: 2.48  Banker: 78.3↑
-    TIER1  RCAT    $13.25  Beta: 3.12  Banker: 75.1↑
-    ...
-
-------------------------------------------------------------------------------
-  STEP 5: Thematic Analyzer
-------------------------------------------------------------------------------
-  Identifying top investment themes...
-
-  PRIME Themes (Highest Conviction):
-     - AI Infrastructure (TREND) - Score: 8.2/10
-     - Power Grid Infrastructure (BOTTLENECK) - Score: 7.8/10
-
-  INVESTABLE Themes:
-     - Drone Technology (TREND) - Score: 7.1/10
-     - Nuclear Renaissance (CONTRARIAN) - Score: 6.8/10
-
-  SELECTIVE Themes:
-     - Quantum Computing (CONTRARIAN) - Score: 5.2/10
-
-  AVOID Themes:
-     - Legacy Retail (TREND) - Score: 3.1/10
-
-  Mapping 44 tickers to themes...
-  17 stocks theme-confirmed
-
-  Step 5 cost: $0.23 (input: 12,450 tokens, output: 2,100 tokens)
-
-------------------------------------------------------------------------------
-  STEP 6: Gatekeeper
-------------------------------------------------------------------------------
-  Running final quality gate on 17 stocks...
-
-  [1/17] INOD... PASS (Conviction: 4/5)
-  [2/17] RCAT... PASS (Conviction: 4/5)
-  [3/17] IONQ... CAUTION - Extended, wait for pullback
-  ...
-
-  Results:
-    PASS:    6 stocks (ready to trade)
-    CAUTION: 7 stocks (watchlist)
-    FAIL:    4 stocks (skip)
-
-  Step 6 cost: $2.15 (17 stocks x ~$0.13/stock)
-
-------------------------------------------------------------------------------
-  STEP 7: Checking Sell Signals
-------------------------------------------------------------------------------
-  Checking 6 open positions...
-
-  VNET: EXIT — Weekly BoS Down at $10.80
-  RCAT: Bullish, +55.9% from entry
-  IBKR: Bullish, +12.2% from entry
-  ...
-
-------------------------------------------------------------------------------
-  PORTFOLIO UPDATE
-------------------------------------------------------------------------------
-  Portfolio: 6 open, 2 closed
-  CSV: portfolio/output/portfolio.csv
-  Google Sheets export: portfolio/output/portfolio_google_sheets.csv
-
-  Performance (closed trades):
-     Win Rate: 75% | Avg Win: +42.3% | Avg Loss: -18.2%
-
-------------------------------------------------------------------------------
-  GROK PROMPTS GENERATED
-------------------------------------------------------------------------------
-  Generated 21 Grok prompts for the week
-
-  Grok prompts: (legacy — now generated by twitter/tweet_generator.py)
-
-  Weekly Schedule:
-     Monday     | Week Ahead           | Hot Theme            | Position Update
-     Tuesday    | Buy Signal           | Cold Theme           | Watchlist
-     Wednesday  | Market Pulse         | Theme Compare        | Sell Signal
-     Thursday   | Buy Signal 2         | Hot Theme 2          | Watchlist 2
-     Friday     | Scanner Stats        | Cold Theme 2         | Position Update
-     Saturday   | Newsletter Drop      | Signal Deep Dive     | Why Passed
-     Sunday     | Engagement           | Trading Lesson       | Week Ahead
-
-  Copy prompts to Grok (X's AI) to generate ready-to-post tweets
-
-==============================================================================
-  FULL GROK PROMPTS (21 FOR THE WEEK)
-==============================================================================
-
-  [Full prompts displayed organized by day...]
-
-==============================================================================
-
-  Summary saved: (legacy — tweets now in twitter/output/content_queue.json)
-
-------------------------------------------------------------------------------
-  RESULTS SAVED
-------------------------------------------------------------------------------
-  Files:
-     - scanner/output/signals.json
-     - scanner/output/analysis_log.csv (appended)
-     - scanner/output/current/report.txt
-     - scanner/output/current/newsletter_briefing.md
-     - portfolio/output/portfolio.csv
-     - portfolio/output/portfolio_google_sheets.csv
-
-------------------------------------------------------------------------------
-  COST SUMMARY
-------------------------------------------------------------------------------
-  Step 5 (Thematic Analyzer): $0.23
-  Step 6 (Gatekeeper):        $2.15
-  Web searches:               $0.34
-  -----------------------------
-  Total:                      $2.72
-
-  Completed in 147.3 seconds
-==============================================================================
-```
-
----
-
-## B. Weekly Workflow Checklist
-
-### Friday Evening (After Market Close)
-
-```
-[ ] Run full scan
-    python -m scanner.scanner --web-search
-
-[ ] Review terminal output
-    - Note PASS signals
-    - Check for sell signals on open positions
-    - Review cost summary
-
-[ ] Quick portfolio check
-    python -m portfolio.manager --report
-```
-
-### Saturday Morning
-
-```
-[ ] Review newsletter briefing
-    cat scanner/output/current/newsletter_briefing.md
-
-[ ] Generate market context (optional)
-    python -m substack.market_analyzer --save
-
-[ ] Compile newsletter
-    python -m substack.newsletter_compiler --from-html
-    -> Converts Claude.ai HTML output to publication-ready newsletter
-
-[ ] Add TradingView charts
-    - Screenshot charts for PASS signals
-    - Screenshot charts for open positions
-    - Insert at [CHART: TICKER] placeholders
-
-[ ] Publish to Substack
-    - Copy markdown to Substack editor
-    - Preview and adjust formatting
-    - Schedule or publish immediately
-```
-
-### Daily (Monday-Sunday)
-
-```
-[ ] Pre-market post (08:00 ET)
-    - Tweets auto-posted from twitter/output/content_queue.json
-    - Review scheduled tweet for accuracy
-    - Manual override if needed
-
-[ ] Morning post (10:00 ET)
-    - Copy Slot 2 prompt to Grok
-    - Post to X
-
-[ ] Midday post (12:30 ET)
-    - Copy Slot 3 prompt to Grok
-    - Post to X
-
-[ ] Power Hour post (15:30 ET) - CRITICAL
-    - Copy Slot 4 prompt to Grok
-    - Post to X
-
-[ ] After-hours post (18:00 ET)
-    - Copy Slot 5 prompt to Grok
-    - Post to X
-```
-
-### Mid-Week (Optional)
-
-```
-[ ] Check portfolio prices
-    python -m portfolio.manager --update
-
-[ ] Check Google Sheets for live P&L
-    - Open your synced Google Sheet
-    - Review stop distances
-
-[ ] React to market events
-    - Adjust prompts if major news
-```
-
----
-
-## C. Troubleshooting
-
-### API Billing Errors
-
-```
-Error: "Billing not enabled" or "Insufficient credits"
-
-Solution:
-1. Log into console.anthropic.com
-2. Go to Billing -> Add payment method
-3. Add credits ($10 minimum)
-4. Retry scan
-```
-
-### yfinance Rate Limits
-
-```
-Error: "Too many requests" or "Connection timeout"
-
-Solution:
-1. Wait 5-10 minutes
-2. Reduce ticker count: --top 50
-3. Run during off-peak hours
-```
-
-### Missing Environment Variables
-
-```
-Error: "ANTHROPIC_API_KEY not set"
-
-Solution:
-1. Add to ~/.bashrc or ~/.zshrc:
-   export ANTHROPIC_API_KEY="sk-ant-api03-..."
-2. Source the file: source ~/.zshrc
-3. Verify: echo $ANTHROPIC_API_KEY
-```
-
-### Scheduler Not Running (macOS)
-
-```
-Problem: Scheduled scan not executing
-
-Solutions:
-1. Check laptop wasn't sleeping
-   - Energy Saver -> Prevent sleep when display is off
-
-2. Verify launchd status:
-   launchctl list | grep bos
-
-3. Check logs:
-   cat ~/Library/Logs/bos_scanner.log
-
-4. Reload agent:
-   launchctl unload ~/Library/LaunchAgents/com.bos.scanner.plist
-   launchctl load ~/Library/LaunchAgents/com.bos.scanner.plist
-```
-
-### Portfolio CSV Corruption
-
-```
-Problem: Malformed portfolio.csv
-
-Solution:
-1. Restore from backup:
-   cp portfolio/output/portfolio_backups/portfolio_YYYYMMDD_HHMMSS.csv portfolio/output/portfolio.csv
-
-2. Or recreate from signals.json + manual entry
-```
-
----
-
-## D. Changelog
-
-### 2026-03-09 (Substack Pipeline → Cowork Migration)
-
-- **Retired Python pipeline** — 10 modules archived to `archive/substack_python_pipeline/`: content_utils, daily_content_pipeline, daily_context_builder, daily_notes_generator, dd_post_generator, html_templates, market_analyzer, newsletter_compiler, note_utils, notes_poster (total ~8,000 lines)
-- **Archived workflows** — `daily_content.yml` and `substack-notes.yml` moved to `archive/substack_python_pipeline/workflows/`
-- **New Cowork instructions** — `substack/COWORK_INSTRUCTIONS.md`: Master document for Cowork scheduled tasks with daily schedule, data sources, output locations, content rules, visual asset specs
-- **Constants extracted** — `substack/constants.py`: NOTE_TYPE_MATRIX, HANDBOOK_SECTION_MAP, extract_prompt_from_handbook() preserved for email builder
-- **Email pipeline rewritten** — `scripts/build_daily_email.py` (800→250 lines): manifest-based, sends HTML files as attachments via new `send_email_with_attachments()` in `utils/email_notifier.py`
-- **Visual assets integrated** — `HTML/` and `Carousel/` folder contents moved to `substack/tools/` (capture.py, carousel-template-v2.js) and `substack/docs/` (animated-diagram-spec.md, carousel-guide.docx)
-- **Saturday workflow updated** — Steps 3 (market analysis) and 4 (daily context) retired from `scanner/saturday_workflow.py` — now handled by Cowork
-- **Tests updated** — `test_substack_content_v2.py` archived, `TestDDPostGenerator` removed from test_integration.py, new `test_email_attachments.py` (18 tests)
-
-### 2026-02-27 (Tweet Subsystem Overhaul — Phases 1-7 Complete)
-
-- **Deleted modules** — `twitter/tweet_generator.py` (batch system), `twitter/chart_capture.py` (Playwright-based), `twitter/verify_tweets.py`; 3 associated test files (`test_tweet_generator_v2.py`, `test_tweet_gen_audit_fixes.py`, `test_tweet_gen_integration.py`); `daily_post.yml` workflow
-- **Live tweet system** — `twitter/live_tweet_generator.py` (2,458 lines): 11-category taxonomy, 7-priority decision cascade, 14-step validation pipeline, 3-account persona affinity, thread support (THEME_LIST, multi-RECEIPT)
-- **Context gatherer overhaul** — `twitter/live_context_gatherer.py`: Grok-powered market context with theme_tickers, fintwit_overlaps, portfolio_movers; removed tweet_opportunities
-- **poster.py --live-queue fix** — Added missing argparse flag (workflow passed it but parser rejected)
-- **Signal colors updated** — TEAL/VIOLET/AMBER → GREEN/RED/CONSIDER across CLAUDE.md to match `config/settings.py` `SIGNAL_COLORS`
-- **CLAUDE.md overhauled** — Source files table (3 deleted + descriptions updated), tests table (3 deleted + 3 added), X/Twitter posting section (batch→live system), chart section (Playwright→chart-img API), workflow table (daily_post.yml removed)
-- **Stale reference cleanup** — Updated 5 source files referencing deleted `tweet_generator.py`/`chart_capture.py` modules
-- **Test suite** — 314 tests passing across 8 test files
-
-### 2026-02-26 (Substack Phase 6 — Delete Old Modules + Daily Content Pipeline)
-
-- **Deleted 3 replaced modules** — `substack/content_generator.py` (1,624 lines), `substack/content_production_guide.py` (858 lines), `substack/notes_batch_generator.py` (1,347 lines) — total 3,829 lines removed
-- **New daily content pipeline** — `substack/daily_content_pipeline.py`: 4-step orchestrator (market analysis → daily context → notes → email) with try/except isolation per step, `--day`/`--dry-run`/`--skip-email` CLI flags
-- **New daily context builder** — `substack/daily_context_builder.py`: Generates `daily_context.md` with adaptive post assignment, embedded category prompt from handbook v5, portfolio/scanner data, note rotation matrix
-- **New daily notes generator** — `substack/daily_notes_generator.py`: 7-type rotation matrix (Portfolio Pulse, Signal Spotlight, Theme Analysis, Educational, Market Mood, Weekend Planning, Performance Review), 2-3 notes/day, LLM generation with template fallback
-- **New content utilities** — `substack/content_utils.py`: `build_content_context()`, HTML helpers, `sanitize_text()`, `scrub_llm_output()`, `validate_post_content()` extracted from deleted modules
-- **New note utilities** — `substack/note_utils.py`: Note formatting, HTML wrapping, file I/O shared between generators
-- **GitHub Action created** — `.github/workflows/daily_content.yml`: Runs daily at 07:00 ET (dual EST/EDT crons with dedup), commits outputs with rebase-retry
-- **Pipeline cleanup** — Removed content_production_guide + notes_batch steps from `friday_scan.yml` and `run_friday.sh`
-- **saturday_workflow.py updated** — Step 4 now uses `daily_context_builder` instead of `content_production_guide`
-- **Test suite updated** — Removed 37 tests depending on deleted LLM functions; 330 tests passing (61 substack content tests retained)
-- **Output path updated** — `content_production_guide.md` → `daily_context.md` across all references
-
-### 2026-02-20 (Substack Content System Overhaul — Handbook v5)
-
-- **4-category adaptive system** — Replaced fixed 7-day content schedule with 4 adaptive categories (Ticker Deep Dive, Theme Rotation, Educational, Performance Review) assigned dynamically based on scanner output
-- **Content Prompt Handbook v5** — `substack/docs/content_prompt_handbook_v5.md`: 4 category post prompts, 2 trade alert prompts, 1 universal notes prompt with embedded day-aware rotation matrix, full Quick Reference section with banned terms and HTML specs
-- **Content production guide enhanced** — `substack/content_production_guide.py` (deleted in Phase 6): Added Saturday to schedule, note types per day from rotation matrix, handbook prompt references per category, fixed stock count to ~1,800
-- **HTML notes support** — `substack/notes_batch_generator.py` (deleted in Phase 6): Added `--html` CLI flag, `HTML_NOTE_TEMPLATE`, `wrap_note_html()` markdown-to-HTML converter, updated `NoteSpec` with `.html` extension support
-- **Daily workflow simplified** — 5-step daily process: open context doc → copy category prompt → attach to Claude.ai (Opus 4.6 + extended thinking) → get HTML post + 3 HTML notes → paste to Substack
-- **Newsletter strategy doc updated** — `substack/docs/newsletter_strategy.md` aligned with 4-category system, updated module paths and output paths
-- **Handbook v4 archived** — `content_prompt_handbook_v4.md` moved to `archive/pre_reorg/`
-
-### 2026-02-19 (5-Section Codebase Reorganization)
-
-- **5-section structure** — Reorganized from `core/`, `content/`, `distribution/` flat packages into 5 domain-specific sections: `scanner/`, `portfolio/`, `substack/`, `twitter/`, `dashboard/`, each owning scripts, docs, and outputs
-- **File moves** — 35+ Python files moved via `git mv` with full import rewriting:
-  - `core/*.py` → `scanner/*.py` (8 files)
-  - `core/portfolio_manager.py` → `portfolio/manager.py`
-  - `content/tweet_generator.py`, `content/models.py`, etc. → `twitter/*.py` (13 files)
-  - `content/newsletter_compiler.py`, etc. → `substack/*.py` (10 files)
-  - `distribution/notifications.py`, `distribution/email_notifier.py` → `utils/*.py`
-  - `utils/health_check.py`, `utils/cost_tracker.py`, etc. → `twitter/*.py` (4 files)
-- **Multi-section output paths** — `config/output_paths.py` redesigned as centralized path registry with `SCANNER_OUTPUT`, `PORTFOLIO_OUTPUT`, `SUBSTACK_OUTPUT`, `TWITTER_OUTPUT` roots and named constants for every file path
-- **TRADES_DIR eliminated** — 175+ references across 35 files replaced with section-specific named constants from `config/output_paths.py`; legacy `TRADES_DIR` alias kept in `config/output_paths.py` only
-- **Output data files moved** — `trades/` contents split into section outputs: scanner data → `scanner/output/`, portfolio CSVs → `portfolio/output/`, newsletter/posts → `substack/output/`, tweet queues/charts → `twitter/output/`
-- **Weekly archives split** — `trades/weeks/YYYY-WXX/` archives split between `scanner/output/archive/` (report.txt, signals.json) and `substack/output/archive/` (newsletter.html, substack_posts/, substack_notes/)
-- **All workflows updated** — 5 GitHub Actions workflow files, 2 shell scripts updated with new `python -m` module paths and output file paths
-- **Dashboard updated** — `data.ts` uses section-specific directory resolution with legacy `trades/` fallback; `bundle-data.sh` copies from 4 section output directories
-- **Test suite intact** — All tests pass with updated imports and mock patches
-
-### 2026-02-14 (Portfolio Dashboard, Newsletter & DD Posts Upgrade)
-
-- **Portfolio dashboard enhanced** — `content/portfolio_visual.py`: Equity curve SVG chart (Portfolio/SPY/QQQ polylines), 6-stat grid (NAV, Return, Win Rate, Alpha vs SPY, Alpha vs NASDAQ, Max Drawdown), enhanced positions table with Current Price and Stop Distance columns, timestamp with refresh instructions
-- **QQQ/NASDAQ benchmark** — `core/portfolio_manager.py`: Added `qqq_value`, `qqq_return_pct`, `alpha_vs_qqq_pct` to `EquitySnapshot`; backward-compatible CSV deserialization; `calculate_nav()` accepts `qqq_data`; `get_compounding_summary()` returns QQQ fields
-- **Newsletter compiler upgraded** — `content/newsletter_compiler.py`: `load_dd_results()` now extracts all Deep DD fields (elevator_pitch, why_now, the_math, bear_case, risk_to_monitor, action); new `load_theme_details()` for theme sub-score table; `generate_benchmark_comparison()` includes QQQ + max drawdown; `COMPILATION_PROMPT` expanded with `{theme_details}` section and full DD field guidance
-- **DD HTML post generator** — **NEW** `substack/dd_post_generator.py`: Standalone dark-theme HTML pages per buy signal with The Pitch, Why Now, The Math, Bear Case, Risk to Monitor, Theme Context (progress bars for sub-scores), Investment Gate Summary, Action card; marketing-safe (sanitizes via `INTERNAL_TERMINOLOGY_MAP`); optional Playwright PNG screenshots; CLI: `python -m substack.dd_post_generator`
-- **Pipeline integration** — DD post generation added to `run_friday.sh` (step 4.5) and `.github/workflows/friday_scan.yml`
-- **Test suite expanded** — 204 → 217 tests; new `TestQQQBenchmark` (5 tests) and `TestDDPostGenerator` (8 tests) in `test_integration.py`
-
-### 2026-02-13 (Sterling Grid Upgrade)
-
-- **Sterling Grid indicators** — Complete replacement of weekly scanner technical indicators based on V1-V4 backtesting (+633% at 10x10, 79% win rate):
-  - **Entry**: HMA(21) slope rising + RSI(14) > 50 + MACD(12,26,9) cross-up + UC rising above + Price < $25 (replaces HMA Pivot BoS + Beta ≥1.5 + Banker Rising)
-  - **Exit**: ExD compound exit (HMA falling + UC falling) OR tiered profit lock (+200%→15%, +100%→20%, +50%→25% trail) (replaces BoS Down + flat 20% trailing stop)
-  - **LLM gates**: Investment Gate (Sonnet) + Deep DD (Opus with extended thinking) (replaces Gatekeeper + DD Automator)
-- **Conviction scale expanded** — 1-5 → 1-10: HIGH 8-10, STANDARD 7, SPEC 4-6, NO GO 1-3
-- **Position sizing** — Conviction-tiered: HIGH=20%, STANDARD=15%, SPEC=8% of equity; max 6 positions; 10% cash reserve; gear system (conservative/recommended/aggressive)
-- **New files**: `core/sterling_indicators.py`, `core/investment_gate.py`, `core/deep_dd.py`, `core/legacy_indicators.py`
-- **Legacy indicators preserved** — `core/legacy_indicators.py` preserves old Banker/HMA/BoS for daily scanner (unchanged)
-- **Retired to archive**: `core/gatekeeper.py`, `core/dd_automator.py` → `archive/legacy_code/`
-- **Test suite expanded** — 141 → 217 tests; new `tests/test_sterling_indicators.py` with 63 indicator unit tests
-- **Backward compatibility** — `signals.json` maps `"banker": uc_value` for downstream content systems; portfolio CSV supports graceful defaults for new columns; daily scanner fully unchanged
-
-### 2026-02-09 (First Exit Strategy)
-
-- **First exit strategy** — Exit immediately on whichever fires first: HMA fracture (BoS bearish) OR 20% trailing stop. No more "tighten to 15%" step.
-- **Removed `TIGHTEN_STOP_PCT`** from `config/settings.py` — dead code, was defined but never used in practice
-- **Removed `tighten_stop()` method** from `core/portfolio_manager.py` — was defined but never called
-- **Fixed dual-exit detection** — Changed `if/elif` to check both conditions independently in `core/scanner.py` and `core/daily_scanner.py`. If both fire on same bar, exit once with combined reason.
-- **Removed per-trade `stop_pct` override** — `calculate_metrics()` and `check_stop_signals()` now always use global 20% (`TRAILING_STOP_PCT`)
-- **Updated all display strings** — "CAUTION SIGNALS" → "EXIT SIGNALS", "Consider Tightening Stops" → "Positions Closed", throughout scanner output and reports
-- **Removed "TIGHTENED STOP"** notification label from `distribution/notifications.py`
-- **Updated daily scanner notifications** — Signal type detection no longer checks for tightened stop
-
-### 2026-02-08 (Banker Rising Entry Gate)
-
-- **Banker entry gate** — Replaced static `banker >= 55` threshold with `banker_rising` check (current bar > previous bar). Backtesting across 11 stocks (2019-2026) showed static threshold catches stocks where institutions FINISHED accumulating; rising check catches them STARTING.
-- **`calculate_banker()`** now returns `Tuple[float, float]` — `(current, previous)` values
-- **Stock dataclass** — Added `banker_prev: float` and `banker_rising: bool` fields
-- **`meets_technical_criteria()`** — Gate changed from `banker >= 55` to `banker_rising`
-- **`get_tier()`** — All passing stocks get TIER1; no level-based tier differentiation (only direction matters)
-- **Daily scanner** — Same rising check applied to daily bars
-- **Config cleanup** — Removed `BANKER_TIER1/2/3` constants from `config/settings.py`
-- **Banned terms** — Added "Banker rising", "UC rising" to banned terms lists
-
-### 2026-02-06 (Content System v2 + Daily Scanner)
-
-- **Daily scanner** — `core/daily_scanner.py`: Mon-Fri after-close BoS scanner on daily bars, max 5 signals/day, dedup against weekly portfolio, separate `daily_portfolio.csv`
-- **Tweet generator v2** — `content/tweet_generator.py`: Unified voice replacing 3-persona system; 7-step validation pipeline; LLM repair loop (max 2 attempts, then drop + log); category-based scheduling; winners-only display rules
-- **Content models** — `content/models.py`: Shared dataclasses (`Tweet`, `ContentData`, `SlotAssignment`, `ValidationResult`); `CHART_REQUIRED_CATEGORIES`; `INTERNAL_TERM_PATTERNS`
-- **Banned terms registry** — `config/banned_terms.py`: Single source of truth for `CRITICAL_BANNED`, `BANNED_PHRASES`, `LOSER_PATTERNS`, `ALL_BANNED`; helper functions `check_banned_phrases()` and `check_loser_focus()`
-- **Sell signal notifications** — `distribution/notifications.py`: Real-time email (SMTP) + WhatsApp (Twilio) alerts on bearish pivots and trailing stop breaches; independent channel firing
-- **7-slot posting system** — `distribution/twitter_poster.py`: Slots 1/6/7 → daily queue, slots 2-5 → weekly queue; EST/EDT-aware `get_current_slot()`; `validate_before_posting()` last-line-of-defence check
-- **Chart capture improvements** — `content/chart_capture.py`: Weekly + daily timeframe support; `capture_charts_batch()` with per-ticker fallback; `chart_path` flows through tweet queue to poster
-- **Daily scan workflow** — `.github/workflows/daily_scan.yml`: Mon-Fri 16:35 ET with EST/EDT dual crons; daily scanner → sell notifications → chart capture → tweet generation
-- **7-slot posting workflow** — `.github/workflows/daily_post.yml`: 14 cron triggers (7 slots × 2 EST/EDT); dual queue awareness; weekend handling (slots 2-5 only)
-- **Integration test suite** — `tests/test_integration.py`: 20 integration tests across 5 classes covering Friday pipeline, daily pipeline, posting system, content validation, and cross-cutting smoke tests
-- **Legacy system archived** — `reaction_generator.py`, `editorial_board.py`, old `tweet_generator.py` (v1), persona YAML files moved to `archive/legacy_code/`
-
-### 2026-02-06 (earlier — Package Reorganisation)
-
-- **Package reorganisation** - Flat 32-file root → `core/`, `content/`, `distribution/`, `config/`, `utils/` packages
-- **Dead code removal** - Removed unused `calculate_bos_daily()`, `passes_momentum_filter()`, legacy CSV fallback
-- **Magic number extraction** - `BANKER_CENTER`, `HMA_PERIOD`, `VWAP_PERIOD`, etc. now in `config/settings.py`
-- **Duplicate consolidation** - Canonical `fetch_current_prices()` and `get_spy_ytd_return()` in `core/portfolio_manager.py`
-- **Backwards-compatible config** - `config/__init__.py` re-exports all settings; `from config import X` unchanged
-- **Workflow updates** - All GitHub Actions and shell scripts use `python -m package.module` format
-
-### 2026-01-21
-
-- **Enhanced CLAUDE.md** - Complete rewrite with three-tier architecture
-- **Full Grok prompts in terminal** - All 21 prompts displayed during scan
-- **Grok prompts summary file** - `grok_prompts_summary.txt` for easy reference
-- **Future integrations documented** - X API, Substack, TradingView, Google Sheets
-
-### 2026-01-13
-
-- **Enhanced newsletter briefing** - Added P&L data, stop distances, performance summary
-- **Dynamic Grok prompts** - Prompts instruct Grok to look up current prices
-- **Live price fetching** - yfinance integration for accurate P&L at generation time
-- **Folder structure cleanup** - Moved files to trades/, created docs/
-
-### 2026-01-06
-
-- **Model upgrade** - Changed to Claude Sonnet 4 for cost efficiency
-- **Portfolio manager integration** - Unified trade tracking
-- **Google Sheets export** - CSV with calculated fields and formula setup
-
-### 2025-12-29
-
-- **Initial release** - Core scanner pipeline with thematic analyzer and gatekeeper
-
----
-
-## E. Dependencies
-
-### requirements.txt
-
-```
-# Core
-pandas>=2.0.0
-numpy>=1.24.0
-yfinance>=0.2.28  # Use <1.0 for Python 3.9
-
-# LLM
-anthropic>=0.18.0
-
-# Optional: Charts
-matplotlib>=3.7.0
-mplfinance>=0.12.0
-
-# Optional: Browser automation (for TradingView charts)
-playwright>=1.40.0
-
-# Optional: Google Sheets
-google-auth>=2.0.0
-google-api-python-client>=2.0.0
-```
-
-### Python Version
-
-- **Recommended:** Python 3.10+
-- **Minimum:** Python 3.9 (requires `yfinance<1.0`)
-
-### System Requirements
-
-- macOS, Linux, or Windows
-- Internet connection (for yfinance and Anthropic API)
-- ~500MB disk space for data and outputs
-
----
+No LLM API keys required — the scanner is pure technical; the skills run inside Claude Code.
+
+## 10. Workflows & troubleshooting
+
+**Active workflows:** `friday_scan.yml` (Fri 21:30 UTC: scan → signals export → notify → commit)
+and `test_notifications.yml` (manual dispatch). Everything else was disabled + archived.
+
+- **Friday scan failed** → check the Actions run; the failure email fires automatically. Re-run via
+  `workflow_dispatch`. The weekend run needs `sterling-run/signals/this-week.csv` — regenerate
+  locally with `python -m scripts.sterling_signals_export` if needed.
+- **Validator FAILs after a weekend run** → fix the failing agent's output and re-run that unit;
+  never patch arrays/counts at persist time (handoff-card-spec §W).
+- **yfinance rate limits** → wait 5–10 min or `--top 50`.
+- **Where is anything old?** → `archive/` (see §3 map). Rollback point: git tag `pre-restructure`.
+
+### Key indicator summary (internal)
+
+Weekly entry: HMA(21) bare-pivot low on weekly bars; strength tags from UC rising / MACD cross-up /
+V6 confluence. Exit: ExD signal or the tiered profit-lock trail (+200%→15%, +100%→20%, +50%→25%).
+Full formulas live in `scanner/sterling_indicators.py` (63 unit tests in
+`tests/test_sterling_indicators.py`).
 
 *End of CLAUDE.md*

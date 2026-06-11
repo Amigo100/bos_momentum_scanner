@@ -1,0 +1,121 @@
+{
+    "week": "2026-W11",
+    "planned_at": "2026-03-11T12:00:00-04:00",
+    "portfolio_snapshot": {
+        "positions": [
+            {"ticker": "SOFI", "entry": 7.90, "current": 18.48, "pnl_pct": 133.9, "theme": "Financial Technology"},
+            {"ticker": "EVTL", "entry": 4.50, "current": 6.09, "pnl_pct": 35.3, "theme": "Drone Tech"},
+            {"ticker": "NVDA", "entry": 150.00, "current": 184.77, "pnl_pct": 23.2, "theme": "AI Chip Manufacturer"},
+            {"ticker": "AMD", "entry": 120.00, "current": 203.23, "pnl_pct": 69.4, "theme": "Semiconductors"},
+            {"ticker": "TMDX", "entry": 65.00, "current": 129.74, "pnl_pct": 99.6, "theme": "Organ Transplantation"},
+            {"ticker": "ASPI", "entry": 6.00, "current": 5.87, "pnl_pct": -2.2, "theme": "Nuclear Fuel"},
+            {"ticker": "HIVE", "entry": 2.10, "current": 2.05, "pnl_pct": -2.4, "theme": "Crypto Miner and Datacentres"},
+            {"ticker": "BAND", "entry": 16.55, "current": 15.53, "pnl_pct": -6.2, "theme": "AI Voice CPaaS Infrastructure"}
+        ],
+        "spy_price": 675.47,
+        "qqq_price": 607.94,
+        "iwm_price": 252.21,
+        "vix": 29.49,
+        "portfolio_return_pct": 40.17,
+        "spy_ytd_pct": -0.60,
+        "qqq_ytd_pct": 1.06,
+        "alpha_vs_spy": 40.77
+    },
+    "market_context": {
+        "regime": "SELECTIVE",
+        "key_events": [
+            "CPI data March 12 (Wednesday 8:30 ET)",
+            "Iran conflict — VIX elevated at 29.49, oil above $90 WTI",
+            "EVTL earnings March 18",
+            "SOFI next earnings May 4",
+            "TMDX next earnings May 5",
+            "AMD next earnings May 5",
+            "NVDA next earnings May 27"
+        ]
+    },
+    "days": {
+        "monday": {
+            "post": null,
+            "visual": null,
+            "notes": ["MARKET_SNAPSHOT", "SIGNAL_TRACKING", "PORTFOLIO_UPDATE"]
+        },
+        "tuesday": {
+            "post": {
+                "type": "green_signal",
+                "ticker": "BAND",
+                "price": 16.55,
+                "theme": "AI Voice CPaaS Infrastructure",
+                "title": "GREEN Signal: $BAND at $16.55 — AI Voice CPaaS Infrastructure",
+                "reasoning": "BAND entered March 8, no GREEN Signal post written yet. CHECK 1 triggers — highest priority."
+            },
+            "visual": null,
+            "notes": ["CATALYST_WATCH", "COMPANION_NOTE", "DATA_INSIGHT"]
+        },
+        "wednesday": {
+            "post": {
+                "type": "sector_watch",
+                "theme": "BizAv Connectivity Upgrade (5G + LEO)",
+                "score": 7.65,
+                "title": "Sector Watch: BizAv Connectivity Upgrade (7.65/10)",
+                "reasoning": "Highest PRIME theme (7.65) distinct from Tuesday's BAND coverage. GOGO on watchlist. Fresh theme with 5G + LEO angle, Textron OEM catalyst."
+            },
+            "visual": {
+                "type": "carousel",
+                "series": "MACRO PULSE",
+                "topic": "BizAv Connectivity — 5G Meets LEO Satellites"
+            },
+            "notes": ["SECTOR_FLOW", "COMPANION_NOTE", "CATALYST_WATCH"]
+        },
+        "thursday": {
+            "post": {
+                "type": "deep_dive",
+                "ticker": "BAND",
+                "title": "Deep Dive: $BAND — The Only Independent Tier-1 Voice Network in CPaaS",
+                "reasoning": "GREEN Signal post on Tuesday does NOT count as Deep Dive. BAND is the only new signal this week and needs full analysis: valuation math, revenue build, price targets."
+            },
+            "visual": {
+                "type": "diagram",
+                "ticker": "BAND",
+                "topic": "BAND revenue engine — AI voice, enterprise comm, CPaaS economics"
+            },
+            "notes": ["SIGNAL_TRACKING", "COMPANION_NOTE", "READER_QUESTION"]
+        },
+        "friday": {
+            "post": {
+                "type": "investor_lessons",
+                "subcategory": "investing_principle",
+                "topic": "Letting Winners Run — The Math Behind Our +100% Positions",
+                "illustrative_ticker": "TMDX",
+                "title": "Investor Lessons: The +100% Position Most Investors Would Have Sold at +30%",
+                "reasoning": "No archive manifests — investing_principle chosen as easiest to connect to live trades. TMDX at +99.6% from $65 entry is a perfect illustration of letting winners run vs taking profits too early."
+            },
+            "visual": {
+                "type": "carousel",
+                "series": "INVESTOR TOOLKIT",
+                "topic": "Letting Winners Run — The Maths of Patience"
+            },
+            "notes": ["PORTFOLIO_UPDATE", "COMPANION_NOTE", "EXIT_DEBRIEF"]
+        },
+        "saturday": {
+            "post": {
+                "type": "tools_and_tech",
+                "subcategory": "screeners",
+                "tool": "Finviz",
+                "demo_ticker": "BAND",
+                "title": "Tools & Tech: Finviz — The Free Screener Every Active Investor Needs",
+                "reasoning": "No archive manifests — screeners chosen as foundational subcategory. Finviz is free, universally accessible, and can be demonstrated on BAND (newest position with interesting fundamentals to surface)."
+            },
+            "visual": {
+                "type": "carousel",
+                "series": "INVESTOR TOOLKIT",
+                "topic": "Finviz Screener Walkthrough"
+            },
+            "notes": ["ALPHA_SCOREBOARD", "COMPANION_NOTE", "WINNER_RECEIPT"]
+        },
+        "sunday": {
+            "post": null,
+            "visual": null,
+            "notes": ["DATA_INSIGHT", "READER_QUESTION"]
+        }
+    }
+}

@@ -1,0 +1,401 @@
+I'll conduct a comprehensive search to identify the top investable themes for the 6-12 month horizon. Let me start with the required searches.Now let me search for the bottleneck analysis based on the hot trends identified in Step A. From the searches, I can see the key hot trends are: AI/Tech, Defense, Energy/Oil Services, Communication Services, and Infrastructure. Let me search for bottlenecks in these areas.Now let me search for defense supply chain bottlenecks:Now let me continue with more searches to complete the analysis. I need to search for contrarian opportunities and overcrowded trades.Based on my comprehensive research, I can now provide the investment theme analysis. Let me compile all the findings into the required JSON format.
+
+{
+  "analysis_date": "2026-02-14",
+  "market_context": "Market entering a 'capital cycle health' dominated environment where infrastructure bottlenecks, power constraints, and capital allocation efficiency matter more than pure narrative momentum. AI infrastructure buildout continues but facing power grid limitations, defense spending accelerating amid geopolitical tensions, and smart money rotating from overcrowded AI hardware into enabling infrastructure.",
+  "trends_identified_step_a": [
+    "AI infrastructure and power demand",
+    "Defense/aerospace buildup driven by geopolitical tensions", 
+    "Energy sector outperformance (oil services leading with +62% in 6M)",
+    "Communication services and data center infrastructure",
+    "Materials and industrials benefiting from infrastructure spending"
+  ],
+  "searches_performed": [
+    "best performing sector ETFs 2026",
+    "investment themes working 2026", 
+    "where is smart money flowing 2026",
+    "sectors with positive earnings revisions 2026",
+    "13F filings top hedge fund new positions 2026",
+    "AI infrastructure bottlenecks 2026",
+    "AI power constraints 2026",
+    "defense supply chain bottlenecks 2026", 
+    "underperforming sectors positive earnings revisions 2026",
+    "overcrowded trades 2026"
+  ],
+
+  "top_themes": [
+    {
+      "rank": 1,
+      "theme": "AI Power Infrastructure & Grid Modernization",
+      "primary_etfs": ["XLU", "PAVE", "URA"],
+      
+      "theme_type": "BOTTLENECK",
+      "theme_type_rationale": "Second-order constraint solving the primary AI bottleneck - power availability and grid capacity constraints that are limiting AI data center deployment",
+      
+      "lifecycle_stage": "EARLY_ADOPTION", 
+      "lifecycle_evidence": "Power constraints only recently identified as primary AI bottleneck in 2025-2026, utilities starting major grid investments, nuclear SMRs getting first commercial contracts",
+      
+      "catalyst_analysis": {
+        "score": 9,
+        "key_catalysts": [
+          {"catalyst": "Global data center power demand to grow from 55GW to 84GW by 2028", "timing": "2026-2028", "impact": "High"},
+          {"catalyst": "Trump administration promising to 'open up energy plants' for AI", "timing": "Q1 2026", "impact": "High"},
+          {"catalyst": "Microsoft/Oracle each announcing >10GW data center projects", "timing": "2026", "impact": "High"},
+          {"catalyst": "Grid connection backlogs forcing on-site power generation solutions", "timing": "Ongoing", "impact": "High"}
+        ],
+        "catalyst_evidence": "Power has emerged as the single most critical bottleneck in AI infrastructure, with energy constraints creating new winners across sectors and regions"
+      },
+      
+      "momentum_analysis": {
+        "score": 8,
+        "etf_1m_return": "+6.6%", 
+        "etf_3m_return": "+5.7%",
+        "etf_3m_annualized": "+22.8%",
+        "theme_velocity": "ACCELERATING",
+        "trend_direction": "Accelerating",
+        "relative_strength_vs_spy": "Outperforming",
+        "momentum_evidence": "XLU up 6.6% in past month vs flat broader market, improving momentum as power constraints intensify"
+      },
+      
+      "crowding_analysis": {
+        "score": 9,
+        "crowding_level": "Low",
+        "warning_signs": [],
+        "crowding_evidence": "Power infrastructure still under-appreciated as AI bottleneck, institutional money just starting to flow into grid modernization themes"
+      },
+      
+      "runway_analysis": {
+        "score": 9,
+        "penetration_estimate": "<10% of required AI power infrastructure built",
+        "growth_runway_years": 10,
+        "runway_evidence": "AI workloads consuming tens of gigawatts globally, projected to approach hundreds of gigawatts by decade end, grid connections take years to secure"
+      },
+      
+      "capital_cycle_analysis": {
+        "score": 8,
+        "valuation_regime": "FUNDAMENTAL",
+        "regime_rationale": "Market pricing on actual capex commitments, power purchase agreements, and infrastructure deployment timelines - revenue and earnings based",
+        "health_assessment": "Strong capital cycle health with capex growth matched by revenue growth from long-term power contracts and infrastructure spending",
+        "revision_trajectory": "ACCELERATING", 
+        "supply_response": "Supply constrained - grid infrastructure takes years to build, creating durable bottleneck",
+        "capital_cycle_evidence": "Hyperscalers committing $280B+ in 2026 capex, utilities signing long-term power purchase agreements, return on infrastructure investments accelerating"
+      },
+      
+      "composite_score": 8.6,
+      "classification": "PRIME",
+      "veto_applied": false,
+      
+      "investment_thesis": "Power availability has become the primary constraint on AI expansion, forcing a strategic pivot from relying on public grids to developing integrated power solutions. This creates a multi-year investment cycle in grid modernization, nuclear power, and energy infrastructure as hyperscalers invest hundreds of billions in dedicated power generation.",
+      "primary_risks": ["Regulatory delays in power infrastructure", "Nuclear safety concerns"],
+      "what_would_change_view": "Breakthrough in AI chip efficiency dramatically reducing power requirements, or major grid infrastructure completion ahead of schedule"
+    },
+    
+    {
+      "rank": 2,
+      "theme": "Defense Industrial Base Modernization", 
+      "primary_etfs": ["ITA", "XAR", "DFEN"],
+      
+      "theme_type": "TREND",
+      "theme_type_rationale": "First-order trend driven by geopolitical tensions and defense budget increases, but with supply chain bottlenecks creating investable sub-themes",
+      
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_evidence": "Defense spending acceleration began in 2024-2025, now moving to procurement and manufacturing capacity expansion phase, new defense companies going public", 
+      
+      "catalyst_analysis": {
+        "score": 8,
+        "key_catalysts": [
+          {"catalyst": "Pentagon FY2026 budget request of $961.6B plus $150B reconciliation", "timing": "2026", "impact": "High"},
+          {"catalyst": "Defense reindustrialization and supply chain reshoring initiatives", "timing": "2026-2027", "impact": "High"},
+          {"catalyst": "Solid rocket motor supply chain investments ($73M+ contracts announced)", "timing": "Q1 2026", "impact": "Medium"},
+          {"catalyst": "3D printing/additive manufacturing scaling for expeditionary production", "timing": "2026", "impact": "Medium"}
+        ],
+        "catalyst_evidence": "Global defense spending reached $2.718 trillion in 2024, up 9.4% with defense primes aiming to increase output of missiles, munitions, and drones"
+      },
+      
+      "momentum_analysis": {
+        "score": 7,
+        "etf_1m_return": "-2.6%",
+        "etf_3m_return": "+14.5%", 
+        "etf_3m_annualized": "+58%",
+        "theme_velocity": "STRONG",
+        "trend_direction": "Strong but consolidating",
+        "relative_strength_vs_spy": "Outperforming",
+        "momentum_evidence": "ITA up 14.5% in 3 months, defense stocks surged following geopolitical tensions, strong 3-month performance despite recent pullback"
+      },
+      
+      "crowding_analysis": {
+        "score": 7,
+        "crowding_level": "Moderate", 
+        "warning_signs": ["Recent strong performance attracting attention"],
+        "crowding_evidence": "Defense gaining institutional recognition but not yet mainstream, still in early adoption phase of multi-year spending cycle"
+      },
+      
+      "runway_analysis": {
+        "score": 8,
+        "penetration_estimate": "30% of required defense industrial capacity expansion",
+        "growth_runway_years": 7,
+        "runway_evidence": "Defense market projected to reach $4.26 trillion by 2035 at 5% CAGR, supply chain bottlenecks requiring multi-year capacity expansion"
+      },
+      
+      "capital_cycle_analysis": {
+        "score": 7,
+        "valuation_regime": "FUNDAMENTAL",
+        "regime_rationale": "Market pricing on actual defense contract awards, budget allocations, and production capacity expansions",
+        "health_assessment": "Healthy capital cycle with government contracts providing revenue visibility, though supply chain bottlenecks creating near-term margin pressure",
+        "revision_trajectory": "STABLE",
+        "supply_response": "Constrained supply response due to complex manufacturing, long qualification cycles, and specialized supply chains",
+        "capital_cycle_evidence": "Defense companies reporting strong backlogs, SIPRI top 100 arms companies recorded $679B in revenues up 5.9%, but supply chain fragility limiting growth"
+      },
+      
+      "composite_score": 7.4,
+      "classification": "INVESTABLE", 
+      "veto_applied": false,
+      
+      "investment_thesis": "Geopolitical tensions and defense budget increases are driving a multi-year modernization cycle, with supply chain bottlenecks in solid rocket motors, electronics, and manufacturing creating investment opportunities in defense industrial capacity expansion and next-generation production technologies.",
+      "primary_risks": ["Supply chain disruptions", "Changes in geopolitical tensions"],
+      "what_would_change_view": "Major de-escalation of global conflicts or defense budget cuts due to fiscal constraints"
+    },
+
+    {
+      "rank": 3,
+      "theme": "Healthcare Sector Contrarian Recovery",
+      "primary_etfs": ["XLV", "IBB", "PPH"],
+      
+      "theme_type": "CONTRARIAN", 
+      "theme_type_rationale": "Underperformed S&P 500 by wide margin over 2.5 years (27% vs 87%) but showing improving earnings revisions and policy clarity",
+      
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_evidence": "Healthcare starting to show relative strength since September 2025, policy headwinds clearing, AI adoption beginning in healthcare applications",
+      
+      "catalyst_analysis": {
+        "score": 7,
+        "key_catalysts": [
+          {"catalyst": "Policy headwinds around drug pricing and ACA largely cleared", "timing": "Q1 2026", "impact": "High"},
+          {"catalyst": "AI adoption in healthcare driving efficiency gains", "timing": "2026", "impact": "Medium"}, 
+          {"catalyst": "Potential ACA subsidies extension compromise", "timing": "Q1 2026", "impact": "Medium"},
+          {"catalyst": "Healthcare earnings revisions turning positive", "timing": "Ongoing", "impact": "Medium"}
+        ],
+        "catalyst_evidence": "Healthcare sector positioned to benefit as AI broadens from tech innovators to adopters, with policy uncertainty regarding drug pricing now resolved"
+      },
+      
+      "momentum_analysis": {
+        "score": 6,
+        "etf_1m_return": "+0.5%",
+        "etf_3m_return": "+3.7%", 
+        "etf_3m_annualized": "+14.8%",
+        "theme_velocity": "STEADY",
+        "trend_direction": "Improving from oversold levels",
+        "relative_strength_vs_spy": "In-line",
+        "momentum_evidence": "XLV showing relative performance improvement since September 2025, earnings estimates moving sideways but no longer declining"
+      },
+      
+      "crowding_analysis": {
+        "score": 9,
+        "crowding_level": "Low",
+        "warning_signs": [], 
+        "crowding_evidence": "Healthcare remains attractively valued after years of underperformance, most healthcare sectors are cheap on price-to-book vs expected ROE"
+      },
+      
+      "runway_analysis": {
+        "score": 7,
+        "penetration_estimate": "15% of AI integration in healthcare", 
+        "growth_runway_years": 5,
+        "runway_evidence": "Aging populations and rising demand for innovative treatments, AI still early in healthcare adoption compared to other sectors"
+      },
+      
+      "capital_cycle_analysis": {
+        "score": 6,
+        "valuation_regime": "FUNDAMENTAL", 
+        "regime_rationale": "Market pricing on earnings, drug approvals, and fundamental healthcare demand drivers",
+        "health_assessment": "Capital cycle healing after years of policy uncertainty, earnings revisions stabilizing but not yet strongly positive",
+        "revision_trajectory": "STABLE",
+        "supply_response": "Limited supply response due to long drug development cycles and regulatory requirements",
+        "capital_cycle_evidence": "Healthcare showing positive EPS surprises led by Communication Services, Health Care, and Financials sectors"
+      },
+      
+      "composite_score": 7.0,
+      "classification": "INVESTABLE",
+      "veto_applied": false,
+      
+      "investment_thesis": "After 2.5 years of underperformance due to policy uncertainty and COVID impacts, healthcare is positioned for recovery as drug pricing clarity emerges, AI adoption accelerates, and valuations remain attractive relative to expected returns. The sector offers defensive characteristics with AI-driven efficiency upside.",
+      "primary_risks": ["Renewed regulatory pressure", "Healthcare inflation concerns"],
+      "what_would_change_view": "Major regulatory changes to drug pricing or healthcare policy, or failure of AI adoption to drive meaningful efficiency gains"
+    },
+    
+    {
+      "rank": 4,
+      "theme": "Communication Services AI Monetization",
+      "primary_etfs": ["XLC", "VGT"],
+      
+      "theme_type": "TREND",
+      "theme_type_rationale": "First-order AI trend but with strong fundamental earnings support and continued catalyst pipeline",
+      
+      "lifecycle_stage": "MAINSTREAM",
+      "lifecycle_evidence": "Communication services was top-performing sector in 2024-2025, now seeing institutional rotation and widespread recognition", 
+      
+      "catalyst_analysis": {
+        "score": 7,
+        "key_catalysts": [
+          {"catalyst": "Q4 2025 earnings beats from Alphabet and Meta driving sector growth", "timing": "Q4 2025", "impact": "High"},
+          {"catalyst": "Continued hyperscaler AI capex driving infrastructure demand", "timing": "2026", "impact": "High"},
+          {"catalyst": "AI model monetization accelerating beyond ChatGPT and coding assistants", "timing": "2026", "impact": "Medium"}
+        ],
+        "catalyst_evidence": "Communication services stocks tracking to be best performing sector in 2025, with AI monetization still in early innings according to Fidelity managers"
+      },
+      
+      "momentum_analysis": {
+        "score": 6,
+        "etf_1m_return": "-1.4%", 
+        "etf_3m_return": "+2.7%",
+        "etf_3m_annualized": "+10.8%",
+        "theme_velocity": "STEADY",
+        "trend_direction": "Consolidating after strong run",
+        "relative_strength_vs_spy": "In-line",
+        "momentum_evidence": "XLC showing pause after strong 2024-2025 performance, but underlying fundamentals remain strong with positive earnings surprises"
+      },
+      
+      "crowding_analysis": {
+        "score": 5,
+        "crowding_level": "Moderate", 
+        "warning_signs": ["Was top-performing sector in 2024-2025", "High institutional attention"],
+        "crowding_evidence": "Communication services gained widespread institutional recognition, but still rated Outperform by major firms like Schwab"
+      },
+      
+      "runway_analysis": {
+        "score": 7,
+        "penetration_estimate": "25% of AI monetization potential",
+        "growth_runway_years": 5,
+        "runway_evidence": "AI model monetization still early with only coding assistants and ChatGPT achieving meaningful scale, enterprise adoption expanding"
+      },
+      
+      "capital_cycle_analysis": {
+        "score": 7,
+        "valuation_regime": "FUNDAMENTAL",
+        "regime_rationale": "Market pricing on actual AI revenue generation, advertising growth, and subscription metrics",
+        "health_assessment": "Strong capital cycle with AI investments generating measurable revenue growth and positive earnings surprises",
+        "revision_trajectory": "ACCELERATING", 
+        "supply_response": "Limited supply response due to AI model development complexity and infrastructure requirements",
+        "capital_cycle_evidence": "Positive EPS surprises from Alphabet ($2.82 vs $2.63) and Meta ($8.88 vs $8.21) driving sector earnings growth acceleration"
+      },
+      
+      "composite_score": 6.4,
+      "classification": "INVESTABLE",
+      "veto_applied": false,
+      
+      "investment_thesis": "Communication services companies are successfully monetizing AI investments through improved advertising efficiency and new product offerings, with continued capex driving infrastructure demand. While crowded, fundamental earnings support and AI monetization runway justify continued exposure.",
+      "primary_risks": ["AI hype reversal", "Increased competition in AI models"],
+      "what_would_change_view": "Major disappointment in AI monetization metrics or significant increase in AI model competition reducing pricing power"
+    },
+
+    {
+      "rank": 5,
+      "theme": "Financial Services AI Adoption & Rate Environment",
+      "primary_etfs": ["XLF", "KBE", "KRE"],
+      
+      "theme_type": "TREND",
+      "theme_type_rationale": "Benefiting from AI capex financing demand and potential rate environment improvements",
+      
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "lifecycle_evidence": "Financials starting to benefit from AI buildout financing needs, earnings revisions turning positive, sector rotation just beginning",
+      
+      "catalyst_analysis": {
+        "score": 6,
+        "key_catalysts": [
+          {"catalyst": "AI capex buildout creating demand for banking services", "timing": "2026", "impact": "Medium"},
+          {"catalyst": "Potential yield curve steepening benefiting bank margins", "timing": "2026", "impact": "Medium"},
+          {"catalyst": "Deregulation expectations under new administration", "timing": "2026", "impact": "Medium"}
+        ],
+        "catalyst_evidence": "J.P. Morgan forecasts financials will benefit as AI broadens to adopters, with resilient earnings and differentiated catalysts like deregulation"
+      },
+      
+      "momentum_analysis": {
+        "score": 5,
+        "etf_1m_return": "-5.0%",
+        "etf_3m_return": "-2.2%", 
+        "etf_3m_annualized": "-8.8%",
+        "theme_velocity": "DECELERATING",
+        "trend_direction": "Weak near-term momentum",
+        "relative_strength_vs_spy": "Underperforming", 
+        "momentum_evidence": "XLF down 5% in past month, recent underperformance but positive earnings surprises starting to emerge"
+      },
+      
+      "crowding_analysis": {
+        "score": 7,
+        "crowding_level": "Low",
+        "warning_signs": [],
+        "crowding_evidence": "Financials not crowded after recent underperformance, institutional interest building but not widespread"
+      },
+      
+      "runway_analysis": {
+        "score": 6,
+        "penetration_estimate": "20% of AI-driven financial services transformation",
+        "growth_runway_years": 4,
+        "runway_evidence": "Banks early in AI adoption for operations and customer service, significant digitization opportunity remaining"
+      },
+      
+      "capital_cycle_analysis": {
+        "score": 6,
+        "valuation_regime": "FUNDAMENTAL",
+        "regime_rationale": "Market pricing on net interest margin expectations, loan growth, and credit quality metrics",
+        "health_assessment": "Capital cycle challenged by rate environment but improving with AI financing opportunities and potential regulatory relief",
+        "revision_trajectory": "STABLE",
+        "supply_response": "Moderate competitive pressure but barriers to entry in banking remain high",
+        "capital_cycle_evidence": "Financials showing positive EPS surprises but sector still facing headwinds from economic uncertainty"
+      },
+      
+      "composite_score": 6.0,
+      "classification": "INVESTABLE",
+      "veto_applied": false,
+      
+      "investment_thesis": "Financial services positioned to benefit from AI infrastructure financing demand and potential improvement in rate environment, though near-term momentum weak. AI adoption by banks creating operational efficiency opportunities while deregulation expectations provide additional tailwind.",
+      "primary_risks": ["Credit cycle deterioration", "Rate environment remaining challenging"],
+      "what_would_change_view": "Significant deterioration in credit quality or prolonged challenging rate environment limiting net interest margins"
+    }
+  ],
+
+  "themes_rejected": [
+    {
+      "theme": "Software/Cloud Computing", 
+      "rejection_reason": "Fading momentum - WCLD down 24% from high, IGV down 30% from high, showing clear deceleration",
+      "evidence": "Cloud computing and software ETFs showing severe underperformance with -13.9% 1M return for WCLD, indicating crowded trade reversal"
+    },
+    {
+      "theme": "Cryptocurrency/Bitcoin", 
+      "rejection_reason": "Overcrowded trade with extreme volatility - BITO down 46% from high, overcrowded positioning leading to liquidations",
+      "evidence": "Bitcoin bears overcrowded again according to Santiment, with negative funding rates indicating crowded short trade that became overcrowded long trade"
+    },
+    {
+      "theme": "Pure AI Hardware/Semiconductors",
+      "rejection_reason": "Transition regime - Moving from milestone-based to revenue-based pricing while facing infrastructure bottlenecks",
+      "evidence": "AI chip supply no longer the bottleneck, power constraints now limiting deployment, suggesting infrastructure rather than compute is the constraint"
+    }
+  ],
+
+  "contrarian_watchlist": [
+    {
+      "theme": "European Equities (GRANOLAS)",
+      "underperformance_period": "46 months",
+      "improving_signal": "GRANOLAS now trade at discount to S&P 500 and smaller premium to rest of Europe, 19x forward P/E",
+      "trigger_to_upgrade": "Evidence of earnings revisions acceleration or significant currency/policy catalysts"
+    },
+    {
+      "theme": "Consumer Discretionary",
+      "underperformance_period": "12 months", 
+      "improving_signal": "Potential AI exposure benefits and tax cut expectations, though consumer stress remains",
+      "trigger_to_upgrade": "Clear improvement in consumer spending patterns or successful AI integration demonstration"
+    }
+  ],
+
+  "theme_watchlist": [
+    {
+      "theme": "Nuclear/Uranium",
+      "current_issue": "URA down 17% from high despite strong long-term fundamentals, technical pullback after strong run",
+      "trigger_to_upgrade": "Technical recovery above key moving averages with continued AI power demand confirmation"
+    },
+    {
+      "theme": "Space/Satellites", 
+      "current_issue": "Mixed performance with UFO down 10% from high despite strong fundamentals in space economy",
+      "trigger_to_upgrade": "Clear commercial space revenue inflection or major government contract announcements"
+    }
+  ]
+}

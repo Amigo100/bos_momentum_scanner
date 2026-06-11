@@ -1,0 +1,804 @@
+{
+  "timestamp": "2026-04-07 00:26:57",
+  "timeframe": "WEEKLY",
+  "entry_criteria": "Sterling Grid V7: HMA pivot + (UC rising OR MACD cross-up) + ATR squeeze",
+  "exit_criteria": "ExD compound exit + tiered profit lock",
+  "stats": {
+    "tickers_loaded": 1279,
+    "data_downloaded": 1269,
+    "hma_pivot_low": 30,
+    "macd_cross_up": 54,
+    "uc_rising": 318,
+    "atr_squeeze": 272,
+    "buy_signal_v6": 18,
+    "buy_signal": 18,
+    "tier_t1": 0,
+    "tier_t2": 1,
+    "tier_t3": 3,
+    "tier_t4": 4,
+    "tier_t5": 1,
+    "tier_t6": 9,
+    "exd_exit": 7,
+    "technical_signals": 18
+  },
+  "market_context_summary": "SELECTIVE regime with NORMAL deployment. GDP decelerating to +1.4% in Q4 2025. Fed frozen at 3.50-3.75% with no cuts expected through year-end. Iran war driving Brent above $100, Strait of Hormuz effectively closed. Russell 2000 outperforming S&P 500 by 4-6pp YTD but 40% of the index is unprofitable with $709B maturity wall.",
+  "market_regime": "selective",
+  "themes": [
+    {
+      "name": "Small Tactical UAS Production",
+      "classification": "PRIME",
+      "composite_score": 7.95,
+      "catalyst_score": 9.0,
+      "momentum_score": 8.0,
+      "crowding_score": 6.0,
+      "runway_score": 8.0,
+      "thesis_summary": "Pentagon pivot to mass-produced expendable autonomous systems. Funded programmes converting to production. Small-cap domestic manufacturers at convergence of defense, reshoring, edge AI.",
+      "why_now": "Budget 53% above FY24. NATO ordering. Production scaling.",
+      "key_catalysts": [
+        "RCAT production ramp",
+        "Gauntlet Phase II selection",
+        "NATO orders"
+      ],
+      "primary_risks": [
+        "Budget sequestration",
+        "Production scaling challenges",
+        "Large prime acquisitions at depressed valuations"
+      ],
+      "valuation_regime": "TRANSITION",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "BLyS/APRIL Autoimmune",
+      "classification": "PRIME",
+      "composite_score": 7.7,
+      "catalyst_score": 8.0,
+      "momentum_score": 7.0,
+      "crowding_score": 7.0,
+      "runway_score": 8.0,
+      "thesis_summary": "Dual approach addresses multiple autoimmune pathways. First-in-disease for Sjogren's. Specialist funds accumulated.",
+      "why_now": "Phase 3 enrollment underway. Capital cycle improving.",
+      "key_catalysts": [
+        "Phase 3 enrollment updates",
+        "Interim data",
+        "BTD potential"
+      ],
+      "primary_risks": [
+        "700% dilution",
+        "Binary Phase 3",
+        "Elevated entry"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Fleet Telematics SaaS EM",
+      "classification": "INVESTABLE",
+      "composite_score": 6.55,
+      "catalyst_score": 7.0,
+      "momentum_score": 6.0,
+      "crowding_score": 7.0,
+      "runway_score": 6.0,
+      "thesis_summary": "Karooooo connects 2.57M vehicles via vertically integrated model. Rule of 60, zero dilution, 63% discount to Samsara.",
+      "why_now": "Growth accelerating. Coverage expanding. Russell inclusion imminent.",
+      "key_catalysts": [
+        "Q4 FY26 May 20",
+        "Russell June 2026",
+        "SE Asia ramp H2"
+      ],
+      "primary_risks": [
+        "ZAR/USD",
+        "Samsara competition",
+        "Thin liquidity"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "PRAME Immunotherapy",
+      "classification": "INVESTABLE",
+      "composite_score": 6.5,
+      "catalyst_score": 6.0,
+      "momentum_score": 5.0,
+      "crowding_score": 6.0,
+      "runway_score": 7.5,
+      "thesis_summary": "PRAME target expansion beyond melanoma. $551M cash. T6 signal, binary, cell therapy viability concern.",
+      "why_now": "SUPRAME Phase 3 advancing.",
+      "key_catalysts": [
+        "SUPRAME Phase 3 data",
+        "IMA203CD8 ovarian data"
+      ],
+      "primary_risks": [
+        "Binary outcome",
+        "Manufacturing scalability",
+        "T6 signal"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "siRNA Expansion",
+      "classification": "SELECTIVE",
+      "composite_score": 5.3,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 6.0,
+      "thesis_summary": "Platform validated, cap exceeds threshold, score below investment grade.",
+      "why_now": "Pipeline catalysts.",
+      "key_catalysts": [
+        "Pipeline data"
+      ],
+      "primary_risks": [
+        "Size exclusion",
+        "Below threshold"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "AI Smart Checkout",
+      "classification": "SELECTIVE",
+      "composite_score": 4.6,
+      "catalyst_score": 4.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 4.0,
+      "thesis_summary": "Revenue declining. Larger competitors retreated. Momentum without demand driver is noise.",
+      "why_now": "Scanner surge but no fundamental backing.",
+      "key_catalysts": [
+        "Cart deployment rev recognition"
+      ],
+      "primary_risks": [
+        "Revenue declining",
+        "Competitor retreat from space"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Handheld Ultrasound",
+      "classification": "SELECTIVE",
+      "composite_score": 5.0,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "thesis_summary": "Interesting but commoditising.",
+      "why_now": "Scanner signal, no catalyst.",
+      "key_catalysts": [
+        "Hospital partnership"
+      ],
+      "primary_risks": [
+        "Commoditisation"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "AI Weapons Detection",
+      "classification": "SELECTIVE",
+      "composite_score": 4.95,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "thesis_summary": "NFL venues deployed but needs government mandates for scale.",
+      "why_now": "Scanner signal, no mandate catalyst.",
+      "key_catalysts": [
+        "Federal mandate"
+      ],
+      "primary_risks": [
+        "Narrow TAM"
+      ],
+      "valuation_regime": "FUNDAMENTAL",
+      "lifecycle_stage": "EARLY_ADOPTION",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "Bispecific Fc Platform",
+      "classification": "SELECTIVE",
+      "composite_score": 5.0,
+      "catalyst_score": 5.0,
+      "momentum_score": 5.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "thesis_summary": "No differentiation from competing platforms.",
+      "why_now": "Scanner signal, no catalyst.",
+      "key_catalysts": [
+        "Clinical data"
+      ],
+      "primary_risks": [
+        "Crowded landscape"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    },
+    {
+      "name": "AI Antibody Design",
+      "classification": "SELECTIVE",
+      "composite_score": 4.2,
+      "catalyst_score": 3.0,
+      "momentum_score": 4.0,
+      "crowding_score": 5.0,
+      "runway_score": 5.0,
+      "thesis_summary": "No catalysts, no candidates, well-funded competition.",
+      "why_now": "ARK accumulation, not fundamentals.",
+      "key_catalysts": [
+        "Candidate nomination",
+        "Pharma partnership"
+      ],
+      "primary_risks": [
+        "No product",
+        "Better-funded competitors"
+      ],
+      "valuation_regime": "OPTIONALITY",
+      "lifecycle_stage": "EMERGENCE",
+      "theme_type": "TREND",
+      "position_sizing_recommendation": "",
+      "primary_etfs": [],
+      "crowding_indicator": ""
+    }
+  ],
+  "pass_signals": [],
+  "consider_signals": [
+    {
+      "symbol": "KARO",
+      "price": 48.05,
+      "tier": "T3",
+      "quality_tier": 4,
+      "beta": 1.07,
+      "uc": 11.34,
+      "uc_rising": true,
+      "rsi14": 55.1,
+      "macd_cross_up": true,
+      "hma_pivot_low": true,
+      "hma_pivot_high": false,
+      "hma_slope_rising": true,
+      "buy_signal": true,
+      "exd_signal": false,
+      "return_20d": 6.8,
+      "banker": 11.34,
+      "uc_rising_above": false,
+      "theme": "Fleet Telematics SaaS in Emerging Markets",
+      "theme_score": 6.55,
+      "pure_play_score": 6.55,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "FUNDAMENTAL",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Q4 FY2026 results May 20, 2026. Russell 2000 inclusion June 2026.",
+      "gate_bear_case": "ZAR/USD collapse compresses USD-reported growth. Samsara enters SA/SE Asia via distribution partnership.",
+      "gate_math": "$49.68 to $67 base (+39%), $95 bull (+98%). EV $69.40 (+44.5%). 6.9:1 upside/downside.",
+      "sector_status": "",
+      "upside_potential": "Seven methods: historical multiples, DCF, comps, reverse DCF, catalyst-adjusted EV, EV/ARR Rule of 40, precedent transactions. Bear $37 (20%) / Base $67 (50%) / Bull $95 (30%). EV $69.40 (+44.5%). Reverse DCF: market prices 12% growth vs 20%+ delivery.",
+      "bullish_factors": [
+        "Market prices bear case at ~57% probability. We assign 20%. 37pp divergence is the edge.",
+        "Q4 FY26 results May 20. Russell 2000 inclusion June 2026. SE Asia headcount +70% driving subscriber acceleration.",
+        "Q4 FY2026 results May 20, 2026"
+      ],
+      "risk_factors": [
+        "Iran escalation. Oil $130. ZAR past 20/USD. Growth to 10%. Samsara + Vodacom SA partnership. Russell deferred. De-rate 22x to 14x. Bear: $37 (-23%).",
+        "ZAR/USD volatility. Every 1 ZAR/USD move = ~$6/share fair value. No hedge.",
+        "Sub growth <12% 2 Qs, net adds <60K 2 Qs, CEO sells <$50, Samsara SA/SE Asia partnership, close <$35"
+      ],
+      "reasoning": "Karooooo is a Rule of 60 SaaS compounder (20% growth + 46% EBITDA margins) with zero dilution, founder-CEO owning 58%, 2.57M subscribers across 23 countries. Trades at 63% EV/Revenue discount to Samsara due to EM domicile, thin float, ZAR revenue \u2014 all actively resolving.",
+      "position_size_pct": 0.01,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "Karooooo is a Rule of 60 SaaS compounder (20% growth + 46% EBITDA margins) with zero dilution, founder-CEO owning 58%, 2.57M subscribers across 23 countries. Trades at 63% EV/Revenue discount to Samsara due to EM domicile, thin float, ZAR revenue \u2014 all actively resolving.",
+      "dd_why_now": "Q4 FY26 results May 20. Russell 2000 inclusion June 2026. SE Asia headcount +70% driving subscriber acceleration.",
+      "dd_the_math": "Seven methods: historical multiples, DCF, comps, reverse DCF, catalyst-adjusted EV, EV/ARR Rule of 40, precedent transactions. Bear $37 (20%) / Base $67 (50%) / Bull $95 (30%). EV $69.40 (+44.5%). Reverse DCF: market prices 12% growth vs 20%+ delivery.",
+      "dd_bear_case": "Iran escalation. Oil $130. ZAR past 20/USD. Growth to 10%. Samsara + Vodacom SA partnership. Russell deferred. De-rate 22x to 14x. Bear: $37 (-23%).",
+      "dd_risk_to_monitor": "ZAR/USD volatility. Every 1 ZAR/USD move = ~$6/share fair value. No hedge.",
+      "dd_action": "Enter $48.05, T3. Tranche 1: 0.75%. Tranche 2: +1.0% on Q4 FY26 confirms. Tranche 3: +0.5% on Russell. Stop $35.",
+      "dd_key_catalyst": "Q4 FY2026 results May 20, 2026",
+      "dd_fatal_flaw": "",
+      "action": "Enter $48.05, T3. Tranche 1: 0.75%. Tranche 2: +1.0% on Q4 FY26 confirms. Tranche 3: +0.5% on Russell. Stop $35.",
+      "catalyst_summary": "Q4 FY2026 results May 20, 2026. Russell 2000 inclusion June 2026."
+    }
+  ],
+  "buy_signals": [
+    {
+      "symbol": "KARO",
+      "price": 48.05,
+      "tier": "T3",
+      "quality_tier": 4,
+      "beta": 1.07,
+      "uc": 11.34,
+      "uc_rising": true,
+      "rsi14": 55.1,
+      "macd_cross_up": true,
+      "hma_pivot_low": true,
+      "hma_pivot_high": false,
+      "hma_slope_rising": true,
+      "buy_signal": true,
+      "exd_signal": false,
+      "return_20d": 6.8,
+      "banker": 11.34,
+      "uc_rising_above": false,
+      "theme": "Fleet Telematics SaaS in Emerging Markets",
+      "theme_score": 6.55,
+      "pure_play_score": 6.55,
+      "theme_verdict": "GOOD FIT",
+      "theme_classification": "INVESTABLE",
+      "valuation_regime": "FUNDAMENTAL",
+      "final_decision": "CONSIDER",
+      "conviction": 7,
+      "gate_verdict": "PASS",
+      "gate_conviction": 7,
+      "gate_catalyst": "Q4 FY2026 results May 20, 2026. Russell 2000 inclusion June 2026.",
+      "gate_bear_case": "ZAR/USD collapse compresses USD-reported growth. Samsara enters SA/SE Asia via distribution partnership.",
+      "gate_math": "$49.68 to $67 base (+39%), $95 bull (+98%). EV $69.40 (+44.5%). 6.9:1 upside/downside.",
+      "sector_status": "",
+      "upside_potential": "Seven methods: historical multiples, DCF, comps, reverse DCF, catalyst-adjusted EV, EV/ARR Rule of 40, precedent transactions. Bear $37 (20%) / Base $67 (50%) / Bull $95 (30%). EV $69.40 (+44.5%). Reverse DCF: market prices 12% growth vs 20%+ delivery.",
+      "bullish_factors": [
+        "Market prices bear case at ~57% probability. We assign 20%. 37pp divergence is the edge.",
+        "Q4 FY26 results May 20. Russell 2000 inclusion June 2026. SE Asia headcount +70% driving subscriber acceleration.",
+        "Q4 FY2026 results May 20, 2026"
+      ],
+      "risk_factors": [
+        "Iran escalation. Oil $130. ZAR past 20/USD. Growth to 10%. Samsara + Vodacom SA partnership. Russell deferred. De-rate 22x to 14x. Bear: $37 (-23%).",
+        "ZAR/USD volatility. Every 1 ZAR/USD move = ~$6/share fair value. No hedge.",
+        "Sub growth <12% 2 Qs, net adds <60K 2 Qs, CEO sells <$50, Samsara SA/SE Asia partnership, close <$35"
+      ],
+      "reasoning": "Karooooo is a Rule of 60 SaaS compounder (20% growth + 46% EBITDA margins) with zero dilution, founder-CEO owning 58%, 2.57M subscribers across 23 countries. Trades at 63% EV/Revenue discount to Samsara due to EM domicile, thin float, ZAR revenue \u2014 all actively resolving.",
+      "position_size_pct": 0.01,
+      "position_dollars": 0,
+      "position_tier": "T3",
+      "dd_verdict": "PASS",
+      "dd_conviction": 7,
+      "dd_position_size": "REDUCED",
+      "dd_elevator_pitch": "Karooooo is a Rule of 60 SaaS compounder (20% growth + 46% EBITDA margins) with zero dilution, founder-CEO owning 58%, 2.57M subscribers across 23 countries. Trades at 63% EV/Revenue discount to Samsara due to EM domicile, thin float, ZAR revenue \u2014 all actively resolving.",
+      "dd_why_now": "Q4 FY26 results May 20. Russell 2000 inclusion June 2026. SE Asia headcount +70% driving subscriber acceleration.",
+      "dd_the_math": "Seven methods: historical multiples, DCF, comps, reverse DCF, catalyst-adjusted EV, EV/ARR Rule of 40, precedent transactions. Bear $37 (20%) / Base $67 (50%) / Bull $95 (30%). EV $69.40 (+44.5%). Reverse DCF: market prices 12% growth vs 20%+ delivery.",
+      "dd_bear_case": "Iran escalation. Oil $130. ZAR past 20/USD. Growth to 10%. Samsara + Vodacom SA partnership. Russell deferred. De-rate 22x to 14x. Bear: $37 (-23%).",
+      "dd_risk_to_monitor": "ZAR/USD volatility. Every 1 ZAR/USD move = ~$6/share fair value. No hedge.",
+      "dd_action": "Enter $48.05, T3. Tranche 1: 0.75%. Tranche 2: +1.0% on Q4 FY26 confirms. Tranche 3: +0.5% on Russell. Stop $35.",
+      "dd_key_catalyst": "Q4 FY2026 results May 20, 2026",
+      "dd_fatal_flaw": "",
+      "action": "Enter $48.05, T3. Tranche 1: 0.75%. Tranche 2: +1.0% on Q4 FY26 confirms. Tranche 3: +0.5% on Russell. Stop $35.",
+      "catalyst_summary": "Q4 FY2026 results May 20, 2026. Russell 2000 inclusion June 2026."
+    }
+  ],
+  "sell_signals": [
+    {
+      "symbol": "TMDX",
+      "price": 100.69,
+      "reason": "25% trailing stop from $150 high. Systematic exit discipline.",
+      "entry_price": 65.0,
+      "highest_close": 0,
+      "drawdown_pct": 0,
+      "pnl_pct": 54.9
+    }
+  ],
+  "assessed_signals": [
+    {
+      "symbol": "IMTX",
+      "price": 10.35,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "VOR",
+      "price": 18.05,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "AZ",
+      "price": 7.48,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "ABSI",
+      "price": 3.06,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "BFLY",
+      "price": 4.11,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "XNCR",
+      "price": 12.81,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "EVLV",
+      "price": 6.03,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "SRPT",
+      "price": 23.23,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T3"
+    },
+    {
+      "symbol": "RCAT",
+      "price": 0,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": ""
+    },
+    {
+      "symbol": "NTNX",
+      "price": 41.1,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T2"
+    },
+    {
+      "symbol": "CENX",
+      "price": 62.57,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T4"
+    },
+    {
+      "symbol": "SNX",
+      "price": 186.92,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T4"
+    },
+    {
+      "symbol": "ACLS",
+      "price": 95.09,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T5"
+    },
+    {
+      "symbol": "FLY",
+      "price": 32.93,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "WH",
+      "price": 82.16,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "BRZE",
+      "price": 23.68,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T4"
+    },
+    {
+      "symbol": "PROP",
+      "price": 2.41,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "RDCM",
+      "price": 12.5,
+      "theme": "",
+      "theme_score": 0,
+      "theme_verdict": "WEAK FIT",
+      "final_decision": "REJECTED",
+      "tier": "T6"
+    },
+    {
+      "symbol": "RCAT",
+      "price": 12.15,
+      "theme": "Small Tactical UAS Production",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "VOR",
+      "price": 18.05,
+      "theme": "BLyS/APRIL Autoimmune",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": "T3"
+    },
+    {
+      "symbol": "IMTX",
+      "price": 10.35,
+      "theme": "PRAME Immunotherapy",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": "T6"
+    },
+    {
+      "symbol": "SKYT",
+      "price": 30.0,
+      "theme": "US Sovereign Foundry",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "MPTI",
+      "price": 0.0,
+      "theme": "Defense Frequency Control",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "INOD",
+      "price": 0.0,
+      "theme": "AI Data Engineering",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "GPCR",
+      "price": 0.0,
+      "theme": "Oral GLP-1 Agonist",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    },
+    {
+      "symbol": "PLAB",
+      "price": 0.0,
+      "theme": "AI Photomask Manufacturing",
+      "theme_score": 0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "WATCHLIST",
+      "tier": ""
+    }
+  ],
+  "historical_winners": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 15.85,
+      "pnl_pct": 100.63291139240506,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "EVTL",
+      "entry_price": 4.5,
+      "current_price": 2.28,
+      "pnl_pct": -49.33333333333334,
+      "signal_date": "2026-02-22",
+      "theme": "Drone tech"
+    },
+    {
+      "ticker": "NVDA",
+      "entry_price": 150.0,
+      "current_price": 177.39,
+      "pnl_pct": 18.259999999999987,
+      "signal_date": "2026-03-01",
+      "theme": "AI Chip Manufacturer"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 217.5,
+      "pnl_pct": 81.25,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 100.69,
+      "pnl_pct": 54.9076923076923,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    },
+    {
+      "ticker": "ASPI",
+      "entry_price": 6.0,
+      "current_price": 4.29,
+      "pnl_pct": -28.500000000000004,
+      "signal_date": "2026-03-04",
+      "theme": "Nuclear Fuel"
+    },
+    {
+      "ticker": "HIVE",
+      "entry_price": 2.1,
+      "current_price": 1.92,
+      "pnl_pct": -8.571428571428575,
+      "signal_date": "2026-03-04",
+      "theme": "Crypto Miner and Datacentres"
+    },
+    {
+      "ticker": "BAND",
+      "entry_price": 16.55,
+      "current_price": 18.05,
+      "pnl_pct": 9.06344410876132,
+      "signal_date": "2026-03-08",
+      "theme": "AI Voice CPaaS Infrastructure"
+    },
+    {
+      "ticker": "VYGR",
+      "entry_price": 4.45,
+      "current_price": 3.96,
+      "pnl_pct": -11.011235955056186,
+      "signal_date": "2026-03-18",
+      "theme": "BBB Gene Therapy Platform"
+    },
+    {
+      "ticker": "SVCO",
+      "entry_price": 5.98,
+      "current_price": 7.19,
+      "pnl_pct": 20.23411371237458,
+      "signal_date": "2026-03-24",
+      "theme": "AI semiconductor fab optimization"
+    },
+    {
+      "ticker": "ACRS",
+      "entry_price": 3.65,
+      "current_price": 4.2,
+      "pnl_pct": 15.068493150684947,
+      "signal_date": "2026-03-24",
+      "theme": "Bispecific antibody AD pipeline"
+    }
+  ],
+  "big_wins": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 15.85,
+      "pnl_pct": 100.63291139240506,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 217.5,
+      "pnl_pct": 81.25,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 100.69,
+      "pnl_pct": 54.9076923076923,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    }
+  ],
+  "home_runs": [
+    {
+      "ticker": "SOFI",
+      "entry_price": 7.9,
+      "current_price": 15.85,
+      "pnl_pct": 100.63291139240506,
+      "signal_date": "2026-02-22",
+      "theme": "Financial Technology"
+    },
+    {
+      "ticker": "AMD",
+      "entry_price": 120.0,
+      "current_price": 217.5,
+      "pnl_pct": 81.25,
+      "signal_date": "2026-03-02",
+      "theme": "Semiconductors"
+    },
+    {
+      "ticker": "TMDX",
+      "entry_price": 65.0,
+      "current_price": 100.69,
+      "pnl_pct": 54.9076923076923,
+      "signal_date": "2026-03-03",
+      "theme": "Organ Transplantation"
+    }
+  ],
+  "exit_signals": [
+    {
+      "symbol": "TMDX",
+      "price": 100.69,
+      "reason": "25% trailing stop from $150 high. Systematic exit discipline.",
+      "entry_price": 65.0,
+      "highest_close": 0,
+      "drawdown_pct": 0,
+      "pnl_pct": 54.9
+    }
+  ]
+}

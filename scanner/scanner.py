@@ -33,8 +33,9 @@ EXIT CRITERIA (first exit — whichever fires first):
 
 CONTEXT:
 - Pure technical signal detector — no LLM API calls ($0.00 cost)
-- Thematic analysis + Investment Gate run in Claude.ai chat (Saturday workflow)
-- merge_decisions.py combines chat decisions with signals_technical.json → signals.json
+- Selection (which flagged signal is a REAL buy) is owned by the sterling-grid skills pipeline:
+  scripts/sterling_signals_export.py converts signals_technical.json →
+  sterling-run/signals/this-week.csv, which the weekend skills run consumes.
 
 Usage:
     python -m scanner.scanner                    # Full pipeline
@@ -1206,64 +1207,11 @@ def save_results(technical_signals: List[Stock], sell_signals: List[SellSignal],
             }
             for s in sell_signals
         ],
-        # Historical tracking for content systems
+        # Kept for output-schema stability; the tweet-system consumers were retired 2026-06
         "historical_winners": [],
         "big_wins": [],
         "home_runs": [],
     }
-
-    # Populate historical wins from signal_tracker (if available)
-    try:
-        from twitter.signal_tracker import load_historical_signals, find_big_wins
-        from config import MARKETING_THRESHOLDS
-
-        historical = load_historical_signals()
-        signals_data["historical_winners"] = [
-            {
-                "ticker": h.ticker,
-                "entry_price": h.entry_price,
-                "current_price": h.current_price,
-                "pnl_pct": h.pnl_pct,
-                "signal_date": h.entry_date,
-                "theme": h.theme,
-            }
-            for h in historical
-        ]
-
-        all_big_wins = find_big_wins()
-        big_win_threshold = MARKETING_THRESHOLDS.get('big_win_threshold', 25.0)
-        home_run_threshold = MARKETING_THRESHOLDS.get('home_run_threshold', 50.0)
-
-        signals_data["big_wins"] = [
-            {
-                "ticker": w.ticker,
-                "entry_price": w.entry_price,
-                "current_price": w.current_price,
-                "pnl_pct": w.pnl_pct,
-                "signal_date": w.entry_date,
-                "theme": w.theme,
-            }
-            for w in all_big_wins if w.pnl_pct >= big_win_threshold
-        ]
-
-        signals_data["home_runs"] = [
-            {
-                "ticker": w.ticker,
-                "entry_price": w.entry_price,
-                "current_price": w.current_price,
-                "pnl_pct": w.pnl_pct,
-                "signal_date": w.entry_date,
-                "theme": w.theme,
-            }
-            for w in all_big_wins if w.pnl_pct >= home_run_threshold
-        ]
-
-        print(f"  📊 Historical tracking: {len(signals_data['historical_winners'])} positions, {len(signals_data['big_wins'])} big wins, {len(signals_data['home_runs'])} home runs")
-
-    except ImportError:
-        print("  ⚠️ signal_tracker not available - historical wins not populated")
-    except Exception as e:
-        print(f"  ⚠️ Error loading historical wins: {e}")
 
     # Write outputs
     signals_json = json.dumps(signals_data, indent=2)
@@ -1279,8 +1227,8 @@ def save_results(technical_signals: List[Stock], sell_signals: List[SellSignal],
     with open(signals_archive, 'w') as f:
         f.write(signals_json)
 
-    # NOTE: signals.json is produced by merge_decisions.py (Saturday workflow),
-    # NOT by scanner.py. Scanner only writes signals_technical.json.
+    # NOTE: scanner writes signals_technical.json only; downstream selection lives in the
+    # sterling-grid skills pipeline (fed via scripts/sterling_signals_export.py).
 
     # ── Analysis log (CSV) — technical fields only ──
     analysis_log = ANALYSIS_LOG

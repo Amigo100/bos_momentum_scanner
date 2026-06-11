@@ -1,0 +1,99 @@
+{
+    "date": "2026-05-31",
+    "day": "saturday",
+    "generated_at": "2026-05-31T08:00:00+10:00",
+    "week": "W22",
+    "weekly_plan_used": "weekly_plan_2026-W22.json",
+    "post": {
+        "type": "weekly_briefing",
+        "status": "produced_externally",
+        "note": "Saturday briefing produced via Prompt 11 during Friday analysis session. Cowork not involved in writing this post."
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "PROMO",
+            "sub_variant": "milestone_promo",
+            "time_aedt": "08:00",
+            "file": "notes/morning_promo_20260531.md",
+            "tickers_referenced": [],
+            "prices_verified": true,
+            "price_note": "NAV and return figures from equity_curve.csv May 31 entry.",
+            "word_count": 95
+        },
+        {
+            "slot": 2,
+            "type": "SCANNER",
+            "sub_variant": "exit_discipline",
+            "time_aedt": "12:00",
+            "file": "notes/midday_scanner_20260531.md",
+            "tickers_referenced": ["KYTX"],
+            "prices_verified": true,
+            "price_note": "KYTX exit price $8.52 from portfolio.csv (exit_date 2026-05-31). NAV from equity_curve.csv.",
+            "word_count": 121
+        },
+        {
+            "slot": 3,
+            "type": "REST",
+            "time_aedt": "20:00",
+            "file": null,
+            "note": "Saturday evening is a rest slot per note matrix."
+        }
+    ],
+    "visual_card": {
+        "type": "portfolio_milestone",
+        "file": "notes/midday_scanner_graphic_20260531.html",
+        "slot": "midday",
+        "description": "Portfolio milestone: +110.02% total return, $57,250 deployed to $110,534 NAV, +61.75pp alpha vs SPY, top performers AMD/BAND/HIVE/SVCO"
+    },
+    "repetition_check": {
+        "previous_manifests_checked": [
+            "daily_manifest_20260526.json (2026-05-26, Tuesday)",
+            "daily_manifest_20260523.json (2026-05-23, Saturday)",
+            "daily_manifest.json (2026-05-18, Monday)"
+        ],
+        "skips": [],
+        "substitutions": [
+            {
+                "original": "PROMO briefing_promo (same as May 23 Saturday)",
+                "replacement": "PROMO milestone_promo (portfolio doubled — unique angle not covered in last 14 days)",
+                "reason": "Last Saturday used briefing_promo with BAND +254% as hook. Portfolio has since crossed +100% total return — milestone event warrants dedicated PROMO angle."
+            },
+            {
+                "original": "SCANNER weekly_recap_visual (same as May 23 Saturday)",
+                "replacement": "SCANNER exit_discipline featuring KYTX exit",
+                "reason": "Last Saturday used weekly_recap_visual full portfolio card. Tuesday used weekly_funnel. KYTX exit today provides fresh exit-discipline angle not covered in 14 days."
+            }
+        ],
+        "variant_rotation": {
+            "PROMO": "milestone_promo (last Saturday: briefing_promo; Tuesday: deep_dive_hook; new angle on portfolio doubling)",
+            "SCANNER": "exit_discipline (last Saturday: weekly_recap_visual; Tuesday: weekly_funnel; fresh exit event today)"
+        }
+    },
+    "freshness_gate": {
+        "prices_searched": ["AMD", "NVDA", "BAND", "HIVE", "SVCO", "ASPI", "CYRX", "VOYG", "ACRS", "KARO", "NAMS", "VYGR", "KYTX"],
+        "price_date": "2026-05-30",
+        "price_note": "Prices from Friday May 30 close (last trading day). KYTX exit confirmed in portfolio.csv with exit_date 2026-05-31.",
+        "equity_curve_date": "2026-05-31",
+        "nav_used": 110534,
+        "total_return_used": 110.02,
+        "spy_return_used": 48.27,
+        "alpha_used": 61.75,
+        "alpha_vs_qqq_used": 44.72,
+        "live_prices": {
+            "AMD": 516.10,
+            "NVDA": 215.00,
+            "BAND": 64.97,
+            "HIVE": 4.50,
+            "SVCO": 11.49,
+            "ASPI": 7.76,
+            "CYRX": 15.69,
+            "VOYG": 49.53,
+            "ACRS": 4.93,
+            "KARO": 53.35,
+            "NAMS": 38.73,
+            "VYGR": 4.45,
+            "KYTX": 8.52
+        }
+    }
+}

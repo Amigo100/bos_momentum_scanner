@@ -1,0 +1,189 @@
+{
+  "week": "2026-W20",
+  "generated_at": "2026-05-10T20:00:00+10:00",
+  "plan_period": "2026-05-10 to 2026-05-16",
+
+  "portfolio_snapshot": {
+    "nav": 101346,
+    "total_return_pct": 77.02,
+    "spy_return_pct": 45.25,
+    "alpha_pct": 31.77,
+    "open_positions": 13,
+    "benchmarks": {
+      "spy_ytd": 7.58,
+      "qqq_ytd": 13.27,
+      "iwm_ytd": -5.2,
+      "vix": 17.19
+    },
+    "positions": [
+      {"ticker": "AMD", "entry": 120.00, "current": 461.20, "pnl_pct": 284.3, "force": "AI Infrastructure"},
+      {"ticker": "BAND", "entry": 16.55, "current": 46.57, "pnl_pct": 181.4, "force": "AI Infrastructure"},
+      {"ticker": "SVCO", "entry": 5.98, "current": 11.59, "pnl_pct": 93.8, "force": "AI Infrastructure"},
+      {"ticker": "NVDA", "entry": 150.00, "current": 215.02, "pnl_pct": 43.3, "force": "AI Infrastructure"},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.83, "pnl_pct": 34.8, "force": "AI Infrastructure"},
+      {"ticker": "ACRS", "entry": 3.65, "current": 4.75, "pnl_pct": 30.1, "force": "Biotech Capital Cycle"},
+      {"ticker": "KARO", "entry": 48.05, "current": 54.48, "pnl_pct": 13.4, "force": "Financial Infrastructure"},
+      {"ticker": "NAMS", "entry": 34.76, "current": 38.73, "pnl_pct": 11.4, "force": "Biotech Capital Cycle"},
+      {"ticker": "CYRX", "entry": 9.67, "current": 9.83, "pnl_pct": 1.7, "force": "Biotech Capital Cycle"},
+      {"ticker": "VYGR", "entry": 4.45, "current": 4.15, "pnl_pct": -6.7, "force": "Biotech Capital Cycle"},
+      {"ticker": "VOYG", "entry": 29.00, "current": 26.74, "pnl_pct": -7.8, "force": "Defense Spending"},
+      {"ticker": "ASPI", "entry": 6.00, "current": 5.40, "pnl_pct": -10.0, "force": "Nuclear Renaissance"},
+      {"ticker": "KYTX", "entry": 9.22, "current": 8.15, "pnl_pct": -11.6, "force": "Biotech Capital Cycle"}
+    ],
+    "significant_moves_since_csv": [
+      {"ticker": "AMD", "note": "Q1 blowout earnings May 5, stock surged +17.5% on results day, now +284% from entry"},
+      {"ticker": "BAND", "note": "Q1 earnings beat, stock rallied from $36 to $46+ in first week of May"},
+      {"ticker": "SVCO", "note": "Q1 beat estimates ($-0.02 vs $-0.05 consensus, revenue $17.76M vs $17.04M), new 12-month high"},
+      {"ticker": "ACRS", "note": "Set new 12-month high post-earnings, Piper Sandler raised target to $11 from $7"}
+    ]
+  },
+
+  "content_schedule": {
+    "saturday_may_10": {
+      "post": "Weekly briefing (produced in Friday analysis session via Prompt 11)",
+      "notes": ["PROMO (briefing) 08:00 AEDT", "SCANNER visual card 12:00 AEDT"]
+    },
+    "sunday_may_11": {
+      "post": null,
+      "notes": ["EDUCATION 08:00 AEDT", "MARKET 12:00 AEDT"]
+    },
+    "monday_may_12": {
+      "post": null,
+      "notes": ["POSITION 08:00 AEDT", "MARKET 12:00 AEDT", "EDUCATION 20:00 AEDT"]
+    },
+    "tuesday_may_13": {
+      "post": "Deep Dive: $SVCO position update (+93.8% from entry, Q1 earnings beat, new 12-month high)",
+      "post_priority": 2,
+      "post_reasoning": "BAND blocked (W19 Tuesday + Friday). CYRX blocked (W18 Tuesday). SVCO is the strongest alternative: +93.8% from $5.98 entry, Q1 beat ($-0.02 vs $-0.05 consensus, revenue $17.76M vs $17.04M), new 12-month high at $12.81. CEO Walden Rhines bought shares at all-time low. Classic system archetype: sub-$500M EDA company at 2.8x revenue vs 11-16x peers.",
+      "notes": ["SCANNER 08:00 AEDT", "POSITION 12:00 AEDT", "PROMO (deep dive) 20:00 AEDT"]
+    },
+    "wednesday_may_14": {
+      "post": null,
+      "notes": ["MARKET 08:00 AEDT", "EDUCATION 12:00 AEDT", "SCANNER 20:00 AEDT"]
+    },
+    "thursday_may_15": {
+      "post": "Methodology (Week A): How 1,279 Stocks Become Three",
+      "post_rotation": "A",
+      "post_reasoning": "Week D used W18 (DLO/GHM rejection). Week B used W19 (binary catalyst sizing). Rotation requires A or C. Week A chosen: rich scanner data (1,279 tickers, 30 momentum inflections, 18 theme-confirmed, 3 survivors). Walks through the five-stage filter chain without revealing indicator names. Connects to CYRX/KYTX/NAMS as the three that cleared all gates.",
+      "notes": ["POSITION 08:00 AEDT", "MARKET 12:00 AEDT", "PROMO (education) 20:00 AEDT"]
+    },
+    "friday_may_16": {
+      "post": null,
+      "notes": ["EDUCATION 08:00 AEDT", "POSITION 12:00 AEDT", "SCANNER 20:00 AEDT"]
+    }
+  },
+
+  "repetition_audit": {
+    "note": "Checked W18 (Apr 30) and W19 (May 3) plans. Identified blocked topics.",
+    "retired_topics": [
+      {"topic": "$BAND deep dive", "last_used": "W19 Tuesday + Friday case study", "status": "BLOCKED (21-day rule)"},
+      {"topic": "$CYRX deep dive", "last_used": "W18 Tuesday", "status": "BLOCKED (21-day rule)"},
+      {"topic": "DLO/GHM rejection stories as LEAD", "last_used": "W18 Thursday", "status": "BLOCKED (21-day rule)"},
+      {"topic": "Week B Investment Education", "last_used": "W19 Thursday", "status": "BLOCKED (must use A or C)"},
+      {"topic": "Binary catalyst position sizing", "last_used": "W19 Thursday", "status": "BLOCKED (21-day concept gap)"}
+    ],
+    "available_topics": ["$SVCO deep dive", "$ACRS deep dive", "$AMD position update", "Week A Methodology", "Week C Free Tool"]
+  },
+
+  "batch_notes": {
+    "education": [
+      {
+        "id": "EDU_1",
+        "sub_variant": "research_insight",
+        "scheduled_for": ["sunday_morning"],
+        "content": "Between 2000 and 2025, stocks with market caps below $500M at the time of their first momentum inflection outperformed those above $2B by 340 basis points annualised over the subsequent 18 months. The smaller the company at signal, the larger the re-rating potential.\n\nOur screening system targets sub-$500M companies for exactly this reason. Thirteen positions. Average market cap at entry: $412M. The structural alpha comes from fishing where fewer institutions are looking.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU_2",
+        "sub_variant": "methodology_philosophy",
+        "scheduled_for": ["monday_evening"],
+        "content": "Most screening systems optimise for one dimension. Growth screens find expensive stocks. Value screens find cheap stocks going nowhere. Momentum screens find crowded trades.\n\nOur system filters across five dimensions simultaneously: trend structure, institutional behaviour, thematic alignment, fundamental quality, and capital structure integrity. A stock must clear all five. The result: 99.9% rejection rate.\n\n1,279 stocks entered the last screening session. Three survived. That is not a bug. That is the entire point.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU_3",
+        "sub_variant": "concept_explainer",
+        "scheduled_for": ["wednesday_midday"],
+        "content": "What does a $364M company with one analyst covering it look like?\n\nIt looks like a stock trading at 2.8x revenue when peers trade at 11-16x. A new CEO who grew his last company from $400M to a $4.5B acquisition. Open-market insider buying at the all-time low. Cost restructuring 70% complete.\n\nThat is the profile our system is designed to find. Under-followed. Mis-priced. Structurally improving. The inefficiency exists because large funds cannot justify the research cost on a $364M market cap. We can.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU_4",
+        "sub_variant": "research_insight",
+        "scheduled_for": ["friday_morning"],
+        "content": "A 2024 study by Verdad Capital analysing 4,200 micro-cap acquisitions found that companies trading below 1x book value with positive operating cash flow were acquired at a median 47% premium to pre-announcement price.\n\nOne of our current holdings trades at 0.96x book value with $411M cash on a $480M market cap. The sector has seen 62 FDA-approved novel therapies in the past year, each one creating new recurring revenue for logistics providers in this space.\n\nThe acquisition math speaks for itself. Cash runway: 22 months.\n\nNot financial advice."
+      }
+    ],
+    "scanner": [
+      {
+        "id": "SCAN_1",
+        "sub_variant": "weekly_funnel",
+        "scheduled_for": ["saturday_midday", "tuesday_morning"],
+        "content": "Last Friday's screening: 1,279 tickers loaded across all US exchanges.\n\n30 showed confirmed momentum inflections. 18 cleared combined structural filters across 6 distinct micro-themes. Three survived full forensic analysis at conviction 6 or above.\n\n99.8% eliminated. The filter chain does not care about narrative. It scores momentum, institutional behaviour, capital structure, and catalyst density. Three stocks met all criteria. The other 1,276 did not.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN_2",
+        "sub_variant": "rejection_story",
+        "scheduled_for": ["wednesday_evening"],
+        "content": "This week we screened a submarine hardware manufacturer riding a $1.01 trillion defence budget. Monopolistic supplier. Record backlog at $515M. Revenue visibility out three years.\n\nWe walked away.\n\nThe stock had already tripled from its 52-week low. Trading at 68x earnings versus an 18-22x peer average. Above the $73 analyst consensus target. The momentum signal was real. The entry timing was not.\n\nKnowing when the price already reflects the thesis is as important as finding the thesis in the first place.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN_3",
+        "sub_variant": "theme_heatmap",
+        "scheduled_for": ["friday_evening"],
+        "content": "Themes from the latest scan, ranked by quality score:\n\nThree rated PRIME: a first-to-market autoimmune therapy platform, the last oral cardiovascular inhibitor in development, and a sole-source submarine supplier. Two rated INVESTABLE: a CGT logistics monopoly approaching first profitability and a semiconductor company riding the 800G optical ramp.\n\nSix themes rejected below our quality threshold. An EV manufacturer, a movie exhibition chain, a community bank. No structural force alignment. No catalyst density.\n\nThe scanner scores four dimensions: catalyst, momentum, crowding, and runway.\n\nNot financial advice."
+      }
+    ],
+    "promo": [
+      {
+        "id": "PROMO_1",
+        "target": "tuesday_deep_dive",
+        "scheduled_for": ["tuesday_evening"],
+        "content": "New deep dive just published.\n\nAn EDA company trading at 2.8x revenue. Peers trade at 11-16x. The new CEO grew his last company from $400M to a $4.5B Siemens acquisition. He bought open-market shares at the all-time low.\n\nEntry at $5.98. Current price: $11.59. Q1 just beat on both lines.\n\nThe full thesis, what the Mixel IP acquisition means for SIP revenue, and where we see fair value in today's post.\n\nNot financial advice."
+      },
+      {
+        "id": "PROMO_2",
+        "target": "thursday_education",
+        "scheduled_for": ["thursday_evening"],
+        "content": "New post: how 1,279 stocks become three.\n\nOur screening system processed every eligible US equity last Friday. 99.8% were eliminated across five stages. The post walks through what each stage removes and why, using real examples from the latest scan.\n\nNo indicator names. No black-box mysticism. Just the logic chain that produces our signals. Free to read.\n\nNot financial advice."
+      }
+    ]
+  },
+
+  "visual_asset_ideas": [
+    {
+      "type": "BUSINESS_MODEL",
+      "description": "$SVCO revenue architecture: $17.76M Q1 revenue split by segment (EDA licenses, Mixel SIP, TCAD). Show 2.8x EV/Revenue vs 11-16x EDA peer range as a discount bar.",
+      "ticker": "SVCO",
+      "data_needed": ["Q1 revenue $17.76M", "Revenue by segment breakdown", "EDA peer multiples 11-16x", "SVCO at 2.8x"]
+    },
+    {
+      "type": "SCREENING_FUNNEL",
+      "description": "Weekly screening funnel: 1,279 to 30 to 18 to 3. Vertical funnel bars with rejection reasons at each stage. Dark navy theme with accent green for survivors.",
+      "ticker": "System",
+      "data_needed": ["1,279 tickers loaded", "30 momentum inflections", "18 cleared structural filters", "3 survived forensic analysis"]
+    },
+    {
+      "type": "PORTFOLIO_ALPHA",
+      "description": "Portfolio vs benchmarks comparison: Portfolio +77.0%, SPY +45.3%, Alpha +31.8pp. 13 positions across 5 structural forces, colour-coded by force.",
+      "ticker": "Portfolio",
+      "data_needed": ["Portfolio +77.02%", "SPY +45.25%", "Alpha +31.77pp", "Force distribution of 13 positions"]
+    },
+    {
+      "type": "CASE_STUDY",
+      "description": "$SVCO CEO playbook: Walden Rhines timeline. Mentor Graphics $400M to $4.5B Siemens acquisition over 24 years. Now at Silvaco: joined, bought shares at $3.07 low, cost cuts 70% done, Mixel acquired.",
+      "ticker": "SVCO",
+      "data_needed": ["Mentor Graphics timeline: start to $4.5B exit", "Rhines share purchases at Silvaco", "Cost restructuring progress 70%", "Mixel acquisition SIP revenue impact"]
+    },
+    {
+      "type": "EARNINGS_SCORECARD",
+      "description": "Portfolio earnings week scorecard: 4 positions reported. AMD +17.5% beat, BAND +30% rally, SVCO beat both lines, ACRS new 12-month high. Grid with ticker, result, price reaction.",
+      "ticker": "Multiple",
+      "data_needed": ["AMD: Q1 beat, +17.5% day-of", "BAND: Q1 beat, rallied to $46+", "SVCO: $-0.02 vs $-0.05, rev $17.76M vs $17.04M", "ACRS: beat, new 12-month high, PT raised to $11"]
+    },
+    {
+      "type": "COMPARISON",
+      "description": "$SVCO vs EDA peer table: Synopsys, Cadence, Ansys, Silvaco. Revenue, growth rate, EV/Revenue multiple, analyst coverage count. Silvaco circled as the outlier at 2.8x with 1 analyst.",
+      "ticker": "SVCO",
+      "data_needed": ["SVCO: $71M rev, 2.8x EV/Rev, 1 analyst", "SNPS: ~$6B rev, 14x", "CDNS: ~$4B rev, 16x", "ANSS: ~$2.3B rev, 13x"]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+ "ticker": "SENS",
+ "status": "passed",
+ "status_rule": "held = row in sterling-run/portfolio.csv; bought = any tier4 BUY (ledger or run-dir row); passed = latest decision DROP/DO_NOT_BUY and not held; else in-funnel",
+ "first_seen": "2026-06-07",
+ "last_updated": "2026-06-07",
+ "runs": [
+  {
+   "date": "2026-06-07",
+   "week_id": "2026-W23",
+   "artifacts": [
+    "SENS_memo_2026-06-07.md",
+    "decision_record.json",
+    "dossier.json",
+    "geometry.json",
+    "memo.md",
+    "tier3_result_2026-06-07.json",
+    "tier4_row.json",
+    "verdict.json"
+   ]
+  }
+ ],
+ "decision_history": [
+  {
+   "ticker": "SENS",
+   "date": "2026-06-07",
+   "week_id": "2026-W23",
+   "stage": "tier4",
+   "decision": "DO_NOT_BUY",
+   "reason": "Sound great-trade thesis at the wrong moment, weaker than RKLB-early-2024 on the sharpened bar; primary and adversarial agree. Firewall CLEAR (no new financing/guidance-cut/credibility/runway event since the 06-07 deep dive; ~$6.57 Jun-6 vs $6.67 signal, entry live; twiist/AID still qualitative, no units). FAILS the RKLB-grade conjunction: inflection NOT present across discriminators (0-of-4 cleanly present; only the MECHANICAL Ascensia-rev-share margin leg SHOWN; load-bearing twiist/AID growth leg ASSERTED-not-shown; OCF adverse \u2014 absences land where the thesis needs them, the round-tripper tell). Theme MID-stage (HUNT P3, neutral regime, capital flowing out) in a ~98%-locked duopoly, SENS the ~1% challenger. Re-rate-magnitude catalyst 12-18mo UNDATED; evidence-backed reward today ~2x, \u22654x in a P=0.12 tail; ~25-30% permanent-impairment from chronic dilution (survivable, not ruin). Theme-map inflection-STRONG keeps it on the HUNT list but does not satisfy the name-level \u00a77 present-inflection the buy-bar demands. Empty book = no overlap/concentration, no quota pressure; better to hold cash. Revises prior 06-06 comparable/BUY (a relative-batch read; SENS alone this week against the absolute exemplar). No watchlist \u2014 re-enters via a later scan if twiist/AID converts to disclosed units.",
+   "source": "run-dir (not in ledger)"
+  },
+  {
+   "ticker": "SENS",
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "tier": "2",
+   "decision": "DROP",
+   "reason": "Marginal asymmetry on a dilution-taxed path: burns ~$128M/yr to make ~$62M rev, $300M shelf/$100M ATM loaded with only ~4 quarters runway \u2014 serial-dilution refi the macro posture cautions against; per-share 4x not high-confidence and no downside protection.",
+   "stage": "tier2",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": "thin-setup"
+  }
+ ]
+}

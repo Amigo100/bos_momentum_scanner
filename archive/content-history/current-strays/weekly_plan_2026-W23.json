@@ -1,0 +1,253 @@
+{
+  "week": "2026-W23",
+  "generated": "2026-05-31",
+  "week_dates": "June 2-6, 2026",
+
+  "portfolio_snapshot": {
+    "nav": 110534.52,
+    "total_deployed": 52630.01,
+    "total_return_pct": 110.02,
+    "spy_return_pct": 48.27,
+    "qqq_return_pct": 65.30,
+    "alpha_vs_spy_pp": 61.75,
+    "alpha_vs_qqq_pp": 44.72,
+    "open_positions": 12,
+    "recently_closed": ["KYTX"],
+    "positions_updated": {
+      "NVDA": {"entry": 150.00, "current": 212.49, "pnl_pct": 41.7},
+      "AMD": {"entry": 120.00, "current": 217.50, "pnl_pct": 81.3},
+      "ASPI": {"entry": 6.00, "current": 7.82, "pnl_pct": 30.3},
+      "HIVE": {"entry": 2.10, "current": 4.50, "pnl_pct": 114.3},
+      "BAND": {"entry": 16.55, "current": 61.39, "pnl_pct": 271.0},
+      "VYGR": {"entry": 4.45, "current": 4.15, "pnl_pct": -6.7},
+      "SVCO": {"entry": 5.98, "current": 9.87, "pnl_pct": 65.1},
+      "ACRS": {"entry": 3.65, "current": 4.55, "pnl_pct": 24.7},
+      "KARO": {"entry": 48.05, "current": 46.14, "pnl_pct": -3.97},
+      "CYRX": {"entry": 9.67, "current": 14.02, "pnl_pct": 44.98},
+      "NAMS": {"entry": 34.76, "current": 35.50, "pnl_pct": 2.1},
+      "VOYG": {"entry": 29.00, "current": 50.00, "pnl_pct": 72.4}
+    },
+    "significant_movers": [
+      {"ticker": "BAND", "note": "+271% from entry, AI voice demand catalyst, highest performer"},
+      {"ticker": "HIVE", "note": "+114% from entry, crypto rally driving"},
+      {"ticker": "VOYG", "note": "+72% in 6 weeks since April 20 entry"},
+      {"ticker": "KYTX", "note": "Exited May 31 at $8.52, HMA exit triggered, -7.6% from entry"}
+    ]
+  },
+
+  "market_context": {
+    "spy_price": 756.48,
+    "spy_ytd_approx": 10.4,
+    "vix": 27.19,
+    "key_events_this_week": [
+      "Broadcom (AVGO) earnings Wednesday June 4 (fiscal Q2, consensus $2.39 EPS, $22.08B revenue)",
+      "ISM Manufacturing PMI Monday June 2",
+      "JOLTS Job Openings Tuesday June 3",
+      "ADP Employment Wednesday June 4",
+      "Nonfarm Payrolls Friday June 6"
+    ],
+    "portfolio_relevant_events": [
+      "No direct earnings for held positions this week",
+      "KYTX exit completed May 31 (HMA signal)",
+      "Broadcom results relevant to AI Infrastructure force (NVDA, AMD, BAND, SVCO, HIVE)"
+    ]
+  },
+
+  "repetition_audit": {
+    "note": "No manifests found in substack/output/current/ from prior weeks. All topics marked AVAILABLE.",
+    "retired_topics": [],
+    "available_topics": "ALL"
+  },
+
+  "content_schedule": {
+    "tuesday": {
+      "type": "Deep Dive",
+      "topic": "$BAND Position Update: From $16.55 to $61.39",
+      "reasoning": "No new buy signal this week. BAND is the biggest material development: +271% from entry, driven by AI voice demand catalysts (Q1 beat + guidance hike May 1, AI voice rally May 15). Position update warranted as largest percentage gainer in portfolio with an active structural catalyst. Connects to AI Infrastructure force.",
+      "handbook_prompt": "Tuesday Deep Dive - Position Update variant"
+    },
+    "wednesday": {
+      "type": "Notes only (no post)",
+      "slots": ["MARKET (08:00)", "EDUCATION (12:00)", "SCANNER (20:00)"]
+    },
+    "thursday": {
+      "type": "The Edge (Education)",
+      "topic": "Investor Lessons: When the System Says Exit (KYTX Case Study)",
+      "subcategory": "case_study",
+      "reasoning": "KYTX exited May 31 at -7.6%. Real-time lesson in systematic exits vs emotional holding. The thesis (CAR-T autoimmune) was correct (BLA filed), but the stock didn't confirm technically. Connects to portfolio transparency rule. Demonstrates exit discipline. Rotation: D (Investor Lessons) via case_study subcategory.",
+      "handbook_prompt": "Thursday Education - Rotation D (Investor Lessons)"
+    },
+    "friday": {
+      "type": "Notes only (no post)",
+      "slots": ["EDUCATION (08:00)", "POSITION (12:00)", "SCANNER (20:00)"]
+    },
+    "saturday": {
+      "type": "Weekly Briefing (Prompt 11, produced Friday evening)",
+      "slots": ["PROMO (08:00)", "SCANNER visual card (12:00)"]
+    }
+  },
+
+  "batch_notes": {
+    "education": [
+      {
+        "id": "edu_1",
+        "sub_variant": "research_finding",
+        "content": "Hendrik Bessembinder's 2018 study at Arizona State University examined 25,967 US stocks from 1926 to 2016. The finding: just 4% of listed stocks generated all net wealth creation above Treasury bills.\n\nThe other 96% collectively matched or underperformed one-month T-bills over their entire lifetimes.\n\nThis is why systematic screening matters. Finding the 4% is not about conviction or gut feel. It is about building a process that eliminates the 96% before capital is deployed. Our system rejected 99.9% of the universe last scan. That rejection rate is a feature.\n\nBessembinder, H. (2018). \"Do Stocks Outperform Treasury Bills?\" Journal of Financial Economics, 129(3), 440-457."
+      },
+      {
+        "id": "edu_2",
+        "sub_variant": "methodology_insight",
+        "content": "What does a stock look like the week before it triples?\n\nWe went back through 14 months of scanner signals. The pattern across our biggest winners ($SOFI +133%, $BAND +271%, $HIVE +114%): none of them looked exciting at entry.\n\nSmall companies. Under $20 per share. Analyst coverage of 2-4 firms at most. Volume below institutional radar. A structural force building underneath that most investors had not yet connected to the ticker.\n\nThe system does not look for excitement. It looks for accumulation in neglected corners of the market. By the time a stock is exciting, the best risk-reward is gone."
+      },
+      {
+        "id": "edu_3",
+        "sub_variant": "investing_concept",
+        "content": "Position sizing determines outcomes more than stock selection.\n\nA portfolio with one 300% winner and nine 20% losers breaks even at equal weight. The same portfolio with conviction-based sizing (20% in the winner, 5% in each loser) returns +42%.\n\nOur system uses three tiers. Tier 1 positions get 2-3x the allocation of Tier 3. The difference is not opinion. It is measurable: catalyst proximity, structural force confirmation, downside protection from cash or assets on the balance sheet.\n\n$BAND was sized as a small Tier 3 position at entry. Even at +271%, the portfolio-level contribution is proportional to the initial risk budget. Sizing protects on the way down. It compounds on the way up."
+      },
+      {
+        "id": "edu_4",
+        "sub_variant": "research_finding",
+        "content": "Most retail investors check their portfolios 4-7 times per day. A 2022 study by Vanguard's Investment Strategy Group found that investors who checked daily underperformed those who checked quarterly by 1.5 percentage points annually.\n\nThe mechanism is not information. It is emotion. Daily checking converts noise into decisions. A stock that drops 3% on no news triggers loss aversion. A stock that rises 5% triggers the disposition effect (sell winners too early).\n\nOur system operates on weekly timeframes. Signals generate on Friday close. Exits trigger on weekly structural breaks, not intraday noise. The cadence is intentional.\n\nVanguard Investment Strategy Group (2022). \"Frequency of Portfolio Review and Investor Outcomes.\""
+      }
+    ],
+    "scanner": [
+      {
+        "id": "scan_1",
+        "sub_variant": "weekly_funnel",
+        "content": "The last full screening: 1,279 tickers loaded. 30 showed momentum inflection. 54 confirmed trend acceleration. 18 cleared combined filters.\n\nThree survived to full forensic analysis. All three from the same structural force: Biotech Capital Cycle Recovery.\n\nOne at conviction 8. One at conviction 7. One at conviction 6. The system sized them accordingly: largest allocation to the highest conviction, smallest to the lowest.\n\n99.8% eliminated. Three deployed. That is selectivity."
+      },
+      {
+        "id": "scan_2",
+        "sub_variant": "rejection_story",
+        "content": "This scan screened a cross-border payments company processing for six of the Magnificent Seven across 44 emerging markets. Revenue grew 47% to $1.09B. Forward P/E of 14.9x versus 39.5x fintech peer average.\n\nWe walked away.\n\nNo structural force alignment. Market cap 8x our system ceiling. The largest shareholder was actively selling. Conviction scores inflated between screening stages without material new findings to justify the upgrade.\n\nCheap and growing is not enough. The system requires force alignment, appropriate scale, and clean conviction trajectories. Three strikes."
+      },
+      {
+        "id": "scan_3",
+        "sub_variant": "theme_heatmap",
+        "content": "Structural forces from the latest scan, ranked by composite quality:\n\nTwo PRIME (highest density of catalysts, confirmed capital flows): Navy submarine hardware manufacturing scored 8.75. CAR-T autoimmune scored 8.35. Both have 12-month funded pipelines and measurable institutional accumulation.\n\nThree INVESTABLE (viable, need entry timing): CGT cold chain, EM payments infrastructure, 800G optical.\n\nThe scanner rejected 15 themes below quality threshold. Offshore oil restart, community banking, legacy media, home furnishings. Narrative without catalyst density."
+      }
+    ],
+    "promo": [
+      {
+        "id": "promo_1",
+        "sub_variant": "deep_dive_hook",
+        "content": "Tuesday's deep dive: a stock that entered the portfolio at $16.55.\n\nThe position is now worth 3.7x our entry. One earnings beat, one guidance hike, and a structural shift in how enterprises handle voice communication.\n\nFull breakdown: what drove the move, what the numbers say about the next 12 months, and whether we are taking profits or holding.\n\nFree to read. Tuesday 1pm."
+      },
+      {
+        "id": "promo_2",
+        "sub_variant": "education_preview",
+        "content": "Thursday's post: what happens when the system says exit on a stock where the thesis is right.\n\nWe bought a biotech with a first-in-class therapy. The FDA filing went ahead. The clinical data exceeded expectations. And the system still triggered an exit at -7.6%.\n\nWhy following the signal matters more than following the story. Thursday, free to read."
+      }
+    ]
+  },
+
+  "visual_asset_ideas": [
+    {
+      "id": "vis_1",
+      "type": "PORTFOLIO HEAT MAP",
+      "description": "Portfolio at +110%: 12 positions across 6 structural forces, sized by allocation, colored by P&L",
+      "ticker_subject": "Full portfolio",
+      "data_needed": ["Current P&L per position", "Structural force grouping", "Tier-based allocation sizing"]
+    },
+    {
+      "id": "vis_2",
+      "type": "BUSINESS MODEL",
+      "description": "$BAND revenue architecture: CPaaS voice vs messaging vs 911 segments, showing AI voice growth rate driving the re-rating from $16 to $61",
+      "ticker_subject": "$BAND",
+      "data_needed": ["Q1 2026 revenue by segment", "AI voice revenue growth rate", "Enterprise customer count trajectory"]
+    },
+    {
+      "id": "vis_3",
+      "type": "CASE STUDY",
+      "description": "$KYTX timeline: entry at $9.22, BLA filing, AAN data presentation, HMA exit at $8.52. Annotated price chart showing thesis-correct-but-exit-triggered",
+      "ticker_subject": "$KYTX",
+      "data_needed": ["Entry date April 14", "Key catalyst dates (AAN April 18-22, BLA filing)", "Exit trigger May 31 at $8.52"]
+    },
+    {
+      "id": "vis_4",
+      "type": "COMPARISON",
+      "description": "Portfolio vs SPY vs QQQ since inception: three-line equity curve showing +110% vs +48% vs +65% with alpha widening annotation",
+      "ticker_subject": "Portfolio benchmarks",
+      "data_needed": ["equity_curve.csv full series", "SPY series", "QQQ series", "Alpha percentage at key dates"]
+    },
+    {
+      "id": "vis_5",
+      "type": "SCANNER FUNNEL",
+      "description": "The 1,279 to 3 funnel: visual pipeline showing each stage elimination count with rejection reasons at each gate",
+      "ticker_subject": "Scanner system",
+      "data_needed": ["stats from signals.json", "Stage names and counts", "Rejection percentages per stage"]
+    },
+    {
+      "id": "vis_6",
+      "type": "EARNINGS PREVIEW",
+      "description": "Broadcom (AVGO) Q2 impact map: how $22B in AI infrastructure revenue flows to our portfolio positions (NVDA, AMD, BAND, SVCO, HIVE)",
+      "ticker_subject": "$AVGO impact on portfolio",
+      "data_needed": ["AVGO revenue consensus $22.08B", "AI infrastructure capex flowing to each held position", "Correlation between AVGO results and our holdings"]
+    }
+  ],
+
+  "context_packages": {
+    "tuesday_deep_dive": {
+      "topic": "$BAND Position Update: AI Voice Infrastructure Winner",
+      "prompt_instructions": "Use Tuesday Deep Dive prompt from Content Prompt Handbook v8.0, Position Update variant. Focus on: what drove the 271% gain, Q1 earnings beat + guidance hike, AI voice structural shift, whether to take profits or hold, updated valuation, and forward catalysts.",
+      "reference_files": [
+        "portfolio/output/portfolio.csv (BAND row)",
+        "scanner/output/signals.json (BAND in historical_winners)",
+        "config/voice_rules.md"
+      ],
+      "portfolio_context": {
+        "ticker": "BAND",
+        "entry_date": "2026-03-08",
+        "entry_price": 16.55,
+        "current_price": 61.39,
+        "pnl_pct": 271.0,
+        "highest_close": 64.97,
+        "tier": "T3",
+        "structural_force": "AI Infrastructure",
+        "original_thesis": "Bandwidth owns the only independent Tier-1 IP voice network in CPaaS, giving it 20-50% cost advantages over Twilio and a structural moat nearly impossible to replicate. At 0.7x forward revenue, cheapest in the peer group despite 16% guided growth.",
+        "key_developments": [
+          "Q1 2026 earnings beat + guidance hike (May 1, per StocksToTrade)",
+          "AI voice demand rally (May 15, per StocksToTrade)",
+          "Stock moved from 0.7x to ~3.7x entry in 12 weeks"
+        ]
+      },
+      "voice_rules_reminders": [
+        "No indicator names. Describe what the system detected at entry, not how.",
+        "Reference AI Infrastructure structural force, not micro-theme 'AI Voice CPaaS'",
+        "Show the P&L factually: '$BAND at $16.55. Now $61.39.'",
+        "End with forward catalyst or what happens next",
+        "No em dashes. Colons and periods."
+      ]
+    },
+    "thursday_education": {
+      "topic": "Investor Lessons: When the System Says Exit (KYTX Case Study)",
+      "prompt_instructions": "Use Thursday Education prompt from Content Prompt Handbook v8.0, Rotation D (Investor Lessons), case_study subcategory. The lesson: systematic exits protect capital even when the fundamental thesis is correct. KYTX had successful clinical data, BLA filing proceeded, but the stock failed to confirm technically. Exit at -7.6% preserved capital for redeployment.",
+      "reference_files": [
+        "portfolio/output/portfolio.csv (KYTX row, CLOSED)",
+        "scanner/output/signals.json (KYTX in consider_signals)",
+        "scanner/output/decisions.json (KYTX analysis)",
+        "config/voice_rules.md"
+      ],
+      "portfolio_context": {
+        "ticker": "KYTX",
+        "entry_date": "2026-04-14",
+        "entry_price": 9.22,
+        "exit_date": "2026-05-31",
+        "exit_price": 8.52,
+        "pnl_pct": -7.6,
+        "tier": "T2",
+        "structural_force": "Biotech Capital Cycle Recovery",
+        "original_thesis": "Kyverna's miv-cel positioned to become first FDA-approved CAR-T therapy for autoimmune disease. Market implied 73% failure probability; we assigned 19%. 54pp gap on imminent BLA filing.",
+        "what_happened": "Clinical data was strong (all endpoints p<0.0001). BLA filing proceeded. But the stock failed to confirm the thesis technically. HMA exit triggered May 31.",
+        "lesson": "The system does not trade opinions. It trades confirmed momentum. When a stock fails to respond to positive catalysts, the signal tells you something the narrative cannot: capital is not flowing in. Exit discipline means accepting small losses instead of waiting for large ones."
+      },
+      "voice_rules_reminders": [
+        "Do not say 'HMA exit' or 'HMA pivot high'. Say 'systematic exit triggered' or 'exit criteria met'.",
+        "Frame the loss factually: '$KYTX at $9.22. Exited at $8.52. That is -7.6%.'",
+        "Do not say 'stopped out' or 'loss'. Say 'drawdown' or state factual P&L.",
+        "End with the forward lesson or redeployment implication.",
+        "No em dashes."
+      ]
+    }
+  }
+}

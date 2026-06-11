@@ -1,0 +1,51 @@
+{
+ "ticker": "QTRX",
+ "status": "passed",
+ "status_rule": "held = row in sterling-run/portfolio.csv; bought = any tier4 BUY (ledger or run-dir row); passed = latest decision DROP/DO_NOT_BUY and not held; else in-funnel",
+ "first_seen": "2026-06-07",
+ "last_updated": "2026-06-08",
+ "runs": [],
+ "decision_history": [
+  {
+   "ticker": "QTRX",
+   "date": "2026-06-07",
+   "week_id": "2026-W23",
+   "tier": "2",
+   "decision": "DROP",
+   "reason": "no-path + thin-setup \u2014 J1 fails both kinds: the binary was mis-specified (FDA clearance is NOT first-in-class \u2014 Fujirebio's p-tau217 test is already FDA-cleared/live via Quest \u2014 and NOT the value-unlock); the dx leg is ~8% of revenue, guided FLAT for 2026, sitting atop an organically declining core (Simoa -21%, Akoya -26%, pharma -33%); all four discriminators are asserted, none shown; CMS currently sidelines blood-based tests from coverage. No credible >=4x and no protected 3-4x; weak asymmetry. Survives (not ruin) but does not earn a scarce Tier-3 slot.",
+   "theme": "Blood-Based Alzheimer's Diagnostics (single-name binary; Tier-0 HOLD'd the broader theme). Reframed at Tier 2: QTRX is really a declining life-science-tools company (Simoa + acquired Akoya spatial) with a small, now-flat AD-Dx option \u2014 not a clean pure-play Dx binary.",
+   "stage": "tier2",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": "no-path"
+  },
+  {
+   "ticker": "QTRX",
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "tier": "3",
+   "decision": "DO_NOT_BUY",
+   "type": "\u2014",
+   "conviction": "\u2014",
+   "reason": "WHAT WOULD MAKE THIS A DO NOT BUY (and does): the path test fails \u2014 0-of-4 \u00a77 discriminators PRESENT where the re-rate needs them; the company excludes the Dx re-rate from its own FY26 guide (CFO: 'not counting on revenues from direct testing in 2026'); the closest archetype comp (GRAIL/Galleri) jus",
+   "stage": "tier3",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": null
+  }
+ ]
+}

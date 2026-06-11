@@ -1,0 +1,25 @@
+2026-01-18 21:40:36,359 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-01-18 21:40:36,360 | INFO     | Max retries: 8
+2026-01-18 21:40:36,360 | INFO     | ============================================================
+2026-01-18 21:40:36,360 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-01-18 21:40:36,360 | INFO     | ============================================================
+2026-01-18 21:40:36,360 | INFO     | Fetching ETF momentum data for context...
+2026-01-18 21:40:38,933 | INFO     | Fetched momentum data for 29 ETFs
+2026-01-18 21:40:38,934 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-01-18 21:40:38,934 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:43:24,001 | DEBUG    | Tokens: 778842 in, 6960 out
+2026-01-18 21:43:24,003 | DEBUG    | Response received: 24231 chars
+2026-01-18 21:43:24,004 | DEBUG    | Raw response saved to logs/opus_raw_response.txt
+2026-01-18 21:43:24,012 | DEBUG    | Parsed JSON keys: ['analysis_date', 'market_context', 'trends_identified_step_a', 'searches_performed', 'top_themes', 'themes_rejected', 'contrarian_watchlist', 'theme_watchlist']
+2026-01-18 21:43:24,015 | INFO     | 
+2026-01-18 21:43:24,015 | INFO     | ============================================================
+2026-01-18 21:43:24,015 | INFO     | STEP 2: MAPPING TICKERS TO THEMES
+2026-01-18 21:43:24,015 | INFO     | ============================================================
+2026-01-18 21:43:24,015 | INFO     | Analyzing 33 tickers: AOSL, AEHR, INOD, ACHR, BBBY, RIOT, QUBT, SEI, PCT, OUST, APLD, FLNC, RXO, AEIS, SMLR, ASPI, JOBY, GCO, DNA, LEU, SPIR, PRTH, POWL, CWH, ELF, APA, OS, WCC, FUN, GPRE, NE, KC, FIP
+2026-01-18 21:43:24,015 | DEBUG    | Compact themes JSON size: 4966 chars
+2026-01-18 21:43:24,015 | INFO     | Splitting into 3 batches of 12 tickers
+2026-01-18 21:43:24,015 | INFO     | Processing batch 1/3: AOSL, AEHR, INOD, ACHR, BBBY, RIOT, QUBT, SEI, PCT, OUST, APLD, FLNC
+2026-01-18 21:43:24,015 | DEBUG    | Rate limiting: sleeping 2.99s between requests
+2026-01-18 21:43:27,005 | INFO     | API call: Step 2 - Ticker Analysis (batch 1) (attempt 1/8)
+2026-01-18 21:43:27,007 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:43:27,316 | ERROR    | BILLING ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CXFaChMwmnjpogJT3SVfs'}

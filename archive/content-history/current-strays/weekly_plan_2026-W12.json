@@ -1,0 +1,131 @@
+{
+  "week": "2026-W12",
+  "generated": "2026-03-16T10:00:00+11:00",
+  "format_version": "v8",
+  "week_dates": {
+    "saturday": "2026-03-14",
+    "sunday": "2026-03-16",
+    "monday": "2026-03-17",
+    "tuesday": "2026-03-18",
+    "wednesday": "2026-03-19",
+    "thursday": "2026-03-20",
+    "friday": "2026-03-21"
+  },
+
+  "portfolio_snapshot": {
+    "nav": 53033.41,
+    "total_deployed": 40000,
+    "total_return_pct": 32.58,
+    "spy_return_pct": -2.95,
+    "alpha_pct": 35.53,
+    "qqq_return_pct": -1.28,
+    "alpha_vs_qqq_pct": 33.86,
+    "open_positions": 8,
+    "positions": [
+      {"ticker": "SOFI", "entry": 7.90, "current": 17.76, "pnl_pct": 124.8, "structural_force": "Financial Infrastructure", "tier": "T1"},
+      {"ticker": "EVTL", "entry": 4.50, "current": 3.77, "pnl_pct": -16.2, "structural_force": "Defence Spending", "tier": "T3"},
+      {"ticker": "NVDA", "entry": 150.00, "current": 180.20, "pnl_pct": 20.1, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "AMD", "entry": 120.00, "current": 193.39, "pnl_pct": 61.2, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "TMDX", "entry": 65.00, "current": 121.31, "pnl_pct": 86.6, "structural_force": "Biotech Capital Cycle", "tier": "T1"},
+      {"ticker": "ASPI", "entry": 6.00, "current": 5.28, "pnl_pct": -12.0, "structural_force": "Nuclear Renaissance", "tier": "T2"},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.08, "pnl_pct": -1.0, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "BAND", "entry": 16.55, "current": 15.19, "pnl_pct": -8.2, "structural_force": "AI Infrastructure", "tier": "T3"}
+    ],
+    "pending_entry": {
+      "ticker": "VYGR",
+      "approved_price": 4.45,
+      "current_price": 4.45,
+      "tier": "T2",
+      "conviction": 6,
+      "structural_force": "Biotech Capital Cycle",
+      "status": "awaiting_saturday_workflow"
+    }
+  },
+
+  "scanner_summary": {
+    "scan_date": "2026-03-14",
+    "market_regime": "SELECTIVE",
+    "tickers_screened_detailed": 18,
+    "unique_themes": 12,
+    "force_aligned": 9,
+    "advanced_to_forensic": 3,
+    "deployed": 1,
+    "watchlisted": 2,
+    "rejected": 17,
+    "new_signal": "VYGR",
+    "watchlist": ["HIMX", "LFMD"]
+  },
+
+  "tuesday": {
+    "priority": 1,
+    "type": "deep_dive",
+    "topic": "VYGR (Voyager Therapeutics)",
+    "structural_force": "Biotech Capital Cycle",
+    "reason": "New buy signal from March 14 scan. Conviction 6, T2. Gene therapy platform with $800M-$1.4B pharma deal comparables trading at $56M EV above cash.",
+    "context_package_file": "context_tuesday_20260318.md"
+  },
+
+  "thursday": {
+    "rotation": "A",
+    "type": "methodology",
+    "topic": "The Five-Stage Filter Chain: How 1,300 Stocks Become Fewer Than Five",
+    "reason": "First Thursday in v8 rotation. Week A = Methodology. Uses March 14 scan data with DDD rejection as case study.",
+    "context_package_file": "context_thursday_20260320.md"
+  },
+
+  "anti_duplication": {
+    "last_deep_dive": {"ticker": "BAND", "date": "2026-03-12", "days_ago": 4},
+    "last_thursday_rotation": "none (first v8 cycle)",
+    "vygr_previous_coverage": "none",
+    "conflicts": "none"
+  },
+
+  "batch_notes": [
+    {"id": 1, "type": "SCANNER", "sub_variant": "weekly_funnel", "file": "notes/batch_scanner_funnel.html"},
+    {"id": 2, "type": "SCANNER", "sub_variant": "rejection_story", "file": "notes/batch_scanner_rejection.html"},
+    {"id": 3, "type": "SCANNER", "sub_variant": "theme_heatmap", "file": "notes/batch_scanner_heatmap.html"},
+    {"id": 4, "type": "EDUCATION", "sub_variant": "research_insight", "file": "notes/batch_education_research.html"},
+    {"id": 5, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "file": "notes/batch_education_methodology.html"},
+    {"id": 6, "type": "EDUCATION", "sub_variant": "concept_explainer", "file": "notes/batch_education_concept.html"},
+    {"id": 7, "type": "PROMO", "sub_variant": "tuesday_deep_dive", "file": "notes/batch_promo_tuesday.html"},
+    {"id": 8, "type": "PROMO", "sub_variant": "thursday_education", "file": "notes/batch_promo_thursday.html"}
+  ],
+
+  "note_schedule": {
+    "saturday": {
+      "08:00_morning": {"type": "PROMO", "sub_variant": "briefing", "source": "live"},
+      "12:00_midday": {"type": "SCANNER", "sub_variant": "visual_card", "source": "live"},
+      "20:00_evening": "rest"
+    },
+    "sunday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "batch_4"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live"},
+      "20:00_evening": "rest"
+    },
+    "monday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "single_winner", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "catalyst_flag", "source": "live"},
+      "20:00_evening": {"type": "EDUCATION", "sub_variant": "methodology_philosophy", "source": "batch_5"}
+    },
+    "tuesday": {
+      "08:00_morning": {"type": "SCANNER", "sub_variant": "weekly_funnel", "source": "batch_1"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "alpha_snapshot", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "tuesday_deep_dive", "source": "batch_7"}
+    },
+    "wednesday": {
+      "08:00_morning": {"type": "MARKET", "sub_variant": "force_status", "source": "live"},
+      "12:00_midday": {"type": "EDUCATION", "sub_variant": "concept_explainer", "source": "batch_6"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "rejection_story", "source": "batch_2"}
+    },
+    "thursday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "honest_loser", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "thursday_education", "source": "batch_8"}
+    },
+    "friday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "live"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "portfolio_alpha", "source": "live"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "theme_heatmap", "source": "batch_3"}
+    }
+  }
+}

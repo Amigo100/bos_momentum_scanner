@@ -1,0 +1,86 @@
+{
+    "date": "2026-05-23",
+    "day": "saturday",
+    "generated_at": "2026-05-23T08:00:00+10:00",
+    "week": "W21",
+    "weekly_plan_used": "weekly_plan_2026-W20.json",
+    "weekly_plan_note": "No W21 plan exists. Mode A has not run for this week. Generated fresh Saturday notes using W20 context, latest signals.json, and live price data from May 22 close.",
+    "post": {
+        "type": "weekly_briefing",
+        "status": "produced_externally",
+        "note": "Saturday briefing produced via Prompt 11 during Friday analysis session. Cowork not involved in writing this post."
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "PROMO",
+            "sub_variant": "briefing_promo",
+            "time_aedt": "08:00",
+            "file": "notes/morning_promo_20260523.html",
+            "tickers_referenced": ["BAND"],
+            "prices_verified": true,
+            "word_count": 89
+        },
+        {
+            "slot": 2,
+            "type": "SCANNER",
+            "sub_variant": "weekly_recap_visual",
+            "time_aedt": "12:00",
+            "file": "notes/midday_scanner_graphic_20260523.html",
+            "tickers_referenced": ["AMD", "BAND", "HIVE", "SVCO", "CYRX", "NVDA", "VOYG", "ACRS", "VYGR", "KARO", "NAMS", "KYTX", "ASPI"],
+            "prices_verified": true,
+            "word_count": 0,
+            "note": "Visual card only. No accompanying text note for this slot."
+        },
+        {
+            "slot": 3,
+            "type": "REST",
+            "time_aedt": "20:00",
+            "file": null,
+            "note": "Saturday evening is a rest slot per note matrix."
+        }
+    ],
+    "visual_card": {
+        "type": "scanner_weekly_recap",
+        "file": "notes/midday_scanner_graphic_20260523.html",
+        "slot": "midday",
+        "description": "Weekly screening recap: 1,279 to 3 funnel, 13 positions with full P&L, portfolio +73.5% vs SPY +43.2%, alpha +30.3pp"
+    },
+    "repetition_check": {
+        "previous_manifests_checked": [
+            "daily_manifest.json (2026-05-18, Monday)",
+            "daily_manifest_20260517.json (2026-05-17, Sunday)"
+        ],
+        "skips": [],
+        "substitutions": [],
+        "variant_rotation": {
+            "PROMO": "briefing_promo (Saturday-specific; last PROMO was W20 Thursday PROMO_2 education promo on May 15)",
+            "SCANNER": "weekly_recap_visual (last SCANNER visual was W20 Saturday SCAN_1 weekly_funnel on May 10; rotated to full recap card with portfolio P&L)"
+        }
+    },
+    "freshness_gate": {
+        "prices_searched": ["AMD", "BAND", "SVCO", "HIVE", "NVDA", "ACRS", "CYRX", "KYTX", "NAMS", "VYGR", "VOYG", "ASPI", "KARO"],
+        "price_date": "2026-05-22",
+        "price_note": "Prices from Friday May 22 close. Market closed May 23 (Saturday).",
+        "equity_curve_date": "2026-05-17",
+        "nav_used": 99356,
+        "total_return_used": 73.55,
+        "spy_return_used": 43.21,
+        "alpha_used": 30.33,
+        "live_prices": {
+            "AMD": 469.43,
+            "BAND": 58.54,
+            "HIVE": 3.89,
+            "SVCO": 9.27,
+            "CYRX": 14.22,
+            "NVDA": 218.13,
+            "VOYG": 41.30,
+            "ACRS": 3.92,
+            "VYGR": 4.24,
+            "KARO": 46.14,
+            "NAMS": 32.81,
+            "KYTX": 8.65,
+            "ASPI": 5.03
+        }
+    }
+}

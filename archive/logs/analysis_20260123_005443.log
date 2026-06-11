@@ -1,0 +1,71 @@
+2026-01-23 00:54:43,832 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-01-23 00:54:43,832 | INFO     | Max retries: 8
+2026-01-23 00:54:43,832 | INFO     | ============================================================
+2026-01-23 00:54:43,832 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-01-23 00:54:43,832 | INFO     | ============================================================
+2026-01-23 00:54:43,832 | INFO     | Fetching ETF momentum data for context...
+2026-01-23 00:54:45,862 | INFO     | Fetched momentum data for 29 ETFs
+2026-01-23 00:54:45,862 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-01-23 00:54:45,862 | DEBUG    | Web search ENABLED for this call
+2026-01-23 00:57:23,145 | DEBUG    | Tokens: 757235 in, 6605 out
+2026-01-23 00:57:23,146 | DEBUG    | Response received: 23100 chars
+2026-01-23 00:57:23,148 | DEBUG    | Raw response saved to logs/opus_raw_response.txt
+2026-01-23 00:57:23,149 | DEBUG    | Parsed JSON keys: ['analysis_date', 'market_context', 'trends_identified_step_a', 'searches_performed', 'top_themes', 'themes_rejected', 'contrarian_watchlist', 'theme_watchlist']
+2026-01-23 00:57:23,149 | INFO     | 
+2026-01-23 00:57:23,149 | INFO     | ============================================================
+2026-01-23 00:57:23,150 | INFO     | STEP 2: MAPPING TICKERS TO THEMES
+2026-01-23 00:57:23,150 | INFO     | ============================================================
+2026-01-23 00:57:23,150 | INFO     | Analyzing 19 tickers: GLXY, BTDR, SMR, GRAL, LTBR, AMSC, RMBS, CEVA, SEDG, CORZ, PSNL, EOSE, IESC, NNE, STRL, IPGP, AAON, AGX, FLR
+2026-01-23 00:57:23,150 | DEBUG    | Compact themes JSON size: 4885 chars
+2026-01-23 00:57:23,150 | INFO     | Splitting into 2 batches of 12 tickers
+2026-01-23 00:57:23,150 | INFO     | Processing batch 1/2: GLXY, BTDR, SMR, GRAL, LTBR, AMSC, RMBS, CEVA, SEDG, CORZ, PSNL, EOSE
+2026-01-23 00:57:23,150 | DEBUG    | Rate limiting: sleeping 3.00s between requests
+2026-01-23 00:57:26,155 | INFO     | API call: Step 2 - Ticker Analysis (batch 1) (attempt 1/8)
+2026-01-23 00:57:26,156 | DEBUG    | Web search ENABLED for this call
+2026-01-23 00:58:12,156 | DEBUG    | Tokens: 230279 in, 1666 out
+2026-01-23 00:58:12,157 | DEBUG    | Response received: 4594 chars
+2026-01-23 00:58:14,168 | INFO     | Processing batch 2/2: IESC, NNE, STRL, IPGP, AAON, AGX, FLR
+2026-01-23 00:58:14,169 | DEBUG    | Rate limiting: sleeping 0.99s between requests
+2026-01-23 00:58:15,165 | INFO     | API call: Step 2 - Ticker Analysis (batch 2) (attempt 1/8)
+2026-01-23 00:58:15,166 | DEBUG    | Web search ENABLED for this call
+2026-01-23 00:59:42,282 | DEBUG    | Tokens: 549007 in, 3130 out
+2026-01-23 00:59:42,284 | DEBUG    | Response received: 8624 chars
+2026-01-23 00:59:42,286 | INFO     | Fetching price data for 19 tickers...
+2026-01-23 00:59:42,286 | DEBUG    | Fetching data for GLXY
+2026-01-23 00:59:43,345 | DEBUG    |   GLXY: $30.92 | Financial Services
+2026-01-23 00:59:43,345 | DEBUG    | Fetching data for BTDR
+2026-01-23 00:59:43,666 | DEBUG    |   BTDR: $14.04 | Technology
+2026-01-23 00:59:43,666 | DEBUG    | Fetching data for SMR
+2026-01-23 00:59:44,016 | DEBUG    |   SMR: $20.64 | Industrials
+2026-01-23 00:59:44,016 | DEBUG    | Fetching data for GRAL
+2026-01-23 00:59:44,362 | DEBUG    |   GRAL: $116.06 | Healthcare
+2026-01-23 00:59:44,362 | DEBUG    | Fetching data for LTBR
+2026-01-23 00:59:44,703 | DEBUG    |   LTBR: $18.35 | Industrials
+2026-01-23 00:59:44,703 | DEBUG    | Fetching data for AMSC
+2026-01-23 00:59:45,026 | DEBUG    |   AMSC: $33.10 | Industrials
+2026-01-23 00:59:45,026 | DEBUG    | Fetching data for RMBS
+2026-01-23 00:59:45,357 | DEBUG    |   RMBS: $124.77 | Technology
+2026-01-23 00:59:45,357 | DEBUG    | Fetching data for CEVA
+2026-01-23 00:59:45,702 | DEBUG    |   CEVA: $23.26 | Technology
+2026-01-23 00:59:45,702 | DEBUG    | Fetching data for SEDG
+2026-01-23 00:59:46,048 | DEBUG    |   SEDG: $34.54 | Technology
+2026-01-23 00:59:46,048 | DEBUG    | Fetching data for CORZ
+2026-01-23 00:59:46,393 | DEBUG    |   CORZ: $18.08 | Technology
+2026-01-23 00:59:46,393 | DEBUG    | Fetching data for PSNL
+2026-01-23 00:59:46,723 | DEBUG    |   PSNL: $11.25 | Healthcare
+2026-01-23 00:59:46,723 | DEBUG    | Fetching data for EOSE
+2026-01-23 00:59:47,053 | DEBUG    |   EOSE: $18.22 | Industrials
+2026-01-23 00:59:47,054 | DEBUG    | Fetching data for IESC
+2026-01-23 00:59:47,382 | DEBUG    |   IESC: $471.12 | Industrials
+2026-01-23 00:59:47,382 | DEBUG    | Fetching data for NNE
+2026-01-23 00:59:47,714 | DEBUG    |   NNE: $36.09 | Industrials
+2026-01-23 00:59:47,714 | DEBUG    | Fetching data for STRL
+2026-01-23 00:59:48,041 | DEBUG    |   STRL: $364.25 | Industrials
+2026-01-23 00:59:48,041 | DEBUG    | Fetching data for IPGP
+2026-01-23 00:59:48,389 | DEBUG    |   IPGP: $86.51 | Technology
+2026-01-23 00:59:48,389 | DEBUG    | Fetching data for AAON
+2026-01-23 00:59:48,771 | DEBUG    |   AAON: $96.58 | Industrials
+2026-01-23 00:59:48,771 | DEBUG    | Fetching data for AGX
+2026-01-23 00:59:49,129 | DEBUG    |   AGX: $380.36 | Industrials
+2026-01-23 00:59:49,129 | DEBUG    | Fetching data for FLR
+2026-01-23 00:59:49,488 | DEBUG    |   FLR: $45.61 | Industrials

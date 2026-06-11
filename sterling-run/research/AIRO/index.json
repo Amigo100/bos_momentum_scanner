@@ -1,0 +1,51 @@
+{
+ "ticker": "AIRO",
+ "status": "passed",
+ "status_rule": "held = row in sterling-run/portfolio.csv; bought = any tier4 BUY (ledger or run-dir row); passed = latest decision DROP/DO_NOT_BUY and not held; else in-funnel",
+ "first_seen": "2026-06-07",
+ "last_updated": "2026-06-08",
+ "runs": [],
+ "decision_history": [
+  {
+   "ticker": "AIRO",
+   "date": "2026-06-07",
+   "week_id": "2026-W23",
+   "tier": "2",
+   "decision": "DROP",
+   "reason": "thin-setup-not-worth-a-slot \u2014 the \u22654x needs a heroic multi-link chain (Blue UAS on-time \u2192 US 'Buy American' channel actually opens \u2192 win share vs a GROWING cleared-competitor field \u2192 GM recovers \u2192 backlog re-accelerates) while the load-bearing \u00a77 discriminator is INVERTED: drone backlog has DECLINED every quarter since IPO (~21%+, ~$250M\u2192$150M) \u2014 converting an un-replenished book is \u00a77's strongest round-tripper tell. Margin inflection absent/asserted (GM 26.6% trough vs 58.8%, FY26 EBITDA guided NEGATIVE). Steep ~3.6x sequential back-half ramp off an $8.9M Q1 on a single platform (RQ-35 Heidrun ~87% of rev). Survives easily (no ruin) and theme is strong, but asymmetry is marginal and the path heroic \u2014 doesn't earn a scarce Tier-3 slot. Theme stays live P1; PRZO is the better-evidenced on-list converter (hardening firm US Tier-1 order vs AIRO's softening book).",
+   "theme": "Counter-Drone / Autonomous Warfare (C-UAS + attritable drones) [P1 \u2014 THE LEAD]",
+   "stage": "tier2",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": "thin-setup"
+  },
+  {
+   "ticker": "AIRO",
+   "date": "2026-06-08",
+   "week_id": "2026-W24",
+   "tier": "3",
+   "decision": "DO_NOT_BUY",
+   "type": "\u2014",
+   "conviction": "\u2014",
+   "reason": "WHAT WOULD MAKE THIS A DO NOT BUY (it already is): three of four \u00a77 winner-discriminators absent (milestone-on-original-date, firm FFP cash anchor, margin/CF inflection) with the one present (backlog) only PARTIAL and per management's own words partly non-firm, ex-US, and flat QoQ / not converting. ",
+   "stage": "tier3",
+   "price_at_decision": null,
+   "forward": {
+    "p3": null,
+    "p6": null,
+    "p12": null,
+    "p18": null,
+    "p24": null,
+    "p36": null
+   },
+   "reason_code": null
+  }
+ ]
+}

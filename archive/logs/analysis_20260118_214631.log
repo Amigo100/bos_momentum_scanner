@@ -1,0 +1,10 @@
+2026-01-18 21:46:32,044 | INFO     | Initialized with model: claude-sonnet-4-20250514
+2026-01-18 21:46:32,045 | INFO     | Max retries: 8
+2026-01-18 21:46:32,045 | INFO     | ============================================================
+2026-01-18 21:46:32,045 | INFO     | STEP 1: IDENTIFYING TOP INVESTABLE THEMES
+2026-01-18 21:46:32,045 | INFO     | ============================================================
+2026-01-18 21:46:32,045 | INFO     | Fetching ETF momentum data for context...
+2026-01-18 21:46:34,578 | INFO     | Fetched momentum data for 29 ETFs
+2026-01-18 21:46:34,578 | INFO     | API call: Step 1 - Theme Identification (attempt 1/8)
+2026-01-18 21:46:34,579 | DEBUG    | Web search ENABLED for this call
+2026-01-18 21:46:34,818 | ERROR    | BILLING ERROR: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CXFaSXhub5xMp77jS38hn'}

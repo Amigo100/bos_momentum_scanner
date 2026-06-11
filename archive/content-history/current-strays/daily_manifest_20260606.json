@@ -1,0 +1,104 @@
+{
+    "date": "2026-06-06",
+    "day": "saturday",
+    "generated_at": "2026-06-06T18:00:00+10:00",
+    "week": "W23",
+    "weekly_plan_used": "weekly_plan_2026-W23.json",
+    "post": {
+        "type": "weekly_briefing",
+        "status": "produced_externally",
+        "note": "Saturday briefing produced via Prompt 11 during Friday evening analysis session. Cowork not involved in writing this post."
+    },
+    "notes": [
+        {
+            "slot": 1,
+            "type": "PROMO",
+            "sub_variant": "briefing_promo",
+            "time_aedt": "08:00",
+            "file": "notes/morning_promo_20260606.md",
+            "tickers_referenced": [],
+            "prices_verified": true,
+            "price_note": "Portfolio stats from equity_curve.csv June 6 row (+102.41% return, +61.11pp alpha). Macro data (172K payrolls, Broadcom selloff, Nasdaq -4% June 4) from web search June 6.",
+            "word_count": 97
+        },
+        {
+            "slot": 2,
+            "type": "SCANNER",
+            "sub_variant": "weekly_funnel",
+            "time_aedt": "12:00",
+            "file": "notes/midday_scanner_20260606.md",
+            "tickers_referenced": [],
+            "prices_verified": false,
+            "price_note": "No ticker prices referenced. Scanner stats from signals.json. Conviction values removed per voice_rules.md.",
+            "word_count": 84
+        },
+        {
+            "slot": 3,
+            "type": "REST",
+            "time_aedt": "20:00",
+            "file": null,
+            "note": "Saturday evening is a rest slot per note matrix."
+        }
+    ],
+    "visual_card": {
+        "type": "scanner_weekly_recap",
+        "file": "notes/midday_scanner_graphic_20260606.html",
+        "slot": "midday",
+        "description": "Scanner funnel (1,279 to 3) + full portfolio 12 positions with live P&L sorted by performance. Dark navy theme, 680px. Alpha updated to +61.1pp per June 6 equity_curve."
+    },
+    "repetition_check": {
+        "previous_manifests_checked": [
+            "daily_manifest_20260601.json (2026-06-01, Monday)",
+            "daily_manifest_20260531.json (2026-05-31, Saturday)",
+            "daily_manifest_20260526.json (2026-05-26, Tuesday)",
+            "daily_manifest_20260523.json (2026-05-23, Saturday)",
+            "daily_manifest_20260517.json (2026-05-17, Sunday)"
+        ],
+        "skips": [
+            {
+                "topic": "S&P 500 record high (7,600)",
+                "reason": "S&P hit 7,600 on Monday June 2 but fell to 7,383 on Wednesday after Broadcom selloff. Stale/misleading by Saturday. Replaced with Broadcom chip selloff as the defining event of the week."
+            }
+        ],
+        "substitutions": [
+            {
+                "original": "PROMO briefing_promo with 'S&P 500 above 7,600' macro hook (earlier run)",
+                "replacement": "PROMO briefing_promo with Broadcom chip selloff hook (Nasdaq -4% June 4, portfolio resilience +102%)",
+                "reason": "S&P 7,600 was stale by Saturday. Broadcom selloff directly relevant to 5 portfolio AI Infrastructure positions. More accurate and more interesting angle for subscribers."
+            }
+        ],
+        "variant_rotation": {
+            "PROMO": "briefing_promo (last Saturday: milestone_promo; fresh angle on Broadcom selloff + portfolio resilience)",
+            "SCANNER": "weekly_funnel (last Saturday: exit_discipline; rotated per variety rule)"
+        }
+    },
+    "freshness_gate": {
+        "prices_searched": ["NVDA", "AMD", "BAND", "HIVE", "ASPI", "SVCO", "ACRS", "KARO", "CYRX", "NAMS", "VOYG", "VYGR"],
+        "price_date": "2026-06-05 (Friday close, market closed Saturday)",
+        "equity_curve_date": "2026-06-06",
+        "nav_used": 106531,
+        "total_return_used": 102.41,
+        "spy_return_used": 41.30,
+        "alpha_used": 61.11,
+        "qqq_return_used": 53.83,
+        "live_prices": {
+            "NVDA": 207.22,
+            "AMD": 409.49,
+            "BAND": 71.25,
+            "HIVE": 4.30,
+            "ASPI": 7.97,
+            "SVCO": 14.17,
+            "ACRS": 4.71,
+            "KARO": 47.11,
+            "CYRX": 15.74,
+            "NAMS": 32.67,
+            "VOYG": 47.70,
+            "VYGR": 3.87
+        },
+        "stale_data_corrected": [
+            "Equity curve updated from May 31 row (110,534 NAV, +110.02%) to June 6 row (106,531 NAV, +102.41%)",
+            "Alpha updated from +61.75pp (May 31) to +61.11pp (June 6)",
+            "Visual card alpha updated from +61.8pp to +61.1pp"
+        ]
+    }
+}

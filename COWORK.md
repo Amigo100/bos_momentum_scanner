@@ -22,14 +22,15 @@ are relative to here.
 
 | Data | Path |
 |------|------|
-| Portfolio | `portfolio/output/portfolio.csv` |
-| Equity curve | `portfolio/output/equity_curve.csv` |
-| Scanner signals | `scanner/output/signals.json` |
-| Decisions | `scanner/output/decisions.json` |
+| Portfolio (newsletter prices — sole source) | `sterling-run/portfolio.csv` |
+| Technical book + equity curve | `portfolio/output/portfolio.csv` · `portfolio/output/equity_curve.csv` |
+| Scanner signals (this week) | `sterling-run/signals/this-week.csv` (raw: `scanner/output/signals_technical.json`) |
+| Decisions ledger | `sterling-run/decisions.json` |
+| Per-ticker research (deep dives, verdicts, status) | `sterling-run/research/<TICKER>/` |
+| Weekly content home (newsletter, notes, deep-dives, decisions) | `sterling-run/weeks/<YYYY-WNN>/` |
+| Theme map + theme health | `sterling-run/log/theme_map.json` · `sterling-run/log/theme_health.jsonl` |
 | Signal history | `scanner/output/signal_history_rows.csv` |
-| Market analysis | `scanner/output/current/market_analysis.md` |
-| Weekly plan | `substack/output/current/weekly_plan_*.json` |
-| Daily manifest | `substack/output/current/daily_manifest.json` |
+| Working area for new content | `substack/output/current/` |
 
 ## What You Automate
 

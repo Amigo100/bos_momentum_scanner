@@ -1,0 +1,24 @@
+
+============================================================
+Thematic Analyzer Error: 2026-02-14T11:16:08.384389
+Error: No valid JSON object found in response
+Traceback (most recent call last):
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/scanner.py", line 514, in run_thematic_gate
+    themes = analyzer.run_step_1()
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/thematic_analyzer.py", line 1738, in run_step_1
+    data = self._extract_json(response_text)
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/thematic_analyzer.py", line 1446, in _extract_json
+    raise ValueError("No valid JSON object found in response")
+ValueError: No valid JSON object found in response
+
+============================================================
+Thematic Analyzer Error: 2026-02-14T11:29:55.532740
+Error: No valid JSON object found in response
+Traceback (most recent call last):
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/scanner.py", line 514, in run_thematic_gate
+    themes = analyzer.run_step_1()
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/thematic_analyzer.py", line 1738, in run_step_1
+    data = self._extract_json(response_text)
+  File "/Users/mattydeighton/Downloads/bos_momentum_scanner/core/thematic_analyzer.py", line 1446, in _extract_json
+    raise ValueError("No valid JSON object found in response")
+ValueError: No valid JSON object found in response

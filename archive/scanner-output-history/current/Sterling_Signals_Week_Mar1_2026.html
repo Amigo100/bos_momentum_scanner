@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sterling Signals — Week of March 1, 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #111827;
+    --card: #1F2937;
+    --accent: #2DD4BF;
+    --green: #22C55E;
+    --amber: #FBBF24;
+    --red: #EF4444;
+    --text: #F9FAFB;
+    --muted: #9CA3AF;
+    --dim: #6B7280;
+    --border: #374151;
+    --header-bg: #0F172A;
+    --teal-highlight: #0D3B34;
+    --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* ── Hero Section ── */
+  .hero {
+    background: linear-gradient(135deg, var(--header-bg) 0%, #0c1a2e 40%, var(--teal-highlight) 100%);
+    padding: 48px 32px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(45,212,191,0.1);
+    border: 1px solid rgba(45,212,191,0.25);
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .hero .date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--dim);
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ── Section Styles ── */
+  .section {
+    padding: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+  .section p {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .section p strong { color: var(--text); font-weight: 600; }
+
+  /* ── Stat Grid ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .stat-card .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .stat-card .change {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .stat-card .change.up { color: var(--green); }
+  .stat-card .change.down { color: var(--red); }
+  .stat-card .change.flat { color: var(--amber); }
+
+  /* ── Funnel ── */
+  .funnel {
+    margin: 20px 0;
+  }
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .funnel-step:last-child { border-bottom: none; }
+  .funnel-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .funnel-num.active { background: var(--accent); color: var(--header-bg); }
+  .funnel-num.filtered { background: var(--card); color: var(--dim); border: 1px solid var(--border); }
+  .funnel-text { font-size: 14px; color: var(--muted); }
+  .funnel-text strong { color: var(--text); }
+  .funnel-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 6px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  /* ── Theme Cards ── */
+  .theme-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .theme-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .theme-card .theme-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .theme-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .theme-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+  .theme-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 8px;
+  }
+  .tag-hot { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-warm { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .tag-cooling { background: rgba(239,68,68,0.12); color: var(--red); }
+  .tag-emerging { background: rgba(45,212,191,0.12); color: var(--accent); }
+
+  /* ── Pullquote ── */
+  .pullquote {
+    background: var(--teal-highlight);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.7;
+  }
+  .pullquote .attribution {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Pass Rationale Card ── */
+  .pass-card {
+    background: linear-gradient(135deg, rgba(251,191,36,0.06) 0%, var(--card) 100%);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .pass-card h3 {
+    color: var(--amber);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pass-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  /* ── Catalyst Table ── */
+  .catalyst-list {
+    margin: 16px 0;
+  }
+  .catalyst-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .catalyst-row:last-child { border-bottom: none; }
+  .catalyst-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 56px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .catalyst-detail {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .catalyst-detail strong { color: var(--text); }
+
+  /* ── Watchlist ── */
+  .watchlist-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+  }
+  .watchlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .watchlist-ticker {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .watchlist-status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--amber);
+    background: rgba(251,191,36,0.1);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+  .watchlist-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    padding: 32px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer p {
+    font-size: 13px;
+    color: var(--dim);
+    margin-bottom: 16px;
+  }
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .footer a:hover { text-decoration: underline; }
+  .footer .cta-button {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--header-bg);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 32px;
+    border-radius: 6px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+  }
+  .footer .cta-button:hover { opacity: 0.9; text-decoration: none; }
+  .footer .disclaimer {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 20px;
+    line-height: 1.6;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 32px 20px; }
+    .section { padding: 24px 20px; }
+    .hero h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════ HERO ═══════ -->
+  <div class="hero">
+    <div class="hero-badge">Weekly Briefing</div>
+    <h1>Sterling <span>Signals</span></h1>
+    <div class="subtitle">The discipline to pass is worth more than the next trade.</div>
+    <div class="date">Issue #47 · Week ending February 28, 2026</div>
+  </div>
+
+  <!-- ═══════ 1. MARKET CONTEXT ═══════ -->
+  <div class="section">
+    <span class="section-label">01 — Market Context</span>
+    <h2>February Closes Red, Rotation Fatigue Sets In</h2>
+    <p>
+      Markets closed February on a sour note as a <strong>hotter-than-expected PPI print</strong> rattled investors on Friday. The S&P 500 finished the month down <strong>0.9%</strong>, the Nasdaq dropped <strong>3.4%</strong>, and the Dow was the lone survivor at <strong>+0.2%</strong>. Small caps gave back ground too, with the Russell 2000 sliding on Friday. The <strong>VIX spiked to 19.86</strong>, touching 21.74 intraday — its highest level since the tariff turbulence earlier this month.
+    </p>
+    <p>
+      The big story remains <strong>rotation fatigue</strong>. The Mag 7 premium has compressed to pre-pandemic levels. Value sectors like materials, energy, and utilities have outperformed YTD, but valuations there are now stretching too. One analyst called it: the rotation may be peaking. Meanwhile, the <strong>10-year yield dropped below 4.0%</strong> as safe-haven buying intensified alongside fresh Iran uncertainty and tariff escalation headlines.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">SPY</div>
+        <div class="value">$686</div>
+        <div class="change down">-0.9% Feb</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">QQQ</div>
+        <div class="value">$607</div>
+        <div class="change down">-3.4% Feb</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">IWM</div>
+        <div class="value">$261</div>
+        <div class="change down">-1.7% Fri</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">VIX</div>
+        <div class="value">19.86</div>
+        <div class="change flat">+6.6% Fri</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ 2. SCANNER FUNNEL ═══════ -->
+  <div class="section">
+    <span class="section-label">02 — What Our Scanner Found</span>
+    <h2>16 Scanned. 0 Deployed.</h2>
+    <p>
+      Our proprietary screening system flagged <strong>16 tickers</strong> across four batches this week. Each passed through technical momentum filters, then into thematic analysis, then through our investment gate, and finally into deep research for the survivors. Every stage is designed to kill weak setups — and this week, none survived intact.
+    </p>
+
+    <!-- [SCAN_FUNNEL] -->
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-num active">16</div>
+        <div>
+          <div class="funnel-text"><strong>Scanner signals</strong> — raw technical breakouts</div>
+          <div class="funnel-bar" style="width:100%"><div class="funnel-bar-fill" style="width:100%;background:var(--accent)"></div></div>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-num active">5</div>
+        <div>
+          <div class="funnel-text"><strong>Theme-confirmed</strong> — passed catalyst + demand analysis</div>
+          <div class="funnel-bar" style="width:100%"><div class="funnel-bar-fill" style="width:31%;background:var(--green)"></div></div>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-num active">3</div>
+        <div>
+          <div class="funnel-text"><strong>Gate cleared</strong> — survived bear case stress test</div>
+          <div class="funnel-bar" style="width:100%"><div class="funnel-bar-fill" style="width:19%;background:var(--amber)"></div></div>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-num filtered">0</div>
+        <div>
+          <div class="funnel-text"><strong>GREEN signals</strong> — 0% pass rate this week</div>
+          <div class="funnel-bar" style="width:100%"><div class="funnel-bar-fill" style="width:0%;background:var(--red)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:var(--dim);">
+      A 0% deployment rate from 16 candidates is rare but not unprecedented. Our system's 79% historical win rate comes from weeks exactly like this one — where the discipline to pass preserved capital for better setups.
+    </p>
+  </div>
+
+  <!-- ═══════ 3. THEMES ═══════ -->
+  <div class="section">
+    <span class="section-label">03 — Themes Driving Momentum</span>
+    <h2>Where Capital Is Flowing — and Where It Isn't</h2>
+
+    <!-- [THEME_SCORES] -->
+    <div class="theme-card">
+      <h3>🛡️ Defense & Aerospace</h3>
+      <div class="theme-desc">Golden Dome initiative + $1T+ defense budget trajectory. Palantir, L3Harris, Kratos, and shield-layer plays continuing to attract institutional flows. This remains the strongest secular wave of 2026.</div>
+      <div class="theme-bar"><div class="theme-bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),var(--accent))"></div></div>
+      <span class="theme-tag tag-hot">Established · Hot</span>
+    </div>
+
+    <div class="theme-card">
+      <h3>⚡ AI Infrastructure (Phase 2)</h3>
+      <div class="theme-desc">Hyperscaler capex at $360B/yr. Post-Nvidia earnings wobble is creating selective opportunities in power, cooling, and edge infrastructure. Broadcom reports Wednesday — the next read on AI demand.</div>
+      <div class="theme-bar"><div class="theme-bar-fill" style="width:78%;background:linear-gradient(90deg,var(--amber),var(--green))"></div></div>
+      <span class="theme-tag tag-warm">Established · Selective</span>
+    </div>
+
+    <div class="theme-card">
+      <h3>🏦 Financial Renaissance</h3>
+      <div class="theme-desc">Deregulation tailwinds, yield curve normalization, and Dow 50K milestone driven partly by financials rotation. Regional bank KRE ETF testing breakout at $70 resistance.</div>
+      <div class="theme-bar"><div class="theme-bar-fill" style="width:71%;background:linear-gradient(90deg,var(--amber),var(--green))"></div></div>
+      <span class="theme-tag tag-warm">Established · Building</span>
+    </div>
+
+    <div class="theme-card">
+      <h3>🧬 Rare Disease Biotech</h3>
+      <div class="theme-desc">Our scanner surfaced multiple signals here — but the sector lacks the multi-stock momentum wave that characterizes our best trades. Individual names showing strength without sector-wide institutional discovery.</div>
+      <div class="theme-bar"><div class="theme-bar-fill" style="width:35%;background:var(--dim)"></div></div>
+      <span class="theme-tag tag-cooling">Isolated · Not Our Edge</span>
+    </div>
+  </div>
+
+  <!-- ═══════ 4. WHY WE PASSED ═══════ -->
+  <div class="section">
+    <span class="section-label">04 — Why We Passed</span>
+    <h2>No New GREEN Signals This Week</h2>
+    <p>
+      Three stocks cleared our gate and entered deep research. All three were in rare disease biotech — a sector producing individual breakouts but not the kind of multi-stock, institutional-discovery wave that generates our system's best returns. After rigorous analysis, our risk review flagged critical issues with every candidate.
+    </p>
+
+    <div class="pullquote">
+      Our system's edge comes from catching powerful secular themes early — defense, AI infrastructure, reshoring — not from isolated clinical binaries. When the scanner finds signal in the wrong sector, the right move is to wait. Capital is ammunition. Don't waste it on off-target trades.
+      <div class="attribution">— Sterling Signals Risk Review</div>
+    </div>
+
+    <div class="pass-card">
+      <h3>⚠️ The Discipline Behind This Decision</h3>
+      <p>
+        This week's scanner produced <strong>100% biotech concentration</strong> across all advancing candidates. Our portfolio construction rules cap any single sector at 50%. More importantly, every candidate was a <strong>binary clinical bet</strong> — the kind of setup that works or doesn't, with no secular momentum to cushion the downside.
+      </p>
+      <p>
+        We identified one genuinely interesting valuation gap in the Rett syndrome gene therapy space — a registrational-stage company trading at an <strong>8x discount</strong> to its direct competitor with comparable FDA designations and trial timelines. That's real. But the stock had just surged 26% on news, and chasing gaps isn't how our system generates 200%+ returns.
+      </p>
+      <p>
+        <strong>Two names moved to our watchlist</strong> with specific re-entry triggers. If the setup improves, we'll be ready.
+      </p>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:600;margin:20px 0 12px;">Watchlist Additions</h3>
+
+    <div class="watchlist-item">
+      <div class="watchlist-header">
+        <span class="watchlist-ticker">NGNE</span>
+        <span class="watchlist-status">Watching</span>
+      </div>
+      <div class="watchlist-desc">
+        Rett syndrome gene therapy with breakthrough designation, registrational trial enrolling, and $240M+ cash floor. Trading at a fraction of its competitor's valuation. Entry trigger: consolidation to the $19–21 range following the recent breakout gap. Earnings March 23.
+      </div>
+    </div>
+
+    <div class="watchlist-item">
+      <div class="watchlist-header">
+        <span class="watchlist-ticker">LRMR</span>
+        <span class="watchlist-status">Watching</span>
+      </div>
+      <div class="watchlist-desc">
+        Friedreich's ataxia therapy with BLA submission targeted for June 2026. Novel surrogate endpoint creates binary risk. Entry trigger: pullback to the $3.80–4.20 range or FDA precedent on novel biomarkers.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ 5. PORTFOLIO ═══════ -->
+  <div class="section">
+    <span class="section-label">05 — Portfolio Status</span>
+    <h2>Capital Preserved, Powder Dry</h2>
+    <p>
+      With no new deployments this week, the portfolio remains positioned in existing holdings. In a month where the <strong>S&P 500 dropped 0.9%</strong> and the <strong>Nasdaq fell 3.4%</strong>, capital preservation is alpha. Cash on the sideline earns nothing, but it also doesn't lose — and it's available the moment our system finds a setup that genuinely matches our edge profile.
+    </p>
+    <p>
+      We continue to monitor existing positions for systematic exit signals. No exits triggered this week.
+    </p>
+
+    <!-- [WINNERS_TABLE] placeholder — no winners to display given portfolio status -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center;margin-top:16px;">
+      <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;">Performance Update</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:8px;">Full portfolio performance and winners table published in the monthly deep-dive. Next update: March 31.</div>
+    </div>
+  </div>
+
+  <!-- ═══════ 6. LOOKING AHEAD ═══════ -->
+  <div class="section">
+    <span class="section-label">06 — Week Ahead</span>
+    <h2>A Data-Heavy Week Could Reset the Tape</h2>
+    <p>
+      The first week of March is loaded with market-moving events. Here's what we're watching — and what could create the re-entry conditions for our watchlist names.
+    </p>
+
+    <div class="catalyst-list">
+      <div class="catalyst-row">
+        <div class="catalyst-date">MON 3/2</div>
+        <div class="catalyst-detail"><strong>ISM Manufacturing PMI</strong> — Consensus 52.3. The factory sector has been a quiet bright spot. A miss here signals the tariff headwinds are biting. Watch for any employment sub-index weakness ahead of Friday's jobs report.</div>
+      </div>
+      <div class="catalyst-row">
+        <div class="catalyst-date">TUE 3/3</div>
+        <div class="catalyst-detail"><strong>CrowdStrike & Best Buy earnings</strong> — Two reads on enterprise security spend and consumer resilience. CrowdStrike is the proxy for cybersecurity demand; Best Buy tells us if consumer wallets are tightening.</div>
+      </div>
+      <div class="catalyst-row">
+        <div class="catalyst-date">WED 3/4</div>
+        <div class="catalyst-detail"><strong>Broadcom Q1 earnings + ADP jobs + ISM Services</strong> — Triple threat. Broadcom is the week's marquee event — post-Nvidia, investors need a clearer AI demand signal. ADP consensus at 55K vs 22K prior sets a low bar.</div>
+      </div>
+      <div class="catalyst-row">
+        <div class="catalyst-date">THU 3/5</div>
+        <div class="catalyst-detail"><strong>Costco & Kroger earnings + jobless claims</strong> — Consumer staples double header. Costco membership trends and Kroger margins will indicate whether the consumer is bending or breaking under inflation pressure.</div>
+      </div>
+      <div class="catalyst-row">
+        <div class="catalyst-date">FRI 3/6</div>
+        <div class="catalyst-detail"><strong>February Nonfarm Payrolls</strong> — Consensus 60K vs 130K in January. This is the big one. A weak number could reignite rate-cut hopes and send risk assets higher. A hot number keeps the Fed on hold and extends the grind. Either way, volatility is likely.</div>
+      </div>
+    </div>
+
+    <div class="pullquote" style="margin-top:24px;">
+      The week ahead is exactly the kind of environment where sitting on cash pays off. If NFP misses and Broadcom disappoints, we could see the kind of broad drawdown that brings our watchlist names into buy zones. If both beat, the risk-on momentum extends and we scan for new theme-aligned entries. Either way, we're positioned to act.
+      <div class="attribution">— Sterling Signals Outlook</div>
+    </div>
+  </div>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <div class="footer">
+    <p>Want the full weekly analysis, watchlist alerts, and real-time GREEN signals?</p>
+    <a href="https://sterlingsignals.substack.com" class="cta-button">Subscribe to Sterling Signals</a>
+    <div class="disclaimer">
+      Sterling Signals is for informational purposes only and does not constitute investment advice. Past performance does not guarantee future results. All investments involve risk. Always conduct your own research and consider consulting a licensed financial advisor before making investment decisions.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{
+  "timestamp": "2026-02-14 11:43:15",
+  "timeframe": "WEEKLY",
+  "entry_criteria": "Sterling Grid: HMA slope\u2191 + RSI>50 + MACD cross-up + UC rising + Price<$25 + Theme + Investment Gate PASS",
+  "exit_criteria": "ExD compound exit (HMA falling + UC falling) OR tiered profit lock (+200%\u219215%, +100%\u219220%, +50%\u219225%)",
+  "stats": {
+    "tickers_loaded": 885,
+    "data_downloaded": 885,
+    "price_under_cap": 430,
+    "hma_slope_rising": 195,
+    "rsi_above_50": 190,
+    "macd_cross_up": 10,
+    "uc_rising_above": 54,
+    "buy_signal": 4,
+    "technical_signals": 4,
+    "theme_confirmed": 3,
+    "final_trade": 0,
+    "final_consider": 0,
+    "beta_gte_1_5": 323,
+    "weekly_bos_up": 4
+  },
+  "themes": [
+    {
+      "name": "AI Power Infrastructure & Grid Modernization",
+      "rank": 1,
+      "classification": "PRIME",
+      "theme_type": "BOTTLENECK",
+      "composite_score": 8.6,
+      "thesis_summary": "Power availability has become the primary constraint on AI expansion, forcing a strategic pivot from relying on public grids to developing integrated power solutions. This creates a multi-year investment cycle in grid modernization, nuclear power, and energy infrastructure as hyperscalers invest hundreds of billions in dedicated power generation.",
+      "key_catalysts": [
+        "Global data center power demand to grow from 55GW to 84GW by 2028",
+        "Trump administration promising to 'open up energy plants' for AI",
+        "Microsoft/Oracle each announcing >10GW data center projects",
+        "Grid connection backlogs forcing on-site power generation solutions"
+      ],
+      "momentum_score": 8,
+      "catalyst_score": 9,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Defense Industrial Base Modernization",
+      "rank": 2,
+      "classification": "INVESTABLE",
+      "theme_type": "TREND",
+      "composite_score": 7.4,
+      "thesis_summary": "Geopolitical tensions and defense budget increases are driving a multi-year modernization cycle, with supply chain bottlenecks in solid rocket motors, electronics, and manufacturing creating investment opportunities in defense industrial capacity expansion and next-generation production technologies.",
+      "key_catalysts": [
+        "Pentagon FY2026 budget request of $961.6B plus $150B reconciliation",
+        "Defense reindustrialization and supply chain reshoring initiatives",
+        "Solid rocket motor supply chain investments ($73M+ contracts announced)",
+        "3D printing/additive manufacturing scaling for expeditionary production"
+      ],
+      "momentum_score": 7,
+      "catalyst_score": 8,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Healthcare Sector Contrarian Recovery",
+      "rank": 3,
+      "classification": "INVESTABLE",
+      "theme_type": "CONTRARIAN",
+      "composite_score": 7.0,
+      "thesis_summary": "After 2.5 years of underperformance due to policy uncertainty and COVID impacts, healthcare is positioned for recovery as drug pricing clarity emerges, AI adoption accelerates, and valuations remain attractive relative to expected returns. The sector offers defensive characteristics with AI-driven efficiency upside.",
+      "key_catalysts": [
+        "Policy headwinds around drug pricing and ACA largely cleared",
+        "AI adoption in healthcare driving efficiency gains",
+        "Potential ACA subsidies extension compromise",
+        "Healthcare earnings revisions turning positive"
+      ],
+      "momentum_score": 6,
+      "catalyst_score": 7,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Communication Services AI Monetization",
+      "rank": 4,
+      "classification": "INVESTABLE",
+      "theme_type": "TREND",
+      "composite_score": 6.4,
+      "thesis_summary": "Communication services companies are successfully monetizing AI investments through improved advertising efficiency and new product offerings, with continued capex driving infrastructure demand. While crowded, fundamental earnings support and AI monetization runway justify continued exposure.",
+      "key_catalysts": [
+        "Q4 2025 earnings beats from Alphabet and Meta driving sector growth",
+        "Continued hyperscaler AI capex driving infrastructure demand",
+        "AI model monetization accelerating beyond ChatGPT and coding assistants"
+      ],
+      "momentum_score": 6,
+      "catalyst_score": 7,
+      "valuation_regime": "FUNDAMENTAL"
+    },
+    {
+      "name": "Financial Services AI Adoption & Rate Environment",
+      "rank": 5,
+      "classification": "INVESTABLE",
+      "theme_type": "TREND",
+      "composite_score": 6.0,
+      "thesis_summary": "Financial services positioned to benefit from AI infrastructure financing demand and potential improvement in rate environment, though near-term momentum weak. AI adoption by banks creating operational efficiency opportunities while deregulation expectations provide additional tailwind.",
+      "key_catalysts": [
+        "AI capex buildout creating demand for banking services",
+        "Potential yield curve steepening benefiting bank margins",
+        "Deregulation expectations under new administration"
+      ],
+      "momentum_score": 5,
+      "catalyst_score": 6,
+      "valuation_regime": "FUNDAMENTAL"
+    }
+  ],
+  "pass_signals": [],
+  "consider_signals": [],
+  "buy_signals": [],
+  "sell_signals": [],
+  "assessed_signals": [
+    {
+      "symbol": "FSLY",
+      "price": 18.26,
+      "theme": "AI Power Infrastructure & Grid Modernization",
+      "theme_score": 0.0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "FAIL",
+      "tier": "TIER1"
+    },
+    {
+      "symbol": "HCSG",
+      "price": 21.59,
+      "theme": "Healthcare Sector Contrarian Recovery",
+      "theme_score": 0.0,
+      "theme_verdict": "STRONG FIT",
+      "final_decision": "FAIL",
+      "tier": "TIER1"
+    },
+    {
+      "symbol": "HLIT",
+      "price": 10.68,
+      "theme": "AI Power Infrastructure & Grid Modernization",
+      "theme_score": 0.0,
+      "theme_verdict": "GOOD FIT",
+      "final_decision": "FAIL",
+      "tier": "TIER1"
+    }
+  ],
+  "historical_winners": [
+    {
+      "ticker": "VNET",
+      "entry_price": 10.4,
+      "current_price": 13.8,
+      "pnl_pct": 32.692307692307686,
+      "signal_date": "2026-01-09",
+      "theme": "Data Center Cooling / Liquid Cooling"
+    },
+    {
+      "ticker": "STRL",
+      "entry_price": 362.53,
+      "current_price": 437.77,
+      "pnl_pct": 20.754144484594384,
+      "signal_date": "2026-01-22",
+      "theme": "AI Cooling & Data Center Infrastructure"
+    },
+    {
+      "ticker": "MOD",
+      "entry_price": 184.66,
+      "current_price": 216.5,
+      "pnl_pct": 17.242499729232108,
+      "signal_date": "2026-01-30",
+      "theme": ""
+    }
+  ],
+  "big_wins": [
+    {
+      "ticker": "VNET",
+      "entry_price": 10.4,
+      "current_price": 13.8,
+      "pnl_pct": 32.692307692307686,
+      "signal_date": "2026-01-09",
+      "theme": "Data Center Cooling / Liquid Cooling",
+      "threshold_crossed": 25.0
+    }
+  ],
+  "home_runs": []
+}

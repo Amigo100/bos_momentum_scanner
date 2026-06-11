@@ -1,0 +1,175 @@
+{
+  "week": "2026-W22",
+  "generated": "2026-05-24T10:00:00+10:00",
+  "week_dates": {
+    "tuesday": "2026-05-26",
+    "wednesday": "2026-05-27",
+    "thursday": "2026-05-28",
+    "friday": "2026-05-29",
+    "saturday": "2026-05-30"
+  },
+  "market_context": {
+    "memorial_day": "Monday May 25 — US markets closed",
+    "fed_chair": "Kevin Warsh sworn in May 22 as new Fed chair, replacing Powell",
+    "key_data": "PCE inflation (Thu May 28), GDP 2nd estimate (Thu May 28), Consumer Confidence (Tue May 26)",
+    "vix": 16.70,
+    "spy_ytd_approx": "+45.2%",
+    "qqq_ytd_approx": "+59.9%",
+    "portfolio_nav": 107811,
+    "portfolio_total_return_pct": 88.31,
+    "portfolio_alpha_vs_spy_pct": 43.10,
+    "portfolio_alpha_vs_qqq_pct": 28.41,
+    "open_positions": 13
+  },
+  "portfolio_snapshot": [
+    {"ticker": "NVDA", "entry": 150.00, "current": 215.33, "pnl_pct": 43.6, "force": "AI Infrastructure"},
+    {"ticker": "AMD", "entry": 120.00, "current": 462.81, "pnl_pct": 285.7, "force": "AI Infrastructure"},
+    {"ticker": "ASPI", "entry": 6.00, "current": 5.55, "pnl_pct": -7.5, "force": "Nuclear Renaissance"},
+    {"ticker": "HIVE", "entry": 2.10, "current": 4.00, "pnl_pct": 90.5, "force": "AI Infrastructure"},
+    {"ticker": "BAND", "entry": 16.55, "current": 58.54, "pnl_pct": 253.8, "force": "AI Infrastructure"},
+    {"ticker": "VYGR", "entry": 4.45, "current": 4.24, "pnl_pct": -4.7, "force": "Biotech Capital Cycle"},
+    {"ticker": "SVCO", "entry": 5.98, "current": 9.27, "pnl_pct": 55.0, "force": "AI Infrastructure"},
+    {"ticker": "ACRS", "entry": 3.65, "current": 4.46, "pnl_pct": 22.2, "force": "Biotech Capital Cycle"},
+    {"ticker": "KARO", "entry": 48.05, "current": 49.99, "pnl_pct": 4.0, "force": "Financial Infrastructure"},
+    {"ticker": "CYRX", "entry": 9.67, "current": 13.95, "pnl_pct": 44.3, "force": "Biotech Capital Cycle"},
+    {"ticker": "KYTX", "entry": 9.22, "current": 8.65, "pnl_pct": -6.2, "force": "Biotech Capital Cycle"},
+    {"ticker": "NAMS", "entry": 34.76, "current": 32.81, "pnl_pct": -5.6, "force": "Biotech Capital Cycle"},
+    {"ticker": "VOYG", "entry": 29.00, "current": 45.24, "pnl_pct": 56.0, "force": "Defense Spending"}
+  ],
+  "content_schedule": {
+    "tuesday": {
+      "type": "deep_dive",
+      "priority": 5,
+      "topic": "Biotech Capital Cycle: Five Positions, Three Catalysts, and the Force That Defines Our Portfolio",
+      "reasoning": "No new scanner signal. Biotech Capital Cycle is our most concentrated structural force (5 of 13 positions: VYGR, ACRS, CYRX, KYTX, NAMS). Mixed P&L creates honest narrative. Multiple near-term catalysts (KYTX BLA filing, NAMS EMA decision, CYRX EBITDA inflection). Force deep dive gives subscribers a comprehensive view of where most capital is allocated."
+    },
+    "thursday": {
+      "type": "education",
+      "rotation": "A",
+      "topic": "How 1,279 Stocks Became Three: The Anatomy of a Screening Session",
+      "reasoning": "Week A rotation (Methodology). No prior Thursday manifests exist. Uses April 13 scan data: 1,279 tickers loaded, 18 technical signals, 6 themes scored, 3 entries (CYRX, KYTX, NAMS). DLO removal by CRO for drift provides a teaching moment about discipline. Connects directly to held positions without revealing indicator names."
+    }
+  },
+  "repetition_audit": {
+    "status": "CLEAN — no prior manifests found in substack/output/current/",
+    "retired_topics": [],
+    "note": "First weekly plan in current output directory. All topics available."
+  },
+  "batch_notes": {
+    "education": [
+      {
+        "id": "EDU-1",
+        "sub_variant": "research_insight",
+        "title": "The Multibagger Entry Window",
+        "scheduled_for": "sunday_morning",
+        "content": "A 2024 study by O'Shaughnessy Asset Management tracked every US stock that returned 500%+ between 2010 and 2023. The median entry point was 34% below the prior 52-week high.\n\nNot at the bottom. Not at the top. In the recovery zone, after maximum pessimism had passed but before momentum confirmation attracted the crowd.\n\nOur screening system targets exactly this window: structural trend reversals where institutional capital is building but the stock is still unloved. Seven of our current 13 positions were entered within 40% of their 52-week lows.\n\nThe wreckage is where the asymmetry lives.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-2",
+        "sub_variant": "methodology_insight",
+        "title": "Why the System Rejects 99.8% of Stocks",
+        "scheduled_for": "monday_evening",
+        "content": "Our last screening session loaded 1,279 stocks. Eighteen passed the initial momentum confirmation. Six survived theme quality scoring. Three cleared the final forensic audit.\n\nThat is a 99.8% rejection rate.\n\nMost screening systems optimise for inclusion: find as many ideas as possible. Ours optimises for exclusion. Every gate is designed to eliminate, not to confirm. The technical filter removes stocks without confirmed trend reversals. The theme filter removes stocks in weak or crowded sectors. The forensic audit removes stocks with capital structure problems, management red flags, or insufficient catalysts.\n\nThe best signal the system produces is \"no.\"\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-3",
+        "sub_variant": "concept_explainer",
+        "title": "What Structural Forces Actually Mean",
+        "scheduled_for": "wednesday_midday",
+        "content": "Not all investment themes are equal. We classify capital flows into structural forces: multi-year spending commitments backed by government budgets, regulatory mandates, or infrastructure requirements that cannot be reversed by a single earnings miss.\n\nDefence Spending: $1.01 trillion FY2027 budget, bipartisan support. Nuclear Renaissance: 14 SMR applications at the NRC, hyperscaler power demand. Biotech Capital Cycle: XBI up 40.8% trailing twelve months, IPO window reopened, $133B in biopharma M&A in 2025.\n\nA force is not a narrative. It is a measurable capital flow with a multi-year runway. Our portfolio maps every position to a force. When a force weakens, positions in that force get re-evaluated regardless of individual stock performance.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-4",
+        "sub_variant": "research_insight",
+        "title": "The Insider Purchase Signal",
+        "scheduled_for": "friday_morning",
+        "content": "When a CEO buys shares on the open market, the average subsequent 12-month return is 11.2% above the benchmark. That finding comes from a study of 64,000 insider transactions between 2003 and 2021 published in the Journal of Financial Economics.\n\nThe key word is \"open market.\" Grants, exercises, and 10b5-1 plan purchases carry no informational signal. Only discretionary purchases with personal capital matter.\n\n$SVCO's CEO Walden Rhines bought $170,000 of stock at the all-time low. He previously grew Mentor Graphics from $400M to a $4.5B Siemens acquisition. When a CEO with that track record uses personal capital at a multi-year low, the information asymmetry favours the buyer.\n\nNot financial advice."
+      }
+    ],
+    "scanner": [
+      {
+        "id": "SCAN-1",
+        "sub_variant": "weekly_funnel",
+        "title": "The April Screening Funnel",
+        "scheduled_for": "tuesday_morning",
+        "content": "The April 13 screening session: 1,279 tickers loaded across all US exchanges.\n\n18 passed the initial momentum confirmation. Six cleared combined filters across 15 distinct micro-themes. Three survived the forensic audit at conviction 7 or higher.\n\nThe three: $CYRX (cold chain logistics monopoly, conviction 8), $KYTX (autoimmune CAR-T first-to-market, conviction 7), $NAMS (oral CETP inhibitor, conviction 6).\n\nAll three in the Biotech Capital Cycle force. Scanner convergence in a single force is rare and informative: it means institutional capital is rotating into the sector with enough breadth to confirm the structural thesis.\n\n99.8% eliminated. That filtering is the system working.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN-2",
+        "sub_variant": "rejection_story",
+        "title": "DLO: The Signal We Walked Away From",
+        "scheduled_for": "wednesday_evening",
+        "content": "DLocal processes payments for six of the Magnificent Seven across 44 emerging markets. Revenue grew 47% to $1.09 billion. Forward P/E of 14.9x versus a 39.5x fintech peer average.\n\nOur screening system flagged it. The theme scored 7.0 out of 10. The momentum signal was confirmed.\n\nWe walked away.\n\nNo structural force alignment. The EM payment infrastructure theme lacked the multi-year government or regulatory catalyst that anchors a force. General Atlantic was selling. Take-rate compressing from 1.19% to 0.88%. Dual-class voting gave insiders 79.5% control.\n\nThe numbers looked right. The structure did not. Knowing the difference is the entire edge.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN-3",
+        "sub_variant": "theme_heatmap",
+        "title": "Theme Quality from the April Scan",
+        "scheduled_for": "friday_evening",
+        "content": "Themes from the April 13 scan, ranked by composite quality score:\n\nThree rated PRIME (highest quality, active catalysts, capital flowing): navy submarine hardware manufacturing, CAR-T autoimmune first-to-market, oral CETP inhibitor regulatory filing.\n\nTwo rated INVESTABLE (viable but need better timing): CGT cold chain logistics, EM cross-border payment infrastructure.\n\nOne rated INVESTABLE on optical interconnects: the 800G ramp cycle with hyperscaler capex at $690 billion.\n\nEleven themes rejected below our quality threshold. Rejected themes included EV manufacturing, movie exhibition, community banking, and radio media. The scanner does not chase narrative. It scores catalyst density, momentum alignment, crowding risk, and runway.\n\nNot financial advice."
+      }
+    ],
+    "promo": [
+      {
+        "id": "PROMO-1",
+        "sub_variant": "deep_dive_hook",
+        "title": "Tuesday Deep Dive Teaser",
+        "scheduled_for": "tuesday_evening",
+        "content": "New deep dive just published.\n\nFive positions across one structural force. Three entered in the same screening session. Combined allocation: the largest single-force concentration in our portfolio.\n\nOne has 70% market share in a logistics niche where every new FDA approval creates recurring revenue. One is racing to become the first non-oncology CAR-T approval in history. One is attempting what four predecessors failed to achieve in cardiovascular medicine.\n\nThe full force analysis, individual P&L, upcoming catalysts, and what we are watching in today's post.\n\nNot financial advice."
+      },
+      {
+        "id": "PROMO-2",
+        "sub_variant": "education_preview",
+        "title": "Thursday Education Teaser",
+        "scheduled_for": "thursday_evening",
+        "content": "New post: how 1,279 stocks became three entries.\n\nThe full anatomy of a screening session, from the initial universe to the final forensic audit. Including the emerging-market fintech stock we rejected despite 47% revenue growth and a P/E ratio three times cheaper than its peer group.\n\nThe system said no. The reasons why are the entire point.\n\nFree to read.\n\nNot financial advice."
+      }
+    ]
+  },
+  "visual_asset_ideas": [
+    {
+      "id": "VIS-1",
+      "type": "PORTFOLIO_FORCE_MAP",
+      "description": "Portfolio force allocation heatmap: 13 positions across 4 structural forces, sized by allocation, coloured by P&L",
+      "ticker_subject": "Full portfolio",
+      "data_needed": ["Position count per force", "Aggregate P&L per force", "Individual position P&L for colour coding"]
+    },
+    {
+      "id": "VIS-2",
+      "type": "SCREENING_FUNNEL",
+      "description": "April 13 screening funnel: 1,279 → 18 → 6 → 3 with rejection counts at each stage and theme labels for survivors",
+      "ticker_subject": "CYRX, KYTX, NAMS",
+      "data_needed": ["stats block from signals.json", "tier breakdown", "final 3 tickers with conviction scores"]
+    },
+    {
+      "id": "VIS-3",
+      "type": "BIOTECH_CATALYST_TIMELINE",
+      "description": "Biotech Capital Cycle catalyst calendar: $KYTX BLA filing, $NAMS EMA decision, $CYRX EBITDA inflection, $ACRS bosakitug Phase 2 readout mapped on a H2 2026 timeline",
+      "ticker_subject": "KYTX, NAMS, CYRX, ACRS",
+      "data_needed": ["Catalyst dates from decisions.json", "Current P&L for each position", "Probability-weighted upside from gate_math"]
+    },
+    {
+      "id": "VIS-4",
+      "type": "CASE_STUDY",
+      "description": "DLO rejection anatomy: the three metrics that looked right (47% revenue growth, 14.9x P/E, 7.0 theme score) versus the three that killed it (no force alignment, take-rate compression, insider selling)",
+      "ticker_subject": "DLO (rejected signal)",
+      "data_needed": ["Revenue growth rate", "P/E vs peer average", "Take-rate trend 1.19% to 0.88%", "General Atlantic selling data"]
+    },
+    {
+      "id": "VIS-5",
+      "type": "BENCHMARK_COMPARISON",
+      "description": "Portfolio vs SPY vs QQQ equity curve since inception: three lines showing +88.3% portfolio, +45.2% SPY, +59.9% QQQ with alpha callouts",
+      "ticker_subject": "Portfolio aggregate",
+      "data_needed": ["equity_curve.csv full dataset", "SPY and QQQ return series", "Alpha at key dates"]
+    },
+    {
+      "id": "VIS-6",
+      "type": "POSITION_SCORECARD",
+      "description": "$BAND revenue architecture breakdown: $187M CPaaS vs $47M Operator, AI voice growth rate, 0.7x forward revenue valuation vs Twilio at 8x",
+      "ticker_subject": "BAND",
+      "data_needed": ["Revenue by segment", "Growth rate by segment", "EV/Revenue vs Twilio, Vonage peer group"]
+    }
+  ],
+  "tuesday_context_package": "See inline output below",
+  "thursday_context_package": "See inline output below"
+}

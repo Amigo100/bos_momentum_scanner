@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; }
+  .card { width: 680px; margin: 0 auto; padding: 32px; background: #ffffff; }
+  .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; border-bottom: 2px solid #1a1a1a; padding-bottom: 12px; }
+  .header h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: 22px; color: #1a1a1a; font-weight: 700; }
+  .header .date { font-size: 13px; color: #6b6b6b; font-family: 'JetBrains Mono', monospace; }
+  .stats-row { display: flex; gap: 16px; margin-bottom: 24px; }
+  .stat-box { flex: 1; background: #f8f7f5; border-radius: 8px; padding: 16px; text-align: center; }
+  .stat-box .label { font-size: 11px; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-box .value { font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .stat-box .value.green { color: #16a34a; }
+  .stat-box .value.red { color: #dc2626; }
+  .stat-box .value.neutral { color: #1a1a1a; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; padding: 8px 12px; background: #f8f7f5; color: #6b6b6b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e0ddd8; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0eeeb; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .ticker { font-weight: 700; color: #1a1a1a; }
+  .pnl-pos { color: #16a34a; font-weight: 600; }
+  .pnl-neg { color: #6b6b6b; }
+  .bar-cell { width: 120px; }
+  .bar-bg { height: 8px; background: #f0eeeb; border-radius: 4px; overflow: hidden; }
+  .bar-fill-green { height: 100%; background: #16a34a; border-radius: 4px; }
+  .bar-fill-red { height: 100%; background: #e0ddd8; border-radius: 4px; float: right; }
+  .benchmarks { margin-top: 20px; display: flex; gap: 24px; }
+  .bench { font-size: 12px; color: #6b6b6b; }
+  .bench span { font-weight: 600; color: #1a1a1a; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h2>Portfolio Snapshot</h2>
+    <div class="date">Mar 13, 2026</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="label">Positions</div>
+      <div class="value neutral">8</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Winners</div>
+      <div class="value green">4</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Best Position</div>
+      <div class="value green">+126.7%</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">SPY Today</div>
+      <div class="value red">$666</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Ticker</th><th>Entry</th><th>Current</th><th>P&L</th><th class="bar-cell">Return</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="ticker">$SOFI</td><td>$7.90</td><td>$17.91</td>
+        <td class="pnl-pos">+126.7%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-green" style="width:100%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$TMDX</td><td>$65.00</td><td>$121.31</td>
+        <td class="pnl-pos">+86.6%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-green" style="width:68%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$AMD</td><td>$120.00</td><td>$203.23</td>
+        <td class="pnl-pos">+69.4%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-green" style="width:55%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$NVDA</td><td>$150.00</td><td>$185.80</td>
+        <td class="pnl-pos">+23.9%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-green" style="width:19%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$BAND</td><td>$16.55</td><td>$16.30</td>
+        <td class="pnl-neg">-1.5%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-red" style="width:5%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$HIVE</td><td>$2.10</td><td>$2.08</td>
+        <td class="pnl-neg">-1.0%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-red" style="width:3%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$EVTL</td><td>$4.50</td><td>$4.14</td>
+        <td class="pnl-neg">-8.0%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-red" style="width:15%"></div></div></td>
+      </tr>
+      <tr>
+        <td class="ticker">$ASPI</td><td>$6.00</td><td>$5.11</td>
+        <td class="pnl-neg">-14.8%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill-red" style="width:25%"></div></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="benchmarks">
+    <div class="bench">SPY: <span>$666.06</span></div>
+    <div class="bench">QQQ: <span>$597.26</span></div>
+    <div class="bench">VIX: <span>29.49</span></div>
+  </div>
+</div>
+</body>
+</html>

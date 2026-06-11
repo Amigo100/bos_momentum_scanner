@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Toll Booth Below the AI Chip: Why $SVCO Trades at Half the Peer Floor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-2: #0f2440;
+    --blue-deep: #1a3a5c;
+    --blue: #2563eb;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --green: #16a34a;
+    --red: #dc2626;
+    --gold: #d97706;
+    --paper: #fcfcfd;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--slate);
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-size: 18px;
+    line-height: 1.72;
+    font-weight: 400;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.1;
+    color: var(--navy);
+    margin: 0 0 22px;
+    letter-spacing: -0.01em;
+  }
+  .preview {
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--slate);
+    font-weight: 400;
+    border-left: 3px solid var(--blue);
+    padding-left: 20px;
+    margin: 0 0 36px;
+    font-style: italic;
+  }
+  .byline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--slate-light);
+    letter-spacing: 0.04em;
+    margin: 0 0 34px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  h2 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.18;
+    color: var(--navy);
+    margin: 54px 0 18px;
+    letter-spacing: -0.01em;
+  }
+  h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blue);
+    vertical-align: middle;
+    margin-right: 12px;
+    letter-spacing: 0.05em;
+  }
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--blue-deep);
+    margin: 34px 0 8px;
+    letter-spacing: 0.005em;
+  }
+  p { margin: 0 0 20px; }
+  strong { color: var(--navy); font-weight: 600; }
+  em { font-style: italic; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Stat grid */
+  .statgrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 0 0 40px;
+  }
+  .statcard {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 18px 16px;
+    color: #fff;
+  }
+  .statcard .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #7d96b5;
+    margin: 0 0 8px;
+  }
+  .statcard .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.15;
+  }
+  .statcard .sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    color: #9db4d0;
+    margin-top: 5px;
+    line-height: 1.35;
+  }
+  .statcard.accent .value { color: #4ade80; }
+
+  /* Secondary stat strip */
+  .targetstrip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0 0 44px;
+    padding: 20px;
+    background: #f1f5f9;
+    border-radius: 12px;
+  }
+  .targetstrip .t { text-align: center; }
+  .targetstrip .tl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-bottom: 6px;
+  }
+  .targetstrip .tv {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .targetstrip .ts {
+    font-size: 11px;
+    color: var(--slate-light);
+    margin-top: 3px;
+  }
+
+  /* TOC */
+  .toc {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 0 0 46px;
+  }
+  .toc .toc-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin: 0 0 14px;
+  }
+  .toc ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    columns: 2;
+    column-gap: 36px;
+  }
+  .toc li {
+    font-size: 15px;
+    padding: 5px 0;
+    break-inside: avoid;
+  }
+  .toc li .n {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--blue);
+    font-size: 12px;
+    margin-right: 9px;
+    font-weight: 600;
+  }
+
+  /* Thesis callout */
+  .thesis {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue-deep) 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 34px 32px;
+    margin: 0 0 12px;
+  }
+  .thesis .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7d96b5;
+    margin: 0 0 14px;
+  }
+  .thesis p {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 25px;
+    line-height: 1.4;
+    color: #fff;
+    margin: 0;
+    font-weight: 400;
+  }
+  .thesis p strong { color: #4ade80; font-weight: 400; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0 30px;
+    font-size: 15px;
+  }
+  thead th {
+    background: var(--navy-2);
+    color: #fff;
+    text-align: left;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  thead th.num, tbody td.num { text-align: right; font-family: 'JetBrains Mono', monospace; }
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody td.tk { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--navy); }
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  .tag.present { background: #dcfce7; color: #15803d; }
+  .tag.partial { background: #fef9c3; color: #a16207; }
+  .tag.absent { background: #fee2e2; color: #b91c1c; }
+
+  /* Scenario cards */
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 28px 0 18px;
+  }
+  .scn {
+    border-radius: 12px;
+    padding: 22px 22px 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left-width: 5px;
+  }
+  .scn.bear { border-left-color: var(--red); }
+  .scn.base { border-left-color: var(--blue); }
+  .scn.rerate { border-left-color: var(--green); }
+  .scn.over { border-left-color: var(--gold); }
+  .scn .sh {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .scn .name {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+  .scn .prob {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate-light);
+  }
+  .scn .price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 27px;
+    font-weight: 700;
+    margin: 6px 0 2px;
+  }
+  .scn.bear .price { color: var(--red); }
+  .scn.base .price { color: var(--blue); }
+  .scn.rerate .price { color: var(--green); }
+  .scn.over .price { color: var(--gold); }
+  .scn .move {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--slate);
+    margin-bottom: 10px;
+  }
+  .scn .desc { font-size: 13.5px; line-height: 1.5; color: var(--slate); margin: 0; }
+
+  .pweight {
+    text-align: center;
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 4px 0 12px;
+  }
+  .pweight .pl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate-light);
+    margin-bottom: 6px;
+  }
+  .pweight .pv {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .pweight .ps { font-size: 13px; color: var(--slate-light); margin-top: 4px; }
+
+  /* Football field */
+  .field {
+    margin: 24px 0 30px;
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .field .frow {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .field .frow:last-child { margin-bottom: 0; }
+  .field .fm {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate);
+    line-height: 1.3;
+  }
+  .field .fbarwrap { position: relative; height: 30px; background: #e2e8f0; border-radius: 6px; }
+  .field .fbar {
+    position: absolute;
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Bear block */
+  .bearbox {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 5px solid var(--red);
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin: 24px 0 28px;
+  }
+  .bearbox .bl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 10px;
+  }
+  .bearbox p { margin: 0 0 14px; }
+  .bearbox p:last-child { margin-bottom: 0; }
+
+  .bearclass { margin: 22px 0 8px; }
+  .bearclass .bc {
+    border-left: 3px solid var(--line);
+    padding: 4px 0 4px 18px;
+    margin-bottom: 18px;
+  }
+  .bearclass .bch {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 16px;
+    margin-bottom: 3px;
+  }
+  .bearclass .bclabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 1px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .lbl-priced { background: #fef9c3; color: #a16207; }
+  .lbl-binary { background: #fee2e2; color: #b91c1c; }
+  .lbl-refuted { background: #dcfce7; color: #15803d; }
+  .bearclass .bc p { font-size: 15px; margin: 0; }
+
+  /* Call card */
+  .callcard {
+    background: linear-gradient(135deg, #052e16 0%, #14532d 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 32px;
+    margin: 24px 0 28px;
+  }
+  .callcard .cgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+  .callcard .cl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #86efac;
+    margin-bottom: 6px;
+  }
+  .callcard .cv {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .callcard p { color: #d1fae5; margin: 0 0 14px; }
+  .callcard p:last-child { margin-bottom: 0; }
+  .callcard strong { color: #fff; }
+
+  .notebox {
+    background: #f8fafc;
+    border: 1px dashed var(--slate-light);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 24px 0;
+    font-size: 14.5px;
+    color: var(--slate);
+  }
+  .notebox strong { color: var(--navy); }
+
+  ul.clean { margin: 0 0 22px; padding-left: 0; list-style: none; }
+  ul.clean li {
+    position: relative;
+    padding: 0 0 14px 26px;
+  }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 11px;
+    width: 7px;
+    height: 7px;
+    background: var(--blue);
+    border-radius: 50%;
+  }
+
+  hr.sec { border: none; border-top: 1px solid var(--line); margin: 56px 0; }
+
+  .footer {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--slate-light);
+    line-height: 1.6;
+  }
+  .footer strong { color: var(--slate); }
+
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    h1 { font-size: 33px; }
+    h2 { font-size: 25px; }
+    .preview { font-size: 18px; }
+    .statgrid { grid-template-columns: repeat(2, 1fr); }
+    .targetstrip { grid-template-columns: repeat(2, 1fr); }
+    .scenarios { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .thesis p { font-size: 21px; }
+    .callcard .cgrid { grid-template-columns: 1fr; gap: 14px; }
+    .field .frow { grid-template-columns: 1fr; gap: 6px; }
+    .field .fm { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <p class="kicker">Sterling Signals &middot; Deep Dive</p>
+  <h1>The Toll Booth Below the AI Chip: Why $SVCO Still Trades at Half the Peer Floor</h1>
+
+  <p class="preview">Every advanced chip on the planet passes through design and process software before it is ever made. Silvaco is a profitable-on-the-cusp specialist in that toll layer, priced at 5.5x revenue against a peer band of 11x to 16x. We bought it at $5.98. It is $11.30 today, and we think the harder leg is still ahead.</p>
+
+  <p class="byline">By the Sterling Signals desk &middot; Coverage initiated 24 March 2026 &middot; Re-underwritten 8 June 2026 &middot; Ticker: $SVCO (NASDAQ)</p>
+
+  <!-- STAT GRID -->
+  <div class="statgrid">
+    <div class="statcard">
+      <div class="label">Entry Price</div>
+      <div class="value">$5.98</div>
+      <div class="sub">24 Mar 2026</div>
+    </div>
+    <div class="statcard accent">
+      <div class="label">Current</div>
+      <div class="value">$11.30</div>
+      <div class="sub">+89.0% held</div>
+    </div>
+    <div class="statcard">
+      <div class="label">Structural Force</div>
+      <div class="value" style="font-size:15px;line-height:1.3;">AI Infrastructure</div>
+      <div class="sub">Chip-design software</div>
+    </div>
+    <div class="statcard">
+      <div class="label">Type</div>
+      <div class="value" style="font-size:16px;">Great Trade</div>
+      <div class="sub">Conviction: Bullish</div>
+    </div>
+  </div>
+
+  <!-- TARGET STRIP -->
+  <div class="targetstrip">
+    <div class="t"><div class="tl">Floor</div><div class="tv">$7&ndash;8.50</div><div class="ts">&minus;25% to &minus;38%</div></div>
+    <div class="t"><div class="tl">Re-rate</div><div class="tv">$24&ndash;31</div><div class="ts">~+135%</div></div>
+    <div class="t"><div class="tl">Overshoot</div><div class="tv">$36&ndash;45</div><div class="ts">~+245%</div></div>
+    <div class="t"><div class="tl">Catalyst</div><div class="tv" style="font-size:13px;">Q2 FY26</div><div class="ts">~early Aug 2026</div></div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-title">In this report</div>
+    <ol>
+      <li><span class="n">01</span><a href="#thesis">The thesis in one sentence</a></li>
+      <li><span class="n">02</span><a href="#company">What this company does</a></li>
+      <li><span class="n">03</span><a href="#why">Why now</a></li>
+      <li><span class="n">04</span><a href="#space">The space</a></li>
+      <li><span class="n">05</span><a href="#evidence">The evidence</a></li>
+      <li><span class="n">06</span><a href="#valuation">Valuation and the path</a></li>
+      <li><span class="n">07</span><a href="#bear">The bear case</a></li>
+      <li><span class="n">08</span><a href="#call">The call</a></li>
+      <li><span class="n">09</span><a href="#wrong">How we would be wrong</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. THESIS -->
+  <h2 id="thesis"><span class="num">01</span>The thesis in one sentence</h2>
+  <div class="thesis">
+    <div class="lab">The whole case, compressed</div>
+    <p>A proven semiconductor-software operator has taken over a structurally real but distressed design-tooling specialist, is executing a quantified margin and cash-flow inflection on an accelerating top line, and is hitting its profitability milestone on schedule, while the stock still trades at <strong>roughly half the peer floor multiple.</strong></p>
+  </div>
+  <p>That leaves a catalyst-protected re-rate of roughly 2.5x to 3x from the $11.30 level today, and a cleaner 4x to 5x framed from our $5.98 entry. The operator running this is Wally Rhines, who took Mentor Graphics from $400M to a $4.5B sale to Siemens. He bought roughly $170,000 of stock in the open market at the $4 lows. We are along for the same ride he is.</p>
+  <p>This is filed as a <strong>great trade</strong>, not a multibagger, and the distinction is deliberate: the open-ended part of the return was harvested between $5.98 and $11.30, and what remains is a protected, evidence-backed re-rate keyed to a binary that lands one quarter out.</p>
+
+  <!-- 2. WHAT IT DOES -->
+  <h2 id="company"><span class="num">02</span>What this company does</h2>
+  <p>Silvaco sells the software chip engineers use to design and develop semiconductors before a single wafer is fabricated. It is a roughly $370M company one layer below the obvious AI compute names: not the chip, but the simulation and design-automation toolchain every advanced chip must pass through first. Revenue runs across three engines.</p>
+  <p><strong>TCAD</strong> is the core franchise: device and process simulation, the layer that models how a transistor will behave before it is built. It did $9.6M of revenue in the March quarter, up 22% year over year, with bookings of $10.5M, up roughly 50%. This is the most defensible part of the business. <strong>Semiconductor IP</strong> is the fastest grower: $4.0M of revenue, up 270% year over year, driven by Mixel's high-speed interface IP into a served market north of $300M, where Silvaco still holds modest share. <strong>Legacy design automation</strong> is the soft spot: roughly $4.1M, down 20% year over year, which management expects to stabilise then return to growth.</p>
+  <p>On top sits <strong>FTCO</strong>, an AI-driven process digital-twin layer, what the company calls virtualised process development. It is anchored by Micron as a genuine paying partner: the original $5M Micron convertible already converted to equity at the May 2024 listing, so this is a real relationship, not a vendor-financed mirage. FTCO is winning new logos each quarter, though customers beyond Micron are not yet named. Insiders own roughly 70% of the company, so the float that actually trades is thin.</p>
+
+  <!-- 3. WHY NOW -->
+  <h2 id="why"><span class="num">03</span>Why now</h2>
+  <p>The structural force under this name is <strong>AI Infrastructure</strong>, and Silvaco's place on that wave is what makes it interesting. It does not sit at the obvious compute layer; it sits at the design and process-development tooling every advanced chip must clear before manufacture. That layer is among the most defensive expressions of the build-out, because design-software spend runs at a stable <strong>~2% of semiconductor revenue regardless of the cycle.</strong> The tailwind is not hype; it is the slower fact that as chips get more complex, the simulation spend per chip rises, and AI is now being turned back on that workflow itself.</p>
+  <p>This is a <strong>top-down-confirmed</strong> theme with an adjacent, specialist expression. The leaders, Synopsys and Cadence, sit on the official map at 11x to 16x revenue. Silvaco is the screener-flagged proxy below them: the same structural demand, priced as a broken laggard. The theme is richly valued at the apex but early and under-recognised in the specialist tier, which is exactly where a re-rating thesis lives. Three clocks converge, and the convergence is the entry.</p>
+
+  <h3>1. The inflection is live, not promised</h3>
+  <p>The March quarter, reported in early May 2026, beat and accelerated: total revenue $17.8M, <strong>up 26% year over year</strong> against a flat prior year; non-GAAP gross margin of <strong>88%, up 788 basis points;</strong> a non-GAAP operating loss that collapsed to just <strong>$0.5M</strong> from $2.8M; and cash that grew sequentially for the first time since the May 2024 listing, from $9.01M to $10.9M.</p>
+
+  <h3>2. The binary milestone lands on its original date</h3>
+  <p>The thesis underwrote non-GAAP profitability by the first half of 2026. The June-quarter guide explicitly calls for <strong>non-GAAP operating profitability for the first time since the December 2024 quarter.</strong> June is the end of the first half. On the original clock, no slip. The $0.5M loss print has already largely de-risked it.</p>
+
+  <h3>3. The gap is still open, and wider from here than it looks</h3>
+  <p>At $11.30 the stock trades at roughly 5.5x revenue against an 11x to 16x peer band, and the cheap broken-to-credible leg is only about 40% to 45% harvested. The cleanest historical match is <strong>Cadence under Lip-Bu Tan, from 2009:</strong> a sub-$1B-revenue design-software number two or three, post-restatement and near delisting, the chief executive and four senior vice presidents gone. Cost discipline plus a product-led reacceleration produced roughly +3,200% over twelve years, with the first clean double inside 18 to 24 months as solvency fear lifted and the multiple re-rated from under 3x to double-digit revenue. The secondary match is Rhines himself at Mentor Graphics, the story he rode to a $4.5B Siemens exit. The same operator now runs Silvaco. That archetype is why this is filed as a great trade, not a watchlist note.</p>
+
+  <!-- 4. THE SPACE -->
+  <h2 id="space"><span class="num">04</span>The space</h2>
+  <p>This section is about the competitive and lifecycle arc of the structural force, which is a different question from the inflection timing above. The conclusion that governs the geometry: the space is early and rising and <em>supports</em> an overshoot multiple, but Silvaco's structural placement <em>caps</em> that overshoot below the leader band. That two-sided fact is precisely why this is a great trade with a protected 2.5x to 3x, and not an open-ended multibagger from here.</p>
+
+  <h3>The live competitive field</h3>
+  <p>Silvaco competes in three fields with very different structures. In <strong>TCAD and process simulation</strong>, its core at roughly 54% of revenue, it is a genuine two-player niche: Silvaco against Synopsys Sentaurus. The decisive structural fact is that device-physics modelling sits <strong>outside the stranglehold of the big three design-software vendors.</strong> No vendor outside that group holds more than 5% in any core category, because the franchise power lives in chip implementation and verification, not in device physics. So Silvaco faces one incumbent here, not the 85%-to-100%-share franchise tools elsewhere. It is the clear <strong>number two</strong>, holding and modestly gaining in power-semiconductor and photonics.</p>
+  <p>In <strong>semiconductor IP</strong> it is a sub-1%-share new entrant in the fastest-growing field, where ARM at 21.3%, Synopsys, Cadence and the recently-acquired Alphawave own the scale and the top five hold roughly 62%. An also-ran by scale, but renting the best sub-current, the interface-IP lane, off a tiny base, which is how you get 270% growth. In <strong>FTCO</strong>, the AI process digital-twin, the field is contested and nascent: the entrenched virtual-fab incumbent is Lam Research's offering, plus Synopsys's own digital-twin. Silvaco's physics-plus-data approach is differentiated and Micron-validated, but not uncontested. Net placement: a clear number-two specialist leader in a defensible non-core niche, a sub-scale fast-follower in IP, and a contested early entrant in the digital-twin layer. Critically, it leads a lane the duopoly does not prioritise. It is not a me-too challenger in chip implementation, which is where past challengers died.</p>
+
+  <h3>Lifecycle and growth: mid-curve, capital still accelerating in</h3>
+  <p>The theme is mid-acceleration, not late. The hard number: the category grows at roughly a 13% compound rate against semiconductor research-and-development spend at roughly 7%, a six-point spread that widened after 2018 and is still widening. The market runs about $20.8B in 2026 toward roughly $30.7B by 2031. The leaders confirm it: Cadence printed core growth of 18% year over year with a record $7.8B backlog and raised its full-year guide; Synopsys carries an $11.3B backlog; system and hyperscaler companies are now 45% of demand, up from 40%, expanding the addressable market rather than cannibalising it. Silvaco sits at the early inflection of its own re-rate inside a mid-curve, rising theme, so there is no too-early and no faded-wave mismatch. The one honest mismatch is at the name level, not the theme: a chunk of its re-rate is already harvested.</p>
+
+  <h3>Capex, demand, and the addressable slice</h3>
+  <p>The AI-infrastructure giga-cycle funds the whole stack: wafer-fab equipment of $133B in 2026, up 18%, heading to $151B in 2027; advanced-process capex up 94% to over $50B by 2028; the custom-accelerator market compounding at 47% to $40.8B by 2028. More unique tape-outs means more process-development and IP licensing per node. But Silvaco's addressable slice is <strong>not</strong> the global ~$20.8B design-software market. It is the sum of three small, fast pockets: a TCAD software market of roughly <strong>$273M in 2026</strong> at a 12% growth rate, where Silvaco's ~$40M TCAD business already holds a meaningful double-digit share; a semiconductor IP market of roughly <strong>$11B in 2026 heading to $38B by 2035</strong> at a 15% rate, where Silvaco is sub-1% share but growing 270% into a $300M-plus served market; and the FTCO pocket, a new market it is helping create, credible but as yet unsized. The binding constraint here is execution and share-capture in small niches, not theme demand or capex, both inflecting hard for the name's products now. A re-rate to $85M to $95M of revenue in 18 to 24 months is segment-supported, not heroic.</p>
+
+  <h3>The moat: does the value-capture hold?</h3>
+  <p>Value-capture is graded <strong>Adjacent, with a Direct edge in process simulation,</strong> and it holds where it matters. The durable components: the TCAD niche is protected by the same lock-in the whole industry runs on, foundry co-development roughly 24 months before production, tape-out mandates, sequential-tool dependency, 95%-plus core-tool retention, and the duopoly does not prioritise device physics, so there is no franchise lock to displace Silvaco. Add deep domain expertise in compound-semiconductor, power and photonics, where the incumbent is weaker, plus Rhines as a scarce operator. The at-risk components: the IP scale-moat belongs to the giants, so the 270% is real growth but not a durable share-moat; and the FTCO first-mover edge is temporary, with the named substitute risk the open variable. The hard ceiling on all independents is that specialists survive in narrow niches but face two paths, acquire breadth to platform status or get acquired. Silvaco's durable terminal is therefore <strong>a defensible niche number two plus a strategic-acquisition candidate</strong>, with Sentaurus-owner Synopsys the natural acquirer and the $4.5B Mentor-to-Siemens deal the precedent. It does not become the third member of the duopoly, which is precisely why value-capture caps below the leaders' grade.</p>
+
+  <h3>The space-to-price read</h3>
+  <p>This is two-sided, and both halves are honoured. <strong>The theme side supports the overshoot:</strong> the space is early-to-mid curve with capital still accelerating in, and TCAD sits outside the duopoly's core lock, so the theme imposes no maturity or crowding cap and a reflexive overshoot is permissible. We do not clip it at the base multiple. <strong>The name side caps it:</strong> a sub-scale number-two specialist whose terminal is a defensible niche or an acquisition, with a still-shrinking legacy segment, will not be granted the full leader band standalone. The net is an overshoot bounded to a haircut of the leader band, anchored to the Cadence-under-Tan re-rate path and a strategic-acquisition precedent; the higher-confidence path is the re-rate tier. That is the multiple-ceiling read, and the catalyst that opens the window is the August earnings print. It is what makes this a great trade, not an open-ended multibagger from here.</p>
+
+  <!-- 5. EVIDENCE -->
+  <h2 id="evidence"><span class="num">05</span>The evidence</h2>
+  <p>What separates thematic winners from same-theme round-trippers is leading, observable operational evidence, not valuation and not story. We score every serious name against four signals. Here is what Silvaco produced.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Leading signal</th>
+        <th style="width:130px;">Read</th>
+        <th>What the data shows</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Margin / cash-flow inflection</strong><br><span style="font-size:12.5px;color:var(--slate-light);">the strongest signal</span></td>
+        <td><span class="tag present">Present</span></td>
+        <td>Non-GAAP gross margin +788bps to 88%; operating loss $2.8M to $0.5M; operating cash flow guided positive in the September quarter, ahead of net income. Operating expense down two consecutive quarters for the first time since listing.</td>
+      </tr>
+      <tr>
+        <td><strong>Binary milestone on its original date</strong></td>
+        <td><span class="tag present">Present</span></td>
+        <td>Non-GAAP operating profitability guided for the June quarter, the end of the first-half window the thesis underwrote. No slip. The $0.5M loss print de-risks the hit.</td>
+      </tr>
+      <tr>
+        <td><strong>Backlog accelerating and converting</strong></td>
+        <td><span class="tag partial">Partial</span></td>
+        <td>Bookings up 26% year over year, book-to-bill near 1.0, remaining performance obligations of $46.6M. But the year-over-year backlog comparison is undisclosed and the absolute figure dipped slightly quarter over quarter, so the conversion test rests on bookings, not a clean backlog ramp.</td>
+      </tr>
+      <tr>
+        <td><strong>Firm fixed-price cash contract</strong></td>
+        <td><span class="tag partial">Partial</span></td>
+        <td>Micron is a real, paying anchor and the original convertible already equitised, so this is a genuine relationship. But the contract value and the FTCO customer names beyond Micron are undisclosed, so the structure cannot be fully verified.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two signals present, two partial, and the strongest of the four, the margin and cash-flow inflection, is the one fully present and on a tight clock. That is a strong scorecard for a name at this stage. The partials are limited by disclosure, not by contradicting evidence: the backlog year-over-year line and the FTCO contract values are open questions we are explicit about, not facts we have filled in.</p>
+
+  <h3>The verified drivers of the gain</h3>
+  <ul class="clean">
+    <li><strong>Growth re-acceleration:</strong> total revenue up 26% year over year after a flat prior year; TCAD up 22% with bookings up roughly 50%; IP up 270%; partly offset by legacy automation down 20%.</li>
+    <li><strong>The underlying burn is small:</strong> the headline $11.0M operating cash outflow was a one-time event, the final $8.3M Nangate litigation settlement plus about $1M of severance. Underlying quarterly burn is only about $1.7M, with breakeven guided for June and positive cash flow for September.</li>
+    <li><strong>The operator has skin in the game:</strong> Rhines bought roughly $170,000 of stock at the $4 lows, raising his stake about 89%; insiders own roughly 70%.</li>
+    <li><strong>An accounting-credibility upgrade:</strong> the auditor change is an upgrade to a major firm, with no disagreements and a clean concurrence, a credibility positive rather than a red flag.</li>
+  </ul>
+
+  <!-- 6. VALUATION -->
+  <h2 id="valuation"><span class="num">06</span>Valuation and the path</h2>
+  <p>We value the floor and the target separately, on purpose: the floor is a survival-and-impairment question, the target a re-rating question, and collapsing them hides the asymmetry.</p>
+
+  <h3>The floor: $7 to $8.50</h3>
+  <p>The downside is a permanent-impairment level of roughly <strong>$7.00 to $8.50,</strong> 25% to 38% below the current $11.30. At that level the stock trades at 3.5x to 4.2x revenue on roughly $67M trailing revenue, where the $5.98-to-$11.30 recovery would have to fully round-trip. It is anchored to the survival read: cash of $10.9M and rising, an underlying burn of about $1.7M, cash flow guided positive in September, no term debt, the convertible already equitised, and a clean accounting picture reinforced by the auditor upgrade. This is a pre-breakeven-adjacent business, not an impairment candidate. It is not ruin.</p>
+
+  <h3>The target: the methods we actually used</h3>
+  <p>Three methods bound the upside on grown revenue of roughly $85M to $95M over 18 to 24 months. The Street's average price target of about $14.62, itself a Strong Buy, is the floor on our bull case, not the cap.</p>
+
+  <div class="field">
+    <div class="frow">
+      <div class="fm">Peer-multiple re-rate<br><span style="font-weight:400;color:var(--slate-light);font-size:11.5px;">9&ndash;11x on grown revenue</span></div>
+      <div class="fbarwrap"><div class="fbar" style="left:38%;right:14%;background:var(--green);">$24<span>$31</span></div></div>
+    </div>
+    <div class="frow">
+      <div class="fm">Comparable-winner peak<br><span style="font-weight:400;color:var(--slate-light);font-size:11.5px;">Cadence-under-Tan, 11&ndash;13x</span></div>
+      <div class="fbarwrap"><div class="fbar" style="left:62%;right:0%;background:var(--gold);">$36<span>$45</span></div></div>
+    </div>
+    <div class="frow">
+      <div class="fm">Strategic acquisition<br><span style="font-weight:400;color:var(--slate-light);font-size:11.5px;">Mentor-to-Siemens precedent</span></div>
+      <div class="fbarwrap"><div class="fbar" style="left:62%;right:0%;background:var(--gold);">$36<span>$45</span></div></div>
+    </div>
+    <div class="frow">
+      <div class="fm">Permanent-impairment floor<br><span style="font-weight:400;color:var(--slate-light);font-size:11.5px;">3.5&ndash;4.2x on trailing revenue</span></div>
+      <div class="fbarwrap"><div class="fbar" style="left:6%;right:79%;background:var(--red);">$7<span>$8.5</span></div></div>
+    </div>
+  </div>
+
+  <h3>The four scenarios</h3>
+  <p>From the $11.30 level, weighted by our probabilities:</p>
+
+  <div class="scenarios">
+    <div class="scn bear">
+      <div class="sh"><span class="name">Bear</span><span class="prob">25%</span></div>
+      <div class="price">$7&ndash;8.50</div>
+      <div class="move">&minus;25% to &minus;38%</div>
+      <p class="desc">The recovery round-trips. Permanent impairment to the survival floor, not ruin. A multiple loss the screening system's stop owns.</p>
+    </div>
+    <div class="scn base">
+      <div class="sh"><span class="name">Base</span><span class="prob">30%</span></div>
+      <div class="price">$13&ndash;16</div>
+      <div class="move">+15% to +42%</div>
+      <p class="desc">The market grants the cross-over roughly as guided but keeps the structural discount. This is where the Street already sits, around $14.62.</p>
+    </div>
+    <div class="scn rerate">
+      <div class="sh"><span class="name">Re-rate</span><span class="prob">30%</span></div>
+      <div class="price">$24&ndash;31</div>
+      <div class="move">~+135% &middot; high confidence</div>
+      <p class="desc">The published thesis. Multiple converges to 9&ndash;11x on grown revenue as profitability lands and cash flow turns. Doubles even on flat revenue to the peer floor.</p>
+    </div>
+    <div class="scn over">
+      <div class="sh"><span class="name">Overshoot</span><span class="prob">15%</span></div>
+      <div class="price">$36&ndash;45</div>
+      <div class="move">~+245% &middot; moderate confidence</div>
+      <p class="desc">The reflexive case. Multiple overshoots to the comparable-peak or strategic-acquisition band as IP and FTCO scale. Bounded below the leader multiple.</p>
+    </div>
+  </div>
+
+  <div class="pweight">
+    <div class="pl">Probability-weighted target</div>
+    <div class="pv">$20.6</div>
+    <div class="ps">~+82% from $11.30 &middot; upside-to-downside roughly 3:1 to 4:1 on weighted upside</div>
+  </div>
+
+  <h3>Velocity and what is priced in</h3>
+  <p>The re-rate window is roughly 6 to 12 months, with implied annualised return above 150% to the re-rate tier. The probability of at least doubling from here is about 15% within six months, 30% within twelve, and 40% within eighteen. The thin effective float, roughly 10M shares once the 70% insider lock is removed, makes any incremental institutional demand mechanically violent.</p>
+  <p>At 5.5x revenue, the market grants the cross-over roughly as guided but assumes Silvaco stays a sub-scale niche player that never closes the gap to the duopoly multiple. The steelman is fair: a $370M number-two name whose largest legacy segment is shrinking 20% deserves a structural discount. But the market is priced for the base on a name whose discriminators are present at the inflection. That gap is the edge to weight into, not a number to converge toward.</p>
+
+  <!-- 7. BEAR -->
+  <h2 id="bear"><span class="num">07</span>The bear case</h2>
+  <div class="bearbox">
+    <div class="bl">The short seller's argument, in its strongest form</div>
+    <p>If you want exposure to AI chip-design software, why on earth would you own this? Buy Synopsys or Cadence. You get the duopoly with real pricing power, real free cash flow and real scale. What you have in Silvaco is a $370M micro-cap whose <strong>largest legacy segment is in outright decline, down 20%,</strong> dressing up a 270%-off-a-rounding-error IP number and a handful of unnamed FTCO logos as a growth story.</p>
+    <p>The history here is unkind. Sub-scale challengers in design software get squeezed by the giants on price and then absorbed at a modest multiple. That is the Magma Design Automation playbook, and it ended at a takeout, not a re-rate. The 5.5x revenue multiple is not a mispricing waiting to be corrected. It is the market accurately pricing a permanent number-two whose ceiling is an acquisition, and roughly half the asymmetry has already been paid out to anyone who bought the $4 lows. You are late to your own thesis.</p>
+  </div>
+
+  <p>That is the real argument, and we carry it knowingly. Here is how each documented bear classifies against the evidence.</p>
+
+  <div class="bearclass">
+    <div class="bc">
+      <div class="bch">Inferior expression<span class="bclabel lbl-binary">Unresolved binary</span></div>
+      <p>The lead bear and the named conviction strike, <em>held off, not settled.</em> The +22% TCAD growth, roughly 50% bookings growth and 270% IP growth show the specialist lanes are genuinely differentiated and growing. More structurally, device physics and TCAD sit outside the big three's core lock, so the chip-implementation squeeze that killed past challengers does not apply to Silvaco's niche. We are paid the 3:1-to-4:1 asymmetry precisely because this bear keeps the multiple at half the peer floor. The gap is the edge.</p>
+    </div>
+    <div class="bc">
+      <div class="bch">Already priced<span class="bclabel lbl-priced">Real but priced</span></div>
+      <p>Genuinely true, reflected in the type, not hidden. About 40% to 45% of the original asymmetry is harvested, from $5.98 to $11.30. That is exactly why this is a great trade with a protected 2.5x to 3x, not a fresh open-ended multibagger.</p>
+    </div>
+    <div class="bc">
+      <div class="bch">FTCO execution and TAM<span class="bclabel lbl-priced">Real but priced</span></div>
+      <p>FTCO is early, a handful of unnamed customers and multi-quarter ratable recognition. If adoption stalls, growth narrows to a low-growth legacy TCAD base. The named substitute risk is Lam's virtual-fab tool and Synopsys's own digital-twin. This overlaps the lead bear and is priced into the base case.</p>
+    </div>
+    <div class="bc">
+      <div class="bch">Dilution machine<span class="bclabel lbl-priced">Real but priced &middot; overhang, not spiral</span></div>
+      <p>A $35M at-the-market facility, roughly $31M of headroom, over a 32.7M-share base is a standing overhang, and management will tap it; they sold about 752,000 shares in the quarter. But the convertible already equitised, cash is rising, positive cash flow is one-to-two quarters out, and any tap near $11 is about half as dilutive per dollar as the $4-lows raises. A re-rate tailwind, not a death spiral.</p>
+    </div>
+    <div class="bc">
+      <div class="bch">Customer concentration<span class="bclabel lbl-refuted">Partially refuted</span></div>
+      <p>The full-year filing shows the top customer at 15% of revenue, the only one above 10%, and Micron is not a named greater-than-10% customer. The relationship is a partnership, not a revenue cliff. An open risk that primary evidence has now meaningfully resolved.</p>
+    </div>
+    <div class="bc">
+      <div class="bch">Cyclical head-fake and fake-theme<span class="bclabel lbl-refuted">Refuted</span></div>
+      <p>Refuted on design software being roughly 2% of semiconductor revenue and stable through cycles, and on the theme being a real, capital-backed mechanism with proven exits. Siemens bought Mentor for $4.5B; Synopsys absorbed Magma. There are real terminal buyers.</p>
+    </div>
+  </div>
+
+  <!-- 8. THE CALL -->
+  <h2 id="call"><span class="num">08</span>The call</h2>
+  <div class="callcard">
+    <div class="cgrid">
+      <div><div class="cl">Type</div><div class="cv">Great Trade</div></div>
+      <div><div class="cl">Conviction</div><div class="cv">Bullish</div></div>
+      <div><div class="cl">Primary target</div><div class="cv">~$27</div></div>
+    </div>
+    <p><strong>Expected path:</strong> a re-rate to roughly <strong>$27, about +135% from $11.30 and about 4.5x from our $5.98 entry, over a 6-to-12-month primary window,</strong> driven by the multiple re-rating toward 9x to 11x on grown revenue as the non-GAAP operating-profitability cross-over lands and cash flow turns positive. The overshoot tier is roughly $39, about +245%, to the comparable-peak or strategic-acquisition band if IP and FTCO scale.</p>
+    <p><strong>Why Bullish and not Extremely Bullish:</strong> the discriminators are strong, two present and two partial, with the strongest signal present on a tight clock, and the re-validation is clean and strengthened. It is held below the top band by two honest facts: the lead inferior-expression bear is an unresolved binary, and 40% to 45% of the asymmetry is already realised.</p>
+    <p><strong>The next proof point:</strong> the <strong>June-quarter earnings, around early August 2026,</strong> which converts non-GAAP operating profitability from guided to delivered, plus the revolver close and the next FTCO logo. Then the September quarter, around November, for positive operating cash flow. Both land inside the horizon and before any forced raise.</p>
+  </div>
+
+  <div class="notebox">
+    <strong>On entry and exit.</strong> The entry and the exit on this position belong to our screening system, not to this thesis. We do not sell at a target; we do not sell on a change of view. The $27 is the scoreboard we hold the thesis against, not a sell trigger. We hold the full position and monitor weekly, and we sell in full only when the screening system flags a technical exit or stop. The target is the argument; the exit is the system's.
+  </div>
+
+  <!-- 9. HOW WE'D BE WRONG -->
+  <h2 id="wrong"><span class="num">09</span>How we would be wrong</h2>
+  <p>Three causes of loss, 18 months out, ranked by likelihood.</p>
+
+  <h3>1. The lead bear bites (most likely)</h3>
+  <p>Capital that wanted AI chip-design exposure consolidates into the two leaders. The 20% legacy drag swamps the small TCAD and IP growth, the name proves too sub-scale to attract an institutional bid, and it round-trips toward $6 to $8. A multiple loss the screening system's stop owns, not ruin, so it lowers conviction but would never have triggered a do-not-buy at selection.</p>
+
+  <h3>2. FTCO stalls into a capex air-pocket</h3>
+  <p>A broad AI-capex and semiconductor downcycle compresses the space multiple and slows IP and FTCO bookings at once. FTCO lands no named anchor beyond Micron and growth narrows to the low-growth TCAD base. The path runs toward the floor, 25% to 38% down.</p>
+
+  <h3>3. Dilution drip plus a guidance wobble</h3>
+  <p>Continued at-the-market taps combine with a slipped June operating-profit print or a pushed-right September cash-flow turn to unwind the credibility premium the run has priced. Dead money or a small loss rather than a crater.</p>
+
+  <p style="margin-top:24px;"><strong>What would invalidate the thesis:</strong> a slipped profitability milestone against its original date, a stall in TCAD and IP growth back toward the legacy base, or evidence that FTCO is a single-customer relationship rather than an expanding pocket. None is a going-concern risk. Survival is adequate: $10.9M and rising cash, minimal debt, about $1.7M underlying burn, a $10M revolver pending, and positive cash flow guided for September mean the company is funded through the cross-over without a forced raise.</p>
+
+  <hr class="sec">
+
+  <div class="footer">
+    <p><strong>Open questions we are carrying.</strong> The $10M revolver close was a non-binding term sheet as of the May call, reaffirmed for the June quarter but not yet confirmed closed. Full-year revenue guidance is qualitative double-digit growth with no explicit range; we model roughly $72M to $78M from the current run-rate. FTCO contract values and customer names beyond Micron are undisclosed. The remaining-performance-obligation year-over-year comparison is undisclosed, which is what limits the backlog test to a partial mark. None of these is load-bearing to the call.</p>
+    <p><strong>Methodology and disclosure.</strong> This is a published deep-dive write-up of completed in-house research on a confirmed position. Every figure traces to that work and to current filings. Prices reflect the close on 5 June 2026. This is not personalised investment advice. We hold this position. Our screening system, not this article, governs entry and exit. Do your own work.</p>
+    <p style="margin-top:18px;color:var(--slate-light);">Sterling Signals &middot; AI Infrastructure coverage &middot; $SVCO</p>
+  </div>
+
+</div>
+</body>
+</html>

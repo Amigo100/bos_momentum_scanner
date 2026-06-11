@@ -1,0 +1,139 @@
+{
+  "week": "2026-W14",
+  "generated": "2026-03-30T08:00:00+11:00",
+  "format_version": "v8",
+  "week_dates": {
+    "saturday": "2026-03-28",
+    "sunday": "2026-03-29",
+    "monday": "2026-03-30",
+    "tuesday": "2026-03-31",
+    "wednesday": "2026-04-01",
+    "thursday": "2026-04-02",
+    "friday": "2026-04-03"
+  },
+
+  "portfolio_snapshot": {
+    "nav_estimate": "~101,000-105,000 (equity curve re-based March 24 when $15K new capital added)",
+    "total_deployed": 55000,
+    "total_return_pct_estimate": "~85%",
+    "spy_return_pct": 0.0,
+    "alpha_pct_estimate": "~85",
+    "open_positions": 11,
+    "note": "Equity curve re-based March 24 when SVCO and ACRS added $15K new capital. March 28 prices from Saturday manifest web search. ASPI earnings March 30 (Monday). EVTL shows [DELISTED?] flag in portfolio.csv.",
+    "positions": [
+      {"ticker": "SOFI", "entry": 7.90, "current": 16.57, "pnl_pct": 109.7, "structural_force": "Financial Infrastructure", "tier": "T1"},
+      {"ticker": "EVTL", "entry": 4.50, "current": 2.65, "pnl_pct": -41.1, "structural_force": "Defence Spending", "tier": "T3"},
+      {"ticker": "NVDA", "entry": 150.00, "current": 178.68, "pnl_pct": 19.1, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "AMD", "entry": 120.00, "current": 201.99, "pnl_pct": 68.3, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "TMDX", "entry": 65.00, "current": 99.38, "pnl_pct": 52.9, "structural_force": "Biotech Capital Cycle", "tier": "T1"},
+      {"ticker": "ASPI", "entry": 6.00, "current": 4.61, "pnl_pct": -23.2, "structural_force": "Nuclear Renaissance", "tier": "T2"},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.12, "pnl_pct": 1.0, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "BAND", "entry": 16.55, "current": 17.10, "pnl_pct": 3.3, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "VYGR", "entry": 4.45, "current": 3.85, "pnl_pct": -13.5, "structural_force": "Biotech Capital Cycle", "tier": "T2"},
+      {"ticker": "SVCO", "entry": 5.98, "current": 7.21, "pnl_pct": 20.6, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "ACRS", "entry": 3.65, "current": 3.59, "pnl_pct": -1.6, "structural_force": "Biotech Capital Cycle", "tier": "T3"}
+    ],
+    "price_source": "Saturday March 28 daily_manifest.json web search",
+    "data_flags": [
+      "EVTL shows [DELISTED?] flag in portfolio.csv. Current at $2.65 vs $4.50 entry (-41.1%). Verify ticker status.",
+      "ASPI earnings March 30 (Monday). Material catalyst.",
+      "Equity curve re-based March 24 — SPY/QQQ benchmarks reset to 0% on that row."
+    ]
+  },
+
+  "scanner_summary": {
+    "scan_date": "2026-03-24",
+    "market_regime": "SELECTIVE",
+    "tickers_loaded": 1279,
+    "hma_pivot_low": 45,
+    "technical_signals": 18,
+    "themes_identified": 7,
+    "prime_themes": 2,
+    "investable_themes": 4,
+    "selective_or_avoid": 1,
+    "deployed": 2,
+    "watchlisted": 3,
+    "rejected_at_gate_or_dd": 5,
+    "new_entries": ["SVCO (T3, conviction 7)", "ACRS (T3, conviction 7)"],
+    "watchlist": ["BKSY (valuation)", "TGB (market cap)", "CPRX (patent trial binary)"]
+  },
+
+  "tuesday": {
+    "priority": 1,
+    "type": "deep_dive",
+    "topic": "SVCO (Silvaco Group) — AI Semiconductor Fab Optimization Turnaround",
+    "structural_force": "AI Infrastructure",
+    "reason": "New buy signal from March 24 scan. Conviction 7, T3. EDA company trading at 2.8x revenue vs 11-16x peers. CEO Walden Rhines (grew Mentor Graphics to $4.5B Siemens acquisition) bought $170K at ATL. Q4 beat by 57%. Richest narrative among new entries for a full deep dive. ACRS (also new, binary biotech) will be covered in notes and a future article.",
+    "anti_duplication_check": "SVCO has never been the primary focus of a deep dive. BAND (also AI Infrastructure) was March 12 (18 days ago), but that was a ticker deep dive, not a force deep dive. No conflict.",
+    "context_package_file": "context_tuesday_20260331.md"
+  },
+
+  "thursday": {
+    "rotation": "C",
+    "type": "free_tool_resource",
+    "topic": "Balance Sheet Red Flag Checklist: 7 Capital Structure Tests Every Small-Cap Investor Should Run",
+    "reason": "Week C in 4-week rotation (A used W12, B used W13). Free tool/resource creates a permanent lead magnet. Uses real rejection data from the scanner (DDD 45% dilution, INV holding company structure, SVCO cash runway, TGB insider selling) as worked examples. Broadly applicable framework subscribers can apply to any stock.",
+    "anti_duplication_check": "Week C has not been used in the v8 rotation cycle. Topic (balance sheet checklist) has never been covered. Clear.",
+    "context_package_file": "context_thursday_20260402.md"
+  },
+
+  "anti_duplication": {
+    "last_deep_dive": {"ticker": "VYGR", "date": "2026-03-18", "days_ago": 12},
+    "last_position_update_post": {"ticker": "ASPI", "date": "2026-03-24", "type": "W13 Tuesday"},
+    "last_thursday_rotations": ["A (2026-03-20, W12)", "B (2026-03-26, W13)"],
+    "svco_previous_coverage": "none (entered portfolio March 24, no prior article)",
+    "acrs_previous_coverage": "none (entered portfolio March 24, no prior article)",
+    "force_deep_dive_check": "AI Infrastructure last covered via BAND ticker deep dive March 12 (18 days). This is a ticker deep dive on SVCO, not a force deep dive. No conflict.",
+    "conflicts": "none"
+  },
+
+  "batch_notes": [
+    {"id": 1, "type": "EDUCATION", "sub_variant": "research_insight", "label": "E1_bessembinder"},
+    {"id": 2, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "label": "E2_transitions"},
+    {"id": 3, "type": "EDUCATION", "sub_variant": "concept_explainer", "label": "E3_tiered_sizing"},
+    {"id": 4, "type": "EDUCATION", "sub_variant": "research_insight", "label": "E4_greenblatt"},
+    {"id": 5, "type": "SCANNER", "sub_variant": "weekly_funnel", "label": "S1_funnel"},
+    {"id": 6, "type": "SCANNER", "sub_variant": "rejection_story", "label": "S2_ddd_rejection"},
+    {"id": 7, "type": "SCANNER", "sub_variant": "theme_heatmap", "label": "S3_heatmap"},
+    {"id": 8, "type": "PROMO", "sub_variant": "tuesday_deep_dive", "label": "P1_svco_promo"},
+    {"id": 9, "type": "PROMO", "sub_variant": "thursday_free_tool", "label": "P2_checklist_promo"}
+  ],
+
+  "note_schedule": {
+    "saturday": {
+      "08:00_morning": {"type": "PROMO", "sub_variant": "briefing", "source": "live", "note": "Already generated March 28 manifest"},
+      "12:00_midday": {"type": "SCANNER", "sub_variant": "visual_card", "source": "live", "note": "Already generated March 28 manifest"},
+      "20:00_evening": "rest"
+    },
+    "sunday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "batch_1"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live", "note": "ASPI earnings Monday. Fed speakers this week."},
+      "20:00_evening": "rest"
+    },
+    "monday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "single_winner", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "catalyst_flag", "source": "live", "note": "ASPI earnings today."},
+      "20:00_evening": {"type": "EDUCATION", "sub_variant": "methodology_philosophy", "source": "batch_2"}
+    },
+    "tuesday": {
+      "08:00_morning": {"type": "SCANNER", "sub_variant": "weekly_funnel", "source": "batch_5"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "alpha_snapshot", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "tuesday_deep_dive", "source": "batch_8"}
+    },
+    "wednesday": {
+      "08:00_morning": {"type": "MARKET", "sub_variant": "force_status", "source": "live"},
+      "12:00_midday": {"type": "EDUCATION", "sub_variant": "concept_explainer", "source": "batch_3"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "rejection_story", "source": "batch_6"}
+    },
+    "thursday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "honest_loser", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "thursday_free_tool", "source": "batch_9"}
+    },
+    "friday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "batch_4"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "single_winner", "source": "live"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "theme_heatmap", "source": "batch_7"}
+    }
+  }
+}

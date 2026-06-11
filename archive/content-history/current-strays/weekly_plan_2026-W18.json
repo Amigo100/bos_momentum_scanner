@@ -1,0 +1,343 @@
+{
+  "week": "2026-W18",
+  "plan_date": "2026-04-30",
+  "publishing_days": "May 3 (Sat) through May 9 (Fri)",
+  "scan_date": "2026-04-14",
+  "next_scan": "2026-05-01 (Friday)",
+
+  "portfolio_snapshot": {
+    "as_of": "2026-04-30",
+    "open_positions": 13,
+    "closed_positions": 3,
+    "positions": [
+      {"ticker": "NVDA", "entry": 150.00, "current": 209.25, "pnl_pct": 39.5, "force": "AI Infrastructure", "tier": "T3", "notes": "Near highs. Earnings upcoming."},
+      {"ticker": "AMD", "entry": 120.00, "current": 335.00, "pnl_pct": 179.2, "force": "AI Infrastructure", "tier": "T1", "notes": "Massive winner. Analyst upgrades. +48.6% in April alone."},
+      {"ticker": "ASPI", "entry": 6.00, "current": 5.08, "pnl_pct": -15.3, "force": "Nuclear Renaissance", "tier": "T2", "notes": "Weakest open position. Thesis intact but needs uranium price catalyst."},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.24, "pnl_pct": 6.7, "force": "AI Infrastructure", "tier": "T1", "notes": "Flat. Crypto and data centre exposure."},
+      {"ticker": "BAND", "entry": 16.55, "current": 23.93, "pnl_pct": 44.6, "force": "AI Infrastructure", "tier": "T3", "notes": "Q1 earnings April 30. B. Riley PT raised to $27."},
+      {"ticker": "VYGR", "entry": 4.45, "current": 4.01, "pnl_pct": -9.9, "force": "Biotech Capital Cycle", "tier": "T2", "notes": "Below entry. VY1706 IND filing Q2 catalyst."},
+      {"ticker": "SVCO", "entry": 5.98, "current": 9.85, "pnl_pct": 64.7, "force": "AI Infrastructure", "tier": "T3", "notes": "Strong performer. Near 52-week high."},
+      {"ticker": "ACRS", "entry": 3.65, "current": 4.31, "pnl_pct": 18.1, "force": "Biotech Capital Cycle", "tier": "T3", "notes": "Steady. ATI-2138 preclinical results positive. Oppenheimer PT $10."},
+      {"ticker": "KARO", "entry": 48.05, "current": 49.99, "pnl_pct": 4.0, "force": "Financial Infrastructure", "tier": "T3", "notes": "Flat near entry. SaaS compounder."},
+      {"ticker": "CYRX", "entry": 9.67, "current": 9.67, "pnl_pct": 0.0, "force": "Biotech Capital Cycle", "tier": "T2", "notes": "Q1 EARNINGS MAY 5. Key catalyst for position scaling."},
+      {"ticker": "KYTX", "entry": 9.22, "current": 8.70, "pnl_pct": -5.6, "force": "Biotech Capital Cycle", "tier": "T2", "notes": "AAN data presented April 18-22. BLA filing imminent."},
+      {"ticker": "NAMS", "entry": 34.76, "current": 36.24, "pnl_pct": 4.3, "force": "Biotech Capital Cycle", "tier": "T3", "notes": "Earnings May 7. EMA decision H2 2026."},
+      {"ticker": "VOYG", "entry": 29.00, "current": 26.59, "pnl_pct": -8.3, "force": "Defence Spending", "tier": "T3", "notes": "Below entry. Starlab and defence tech platform."}
+    ],
+    "recently_closed": [
+      {"ticker": "SOFI", "entry": 7.90, "exit": 18.44, "pnl_pct": 133.4, "reason": "Profit lock triggered from $32 high"},
+      {"ticker": "EVTL", "entry": 4.50, "exit": 3.00, "pnl_pct": -33.3, "reason": "Manual exit"},
+      {"ticker": "TMDX", "entry": 65.00, "exit": 100.69, "pnl_pct": 54.9, "reason": "Profit lock triggered from $150 high"}
+    ],
+    "benchmarks": {
+      "SPY": 709.86,
+      "QQQ": 659.68,
+      "IWM": 271.18,
+      "VIX": 17.83
+    },
+    "equity_curve_latest": {
+      "date": "2026-04-27",
+      "nav": 80131.48,
+      "total_deployed": 55583.73,
+      "total_return_pct": 44.16,
+      "spy_return_pct": 45.25,
+      "alpha_pct": -1.09
+    }
+  },
+
+  "upcoming_catalysts_this_week": [
+    {"date": "2026-04-30", "event": "BAND Q1 2026 earnings (before market open)", "portfolio_impact": "Direct. Held position at +44.6%."},
+    {"date": "2026-05-01", "event": "Weekly scanner run (Friday)", "portfolio_impact": "New signals for next week."},
+    {"date": "2026-05-05", "event": "CYRX Q1 2026 earnings", "portfolio_impact": "Critical. Scale-up trigger if revenue >=47M and EBITDA guidance reaffirmed."},
+    {"date": "2026-05-07", "event": "NAMS earnings report", "portfolio_impact": "Updates on PREVAIL timeline and cash position."},
+    {"date": "2026-05-06", "event": "FOMC minutes or next Fed commentary window", "portfolio_impact": "Rates held at 3.75% on April 29. Dot plot guidance matters for rate-sensitive positions."}
+  ],
+
+  "repetition_audit": {
+    "status": "FIRST_PLAN",
+    "notes": "No prior manifests found. All topics AVAILABLE. No retirement needed.",
+    "retired_topics": [],
+    "available_topics": "All"
+  },
+
+  "content_schedule": {
+    "tuesday_may_6": {
+      "type": "deep_dive",
+      "topic": "$CYRX Deep Dive: The CGT Cold Chain Monopoly Approaching Profitability",
+      "priority": 1,
+      "reasoning": "Highest conviction recent entry (8). Q1 earnings May 5 creates immediate next-day catalyst. 70% CGT pipeline market share, $70M EV on $192M revenue, approaching first profitable quarter in 27-year history. Readers get earnings reaction context plus full thesis."
+    },
+    "thursday_may_8": {
+      "type": "education",
+      "rotation": "D",
+      "subcategory": "investor_lessons",
+      "topic": "When the Scanner Says No: Two Stocks We Walked Away From This Month",
+      "reasoning": "First Thursday plan, starting with Week D (Investor Lessons). Rich rejection data from DLO (removed by CRO for conviction drift: 2/7 archetype, $3.9B cap 8x system ceiling, General Atlantic selling) and GHM (chasing at $91 after tripling, 68x P/E vs 18-22x peers). Both demonstrate system discipline. Connects to portfolio through the screening methodology."
+    },
+    "saturday_may_3": {
+      "type": "weekly_briefing",
+      "topic": "Weekly Screening (from Friday April 25 analysis)",
+      "notes": "Produced by user via Prompt 11 during Friday evening analysis. Cowork generates PROMO note only."
+    },
+    "note_schedule": {
+      "saturday": ["PROMO (briefing)", "SCANNER visual card"],
+      "sunday": ["EDUCATION", "MARKET"],
+      "monday": ["POSITION", "MARKET", "EDUCATION"],
+      "tuesday": ["SCANNER", "POSITION", "PROMO (deep dive)"],
+      "wednesday": ["MARKET", "EDUCATION", "SCANNER"],
+      "thursday": ["POSITION", "MARKET", "PROMO (education)"],
+      "friday": ["EDUCATION", "POSITION", "SCANNER"]
+    }
+  },
+
+  "batch_notes": {
+    "education": [
+      {
+        "id": "EDU-1",
+        "sub_variant": "research_insight",
+        "title": "The Small-Cap Discount Anomaly",
+        "scheduled_for": ["sunday_morning", "monday_evening"],
+        "content": "Russell 2000 forward P/E trades at a 31% discount to the S&P 500. That is the widest gap in 25 years.\n\nHistorically, discounts above 20% have preceded small-cap outperformance in 8 of 10 instances over the subsequent 18 months. The median excess return: 14.2 percentage points.\n\nThe last time the gap exceeded 30% was March 2001. Small caps outperformed large caps by 22% over the following two years. The current gap opened in Q3 2025 and has persisted for nine months.\n\nOur screening system targets sub-$500M companies by design. The structural discount is the tailwind.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-2",
+        "sub_variant": "methodology_philosophy",
+        "title": "Why We Screen 1,279 Stocks to Find Three",
+        "scheduled_for": ["wednesday_midday", "friday_morning"],
+        "content": "Most stock pickers start with an idea and look for confirming data. Our system starts with 1,279 stocks and eliminates 99.8% of them.\n\nLast scan: 30 showed momentum inflection. 18 cleared combined filters. Six survived theme quality scoring. Three made it through the forensic audit stage.\n\nThe rejection rate is not a bug. A study by Bessembinder (2018) found that just 4% of publicly traded US stocks accounted for the entire net wealth creation in equities since 1926. The other 96% collectively matched Treasury bills.\n\nFinding the 4% requires eliminating the 96%. That is what the filter chain does.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-3",
+        "sub_variant": "concept_explainer",
+        "title": "Cash Floor Investing",
+        "scheduled_for": ["monday_evening_alt"],
+        "content": "What does it mean when a company's cash exceeds its enterprise value?\n\nIt means the market is paying you to take the business. $CYRX has $411M in cash and a market cap near $480M. Enterprise value: $70M. The business generated $192M in revenue last year.\n\nThis is a cash floor. If the company shut down tomorrow, liquidated, and returned cash to shareholders, you would receive approximately $8.25 per share. The stock trades at $9.67.\n\nMaximum downside from the cash floor: 15%. Maximum upside if the business reaches profitability and re-rates to 2.5x revenue: 65%.\n\nThe asymmetry is the thesis.\n\nNot financial advice."
+      },
+      {
+        "id": "EDU-4",
+        "sub_variant": "research_insight",
+        "title": "The Insider Buying Signal",
+        "scheduled_for": ["friday_morning_alt"],
+        "content": "Lakonishok and Lee (2001, Journal of Finance) tracked 10 years of insider transactions across all US public companies. One finding stood out.\n\nWhen a CEO buys shares on the open market at a company below $500M market cap, the stock outperformed the market by an average of 11.2% over the following 12 months. The signal was strongest when the purchase represented more than 0.5% of the CEO's reported compensation.\n\n$SVCO's CEO Walden Rhines bought $170K of open-market shares at the all-time low. He previously grew Mentor Graphics from $400M revenue to a $4.5B acquisition by Siemens.\n\nInsider purchases are not guarantees. They are information.\n\nNot financial advice."
+      }
+    ],
+    "scanner": [
+      {
+        "id": "SCAN-1",
+        "sub_variant": "weekly_funnel",
+        "title": "The Funnel: 1,279 to 3",
+        "scheduled_for": ["tuesday_morning", "saturday_midday"],
+        "content": "Last Friday's screening: 1,279 tickers loaded across all US exchanges.\n\n30 showed momentum inflection. 18 cleared combined filters across 6 distinct themes. Three survived the forensic audit stage.\n\nAll three sit within the Biotech Capital Cycle force, targeting different nodes of the pipeline: cold chain logistics, autoimmune cell therapy, and cardiovascular drug development. 100% healthcare concentration, but three distinct sub-themes with uncorrelated catalysts.\n\n99.8% eliminated. One conviction 8. One conviction 7. One conviction 6.\n\nThe scanner does not chase narrative. It scores catalyst density, competitive moat, capital structure, and timing.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN-2",
+        "sub_variant": "rejection_story",
+        "title": "The $91 Stock We Walked Away From",
+        "scheduled_for": ["wednesday_evening", "friday_evening"],
+        "content": "This month we screened a submarine hardware manufacturer riding a $1.01 trillion defence budget. Monopolistic supplier. Record $515.6M backlog. 2.3x book-to-bill ratio.\n\nThe theme scored 8.75 out of 10. Highest in the session.\n\nWe walked away.\n\nThe stock had tripled from its 52-week low. Trading at $91 against a $73 analyst consensus. 68x trailing P/E versus an 18-22x peer average. The momentum signal was real. The entry was not.\n\nOur system does not chase confirmed winners at full valuation. It finds them before the market does. $GHM goes on the watchlist at $65-70.\n\nNot financial advice."
+      },
+      {
+        "id": "SCAN-3",
+        "sub_variant": "rejection_story",
+        "title": "Conviction Drift: Why We Removed a 47% Grower",
+        "scheduled_for": ["tuesday_morning_alt"],
+        "content": "A cross-border payments company processing transactions for six of the Magnificent Seven. Revenue growing 47%. Return on equity 35.6%. Forward P/E of 14.9x against a 39.5x fintech peer average.\n\nThe screening system flagged it. The forensic audit passed it. Then the final review removed it.\n\nThe reason: conviction drift. Between the initial screen and the final review, the conviction score inflated from a cautious pass to an aggressive buy without any new material finding. The company trades at $3.9 billion market cap, eight times our system's target range. General Atlantic is actively selling. No structural force alignment.\n\nGood numbers are not enough. System fit matters.\n\nNot financial advice."
+      }
+    ],
+    "promo": [
+      {
+        "id": "PROMO-1",
+        "sub_variant": "deep_dive_hook",
+        "title": "Tuesday Deep Dive Teaser (CYRX)",
+        "scheduled_for": ["tuesday_evening"],
+        "content": "New deep dive just published.\n\nA company that controls 70% of the global logistics for a $50 billion therapy market. Enterprise value: $70 million. Cash on the balance sheet: $411 million. The market is pricing this company for failure.\n\nQ1 earnings landed yesterday. The profitability inflection the market has waited 27 years for may be arriving in H2 2026.\n\nThe full thesis, valuation, bear case, and exit criteria in today's post.\n\nNot financial advice."
+      },
+      {
+        "id": "PROMO-2",
+        "sub_variant": "education_preview",
+        "title": "Thursday Education Teaser",
+        "scheduled_for": ["thursday_evening"],
+        "content": "New post: why we walked away from two stocks this month despite strong momentum signals and compelling narratives.\n\nOne had tripled in price and scored 8.75 out of 10 on theme quality. The other was growing revenue 47% with a 35.6% return on equity. Both were rejected.\n\nThe screening system catches more value in what it rejects than in what it buys. This week's post breaks down both decisions.\n\nFree to read.\n\nNot financial advice."
+      }
+    ]
+  },
+
+  "visual_asset_ideas": [
+    {
+      "id": "VIS-1",
+      "type": "SCANNER_RECAP",
+      "description": "Weekly screening funnel card: 1,279 tickers to 3 entries. Funnel bars showing each stage (momentum inflection: 30, combined filters: 18, theme scoring: 6, forensic audit: 3). Theme heatmap with PRIME/INVESTABLE classifications. Three entries listed with tier and conviction.",
+      "ticker_subject": "Scanner system",
+      "data_needed": ["signals.json stats block", "theme classifications and scores", "3 entry tickers with conviction levels"]
+    },
+    {
+      "id": "VIS-2",
+      "type": "PORTFOLIO_SNAPSHOT",
+      "description": "Portfolio heat map: 13 positions across 5 structural forces, sized by allocation, coloured by P&L. AMD at +179% anchors the top. ASPI at -15% shows honest transparency. NAV $80,131 on $55,584 deployed. Alpha vs SPY shown as comparison bar.",
+      "ticker_subject": "Full portfolio",
+      "data_needed": ["All 13 open positions with entry/current/P&L", "NAV and deployed capital from equity_curve.csv", "Force groupings"]
+    },
+    {
+      "id": "VIS-3",
+      "type": "BUSINESS_MODEL",
+      "description": "$CYRX revenue architecture: $192M guided revenue split by segment (BioServices, CryoStork, CryoPort Systems). $411M cash position vs $480M market cap visualised as stacked bar. EBITDA trajectory chart: quarterly EBITDA from Q1 2025 through H2 2026 target, showing the inflection path.",
+      "ticker_subject": "$CYRX",
+      "data_needed": ["Revenue breakdown by segment from 10-K", "Cash position and market cap", "Quarterly EBITDA figures trailing 6 quarters"]
+    },
+    {
+      "id": "VIS-4",
+      "type": "CASE_STUDY",
+      "description": "The GHM rejection anatomy: left column shows what looked good (8.75 theme score, monopolistic supplier, $515M backlog, $1.01T defence budget). Right column shows what killed it (68x P/E vs 18-22x peers, tripled from low, above $73 analyst consensus, entry timing: CHASING). Visual verdict stamp: WATCHLIST at $65-70.",
+      "ticker_subject": "$GHM",
+      "data_needed": ["Theme score and classification", "P/E ratio vs peer average", "Price vs 52-week range and analyst consensus"]
+    },
+    {
+      "id": "VIS-5",
+      "type": "EARNINGS_PREVIEW",
+      "description": "$CYRX Q1 earnings watch card: the 4 metrics that matter. Revenue (consensus vs $47M scale-up trigger), EBITDA guidance language (reaffirm vs soften), therapy approval pipeline count, DHL competitive commentary. Entry price $9.67, current price, stop at $5.50, cash floor $8.25.",
+      "ticker_subject": "$CYRX",
+      "data_needed": ["Revenue consensus estimate", "EBITDA guidance from last call", "Number of therapies in pipeline", "Entry price and stop level"]
+    },
+    {
+      "id": "VIS-6",
+      "type": "COMPARISON",
+      "description": "Biotech trio comparison card: $CYRX vs $KYTX vs $NAMS side by side. For each: entry price, current P&L, catalyst timeline, bear case severity (MODERATE/MODERATE/STRONG), cash runway, and conviction score. Colour-coded by catalyst proximity (green = imminent, amber = H2 2026, red = 2027).",
+      "ticker_subject": "$CYRX, $KYTX, $NAMS",
+      "data_needed": ["Entry prices and current prices for all three", "Next catalyst date for each", "Cash runway and bear case severity from decisions.json"]
+    }
+  ],
+
+  "context_package_tuesday": {
+    "title": "TUESDAY CONTEXT PACKAGE: DEEP DIVE ON $CYRX",
+    "priority": 1,
+    "priority_reason": "New buy signal from W16 scan (April 14). Highest conviction entry (8). Q1 earnings May 5 provides immediate catalyst.",
+    "structural_force": "Biotech Capital Cycle Recovery",
+    "force_status": "CONFIRMED wave. XBI +40.8% TTM. Biotech IPO window strongest since 2021. 62 novel FDA approvals in 2025. CGT clinical trials at record levels.",
+
+    "entry_data": {
+      "ticker": "CYRX",
+      "entry_price": 9.67,
+      "tier": "T2",
+      "conviction": 8,
+      "position_size": "2.5% (1.0% initial, scale to 2.5% on May 5 earnings confirmation)"
+    },
+
+    "thesis_elevator_pitch": "Cryoport controls ~70% of the global CGT pipeline logistics and 20 commercial therapies. At $70M enterprise value on $192M guided revenue with $411M cash providing 85% downside protection, the stock is priced for failure while approaching its first positive EBITDA quarter.",
+
+    "why_now": "Q1 2026 earnings May 5 to confirm revenue trajectory and EBITDA guidance; H2 2026 positive EBITDA inflection",
+
+    "the_math": "7-method blended valuation: base $13.77 (+42.4%), bull $21.89 (+126.4%). E(Price) $13.98 (+44.6%). Reverse DCF implies 3% growth vs 12% delivered and 8-10% guided.",
+
+    "bear_case": "Company has never sustained profitability in 27-year history. Q4 EBITDA regressed from Q3. Interest income of $16-20M annually drops $7-9M post-convertible repayment in Dec 2026. DHL acquired CRYOPDP and committed EUR 2B to life sciences logistics. CEO Shelton is 78 with no disclosed succession plan. Zero insider purchases, $4.29M net insider selling.",
+
+    "risk_to_monitor": "Management softens or removes H2 2026 positive EBITDA guidance on May 5 earnings call",
+
+    "exit_criteria": "Enter at $9.67, T2 position, 1.0% initial tranche. Scale to 2.5% on May 5 earnings confirmation (revenue >=47M, EBITDA guidance reaffirmed). Stop below $5.50.",
+
+    "key_catalyst": "H2 2026 positive adjusted EBITDA: first profitability in company history",
+
+    "gate_data": {
+      "gate_verdict": "PASS",
+      "gate_result": "CLEAN_PASS",
+      "gate_conviction": 8,
+      "catalyst_summary": "Q1 2026 earnings May 5; H2 2026 EBITDA breakeven target; convertible note maturity December 1, 2026",
+      "red_flag_level": "CLEAN",
+      "dilution_check": "CLEAN: No significant dilution. Shares outstanding ~49.8M. Cash $411M essentially equals market cap."
+    },
+
+    "screening_trail": {
+      "scan_date": "2026-04-13",
+      "theme": "CGT cold chain logistics monopoly",
+      "theme_score": 7.35,
+      "classification": "INVESTABLE",
+      "wave_strength": "CONFIRMED",
+      "stage_reached": "PASS",
+      "archetype_score": "5/7",
+      "system_fit": "STRONG"
+    },
+
+    "structural_force_context": "Biotech Capital Cycle Recovery: $133B biopharma M&A in 2025. FDA approved 62 novel therapies in 2025. CGT clinical trials reaching record levels. CAR-T REMS removal expanding outpatient administration. XBI up 40.8% trailing twelve months. IPO window strongest since 2021.",
+
+    "bullish_factors": [
+      "Market assigns 56% probability of failure to reach profitability; we assign 25%.",
+      "Demonstrated $12M annual EBITDA improvement trajectory.",
+      "Structural nature of CGT approval momentum: 9 new therapy approvals and 13 BLA/MAA filings guided for 2026.",
+      "Cash floor at $8.25/share provides 85% downside protection from entry.",
+      "Convertible note overhang clears December 2026."
+    ],
+
+    "risk_factors": [
+      "Never sustained profitability in 27-year history.",
+      "Q4 EBITDA regressed from Q3.",
+      "Interest income subsidy ($16-20M/year) drops $7-9M post-convertible repayment.",
+      "DHL acquired CRYOPDP and committed EUR 2B to life sciences logistics.",
+      "CEO Shelton is 78 with no disclosed succession plan.",
+      "Zero insider purchases, $4.29M net insider selling."
+    ],
+
+    "supplementary": {
+      "theme_lifecycle": "TROUGH hype cycle, INFLECTION S-curve. Sweet spot: true.",
+      "opportunity_type": "SPECIAL_SITUATION",
+      "valuation_regime": "TRANSITION",
+      "return_driver": "FUNDAMENTAL_RERATE + CATALYST_DRIVEN",
+      "hold_thesis": "Expected hold 8-14 months. Key milestones: Q1 earnings May 5, CGT approval calendar through 2026, positive EBITDA H2 2026, convertible maturity Dec 1 2026.",
+      "variant_perception": "Market assigns 56% probability of failure to reach profitability; we assign 25%. The demonstrated $12M annual EBITDA improvement and structural nature of CGT approval momentum make the bear case a minority outcome."
+    },
+
+    "claude_ai_prompt_instructions": "Use the Deep Dive prompt from the Content Prompt Handbook v8. Attach: this context package, portfolio.csv, decisions.json, voice_rules.md. The post should include: stat grid header (EV, revenue, cash floor, conviction), business model section, the thesis (elevator pitch expanded), why now (earnings + EBITDA inflection), the math (7-method valuation table), bear case (full and honest), what we are watching (May 5 earnings metrics), exit criteria. Ensure all indicator names are replaced with approved language per voice_rules.md.",
+
+    "reference_files": [
+      "portfolio/output/portfolio.csv",
+      "scanner/output/decisions.json",
+      "config/voice_rules.md",
+      "substack/COWORK_INSTRUCTIONS.md (Section 7: Context Packages)"
+    ]
+  },
+
+  "context_package_thursday": {
+    "title": "THURSDAY CONTEXT PACKAGE: INVESTOR LESSONS (Week D)",
+    "rotation": "D",
+    "type": "Investor Lessons",
+    "topic": "When the Scanner Says No: Two Stocks We Walked Away From This Month",
+
+    "supporting_data": {
+      "rejection_1_GHM": {
+        "ticker": "GHM",
+        "price_at_scan": 91.09,
+        "theme": "Navy submarine hardware manufacturing",
+        "theme_score": 8.75,
+        "classification": "PRIME",
+        "wave_strength": "POWERFUL",
+        "stage_rejected": "gate",
+        "rejection_reason": "CHASING: stock at $91 has tripled from 52-week low ($24.78), trades above $73 analyst consensus, P/E 68x (3x peer avg). Return math MARGINAL (30-50% path). Entry timing CHASING (270% from lows).",
+        "what_looked_good": "Monopolistic supplier of submarine propulsion equipment. $1.01T FY2027 defence budget. $515.6M backlog at 2.3x book-to-bill. Scored 8.75/10, highest in session. POWERFUL wave strength in Defence force.",
+        "what_killed_it": "Entry timing. Tripled from $24.78 low. 68x P/E vs 18-22x peer average. Above $73 analyst consensus. Return math required 30-50% further upside from already extended levels.",
+        "lesson": "Theme quality and business quality are necessary but not sufficient. Entry timing determines whether a great company becomes a great investment. The system waits for $65-70.",
+        "reconsider_if": "Pullback to $65-70 range or Q4 FY2026 earnings beat with guidance raise (late May/June 2026)."
+      },
+      "rejection_2_DLO": {
+        "ticker": "DLO",
+        "price_at_scan": 13.12,
+        "theme": "EM cross-border payment infrastructure",
+        "theme_score": 7.00,
+        "classification": "INVESTABLE",
+        "stage_rejected": "review_gate",
+        "rejection_reason": "STRONG DRIFT 2/7 archetype. No wave confirmation, no force alignment, $3.9B market cap 8x system ceiling. Conviction inflation from gate PASS WITH FLAGS to DD T1 BUY not justified. General Atlantic actively selling. Dual-class structure 79.55% co-founder voting.",
+        "what_looked_good": "Revenue growing 47% to $1.09B. 35.6% ROE. Forward P/E 14.9x vs 39.5x fintech peer average. Processing payments for 6 of the Magnificent Seven. $300M buyback. First-ever dividend.",
+        "what_killed_it": "Conviction drift. Between initial screen and final review, conviction inflated without new finding. Market cap $3.9B is 8x system target. No structural force alignment. General Atlantic selling. The stock was a great company that did not fit the system.",
+        "lesson": "Good fundamentals are not the same as system fit. A screening system works because it enforces constraints. When those constraints are relaxed for 'exceptional' cases, the system stops working. 2/7 archetype score means it matches 2 of the 7 characteristics our best performers share.",
+        "reconsider_if": "Stock drops below $10; EM payments structural force emerges with CONFIRMED wave; General Atlantic reverses selling."
+      },
+      "portfolio_parallel": "Our three actual entries (CYRX, KYTX, NAMS) scored 5/7, 5/7, and 3/7 on archetype fit respectively. The 5/7 scores demonstrate what system alignment looks like versus the 2/7 we rejected."
+    },
+
+    "claude_ai_prompt_instructions": "Use the Education/Investor Lessons prompt from the Content Prompt Handbook v8. Attach: this context package, decisions.json (no_go array for GHM and DLO), signal_history_rows.csv, voice_rules.md. Structure: stat grid showing both rejections side by side, then narrative for each (what looked good, what the system caught, the lesson), then the system principle connecting both stories. End with forward look: what would trigger reconsideration. Free to read (no paywall).",
+
+    "reference_files": [
+      "scanner/output/decisions.json",
+      "scanner/output/signal_history_rows.csv",
+      "config/voice_rules.md",
+      "substack/COWORK_INSTRUCTIONS.md (Section 5c: Thursday rotation)"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+    "date": "2026-03-13",
+    "day": "friday",
+    "generated_at": "2026-03-13T07:15:00",
+    "source": "cowork",
+    "decision_reason": "Friday → Investor Lessons: Letting Winners Run (TMDX +86.6% from $65). Post MISSING — user needs to generate in claude.ai.",
+    "post": {
+        "category": "investor_lessons",
+        "subcategory": "investing_principle",
+        "file": null,
+        "title": "Investor Lessons: The +100% Position Most Investors Would Have Sold at +30%",
+        "status": "MISSING"
+    },
+    "visual": {
+        "type": "carousel",
+        "series": "INVESTOR TOOLKIT",
+        "file": null,
+        "status": "MISSING"
+    },
+    "notes": [
+        {"slot": 1, "type": "PORTFOLIO_UPDATE", "time_et": "08:30", "time_label": "morning", "file": "notes/morning_portfolio_update_20260313.html", "graphic": "notes/morning_portfolio_update_graphic_20260313.png"},
+        {"slot": 2, "type": "COMPANION_NOTE", "time_et": "12:30", "time_label": "midday", "file": null},
+        {"slot": 3, "type": "EXIT_DEBRIEF", "time_et": "17:00", "time_label": "evening", "file": null}
+    ],
+    "reminders": [
+        {"time_et": "08:30", "action": "Post morning PORTFOLIO_UPDATE note + graphic", "file": "notes/morning_portfolio_update_20260313.html"},
+        {"time_et": "12:30", "action": "Post companion note + publish Investor Lessons post (GENERATE FIRST in claude.ai)", "file": null},
+        {"time_et": "17:00", "action": "Post evening EXIT_DEBRIEF note (GENERATE FIRST)", "file": null}
+    ],
+    "tweets_generated": 6,
+    "new_signals": []
+}

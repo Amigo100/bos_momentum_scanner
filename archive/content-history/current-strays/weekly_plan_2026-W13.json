@@ -1,0 +1,127 @@
+{
+  "week": "2026-W13",
+  "generated": "2026-03-22T10:00:00+11:00",
+  "format_version": "v8",
+  "week_dates": {
+    "saturday": "2026-03-21",
+    "sunday": "2026-03-22",
+    "monday": "2026-03-23",
+    "tuesday": "2026-03-24",
+    "wednesday": "2026-03-25",
+    "thursday": "2026-03-26",
+    "friday": "2026-03-27"
+  },
+
+  "portfolio_snapshot": {
+    "nav_estimate": "~49000-50000 (estimated from live prices; equity_curve not yet updated for W13)",
+    "total_deployed": 40000,
+    "total_return_pct_estimate": "~22-25%",
+    "spy_return_pct": -2.95,
+    "alpha_pct_estimate": "~25-28%",
+    "open_positions": 9,
+    "note": "Friday March 21 scan may have produced updated signals.json. Saturday workflow not yet confirmed. Prices below from web search March 22.",
+    "positions": [
+      {"ticker": "SOFI", "entry": 7.90, "current": 17.07, "pnl_pct": 116.1, "structural_force": "Financial Infrastructure", "tier": "T1"},
+      {"ticker": "EVTL", "entry": 4.50, "current": 4.24, "pnl_pct": -5.8, "structural_force": "Defence Spending", "tier": "T3"},
+      {"ticker": "NVDA", "entry": 150.00, "current": 178.56, "pnl_pct": 19.0, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "AMD", "entry": 120.00, "current": 201.33, "pnl_pct": 67.8, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "TMDX", "entry": 65.00, "current": 113.18, "pnl_pct": 74.1, "structural_force": "Biotech Capital Cycle", "tier": "T1"},
+      {"ticker": "ASPI", "entry": 6.00, "current": 4.22, "pnl_pct": -29.7, "structural_force": "Nuclear Renaissance", "tier": "T2"},
+      {"ticker": "HIVE", "entry": 2.10, "current": 2.12, "pnl_pct": 1.0, "structural_force": "AI Infrastructure", "tier": "T1"},
+      {"ticker": "BAND", "entry": 16.55, "current": 15.23, "pnl_pct": -8.0, "structural_force": "AI Infrastructure", "tier": "T3"},
+      {"ticker": "VYGR", "entry": 4.45, "current": 4.45, "pnl_pct": 0.0, "structural_force": "Biotech Capital Cycle", "tier": "T2"}
+    ],
+    "data_flag": "ASPI highest_close in portfolio.csv is $14.40 but entry was March 4 at $6.00. This value may reflect pre-entry historical high rather than post-entry tracking. Verify and correct if needed."
+  },
+
+  "scanner_summary": {
+    "scan_date": "2026-03-14",
+    "note": "March 21 scan data not yet available. Working with March 14 scan. Check if signals.json was updated by the Friday scan.",
+    "market_regime": "SELECTIVE",
+    "tickers_screened_detailed": 18,
+    "unique_themes": 12,
+    "force_aligned": 9,
+    "advanced_to_forensic": 3,
+    "deployed": 1,
+    "watchlisted": 2,
+    "rejected": 17,
+    "new_signal": "VYGR (deployed W12)",
+    "watchlist": ["HIMX", "LFMD"]
+  },
+
+  "tuesday": {
+    "priority": 2,
+    "type": "position_update",
+    "topic": "ASPI (ASP Isotopes) — Nuclear Renaissance Thesis Check",
+    "structural_force": "Nuclear Renaissance",
+    "reason": "ASPI at -29.7% from $6.00 entry (now $4.22). Material drawdown requires transparent position update. No new buy signal from available scan data to trigger Priority 1. VYGR deep dive was last Tuesday (March 18, within 21-day anti-duplication window). Nuclear Renaissance force status needs assessment given uranium price movements.",
+    "anti_duplication_check": "ASPI has not been the primary focus of a deep dive or position update post. Development notes were generated March 18-19 but no full article. Clear to proceed.",
+    "context_package_file": "context_tuesday_20260324.md"
+  },
+
+  "thursday": {
+    "rotation": "B",
+    "type": "investment_education",
+    "topic": "Cash Floor Analysis: How Downside Boundaries Change the Risk Equation",
+    "reason": "Week B in 4-week rotation (A was used W12). Investment education using cash floor analysis as the concept. VYGR provides a real portfolio example ($3.43-3.63 cash per share creating a known downside boundary). Broadly applicable to pre-revenue biotech and asset-heavy companies.",
+    "anti_duplication_check": "Last Thursday was Week A (Methodology). Week B is least-recently-used. Topic (cash floor analysis) has not been covered before.",
+    "context_package_file": "context_thursday_20260326.md"
+  },
+
+  "anti_duplication": {
+    "last_deep_dive": {"ticker": "VYGR", "date": "2026-03-18", "days_ago": 4},
+    "last_position_update_post": "none in last 21 days",
+    "last_thursday_rotations": ["A (2026-03-20)"],
+    "aspi_previous_coverage": "development notes March 18-19 only (no full article)",
+    "conflicts": "none"
+  },
+
+  "batch_notes": [
+    {"id": 1, "type": "SCANNER", "sub_variant": "weekly_funnel", "file": "notes/batch_scanner_funnel_w13.html"},
+    {"id": 2, "type": "SCANNER", "sub_variant": "rejection_story", "file": "notes/batch_scanner_rejection_w13.html"},
+    {"id": 3, "type": "SCANNER", "sub_variant": "theme_heatmap", "file": "notes/batch_scanner_heatmap_w13.html"},
+    {"id": 4, "type": "EDUCATION", "sub_variant": "research_insight", "file": "notes/batch_education_research_w13.html"},
+    {"id": 5, "type": "EDUCATION", "sub_variant": "methodology_philosophy", "file": "notes/batch_education_methodology_w13.html"},
+    {"id": 6, "type": "EDUCATION", "sub_variant": "concept_explainer", "file": "notes/batch_education_concept_w13.html"},
+    {"id": 7, "type": "PROMO", "sub_variant": "tuesday_position_update", "file": "notes/batch_promo_tuesday_w13.html"},
+    {"id": 8, "type": "PROMO", "sub_variant": "thursday_education", "file": "notes/batch_promo_thursday_w13.html"}
+  ],
+
+  "note_schedule": {
+    "saturday": {
+      "08:00_morning": {"type": "PROMO", "sub_variant": "briefing", "source": "live"},
+      "12:00_midday": {"type": "SCANNER", "sub_variant": "visual_card", "source": "live"},
+      "20:00_evening": "rest"
+    },
+    "sunday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "batch_4"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live"},
+      "20:00_evening": "rest"
+    },
+    "monday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "single_winner", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "catalyst_flag", "source": "live"},
+      "20:00_evening": {"type": "EDUCATION", "sub_variant": "methodology_philosophy", "source": "batch_5"}
+    },
+    "tuesday": {
+      "08:00_morning": {"type": "SCANNER", "sub_variant": "weekly_funnel", "source": "batch_1"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "alpha_snapshot", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "tuesday_position_update", "source": "batch_7"}
+    },
+    "wednesday": {
+      "08:00_morning": {"type": "MARKET", "sub_variant": "force_status", "source": "live"},
+      "12:00_midday": {"type": "EDUCATION", "sub_variant": "concept_explainer", "source": "batch_6"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "rejection_story", "source": "batch_2"}
+    },
+    "thursday": {
+      "08:00_morning": {"type": "POSITION", "sub_variant": "honest_loser", "source": "live"},
+      "12:00_midday": {"type": "MARKET", "sub_variant": "event_impact", "source": "live"},
+      "20:00_evening": {"type": "PROMO", "sub_variant": "thursday_education", "source": "batch_8"}
+    },
+    "friday": {
+      "08:00_morning": {"type": "EDUCATION", "sub_variant": "research_insight", "source": "live"},
+      "12:00_midday": {"type": "POSITION", "sub_variant": "single_winner", "source": "live"},
+      "20:00_evening": {"type": "SCANNER", "sub_variant": "theme_heatmap", "source": "batch_3"}
+    }
+  }
+}

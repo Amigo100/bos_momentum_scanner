@@ -12,8 +12,7 @@ import pytest
 
 # ── Module imports (units under test) ────────────────────────────────────────
 
-from twitter.models import INTERNAL_TERM_PATTERNS
-from config.banned_terms import ALL_BANNED
+from config.banned_terms import ALL_BANNED, INTERNAL_TERM_PATTERNS
 
 
 _BATCH_TESTS_REMOVED = True  # TestFridayPipeline, TestDailyPosting, TestContentValidation deleted (Tweet Phase 1)

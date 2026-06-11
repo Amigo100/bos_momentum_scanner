@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nuclear Renaissance Outsider: $ASPI and the $2.7 Billion Capital Event It Sat Outside</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1628; --navy2:#0f2440; --blue:#1a3a5c; --blue2:#2563eb;
+    --slate:#334155; --slate2:#64748b; --green:#16a34a; --red:#dc2626; --gold:#d97706;
+    --paper:#ffffff; --line:#e2e8f0; --soft:#f8fafc; --softer:#f1f5f9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--soft); color:var(--slate);
+    font-family:'DM Sans',system-ui,sans-serif; font-size:18px; line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px; margin:0 auto; padding:40px 24px; background:var(--paper);}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--blue2); font-weight:600; margin:0 0 14px;
+  }
+  h1{
+    font-family:'DM Serif Display',Georgia,serif; font-weight:400;
+    font-size:clamp(34px,6vw,52px); line-height:1.08; color:var(--navy);
+    margin:0 0 18px; letter-spacing:-.01em;
+  }
+  h2{
+    font-family:'DM Serif Display',Georgia,serif; font-weight:400;
+    font-size:clamp(26px,4.4vw,34px); line-height:1.14; color:var(--navy);
+    margin:54px 0 8px; letter-spacing:-.01em; scroll-margin-top:20px;
+  }
+  h3{
+    font-family:'DM Sans',sans-serif; font-weight:700; font-size:20px;
+    color:var(--blue); margin:30px 0 6px; letter-spacing:-.01em;
+  }
+  .section-num{
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--blue2);
+    font-weight:600; display:block; margin-bottom:2px; letter-spacing:.08em;
+  }
+  p{margin:0 0 18px;}
+  strong{color:var(--navy); font-weight:600;}
+  em{color:var(--slate);}
+  a{color:var(--blue2); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .lead{font-size:21px; line-height:1.6; color:var(--slate);}
+
+  /* Preview */
+  .preview{
+    border-left:4px solid var(--blue2); background:var(--softer);
+    padding:18px 22px; margin:0 0 30px; border-radius:0 10px 10px 0;
+    font-size:18px; color:var(--slate);
+  }
+  .preview .tag{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--slate2); display:block; margin-bottom:6px;
+  }
+
+  /* Byline */
+  .byline{
+    display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--slate2);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:14px 0; margin:0 0 34px; letter-spacing:.04em;
+  }
+  .pill{
+    display:inline-block; padding:3px 10px; border-radius:999px;
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase;
+  }
+  .pill.buy{background:#dcfce7; color:#15803d;}
+  .pill.type{background:#dbeafe; color:#1d4ed8;}
+  .pill.conv{background:#fef3c7; color:#b45309;}
+
+  /* Stat grid */
+  .stat-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 14px;
+  }
+  .stat{
+    background:var(--navy); color:#fff; border-radius:12px; padding:16px 16px 18px;
+    position:relative; overflow:hidden;
+  }
+  .stat .k{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:#7dd3fc; margin-bottom:8px; display:block; font-weight:600;
+  }
+  .stat .v{
+    font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700;
+    color:#fff; line-height:1.1;
+  }
+  .stat .sub{font-size:11px; color:#94a3b8; margin-top:5px; font-family:'DM Sans',sans-serif;}
+  .stat.accent{background:linear-gradient(135deg,#1a3a5c,#2563eb);}
+  .stat-note{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--slate2);
+    margin:0 0 36px; text-align:right;
+  }
+
+  /* Secondary stat strip */
+  .strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:0 0 38px;
+  }
+  .strip div{padding:14px 14px; border-right:1px solid var(--line); background:var(--soft);}
+  .strip div:last-child{border-right:none;}
+  .strip .k{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--slate2); display:block; margin-bottom:5px;}
+  .strip .v{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--navy);}
+  .strip .v.green{color:var(--green);} .strip .v.red{color:var(--red);}
+
+  /* TOC */
+  .toc{
+    background:var(--softer); border-radius:12px; padding:22px 26px; margin:0 0 40px;
+  }
+  .toc h4{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--slate2); margin:0 0 12px; font-weight:600;
+  }
+  .toc ol{margin:0; padding:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; padding:5px 0; border-bottom:1px dashed var(--line);}
+  .toc li:last-child{border-bottom:none;}
+  .toc li::before{
+    content:counter(toc,decimal-leading-zero); font-family:'JetBrains Mono',monospace;
+    font-size:12px; color:var(--blue2); margin-right:12px; font-weight:600;
+  }
+  .toc a{color:var(--slate); font-weight:500;}
+
+  /* Tables */
+  table{
+    width:100%; border-collapse:collapse; margin:22px 0 28px; font-size:15px;
+    border-radius:10px; overflow:hidden; box-shadow:0 0 0 1px var(--line);
+  }
+  thead th{
+    background:var(--navy2); color:#fff; text-align:left; padding:12px 14px;
+    font-family:'DM Sans',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing:.03em;
+  }
+  tbody td{padding:11px 14px; border-top:1px solid var(--line); vertical-align:top;}
+  tbody tr:nth-child(even){background:var(--soft);}
+  td.mono,th.mono{font-family:'JetBrains Mono',monospace;}
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+    padding:2px 9px; border-radius:6px; letter-spacing:.04em; white-space:nowrap;
+  }
+  .badge.present{background:#dcfce7; color:#15803d;}
+  .badge.partial{background:#fef3c7; color:#b45309;}
+  .badge.absent{background:#fee2e2; color:#b91c1c;}
+
+  /* Scenario cards */
+  .scenarios{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:26px 0 30px;}
+  .scen{
+    border-radius:12px; padding:18px 20px; background:var(--paper);
+    box-shadow:0 0 0 1px var(--line); border-left:5px solid var(--slate2);
+  }
+  .scen.bear{border-left-color:var(--red);}
+  .scen.base{border-left-color:var(--blue2);}
+  .scen.rerate{border-left-color:var(--green);}
+  .scen.overshoot{border-left-color:var(--gold);}
+  .scen .label{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; font-weight:700; margin-bottom:8px;
+  }
+  .scen.bear .label{color:var(--red);} .scen.base .label{color:var(--blue2);}
+  .scen.rerate .label{color:var(--green);} .scen.overshoot .label{color:var(--gold);}
+  .scen .price{font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:700; color:var(--navy); line-height:1;}
+  .scen .ret{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; margin:4px 0 10px;}
+  .scen .ret.up{color:var(--green);} .scen .ret.dn{color:var(--red);}
+  .scen .prob{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px;
+    font-weight:700; background:var(--softer); color:var(--slate); padding:3px 10px;
+    border-radius:999px; margin-bottom:10px;
+  }
+  .scen .desc{font-size:14px; line-height:1.55; color:var(--slate); margin:0;}
+
+  .pw{
+    background:var(--navy); color:#fff; border-radius:12px; padding:20px 24px;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    gap:14px; margin:0 0 30px;
+  }
+  .pw .l{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#7dd3fc;}
+  .pw .big{font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:700;}
+  .pw .small{font-size:13px; color:#94a3b8; font-family:'JetBrains Mono',monospace;}
+
+  /* Football field */
+  .field{margin:24px 0 30px; border:1px solid var(--line); border-radius:12px; padding:22px 24px; background:var(--soft);}
+  .field h4{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--slate2); margin:0 0 18px; font-weight:600;}
+  .bar-row{margin-bottom:18px;}
+  .bar-row .meta{display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;}
+  .bar-row .meta .name{font-weight:600; color:var(--navy);}
+  .bar-row .meta .rng{font-family:'JetBrains Mono',monospace; color:var(--slate2);}
+  .track{position:relative; height:14px; background:var(--softer); border-radius:8px;}
+  .bar{position:absolute; height:14px; border-radius:8px;}
+  .bar.sotp{background:linear-gradient(90deg,#fca5a5,#dc2626);}
+  .bar.now{background:linear-gradient(90deg,#86efac,#16a34a);}
+  .bar.peak{background:linear-gradient(90deg,#fcd34d,#d97706);}
+  .field .scale{display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--slate2); margin-top:4px;}
+
+  /* Callouts */
+  .callout{
+    border-left:4px solid var(--gold); background:#fffbeb; padding:16px 20px;
+    border-radius:0 10px 10px 0; margin:24px 0; font-size:16px;
+  }
+  .callout.bear-box{border-left-color:var(--red); background:#fef2f2;}
+  .callout.note{border-left-color:var(--blue2); background:#eff6ff;}
+  .callout .h{font-weight:700; color:var(--navy); display:block; margin-bottom:6px; font-size:14px; letter-spacing:.02em;}
+
+  ul.clean{margin:0 0 20px; padding-left:0; list-style:none;}
+  ul.clean li{position:relative; padding:6px 0 6px 26px; border-bottom:1px solid var(--softer);}
+  ul.clean li::before{content:"▸"; position:absolute; left:4px; color:var(--blue2); font-weight:700;}
+  ul.clean li:last-child{border-bottom:none;}
+
+  .divider{height:1px; background:var(--line); border:none; margin:46px 0;}
+
+  .footer{
+    margin-top:54px; padding-top:24px; border-top:2px solid var(--navy);
+    font-size:13px; color:var(--slate2); line-height:1.6;
+  }
+  .footer .disc{font-style:italic;}
+
+  @media (max-width:640px){
+    body{font-size:17px;}
+    .wrap{padding:28px 16px;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .strip{grid-template-columns:repeat(2,1fr);}
+    .strip div:nth-child(2){border-right:none;}
+    .strip div:nth-child(1),.strip div:nth-child(2){border-bottom:1px solid var(--line);}
+    .scenarios{grid-template-columns:1fr;}
+    .pw{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Sterling Signals · Deep Dive</p>
+  <h1>The Nuclear Renaissance Has a $2.7 Billion Capital Event. $ASPI Sat Outside It, and That Is the Whole Trade.</h1>
+
+  <div class="preview">
+    <span class="tag">Why this is in the book</span>
+    A company carrying an ~$845M market value on roughly $16M to $17M of trailing revenue and <strong>zero dollars of enrichment sales</strong>. We hold it anyway. Here is the case for a path to ~$30, the floor at ~$3.75, and why the +59% we are already up is the least interesting number on this page.
+  </div>
+
+  <div class="byline">
+    <span class="pill buy">Confirmed Buy</span>
+    <span class="pill type">Multibagger</span>
+    <span class="pill conv">Conviction: Bullish</span>
+    <span>Structural force: Nuclear Renaissance</span>
+    <span>Re-underwritten 08 Jun 2026</span>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <span class="k">Entry Price</span>
+      <span class="v">$4.22</span>
+      <span class="sub">Re-entry 16 Mar 2026</span>
+    </div>
+    <div class="stat accent">
+      <span class="k">Current</span>
+      <span class="v">$6.71</span>
+      <span class="sub">+59.0% held · ~$845M cap</span>
+    </div>
+    <div class="stat">
+      <span class="k">Type</span>
+      <span class="v" style="font-size:18px;">Multibagger</span>
+      <span class="sub">Open-ended ≥4x, conditional</span>
+    </div>
+    <div class="stat">
+      <span class="k">Next Catalyst</span>
+      <span class="v" style="font-size:14px; line-height:1.25;">QLE spin pricing</span>
+      <span class="sub">~Q3 2026 + first revenue</span>
+    </div>
+  </div>
+  <p class="stat-note">Prices from the held-position ledger, 05 Jun 2026 close. Refreshed before publishing.</p>
+
+  <div class="strip">
+    <div><span class="k">Floor</span><span class="v red">$3.75</span></div>
+    <div><span class="k">Re-rate</span><span class="v green">$16</span></div>
+    <div><span class="k">Overshoot</span><span class="v">$30</span></div>
+    <div><span class="k">Prob-weighted</span><span class="v green">$10.3</span></div>
+  </div>
+
+  <div class="toc">
+    <h4>What's inside</h4>
+    <ol>
+      <li><a href="#thesis">The thesis in one sentence</a></li>
+      <li><a href="#what">What this company actually does</a></li>
+      <li><a href="#why">Why now: the inflection</a></li>
+      <li><a href="#space">The Space: the segment's trajectory</a></li>
+      <li><a href="#evidence">The evidence: our scorecard</a></li>
+      <li><a href="#valuation">Valuation and the path</a></li>
+      <li><a href="#bear">The bear case</a></li>
+      <li><a href="#call">The call</a></li>
+      <li><a href="#wrong">How we would be wrong</a></li>
+    </ol>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 1 -->
+  <h2 id="thesis"><span class="section-num">01</span>The thesis in one sentence</h2>
+  <p class="lead">ASP Isotopes is the earliest, non-government-funded, highest-variance Western non-Russian enrichment outsider, sitting on a policy-mandated enriched-uranium supply gap plus a quantum-isotope bottleneck and a helium shock, with a near-term spin-off of its enrichment subsidiary and first commercial isotope shipments as the catalysts that convert a zero-revenue story into numbers.</p>
+  <p>This is a conditional but credible path to four times the current price if those legs land, on a balance sheet with roughly $290.5M of liquidity that buys the company more than twelve months to get there. The litigation that capped our prior read has settled. The competitive field, as we will show, now caps the <em>overshoot</em> to a tail while still supporting the <em>re-rate</em>. We re-underwrote the name on 08 June 2026 with the price down about 12% to $6.71. Nothing in the thesis broke. Two things changed: the decisive legal binary moved toward settlement, and a deeper read of the segment made the cohort's cooling explicit. Type and conviction held. The geometry was re-cut.</p>
+
+  <!-- 2 -->
+  <h2 id="what"><span class="section-num">02</span>What this company actually does</h2>
+  <p>ASP Isotopes is an advanced isotope-enrichment business with three distinct revenue legs and a fourth supporting arm. It is not a single-product story, and underwriting it as one is the first mistake the market makes.</p>
+  <p><strong>Leg one is the nuclear fuel cycle.</strong> Through its enrichment subsidiary, the company is building toward high-assay low-enriched uranium and enriched uranium for advanced reactors. This leg is anchored by a conditional framework with TerraPower covering up to 150 metric tons over 2028 to 2037, a backing loan of $22.0M maturing in 2032, and a targeted facility of roughly 15 metric tons per year from 2027 at a South African site. This is the leg that carries the multibagger narrative, and it is the leg that currently produces <strong>zero revenue</strong>.</p>
+  <p><strong>Leg two is specialist stable isotopes.</strong> Silicon-28 for quantum computing and advanced-semiconductor thermal management, sold under three signed United States commercial supply contracts; ytterbium-176 feeding into radiopharmaceutical Lutetium-177; and Carbon-14 under a Canadian take-or-pay agreement scaling from roughly $2.5M to roughly $5M per year. This leg is real and shipping.</p>
+  <p><strong>Leg three is helium and liquefied natural gas</strong>, captured through the Renergen asset, drilling into an acute global helium shortage. <strong>The fourth arm is radiopharmacy</strong>, guided to more than $10M in 2026.</p>
+  <p>The numbers that matter: first-quarter 2026 revenue was <strong>$4.18M</strong>, up from $1.1M a year earlier, but composed of radiopharmacy doses and initial helium and gas, <em>not</em> enrichment. Gross margin moved from 29.7% to roughly 40% year over year, an expansion of around 1,020 basis points, though on a tiny, acquisition-driven base of one quarter and only ~$1.7M of gross profit. Competitively, the company is a near-pure-play on Western non-Russian enrichment, sitting alongside Centrus as the benchmark name in its segment, but as the smaller, earlier, higher-variance expression.</p>
+
+  <!-- 3 -->
+  <h2 id="why"><span class="section-num">03</span>Why now: the inflection</h2>
+  <p>The structural force is the <strong>Nuclear Renaissance</strong>: a Western re-industrialisation of the nuclear fuel cycle driven by two reinforcing, policy-backed demand shocks. The first is the artificial-intelligence and data-centre power crunch reviving baseload and small-modular-reactor demand. The second is a United States government mandate to remove Russia from the enriched-uranium supply chain. The scale is not narrative. It is committed and, since our prior memo, capitalised: a $2.7B federal enrichment program announced on 05 January 2026, a defence-production consortium of more than 90 fuel-cycle companies in April 2026, roughly 15 reactors online in 2026, more than 50 small-modular-reactor projects targeted to 2035, and a projected cumulative shortfall of around 3,000 metric tons of high-assay low-enriched uranium by 2035. Riding alongside it is a second, independent pull the same vehicle captures: a real helium supply shock, with Qatar's Ras Laffan facility halted indefinitely and roughly 30% to 38% of world supply removed.</p>
+  <p>This name reaches the verdict as a <strong>top-down theme that the bottom-up signal confirmed</strong>: it sits on our map of the Nuclear Renaissance as a direct-capture vehicle, and our screening system flagged its technical re-entry at the mid-March weekly low of $4.22. The theme is genuinely early and accelerating. The reason the operational inflection is <em>now</em> rests on three primary-source changes since we last wrote at $7.61.</p>
+  <p><strong>First, the decisive bear de-risked.</strong> The securities class action alleging the enrichment process could not deliver reached an agreement-in-principle after mediation on 03 April 2026; the court approved a joint stay on 06 April 2026, with the stipulation of settlement and preliminary-approval motion due within 60 days. This retires the fraud-finding tail that capped our prior conviction. It is a resolution, not a vindication: the capability claim was never adjudicated in the company's favour, and the settlement amount and insurance split remain undisclosed.</p>
+  <p><strong>Second, physical operational proof.</strong> An 8-K filed 26 May 2026 confirmed the first 18 Silicon-28 stages physically restarted at target enrichment for more than three weeks, following a roughly nine-month outage from an October 2025 power surge. The stock rose 25% that day. It is a real-world rebuttal of the worthless-technology claim, though Silicon-28 purity is not the same thing as proven economic uranium enrichment.</p>
+  <p><strong>Third, the catalyst clock survives.</strong> The enrichment subsidiary filed a confidential registration statement on 12 November 2025, with the spin guided to the first half of 2026, now effectively elapsed un-priced and the single live clock. First Silicon-28 commercial shipments reset to the third quarter of 2026, and a non-binding memorandum with a European advanced-reactor developer on 11 May 2026 adds a second counterparty.</p>
+  <div class="callout note">
+    <span class="h">The comparable winner, and the type</span>
+    This setup most resembles the path Centrus walked from roughly $30 to $50 in 2023 to a peak near $464 in 2025, about a ten-fold run on the milestone-to-first-delivery-to-re-rate sequence. We tag it a <strong>multibagger</strong>, archetype N (narrative and platform-inflection), because the upside is open-ended optionality de-risked by quantified leading indicators rather than a defined-ceiling trade.
+  </div>
+
+  <!-- 4 THE SPACE -->
+  <h2 id="space"><span class="section-num">04</span>The Space: the segment's trajectory</h2>
+  <p>Section three was about <em>this company's</em> inflection timing. This section is about the <em>segment</em> it lives in: who competes, where the arc sits, where the money flows, whether the moat holds, and how all of that sets a ceiling on the price. This is where the re-underwrite did its real work.</p>
+
+  <h3>The defining event, and the company sat outside it</h3>
+  <p>The single biggest capital event this sub-theme will ever see landed on 05 January 2026: the federal $2.7B enrichment program, awarding <strong>$900M each to Centrus, General Matter and Orano</strong>, plus $28.5M to Global Laser Enrichment. <strong>ASP Isotopes and its enrichment subsidiary received nothing.</strong> They pursue a separate, self-financed, South-Africa-based path. That one fact reframes the entire read: the segment's enrichment economics, and the government validation that re-rates a multiple, are accruing to centrifuge incumbents, not to this name.</p>
+
+  <h3>The live competitive field</h3>
+  <p>On uranium enrichment, the proven leader is <strong>Centrus</strong>: roughly $3.18B market value, a backlog of about $3.1B firm plus $2.4B contingent, around $1.9B of cash, 900 kilograms of high-assay material already delivered, fiscal-2026 revenue guided to $450M to $500M, and profitable. It is gaining share on real revenue plus the marquee award. <strong>General Matter</strong>, backed by Founders Fund and led by an ex-SpaceX operator, is a credible, deep-pocketed centrifuge entrant on $900M, targeting operations in 2034; <strong>Orano</strong> holds $900M for an Oak Ridge build to 2031. The laser cohort, the closest technology analog to this company's non-centrifuge approach, is a tell: Global Laser Enrichment <em>declined</em> the high-assay request, prioritising depleted-uranium reprocessing. On specialist isotopes, this name is a genuine first-mover on Silicon-28 but a fast-follower on ytterbium-176, where Kinectrics has shipped since May 2024 and SHINE is also building. On helium, it holds a near-monopoly position as the only commercial-scale non-traditional entrant, targeting roughly 5% of global supply. The net placement: a multi-leg outsider, not the player the segment's enrichment economics are accruing to.</p>
+
+  <h3>Lifecycle and growth: two layers that have decoupled</h3>
+  <p>Read the arc in two layers, because they have come apart. The <strong>theme layer</strong> of policy, capital expenditure and end-demand is early and still accelerating: the $2.7B program, the 90-plus-company consortium, the 3,000-ton shortfall by 2035, an acute helium shock. The <strong>equity-capital layer</strong>, meaning the cohort's share momentum, has cooled and is reversing. The pre-commercial nuclear cohort took a sector-wide risk-off correction in early June 2026: NuScale fell 16.7% off its high to $10.37 with a sell-side cut to $7; Oklo dropped 11% to $58 from a $193.84 high; Nano Nuclear is 60% off its peak; <strong>this name itself fell 15.81% to $6.67 on 05 June on no company-specific news.</strong> The market is bifurcating, rewarding proven-revenue enrichers and punishing pre-commercial story names. This name's placement is therefore elevated-expectations and two-sided momentum, with enrichment revenue still at zero. The mismatch is the point: the theme is early, but this name's cohort has already round-tripped once.</p>
+
+  <h3>Capex and demand: the honest sizing by leg</h3>
+  <p>Capital expenditure direction is up and policy-committed, but it flows to centrifuge incumbents on 2031-to-2034 timelines, and uranium dollars are a 2028-and-later story for everyone. The company's addressable slices, sized honestly: the <strong>enrichment leg</strong> is large but distant, with the dedicated high-assay market potentially exceeding ~$4B per year by 2030 in the 600-ton case, of which this name's slice is open-ended optionality but zero today and not government-funded. <strong>Silicon-28</strong> is the nearest hard catalyst but a small current market, roughly 500 kilograms per year of global high-purity capacity at $10,000 to $50,000 per kilogram, about a $5M to $25M annual market, levered to a quantum-computing market projected near $8.6B by 2030. <strong>Helium through Renergen</strong> is the strongest near-term cash leg, an acute structural shortage into which the company is drilling roughly four months early, a real 18-to-36-month dollar-generating runway. The clearest near-term cash is helium, then Silicon-28; the enrichment leg that carries the narrative is a 2028-plus market with the capital flowing elsewhere.</p>
+
+  <h3>The moat: does value-capture hold as the space matures</h3>
+  <p>Two distinct moats, and they grade differently. The Aerodynamic Separation Process, already physically deployed for Silicon-28 and Carbon-14 and restarted at target enrichment for more than three weeks, is a genuine working low-capital-expenditure niche capability and a real first-mover advantage, though on a small market with a contested ytterbium-176 flank. The Quantum Enrichment Process, the laser-based uranium technology, is where the moat is temporary and unproven: it has never produced economic high-assay material, and the substitute risk is severe and better-capitalised, namely proven centrifuge, the very technology the government funded. The historical substrate is brutal: a domestic laser program was cancelled in 1999 after $100M, Japan scrapped its program in 2001, France in 2003. The not-the-1990s rebuttal is plausible but unadjudicated, and it is precisely the litigated point. Helium is a separate, durable geology-and-scarcity bottleneck. The verdict: the name holds a direct value-capture grade on Silicon-28 and helium, but its claim on the uranium segment is structurally at risk, which is exactly why the four-times path is conditional, not owned.</p>
+
+  <h3>How the segment's trajectory sets the price ceiling</h3>
+  <p>This is the payoff. The overshoot tier is anchored to the Centrus peak run, from roughly $30 to $50 up to about $464, around ten times, and that anchor still defines the ceiling's <em>shape</em>. But three current facts cap how much of it this regime supports. The anchor has <strong>de-rated about 65%</strong>; Centrus now trades near $161 at roughly six to seven times enterprise-value-to-revenue, so paying for a peak-multiple overshoot today fights the tape. The cohort's capital is <strong>reversing, not accelerating</strong>, the most salient near-term risk. And this name is <strong>outside the segment's defining capital event</strong>, so its multiple cannot lean on government validation. What keeps the overshoot on the board: the theme layer remains early and policy-accelerating, the shortfall and the helium shock are real, and a clean name-specific catalyst could still force a violent reflexive re-rate into a short interest of roughly 22% to 23%. The net for the geometry is decisive: <strong>the space supports the re-rate tier toward where quality enrichment names trade now, but caps the full peak overshoot to a low-probability, catalyst-and-squeeze-dependent tail of around 10%.</strong> The theme catalyst window is dense around the third quarter of 2026; the capital-flow tailwind that powers an overshoot is, at this moment, running against the cohort.</p>
+
+  <!-- 5 -->
+  <h2 id="evidence"><span class="section-num">05</span>The evidence: our scorecard</h2>
+  <p>We separate thematic winners from same-theme round-trippers on leading, observable operational evidence, not valuation and not story. Four discriminators carry the weight. Here is exactly where this name stands, and we do not soften it.</p>
+
+  <table>
+    <thead>
+      <tr><th>Discriminator</th><th class="mono">Read</th><th>What the data actually shows</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backlog converting to revenue</strong></td>
+        <td><span class="badge absent">Absent</span></td>
+        <td>Enrichment revenue is $0, so the convert-to-revenue test is non-measurable for the thesis leg. This is the round-tripper tell, and it is the honest centre of the bear case.</td>
+      </tr>
+      <tr>
+        <td><strong>Milestone on its original date</strong></td>
+        <td><span class="badge partial">Partial</span></td>
+        <td>Silicon-28, ytterbium-176 and Carbon-14 all slipped versus original dates, and Silicon-28 slipped again this cycle from "first half 2026" to "third quarter 2026." At least three slips in the trailing twelve months, though at least two trace to the single October 2025 power surge. Offsetting it: the 26 May restart at target enrichment is a hard-data partial refutation of the "tech does not work" claim.</td>
+      </tr>
+      <tr>
+        <td><strong>Firm fixed-price cash contract</strong></td>
+        <td><span class="badge partial">Partial</span></td>
+        <td>The TerraPower relationship is real and strategic but conditional: a $22.0M loan and a non-binding 150-ton framework, no take-or-pay. The Carbon-14 take-or-pay is firm but immaterial. Three Silicon-28 contracts are firm-sounding but dollar-undisclosed. The 11 May European agreement is explicitly non-binding.</td>
+      </tr>
+      <tr>
+        <td><strong>Margin and cash-flow inflection</strong></td>
+        <td><span class="badge partial">Partial</span></td>
+        <td>Gross margin moved roughly 1,020 basis points, but on one tiny quarter. Operating cash flow is still deeply negative at about negative $37.8M trailing, and the continuing-operations net loss widened to $26.7M.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The read:</strong> the structural force the position is underwritten on is <em>still not converting to revenue</em>. That single fact is why conviction is Bullish and not Extremely Bullish. It is also why the verified drivers below are read as <em>credible</em> rather than <em>proven</em>.</p>
+
+  <p>On survival, the scorecard is the opposite of the discriminators, and this is what makes the tail shot ownable. Liquidity stood at roughly <strong>$290.5M</strong>, comprising $207.3M of cash and $83.2M of short-term investments at 31 March 2026, against a trailing burn of about $37.8M. That is more than twelve months, more than six quarters by our firewall test. Stockholders' equity is <strong>positive $299.0M</strong>, $289.0M attributable. Debt is modest at $58.3M, with convertible notes of $199.9M carried at fair value. Our accounting-quality check on solvency clears. The real tax here is dilution, not insolvency: the share count rose from 111.7M to 125.9M in one quarter, up 12.8%, driven by an all-stock acquisition. A literal dilution-velocity test would flag, but the structured-convert and all-stock-acquisition carve-out applies; these are strategic converts, not a death-spiral cash machine into a falling tape.</p>
+
+  <!-- 6 -->
+  <h2 id="valuation"><span class="section-num">06</span>Valuation and the path</h2>
+  <p>We value the floor and the target separately, because they answer different questions. The floor asks how far we fall if the thesis breaks. The target asks where we go if it works. We do not net one against the other.</p>
+
+  <h3>The floor: about $3.75</h3>
+  <p>Method: a dilution-adjusted break-up sum-of-the-parts for a narrative-inflection name, with the uranium and enrichment-subsidiary leg valued at roughly zero. What remains is the non-enrichment value, namely the helium and gas asset plus radiopharmacy plus the producing Silicon-28 line, less parent overhang, on about 165M bear-case diluted shares. That lands at <strong>$3.75</strong>, range $3.50 to $4.00, roughly 44% below the current $6.71 and about 11% below our $4.22 entry. Critically, this is a thesis-break floor, <em>not</em> a going-concern floor: survival is solid given the $290.5M of liquidity, positive equity and cleared solvency check. The real downside is dilution to a non-ruin floor, not impairment.</p>
+
+  <h3>The target: re-rate ~$16, overshoot ~$30</h3>
+  <p>The <strong>re-rate</strong> is the supported tier: the enrichment, isotope and helium legs converge to the multiple where the theme's quality name trades <em>now</em>, roughly six to seven times enterprise-value-to-revenue, implying a value of about $1.8B to $2.3B and a price near $16, around 2.4 times. The <strong>overshoot</strong> is anchored to the Centrus historical peak near $464, around ten times revenue and roughly eighteen times enterprise-value-to-EBITDA, a reflexive run on a clean catalyst plus a squeeze into the 22% to 23% short interest, landing near $30, around 4.5 times. Per the restrictive ceiling established in section four, we held the overshoot <em>level</em> but gated its <em>probability</em> to a tail.</p>
+
+  <div class="field">
+    <h4>Football field · the three methods used</h4>
+    <div class="bar-row">
+      <div class="meta"><span class="name">Dilution-adjusted break-up (floor)</span><span class="rng">$3.50 – $4.00</span></div>
+      <div class="track"><div class="bar sotp" style="left:0%; width:9%;"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="meta"><span class="name">Current-multiple on converting legs</span><span class="rng">$14 – $18</span></div>
+      <div class="track"><div class="bar now" style="left:40%; width:13%;"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="meta"><span class="name">Peak-multiple on crystallised parts</span><span class="rng">$27 – $34</span></div>
+      <div class="track"><div class="bar peak" style="left:77%; width:23%;"></div></div>
+    </div>
+    <div class="scale"><span>$0</span><span>$10</span><span>$20</span><span>$30</span><span>$40</span></div>
+  </div>
+
+  <p>The four scenarios, with the overshoot probability gated by the ceiling:</p>
+
+  <div class="scenarios">
+    <div class="scen bear">
+      <span class="label">Bear</span>
+      <div class="price">$3.75</div>
+      <div class="ret dn">−44% from $6.71</div>
+      <div class="prob">Probability 35%</div>
+      <p class="desc">Enrichment stays at zero, the subsidiary spin slips or prices weakly, and the cooling cohort compresses the multiple toward the break-up floor. The single most likely outcome given the absent and partial discriminators plus the cooling tape.</p>
+    </div>
+    <div class="scen base">
+      <span class="label">Base</span>
+      <div class="price">$8</div>
+      <div class="ret up">+19% from $6.71</div>
+      <div class="prob">Probability 35%</div>
+      <p class="desc">Silicon-28 ships in the third quarter of 2026, helium delivers cash, and the settlement finalises, but uranium enrichment stays optionality and the narrative multiple barely moves.</p>
+    </div>
+    <div class="scen rerate">
+      <span class="label">Re-rate</span>
+      <div class="price">$16</div>
+      <div class="ret up">+138% from $6.71</div>
+      <div class="prob">Probability 20%</div>
+      <p class="desc">The enrichment subsidiary crystallises a real uranium value, helium cash converts, and the multiple converges to where the quality enrichment name trades now. The supported tier.</p>
+    </div>
+    <div class="scen overshoot">
+      <span class="label">Overshoot</span>
+      <div class="price">$30</div>
+      <div class="ret up">+347% from $6.71</div>
+      <div class="prob">Probability 10%</div>
+      <p class="desc">A reflexive run to the comparable peak plus a short squeeze. The level is kept; the probability is gated to a catalyst-and-squeeze-dependent tail per the restrictive ceiling.</p>
+    </div>
+  </div>
+
+  <div class="pw">
+    <div>
+      <span class="l">Probability-weighted target</span>
+      <div class="big">$10.3</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="small">≈ +53% from $6.71</div>
+      <div class="small">Up ~+347% / +138% &nbsp;vs&nbsp; down ~−44%</div>
+    </div>
+  </div>
+
+  <p><strong>Velocity.</strong> Time-to-re-rate is roughly 12 to 18 months; the implied annual return on the probability-weighted ~$10.3 is around 33% per year. The probability of doubling to roughly $13.4 is about 8%, 15% and 22% at 6, 12 and 18 months. The short interest near 22% to 23% and days-to-cover of about five to six amplify the path; the 25% move on the 26 May restart shows the violence available. The same reflexivity cuts both ways: the cohort rotation ran the stock down 15.81% on no news on 05 June.</p>
+
+  <div class="callout">
+    <span class="h">What the price already pays for</span>
+    At $6.71, roughly $845M on zero enrichment revenue, the market already pays a full narrative and optionality multiple. The sell-side cluster of $11 to $13 prices a near-double on optionality before we add anything. Steelman it: this is a genuine Western non-Russian enrichment vehicle into a mandated supply gap and a real helium shock, with a near-term value-crystalliser and a physically restarted process; the premium is arguably warranted. The honest consequence: the four-times path is <em>entirely beyond consensus and conditional</em>. There is no priced-for-failure mispricing to lean into. The edge is that the conditional path is credible, not heroic. The remaining room must be earned, not discovered.
+  </div>
+
+  <!-- 7 -->
+  <h2 id="bear"><span class="section-num">07</span>The bear case</h2>
+  <p>Here is the short report, written the way a short-seller would write it.</p>
+  <div class="callout bear-box">
+    <span class="h">The lead bear: a fake inflection that has de-risked but not closed</span>
+    <p style="margin:0 0 12px;">This is a company valued at ~$845M that has never sold a dollar of the product its entire narrative depends on. The uranium-enrichment process is a laser-based technology in a class that has failed three times: cancelled domestically in 1999 after $100M, scrapped in Japan in 2001 and France in 2003. The 2024 short report called it an outdated derivative that will not commercially scale, and a December 2025 court ruling let that capability claim proceed. Management's rebuttal that "this is not the 1990s" has never been adjudicated and has never produced economic high-assay material. The milestone record is a string of slips. The headline restart was Silicon-28, a different and far easier isotope, which proves nothing about uranium. The capital that validates this segment, $2.7B of it, went to three centrifuge competitors and pointedly not to this company. You are paying a peak narrative multiple for a 2028-plus optionality that the government declined to fund.</p>
+    <p style="margin:0;">That argument now carries a settlement (agreement-in-principle 03 April 2026, court stay 06 April 2026) that removes the fraud-finding tail, and a physical restart at target enrichment on the board. So it is a de-risked, unresolved binary, not a closed one. It is a <em>partial</em> refutation: Silicon-28 purity is not proven economic uranium enrichment, which is exactly the litigated point, and enrichment revenue is still zero. <strong>Why we are paid to carry it:</strong> the same binary that could break the thesis also caps a market already short 22% to 23% of the float; a clean catalyst can force a violent re-rate, and we hold more than twelve months of runway to let it resolve.</p>
+  </div>
+  <p>The supporting bears are all <strong>real but priced</strong>, and none is refuted away:</p>
+  <ul class="clean">
+    <li><strong>Already priced</strong> (real): the optionality is in the price; the four-times path is genuine room beyond consensus, but conditional.</li>
+    <li><strong>Cyclical head-fake / theme rotation</strong> (real and newly salient): the cohort's capital-flow reversal is actively firing and can compress the multiple regardless of execution. The most salient near-term risk.</li>
+    <li><strong>Dilution machine</strong> (real but priced): up 12.8% in a quarter; the structured-convert carve-out applies.</li>
+    <li><strong>Inferior expression / superior proxy</strong> (real but priced): Centrus is the proven, larger, government-funded same-theme vehicle a rotation favours. It does not fire as a kill, because this name carries independent helium and isotope legs Centrus lacks, but it is the safer same-theme alternative.</li>
+    <li><strong>Distant-market and timeline</strong> (real but priced): uranium dollars are a 2028-and-later conditional story.</li>
+    <li><strong>Customer concentration</strong> (real but priced): TerraPower is one conditional customer; mitigated by three Silicon-28 contracts, the Carbon-14 deal and the European memorandum, but offtake is thin and dollar-undisclosed.</li>
+    <li><strong>Jurisdiction and execution</strong> (real but priced): South African grid fragility, the October 2025 surge, is already in the slip history.</li>
+  </ul>
+  <p>One bear is genuinely <strong>refuted</strong>, and we tested it hard: the no-terminal-buyer argument. Government, TerraPower and reactor-developer demand, plus the helium pull, demonstrably exist. The question is conversion and timing, not whether a buyer exists.</p>
+
+  <!-- 8 -->
+  <h2 id="call"><span class="section-num">08</span>The call</h2>
+  <p><strong>Buy. Type: multibagger. Conviction: Bullish. Archetype N.</strong> All three spine judgments hold: a credible if conditional path to four times or more, favourable asymmetry (probability-weighted around +53%, upside roughly +347% and +138% against downside of about −44%), and survival to realise it, with more than twelve months of runway, positive equity of $299M and a cleared solvency check. No automatic do-not-buy fires.</p>
+  <p>Conviction is Bullish and not Extremely Bullish, and the reason is precise: the prior litigation cap has lifted, but two caps replaced it. The structural force is still not converting, with enrichment revenue at zero; the optionality is largely priced; and the segment read shows the cohort cooling while the defining capital went to centrifuge incumbents. Two caps swapped; conviction unchanged.</p>
+  <p><strong>Expected path:</strong> ~$16 at the re-rate, the supported tier, toward ~$30 at the overshoot, the gated 10% tail, over roughly <strong>12 to 18 months</strong>. The drivers are the enrichment-subsidiary spin pricing the uranium asset independently, first Silicon-28, ytterbium-176 and Carbon-14 revenue converting story into numbers, and the helium ramp. <strong>Catalyst window:</strong> dense but two-sided, around the third quarter of 2026. The subsidiary spin pricing is the key live clock, since the first-half guidance has elapsed un-priced; first Silicon-28 shipment and settlement finalisation are the next dated proof points; the helium shock is the cash-synced theme catalyst; the cohort rotation is the concurrent counterweight.</p>
+  <div class="callout note">
+    <span class="h">The next checkpoint, and a discipline note</span>
+    The expected-path checkpoint is the enrichment-subsidiary spin actually pricing, and at what implied uranium-asset value. State this plainly: <strong>entry and exit belong to our screening system, not to this article.</strong> The screening system timed the $4.22 re-entry; the position is held in full and monitored weekly for the system's technical exit or stop. The targets above are the published thesis and the scoreboard we hold ourselves against. They are not a sell trigger.
+  </div>
+
+  <!-- 9 -->
+  <h2 id="wrong"><span class="section-num">09</span>How we would be wrong</h2>
+  <p>Three most-likely causes of an eighteen-month loss, in order.</p>
+  <p><strong>One: enrichment never converts on schedule.</strong> The subsidiary spin slips again or prices weakly, Silicon-28 ships but stays immaterial, uranium remains zero and optionality, and the market stops paying a narrative multiple, de-rating toward the ~$3.75 break-up floor. This is the honest centre of the bear case: the structural force still has not begun converting.</p>
+  <p><strong>Two: the cohort capital-flow reversal deepens.</strong> The pre-commercial nuclear cohort keeps de-rating, the live NuScale, Oklo and Nano round-trip, and compresses this name's multiple <em>regardless</em> of execution. The 15.81% drop on no news on 05 June is the live warning.</p>
+  <p><strong>Three: the dilution tax compounds.</strong> Continued structured converts plus acquisition stock keep the share count climbing, capping per-share upside even on operational wins.</p>
+  <p>None of the three is a ruin we can currently rule out as a risk, because survival is solid, the runway is more than twelve months, and there is no death-spiral structure. So the most-likely loss is a de-rate to a non-ruin floor, not a permanent impairment. That is a conviction strike the published thesis names openly. It is not a do-not-buy.</p>
+  <p>The open questions we carry but never lean on: the settlement amount and structure remain undisclosed; the dollar value of the three Silicon-28 contracts is the number that would move the firm-contract read toward present; and the subsidiary spin's pricing, implied uranium-asset value and confirmed timing remain the single most important unknown, with the registration statement still confidential. Each is flagged, each travels, and none is load-bearing for the call.</p>
+
+  <hr class="divider">
+
+  <div class="footer">
+    <p><strong>Sterling Signals</strong> · This deep dive is the source for our position notes and the week's structural-force coverage. We hold $ASPI in the model book as a full position, entered once at the screening signal and monitored weekly for the system's technical exit.</p>
+    <p class="disc">Educational and informational content. Not investment advice, not a solicitation, and not a recommendation to buy or sell any security. We may hold positions in the names discussed. Markets carry risk, including total loss of capital. Do your own work and consult a licensed professional before acting. Prices and figures are as of the dates stated and were drawn from primary sources and our held-position ledger at the time of writing.</p>
+  </div>
+
+</div>
+</body>
+</html>
